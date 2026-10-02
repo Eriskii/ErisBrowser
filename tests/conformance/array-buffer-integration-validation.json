@@ -1,0 +1,235 @@
+{
+  "format": 1,
+  "oracle": {
+    "path": "tests/conformance/array-buffer-integration-fixture.json",
+    "bytes": 1285,
+    "sha256": "fdabafbe19d41029c2e7794b731db53bcea00f3a16c6fcc4aaa7d86faccac411"
+  },
+  "fixture": {
+    "path": "tests/fixtures/array-buffer.html",
+    "bytes": 4822,
+    "sha256": "37505a1a232c6988e1f54008fcc0ff419bf14296a38d5f808fb99fc984cc2c7b"
+  },
+  "worker_generation": 193,
+  "pipeline_test": "array_buffer_resizing_transfer_and_species_survive_document_callbacks",
+  "worker_test": "confined_array_buffer_resizing_transfer_and_species_survive_document_callbacks",
+  "executed_in_full_matrices": {
+    "188-default": {
+      "passed": 1269,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-default-tests.log",
+        "bytes": 120092,
+        "sha256": "3803ac0b47148c6cd240af762987d7ede35abd680854d3566e7e9d3dad2062ca"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 13.407,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "3803ac0b47148c6cd240af762987d7ede35abd680854d3566e7e9d3dad2062ca",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-default-tests.log"
+      }
+    },
+    "188-feature": {
+      "passed": 1280,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-feature-tests.log",
+        "bytes": 121270,
+        "sha256": "c17e2be06b5ccd2ca2246d75d83e9ebc4ea846bb0092dff84d848e6809212274"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 21.46,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "c17e2be06b5ccd2ca2246d75d83e9ebc4ea846bb0092dff84d848e6809212274",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-feature-tests.log"
+      }
+    },
+    "198-default": {
+      "passed": 1269,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-default-tests.log",
+        "bytes": 119936,
+        "sha256": "3a7cd9c65d79df73ec2260cbaca2df41953c17c3bc4c071d47d974c19636d9b1"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 16.021,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "3a7cd9c65d79df73ec2260cbaca2df41953c17c3bc4c071d47d974c19636d9b1",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-default-tests.log"
+      }
+    },
+    "198-feature": {
+      "passed": 1280,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup.log",
+        "bytes": 121021,
+        "sha256": "ae0b22804fcfeb6245fc3d6fb7df9ffa441a6e93b6981a7934e787249237d9a7"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 8.826,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "ae0b22804fcfeb6245fc3d6fb7df9ffa441a6e93b6981a7934e787249237d9a7",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup.log"
+      }
+    }
+  },
+  "focused_candidate1": {
+    "pipeline": {
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "pipeline",
+        "array_buffer"
+      ],
+      "toolchain": "188",
+      "exit_code": 0,
+      "failure": null,
+      "cleanup_failure": null,
+      "leader_reaped": true,
+      "inputs_unchanged": true,
+      "elapsed_seconds": 7.071,
+      "deadline_seconds": 900,
+      "owned_group_cleanup_before_first_reap": true,
+      "log_sha256": "da458791ef9f8e9ddbe73caa86007235c5b867fd826392e7a2b4db2b17c37bf7",
+      "log": "/tmp/eris-array-buffer-candidate-1/focused-pipeline.log"
+    },
+    "worker": {
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "worker",
+        "confined_array_buffer",
+        "--",
+        "--include-ignored"
+      ],
+      "toolchain": "188",
+      "exit_code": 0,
+      "failure": null,
+      "cleanup_failure": null,
+      "leader_reaped": true,
+      "inputs_unchanged": true,
+      "elapsed_seconds": 2.317,
+      "deadline_seconds": 900,
+      "owned_group_cleanup_before_first_reap": true,
+      "log_sha256": "c3f27d4c12a55d85d120efdef5c4ad0d71fe6c930d67870b7da8d34a82e84dd7",
+      "log": "/tmp/eris-array-buffer-candidate-1/focused-worker.log"
+    }
+  },
+  "observations": {
+    "initial": {
+      "body_class": "ready",
+      "result_text": "ready",
+      "sample_rgb": 32768
+    },
+    "after_click": {
+      "body_class": "clicked",
+      "result_text": "6",
+      "sample_rgb": 255
+    },
+    "sample_points": [
+      [
+        10,
+        10
+      ],
+      [
+        60,
+        10
+      ],
+      [
+        110,
+        10
+      ],
+      [
+        160,
+        10
+      ],
+      [
+        210,
+        10
+      ],
+      [
+        260,
+        10
+      ]
+    ],
+    "unexpected_diagnostics": 0,
+    "worker_pixels_equal_direct_page": true
+  },
+  "limitations": "Supported buffer-only page/worker tests check metadata and effects, not byte contents. Independent private tests cover backing bytes."
+}

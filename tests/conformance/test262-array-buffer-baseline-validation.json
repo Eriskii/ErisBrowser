@@ -1,0 +1,840 @@
+{
+  "format": 1,
+  "operation": "Authorized baseline publication by exact projection of completed reports, followed by offline check_baseline; no adapters rerun.",
+  "publisher": {
+    "path": "/tmp/eris-array-buffer-publish-baselines.py",
+    "sha256": "1f7a86db48d1ec75dbb7adbfb8cf0f7a32c97cf7e55e342412ffc92173af1d4c",
+    "bytes": 12035
+  },
+  "runner": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test262_conformance.py",
+    "sha256": "8bb09032cdf03406173f01e8a0ce0b8463e423800babacc65506c3a456b4b4f0",
+    "bytes": 214005
+  },
+  "subprocess_Popen_forbidden": true,
+  "engine_executions": 0,
+  "new_baseline": {
+    "profile": "array-buffer",
+    "path": "tests/conformance/test262-array-buffer-current.json",
+    "sha256": "9a9a052de66d0c302f157f0762afefdcd16aacd909c95d2c3409cd12fdc5f265",
+    "counts": {
+      "passed": 262,
+      "unsupported": 130,
+      "failed": 50
+    },
+    "all_controls_verified": 160,
+    "BAD_RUN_statuses_absent": true,
+    "meaning": "Known-state regression gate, not all-pass conformance or health certification for separate local resource cases."
+  },
+  "historical_baseline_archive": {
+    "path": "/tmp/eris-array-buffer-baselines-before.json",
+    "sha256": "27f2508f55136d4ad987fe7b63f0051895b0737e538c486f8330f452a32e5106",
+    "bytes": 3699342
+  },
+  "historical_formal_comparison": {
+    "path": "/tmp/eris-array-buffer-candidate-2/profiles-comparison.json",
+    "sha256": "8fd6333af775273248be45318ece70559f92b6bd757225e810bd153ebfa9b318",
+    "bytes": 45089
+  },
+  "historical_local_execution": {
+    "path": "/tmp/eris-array-buffer-historical-local-candidate-2/execution.json",
+    "sha256": "48e8cec6ca14e7e20a7ea10b309970c888285427168a1629b3685b8334e58ed1",
+    "bytes": 10095
+  },
+  "historical_local_comparison": {
+    "path": "/tmp/eris-array-buffer-historical-local-candidate-2/comparison.json",
+    "sha256": "e058f2026d4be170d511c3509e6e88f49b6e37e1fc7d29497ba65114de659c59",
+    "bytes": 2508
+  },
+  "old_baseline_hashes_before": {
+    "addition": "69610fc6ff4ab4f2d72eae1aa5ccc6cc127af758f998448f6c9e15b76628fe4d",
+    "array-descriptors": "16b9d7428696157b55284b8a7884b5f290e86756afcdf505ed99a3d49ae3501a",
+    "array-find": "9acc545529e16134d5ec1082415a679babb643bc9f587d7143ed6b0604b9c3d9",
+    "array-from": "9057d437c4f6ef9d8f758549f456377258b6c8af024cc50ae3b214c110378daf",
+    "array-reduce": "aaced8d7d1c9b079067e2abff639657adf89bc5c349ec19188c28314c82aebce",
+    "array-splice": "f101d6ecf1d515dfb4f1e37a8cab6b96818a46f09aff2039ddd4dae26e06eec1",
+    "compound-assignment": "1ed2ffaad47349010ad532ba43e0cbaf59750c23d0d76c4e5174bc0090ea2dfd",
+    "core-iterators": "02077518cb4bfa8c4ada143276c4224252eabd694a5a8e77a5520c5ac4a9cb1d",
+    "date": "8e282442518943971a743f512be6a5de368718f2f8029fb358355fb5d7f48bac",
+    "equality": "c1418e959a4936d94cb24960c379dccee01af48d932fe4ff7622964129b227df",
+    "for-of": "c023e088a45ba866ba9436832a2a0ba6584f9261038ad26df72825523820cf06",
+    "function-constructor": "f17ce66f9c4f5395ade2e9d607e806dce678c84558674d30e1a53e378e3136c0",
+    "functions": "53627cfffdb3b01c7453aed80e750909ba0198a888747b2f3cb22674c3966040",
+    "global-values": "05a82b4c2f40643fa91df9905e4be566332f4106592c3f99e9397819cec18803",
+    "is-prototype-of": "0c6a95e3eca5d1d8949f0770ff7dc2557dedfff8c96cd62ce5173ca5a1745efe",
+    "labels": "035145ff2b1d5df31077936c86d4ca54dc58185f7fb32ca812fd2ea96c1f07f3",
+    "logical-assignment": "08550c1b03893e8b5e75ef8caa234b1ac7bb1c4f5f5e2dfaa37e69a0b38ac705",
+    "new-target": "187696b419974db062b8eb5ddac457f7cc1fb849d3de6c495b91c7bb8026a2d7",
+    "number-statics": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070",
+    "numeric-conversion": "2a14928428ef7fa112d0f4434eb7764a73b1685de2e494eaac9d3991a4cf187c",
+    "object-integrity": "59b2fff7ba920b4486cff5168cde5d4471ed7cefed080d6478399530da8d7736",
+    "reflect-construction": "160ece084c889dd5693207aa59dcf0a732f04548eb15dbdacbcae3203680a22a",
+    "regexp": "07b65132730d23644e5405ba5990c7243870b2f3cef846864ad1d8dc3d5a43a5",
+    "regexp-match-search": "364b8180ba234cee05fede0c681816d6b1675b1af19eb450058334bf7cf6345c",
+    "regexp-split": "8a8aa3820823be4e9208b4e738942b676884a93d78cd6f0ea12db51d65e665ab",
+    "relational": "da9b25f56a36b1ff2b4997642fa26933ff534d9866ff155d0826f2599cb65fe9",
+    "rest-parameters": "d2afff0d3de3fa2cf37c68ee4d8b5e7794688dd1b514e827e4b2c22e763310f3",
+    "string-concat": "00367d16ec166ff6d88482b36221dc444922578482d5212fd4732fe512668364",
+    "string-json": "988461016a336b25c74e36d19418b90d61193211ab9012dce0b0624e278a80ff",
+    "string-last-index-of": "4db22ae25a830831125415e7f6a29f136c77e72203b25810c1595b8ee4207cf5",
+    "string-search": "952b4d98851498b70d5ee7a60c25e3894002d875ca98dab57869e2a0cc9e883b",
+    "symbols": "7ad674a89581e055552742645de0912233df9fbb0af7d731d974e188b803baea",
+    "template-literal": "e990475ba6e02361403ab3e610758cd3a91dbf8e02c15cbf649f5b425fd622a8"
+  },
+  "old_33_gates_passed_before_changes": true,
+  "strengthened_baselines": [
+    {
+      "profile": "array-from",
+      "before_baseline_sha256": "9057d437c4f6ef9d8f758549f456377258b6c8af024cc50ae3b214c110378daf",
+      "after_baseline_sha256": "33167f5d478a3826232e62cba3843adab9cd886639997b12ebdeecf7a0403cba",
+      "gained_cases": [
+        "test/built-ins/Array/from/items-is-arraybuffer.js:sloppy",
+        "test/built-ins/Array/from/items-is-arraybuffer.js:strict"
+      ],
+      "counts": {
+        "passed": 86,
+        "unsupported": 4
+      },
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-array-from.json",
+        "sha256": "454aef00d6fcd2ac5fae31b94b76063bc15d8b74993c4542150943bd72ce7aa9",
+        "bytes": 137895
+      }
+    },
+    {
+      "profile": "object-integrity",
+      "before_baseline_sha256": "59b2fff7ba920b4486cff5168cde5d4471ed7cefed080d6478399530da8d7736",
+      "after_baseline_sha256": "8bf19bb9d8233e1089a6ec61cc1954c8aac6aed35cd62af4c9c2ffac2c3876f3",
+      "gained_cases": [
+        "test/built-ins/Object/seal/seal-arraybuffer.js:sloppy",
+        "test/built-ins/Object/seal/seal-arraybuffer.js:strict"
+      ],
+      "counts": {
+        "passed": 396,
+        "unsupported": 38,
+        "failed": 40
+      },
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-object-integrity.json",
+        "sha256": "2be3f43bc1914a93f34402fcd7b66cdcf9c273f689b2619d1a22e74d8fabfbaa",
+        "bytes": 464288
+      }
+    }
+  ],
+  "unchanged_old_baselines": 31,
+  "total_baselines": 34,
+  "checks": [
+    {
+      "profile": "addition",
+      "baseline_path": "tests/conformance/test262-addition-current.json",
+      "baseline_sha256": "69610fc6ff4ab4f2d72eae1aa5ccc6cc127af758f998448f6c9e15b76628fe4d",
+      "case_count": 95,
+      "counts": {
+        "unsupported": 28,
+        "passed": 67
+      },
+      "controls": 64,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-addition.json",
+        "sha256": "f4afe861144ad495313d3162149cc64dcccbbe72bcd9b2c9f68aece8e65a32cc",
+        "bytes": 103624
+      }
+    },
+    {
+      "profile": "array-descriptors",
+      "baseline_path": "tests/conformance/test262-array-descriptors-current.json",
+      "baseline_sha256": "16b9d7428696157b55284b8a7884b5f290e86756afcdf505ed99a3d49ae3501a",
+      "case_count": 3574,
+      "counts": {
+        "passed": 3554,
+        "unsupported": 20
+      },
+      "controls": 84,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-array-descriptors.json",
+        "sha256": "932b422b465a3dbf0e03f67b2ed02aaf467b734a7a2bc1a94cb0a75f9ef921d3",
+        "bytes": 2271931
+      }
+    },
+    {
+      "profile": "array-find",
+      "baseline_path": "tests/conformance/test262-array-find-current.json",
+      "baseline_sha256": "9acc545529e16134d5ec1082415a679babb643bc9f587d7143ed6b0604b9c3d9",
+      "case_count": 180,
+      "counts": {
+        "passed": 148,
+        "unsupported": 32
+      },
+      "controls": 288,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-array-find.json",
+        "sha256": "6d1d74340b9dbc6306a80f3925184112f1185b9a23a1eae19d6593b5c972859e",
+        "bytes": 333300
+      }
+    },
+    {
+      "profile": "array-from",
+      "baseline_path": "tests/conformance/test262-array-from-current.json",
+      "baseline_sha256": "33167f5d478a3826232e62cba3843adab9cd886639997b12ebdeecf7a0403cba",
+      "case_count": 90,
+      "counts": {
+        "passed": 86,
+        "unsupported": 4
+      },
+      "controls": 96,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-array-from.json",
+        "sha256": "454aef00d6fcd2ac5fae31b94b76063bc15d8b74993c4542150943bd72ce7aa9",
+        "bytes": 137895
+      }
+    },
+    {
+      "profile": "array-reduce",
+      "baseline_path": "tests/conformance/test262-array-reduce-current.json",
+      "baseline_sha256": "aaced8d7d1c9b079067e2abff639657adf89bc5c349ec19188c28314c82aebce",
+      "case_count": 1034,
+      "counts": {
+        "passed": 1018,
+        "unsupported": 16
+      },
+      "controls": 128,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-array-reduce.json",
+        "sha256": "4412ec3be1f345ba9e656c4776d53d7a8e2b2d8eddfcd8dd186aca7b20f281ae",
+        "bytes": 743045
+      }
+    },
+    {
+      "profile": "array-splice",
+      "baseline_path": "tests/conformance/test262-array-splice-current.json",
+      "baseline_sha256": "f101d6ecf1d515dfb4f1e37a8cab6b96818a46f09aff2039ddd4dae26e06eec1",
+      "case_count": 162,
+      "counts": {
+        "passed": 138,
+        "unsupported": 24
+      },
+      "controls": 96,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-array-splice.json",
+        "sha256": "d63d857e33da63db39b42ea8c0a27d3f4f34bccfd7428ecc391b8ef7e4d78209",
+        "bytes": 183806
+      }
+    },
+    {
+      "profile": "compound-assignment",
+      "baseline_path": "tests/conformance/test262-compound-assignment-current.json",
+      "baseline_sha256": "1ed2ffaad47349010ad532ba43e0cbaf59750c23d0d76c4e5174bc0090ea2dfd",
+      "case_count": 786,
+      "counts": {
+        "unsupported": 169,
+        "passed": 617
+      },
+      "controls": 128,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-compound-assignment.json",
+        "sha256": "3882c6312c9d952570743f1e69349949a711b1509f839098b359ab5ca3962765",
+        "bytes": 607105
+      }
+    },
+    {
+      "profile": "core-iterators",
+      "baseline_path": "tests/conformance/test262-core-iterators-current.json",
+      "baseline_sha256": "02077518cb4bfa8c4ada143276c4224252eabd694a5a8e77a5520c5ac4a9cb1d",
+      "case_count": 144,
+      "counts": {
+        "passed": 106,
+        "unsupported": 38
+      },
+      "controls": 132,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-core-iterators.json",
+        "sha256": "e879a2a9998b9cd2889d5455fbc3d3ef1bd505910079f1e322eeeaad0dac2a9f",
+        "bytes": 204334
+      }
+    },
+    {
+      "profile": "date",
+      "baseline_path": "tests/conformance/test262-date-current.json",
+      "baseline_sha256": "8e282442518943971a743f512be6a5de368718f2f8029fb358355fb5d7f48bac",
+      "case_count": 1188,
+      "counts": {
+        "passed": 1166,
+        "unsupported": 22
+      },
+      "controls": 340,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-date.json",
+        "sha256": "05099bb682de9194c32ffc429bf53fe25842626e5b352df40e434920ac3a7851",
+        "bytes": 1039354
+      }
+    },
+    {
+      "profile": "equality",
+      "baseline_path": "tests/conformance/test262-equality-current.json",
+      "baseline_sha256": "c1418e959a4936d94cb24960c379dccee01af48d932fe4ff7622964129b227df",
+      "case_count": 286,
+      "counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "controls": 128,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-equality.json",
+        "sha256": "97d15ce571c96b488f0be661e111d4083bf961349086812a871ab2205c21b266",
+        "bytes": 264377
+      }
+    },
+    {
+      "profile": "for-of",
+      "baseline_path": "tests/conformance/test262-for-of-current.json",
+      "baseline_sha256": "c023e088a45ba866ba9436832a2a0ba6584f9261038ad26df72825523820cf06",
+      "case_count": 1442,
+      "counts": {
+        "passed": 137,
+        "unsupported": 1303,
+        "failed": 2
+      },
+      "controls": 80,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-for-of.json",
+        "sha256": "07eba14ba2e134fb11fd386b4ececac4ae38880d8e8340228bd6ce4dcd3af4b3",
+        "bytes": 868127
+      }
+    },
+    {
+      "profile": "function-constructor",
+      "baseline_path": "tests/conformance/test262-function-constructor-current.json",
+      "baseline_sha256": "f17ce66f9c4f5395ade2e9d607e806dce678c84558674d30e1a53e378e3136c0",
+      "case_count": 291,
+      "counts": {
+        "passed": 241,
+        "unsupported": 50
+      },
+      "controls": 64,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-function-constructor.json",
+        "sha256": "40f312c8f97559201f06aab4d22868d13444fcd8d5b98a1561702bb6fa6510a8",
+        "bytes": 215489
+      }
+    },
+    {
+      "profile": "functions",
+      "baseline_path": "tests/conformance/test262-functions-current.json",
+      "baseline_sha256": "53627cfffdb3b01c7453aed80e750909ba0198a888747b2f3cb22674c3966040",
+      "case_count": 1131,
+      "counts": {
+        "passed": 546,
+        "unsupported": 585
+      },
+      "controls": 48,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-functions.json",
+        "sha256": "c7c0a811ff1f81d914101e29e80e5fb6f734ac6c11ca4867611c214cc5e13f0f",
+        "bytes": 747553
+      }
+    },
+    {
+      "profile": "global-values",
+      "baseline_path": "tests/conformance/test262-global-values-current.json",
+      "baseline_sha256": "05a82b4c2f40643fa91df9905e4be566332f4106592c3f99e9397819cec18803",
+      "case_count": 88,
+      "counts": {
+        "passed": 70,
+        "unsupported": 18
+      },
+      "controls": 64,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-global-values.json",
+        "sha256": "3e12677d5c8359711bd1d564ecf592ddeb0346d925b412f30b9bdd713e393f65",
+        "bytes": 100768
+      }
+    },
+    {
+      "profile": "is-prototype-of",
+      "baseline_path": "tests/conformance/test262-is-prototype-of-current.json",
+      "baseline_sha256": "0c6a95e3eca5d1d8949f0770ff7dc2557dedfff8c96cd62ce5173ca5a1745efe",
+      "case_count": 20,
+      "counts": {
+        "unsupported": 6,
+        "passed": 14
+      },
+      "controls": 64,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-is-prototype-of.json",
+        "sha256": "0b99fa8a660ce0852601f80d1a40db76017f5954b5eea99d32902079a477d42e",
+        "bytes": 60149
+      }
+    },
+    {
+      "profile": "labels",
+      "baseline_path": "tests/conformance/test262-labels-current.json",
+      "baseline_sha256": "035145ff2b1d5df31077936c86d4ca54dc58185f7fb32ca812fd2ea96c1f07f3",
+      "case_count": 125,
+      "counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "controls": 80,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-labels.json",
+        "sha256": "a6bbd847497ab023cc8b2268c60fd1e007e51bac90e50ae057ed3207e8d9a90f",
+        "bytes": 140113
+      }
+    },
+    {
+      "profile": "logical-assignment",
+      "baseline_path": "tests/conformance/test262-logical-assignment-current.json",
+      "baseline_sha256": "08550c1b03893e8b5e75ef8caa234b1ac7bb1c4f5f5e2dfaa37e69a0b38ac705",
+      "case_count": 132,
+      "counts": {
+        "unsupported": 48,
+        "passed": 78,
+        "failed": 6
+      },
+      "controls": 104,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-logical-assignment.json",
+        "sha256": "8a4370fab25731a3ca9d1fc65b37c14fd017444099d1385da6190c796451d5fc",
+        "bytes": 167734
+      }
+    },
+    {
+      "profile": "new-target",
+      "baseline_path": "tests/conformance/test262-new-target-current.json",
+      "baseline_sha256": "187696b419974db062b8eb5ddac457f7cc1fb849d3de6c495b91c7bb8026a2d7",
+      "case_count": 28,
+      "counts": {
+        "passed": 20,
+        "unsupported": 8
+      },
+      "controls": 96,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-new-target.json",
+        "sha256": "01bb993878e12bcf2d76e96d0b430d7b7f35939c897d36ee6eb65a0181eddac2",
+        "bytes": 88255
+      }
+    },
+    {
+      "profile": "number-statics",
+      "baseline_path": "tests/conformance/test262-number-statics-current.json",
+      "baseline_sha256": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070",
+      "case_count": 340,
+      "counts": {
+        "passed": 260,
+        "unsupported": 80
+      },
+      "controls": 104,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-number-statics.json",
+        "sha256": "ab3e51d6225f008093dcd5caaddb42f75e67a9c0b1897208a2c3db389f5bdac0",
+        "bytes": 274305
+      }
+    },
+    {
+      "profile": "numeric-conversion",
+      "baseline_path": "tests/conformance/test262-numeric-conversion-current.json",
+      "baseline_sha256": "2a14928428ef7fa112d0f4434eb7764a73b1685de2e494eaac9d3991a4cf187c",
+      "case_count": 60,
+      "counts": {
+        "passed": 32,
+        "unsupported": 28
+      },
+      "controls": 80,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-numeric-conversion.json",
+        "sha256": "6eed2be3a28587fb66a95795a15a2a8abc3a1a32d8dc0ff8aa8ad4895914efeb",
+        "bytes": 94321
+      }
+    },
+    {
+      "profile": "object-integrity",
+      "baseline_path": "tests/conformance/test262-object-integrity-current.json",
+      "baseline_sha256": "8bf19bb9d8233e1089a6ec61cc1954c8aac6aed35cd62af4c9c2ffac2c3876f3",
+      "case_count": 474,
+      "counts": {
+        "passed": 396,
+        "unsupported": 38,
+        "failed": 40
+      },
+      "controls": 224,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-object-integrity.json",
+        "sha256": "2be3f43bc1914a93f34402fcd7b66cdcf9c273f689b2619d1a22e74d8fabfbaa",
+        "bytes": 464288
+      }
+    },
+    {
+      "profile": "reflect-construction",
+      "baseline_path": "tests/conformance/test262-reflect-construction-current.json",
+      "baseline_sha256": "160ece084c889dd5693207aa59dcf0a732f04548eb15dbdacbcae3203680a22a",
+      "case_count": 38,
+      "counts": {
+        "passed": 38
+      },
+      "controls": 96,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-reflect-construction.json",
+        "sha256": "8c229fb3eeff3cdeff969b37bf24b2d5510ab8fb47a45ccf94a14ede3bab1852",
+        "bytes": 94500
+      }
+    },
+    {
+      "profile": "regexp",
+      "baseline_path": "tests/conformance/test262-regexp-current.json",
+      "baseline_sha256": "07b65132730d23644e5405ba5990c7243870b2f3cef846864ad1d8dc3d5a43a5",
+      "case_count": 290,
+      "counts": {
+        "passed": 262,
+        "unsupported": 28
+      },
+      "controls": 44,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-regexp.json",
+        "sha256": "21c294a4f282a538579a79d5234620785262de3db1667136247a3cf8dbf6f0e9",
+        "bytes": 212792
+      }
+    },
+    {
+      "profile": "regexp-match-search",
+      "baseline_path": "tests/conformance/test262-regexp-match-search-current.json",
+      "baseline_sha256": "364b8180ba234cee05fede0c681816d6b1675b1af19eb450058334bf7cf6345c",
+      "case_count": 340,
+      "counts": {
+        "passed": 316,
+        "unsupported": 20,
+        "failed": 4
+      },
+      "controls": 80,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-match-search.json",
+        "sha256": "a429cf740cc07ccdfb41b43f0d4e5c4488d0bc1ec5b2b92c4b5227e7e7515b21",
+        "bytes": 277136
+      }
+    },
+    {
+      "profile": "regexp-split",
+      "baseline_path": "tests/conformance/test262-regexp-split-current.json",
+      "baseline_sha256": "8a8aa3820823be4e9208b4e738942b676884a93d78cd6f0ea12db51d65e665ab",
+      "case_count": 96,
+      "counts": {
+        "passed": 90,
+        "unsupported": 6
+      },
+      "controls": 72,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-split.json",
+        "sha256": "03c933e0cde0d45ad792b6d2e3f9d96b8ccd1eeae59d2b963570583abaedc94b",
+        "bytes": 115672
+      }
+    },
+    {
+      "profile": "relational",
+      "baseline_path": "tests/conformance/test262-relational-current.json",
+      "baseline_sha256": "da9b25f56a36b1ff2b4997642fa26933ff534d9866ff155d0826f2599cb65fe9",
+      "case_count": 364,
+      "counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "controls": 128,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-relational.json",
+        "sha256": "654265c7ebb55f29a102e28a8d7802b02658482e264cea4b2a8550b7d04df126",
+        "bytes": 316317
+      }
+    },
+    {
+      "profile": "rest-parameters",
+      "baseline_path": "tests/conformance/test262-rest-parameters-current.json",
+      "baseline_sha256": "d2afff0d3de3fa2cf37c68ee4d8b5e7794688dd1b514e827e4b2c22e763310f3",
+      "case_count": 22,
+      "counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "controls": 64,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-rest-parameters.json",
+        "sha256": "2fea128360ff66fa44fbbaf6b83c616ca169076e34e86b9aef2ccf49731ab5c4",
+        "bytes": 61503
+      }
+    },
+    {
+      "profile": "string-concat",
+      "baseline_path": "tests/conformance/test262-string-concat-current.json",
+      "baseline_sha256": "00367d16ec166ff6d88482b36221dc444922578482d5212fd4732fe512668364",
+      "case_count": 44,
+      "counts": {
+        "passed": 44
+      },
+      "controls": 56,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-string-concat.json",
+        "sha256": "d5fec6ba461c214e92bcf3c5b15efec765fcf4f70e9c1f078f8a22d1673b62c4",
+        "bytes": 68793
+      }
+    },
+    {
+      "profile": "string-json",
+      "baseline_path": "tests/conformance/test262-current.json",
+      "baseline_sha256": "988461016a336b25c74e36d19418b90d61193211ab9012dce0b0624e278a80ff",
+      "case_count": 652,
+      "counts": {
+        "passed": 568,
+        "unsupported": 84
+      },
+      "controls": 32,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-string-json.json",
+        "sha256": "a8210d0c1f2e5d64679aef385981647b8ddcd6fb91b495eb877bf8c2503fb7fc",
+        "bytes": 417708
+      }
+    },
+    {
+      "profile": "string-last-index-of",
+      "baseline_path": "tests/conformance/test262-string-last-index-of-current.json",
+      "baseline_sha256": "4db22ae25a830831125415e7f6a29f136c77e72203b25810c1595b8ee4207cf5",
+      "case_count": 50,
+      "counts": {
+        "passed": 50
+      },
+      "controls": 80,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-string-last-index-of.json",
+        "sha256": "5abac8dfd4d2179c17b5f38187d241b970ce98850c99175b01bd7e1c61c01256",
+        "bytes": 92349
+      }
+    },
+    {
+      "profile": "string-search",
+      "baseline_path": "tests/conformance/test262-string-search-current.json",
+      "baseline_sha256": "952b4d98851498b70d5ee7a60c25e3894002d875ca98dab57869e2a0cc9e883b",
+      "case_count": 484,
+      "counts": {
+        "passed": 470,
+        "unsupported": 12,
+        "failed": 2
+      },
+      "controls": 72,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-string-search.json",
+        "sha256": "a46009ee0d110316cc404b4ec4706f0d14663af65fd52a0defedaded67c6e9bb",
+        "bytes": 374013
+      }
+    },
+    {
+      "profile": "symbols",
+      "baseline_path": "tests/conformance/test262-symbols-current.json",
+      "baseline_sha256": "7ad674a89581e055552742645de0912233df9fbb0af7d731d974e188b803baea",
+      "case_count": 242,
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "controls": 80,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-symbols.json",
+        "sha256": "8610c841bb89c6d8c0b70dda355ccaaac58cd843ae52e1e5e9af494d5d159612",
+        "bytes": 202299
+      }
+    },
+    {
+      "profile": "template-literal",
+      "baseline_path": "tests/conformance/test262-template-literal-current.json",
+      "baseline_sha256": "e990475ba6e02361403ab3e610758cd3a91dbf8e02c15cbf649f5b425fd622a8",
+      "case_count": 114,
+      "counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "controls": 44,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/profile-template-literal.json",
+        "sha256": "2d61f497f28ba91216caa6ca42f1645facee70d6a6158534e8f7f82991127103",
+        "bytes": 113150
+      }
+    },
+    {
+      "profile": "array-buffer",
+      "baseline_path": "tests/conformance/test262-array-buffer-current.json",
+      "baseline_sha256": "9a9a052de66d0c302f157f0762afefdcd16aacd909c95d2c3409cd12fdc5f265",
+      "case_count": 442,
+      "counts": {
+        "passed": 262,
+        "unsupported": 130,
+        "failed": 50
+      },
+      "controls": 160,
+      "all_controls_verified": true,
+      "BAD_RUN_statuses_absent": true,
+      "regressions": [],
+      "unrecorded_improvements": [],
+      "report": {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-array-buffer-final.json",
+        "sha256": "04258cedaa5b42d7882bef9f7663a64904ae1b475f64f9a82d9f805a07300a00",
+        "bytes": 419945
+      }
+    }
+  ],
+  "catalog": {
+    "profiles": 42,
+    "mode_cases": 18563,
+    "controls": 4252,
+    "observation_only_profiles": [
+      "array-concat",
+      "array-last-index-of",
+      "array-predicates",
+      "array-sort",
+      "identifiers",
+      "numeric-parsing",
+      "regexp-constructor",
+      "uri"
+    ]
+  },
+  "workflow": {
+    "path": ".github/workflows/check.yml",
+    "before_sha256": "375a97af0999a25c999abd4ebaa411b2302b8814f5602663a530ae9cc5fc73a4",
+    "after_sha256": "c5a69f4a1ac6e441cf8abc105ee79d55b8dd370e50e6ddc04520f6161d5de95e",
+    "only_addition": "      - name: Preserve pinned non-shared ArrayBuffer behavior\n        run: python3 tools/test262_conformance.py --profile array-buffer --baseline tests/conformance/test262-array-buffer-current.json --output artifacts/test262-array-buffer-gate.json\n",
+    "gate_added": true
+  },
+  "preserved_initial_preparation": {
+    "path": "/tmp/eris-array-buffer-baseline-publication-before/test262-array-buffer-preparation.json",
+    "sha256": "826afac4e52ab5a07d2715ad4c24ff6d8ed68b297f6c0d228c2b880d76690757"
+  },
+  "original_formal_reports_unchanged": true,
+  "production_tools_corpus_helpers_policy_and_quota_unchanged_by_publication": true
+}

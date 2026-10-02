@@ -1,0 +1,135 @@
+{
+  "format": 1,
+  "scope": "Nonshared fixed and resizable ArrayBuffer foundation: resize, same-realm species slice, transfer, transferToFixedLength, detachment and buffer metadata.",
+  "parent": "77866e93f4d8486807aa843667619ea4ccccccfa",
+  "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+  "candidate": "/tmp/eris-array-buffer-candidate-2",
+  "local": {
+    "sources": 52,
+    "modes": 104,
+    "counts": {
+      "passed": 88,
+      "resource": 6,
+      "failed": 8,
+      "unsupported": 2
+    },
+    "expectations_verified": 92,
+    "controls_verified": 76,
+    "report": {
+      "path": "tests/conformance/array-buffer-final.json",
+      "bytes": 550659,
+      "sha256": "f96264d5bb3eb5464458710d7db90a4180d7139c43042f3778d66d93f8f07ae0"
+    },
+    "comparison": {
+      "path": "tests/conformance/array-buffer-comparison.json",
+      "bytes": 1133786,
+      "sha256": "51bccda07a40564adbd89851f63ef1c94a7c08f4c26879f83bd2338cbe4bc01d"
+    },
+    "preparation": {
+      "path": "tests/conformance/array-buffer-local-preparation.json",
+      "bytes": 80272,
+      "sha256": "15682dd5335dac540307dcad0a975fb6e3f4b5d3a62d489e5cefba1373ec202a"
+    }
+  },
+  "formal": {
+    "sources": 221,
+    "modes": 442,
+    "counts": {
+      "passed": 262,
+      "unsupported": 130,
+      "failed": 50
+    },
+    "controls_verified": 160,
+    "report": {
+      "path": "tests/conformance/test262-array-buffer-final.json",
+      "bytes": 419945,
+      "sha256": "04258cedaa5b42d7882bef9f7663a64904ae1b475f64f9a82d9f805a07300a00"
+    },
+    "comparison": {
+      "path": "tests/conformance/test262-array-buffer-comparison.json",
+      "bytes": 771746,
+      "sha256": "f729e85451abeaef4eec4ea3f4394702ad026ec726da00e8734d1e8a566efe7d"
+    },
+    "preparation": {
+      "path": "tests/conformance/test262-array-buffer-preparation.json",
+      "bytes": 21230,
+      "sha256": "d50082565522bb3c5db94a1978cde20be67b88d35631df115e4f9b4b14035b65"
+    }
+  },
+  "historical": {
+    "profiles": 41,
+    "modes": 18121,
+    "controls": 4092,
+    "pass_gains": 4,
+    "pass_losses": 0,
+    "other_observation_changes": 0,
+    "comparison": {
+      "path": "tests/conformance/array-buffer-historical-comparison.json",
+      "bytes": 45089,
+      "sha256": "8fd6333af775273248be45318ece70559f92b6bd757225e810bd153ebfa9b318"
+    },
+    "local": {
+      "suites": 7,
+      "modes": 1378,
+      "controls": 316,
+      "complete_observation_changes": 0,
+      "comparison": {
+        "path": "tests/conformance/array-buffer-historical-local-comparison.json",
+        "bytes": 2508,
+        "sha256": "e058f2026d4be170d511c3509e6e88f49b6e37e1fc7d29497ba65114de659c59"
+      },
+      "execution": {
+        "path": "tests/conformance/array-buffer-historical-local-execution.json",
+        "bytes": 10095,
+        "sha256": "48e8cec6ca14e7e20a7ea10b309970c888285427168a1629b3685b8334e58ed1"
+      }
+    }
+  },
+  "catalog": {
+    "profiles": 42,
+    "modes": 18563,
+    "controls": 4252,
+    "known_state_gates": 34,
+    "baseline_validation": {
+      "path": "tests/conformance/test262-array-buffer-baseline-validation.json",
+      "bytes": 31514,
+      "sha256": "7ba2a510d0ea7bbc43292b3881e433c42c4c536a2d359e74f976b4843c727c69"
+    }
+  },
+  "validation": {
+    "path": "tests/conformance/array-buffer-validation.json",
+    "bytes": 28278,
+    "sha256": "fccb30362ea238ad143052ea7d4fd9edab4a98d75558e1435c2da98092b7839d"
+  },
+  "limits": {
+    "path": "tests/conformance/array-buffer-limits.json",
+    "bytes": 1031,
+    "sha256": "d2448e54ced391a5fd1caf320d4cb39050e1253c9e37971b3ee1ed6b33829fc2"
+  },
+  "integration": {
+    "path": "tests/conformance/array-buffer-integration-validation.json",
+    "bytes": 6649,
+    "sha256": "37ae9f5aee2c7b34dd339e024cf6ba21cfdcb8eb87ef27ae686edeabe9bcdfd8"
+  },
+  "reviews": {
+    "path": "tests/conformance/array-buffer-reviews.json",
+    "bytes": 42814,
+    "sha256": "0e1f21fa3dbba1750d2828c77359a6559b4df710844d02f2b03a88471cc7501e"
+  },
+  "policy": {
+    "resource_quotas_increased": false,
+    "old_corpus_policy_expectations_changed": false,
+    "raw_failures_resources_exclusions_preserved": true
+  },
+  "limitations": [
+    "TypedArray and DataView byte access not yet implemented; isView false for the supported closed set",
+    "SharedArrayBuffer, Proxy, foreign realms, host detachment and immutable proposals remain missing",
+    "Two ordinary local metadata modes exhaust the existing instruction budget",
+    "Remaining generic property/callback/JSON allocation accounting is incomplete",
+    "Original Date host readiness test failure cause remains unresolved; all failures retained with later successful full run",
+    "No Chromium performance comparison or browser GPU rasterization in this checkpoint"
+  ],
+  "full_goal_complete": false,
+  "production_security_claimed": false,
+  "remote_ci_status": "pending publication and exact-commit CI"
+}

@@ -1,5 +1,10 @@
 # Pinned Test262 Array.from inventory
 
+The [ArrayBuffer follow-up](array-buffer.md) closes both
+`items-is-arraybuffer.js` modes: the unchanged profile now records **86 passed
+and four excluded**, with all 96 controls verified. Earlier observations below
+retain their original checkpoint attribution.
+
 This profile retains the **complete 47-source / 90-mode**
 `test/built-ins/Array/from` subtree at Test262 revision
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`. The

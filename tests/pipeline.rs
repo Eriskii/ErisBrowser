@@ -89,6 +89,14 @@ fn array_concat_preserves_spreadability_aliases_and_partial_callback_effects() {
 }
 
 #[test]
+fn array_buffer_resizing_transfer_and_species_survive_document_callbacks() {
+    assert_six_scripted_samples_with_result_text(
+        include_str!("fixtures/array-buffer.html"),
+        Some(["ready", "6"]),
+    );
+}
+
+#[test]
 fn own_key_order_and_live_enumeration_survive_document_callbacks() {
     assert_six_scripted_samples(include_str!("fixtures/own-keys.html"));
 }

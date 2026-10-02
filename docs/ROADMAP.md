@@ -1,5 +1,19 @@
 # Development docket
 
+[ArrayBuffer](../tests/conformance/array-buffer.md) adds nonshared fixed and
+resizable backing storage, resizing, same-realm species slicing, transfers and
+detachment. Its complete pinned profile records 262 passes, 50 failures and 130
+exclusions. Typed arrays, DataView, shared memory, Proxy and foreign realms
+remain ahead. Two metadata-heavy local modes reach the unchanged work limit;
+broader interpreter performance and accounting remain open work.
+
+The [Vulkan milestones](vulkan-rendering.md) remain active: connect the custom
+rasterizer to browser drawing, then extend coverage to text, rounded edges and
+compositing. The standalone probe already covers rectangles, nearest-neighbor
+images and source alpha over opaque RGB. Browser painting still runs on the CPU;
+the optional Vulkan presenter uploads those CPU frames. Performance within 30%
+of Chromium has not been demonstrated.
+
 [Array concat](../tests/conformance/array-concat.md) now streams live
 spreadability, same-realm species and aliased results. Its complete upstream
 profile gains 99 passes with no lost pass; four typed-array failures, eighteen
@@ -31,7 +45,7 @@ iterators and array-like inputs with generic construction, live mapping,
 own data definitions and specified iterator closing. Its unchanged local
 matrix verifies 388 of 402 expectations, including twelve expected resource
 stops; fourteen prerequisite modes remain unmet. The complete upstream profile
-now has 84 passes, two ArrayBuffer failures and four metadata exclusions,
+now has 86 passes and four metadata exclusions after the ArrayBuffer follow-up,
 with all 96 controls verified. Remaining Array methods and broader iterator
 consumers remain ahead.
 

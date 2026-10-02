@@ -1,0 +1,479 @@
+{
+  "format": 1,
+  "profile": "array-buffer",
+  "purpose": "Formal profile publication from completed immutable observations; no engine execution during publication.",
+  "inventory": {
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "subtree": "test/built-ins/ArrayBuffer",
+    "sources": 221,
+    "source_bytes": 261335,
+    "directories": 15,
+    "sloppy_modes": 221,
+    "strict_modes": 221,
+    "mode_cases": 442,
+    "helpers": [
+      "harness/assert.js",
+      "harness/compareArray.js",
+      "harness/detachArrayBuffer.js",
+      "harness/isConstructor.js",
+      "harness/propertyHelper.js",
+      "harness/sta.js",
+      "harness/testTypedArray.js"
+    ],
+    "original_git_proof_documents": 6,
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "subtree_tree": "86fe659bc58e1293e1ed757a87bdda41ef0bcd86",
+    "manifest_sha256": "030314ffaddefd24b13fdf086cfbf29addb8aa0892d38e9c9a55e84f0bdbfdc2"
+  },
+  "policy": {
+    "definition": "ARRAY_CONCAT_FEATURES | {'ArrayBuffer', 'resizable-arraybuffer', 'arraybuffer-transfer', 'align-detached-buffer-semantics-with-web-reality'}",
+    "runner_policy": {
+      "format": 2,
+      "supported_features": [
+        "Array.prototype.values",
+        "ArrayBuffer",
+        "Reflect",
+        "Reflect.apply",
+        "Reflect.construct",
+        "Reflect.ownKeys",
+        "String.fromCodePoint",
+        "Symbol",
+        "Symbol.asyncIterator",
+        "Symbol.hasInstance",
+        "Symbol.isConcatSpreadable",
+        "Symbol.iterator",
+        "Symbol.match",
+        "Symbol.matchAll",
+        "Symbol.prototype.description",
+        "Symbol.replace",
+        "Symbol.search",
+        "Symbol.species",
+        "Symbol.split",
+        "Symbol.toPrimitive",
+        "Symbol.toStringTag",
+        "Symbol.unscopables",
+        "align-detached-buffer-semantics-with-web-reality",
+        "arraybuffer-transfer",
+        "arrow-function",
+        "computed-property-names",
+        "const",
+        "default-parameters",
+        "for-in-order",
+        "for-of",
+        "let",
+        "new.target",
+        "object-methods",
+        "regexp-dotall",
+        "regexp-match-indices",
+        "regexp-named-groups",
+        "regexp-sticky",
+        "resizable-arraybuffer",
+        "template",
+        "trailing-function-commas",
+        "well-formed-json-stringify"
+      ],
+      "negative_intrinsic_errors": [
+        "Error",
+        "EvalError",
+        "RangeError",
+        "ReferenceError",
+        "SyntaxError",
+        "TypeError",
+        "URIError"
+      ],
+      "strict": true,
+      "modules": false,
+      "async_completion": false,
+      "host_hooks": false,
+      "timeout_seconds": 3.0
+    },
+    "runner_policy_sha256": "1ef26b5c6a79ac667ffba496ad693275a5336065a96067dc291d34cc62c897f3",
+    "admitted_modes": 312,
+    "excluded_modes": 130,
+    "declared_feature_exclusions": 112,
+    "host_hook_source_check_exclusions": 18,
+    "exclusion_reasons": {
+      "unimplemented declared features: DataView": 8,
+      "unimplemented declared features: DataView, class": 2,
+      "unimplemented declared features: TypedArray": 6,
+      "unimplemented declared features: TypedArray, class": 2,
+      "unimplemented declared features: DataView, TypedArray": 2,
+      "unimplemented declared features: cross-realm": 2,
+      "Test262 host hooks are not implemented (conservative source check)": 18,
+      "unimplemented declared features: DataView, Int8Array": 8,
+      "unimplemented declared features: SharedArrayBuffer": 18,
+      "unimplemented declared features: immutable-arraybuffer": 42,
+      "unimplemented declared features: DataView, Int8Array, immutable-arraybuffer": 6,
+      "unimplemented declared features: SharedArrayBuffer, immutable-arraybuffer": 6,
+      "unimplemented declared features: BigInt": 6,
+      "unimplemented declared features: Uint8Array, immutable-arraybuffer": 4
+    },
+    "changed_after_observations": false
+  },
+  "executions": {
+    "before": {
+      "counts": {
+        "failed": 312,
+        "unsupported": 130
+      },
+      "controls_verified": 32,
+      "controls": 160,
+      "returncode": 1,
+      "binary_sha256": "64667259eff3ccec0c2ef98370a60a1dea71560def07574dc59db1bbb3fff3c0"
+    },
+    "candidate": {
+      "counts": {
+        "passed": 262,
+        "unsupported": 130,
+        "failed": 50
+      },
+      "controls_verified": 160,
+      "controls": 160,
+      "returncode": 1,
+      "binary_sha256": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
+      "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+      "retries": false,
+      "all_inputs_unchanged_after_execution": true
+    },
+    "candidate_execution_record": {
+      "all_inputs_unchanged_after_execution": true,
+      "baseline_written": false,
+      "binary_manifest": "/tmp/eris-array-buffer-candidate-2/default-binaries.json",
+      "binary_sha256": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
+      "cancellation": "SIGINT/SIGTERM raise KeyboardInterrupt into the existing BaseException cleanup path.",
+      "candidate_directory": "/tmp/eris-array-buffer-candidate-2",
+      "captured_files": {
+        "array-buffer.json": {
+          "bytes": 419945,
+          "sha256": "04258cedaa5b42d7882bef9f7663a64904ae1b475f64f9a82d9f805a07300a00"
+        },
+        "comparison.json": {
+          "bytes": 771746,
+          "sha256": "f729e85451abeaef4eec4ea3f4394702ad026ec726da00e8734d1e8a566efe7d"
+        },
+        "stderr.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout.log": {
+          "bytes": 187,
+          "sha256": "e8570b9d60def344474ea2c1ab542fba4673fb3dbb3ac3432400475fb5b9213c"
+        }
+      },
+      "case_count": 442,
+      "checked_production_inputs": {
+        "computed_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+        "input_bytes": 5857034,
+        "input_files": 106
+      },
+      "child_environment_removed": [
+        "PYTHONOPTIMIZE",
+        "PYTHONPATH",
+        "PYTHONHOME"
+      ],
+      "cleanup": "Frozen helper: waitid NOWAIT; kill owned group before first wait; mark reap phase before wait to prevent later PID reuse signals.",
+      "command": [
+        "/run/current-system/sw/bin/python3",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test262_conformance.py",
+        "--binary",
+        "/tmp/eris-array-buffer-candidate-2/eris-js",
+        "--profile",
+        "array-buffer",
+        "--output",
+        "/tmp/eris-array-buffer-formal-candidate-2/array-buffer.json",
+        "--jobs",
+        "4",
+        "--timeout",
+        "3"
+      ],
+      "comparison_sha256": "f729e85451abeaef4eec4ea3f4394702ad026ec726da00e8734d1e8a566efe7d",
+      "control_count": 160,
+      "control_health": true,
+      "controls_verified": 160,
+      "counts": {
+        "failed": 50,
+        "passed": 262,
+        "unsupported": 130
+      },
+      "elapsed_seconds": 1.002,
+      "ended_utc": "2026-10-02T02:57:15.354422+00:00",
+      "environment": {
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "LC_TIME": null,
+        "LD_LIBRARY_PATH": "/nix/store/bn8fa50wbg41yf72aalbjcaaq4r4j6kn-wayland-1.26.0/lib:/nix/store/n2wqk78za8grzs9088ya5qy6vw280p8x-libxkbcommon-1.13.2/lib:/nix/store/7gwd2kvkx1s369cwiv5z4x2xjxbppav6-libx11-1.8.13/lib:/nix/store/i88qpfah2j0yq7nihbm626abbhzkc21g-libX11-1.8.10/lib:/nix/store/09aq563zkqcw9ikxn02p4bm13i2hz51r-libxcb-1.17.0/lib:/nix/store/ljxnc3sy590a8rzf59rvclkxg8h71qdf-libxcursor-1.2.3/lib:/nix/store/rywxisd25h7ymiydgcg0188c0ap0shgx-libXcursor-1.2.1/lib:/nix/store/0kx9jb9qcvh9kg9qi8kxwxymbvbpykdj-libxrandr-1.5.5/lib:/nix/store/40r89hwph88md7jk5vhqx57k36c8f5jh-libXrandr-1.5.4/lib:/nix/store/fxwwv4xllvcxcpf7s2xm572sc95r851c-libxi-1.8.3/lib:/nix/store/68wclazg6vj6jqq03sqhdn4x7ji082cr-libXi-1.8.1/lib",
+        "TZ": null
+      },
+      "exit_observed_without_reaping": {
+        "si_code": 1,
+        "si_pid": 3,
+        "si_status": 1
+      },
+      "formal_files_verified": 273,
+      "format": 1,
+      "input_files": {
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/html_conformance.py": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/import_test262.py": "8031ecd640e08b6ddad74d06684e4f435529b149d8a44a7e17da4615b8b29a4a",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/run.py": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test262_conformance.py": "8bb09032cdf03406173f01e8a0ce0b8463e423800babacc65506c3a456b4b4f0",
+        "/tmp/eris-array-buffer-candidate-2/default-binaries.json": "cad7b9d4ad7d807ac0d7527e48c917160dd7ac0a548168cb00d9bd65ad810669",
+        "/tmp/eris-array-buffer-candidate-2/eris-js": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
+        "/tmp/eris-array-buffer-candidate-2/inputs.json": "ad5f1240cacad5209a89a1a629bbddc309451ddfec15a250c70107485a92e5aa",
+        "/tmp/eris-array-buffer-candidate-2/provenance.json": "462fc57184ba0301c3111809288fcb86c05e48118a5b13a903f28da4266b065f",
+        "/tmp/eris-array-buffer-formal-before-driver.py": "4d6b7290d2963cf061a254f1ffa6f9fd720596fb842bc38c34c196d09089fa93",
+        "/tmp/eris-array-buffer-formal-before/array-buffer.json": "2029e66e64659ec064281b8fa947af68cf69999e4e613025a0b59a1a91815eb0",
+        "/tmp/eris-array-buffer-formal-before/execution.json": "8d1cefddeafec6106801d100cc0f7438016ab24c9a91969298d554397041ab44",
+        "/tmp/eris-array-buffer-formal-candidate-driver-preparation.json": "178793ba77754086e34f276d82a1ce3522489bb40284a59a5b9ff4a6f55e5ebd",
+        "/tmp/eris-array-buffer-formal-candidate-driver.py": "3bbb4cbc7a114e922b79254914b904499006ed1fdbceef2c45839ed97164edf0",
+        "/tmp/eris-array-buffer-formal-freeze.json": "dca40ca0966bdb42473ef8f4cb83dd11b14c1a31d1e598481167a03587653b72",
+        "/tmp/eris-array-buffer-tooling-stage/source-mode-helper-ledger.json": "da1ad918c6a5a8746479b759172f7696e6b35858640cb5aff732490a4b219f46"
+      },
+      "leader_reaped": true,
+      "limits": {
+        "adapter_stderr_bytes": 65536,
+        "adapter_stdout_bytes": 98304,
+        "case_timeout_seconds": 3,
+        "jobs": 4,
+        "per_output_file_bytes": 33554432,
+        "process_address_space_bytes": 1073741824,
+        "process_cpu_seconds": 300,
+        "profile_deadline_seconds": 600,
+        "reap_deadline_seconds": 5
+      },
+      "local_offset_seconds": 18000,
+      "local_timezone": [
+        "EST",
+        "EDT"
+      ],
+      "normalization": false,
+      "output_directory": "/tmp/eris-array-buffer-formal-candidate-2",
+      "phase": "authorized formal ArrayBuffer candidate replay",
+      "process_group_cleanup_before_reap": true,
+      "process_pid": 3,
+      "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+      "report_sha256": "04258cedaa5b42d7882bef9f7663a64904ae1b475f64f9a82d9f805a07300a00",
+      "retries": false,
+      "returncode": 1,
+      "started_utc": "2026-10-02T02:57:14.278290+00:00"
+    }
+  },
+  "comparison": {
+    "raw_pass_gains": 262,
+    "raw_pass_losses": 0,
+    "complete_changed_case_records": 310,
+    "complete_unchanged_case_records": 132,
+    "complete_changed_control_records": 128,
+    "complete_unchanged_control_records": 32,
+    "all_case_control_mode_expectation_exclusion_contracts_exact": true,
+    "published_complete_comparison": "test262-array-buffer-comparison.json"
+  },
+  "remaining_failures": {
+    "missing_Uint8Array": {
+      "modes": 48,
+      "sources": [
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-larger-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-larger.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-same-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-same.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-smaller-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-smaller.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-zero-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-fixed-to-zero.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-resizable-to-larger.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-resizable-to-same.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-resizable-to-smaller.js",
+        "test/built-ins/ArrayBuffer/prototype/transfer/from-resizable-to-zero.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-larger-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-larger.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-same-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-same.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-smaller-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-smaller.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-zero-no-resizable.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-fixed-to-zero.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-resizable-to-larger.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-resizable-to-same.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-resizable-to-smaller.js",
+        "test/built-ins/ArrayBuffer/prototype/transferToFixedLength/from-resizable-to-zero.js"
+      ],
+      "reachability": "These unchanged sources construct Uint8Array before reaching their transfer byte assertions."
+    },
+    "untagged_BigInt_parse": {
+      "modes": 2,
+      "source": "test/built-ins/ArrayBuffer/options-non-object.js",
+      "source_sha256": "08cb3c010467e99e810c63995a670174a200c23a5308203855712a3e63fb303a",
+      "diagnostic": "identifier immediately follows numeric literal",
+      "prerequisite": "The unchanged options-non-object.js source contains 1n but only declares resizable-arraybuffer."
+    }
+  },
+  "controls": {
+    "common": 32,
+    "feature_pairs": 32,
+    "feature_modes_per_pair": 4,
+    "feature_rows": 128,
+    "total": 160,
+    "verified": 160,
+    "same_mode_positive_partner_required": true,
+    "independent_source_sha256": "36353c415a038cfa68614ec288da731a82f468c9e14ab9ebf370568dfccca02b"
+  },
+  "baseline_preparation": {
+    "eligible_under_unchanged_health_rule": true,
+    "BAD_RUN_STATUSES": [
+      "adapter-error",
+      "resource",
+      "timeout"
+    ],
+    "bad_run_statuses_present": [],
+    "proposal_path": "/tmp/eris-array-buffer-proposed-current.json",
+    "proposal_sha256": "9a9a052de66d0c302f157f0762afefdcd16aacd909c95d2c3409cd12fdc5f265",
+    "retained_statuses": {
+      "passed": 262,
+      "unsupported": 130,
+      "failed": 50
+    },
+    "offline_check_baseline_self": {
+      "regressions": [],
+      "improvements": []
+    },
+    "repository_baseline_written_at_this_preparation": false,
+    "CI_gate_added_at_this_preparation": false,
+    "publication_condition": "Root confirmation of complete historical formal and local replays; pending when this preparation is recorded.",
+    "meaning": "Known-state regression gate retaining 50 failures and 130 exclusions, not all-pass conformance."
+  },
+  "separate_local_limitations": "The independent local suite includes two ordinary metadata cases stopping on instruction work and four expected terminal-resource cases. Formal health here does not reclassify or certify those local outcomes.",
+  "preservation": {
+    "old_baseline_count": 33,
+    "old_baselines_byte_identical_at_publication": true,
+    "old_contract_profiles": 41,
+    "old_contract_cases": 18121,
+    "old_contract_controls": 4092,
+    "old_profile_replay_results_owned_by_root": true,
+    "tool_corpus_source_helper_oracle_quota_changes_in_this_publication": false,
+    "engine_executions_in_this_publication": 0,
+    "subprocess_Popen_forbidden": true
+  },
+  "bindings": [
+    {
+      "path": "/tmp/eris-array-buffer-formal-before/array-buffer.json",
+      "sha256": "2029e66e64659ec064281b8fa947af68cf69999e4e613025a0b59a1a91815eb0",
+      "bytes": 437773
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-before/execution.json",
+      "sha256": "8d1cefddeafec6106801d100cc0f7438016ab24c9a91969298d554397041ab44",
+      "bytes": 5365
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-2/array-buffer.json",
+      "sha256": "04258cedaa5b42d7882bef9f7663a64904ae1b475f64f9a82d9f805a07300a00",
+      "bytes": 419945
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-2/comparison.json",
+      "sha256": "f729e85451abeaef4eec4ea3f4394702ad026ec726da00e8734d1e8a566efe7d",
+      "bytes": 771746
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-2/execution.json",
+      "sha256": "cc77fe3a9ebe692c55ac1a774d2f29ab7cbbe08837dc43438bbc1986637f3f50",
+      "bytes": 6085
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-2/stdout.log",
+      "sha256": "e8570b9d60def344474ea2c1ab542fba4673fb3dbb3ac3432400475fb5b9213c",
+      "bytes": 187
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-2/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-freeze.json",
+      "sha256": "dca40ca0966bdb42473ef8f4cb83dd11b14c1a31d1e598481167a03587653b72",
+      "bytes": 63996
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-driver.py",
+      "sha256": "3bbb4cbc7a114e922b79254914b904499006ed1fdbceef2c45839ed97164edf0",
+      "bytes": 15967
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-driver-preparation.json",
+      "sha256": "178793ba77754086e34f276d82a1ce3522489bb40284a59a5b9ff4a6f55e5ebd",
+      "bytes": 2257
+    },
+    {
+      "path": "/tmp/eris-array-buffer-formal-candidate-driver-preparation.initial.json",
+      "sha256": "f44736a2be5166736fa45b7dd0b4f16b09219cf6f253159ea6bc3e74d5032da1",
+      "bytes": 1906
+    },
+    {
+      "path": "/tmp/eris-array-buffer-tooling-stage/source-mode-helper-ledger.json",
+      "sha256": "da1ad918c6a5a8746479b759172f7696e6b35858640cb5aff732490a4b219f46",
+      "bytes": 725830
+    },
+    {
+      "path": "/tmp/eris-array-buffer-contracts-before.json",
+      "sha256": "7e56c9b8281e5e2944dc0d70d96a8ddeaf6f7769074561e6da53abc65191cceb",
+      "bytes": 18874491
+    },
+    {
+      "path": "/tmp/eris-array-buffer-baselines-before.json",
+      "sha256": "27f2508f55136d4ad987fe7b63f0051895b0737e538c486f8330f452a32e5106",
+      "bytes": 3699342
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test262_conformance.py",
+      "sha256": "8bb09032cdf03406173f01e8a0ce0b8463e423800babacc65506c3a456b4b4f0",
+      "bytes": 214005
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/import_test262.py",
+      "sha256": "8031ecd640e08b6ddad74d06684e4f435529b149d8a44a7e17da4615b8b29a4a",
+      "bytes": 49352
+    },
+    {
+      "path": "/tmp/eris-array-buffer-candidate-2/inputs.json",
+      "sha256": "ad5f1240cacad5209a89a1a629bbddc309451ddfec15a250c70107485a92e5aa",
+      "bytes": 14591
+    },
+    {
+      "path": "/tmp/eris-array-buffer-candidate-2/default-binaries.json",
+      "sha256": "cad7b9d4ad7d807ac0d7527e48c917160dd7ac0a548168cb00d9bd65ad810669",
+      "bytes": 337
+    }
+  ],
+  "baseline_publication": {
+    "state": "Published after root confirmed 41 historical formal profiles and seven local suites complete.",
+    "current_baseline": "test262-array-buffer-current.json",
+    "current_baseline_sha256": "9a9a052de66d0c302f157f0762afefdcd16aacd909c95d2c3409cd12fdc5f265",
+    "new_profile_known_state": {
+      "passed": 262,
+      "unsupported": 130,
+      "failed": 50
+    },
+    "old_baseline_count": 33,
+    "old_baselines_strengthened": {
+      "array-from": [
+        "test/built-ins/Array/from/items-is-arraybuffer.js:sloppy",
+        "test/built-ins/Array/from/items-is-arraybuffer.js:strict"
+      ],
+      "object-integrity": [
+        "test/built-ins/Object/seal/seal-arraybuffer.js:sloppy",
+        "test/built-ins/Object/seal/seal-arraybuffer.js:strict"
+      ]
+    },
+    "other_old_baselines_unchanged": 31,
+    "total_current_baselines": 34,
+    "offline_same_report_checks": 34,
+    "regressions": 0,
+    "unrecorded_improvements": 0,
+    "catalog_profiles": 42,
+    "catalog_cases": 18563,
+    "catalog_controls": 4252,
+    "evidence": "test262-array-buffer-baseline-validation.json",
+    "engine_reruns": 0,
+    "original_preparation_sha256": "826afac4e52ab5a07d2715ad4c24ff6d8ed68b297f6c0d228c2b880d76690757"
+  }
+}

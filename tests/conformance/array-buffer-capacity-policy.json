@@ -1,0 +1,23 @@
+{
+  "format": "eris-array-buffer-plan-capacity-addendum-v1",
+  "timing": "Approved by root during source review before any compilation or engine execution",
+  "plan": {
+    "path": "/tmp/eris-array-buffer-plan.md",
+    "sha256": "1bece7448f61d0d4fc4b49f48a43f4c4cd59e877b780a5e3851e8f359948abb4"
+  },
+  "policy_review": {
+    "path": "/tmp/eris-array-buffer-initial-capacity-policy-review.json",
+    "sha256": "c85726f265ca7cdd88e68e861080ed0df8a89cc7283d92402a3816dabc5f8ed2"
+  },
+  "preserved_preclarification_module": {
+    "path": "/tmp/eris-array-buffer-before-capacity-clarification.rs",
+    "sha256": "d301f219492cf18bcec2e434a760b51cc009121e0eb3e85a75f0a41e2bf923a2"
+  },
+  "change": "CreateByteDataBlock receives the same existing absolute MAX_HEAP feasibility ceiling already accepted for maximum length: length greater than MAX_HEAP throws RangeError after prototype lookup/object creation, before zero-fill work/storage. In-range remaining work/heap shortages remain terminal. No caps/oracles/policy feature admission changed.",
+  "new_private_checks": [
+    "direct impossible block consumes no byte work/allocation",
+    "ordinary object creation still precedes impossible block failure",
+    "huge request plus throwing newTarget prototype preserves original error",
+    "fixed transfer capacity failure preserves earlier conversion resize and source attachment"
+  ]
+}

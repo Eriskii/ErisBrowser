@@ -71,9 +71,11 @@ and launch controls described above; neither path is a GPU sandbox.
 The separate [custom raster probe](../tools/vulkan-raster-probe/README.md)
 accepts only its fixed synthetic rectangle/image fixtures. It validates the
 whole input before Vulkan initialization, owns immutable planned data, and
-checks every source's dimensions, exact RGBA length and opaque alpha even when
-unused or hidden. Source count/aggregate bytes are checked before pixel scans;
-packing occurs once per source and bounded axis tables preserve CPU sampling.
+checks every source's dimensions and exact RGBA length even when unused or
+hidden. Source count and aggregate bytes are checked before packing, which occurs
+once per source; bounded axis tables preserve CPU sampling. Source alpha blends
+in ordered GPU passes over opaque RGB. Transparent images still consume their
+planned dispatch and sampling-table budgets, and no CPU alpha scan skips them.
 The output, readback, metadata and optional image arena share a 1 MiB explicit
 GPU-buffer limit. Ordered passes and shader range checks protect this bounded
 subset; driver/device/pipeline allocations and upload staging are outside that
@@ -161,6 +163,27 @@ property/JSON accounting and allocator recovery remain separate work. See the
 [unchanged limits](../tests/conformance/array-concat-limits.json) and
 [validation record](../tests/conformance/array-concat-validation.json).
 
+[ArrayBuffer](../tests/conformance/array-buffer.md) stores non-shared backing
+bytes in private records separate from ordinary object properties. Numeric
+record lookup, metadata growth, zero initialization and copying consume the
+existing script budgets. Reservations pay full new storage and relocation work;
+shrinking, replacement and detachment do not refund cumulative allocation.
+Record indices survive author callbacks, but no backing borrow crosses one.
+Resize prepares growth before publishing it, slice validates both buffers before
+writing its surviving source range, and transfer detaches only after destination
+allocation and copying succeed. Earlier author effects remain visible on error.
+
+Absolute backing feasibility reuses the unchanged 8 MiB heap ceiling. An initial
+length above it throws `RangeError` after prototype lookup and object creation,
+before attempting allocation or charging nonexistent zero-fill work. Resizable
+maximum feasibility is checked after initial backing allocation; storing a
+maximum does not allocate that capacity. Otherwise feasible requests still face
+the unchanged terminal work and cumulative heap limits. Twenty-four private
+groups cover byte contents, reentrant callbacks, allocation/copy boundaries and
+cleanup. Typed-array and DataView access, shared memory, foreign realms and host
+detachment remain absent. These scoped checks do not establish general arena
+accounting, allocator recovery, total process-memory bounds or production security.
+
 ## Representative limits
 
 | Resource | Bound |
@@ -180,6 +203,7 @@ property/JSON accounting and allocator recovery remain separate work. See the
 | Script entry instructions / hard call-depth cap | 100,000 / 32 |
 | Shared execution nesting | 96 weighted units; calls cost 4, other guarded nesting costs 1 |
 | Script cumulative allocation accounting | 8 MiB |
+| ArrayBuffer absolute backing/max-length feasibility | 8 MiB; remaining script work and cumulative allocation limits also apply |
 | Disclosure notifications per host checkpoint | 64, sharing one 100,000-step budget |
 | Individual script string | 262,144 UTF-16 code units / 512 KiB backing units |
 | Script tags / aggregate script source | 64 / 1 MiB |

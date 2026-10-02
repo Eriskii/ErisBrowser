@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "602023dfe820d591c4a8fc8d83a9e4680012f4b15083f855f84da427539c988d",
   "runner_policy_sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391",
-  "binary_sha256": "ab40a96f2cc1908359186e7c0648cecddc5ad8f8b2adf8a60de0e0d2c9a8f220",
+  "binary_sha256": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
   "cases": {
     "test/built-ins/Object/freeze/15.2.3.9-0-1.js:sloppy": {
       "status": "passed",
@@ -1885,12 +1885,12 @@
       "source_sha256": "994060e08de1f32843aa3168128350670ab60f4f81e85c39631876327fc51aa3"
     },
     "test/built-ins/Object/seal/seal-arraybuffer.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "85cd8bf44243e61dd5c8df2903757b9b9faa6c3f43ad7b98ac000808960338f0",
       "source_sha256": "b3a0d779dbfe9492c807baf2bad4e254a65f403547400ecd0516653041c5312f"
     },
     "test/built-ins/Object/seal/seal-arraybuffer.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "704bb2a9a70791721e5ba90a72b63d574cfb06f1fa28438387ac4aed9f1c8e29",
       "source_sha256": "b3a0d779dbfe9492c807baf2bad4e254a65f403547400ecd0516653041c5312f"
     },

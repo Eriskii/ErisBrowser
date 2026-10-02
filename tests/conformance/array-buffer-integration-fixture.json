@@ -1,0 +1,51 @@
+{
+  "format": "eris-array-buffer-integration-fixture-v1",
+  "source_sha256": "37505a1a232c6988e1f54008fcc0ff419bf14296a38d5f808fb99fc984cc2c7b",
+  "before_implementation": true,
+  "worker_generation": 193,
+  "load": {
+    "body_class": "ready",
+    "result": "ready",
+    "sample_rgb": "008000"
+  },
+  "click": {
+    "body_class": "clicked",
+    "result": "6",
+    "sample_rgb": "0000ff"
+  },
+  "pixel_positions": [
+    [
+      10,
+      10
+    ],
+    [
+      60,
+      10
+    ],
+    [
+      110,
+      10
+    ],
+    [
+      160,
+      10
+    ],
+    [
+      210,
+      10
+    ],
+    [
+      260,
+      10
+    ]
+  ],
+  "behaviors": [
+    "Length/options/newTarget prototype trace LMVP; custom prototype retains branded buffer",
+    "Object.freeze affects ordinary properties; backing resize remains allowed",
+    "Transfer length conversion resizes source, ignores constructor, preserves maximum and detaches old data",
+    "transferToFixedLength can exceed former resizable maximum",
+    "slice trace ABCSN, captured length and callback resize",
+    "species source-detachment and zero-length source/result alias both throw with previous effects retained"
+  ],
+  "limits": "JS checks metadata/state/callback order; backing byte content needs private runtime tests until views exist"
+}

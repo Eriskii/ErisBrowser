@@ -1,0 +1,59 @@
+{
+  "phase": "source-review policy clarification before first compiler/candidate execution",
+  "absolute_backing_byte_ceiling": 8388608,
+  "ceiling_source": "existing unchanged Runtime MAX_HEAP",
+  "changes_to_frozen_public_oracles": false,
+  "remaining_budget_failures": "terminal resource; no refunds or quota increases",
+  "cases": [
+    {
+      "name": "impossible_initial_block",
+      "requested_bytes": 8388609,
+      "expected": "RangeError",
+      "byte_reserve_attempted": false,
+      "zero_fill_work_charged": false,
+      "backing_bytes_charged": false,
+      "order": "ordinary prototype lookup/object creation precedes refusal; all reached object/callback costs remain charged"
+    },
+    {
+      "name": "throwing_prototype_precedes_capacity",
+      "requested_bytes": 7881299347898368,
+      "prototype_getter": "throws unique marker",
+      "expected": "same marker; no attempted byte block"
+    },
+    {
+      "name": "early_length_maximum_mismatch",
+      "requested_bytes": 8388609,
+      "maximum_bytes": 1,
+      "prototype_getter": "records visit",
+      "expected": "RangeError before prototype getter"
+    },
+    {
+      "name": "fixed_transfer_impossible_target",
+      "source_bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "argument_callback": "resizes source to 2, then returns 8388609",
+      "expected": "RangeError",
+      "source_after": [
+        1,
+        2
+      ],
+      "source_attached": true,
+      "source_maximum_bytes": 8,
+      "method": "transferToFixedLength"
+    },
+    {
+      "name": "feasible_request_remaining_budget_shortage",
+      "requested_bytes": 16,
+      "expected": "terminal resource when actual work or cumulative remaining heap is insufficient",
+      "catch_or_finally_runs": false
+    }
+  ],
+  "references": [
+    "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-createbytedatablock",
+    "https://tc39.es/ecma262/multipage/structured-data.html#sec-allocatearraybuffer"
+  ]
+}

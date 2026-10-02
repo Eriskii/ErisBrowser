@@ -1,0 +1,22 @@
+{
+  "base_commit": "77866e93f4d8486807aa843667619ea4ccccccfa",
+  "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+  "source_archive": {
+    "path": "/tmp/eris-array-buffer-candidate-2/source.tar",
+    "bytes": 9584640,
+    "sha256": "c143c2131a07a7b56051158296189aa49534525b5c9beb43c1130a9a176ee051"
+  },
+  "review": {
+    "path": "/tmp/eris-array-buffer-candidate2-static-archive-review.json",
+    "bytes": 4648,
+    "sha256": "804b4f4f7e9cbc3ce009922ac86b802ca751c75d4763645b640e59d4ddbe9532"
+  },
+  "existing_bindings_checked": 107,
+  "changed_existing": {},
+  "new_normative_safe_integer": {
+    "src/script/array_buffer.rs:MAX_INDEX": "9_007_199_254_740_991"
+  },
+  "absolute_backing_capacity_reuses": "src/script.rs:MAX_HEAP",
+  "resource_quotas_increased": false,
+  "scope": "Absolute initial-backing and maximum feasibility reuse MAX_HEAP; cumulative remaining work/heap remains terminal. No quota raised. General arena/property/callback/JSON accounting remains incomplete."
+}

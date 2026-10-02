@@ -61,12 +61,13 @@ CORE_ITERATOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'Array.proto
 ARRAY_FROM_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'for-of', 'let', 'const', 'Array.prototype.values'}
 ARRAY_SPLICE_FEATURES = ARRAY_FROM_FEATURES.copy()
 ARRAY_CONCAT_FEATURES = ARRAY_SPLICE_FEATURES.copy()
+ARRAY_BUFFER_FEATURES = ARRAY_CONCAT_FEATURES | {'ArrayBuffer', 'resizable-arraybuffer', 'arraybuffer-transfer', 'align-detached-buffer-semantics-with-web-reality'}
 ARRAY_FIND_FEATURES = ARRAY_PREDICATE_FEATURES | {'array-find-from-last'}
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -193,13 +194,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -508,6 +509,186 @@ def core_iterator_preflight_variants():
                  "assert.throws(TypeError,function(){new m();});")
         pairs.append(('property-' + kind.lower() + '-next', setup, 'm.length', '0', '1'))
     return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
+            for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
+            for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def array_buffer_preflight_variants():
+    """Bounded standard-derived pairs; real successful calls guard all errors."""
+    guard = (
+        "assert.sameValue(typeof ArrayBuffer,'function','ArrayBuffer availability');\n"
+        "var AB=ArrayBuffer,P=AB.prototype,rz=P.resize,sl=P.slice,tr=P.transfer,tf=P.transferToFixedLength;"
+        "assert.sameValue(typeof rz,'function');assert.sameValue(typeof sl,'function');"
+        "assert.sameValue(typeof tr,'function');assert.sameValue(typeof tf,'function');"
+        "assert.sameValue(typeof AB.isView,'function');"
+        "var $abF=new AB(2),$abR=new AB(2,{maxByteLength:4});"
+        "assert.sameValue($abF.byteLength,2);assert.sameValue($abF.maxByteLength,2);assert.sameValue($abF.resizable,false);"
+        "assert.sameValue($abR.maxByteLength,4);assert.sameValue($abR.resizable,true);assert.sameValue($abR.detached,false);"
+        "assert.sameValue(rz.call($abR,3),undefined);assert.sameValue($abR.byteLength,3);"
+        "assert.sameValue(sl.call($abR,1,2).byteLength,1);"
+        "var $abT=tr.call($abR);assert.sameValue($abT.byteLength,3);assert.sameValue($abT.resizable,true);"
+        "assert.sameValue($abR.byteLength,0);assert.sameValue($abR.detached,true);"
+        "var $abX=tf.call($abT);assert.sameValue($abX.byteLength,3);assert.sameValue($abX.resizable,false);"
+        "assert.sameValue($abT.detached,true);assert.sameValue(AB.isView($abF),false);\n"
+    )
+    pairs = [
+        ('property-constructor',
+         "verifyProperty(AB,'name',{value:'ArrayBuffer',writable:false,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(AB,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(AB,'prototype',{value:P,writable:false,enumerable:false,configurable:false},{restore:true});"
+         "verifyProperty(P,'constructor',{value:AB,writable:true,enumerable:false,configurable:true},{restore:true});",
+         'Object.getPrototypeOf(P)===Object.prototype', 'true', 'false'),
+        ('constructor-toindex',
+         "var a=new AB(),b=new AB(NaN),c=new AB(-0.9),d=new AB('3.9'),e=new AB(true);"
+         "assert.sameValue(a.byteLength,0);assert.sameValue(b.byteLength,0);assert.sameValue(c.byteLength,0);"
+         "assert.sameValue(d.byteLength,3);assert.throws(RangeError,function(){new AB(-1);});"
+         "assert.throws(RangeError,function(){new AB(Infinity);});assert.throws(TypeError,function(){new AB(Symbol());});",
+         'e.byteLength', '1', '2'),
+        ('new-required-before-conversion',
+         "var touched=0,arg={valueOf:function(){touched++;return 1;}};"
+         "assert.throws(TypeError,function(){AB(arg);});assert.throws(TypeError,function(){AB.call({},arg);});",
+         'touched', '0', '1'),
+        ('options-nonobjects-and-undefined',
+         "var opts=[undefined,null,false,2,'text',Symbol()],ok=true;for(var i=0;i<opts.length;i++){var b=new AB(1,opts[i]);"
+         "ok=ok&&b.byteLength===1&&b.maxByteLength===1&&!b.resizable;}"
+         "var calls=0,o={};Object.defineProperty(o,'maxByteLength',{get:function(){calls++;return undefined;}});"
+         "var b=new AB(1,o);assert.sameValue(b.resizable,false);assert.sameValue(calls,1);",
+         'ok', 'true', 'false'),
+        ('options-coercion-order',
+         "var trace='',o={};Object.defineProperty(o,'maxByteLength',{get:function(){trace+='O';return {valueOf:function(){trace+='M';return 6.9;}};}});"
+         "var b=new AB({valueOf:function(){trace+='L';return 2.9;}},o);"
+         "assert.sameValue(b.byteLength,2);assert.sameValue(b.maxByteLength,6);assert.sameValue(b.resizable,true);",
+         'trace', "'LOM'", "'OLM'"),
+        ('newtarget-prototype-order',
+         "var trace='',proto={},N=function(){}.bind(null);Object.defineProperty(N,'prototype',{get:function(){trace+='P';return proto;}});"
+         "var o={};Object.defineProperty(o,'maxByteLength',{get:function(){trace+='O';return {valueOf:function(){trace+='M';return 4;}};}});"
+         "var b=Reflect.construct(AB,[{valueOf:function(){trace+='L';return 2;}},o],N);"
+         "assert.sameValue(Object.getPrototypeOf(b),proto);assert.sameValue(Object.getOwnPropertyDescriptor(P,'byteLength').get.call(b),2);",
+         'trace', "'LOMP'", "'PLOM'"),
+        ('max-range-before-prototype',
+         "var touched=0,N=function(){}.bind(null);Object.defineProperty(N,'prototype',{get:function(){touched++;return {};}});"
+         "assert.throws(RangeError,function(){Reflect.construct(AB,[3,{maxByteLength:2}],N);});",
+         'touched', '0', '1'),
+        ('constructor-abrupt-identity',
+         "var reason={},caught,touched=0,o={};Object.defineProperty(o,'maxByteLength',{get:function(){touched++;return 4;},configurable:true});"
+         "try{new AB({valueOf:function(){throw reason;}},o);}catch(e){caught=e;}assert.sameValue(caught,reason);"
+         "assert.sameValue(touched,0);caught=undefined;Object.defineProperty(o,'maxByteLength',{get:function(){throw reason;},configurable:true});"
+         "try{new AB(1,o);}catch(e){caught=e;}assert.sameValue(caught,reason);",
+         'touched', '0', '1'),
+        ('property-getters',
+         "var names=['byteLength','maxByteLength','resizable','detached'];for(var i=0;i<names.length;i++){var key=names[i],d=Object.getOwnPropertyDescriptor(P,key);"
+         "verifyProperty(P,key,{get:d.get,set:undefined,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(d.get,'name',{value:'get '+key,writable:false,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(d.get,'length',{value:0,writable:false,enumerable:false,configurable:true},{restore:true});"
+         "assert.sameValue(Object.getOwnPropertyDescriptor(d.get,'prototype'),undefined);}",
+         'names.length', '4', '3'),
+        ('getter-brands-and-prototype',
+         "var names=['byteLength','maxByteLength','resizable','detached'],seen=0;for(var i=0;i<names.length;i++){var get=Object.getOwnPropertyDescriptor(P,names[i]).get;"
+         "assert.throws(TypeError,function(){get.call(P);});assert.throws(TypeError,function(){get.call({});});"
+         "assert.throws(TypeError,function(){get.call(null);});seen++;}", 'seen', '4', '3'),
+        ('shadow-properties-do-not-replace-slots',
+         "var b=new AB(2,{maxByteLength:4}),g=Object.getOwnPropertyDescriptor(P,'byteLength').get;"
+         "Object.defineProperty(b,'byteLength',{value:99});Object.defineProperty(b,'resizable',{value:false});"
+         "rz.call(b,3);assert.sameValue(b.byteLength,99);assert.sameValue(g.call(b),3);"
+         "var c=tr.call(b);assert.sameValue(c.byteLength,3);assert.sameValue(b.detached,true);",
+         'c.resizable', 'true', 'false'),
+        ('property-species-and-tag',
+         "var d=Object.getOwnPropertyDescriptor(AB,Symbol.species),token={};"
+         "verifyProperty(AB,Symbol.species,{get:d.get,set:undefined,enumerable:false,configurable:true},{restore:true});"
+         "assert.sameValue(d.get.call(token),token);assert.sameValue(d.get.call(null),null);"
+         "verifyProperty(P,Symbol.toStringTag,{value:'ArrayBuffer',writable:false,enumerable:false,configurable:true},{restore:true});",
+         'Object.prototype.toString.call(new AB(0))', "'[object ArrayBuffer]'", "'[object Object]'"),
+        ('resize-live-coercion',
+         "var b=new AB(2,{maxByteLength:8}),trace='';var result=rz.call(b,{valueOf:function(){trace+='V';rz.call(b,1);return 6;}});"
+         "assert.sameValue(result,undefined);assert.sameValue(b.byteLength,6);rz.call(b,0);rz.call(b,3);"
+         "assert.sameValue(b.byteLength,3);assert.sameValue(b.maxByteLength,8);", 'trace', "'V'", "'VV'"),
+        ('resize-fixed-brand-before-coercion',
+         "var touched=0,n={valueOf:function(){touched++;return 0;}},b=new AB(2);"
+         "assert.throws(TypeError,function(){rz.call(b,n);});assert.throws(TypeError,function(){rz.call({},n);});",
+         'touched', '0', '1'),
+        ('resize-invalid-preserves-state',
+         "var b=new AB(2,{maxByteLength:4});assert.throws(RangeError,function(){rz.call(b,5);});"
+         "assert.throws(RangeError,function(){rz.call(b,-1);});assert.throws(TypeError,function(){rz.call(b,Symbol());});"
+         "assert.sameValue(b.byteLength,2);assert.sameValue(b.detached,false);", 'b.maxByteLength', '4', '5'),
+        ('resize-detached-still-coerces',
+         "var b=new AB(2,{maxByteLength:4}),touched=0;tr.call(b);assert.sameValue(b.resizable,true);"
+         "assert.sameValue(b.maxByteLength,0);assert.throws(TypeError,function(){rz.call(b,{valueOf:function(){touched++;return 1;}});});",
+         'touched', '1', '0'),
+        ('resize-coercion-detaches',
+         "var b=new AB(2,{maxByteLength:4}),moved;assert.throws(TypeError,function(){rz.call(b,{valueOf:function(){moved=tf.call(b);return 1;}});});"
+         "assert.sameValue(moved.byteLength,2);assert.sameValue(moved.resizable,false);", 'b.detached', 'true', 'false'),
+        ('slice-relative-indices-and-fixed-result',
+         "var b=new AB(6,{maxByteLength:8}),r=sl.call(b,-4,-1);assert.sameValue(r.byteLength,3);assert.sameValue(r.resizable,false);"
+         "assert.sameValue(sl.call(b,5,2).byteLength,0);assert.sameValue(sl.call(b,-Infinity,Infinity).byteLength,6);"
+         "assert.sameValue(sl.call(b,1,undefined).byteLength,5);", 'r.maxByteLength', '3', '8'),
+        ('slice-captured-length-conversion-order',
+         "var b=new AB(4,{maxByteLength:8}),trace='';var r=sl.call(b,{valueOf:function(){trace+='S';rz.call(b,8);return 1;}},"
+         "{valueOf:function(){trace+='E';return 8;}});assert.sameValue(r.byteLength,3);assert.sameValue(b.byteLength,8);",
+         'trace', "'SE'", "'ES'"),
+        ('slice-species-order',
+         "var trace='',b=new AB(4),holder={},target=new AB(2);function C(n){trace+='N';assert.sameValue(n,2);assert.sameValue(arguments.length,1);assert.sameValue(new.target,C);return target;}"
+         "Object.defineProperty(b,'constructor',{get:function(){trace+='C';return holder;}});"
+         "Object.defineProperty(holder,Symbol.species,{get:function(){trace+='G';return C;}});"
+         "var r=sl.call(b,{valueOf:function(){trace+='S';return 1;}},{valueOf:function(){trace+='E';return 3;}});assert.sameValue(r,target);",
+         'trace', "'SECGN'", "'CGSEN'"),
+        ('slice-result-brands-same-and-small',
+         "var b=new AB(4),out;function C(){return out;}b.constructor={};b.constructor[Symbol.species]=C;"
+         "out={};assert.throws(TypeError,function(){sl.call(b,0,2);});out=b;assert.throws(TypeError,function(){sl.call(b,0,0);});"
+         "out=new AB(1);assert.throws(TypeError,function(){sl.call(b,0,2);});", 'b.detached', 'false', 'true'),
+        ('slice-detached-result',
+         "var b=new AB(2),out=new AB(2);tr.call(out);b.constructor={};b.constructor[Symbol.species]=function(){return out;};"
+         "assert.throws(TypeError,function(){sl.call(b,0,0);});", 'b.byteLength', '2', '0'),
+        ('slice-detach-source-after-construction',
+         "var b=new AB(2),made=0;b.constructor={};b.constructor[Symbol.species]=function(n){made++;tf.call(b);return new AB(n);};"
+         "assert.throws(TypeError,function(){sl.call(b,0,0);});assert.sameValue(b.detached,true);", 'made', '1', '0'),
+        ('slice-resizable-larger-result-and-shrunk-source',
+         "var b=new AB(4,{maxByteLength:8}),out=new AB(6,{maxByteLength:9});b.constructor={};"
+         "b.constructor[Symbol.species]=function(n){assert.sameValue(n,3);rz.call(b,0);return out;};"
+         "var r=sl.call(b,1,4);assert.sameValue(r,out);assert.sameValue(r.byteLength,6);assert.sameValue(r.maxByteLength,9);"
+         "assert.sameValue(b.byteLength,0);", 'r.resizable', 'true', 'false'),
+        ('transfer-preserves-resizability',
+         "var b=new AB(3,{maxByteLength:7}),r=tr.call(b,5);assert.sameValue(r.byteLength,5);assert.sameValue(r.maxByteLength,7);"
+         "assert.sameValue(r.resizable,true);assert.sameValue(r.detached,false);assert.sameValue(b.byteLength,0);"
+         "assert.sameValue(b.maxByteLength,0);assert.sameValue(b.resizable,true);", 'b.detached', 'true', 'false'),
+        ('transfer-fixed-may-exceed-old-maximum',
+         "var b=new AB(2,{maxByteLength:3}),r=tf.call(b,5);assert.sameValue(r.byteLength,5);assert.sameValue(r.maxByteLength,5);"
+         "assert.sameValue(r.resizable,false);assert.sameValue(b.resizable,true);", 'b.detached', 'true', 'false'),
+        ('transfer-default-versus-null',
+         "var a=tr.call(new AB(3)),b=tr.call(new AB(3),undefined),c=tf.call(new AB(3),null);"
+         "assert.sameValue(a.byteLength,3);assert.sameValue(b.byteLength,3);assert.sameValue(c.byteLength,0);",
+         'c.resizable', 'false', 'true'),
+        ('transfer-invalid-keeps-original',
+         "var b=new AB(2,{maxByteLength:3});assert.throws(RangeError,function(){tr.call(b,4);});"
+         "assert.throws(RangeError,function(){tf.call(b,-1);});assert.throws(TypeError,function(){tr.call(b,Symbol());});"
+         "assert.sameValue(b.byteLength,2);assert.sameValue(b.maxByteLength,3);", 'b.detached', 'false', 'true'),
+        ('transfer-brand-before-coercion',
+         "var touched=0,n={valueOf:function(){touched++;return 0;}};assert.throws(TypeError,function(){tr.call({},n);});"
+         "assert.throws(TypeError,function(){tf.call(P,n);});", 'touched', '0', '1'),
+        ('transfer-coercion-before-detached-and-live-change',
+         "var methods=[tr,tf],calls=0;for(var i=0;i<methods.length;i++){var b=new AB(2,{maxByteLength:6});tr.call(b);"
+         "assert.throws(TypeError,function(){methods[i].call(b,{valueOf:function(){calls++;return 1;}});});"
+         "var c=new AB(2,{maxByteLength:6}),r=methods[i].call(c,{valueOf:function(){rz.call(c,4);return 3;}});"
+         "assert.sameValue(r.byteLength,3);assert.sameValue(c.detached,true);"
+         "var d=new AB(2);assert.throws(TypeError,function(){methods[i].call(d,{valueOf:function(){tf.call(d);return 1;}});});}",
+         'calls', '2', '0'),
+        ('transfer-ignores-species-and-global-binding',
+         "var touched=0,a=new AB(2),b=new AB(2);function poison(){touched++;throw new Test262Error('constructor must not be read');}"
+         "Object.defineProperty(a,'constructor',{get:poison});Object.defineProperty(b,'constructor',{get:poison});"
+         "ArrayBuffer=function(){throw new Test262Error('global binding must not be used');};"
+         "var x=tr.call(a),y=tf.call(b);assert.sameValue(Object.getPrototypeOf(x),P);assert.sameValue(Object.getPrototypeOf(y),P);"
+         "assert.sameValue(x.byteLength,2);assert.sameValue(y.byteLength,2);", 'touched', '0', '1'),
+        ('property-methods-and-isview',
+         "var names=['resize','slice','transfer','transferToFixedLength'],lengths=[1,2,0,0];"
+         "for(var i=0;i<names.length;i++){var key=names[i],m=P[key];verifyProperty(P,key,{value:m,writable:true,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(m,'name',{value:key,writable:false,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(m,'length',{value:lengths[i],writable:false,enumerable:false,configurable:true},{restore:true});"
+         "assert.sameValue(Object.getOwnPropertyDescriptor(m,'prototype'),undefined);assert.throws(TypeError,function(){new m();});}"
+         "verifyProperty(AB,'isView',{value:AB.isView,writable:true,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(AB.isView,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+         "assert.sameValue(AB.isView({buffer:new AB(0),byteLength:0}),false);assert.sameValue(AB.isView(null),false);",
+         'AB.isView(new AB(0))', 'false', 'true'),
+    ]
+    return [('array-buffer-' + name + suffix, guard + setup + '\n' + f'assert.sameValue({actual},{value});\n', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
 
@@ -1960,6 +2141,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         variants += core_iterator_preflight_variants()
     if profile == 'array-from':
         variants += array_from_preflight_variants()
+    if profile == 'array-buffer':
+        variants += array_buffer_preflight_variants()
     if profile == 'array-concat':
         variants += array_concat_preflight_variants()
     if profile == 'array-splice':
@@ -1982,7 +2165,7 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 name=name, mode=mode, case_sha256=case['case_sha256'],
                 source_sha256=digest(case['source']), expected=expected,
                 verified=correct, result=result)
-    if profile in {'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         # An unavailable prerequisite can throw the harness's Test262Error in both partners.
         # Preserve that raw observation, but do not verify the mismatch unless
         # its separately executed positive partner completes successfully.

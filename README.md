@@ -4,6 +4,12 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+The [ArrayBuffer checkpoint](tests/conformance/array-buffer.md) adds fixed and
+resizable buffers, resizing, same-realm species-aware slicing, transfers and
+detachment. Typed arrays, DataView and shared memory remain unfinished. The
+[Vulkan rendering docket](docs/vulkan-rendering.md) tracks the custom GPU
+rasterizer; native browser painting currently remains on the CPU.
+
 ## Open the browser
 
 Clone the public repository:
@@ -103,6 +109,7 @@ python3 tools/test262_conformance.py --profile symbols --baseline tests/conforma
 python3 tools/test262_conformance.py --profile object-integrity --baseline tests/conformance/test262-object-integrity-current.json
 python3 tools/test262_conformance.py --profile array-find --baseline tests/conformance/test262-array-find-current.json
 python3 tools/test262_conformance.py --profile array-splice --baseline tests/conformance/test262-array-splice-current.json
+python3 tools/test262_conformance.py --profile array-buffer --baseline tests/conformance/test262-array-buffer-current.json
 python3 tools/test262_conformance.py --profile date --baseline tests/conformance/test262-date-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
@@ -377,8 +384,8 @@ freezing and integrity queries for supported ECMAScript objects, including
 arrays, functions, boxed strings and arguments objects. Own descriptor flags
 are processed without invoking getters; children and prototypes remain shallow.
 The [complete upstream profile](tests/conformance/test262-object-integrity.md)
-retains 239 sources and 474 modes. With Date support it records 394 passed,
-42 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
+retains 239 sources and 474 modes. With Date and ArrayBuffer support it records
+396 passed, 40 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
 verified. All 228 frozen local variants and their 12 controls also pass.
 Eight older descriptor modes gain passes, and all 14,296 other older
 observations are unchanged. That checkpoint has 34 profiles, 14,778
@@ -412,8 +419,8 @@ modes remain unmet. At that checkpoint the complete upstream profile had 82
 passes, four failures requiring `splice` or `ArrayBuffer`, four metadata exclusions
 and 96 verified controls. All 38 older profile observations remained unchanged.
 The combined inventory then had 39 profiles, 17,822 modes, 3,900 verified controls
-and 32 known-state regression gates. The splice follow-up brings Array.from to
-84 passes; its two ArrayBuffer failures and four exclusions remain visible.
+and 32 known-state regression gates. Splice brought Array.from to 84 passes;
+ArrayBuffer closes its last two failures, reaching 86 passes and four exclusions.
 
 [Shared enumeration accounting](tests/conformance/own-keys.md) preserves that
 entire inventory while charging string-key snapshots, caller buffers and for-in
@@ -428,7 +435,7 @@ and 24 unchanged metadata exclusions across 162 modes; all 96 controls verify.
 The local fixture verifies 90 of 96 expectations, including four expected resource
 stops; Proxy, typed-array and cross-realm prerequisites remain unmet. Ten older
 find/Array.from modes gain passes, with no other historical observation or control
-changes. The catalog now has 33 known-state gates; all final baseline projections
+changes. That checkpoint had 33 known-state gates; all final baseline projections
 were checked against the completed reports. The
 [evidence](tests/conformance/array-splice.json) retains all gaps and
 unchanged limits; broader property accounting and full compatibility remain open.
@@ -440,7 +447,18 @@ complete 137-mode profile records 113 passes, four missing-typed-array failures,
 fixture verifies 84 of 90 expectations, including four expected resource stops.
 All 40 older profiles and six selected local suites remain exactly unchanged.
 The two ordinary upstream resource outcomes prevent a new regression gate;
-the catalog retains **33 known-state gates**, with no quota or policy changes.
+that checkpoint retained **33 known-state gates**, with no quota or policy changes.
+
+[ArrayBuffer](tests/conformance/array-buffer.md) adds nonshared fixed and
+resizable backing stores, slicing, transfers and detachment. Its complete
+upstream profile records **262 passed, 50 failed and 130 excluded modes**, with
+all 160 controls verified. The local suite verifies **92 of 104 expectations**;
+two ordinary metadata modes reach the work limit and ten prerequisite modes
+remain unmet. Typed arrays, DataView, shared memory and foreign realms remain
+unfinished. Four older Array.from/Object.seal modes gain passes, with every other
+historical observation unchanged. The catalog now contains **42 profiles /
+18,563 modes / 4,252 controls**, with **34 known-state regression gates**.
+Those gates preserve recorded gaps as well as passing cases.
 
 [Synchronous iteration](tests/conformance/for-of.md) supports identifier/member
 `for…of` heads, lexical bindings, iterator closing and native Array, String and

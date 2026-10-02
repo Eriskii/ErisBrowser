@@ -1,5 +1,58 @@
 # Validation record
 
+## ArrayBuffer storage, resizing, slicing and transfers
+
+The [ArrayBuffer evidence](../tests/conformance/array-buffer.json) compares the
+frozen candidate against published commit `77866e93f4d8486807aa843667619ea4ccccccfa`.
+The independently authored local sources retain **88 passed, eight failed, two
+unsupported and six resource outcomes**: **92 of 104 expectations and all 76
+controls verify**. Four resource outcomes are expected engine-policy checks;
+both modes of an ordinary metadata test also exhaust the unchanged instruction
+budget. Ten view/shared-buffer/Proxy/foreign-realm prerequisite modes remain
+unmet. No local expectation or source was changed after observing results.
+
+The [complete pinned profile](../tests/conformance/test262-array-buffer.md)
+retains all **221 sources / 442 modes**: **262 passed, 50 failed and 130 excluded**,
+with **160 verified controls** and no resource, timeout or adapter errors.
+Forty-eight failures require Uint8Array; two reach untagged BigInt syntax.
+The exclusions retain 112 declared-feature and eighteen host-hook exclusions.
+Its known-state baseline records every observation, including the failures.
+Two strengthened older baselines retain four new Array.from/Object.seal passes.
+All **34 final gates** are checked against completed reports without rerunning
+the engine. The combined inventory has **42 profiles / 18,563 modes / 4,252 controls**.
+
+The **41 older profiles / 18,121 modes / 4,092 controls** have exactly those four
+gains, with no other case or control changes and all 33 preceding gates passing.
+Seven older local suites retain **1,378 cases and 316 controls** byte-for-byte
+at the observation level. A stale two-tool hash binding prevented the first
+historical-local attempt from starting any engine; the reviewed replacement
+manifest changes only bindings for new-profile additions. All old source,
+helper, runner, expectation and before-report bytes remain intact.
+
+Rust **1.88 and 1.98** pass strict all-target Clippy and **1,269 default / 1,280
+Vulkan-feature tests**. The evidence includes **24 private buffer test groups**,
+**274 Python tests**, direct page integration and the actual confined worker.
+Both release variants pass all **57 CPU pixel references**. Byte-identical HTML
+adapters and 68 unchanged inputs justify reuse of **3,868 matches, two mismatches
+and six unsupported outcomes**; no fresh HTML run is claimed. The single
+mutation smoke run covers **15,000 cases**, with zero caught panics or invariant
+failures and seventeen bounded paint stops.
+
+One private-test Clippy expression was corrected without changing semantics.
+The first Rust 1.98 feature test run failed an existing Date helper readiness
+assertion. Tracing passed that test but encountered a different large-request
+timeout; one untraced full follow-up passed. Both failures remain in the
+[Date follow-up record](../tests/conformance/array-buffer-date-host-followup.json).
+The original cause remains unresolved; tracing overhead is a plausible,
+unproven explanation for the second failure. No deadline or assertion was relaxed.
+
+All existing quotas remain unchanged. Private tests cover byte initialization,
+copying, shrink/regrow zeroing, species-result suffixes, callback ordering and
+allocation/copy refusal. Typed arrays, DataView, shared memory and broader
+accounting remain unfinished. This checkpoint adds no GPU execution, Chromium
+performance comparison or security certification. Exact-commit remote CI is
+pending publication.
+
 ## Standalone Vulkan source-alpha rasterization
 
 The [custom raster probe](../tools/vulkan-raster-probe/README.md) now blends

@@ -1,0 +1,51 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ArrayBuffer through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#construct{left:0}#resize{left:50px}#transfer{left:100px}#fixed{left:150px}#slice{left:200px}#failure{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="construct" class="sample"></div><div id="resize" class="sample"></div>
+<div id="transfer" class="sample"></div><div id="fixed" class="sample"></div>
+<div id="slice" class="sample"></div><div id="failure" class="sample"></div>
+<button id="change" type="button">Run buffer callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function apply(color){
+  check(typeof ArrayBuffer==='function','ArrayBuffer availability');
+  const byteLength=Object.getOwnPropertyDescriptor(ArrayBuffer.prototype,'byteLength').get;
+  let trace='';const proto={},target=(function(){}).bind(null),options={};
+  Object.defineProperty(target,'prototype',{get:function(){trace+='P';return proto;}});
+  Object.defineProperty(options,'maxByteLength',{get:function(){trace+='M';return {valueOf:function(){trace+='V';return 8;}};}});
+  const created=Reflect.construct(ArrayBuffer,[{valueOf:function(){trace+='L';return 3.9;}},options],target);
+  check(trace==='LMVP'&&Object.getPrototypeOf(created)===proto&&byteLength.call(created)===3,'constructor conversion and alternate prototype order');
+  check(ArrayBuffer.isView(created)===false&&Object.keys(created).length===0,'buffer is not a view and has no byte properties');mark('construct',color);
+  const resized=new ArrayBuffer(4,{maxByteLength:8});Object.freeze(resized);
+  check(Object.isFrozen(resized)&&resized.resize(1)===undefined&&resized.byteLength===1,'ordinary freezing does not freeze backing data');
+  resized.resize(6);check(resized.byteLength===6&&resized.maxByteLength===8&&resized.resizable&&!resized.detached,'resize metadata');mark('resize',color);
+  const moved=new ArrayBuffer(4,{maxByteLength:8});let lengthReads=0;
+  Object.defineProperty(moved,'constructor',{get:function(){throw new Error('transfer read constructor');}});
+  const replacement=moved.transfer({valueOf:function(){lengthReads++;moved.resize(2);return 6;}});
+  check(lengthReads===1&&moved.detached&&moved.byteLength===0&&moved.maxByteLength===0&&moved.resizable,'transfer detaches only the old backing data');
+  check(replacement!==moved&&replacement.byteLength===6&&replacement.maxByteLength===8&&replacement.resizable&&!replacement.detached&&Object.getPrototypeOf(replacement)===ArrayBuffer.prototype,'transfer preserves maximum and intrinsic prototype');mark('transfer',color);
+  const source=new ArrayBuffer(2,{maxByteLength:4}),fixed=source.transferToFixedLength(7);
+  check(source.detached&&source.resizable&&fixed.byteLength===7&&fixed.maxByteLength===7&&!fixed.resizable&&!fixed.detached,'fixed transfer may exceed old resizable maximum');mark('fixed',color);
+  const sliced=new ArrayBuffer(6,{maxByteLength:8}),constructor={};let order='',result;
+  Object.defineProperty(sliced,'constructor',{get:function(){order+='C';return constructor;}});
+  Object.defineProperty(constructor,Symbol.species,{get:function(){order+='S';return function(length){order+='N';check(arguments.length===1&&length===3,'species length');sliced.resize(2);result=new ArrayBuffer(length);return result;};}});
+  const copy=sliced.slice({valueOf:function(){order+='A';return 1;}},{valueOf:function(){order+='B';return 4;}});
+  check(order==='ABCSN'&&copy===result&&copy.byteLength===3&&sliced.byteLength===2&&!copy.resizable,'slice captures length then revalidates resized source');mark('slice',color);
+  const detached=new ArrayBuffer(3),species={};let kept,detachedError=false,aliasError=false;
+  species[Symbol.species]=function(length){detached.transfer();kept=new ArrayBuffer(length);return kept;};detached.constructor=species;
+  try{detached.slice(0,2);}catch(error){detachedError=error instanceof TypeError;}
+  const alias=new ArrayBuffer(0),aliasSpecies={};aliasSpecies[Symbol.species]=function(){return alias;};alias.constructor=aliasSpecies;
+  try{alias.slice(0,0);}catch(error){aliasError=error instanceof TypeError;}
+  check(detachedError&&detached.detached&&kept.byteLength===2&&aliasError&&!alias.detached,'species detachment and result alias rejection retain prior effects');mark('failure',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

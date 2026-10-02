@@ -1,0 +1,267 @@
+{
+  "schema": 1,
+  "reviewer": "/root/html_css",
+  "scope": "Read-only inspection of retained Date host failure, traced diagnostic and untraced full follow-up; no engine, compiler or test execution by this reviewer. Only this scratch review record was written.",
+  "reviewed_at_utc": "2026-10-02T02:58:25.306327+00:00",
+  "candidate_directory": "/tmp/eris-array-buffer-candidate-2",
+  "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+  "input_ledger": {
+    "path": "/tmp/eris-array-buffer-candidate-2/inputs.json",
+    "sha256": "ad5f1240cacad5209a89a1a629bbddc309451ddfec15a250c70107485a92e5aa",
+    "bytes": 14591
+  },
+  "current_input_files_rehashed": 106,
+  "all_current_input_hashes_match": true,
+  "date_source_bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/date_host.rs",
+      "sha256": "2c8ef2a33174f53c4bb11a7633addecae6958aa471d7274284cb5dfa99cc0ba0",
+      "bytes": 32193
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/date_host/tests.rs",
+      "sha256": "417ef77384da8a63ee29c6f87aa663d44f2d30c357af39f892db54fb8527be3c",
+      "bytes": 25995
+    }
+  ],
+  "executions": {
+    "original": {
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests.log",
+        "sha256": "062dea908c41ff4e0d04cc0b6fdf8203a467a8267f09b5393aa1bc78769c0b07",
+        "bytes": 101769
+      },
+      "result": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-result.json",
+        "sha256": "d63f6129cf7f4c1e555d05c3b48a0046b79af7b5fc3793e60e6fe62f6c550bd4",
+        "bytes": 556
+      },
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--features",
+        "vulkan-presenter",
+        "--",
+        "--include-ignored"
+      ],
+      "exit_code": 101,
+      "elapsed_seconds": 14.142,
+      "outer_deadline_seconds": 900,
+      "target_results": [
+        {
+          "passed": 1067,
+          "failed": 1,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        }
+      ],
+      "total_passed": 1067,
+      "total_failed": 1,
+      "total_ignored": 0,
+      "owned_cleanup_and_post_input_checks_passed": true
+    },
+    "traced": {
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-launch-diagnostic.log",
+        "sha256": "5573cdac367376019dcce4e3d259ca950938382ab5efb54feedeedeb2dfda951",
+        "bytes": 101704
+      },
+      "result": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-launch-diagnostic-result.json",
+        "sha256": "f4d73ec8c1da6cd3cd9519d049fc8fc02f282c1a5300295c6db04d27f0a0c80e",
+        "bytes": 742
+      },
+      "command": [
+        "strace",
+        "-f",
+        "-qq",
+        "-s",
+        "256",
+        "-e",
+        "trace=process",
+        "-o",
+        "/tmp/eris-array-buffer-candidate-2/198-feature-date-launch.trace",
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--features",
+        "vulkan-presenter",
+        "--",
+        "--include-ignored"
+      ],
+      "exit_code": 101,
+      "elapsed_seconds": 7.379,
+      "outer_deadline_seconds": 900,
+      "target_results": [
+        {
+          "passed": 1067,
+          "failed": 1,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        }
+      ],
+      "total_passed": 1067,
+      "total_failed": 1,
+      "total_ignored": 0,
+      "owned_cleanup_and_post_input_checks_passed": true
+    },
+    "followup": {
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup.log",
+        "sha256": "ae0b22804fcfeb6245fc3d6fb7df9ffa441a6e93b6981a7934e787249237d9a7",
+        "bytes": 121021
+      },
+      "result": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup-result.json",
+        "sha256": "cc5c857cbe03fe0a04fc8bce0175f88a5d187a185465f84891c5218266574f9f",
+        "bytes": 571
+      },
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--features",
+        "vulkan-presenter",
+        "--",
+        "--include-ignored"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 8.826,
+      "outer_deadline_seconds": 900,
+      "target_results": [
+        {
+          "passed": 1068,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 50,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 17,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 59,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 9,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 2,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 51,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        },
+        {
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        }
+      ],
+      "total_passed": 1280,
+      "total_failed": 0,
+      "total_ignored": 0,
+      "owned_cleanup_and_post_input_checks_passed": true
+    }
+  },
+  "trace": {
+    "path": "/tmp/eris-array-buffer-candidate-2/198-feature-date-launch.trace",
+    "sha256": "1f621afe954dae86cb93a260c4fbd8463af58d8ae08281c9254d81d050388125",
+    "bytes": 433453
+  },
+  "trace_receipt": {
+    "path": "/tmp/eris-array-buffer-candidate-2/198-feature-date-launch-trace.json",
+    "sha256": "2e2d6b4d647fe5217352b19084298422523d436e03fc32823df7f5e82b763dfa",
+    "bytes": 180
+  },
+  "plans": [
+    {
+      "path": "/tmp/eris-array-buffer-candidate-2/198-feature-date-launch-diagnostic-plan.json",
+      "sha256": "c911b75d5b89f811265099a1502532b8eedf681ab6a3db69ed498914aca08406",
+      "bytes": 893
+    },
+    {
+      "path": "/tmp/eris-array-buffer-candidate-2/198-feature-untraced-followup-plan.json",
+      "sha256": "72fc502cf411f7cf72d8cb2a12c8e0a73d84cad6ca36f39fdb97133485bd02cb",
+      "bytes": 911
+    }
+  ],
+  "findings": {
+    "original_failure": "host_run_capture_silent_blocked_helper_obeys_cancel_and_deadline failed its readiness assertion at tests.rs:663. The assertion omitted the capture result; the retained evidence does not establish why readiness was not observed.",
+    "traced_observations": "Both silent helper actions passed. The trace records successful execve completion for the large-request, silent-cancel and silent-timeout helpers; no ETXTBSY or EAGAIN appears. The different large-private-partial-request test timed out at tests.rs:630.",
+    "traced_timeout_causation": "Additional ptrace overhead during the shell request drain is plausible, but this process-only trace neither measures read calls nor proves that overhead caused the timeout. It does not explain the original failure.",
+    "followup": "One untraced run of the original complete command passed all 1280 tests across 13 result rows, with zero failed or ignored. Both previously affected groups passed. No additional targeted execution was performed.",
+    "source_and_policy": "All 106 candidate inputs match their frozen hashes; Date source, assertions, 1000 ms capture timeout, outer 900 s deadline and test parallelism were unchanged. No corrective code or resolved root cause is claimed.",
+    "provenance_wording_caveat": "The preserved follow-up plan says trace-induced different timeout. This review narrows that wording to timeout observed during tracing; causation remains unproven."
+  },
+  "conclusion": "The passing full follow-up is supported by the retained log and receipt. Both earlier failures remain part of the validation history, and the original readiness cause remains unresolved."
+}

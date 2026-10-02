@@ -1,0 +1,212 @@
+{
+  "format": "eris-array-buffer-backing-oracle-v1",
+  "authored_before_implementation": true,
+  "purpose": "Independent private-byte and resource-cutpoint obligations; no JS view is invented for this checkpoint",
+  "cases": [
+    {
+      "id": "initial-zero-block",
+      "length": 4,
+      "expected_bytes": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "resize-shrink-regrow",
+      "initial_bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "max_byte_length": 8,
+      "operations": [
+        {
+          "resize": 2
+        },
+        {
+          "resize": 5
+        }
+      ],
+      "expected_bytes": [
+        1,
+        2,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "slice-shrink-existing-species-result",
+      "initial_bytes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "slice": [
+        1,
+        4
+      ],
+      "species_effects": {
+        "source_resize": 2,
+        "returned_existing_bytes": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ]
+      },
+      "expected_requested_length": 3,
+      "expected_result_bytes": [
+        2,
+        9,
+        9,
+        9,
+        9
+      ],
+      "expected_source_bytes": [
+        1,
+        2
+      ],
+      "max_byte_length": 8
+    },
+    {
+      "id": "slice-grow-does-not-expand-captured-range",
+      "initial_bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "slice": [
+        1
+      ],
+      "species_effects": {
+        "source_resize": 6,
+        "returned_existing_bytes": [
+          9,
+          9,
+          9,
+          9,
+          9
+        ]
+      },
+      "expected_requested_length": 3,
+      "expected_result_bytes": [
+        2,
+        3,
+        4,
+        9,
+        9
+      ],
+      "max_byte_length": 8,
+      "end_argument": "omitted",
+      "expected_source_bytes": [
+        1,
+        2,
+        3,
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "transfer-after-conversion-shrink",
+      "initial_bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "max_byte_length": 8,
+      "length_valueof": {
+        "source_resize": 2,
+        "return": 6
+      },
+      "expected_result_bytes": [
+        1,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_result_max_byte_length": 8,
+      "expected_old_detached": true,
+      "expected_old_resizable": true
+    },
+    {
+      "id": "transfer-to-fixed-above-old-maximum",
+      "initial_bytes": [
+        1,
+        2
+      ],
+      "max_byte_length": 4,
+      "new_length": 7,
+      "expected_result_bytes": [
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expected_result_resizable": false,
+      "expected_old_detached": true
+    },
+    {
+      "id": "resize-resource-transaction",
+      "initial_bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "required_checks": [
+        "work reservation before zero-fill or copy",
+        "full new capacity charged before growth reserve",
+        "no partial byte changes on work/heap failure",
+        "old length and data survive allocation failure",
+        "no allocation refund for shrink or detach"
+      ]
+    },
+    {
+      "id": "transfer-resource-transaction",
+      "initial_bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "required_checks": [
+        "all fallible allocation/work/copy preparation before old detach",
+        "destination and old buffer IDs remain distinct",
+        "prior author conversions remain observable on failure",
+        "old post-conversion bytes and detached=false survive insufficient budget"
+      ]
+    },
+    {
+      "id": "slice-revalidate-without-held-borrows",
+      "required_checks": [
+        "species allocates multiple buffers to reallocate side table safely",
+        "source detach error occurs after destination brand/detach/identity/length checks",
+        "source shrink below first index copies no bytes into an existing nonzero result",
+        "zero-length slice still constructs and rejects same result identity"
+      ]
+    }
+  ],
+  "resource_policy": "Use exact measured private cutpoints under existing MAX_HEAP/MAX_STEPS; never alter the quotas or turn terminal engine exhaustion into a caught JavaScript pass.",
+  "reference": "https://tc39.es/ecma262/multipage/structured-data.html#sec-arraybuffer-objects",
+  "pre_execution_correction": {
+    "preserved_initial": "/tmp/eris-array-buffer-backing-oracle-initial.json",
+    "sha256": "4d2be1eaba4067b6c54ce6e1d19b79b4745ff30afb3160653ca2cb1c3e8c69a6",
+    "reason": "Independent review caught ambiguous null encoding for omitted slice end. Use a one-argument call; explicitly state resizable maximum on both callback-resize cases. No implementation or execution occurred; expected byte sequences unchanged."
+  }
+}

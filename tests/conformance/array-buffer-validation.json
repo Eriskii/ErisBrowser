@@ -1,0 +1,861 @@
+{
+  "format": 1,
+  "candidate": "/tmp/eris-array-buffer-candidate-2",
+  "parent": "77866e93f4d8486807aa843667619ea4ccccccfa",
+  "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+  "production_file_count": 106,
+  "source_archive": {
+    "path": "/tmp/eris-array-buffer-candidate-2/source.tar",
+    "bytes": 9584640,
+    "sha256": "c143c2131a07a7b56051158296189aa49534525b5c9beb43c1130a9a176ee051"
+  },
+  "inputs": {
+    "path": "/tmp/eris-array-buffer-candidate-2/inputs.json",
+    "bytes": 14591,
+    "sha256": "ad5f1240cacad5209a89a1a629bbddc309451ddfec15a250c70107485a92e5aa"
+  },
+  "verification_inputs": {
+    "path": "/tmp/eris-array-buffer-candidate-2/verification-inputs.json",
+    "bytes": 20482,
+    "sha256": "d4785667775894614c18c0b3433959912b07d5f33e04adb3faeba54f2abb6fcf"
+  },
+  "literal_includes": {
+    "path": "/tmp/eris-array-buffer-candidate-2/literal-includes.json",
+    "bytes": 13655,
+    "sha256": "d1331715512a2db6121b3dfe96c57ba84b852ea11a490c757fd98ea52ccb2cb5"
+  },
+  "default_binaries": {
+    "eris-browser": "8b88d35a175dc30de81b983e99ae38cd1460d0366c62db21604c941abd490932",
+    "eris-js": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
+    "eris-dom": "db89ac31ae89b541da960de958c90a0dc65aa62a78dbb83ec3f0b121dc934268",
+    "eris-stress": "6d0e5204c27e24ca13b02d27c72da5787b6041a9f7c6c3d51ed81763239d6e55"
+  },
+  "feature_binaries": {
+    "eris-browser": "aff334a778c9d2825087bf56a2fa6bca3a8ffea375d7ac78470f53082146f414",
+    "eris-js": "c6ed4fd547e09e99e1b53295c13e7b64a93b7ccbb729b76c1400e55bb14ec9aa",
+    "eris-dom": "4e58b41d7e9eb3849b6c56b01adad1d8c04c0092552c34240e122717324630dd",
+    "eris-stress": "d118182c5151a1ae4017bfd61893f619d2d1d7fe09980934533c20dce3dfedb4"
+  },
+  "release_rust_toolchain": "1.98.0",
+  "private_groups": 24,
+  "rust_matrix": {
+    "188-default": {
+      "passed": 1269,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-default-tests.log",
+        "bytes": 120092,
+        "sha256": "3803ac0b47148c6cd240af762987d7ede35abd680854d3566e7e9d3dad2062ca"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 13.407,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "3803ac0b47148c6cd240af762987d7ede35abd680854d3566e7e9d3dad2062ca",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-default-tests.log"
+      }
+    },
+    "188-feature": {
+      "passed": 1280,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-feature-tests.log",
+        "bytes": 121270,
+        "sha256": "c17e2be06b5ccd2ca2246d75d83e9ebc4ea846bb0092dff84d848e6809212274"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 21.46,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "c17e2be06b5ccd2ca2246d75d83e9ebc4ea846bb0092dff84d848e6809212274",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-feature-tests.log"
+      }
+    },
+    "198-default": {
+      "passed": 1269,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-default-tests.log",
+        "bytes": 119936,
+        "sha256": "3a7cd9c65d79df73ec2260cbaca2df41953c17c3bc4c071d47d974c19636d9b1"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 16.021,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "3a7cd9c65d79df73ec2260cbaca2df41953c17c3bc4c071d47d974c19636d9b1",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-default-tests.log"
+      }
+    },
+    "198-feature": {
+      "passed": 1280,
+      "failed": 0,
+      "ignored": 0,
+      "log": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup.log",
+        "bytes": 121021,
+        "sha256": "ae0b22804fcfeb6245fc3d6fb7df9ffa441a6e93b6981a7934e787249237d9a7"
+      },
+      "execution": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 8.826,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "ae0b22804fcfeb6245fc3d6fb7df9ffa441a6e93b6981a7934e787249237d9a7",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup.log"
+      }
+    }
+  },
+  "checks": {
+    "188-buffer-private": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-buffer-private-result.json",
+        "bytes": 518,
+        "sha256": "c0cd04fcaa6794f8ede5603c7d688160a0d1667055dd583003d4a055023b1af1"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--lib",
+          "script::array_buffer"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 4.171,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "572a6cce17b0f9162287275d3c96ffa9b25004630bfae9b5f7135582a3231647",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-buffer-private.log"
+      }
+    },
+    "188-default-clippy": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-default-clippy-result.json",
+        "bytes": 536,
+        "sha256": "7bb9bf7add7d7f2523a4167b80c26f11f664f0cb77d72a83c56cd88ced10bc31"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "clippy",
+          "--offline",
+          "--locked",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 5.719,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "3ed9904a5c981c5d96ac9bfdafc0c34039aed8440b8a90adf8f428c10acdc009",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-default-clippy.log"
+      }
+    },
+    "188-default-tests": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-default-tests-result.json",
+        "bytes": 512,
+        "sha256": "8fb336b272e7ca7b03ed5e287bc5df65340478222d123e5a725065b6ef966eaf"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 13.407,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "3803ac0b47148c6cd240af762987d7ede35abd680854d3566e7e9d3dad2062ca",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-default-tests.log"
+      }
+    },
+    "188-feature-clippy": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-feature-clippy-result.json",
+        "bytes": 578,
+        "sha256": "29e123f199783fb82f60c9b708fcdd4380a0beeafdb14c85434bee0dcc2d32ee"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "clippy",
+          "--offline",
+          "--locked",
+          "--all-targets",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 5.971,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "b24560f3c42a222a17071bbaaf9aee75e2750ab28cb9207f8d7e52d586d638e5",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-feature-clippy.log"
+      }
+    },
+    "188-feature-tests": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/188-feature-tests-result.json",
+        "bytes": 553,
+        "sha256": "d5464f185034b140fe7bb8a71bbec604911958f5aa02c73851fa12b35342e9d2"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "188",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 21.46,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "c17e2be06b5ccd2ca2246d75d83e9ebc4ea846bb0092dff84d848e6809212274",
+        "log": "/tmp/eris-array-buffer-candidate-2/188-feature-tests.log"
+      }
+    },
+    "198-default-clippy": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-default-clippy-result.json",
+        "bytes": 536,
+        "sha256": "1e85e25bc90b03bdd962fb34984952b8349084267cebd54cba2ed2d0d9861d4d"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "clippy",
+          "--offline",
+          "--locked",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 3.668,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "6065305ae6d127a76c412369738398a305ac342a9c77540c0805f220c42af735",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-default-clippy.log"
+      }
+    },
+    "198-default-tests": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-default-tests-result.json",
+        "bytes": 512,
+        "sha256": "2b68a8841aa2533e168629213b8b88c9a0fc8dbd945cf80ea1891ffb281d3282"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 16.021,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "3a7cd9c65d79df73ec2260cbaca2df41953c17c3bc4c071d47d974c19636d9b1",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-default-tests.log"
+      }
+    },
+    "198-feature-clippy": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-clippy-result.json",
+        "bytes": 578,
+        "sha256": "7e0240c314afa5897925b9f1c321a3fa6c09e12b1da21c048ce1ad1e5a30a355"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "clippy",
+          "--offline",
+          "--locked",
+          "--all-targets",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 3.371,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "ccc84ac9059ce29c7d385088a3967bdc819eaa43011a60943398a395e45f850b",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-feature-clippy.log"
+      }
+    },
+    "198-feature-tests-launch-diagnostic": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-launch-diagnostic-result.json",
+        "bytes": 742,
+        "sha256": "f4d73ec8c1da6cd3cd9519d049fc8fc02f282c1a5300295c6db04d27f0a0c80e"
+      },
+      "result": {
+        "command": [
+          "strace",
+          "-f",
+          "-qq",
+          "-s",
+          "256",
+          "-e",
+          "trace=process",
+          "-o",
+          "/tmp/eris-array-buffer-candidate-2/198-feature-date-launch.trace",
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 101,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 7.379,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "5573cdac367376019dcce4e3d259ca950938382ab5efb54feedeedeb2dfda951",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-launch-diagnostic.log"
+      }
+    },
+    "198-feature-tests": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-result.json",
+        "bytes": 556,
+        "sha256": "d63f6129cf7f4c1e555d05c3b48a0046b79af7b5fc3793e60e6fe62f6c550bd4"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 101,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 14.142,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "062dea908c41ff4e0d04cc0b6fdf8203a467a8267f09b5393aa1bc78769c0b07",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-feature-tests.log"
+      }
+    },
+    "198-feature-tests-untraced-followup": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup-result.json",
+        "bytes": 571,
+        "sha256": "cc5c857cbe03fe0a04fc8bce0175f88a5d187a185465f84891c5218266574f9f"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "test",
+          "--offline",
+          "--locked",
+          "--features",
+          "vulkan-presenter",
+          "--",
+          "--include-ignored"
+        ],
+        "toolchain": "198",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 8.826,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "ae0b22804fcfeb6245fc3d6fb7df9ffa441a6e93b6981a7934e787249237d9a7",
+        "log": "/tmp/eris-array-buffer-candidate-2/198-feature-tests-untraced-followup.log"
+      }
+    },
+    "default-build": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/default-build-result.json",
+        "bytes": 495,
+        "sha256": "7eff2aa4127fddfc849bde40b5889c9a78fee603c276d4909d48d158e3dae7f2"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "build",
+          "--offline",
+          "--locked",
+          "--release"
+        ],
+        "toolchain": "release",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 40.944,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "f59b8c8f4e697662af9fe4a16d2ec147192299506f7a8c44d1ea4794f5f924b3",
+        "log": "/tmp/eris-array-buffer-candidate-2/default-build.log"
+      }
+    },
+    "default-pixels": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/default-pixels-result.json",
+        "bytes": 633,
+        "sha256": "af33e3a72b1d7ca5a057ebd74849b9b4662cc298e10785fce88dde6696741e9c"
+      },
+      "result": {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "tools/reftest.py",
+          "--binary",
+          "/tmp/eris-array-buffer-candidate-2/eris-browser",
+          "--output-dir",
+          "/tmp/eris-array-buffer-candidate-2/default-pixels"
+        ],
+        "toolchain": "default",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 6.067,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "0e3c95c7a11abeba5079e8fdac210a153234b00b407ec4b709a70bfb381b5907",
+        "log": "/tmp/eris-array-buffer-candidate-2/default-pixels.log"
+      }
+    },
+    "feature-build": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/feature-build-result.json",
+        "bytes": 537,
+        "sha256": "c0fe9342ff76c8952effa7a5cc82c9115919c7653f1b5a5fc762a1eab13ca8c9"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "build",
+          "--offline",
+          "--locked",
+          "--release",
+          "--features",
+          "vulkan-presenter"
+        ],
+        "toolchain": "release",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 42.401,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "8f1fc365e5a2c21af19657c5da22fc132913186beda01d00ea240c7f7334ef50",
+        "log": "/tmp/eris-array-buffer-candidate-2/feature-build.log"
+      }
+    },
+    "feature-pixels": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/feature-pixels-result.json",
+        "bytes": 640,
+        "sha256": "dea9eda48b7a6372fd5b053a4d210f35000f3963c22aa3c32e82c0d9a6011531"
+      },
+      "result": {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "tools/reftest.py",
+          "--binary",
+          "/tmp/eris-array-buffer-candidate-2/eris-browser-vulkan",
+          "--output-dir",
+          "/tmp/eris-array-buffer-candidate-2/feature-pixels"
+        ],
+        "toolchain": "default",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 5.968,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "41a22494489b092424110d4c0d92111711c5365783723b9adbef9a7a68de7194",
+        "log": "/tmp/eris-array-buffer-candidate-2/feature-pixels.log"
+      }
+    },
+    "format": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/format-result.json",
+        "bytes": 473,
+        "sha256": "6d6f7d70d070f45012c8db7b1d760d7ff239519b8750512cd666cda0fba42d4b"
+      },
+      "result": {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--",
+          "--check"
+        ],
+        "toolchain": "default",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 0.717,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "log": "/tmp/eris-array-buffer-candidate-2/format.log"
+      }
+    },
+    "stress": {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate-2/stress-result.json",
+        "bytes": 495,
+        "sha256": "79e4eb1614610ebe5cb69e54f3e10fc5edbaa158c1ce520bcb5491a130d8dc16"
+      },
+      "result": {
+        "command": [
+          "/tmp/eris-array-buffer-candidate-2/eris-stress",
+          "5000",
+          "0xe2152026"
+        ],
+        "toolchain": "default",
+        "exit_code": 0,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 3.617,
+        "deadline_seconds": 180,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "55055a1e04a1158a3fe88526ae17180eff994f67b977b4b26fcdbdffca399e9c",
+        "log": "/tmp/eris-array-buffer-candidate-2/stress.log"
+      }
+    }
+  },
+  "pixels": {
+    "default": {
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/default-pixels/report.json",
+        "bytes": 21321,
+        "sha256": "0e3c95c7a11abeba5079e8fdac210a153234b00b407ec4b709a70bfb381b5907"
+      },
+      "passed": 57,
+      "failed": 0
+    },
+    "feature": {
+      "report": {
+        "path": "/tmp/eris-array-buffer-candidate-2/feature-pixels/report.json",
+        "bytes": 21327,
+        "sha256": "41a22494489b092424110d4c0d92111711c5365783723b9adbef9a7a68de7194"
+      },
+      "passed": 57,
+      "failed": 0
+    }
+  },
+  "historical_profiles": {
+    "comparison": {
+      "path": "tests/conformance/array-buffer-historical-comparison.json",
+      "bytes": 45089,
+      "sha256": "8fd6333af775273248be45318ece70559f92b6bd757225e810bd153ebfa9b318"
+    },
+    "counts": {
+      "profiles": 41,
+      "cases": 18121,
+      "controls": 4092,
+      "control_changes": 0,
+      "improvements": 4,
+      "regressions": 0,
+      "other_changes": 0,
+      "existing_baseline_gates_passed": 33
+    }
+  },
+  "python": {
+    "binding": {
+      "path": "/tmp/eris-array-buffer-python-verification.json",
+      "bytes": 1654,
+      "sha256": "38c5eaae3b855f2ae952cba72432bcee483f330b56bddbf79c4a349242f33708"
+    },
+    "result": {
+      "all_273_frozen_tool_and_new_corpus_files_verified_before_and_after": true,
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "cwd": "/home/eriskii/Documents/Programming/Projects/ErisBrowser",
+      "elapsed_reported_seconds": 51.276,
+      "engine_executions": 0,
+      "errors": 0,
+      "failures": 0,
+      "focused_tests": {
+        "log_path": "/tmp/eris-array-buffer-tooling-stage/focused-python.log",
+        "log_sha256": "87af80ad4c96b3a1c4624a7cb424b22f603fb1c4e575b978247d3e28d215944e",
+        "returncode": 0,
+        "tests": 10
+      },
+      "formal_freeze_sha256": "dca40ca0966bdb42473ef8f4cb83dd11b14c1a31d1e598481167a03587653b72",
+      "historical_contracts": {
+        "canonical_sha256": "7e56c9b8281e5e2944dc0d70d96a8ddeaf6f7769074561e6da53abc65191cceb",
+        "cases": 18121,
+        "controls": 4092,
+        "exact": true,
+        "profiles": 41
+      },
+      "log_path": "/tmp/eris-array-buffer-tooling-stage/full-python.log",
+      "log_sha256": "505f72bfd05a96689c653a737ebe360f97f455caad3ed65fe7625ea676c28f4f",
+      "preparation_failure": {
+        "correction": "needle follows renamed text; no generated oracle/control/policy changes",
+        "original_log_sha256": "103355fa21ecda0372a33b70230ca0ff822e87edd79e8da1f3e513ebdf5887e1",
+        "original_script_sha256": "daffdde3161911277a85f5b2c7a9aa6bc460c867c29c2ad4e023537ba9d7efce",
+        "phase": "source generation before first focused test",
+        "reason": "search needle referenced old Array.prototype.concat text after textual renaming to ArrayBuffer"
+      },
+      "returncode": 0,
+      "skipped": 0,
+      "tests": 274,
+      "utc": "2026-09-29T13:29:36.867147+00:00"
+    }
+  },
+  "html": {
+    "reuse": {
+      "path": "tests/conformance/array-buffer-html-reuse.json",
+      "bytes": 13710,
+      "sha256": "cb9c238ee096b202e00f9c8ff4195e030d75685e101882e8270c3d6adbbe54d4"
+    },
+    "counts": {
+      "matched": 3868,
+      "mismatched": 2,
+      "unsupported": 6
+    },
+    "fresh_executions": 0
+  },
+  "stress": {
+    "iterations": 5000,
+    "cases": 15000,
+    "caught_panics": 0,
+    "invariant_failures": 0,
+    "bounded_paint_stops": 17,
+    "seed": "0xe2152026",
+    "log": {
+      "path": "/tmp/eris-array-buffer-candidate-2/stress.log",
+      "bytes": 766,
+      "sha256": "55055a1e04a1158a3fe88526ae17180eff994f67b977b4b26fcdbdffca399e9c"
+    }
+  },
+  "reviews": {
+    "path": "tests/conformance/array-buffer-reviews.json",
+    "bytes": 42814,
+    "sha256": "0e1f21fa3dbba1750d2828c77359a6559b4df710844d02f2b03a88471cc7501e"
+  },
+  "limits": {
+    "path": "tests/conformance/array-buffer-limits.json",
+    "bytes": 1031,
+    "sha256": "d2448e54ced391a5fd1caf320d4cb39050e1253c9e37971b3ee1ed6b33829fc2"
+  },
+  "retained_failures": {
+    "candidate1_clippy": {
+      "result": {
+        "command": [
+          "cargo",
+          "clippy",
+          "--offline",
+          "--locked",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "toolchain": "188",
+        "exit_code": 101,
+        "failure": null,
+        "cleanup_failure": null,
+        "leader_reaped": true,
+        "inputs_unchanged": true,
+        "elapsed_seconds": 5.876,
+        "deadline_seconds": 900,
+        "owned_group_cleanup_before_first_reap": true,
+        "log_sha256": "4e4dfde876cea3b375864d18fc7ec9745984f7000835e8161684cd57fac68139",
+        "log": "/tmp/eris-array-buffer-candidate-1/188-default-clippy.log"
+      },
+      "correction": "Equivalent private-test range expression; production code unchanged"
+    },
+    "candidate2_date_host": {
+      "path": "tests/conformance/array-buffer-date-host-followup.json",
+      "bytes": 8940,
+      "sha256": "ea6515af04f975be8175376c1767d34aae27a7bf80b79382cffae1cf8737dc0e"
+    }
+  },
+  "remote_ci_status": "pending publication and exact-commit CI",
+  "full_goal_complete": false,
+  "performance_comparison_performed": false,
+  "gpu_execution_in_this_checkpoint": false,
+  "security_proof_claimed": false,
+  "historical_local": {
+    "suites": 7,
+    "modes": 1378,
+    "controls": 316,
+    "complete_observation_changes": 0,
+    "comparison": {
+      "path": "tests/conformance/array-buffer-historical-local-comparison.json",
+      "bytes": 2508,
+      "sha256": "e058f2026d4be170d511c3509e6e88f49b6e37e1fc7d29497ba65114de659c59"
+    },
+    "execution": {
+      "path": "tests/conformance/array-buffer-historical-local-execution.json",
+      "bytes": 10095,
+      "sha256": "48e8cec6ca14e7e20a7ea10b309970c888285427168a1629b3685b8334e58ed1"
+    }
+  },
+  "baseline_validation": {
+    "path": "tests/conformance/test262-array-buffer-baseline-validation.json",
+    "bytes": 31514,
+    "sha256": "7ba2a510d0ea7bbc43292b3881e433c42c4c536a2d359e74f976b4843c727c69"
+  },
+  "known_state_gates": 34
+}

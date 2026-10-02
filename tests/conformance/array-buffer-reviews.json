@@ -1,0 +1,694 @@
+{
+  "format": 1,
+  "reviews": [
+    {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-root-oracle-review.json",
+        "bytes": 1427,
+        "sha256": "4414b6e7f799446bf271a9704e15c1b7ccc44bf43abadf81a8105261e8182c59"
+      },
+      "review": {
+        "result": "no concrete static review findings",
+        "reviewer": "root",
+        "engine_executed": false,
+        "reviewed": [
+          "All 52 local case bodies and accepted 16 pair intentions",
+          "All 32 formal positive/wrong pairs and successful feature guard",
+          "Private backing oracle current corrected one-argument slice representation",
+          "Browser and confined-worker integration fixture"
+        ],
+        "limits": [
+          "No typed-array/DataView/SharedArrayBuffer/Proxy/foreign realm implementation is inferred",
+          "Terminal engine policy resources are not semantic passes",
+          "ArrayBuffer-only APIs do not expose bytes; private Rust tests must exercise byte contents"
+        ],
+        "files": {
+          "/tmp/eris-array-buffer-local-draft/draft.json": "ac737a25917a477e9459dc4a03a65f0f80f6bb3adae01682a0aa73771a068e9c",
+          "/tmp/eris-array-buffer-local-draft/array-buffer.js": "f0fa6fded781ed80e20ee382367a34ea49f75258d75e66e29af24010ab50c2b3",
+          "/tmp/eris-array-buffer-local-draft/preflights.json": "fcb8fe944f2695a0398c00ca437ea411524aaaf04e14d6da9e6fa039ce6196a9",
+          "/tmp/eris-array-buffer-tooling-stage/array-buffer-controls.py.txt": "36353c415a038cfa68614ec288da731a82f468c9e14ab9ebf370568dfccca02b",
+          "/tmp/eris-array-buffer-backing-oracle.json": "fbdf470c1973384361525b0adb94c8dca1d9c442e84d9f64c73d37aeac71d230",
+          "tests/fixtures/array-buffer.html": "37505a1a232c6988e1f54008fcc0ff419bf14296a38d5f808fb99fc984cc2c7b"
+        }
+      }
+    },
+    {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-root-tooling-review.json",
+        "bytes": 2093,
+        "sha256": "513a2006b18461e7fbf4fdd4ddac9f15af1a4e2bdd09e66dd2d0c048ea424a90"
+      },
+      "review": {
+        "result": "no concrete static review findings",
+        "engine_execution": false,
+        "reviewed": [
+          "complete importer/profile metadata and authentication registrations",
+          "32 guarded positive/wrong pairs and same-mode mismatch verification hookup",
+          "new corpus corruption, original helper, control identity and historical contract tests",
+          "ten historical tests exclude only newly introduced profile; old counts and digests unchanged"
+        ],
+        "files": {
+          "tools/import_test262.py": "8031ecd640e08b6ddad74d06684e4f435529b149d8a44a7e17da4615b8b29a4a",
+          "tools/test262_conformance.py": "8bb09032cdf03406173f01e8a0ce0b8463e423800babacc65506c3a456b4b4f0",
+          "tools/test_test262_array_concat.py": "33779c9dabc04e630b9bc8f66c0c81f65f58d709159e3bba1438341f7d3486e5",
+          "tools/test_test262_array_find.py": "32884f10fe9c98a65967c54a78e4fc46b00152577320e8c25817afd48060dd4f",
+          "tools/test_test262_array_from.py": "cd092759896643c29d67cac2d17526518e7412facf80e1f5b3c6979d12e825e0",
+          "tools/test_test262_array_predicates.py": "b45517c69b1d8b6b62f29d3d3430462023aefc94e792137dc5d14ec1d9937104",
+          "tools/test_test262_array_splice.py": "66e26030d21d3f2163f88c50ed16f473847a218d903a8ef04adadd85e46065d5",
+          "tools/test_test262_conformance.py": "a0cca2701e5e435c8029d9e0e3956c69e72bbc57ab727b52c9b4d9abc88005c4",
+          "tools/test_test262_construction.py": "f158a76f996342defae4d9de1bef3a70fb460a4e5f9169af3dbcdeed5739ac1d",
+          "tools/test_test262_date.py": "7c8773731e998776949309a32558e4ba32c8f5c77c751a72139ccd31f3c6b80f",
+          "tools/test_test262_iteration.py": "25d9027c8eb60bc491323c00551786118c3580639a674d5a34a20140b3f3b837",
+          "tools/test_test262_object_integrity.py": "fbd246ad9c138975b99fece1e80765f92f95f50e41cc32ceaf0441f02a55a093",
+          "tools/test_test262_array_buffer.py": "4cbb297070c22bba1b330045a70e029baec8f1193b5c30074a507e1fcb30e382"
+        },
+        "historical_replay_input_manifest_sha256": "e13437a594a47a343abe12821a6102eee7876740bd7ca354200659c9c03fe0e1",
+        "historical_replay_driver_sha256": "2ad59995418cd3be14185d9da6f47b19bb8ef45ec9a298e975773b6cb7f96812"
+      }
+    },
+    {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-root-runtime-and-private-review.json",
+        "bytes": 7697,
+        "sha256": "f323f6f02572d7dbfefb2dbfca8943a667692baeee1a31113c60a508780634be"
+      },
+      "review": {
+        "status": "Read-only production and private-test review completed; no concrete defect identified",
+        "reviewer": "root",
+        "candidate": 1,
+        "production_input_sha256": "411c8e63d06ce83036274527237b0b57e25bfde2ef3afbdfa5269598a7650ff8",
+        "production_review": [
+          "Constructor call/construct dispatch, conversion/options/prototype/object/block/late-maximum ordering",
+          "Stored intrinsic constructor/prototype identities and ordinary descriptor installation",
+          "Sorted append-only private records with numeric bounded lookup; no Value or ScriptObject layout change",
+          "Fallible full-capacity backing and record reservations; precharged move/zero/copy work; no refunds",
+          "Resizable brand before coercion; current attachment/length rechecked after author effects",
+          "Species receives captured requested length; destination validation precedes final source attachment check",
+          "Both disjoint slice copy directions; zero-count source shrink skips invalid ranges; destination suffix preserved",
+          "Transfer uses saved intrinsic and independently allocated destination; no fallible operation after source detach",
+          "Absolute host feasibility RangeError distinguished from unchanged cumulative resource termination",
+          "No typed-array/DataView/shared-buffer/foreign-realm host API or user-visible byte property introduced"
+        ],
+        "private_review": {
+          "authored_groups": [
+            "array_buffer_metadata_brands_aliases_and_isview",
+            "array_buffer_constructor_conversion_options_and_prototype_order",
+            "array_buffer_host_maximum_policy_is_late_and_does_not_allocate_maximum",
+            "array_buffer_ordinary_properties_and_integrity_do_not_change_backing_slots",
+            "array_buffer_resize_reentry_and_detached_conversion_order",
+            "array_buffer_slice_species_order_result_checks_and_saved_intrinsic",
+            "array_buffer_slice_detachment_waits_for_species_and_keeps_prior_effects",
+            "array_buffer_transfer_conversion_reentry_limits_and_intrinsic_identity",
+            "array_buffer_bytes_zero_initialization_and_shrink_regrow",
+            "array_buffer_bytes_slice_shrink_and_grow_preserve_existing_target_suffix",
+            "array_buffer_bytes_slice_zero_copy_and_reentrant_side_table_growth",
+            "array_buffer_bytes_transfer_copies_current_prefix_and_zeroes_extension",
+            "array_buffer_zero_fill_and_record_growth_refuse_before_publication",
+            "array_buffer_resize_work_and_full_growth_heap_are_transactional",
+            "array_buffer_transfer_copy_cut_retains_post_callback_source_and_zero_destination",
+            "array_buffer_transfer_heap_cut_never_detaches_source",
+            "array_buffer_slice_copy_cut_does_not_modify_preexposed_species_output",
+            "array_buffer_record_search_growth_and_cheap_getters_do_not_scan_bytes",
+            "array_buffer_ignored_extra_arguments_and_detach_never_refund_storage",
+            "array_buffer_repeated_creation_shares_cumulative_heap_without_refunds",
+            "array_buffer_terminal_recursion_and_allocation_skip_author_cleanup",
+            "array_buffer_reached_host_and_cycle_boundaries_preserve_order",
+            "array_buffer_absolute_capacity_rejects_before_fictional_byte_work_or_storage",
+            "array_buffer_impossible_fixed_transfer_preserves_callback_effects_and_source"
+          ],
+          "executed": 0,
+          "independent_byte_vectors_matched_statically": true,
+          "checks": [
+            "initial zero bytes and zero-capacity empty transfer",
+            "shrink/regrow clears discarded bytes and replacement extension",
+            "preexisting species target [2,9,9,9,9] after source shrink and [2,3,4,9,9] after source growth",
+            "species callback asserts actual record-capacity growth; zero-copy target sentinels remain",
+            "transfer copies post-callback source prefix and zero extension; fixed transfer can exceed old maximum",
+            "measured one-short record work/heap publication cuts preserve empty record table",
+            "in-capacity resize work and full replacement heap cuts preserve source bytes",
+            "measured transfer copy refusal retains callback effects, old attached bytes and zeroed unreachable destination",
+            "measured transfer allocation refusal retains callback effects and attachment",
+            "measured final slice copy refusal preserves preexposed target sentinel bytes",
+            "4096-byte metadata getter under nine ticks; no allocation or payload scan",
+            "cumulative creation, ignored extras, and detach/shrink do not refund charges",
+            "terminal recursion/allocation bypass catch/finally and restore internal counters",
+            "absolute impossible-block refusal avoids fictional byte charges; prototype error order and transfer source preserved"
+          ]
+        },
+        "integration_review": [
+          "six page samples check load and click transitions",
+          "same six effects reused by real confined-worker wrapper, generation193",
+          "no test execution or pixel claim made"
+        ],
+        "limitations": [
+          "Rust compilation, borrow checking, private execution, conformance replay and regression matrix remain pending",
+          "Private byte seeding is a test-only seam; author byte-view APIs remain absent",
+          "Generic object arenas, callbacks, property and JSON accounting retain existing limitations; no total process-memory or production-security proof",
+          "No full web compatibility or Chromium performance claim"
+        ],
+        "independent_agent_status": "Prior oracle and interim private reviews completed; final agent runtime/private binding attempts failed due usage limit. This receipt is the root review, not a completed final agent audit.",
+        "inputs": [
+          {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_buffer.rs",
+            "sha256": "66ca08fbf235a3593efaa4c1e31cdfcf559a3ad4de6688326a9a4ee75ab2f0dd"
+          },
+          {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_buffer/tests.rs",
+            "sha256": "fe3f4c57159095bc3286224fa214d2b58384d9f2545a37b406cf1bc83fe3ff00"
+          },
+          {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script.rs",
+            "sha256": "dd09f360f3b7633904de5b6892969b71c2e52fd52f0f30476f4a296829f3eb99"
+          },
+          {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/construction.rs",
+            "sha256": "ff2061cb3c4d99d1bb31a649cb242676ae80952c2efcf29f9875dabdde8a9885"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-source-ready.json",
+            "sha256": "28b26930c327c9d90d9648f47e8003b25d9d7c2d44ee32a7b607b7f02aa4e379"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-backing-oracle.json",
+            "sha256": "fbdf470c1973384361525b0adb94c8dca1d9c442e84d9f64c73d37aeac71d230"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-capacity-oracle.json",
+            "sha256": "7fe8e6d4036e8250d47a45cba91fbdcb8972603fca81726130eaad2d43607eca"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-plan-capacity-addendum.json",
+            "sha256": "f7d2311cd3615d8e93816762679e688ac1d15a6cbdf5e135949f75382b564690"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-candidate1-static-archive-review.json",
+            "sha256": "c17a578877e6829eec0af8b5c81081ef3b8f36991dcfde09a9990209eef12fb7"
+          },
+          {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/fixtures/array-buffer.html",
+            "sha256": "37505a1a232c6988e1f54008fcc0ff419bf14296a38d5f808fb99fc984cc2c7b"
+          },
+          {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/pipeline.rs",
+            "sha256": "3c17898c2658e71c245e7fbbe7f707ad89f996ee482bd3d594fbbb6abe35986f"
+          },
+          {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/worker.rs",
+            "sha256": "4b9b1d7c4c3c70f0e6009462ee9dae62a0e1c6ed1b22f92fbed03b2be2995895"
+          }
+        ]
+      }
+    },
+    {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-candidate2-static-archive-review.json",
+        "bytes": 4648,
+        "sha256": "804b4f4f7e9cbc3ce009922ac86b802ca751c75d4763645b640e59d4ddbe9532"
+      },
+      "review": {
+        "phase": "read-only static archive review; this reviewer did not invoke a compiler or engine",
+        "findings": [],
+        "candidate_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+        "parent": "77866e93f4d8486807aa843667619ea4ccccccfa",
+        "production_files": 106,
+        "verification_files": 141,
+        "archive": {
+          "members": 235,
+          "regular_files": 201,
+          "unique_literal_dependencies": 91,
+          "literal_occurrences": 183,
+          "all_input_bytes_exact": true,
+          "digest_recomputed_from_archived_bytes": true,
+          "all_rust_tests_and_literal_dependencies_present": true
+        },
+        "source_scope": {
+          "changed_existing": [
+            "src/script.rs",
+            "src/script/construction.rs"
+          ],
+          "new": [
+            "src/script/array_buffer.rs",
+            "src/script/array_buffer/tests.rs"
+          ],
+          "all_other_existing_sources_unchanged": true
+        },
+        "limits": {
+          "existing_bindings_checked": 107,
+          "changed_existing": {},
+          "new_normative_safe_integer": {
+            "src/script/array_buffer.rs:MAX_INDEX": "9_007_199_254_740_991"
+          },
+          "absolute_backing_capacity_reuses": "src/script.rs:MAX_HEAP",
+          "resource_quotas_increased": false
+        },
+        "private_tests": {
+          "groups": [
+            "array_buffer_metadata_brands_aliases_and_isview",
+            "array_buffer_constructor_conversion_options_and_prototype_order",
+            "array_buffer_host_maximum_policy_is_late_and_does_not_allocate_maximum",
+            "array_buffer_ordinary_properties_and_integrity_do_not_change_backing_slots",
+            "array_buffer_resize_reentry_and_detached_conversion_order",
+            "array_buffer_slice_species_order_result_checks_and_saved_intrinsic",
+            "array_buffer_slice_detachment_waits_for_species_and_keeps_prior_effects",
+            "array_buffer_transfer_conversion_reentry_limits_and_intrinsic_identity",
+            "array_buffer_bytes_zero_initialization_and_shrink_regrow",
+            "array_buffer_bytes_slice_shrink_and_grow_preserve_existing_target_suffix",
+            "array_buffer_bytes_slice_zero_copy_and_reentrant_side_table_growth",
+            "array_buffer_bytes_transfer_copies_current_prefix_and_zeroes_extension",
+            "array_buffer_zero_fill_and_record_growth_refuse_before_publication",
+            "array_buffer_resize_work_and_full_growth_heap_are_transactional",
+            "array_buffer_transfer_copy_cut_retains_post_callback_source_and_zero_destination",
+            "array_buffer_transfer_heap_cut_never_detaches_source",
+            "array_buffer_slice_copy_cut_does_not_modify_preexposed_species_output",
+            "array_buffer_record_search_growth_and_cheap_getters_do_not_scan_bytes",
+            "array_buffer_ignored_extra_arguments_and_detach_never_refund_storage",
+            "array_buffer_repeated_creation_shares_cumulative_heap_without_refunds",
+            "array_buffer_terminal_recursion_and_allocation_skip_author_cleanup",
+            "array_buffer_reached_host_and_cycle_boundaries_preserve_order",
+            "array_buffer_absolute_capacity_rejects_before_fictional_byte_work_or_storage",
+            "array_buffer_impossible_fixed_transfer_preserves_callback_effects_and_source"
+          ],
+          "execution_status": "execution evidence is separate; see candidate compiler/test receipts"
+        },
+        "inputs": [
+          {
+            "path": "/tmp/eris-array-buffer-candidate-2/inputs.json",
+            "bytes": 14591,
+            "sha256": "ad5f1240cacad5209a89a1a629bbddc309451ddfec15a250c70107485a92e5aa"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-candidate-2/verification-inputs.json",
+            "bytes": 20482,
+            "sha256": "d4785667775894614c18c0b3433959912b07d5f33e04adb3faeba54f2abb6fcf"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-candidate-2/literal-includes.json",
+            "bytes": 13655,
+            "sha256": "d1331715512a2db6121b3dfe96c57ba84b852ea11a490c757fd98ea52ccb2cb5"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-candidate-2/provenance.json",
+            "bytes": 471,
+            "sha256": "462fc57184ba0301c3111809288fcb86c05e48118a5b13a903f28da4266b065f"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-candidate-2/source.tar",
+            "bytes": 9584640,
+            "sha256": "c143c2131a07a7b56051158296189aa49534525b5c9beb43c1130a9a176ee051"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-source-ready-2.json",
+            "bytes": 4716,
+            "sha256": "b4742eed675d35db1612882d38690c490a74209754f0daddcdbd95a835d353e5"
+          },
+          {
+            "path": "/tmp/eris-array-buffer-limits-before.json",
+            "bytes": 11829,
+            "sha256": "c71d9b4d7becd0e34635473401c11aaab0be096dbbad2425de5f3ea4c4104638"
+          }
+        ],
+        "verifier": {
+          "path": "/tmp/eris-array-buffer-static-archive-review-2.py",
+          "bytes": 5937,
+          "sha256": "a9eff18bc3d886c863381c96274bf7d547e86520bc074fc55367436a078f7b5f"
+        }
+      }
+    },
+    {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-independent-runtime-review.json",
+        "bytes": 6652,
+        "sha256": "ffbdd453cd6fb76d12936b817e607cee2fa866ad2c8dabcdf0985e1fa11cef25"
+      },
+      "review": {
+        "candidate1_input_sha256": "411c8e63d06ce83036274527237b0b57e25bfde2ef3afbdfa5269598a7650ff8",
+        "compiler_runs": 0,
+        "engine_runs": 0,
+        "findings": [],
+        "format": 1,
+        "hooks_diff_sha256": "74e4adaed10a9d6e8f3a18707d4deaad94e68a187560d2218b8147ce997a961f",
+        "input_evidence": {
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_splice.rs": "50f9d4645755f317218c5fb932a273e9d2792d63f2a301d77f95afd25b0f9802",
+          "/tmp/eris-array-buffer-admitted-demand-review.json": "44058c841e08cd8a77700b5e212126155140474c43cca6a8612f974b0f76ce19",
+          "/tmp/eris-array-buffer-backing-oracle.json": "fbdf470c1973384361525b0adb94c8dca1d9c442e84d9f64c73d37aeac71d230",
+          "/tmp/eris-array-buffer-capacity-oracle.json": "7fe8e6d4036e8250d47a45cba91fbdcb8972603fca81726130eaad2d43607eca",
+          "/tmp/eris-array-buffer-plan-capacity-addendum.json": "f7d2311cd3615d8e93816762679e688ac1d15a6cbdf5e135949f75382b564690",
+          "/tmp/eris-array-buffer-plan.md": "1bece7448f61d0d4fc4b49f48a43f4c4cd59e877b780a5e3851e8f359948abb4"
+        },
+        "limits": [
+          "Read-only static source review; not a dynamic validation receipt or exhaustive correctness/security proof.",
+          "Generic object allocation/property-map/ordinary constructor accounting outside the narrowly reused charged paths remains the previously disclosed shared scope.",
+          "Root reported a candidate1 Clippy-only manual_range_contains style correction pending in tests.rs. Production files are unchanged; the reviewed private bytes are explicitly bound to candidate1 archive."
+        ],
+        "production_files": [
+          {
+            "bytes": 20825,
+            "path": "src/script/array_buffer.rs",
+            "sha256": "66ca08fbf235a3593efaa4c1e31cdfcf559a3ad4de6688326a9a4ee75ab2f0dd"
+          },
+          {
+            "bytes": 876726,
+            "path": "src/script.rs",
+            "sha256": "dd09f360f3b7633904de5b6892969b71c2e52fd52f0f30476f4a296829f3eb99"
+          },
+          {
+            "bytes": 26109,
+            "path": "src/script/construction.rs",
+            "sha256": "ff2061cb3c4d99d1bb31a649cb242676ae80952c2efcf29f9875dabdde8a9885"
+          }
+        ],
+        "reviewed_invariants": {
+          "backing": [
+            "Positive initial blocks prepay actual zero work and requested storage before fallible reserve and fill; zero length performs no backing fill.",
+            "Resize rereads attachment/current length after conversion, keeps maximum identity, truncates without exposing old bytes, and zeroes each regrown byte.",
+            "Replacement resize prepays retained-prefix read/write, extension zeroing and full replacement storage before mutation; no intermediate clone.",
+            "Cumulative allocation is never refunded on shrink, replacement or detach. Feasible remaining-work/heap shortages stay terminal."
+          ],
+          "constructor": [
+            "Plain call rejects before coercion; construct validates ToIndex length, gets/converts optional maximum, checks initial>maximum before newTarget prototype.",
+            "Charged named lookup invokes prototype getter before ordinary object/backing creation. Fallback uses saved same-realm prototype.",
+            "Absolute initial feasibility is checked at block creation after object creation, before nonexistent zero work. Maximum feasibility stays after the initial block."
+          ],
+          "hooks_and_scope": [
+            "Registration adds separate private state and constructor/method dispatch; Value and ScriptObject layouts and shared splice helper bodies remain unchanged.",
+            "Getters use authentic numeric record lookup and constant metadata reads, without byte scans. Detached RAB retains resizable identity while exposed lengths are zero.",
+            "isView returns false for the current no-view runtime; no typed-array/DataView/shared/foreign brand or host detach API is introduced."
+          ],
+          "private_checks": [
+            "Independent literal byte cases cover zeroing, retained prefix, discarded-byte regrowth, both split directions and preexisting target sentinel suffix.",
+            "Reentrant species grows the record table; work/heap cutpoints preserve exposed source/target bytes and author effects; recursion/terminal errors inspect VM cleanup.",
+            "Capacity addendum checks no fictional work, object-before-block ordering, earlier getter throw identity, and transfer source preservation."
+          ],
+          "records": [
+            "Objects append at objects.len(); no removal/reordering production path found. Constructor callback occurs before new object id allocation; record publication has no callback.",
+            "Record vector is append-only; numeric binary search prepays each reached comparison. Stable indices survive reentrant appends.",
+            "Checked capacity multiplication and full new record-buffer storage plus relocation work precede fallible reserve; publication uses available capacity."
+          ],
+          "species_slice": [
+            "Capture initial length then convert start/end; resolve live constructor/species; construct with exactly one requested-length argument and precharged temporary vector.",
+            "Authentic destination brand/attachment, identity and size checks precede final source attachment recheck. Reentrant source resize limits copy to the surviving prefix.",
+            "Copy uses disjoint record borrows after all callbacks/precharges; zero surviving count skips out-of-range source slicing. Existing result suffix stays untouched."
+          ],
+          "transfer": [
+            "Explicit length conversion precedes detachment check; conversion side effects are retained. Undefined uses stored length, including zero for a detached record before its rejection.",
+            "Preserved intrinsic constructor has an immutable own prototype property: destination allocation cannot invoke author code after source-length snapshot.",
+            "Fresh destination allocation and full copy precharge precede byte copy and the final infallible detach; no fallible operation follows source bytes=None."
+          ]
+        },
+        "reviewed_private_source": {
+          "archive": "/tmp/eris-array-buffer-candidate-1/source.tar",
+          "archive_sha256": "e254124461878bef96a358703f8363a11c4eb4318b35d75f1328b0b4eb04a951",
+          "groups": 24,
+          "path_in_archive": "src/script/array_buffer/tests.rs",
+          "scope": "Static expectations and resource cutpoint review only; no tests executed by this reviewer.",
+          "sha256": "fe3f4c57159095bc3286224fa214d2b58384d9f2545a37b406cf1bc83fe3ff00"
+        },
+        "reviewer": "/root/html_css",
+        "source_edits": 0,
+        "source_ready": {
+          "path": "/tmp/eris-array-buffer-source-ready.json",
+          "sha256": "28b26930c327c9d90d9648f47e8003b25d9d7c2d44ee32a7b607b7f02aa4e379"
+        },
+        "status": "Bounded independent static review complete; no concrete production defect found.",
+        "test_runs": 0,
+        "utc": "2026-10-02T02:44:36.748589+00:00"
+      }
+    },
+    {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-private-tests-review.json",
+        "bytes": 12339,
+        "sha256": "b3d9710f160f738cc072dde555392923ad8bcab61545a7f503dee0761baecb04"
+      },
+      "review": {
+        "format": "eris-array-buffer-independent-private-review-v1",
+        "conclusion": "No concrete remaining test expectation, setup or cutpoint defect found in the bounded static review of the held 24 groups.",
+        "scope": "All private test source read, with supporting allocation/resize/slice/copy/transfer/record lookup paths inspected; this is not an independent whole-runtime or integration-hook audit.",
+        "execution_attribution": {
+          "reviewer_engine_runs": 0,
+          "reviewer_compiler_runs": 0,
+          "reviewer_test_runs": 0,
+          "repository_edits": 0,
+          "test_execution_owner": "Root owns the first compiler/private run and later validation. This record makes no execution-success claim."
+        },
+        "inputs": {
+          "source_ready": {
+            "path": "/tmp/eris-array-buffer-source-ready.json",
+            "bytes": 4143,
+            "sha256": "28b26930c327c9d90d9648f47e8003b25d9d7c2d44ee32a7b607b7f02aa4e379"
+          },
+          "module": {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_buffer.rs",
+            "bytes": 20825,
+            "sha256": "66ca08fbf235a3593efaa4c1e31cdfcf559a3ad4de6688326a9a4ee75ab2f0dd"
+          },
+          "tests": {
+            "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_buffer/tests.rs",
+            "bytes": 32633,
+            "sha256": "fe3f4c57159095bc3286224fa214d2b58384d9f2545a37b406cf1bc83fe3ff00"
+          },
+          "backing_oracle": {
+            "path": "/tmp/eris-array-buffer-backing-oracle.json",
+            "bytes": 4915,
+            "sha256": "fbdf470c1973384361525b0adb94c8dca1d9c442e84d9f64c73d37aeac71d230"
+          },
+          "capacity_oracle": {
+            "path": "/tmp/eris-array-buffer-capacity-oracle.json",
+            "bytes": 1992,
+            "sha256": "7fe8e6d4036e8250d47a45cba91fbdcb8972603fca81726130eaad2d43607eca"
+          },
+          "capacity_oracle_initial": {
+            "path": "/tmp/eris-array-buffer-capacity-oracle-initial.json",
+            "bytes": 1918,
+            "sha256": "ed793ea6d926d2f6b44654b5001fa13f0db91b81e64301fd3180e17597fb55d0"
+          },
+          "plan": {
+            "path": "/tmp/eris-array-buffer-plan.md",
+            "bytes": 21047,
+            "sha256": "1bece7448f61d0d4fc4b49f48a43f4c4cd59e877b780a5e3851e8f359948abb4"
+          },
+          "capacity_addendum": {
+            "path": "/tmp/eris-array-buffer-plan-capacity-addendum.json",
+            "bytes": 1384,
+            "sha256": "f7d2311cd3615d8e93816762679e688ac1d15a6cbdf5e135949f75382b564690"
+          }
+        },
+        "whole_source_ready_bindings_verified": [
+          {
+            "path": "src/script/array_buffer.rs",
+            "sha256": "66ca08fbf235a3593efaa4c1e31cdfcf559a3ad4de6688326a9a4ee75ab2f0dd",
+            "bytes": 20825
+          },
+          {
+            "path": "src/script/array_buffer/tests.rs",
+            "sha256": "fe3f4c57159095bc3286224fa214d2b58384d9f2545a37b406cf1bc83fe3ff00",
+            "bytes": 32633
+          },
+          {
+            "path": "src/script.rs",
+            "sha256": "dd09f360f3b7633904de5b6892969b71c2e52fd52f0f30476f4a296829f3eb99",
+            "bytes": 876726
+          },
+          {
+            "path": "src/script/construction.rs",
+            "sha256": "ff2061cb3c4d99d1bb31a649cb242676ae80952c2efcf29f9875dabdde8a9885",
+            "bytes": 26109
+          }
+        ],
+        "primary_sources": [
+          "https://tc39.es/ecma262/multipage/structured-data.html#sec-arraybuffer.prototype.resize",
+          "https://tc39.es/ecma262/multipage/structured-data.html#sec-arraybuffer.prototype.slice",
+          "https://tc39.es/ecma262/multipage/structured-data.html#sec-arraybuffercopyanddetach",
+          "https://tc39.es/ecma262/multipage/structured-data.html#sec-allocatearraybuffer",
+          "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-createbytedatablock"
+        ],
+        "groups": [
+          "array_buffer_metadata_brands_aliases_and_isview",
+          "array_buffer_constructor_conversion_options_and_prototype_order",
+          "array_buffer_host_maximum_policy_is_late_and_does_not_allocate_maximum",
+          "array_buffer_ordinary_properties_and_integrity_do_not_change_backing_slots",
+          "array_buffer_resize_reentry_and_detached_conversion_order",
+          "array_buffer_slice_species_order_result_checks_and_saved_intrinsic",
+          "array_buffer_slice_detachment_waits_for_species_and_keeps_prior_effects",
+          "array_buffer_transfer_conversion_reentry_limits_and_intrinsic_identity",
+          "array_buffer_bytes_zero_initialization_and_shrink_regrow",
+          "array_buffer_bytes_slice_shrink_and_grow_preserve_existing_target_suffix",
+          "array_buffer_bytes_slice_zero_copy_and_reentrant_side_table_growth",
+          "array_buffer_bytes_transfer_copies_current_prefix_and_zeroes_extension",
+          "array_buffer_zero_fill_and_record_growth_refuse_before_publication",
+          "array_buffer_resize_work_and_full_growth_heap_are_transactional",
+          "array_buffer_transfer_copy_cut_retains_post_callback_source_and_zero_destination",
+          "array_buffer_transfer_heap_cut_never_detaches_source",
+          "array_buffer_slice_copy_cut_does_not_modify_preexposed_species_output",
+          "array_buffer_record_search_growth_and_cheap_getters_do_not_scan_bytes",
+          "array_buffer_ignored_extra_arguments_and_detach_never_refund_storage",
+          "array_buffer_repeated_creation_shares_cumulative_heap_without_refunds",
+          "array_buffer_terminal_recursion_and_allocation_skip_author_cleanup",
+          "array_buffer_reached_host_and_cycle_boundaries_preserve_order",
+          "array_buffer_absolute_capacity_rejects_before_fictional_byte_work_or_storage",
+          "array_buffer_impossible_fixed_transfer_preserves_callback_effects_and_source"
+        ],
+        "backing_oracle_review": [
+          {
+            "id": "initial-zero-block",
+            "tests": [
+              "array_buffer_bytes_zero_initialization_and_shrink_regrow"
+            ],
+            "check": "Direct initial four-byte block equals [0,0,0,0]. Added attached-empty transfer preserves a genuine distinct target with zero length/capacity while detaching the old record."
+          },
+          {
+            "id": "resize-shrink-regrow",
+            "tests": [
+              "array_buffer_bytes_zero_initialization_and_shrink_regrow"
+            ],
+            "check": "Seeded [1,2,3,4], max 8, shrink 2 then grow 5 yields exactly [1,2,0,0,0]."
+          },
+          {
+            "id": "slice-shrink-existing-species-result",
+            "tests": [
+              "array_buffer_bytes_slice_shrink_and_grow_preserve_existing_target_suffix"
+            ],
+            "check": "Seeded six-byte source shrinks to 2 inside species; requested result length remains 3; preexisting [9,9,9,9,9] becomes [2,9,9,9,9] and source [1,2]."
+          },
+          {
+            "id": "slice-grow-does-not-expand-captured-range",
+            "tests": [
+              "array_buffer_bytes_slice_shrink_and_grow_preserve_existing_target_suffix"
+            ],
+            "check": "Actual omitted-end one-argument call: four-byte source grows to 6, requested result remains 3; target becomes [2,3,4,9,9], source [1,2,3,4,0,0]."
+          },
+          {
+            "id": "transfer-after-conversion-shrink",
+            "tests": [
+              "array_buffer_bytes_transfer_copies_current_prefix_and_zeroes_extension"
+            ],
+            "check": "Callback shrinks [1,2,3,4] to 2 before transfer length 6; exact target [1,2,0,0,0,0], max 8 retained, old detached with max slot retained."
+          },
+          {
+            "id": "transfer-to-fixed-above-old-maximum",
+            "tests": [
+              "array_buffer_bytes_transfer_copies_current_prefix_and_zeroes_extension"
+            ],
+            "check": "[1,2], max 4, fixed transfer length 7 gives [1,2,0,0,0,0,0], fixed target and detached source."
+          },
+          {
+            "id": "resize-resource-transaction",
+            "tests": [
+              "array_buffer_resize_work_and_full_growth_heap_are_transactional",
+              "array_buffer_ignored_extra_arguments_and_detach_never_refund_storage"
+            ],
+            "check": "Measured in-capacity growth cost minus one refuses before zeroing; actual capacity+1 growth with one byte short of full replacement storage preserves [1,2]. Shrink does not refund retained allocation."
+          },
+          {
+            "id": "transfer-resource-transaction",
+            "tests": [
+              "array_buffer_transfer_copy_cut_retains_post_callback_source_and_zero_destination",
+              "array_buffer_transfer_heap_cut_never_detaches_source"
+            ],
+            "check": "Equivalent setup measures successful work/storage; one-short replay confirms callback effect count 1 and attached post-callback [1,2]. Final work refusal leaves distinct staged destination entirely zero. Detach has no later fallible charge in the inspected implementation."
+          },
+          {
+            "id": "slice-revalidate-without-held-borrows",
+            "tests": [
+              "array_buffer_bytes_slice_zero_copy_and_reentrant_side_table_growth",
+              "array_buffer_slice_copy_cut_does_not_modify_preexposed_species_output",
+              "array_buffer_slice_species_order_result_checks_and_saved_intrinsic",
+              "array_buffer_slice_detachment_waits_for_species_and_keeps_prior_effects"
+            ],
+            "check": "Species shrinks below first and creates 17 genuine buffers; test asserts actual record capacity increased, and preexisting nonzero target remains unchanged. Final measured copy refusal preserves target and earlier species effect. Brand/distinctness/size and detachment ordering are separately asserted."
+          }
+        ],
+        "copy_index_order_review": "The nonempty sentinel slice creates target before source, exercising source index > target index. Nonempty transfer creates a later target and asserts exact bytes, exercising source index < target index in the same buffer_copy helper. Zero-copy growth case alone is not credited as exercising a copy branch.",
+        "resolved_review_suggestions": [
+          {
+            "issue": "Initial record-publication group tested one-short work but lacked a corresponding heap cut.",
+            "resolution": "Final group measures allocation cost on fresh equivalent state, then replays one-short heap and asserts no records and capacity zero."
+          },
+          {
+            "issue": "Initial cheap-getter group used only zero-byte payloads, weakening its no-payload-scan claim.",
+            "resolution": "Final group creates 64 empty buffers plus a 4096-byte buffer, obtains its length under a nine-tick allowance with no heap change, and retains direct logarithmic lookup and one-tick isView checks."
+          }
+        ],
+        "capacity_policy_review": {
+          "classification": "Pre-compiler implementation capacity policy, not a new normative ECMAScript RangeError threshold. Existing absolute MAX_HEAP and remaining cumulative budgets are unchanged.",
+          "checks": [
+            "Impossible initial block is refused with RangeError before backing work/storage; direct private counters stay unchanged. Ordered allocation separately creates an ordinary object before refusal and retains its reached charges.",
+            "Throwing newTarget prototype precedes the capacity refusal. Early length/max mismatch precedes the prototype getter.",
+            "Fixed transfer uses a RAB source with max 8; callback shrinks to [1,2], requests 8388609, and refusal preserves bytes, attachment and effect count.",
+            "Feasible small allocations under insufficient remaining budgets stay terminal resource errors; resource propagation and author catch/finally suppression have separate runtime-script controls."
+          ],
+          "literal_scope": "These are policy-branch checks, not a claim that all five capacity-oracle literal calls were replayed. The throwing-prototype test uses MAX_SAFE rather than 7881299347898368; early mismatch and feasible-budget controls use other small/large operands with the same required ordering. Original public oracle and original backing vectors remain unchanged."
+        },
+        "other_checks": [
+          "Installed intrinsic values are used; no fabricated native function identity substitutes for setup.",
+          "Original Test262 helpers are included; property verification restores subsequently used properties.",
+          "Private byte seeding is explicitly test-only, with no JavaScript-facing byte/view API.",
+          "Successful measured runs and one-short replays use fresh equivalent states before budget injection. Final copy checks assert prior callback effects, rather than accepting any early resource error.",
+          "Valid-id prototype cycle and lazy reached-host boundaries are distinct, and cleanup checks cover calls, stack/eval/JSON depth, frames and active joins."
+        ],
+        "limitations": [
+          "Static review does not establish compilation or execution success; root records those separately.",
+          "Actual host allocator OOM is not forced by these deterministic quota tests.",
+          "No view implementation or browser security/performance certification is inferred from private byte access."
+        ],
+        "open_findings": []
+      }
+    },
+    {
+      "binding": {
+        "path": "/tmp/eris-array-buffer-private-tests-review-final-delta.json",
+        "bytes": 2453,
+        "sha256": "0485ee2a26a00df5c81734cabec44e1213fe0ee2ddd3a425d6b2dba80b8bbcaa"
+      },
+      "review": {
+        "format": "eris-array-buffer-private-review-final-delta-v1",
+        "initial_review": {
+          "path": "/tmp/eris-array-buffer-private-tests-review.json",
+          "bytes": 12339,
+          "sha256": "b3d9710f160f738cc072dde555392923ad8bcab61545a7f503dee0761baecb04"
+        },
+        "initial_test_sha256": "fe3f4c57159095bc3286224fa214d2b58384d9f2545a37b406cf1bc83fe3ff00",
+        "final_tests": {
+          "path": "src/script/array_buffer/tests.rs",
+          "bytes": 32630,
+          "sha256": "cc6708b1d58f1702bf382af40568cc0cedb04bfbde9fce40325674c769d64c9b"
+        },
+        "changed_line": 582,
+        "exact_delta": {
+          "before": "assert!(capacity >= 65 && capacity < 132);",
+          "after": "assert!((65..132).contains(&capacity));",
+          "proof": "Replacing the sole new assertion text with the old text reproduces the complete candidate 1 test-file SHA-256 exactly."
+        },
+        "semantic_review": "For usize capacity, 65 <= capacity && capacity < 132 is exactly the half-open range predicate (65..132).contains(&capacity). No expected byte vector, callback source, test count, quota, helper or runtime operation changes.",
+        "groups": 24,
+        "unchanged_module": {
+          "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/array_buffer.rs",
+          "bytes": 20825,
+          "sha256": "66ca08fbf235a3593efaa4c1e31cdfcf559a3ad4de6688326a9a4ee75ab2f0dd"
+        },
+        "unchanged_backing_oracle": {
+          "path": "/tmp/eris-array-buffer-backing-oracle.json",
+          "bytes": 4915,
+          "sha256": "fbdf470c1973384361525b0adb94c8dca1d9c442e84d9f64c73d37aeac71d230"
+        },
+        "unchanged_capacity_oracle": {
+          "path": "/tmp/eris-array-buffer-capacity-oracle.json",
+          "bytes": 1992,
+          "sha256": "7fe8e6d4036e8250d47a45cba91fbdcb8972603fca81726130eaad2d43607eca"
+        },
+        "open_findings": [],
+        "execution_attribution": {
+          "reviewer_engine_compiler_test_runs": 0,
+          "root_reported_candidate_1": "All 24 private groups and Page/real-worker checks passed; later strict Clippy reported manual_range_contains in this assertion. Root preserves candidate 1/logs and owns candidate 2 validation.",
+          "claim_limit": "This delta verifies source equivalence; it does not claim a new candidate 2 test execution."
+        },
+        "candidate_2_source_ready": {
+          "path": "/tmp/eris-array-buffer-source-ready-2.json",
+          "bytes": 4716,
+          "sha256": "b4742eed675d35db1612882d38690c490a74209754f0daddcdbd95a835d353e5"
+        },
+        "candidate_2_production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf"
+      }
+    }
+  ]
+}

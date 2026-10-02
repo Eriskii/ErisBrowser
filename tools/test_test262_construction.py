@@ -23,7 +23,7 @@ class ConstructionCorpusTests(unittest.TestCase):
         selected = {}
         for profile, features in runner.PROFILE_FEATURES.items():
             self.assertTrue(additions <= features, profile)
-            if profile in {'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-find', 'object-integrity', 'array-predicates', 'array-descriptors', 'array-last-index-of', 'string-last-index-of', 'regexp-match-search', 'regexp-constructor', 'regexp-split', 'string-search', 'function-constructor', 'reflect-construction', 'new-target'}:
+            if profile in {'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-find', 'object-integrity', 'array-predicates', 'array-descriptors', 'array-last-index-of', 'string-last-index-of', 'regexp-match-search', 'regexp-constructor', 'regexp-split', 'string-search', 'function-constructor', 'reflect-construction', 'new-target'}:
                 continue  # Later selections are outside the historical policy delta.
             prior = features - additions
             if profile == 'symbols':

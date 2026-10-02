@@ -1,0 +1,262 @@
+{
+  "format": 1,
+  "phase": "candidate",
+  "started_utc": "2026-10-02T03:01:29.879547+00:00",
+  "driver_sha256": "31aab29fd7a8075210b9087906c2066fe0aaeb9947ae63aa0564871108706913",
+  "manifest_sha256": "49095956370242b9014a541fe84c7f98e3a087c49b433fa28f7123171f026605",
+  "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+  "binary_sha256": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
+  "release_files": {
+    "inputs.json": {
+      "path": "/tmp/eris-array-buffer-candidate-2/inputs.json",
+      "bytes": 14591,
+      "sha256": "ad5f1240cacad5209a89a1a629bbddc309451ddfec15a250c70107485a92e5aa"
+    },
+    "default-binaries.json": {
+      "path": "/tmp/eris-array-buffer-candidate-2/default-binaries.json",
+      "bytes": 337,
+      "sha256": "cad7b9d4ad7d807ac0d7527e48c917160dd7ac0a548168cb00d9bd65ad810669"
+    },
+    "source.tar": {
+      "path": "/tmp/eris-array-buffer-candidate-2/source.tar",
+      "bytes": 9584640,
+      "sha256": "c143c2131a07a7b56051158296189aa49534525b5c9beb43c1130a9a176ee051"
+    },
+    "eris-js": {
+      "path": "/tmp/eris-array-buffer-candidate-2/eris-js",
+      "bytes": 3197200,
+      "sha256": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b"
+    }
+  },
+  "completed": true,
+  "all_inputs_unchanged": true,
+  "summaries": {
+    "array-from": {
+      "counts": {
+        "passed": 376,
+        "unsupported": 4,
+        "failed": 10,
+        "resource": 12
+      },
+      "modes": 402,
+      "controls": 76,
+      "controls_verified": 76,
+      "original_report_identity_verified": true
+    },
+    "array-descriptors": {
+      "counts": {
+        "passed": 72
+      },
+      "modes": 72,
+      "controls": 0,
+      "controls_verified": 0,
+      "original_report_identity_verified": true
+    },
+    "object-integrity": {
+      "counts": {
+        "passed": 228
+      },
+      "modes": 228,
+      "controls": 12,
+      "controls_verified": 12,
+      "original_report_identity_verified": true
+    },
+    "for-of": {
+      "counts": {
+        "passed": 380,
+        "unsupported": 12,
+        "resource": 12
+      },
+      "modes": 404,
+      "controls": 60,
+      "controls_verified": 60,
+      "original_report_identity_verified": true
+    },
+    "own-keys": {
+      "counts": {
+        "passed": 86
+      },
+      "modes": 86,
+      "controls": 24,
+      "controls_verified": 24,
+      "original_report_identity_verified": true
+    },
+    "array-splice": {
+      "counts": {
+        "passed": 86,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "modes": 96,
+      "controls": 76,
+      "controls_verified": 76,
+      "original_report_identity_verified": true
+    },
+    "array-concat": {
+      "counts": {
+        "passed": 80,
+        "failed": 4,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "modes": 90,
+      "controls": 68,
+      "controls_verified": 68,
+      "original_report_identity_verified": true
+    }
+  },
+  "ended_utc": "2026-10-02T03:01:39.092939+00:00",
+  "captured_files": {
+    "array-concat.execution.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-concat.execution.json",
+      "bytes": 636,
+      "sha256": "39a790215bed3aff3fcc85c4dd071bdd9f719a73bb8d36bcb8e03a9122ab93c5"
+    },
+    "array-concat.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-concat.json",
+      "bytes": 376247,
+      "sha256": "c52ac9fe9cf9189c4adbdde17716636eabde1be2bfa5188915ada47182cf8c2b"
+    },
+    "array-concat.stderr.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-concat.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "array-concat.stdout.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-concat.stdout.log",
+      "bytes": 10744,
+      "sha256": "079e382591ea89094c957c5eb55975ab2c37ce4bb1c7477d786f5330e70a074f"
+    },
+    "array-descriptors.execution.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-descriptors.execution.json",
+      "bytes": 642,
+      "sha256": "9151cf92660cd31637056b44e3ec5541405d590bc153af67b436a3cbc8b42a57"
+    },
+    "array-descriptors.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-descriptors.json",
+      "bytes": 93988,
+      "sha256": "4b04a5086c8398241d142c143c2f5a0613cfdc94b65e80dcea4c546389bc9487"
+    },
+    "array-descriptors.stderr.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-descriptors.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "array-descriptors.stdout.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-descriptors.stdout.log",
+      "bytes": 4207,
+      "sha256": "5da6ba9211ebbdc0a91f3547ef39da89ccb6bd2b1d5b890fb5267c0c62d66608"
+    },
+    "array-from.execution.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-from.execution.json",
+      "bytes": 626,
+      "sha256": "44bf806c86d78c62218e8ced5ca0124d2ac99d209f4d68a0f9658442ed416caa"
+    },
+    "array-from.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-from.json",
+      "bytes": 1104224,
+      "sha256": "56ece35a8ed9ccd63a19e001c5d5b5c416503666f2455554779d3be36b23a5a7"
+    },
+    "array-from.stderr.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-from.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "array-from.stdout.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-from.stdout.log",
+      "bytes": 25286,
+      "sha256": "51d9c4a756eac0b56ea8cc6bce403b3c97db90d3517000f46eff202bee708f07"
+    },
+    "array-splice.execution.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-splice.execution.json",
+      "bytes": 636,
+      "sha256": "b62ef7b6391162d79eedc4be0a723264e0c92dbe9422ac851d395ce33f4437e8"
+    },
+    "array-splice.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-splice.json",
+      "bytes": 389450,
+      "sha256": "d8fcf4dde9def0e0346ccea7f5e02ad4704973435ac85917448cb4ddcc58d962"
+    },
+    "array-splice.stderr.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-splice.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "array-splice.stdout.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/array-splice.stdout.log",
+      "bytes": 11232,
+      "sha256": "06bab779d86be79c1a85de3f95b11d54406a097188d83c8d5e461c0f3b31bbcb"
+    },
+    "comparison.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/comparison.json",
+      "bytes": 2508,
+      "sha256": "e058f2026d4be170d511c3509e6e88f49b6e37e1fc7d29497ba65114de659c59"
+    },
+    "for-of.execution.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/for-of.execution.json",
+      "bytes": 624,
+      "sha256": "d7a2ba279a6eb1223d6c0fa547de17c1302e1ee44121deec5ed4504874ec1464"
+    },
+    "for-of.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/for-of.json",
+      "bytes": 957975,
+      "sha256": "505cfac3b843d3685f5f6fe95c9ee3e1ab14a0990fd154a514debb8984c0d4dc"
+    },
+    "for-of.stderr.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/for-of.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "for-of.stdout.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/for-of.stdout.log",
+      "bytes": 24947,
+      "sha256": "518088735ae76ae4d46249d097c745f9a343a87a3ba953423b7efcc3e2cfccd0"
+    },
+    "object-integrity.execution.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/object-integrity.execution.json",
+      "bytes": 644,
+      "sha256": "dc29ae1a06991ab71956c5f1490bb189007871a3e199a985ee096672de66e7ac"
+    },
+    "object-integrity.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/object-integrity.json",
+      "bytes": 523204,
+      "sha256": "ce8ad169abb0ca8cc1e0f862f0279da4809d5095909a9a98092b440ff1a4a144"
+    },
+    "object-integrity.stderr.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/object-integrity.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "object-integrity.stdout.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/object-integrity.stdout.log",
+      "bytes": 15362,
+      "sha256": "e803d4dab10331078590aed9eb7bd74972e5ec30a3d363ae2486cd2779a10621"
+    },
+    "own-keys/report.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/own-keys/report.json",
+      "bytes": 194169,
+      "sha256": "eddc6101a3419777c33968da58d7c930ab884f9eb1f8192f0596dcd8f39589f1"
+    },
+    "own-keys.execution.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/own-keys.execution.json",
+      "bytes": 677,
+      "sha256": "6b178fbcb5a7e4d6e47c3688fcf91e6a57bf90646bd4e7e154db4b56e02e6c3d"
+    },
+    "own-keys.stderr.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/own-keys.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "own-keys.stdout.log": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/own-keys.stdout.log",
+      "bytes": 6577,
+      "sha256": "64513582a4374cc980ddae56216eb84c56f4c1305c090baa3cee08b422571fe7"
+    },
+    "start.json": {
+      "path": "/tmp/eris-array-buffer-historical-local-candidate-2/start.json",
+      "bytes": 1302,
+      "sha256": "ebc696c01fbc33ef1a777002b7b2ea72135b9dbe5ebf0ee72448ccde36ac406a"
+    }
+  }
+}

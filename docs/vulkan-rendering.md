@@ -309,6 +309,15 @@ Resolve scopes and clipped bounds with bounded CPU work, then execute custom
 GPU kernels or draws in display-list order. Overlapping writes must be ordered;
 a single unordered dispatch over primitives would be incorrect.
 
+The next integration check will consume real confined-worker snapshots in an
+offscreen harness, with independently specified pixels and explicit whole-frame
+fallback. It must preserve image-key resolution, legal missing images, line
+lowering and typed scope restoration. Complete worker teardown before Vulkan
+initialization keeps this first check separate from driver/spawn interactions.
+The probe's 320×240 cap is below the native window's 400×250 minimum, and browser
+chrome needs text rendering. Neither native-window integration nor larger frame
+limits follow from a successful offscreen bridge; both need separate validation.
+
 Reject unsupported frames before GPU execution and paint the complete frame
 with the CPU backend. Do not drop unsupported commands or mix partial frames
 without a defined compositing model. This first subset mostly exercises simple

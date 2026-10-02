@@ -1,0 +1,94 @@
+{
+  "suites": {
+    "array-from": {
+      "unchanged_complete_records": 478,
+      "changed_complete_records": 0,
+      "transitions": {
+        "passed -> passed": 376,
+        "unsupported -> unsupported": 4,
+        "failed -> failed": 10,
+        "resource -> resource": 12
+      },
+      "raw_pass_gains": [],
+      "raw_pass_losses": [],
+      "changes": [],
+      "no_observation_normalization": true
+    },
+    "array-descriptors": {
+      "unchanged_complete_records": 72,
+      "changed_complete_records": 0,
+      "transitions": {
+        "passed -> passed": 72
+      },
+      "raw_pass_gains": [],
+      "raw_pass_losses": [],
+      "changes": [],
+      "no_observation_normalization": true
+    },
+    "object-integrity": {
+      "unchanged_complete_records": 240,
+      "changed_complete_records": 0,
+      "transitions": {
+        "passed -> passed": 228
+      },
+      "raw_pass_gains": [],
+      "raw_pass_losses": [],
+      "changes": [],
+      "no_observation_normalization": true
+    },
+    "for-of": {
+      "unchanged_complete_records": 464,
+      "changed_complete_records": 0,
+      "transitions": {
+        "passed -> passed": 380,
+        "unsupported -> unsupported": 12,
+        "resource -> resource": 12
+      },
+      "raw_pass_gains": [],
+      "raw_pass_losses": [],
+      "changes": [],
+      "no_observation_normalization": true
+    },
+    "own-keys": {
+      "unchanged_complete_records": 110,
+      "changed_complete_records": 0,
+      "transitions": {
+        "passed -> passed": 86
+      },
+      "raw_pass_gains": [],
+      "raw_pass_losses": [],
+      "changes": [],
+      "no_observation_normalization": true
+    },
+    "array-splice": {
+      "unchanged_complete_records": 172,
+      "changed_complete_records": 0,
+      "transitions": {
+        "passed -> passed": 86,
+        "resource -> resource": 4,
+        "failed -> failed": 4,
+        "unsupported -> unsupported": 2
+      },
+      "raw_pass_gains": [],
+      "raw_pass_losses": [],
+      "changes": [],
+      "no_observation_normalization": true
+    },
+    "array-concat": {
+      "unchanged_complete_records": 158,
+      "changed_complete_records": 0,
+      "transitions": {
+        "passed -> passed": 80,
+        "failed -> failed": 4,
+        "unsupported -> unsupported": 2,
+        "resource -> resource": 4
+      },
+      "raw_pass_gains": [],
+      "raw_pass_losses": [],
+      "changes": [],
+      "no_observation_normalization": true
+    }
+  },
+  "no_filters": true,
+  "no_normalization": true
+}

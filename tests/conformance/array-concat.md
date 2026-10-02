@@ -86,7 +86,8 @@ and through the actual confined worker. Byte-identical HTML adapters and 68
 unchanged inputs justify reusing the preceding **3,868 matched / two mismatched /
 six unsupported** report; no fresh HTML run is claimed. One mutation-smoke run
 covers **15,000 cases**, with zero caught panics or invariant failures and
-seventeen bounded paint stops. Remote CI for this checkpoint is pending publication.
+seventeen bounded paint stops. All seven [remote CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36570342566)
+passed for published commit `f65c666`.
 
 The method borrows arguments and keeps constant-size loop state rather than
 reserving its logical range. Each reached item and index, including holes,

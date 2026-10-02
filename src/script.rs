@@ -38,6 +38,7 @@ pub use symbols::Symbol;
 mod parser_legacy;
 #[cfg(test)]
 use parser_legacy::{ActiveLabel, Parser};
+mod array_buffer;
 mod array_builtins;
 mod array_concat;
 mod array_from;
@@ -1528,6 +1529,7 @@ pub struct Runtime {
     native_properties: BTreeMap<String, usize>,
     symbols: symbols::State,
     iterators: iterators::State,
+    array_buffers: array_buffer::State,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
@@ -1608,6 +1610,7 @@ impl Runtime {
             "isFinite",
             "Object",
             "Array",
+            "ArrayBuffer",
             "Function",
             "RegExp",
             "Event",
@@ -1677,6 +1680,7 @@ impl Runtime {
             native_properties: BTreeMap::new(),
             symbols: symbols::State::default(),
             iterators: iterators::State::default(),
+            array_buffers: array_buffer::State::default(),
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
@@ -1690,6 +1694,7 @@ impl Runtime {
             allocated: 2048
                 + std::mem::size_of::<DateHost>()
                 + std::mem::size_of::<iterators::State>()
+                + std::mem::size_of::<array_buffer::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + TrackedGlobal::ALL
@@ -1738,6 +1743,7 @@ impl Runtime {
             "Object",
             "Function",
             "Array",
+            "ArrayBuffer",
             "String",
             "Number",
             "Boolean",
@@ -1820,6 +1826,7 @@ impl Runtime {
             "Object",
             "Function",
             "Array",
+            "ArrayBuffer",
             "String",
             "Number",
             "Boolean",
@@ -2369,6 +2376,7 @@ impl Runtime {
             );
         }
         self.initialize_symbols()?;
+        self.install_array_buffer_intrinsics()?;
         self.install_iterator_intrinsics()?;
         self.initialize_dom_bindings()
     }
@@ -7670,6 +7678,12 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "ArrayBuffer" {
+            return Err(ScriptError::type_error("ArrayBuffer requires new"));
+        }
+        if let Some(method) = native.name.strip_prefix("ArrayBuffer.") {
+            return self.array_buffer_native(method, native.receiver.clone(), &args, doc);
+        }
         if native.name == "Array.from" {
             return self.array_from(native.receiver.clone(), &args, doc);
         }

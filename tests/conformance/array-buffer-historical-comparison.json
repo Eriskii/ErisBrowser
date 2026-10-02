@@ -1,0 +1,1151 @@
+{
+  "complete": true,
+  "infrastructure_failure": null,
+  "binary": "/tmp/eris-array-buffer-candidate-2/eris-js",
+  "binary_sha256": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
+  "before_binary_sha256": "64667259eff3ccec0c2ef98370a60a1dea71560def07574dc59db1bbb3fff3c0",
+  "production_input_sha256": "7cc8ea1321f029c705898aa7dd480e7a79bb878f454c342aeacfcba3f84274bf",
+  "prepared_manifest_sha256": "e13437a594a47a343abe12821a6102eee7876740bd7ca354200659c9c03fe0e1",
+  "before_commit": "77866e93f4d8486807aa843667619ea4ccccccfa",
+  "before_provenance_sha256": "9310512d8fc830338fd69db336d200229b79a3d918cab5f31fe4b18aa5e9f334",
+  "replay_script_sha256": "19ef964c50e740a5a9a02d4ea35fff729451470f7b2a0681fad90fefdb7aedf2",
+  "profiles": [
+    {
+      "profile": "addition",
+      "before_report_sha256": "2972b71a004dec3fb9dcb542aa485cdf5ad61dfa99d3c445f7465cc4c0767ed5",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-addition.json",
+      "report_sha256": "f4afe861144ad495313d3162149cc64dcccbbe72bcd9b2c9f68aece8e65a32cc",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-addition.log",
+      "log_sha256": "27b6c6e7f17e8025b5b6c17e629068ff3f4f2b6b8fe7777950447ef975c64336",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 28,
+        "passed": 67
+      },
+      "cases": 95,
+      "controls": 64,
+      "controls_verified": 64,
+      "baseline": {
+        "path": "tests/conformance/test262-addition-current.json",
+        "sha256": "69610fc6ff4ab4f2d72eae1aa5ccc6cc127af758f998448f6c9e15b76628fe4d"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-concat",
+      "before_report_sha256": "f0cf9daae3fd657fed9cd2dfa6a23e71e4c34a312db2ea42312b133d0fb0f50c",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-concat.json",
+      "report_sha256": "d5c8999e3ad84fbfba7cfbe2991ed1e426358eb3a5f972599f4ba63b0084d773",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-concat.log",
+      "log_sha256": "fa50d257151c392b3a9182163f2999b4938758d0285b793385fbb1786515b895",
+      "exit_code": 1,
+      "counts": {
+        "passed": 113,
+        "failed": 4,
+        "unsupported": 18,
+        "resource": 2
+      },
+      "cases": 137,
+      "controls": 96,
+      "controls_verified": 96,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-descriptors",
+      "before_report_sha256": "99c1cf9011ace4c6c04424680532fc14621964ec276ba9cacbe9cdc1855f440a",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-descriptors.json",
+      "report_sha256": "932b422b465a3dbf0e03f67b2ed02aaf467b734a7a2bc1a94cb0a75f9ef921d3",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-descriptors.log",
+      "log_sha256": "7848585d8de85d535db93ade712b454791253383bba17c222bd1f95acadb8110",
+      "exit_code": 0,
+      "counts": {
+        "passed": 3554,
+        "unsupported": 20
+      },
+      "cases": 3574,
+      "controls": 84,
+      "controls_verified": 84,
+      "baseline": {
+        "path": "tests/conformance/test262-array-descriptors-current.json",
+        "sha256": "16b9d7428696157b55284b8a7884b5f290e86756afcdf505ed99a3d49ae3501a"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-find",
+      "before_report_sha256": "e016c77a461148cc9066322a2c7b24635ae2ff58d744487e34ce5f5c4858a176",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-find.json",
+      "report_sha256": "6d1d74340b9dbc6306a80f3925184112f1185b9a23a1eae19d6593b5c972859e",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-find.log",
+      "log_sha256": "c511f855303a9d4fcc6bf784c579bd977efa80fa094027270cbfde169b0a1798",
+      "exit_code": 0,
+      "counts": {
+        "passed": 148,
+        "unsupported": 32
+      },
+      "cases": 180,
+      "controls": 288,
+      "controls_verified": 288,
+      "baseline": {
+        "path": "tests/conformance/test262-array-find-current.json",
+        "sha256": "9acc545529e16134d5ec1082415a679babb643bc9f587d7143ed6b0604b9c3d9"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-from",
+      "before_report_sha256": "31dd21edd9ac9d498a14e441fa1a26cd395f6c7360cf675225a817577a724476",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-from.json",
+      "report_sha256": "454aef00d6fcd2ac5fae31b94b76063bc15d8b74993c4542150943bd72ce7aa9",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-from.log",
+      "log_sha256": "5393677d85023321b37810adacc104e037f94a7ab5d44d9d1cf5def46f2309d2",
+      "exit_code": 0,
+      "counts": {
+        "passed": 86,
+        "unsupported": 4
+      },
+      "cases": 90,
+      "controls": 96,
+      "controls_verified": 96,
+      "baseline": {
+        "path": "tests/conformance/test262-array-from-current.json",
+        "sha256": "9057d437c4f6ef9d8f758549f456377258b6c8af024cc50ae3b214c110378daf"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [
+        "test/built-ins/Array/from/items-is-arraybuffer.js:sloppy",
+        "test/built-ins/Array/from/items-is-arraybuffer.js:strict"
+      ],
+      "observation_changes": [
+        {
+          "id": "test/built-ins/Array/from/items-is-arraybuffer.js:sloppy",
+          "kind": "improvement",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'ArrayBuffer' is not defined",
+              "harness": ""
+            }
+          },
+          "candidate": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Array/from/items-is-arraybuffer.js:strict",
+          "kind": "improvement",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'ArrayBuffer' is not defined",
+              "harness": ""
+            }
+          },
+          "candidate": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        }
+      ],
+      "control_changes": []
+    },
+    {
+      "profile": "array-last-index-of",
+      "before_report_sha256": "50bde54d1f9da60a236142debf31abb7a698e69a9465725823a6a74e91fdef3c",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-last-index-of.json",
+      "report_sha256": "865c30ec29c087165362c83f210c84f1925f4b91ad0477eb6f757024d2f9baa0",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-last-index-of.log",
+      "log_sha256": "098b6705ebf8f2592aae66cf12c7171227b1f8b28a7338cfe56be6e2dc559115",
+      "exit_code": 1,
+      "counts": {
+        "passed": 385,
+        "resource": 2,
+        "unsupported": 8
+      },
+      "cases": 395,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-predicates",
+      "before_report_sha256": "16df513ef42c3c900152e860c6f8e4f75fe3fab4973a8d1f7782c6ea990b1f6b",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-predicates.json",
+      "report_sha256": "811d97ce325cb9f8c983d2f8f789253c3d147675a056a0e54a8d6af1737e3a63",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-predicates.log",
+      "log_sha256": "cfc6ebd80fe3ebba620b127dbaccadb723c08604ddbff8146b1403e875ccda77",
+      "exit_code": 1,
+      "counts": {
+        "passed": 847,
+        "resource": 4,
+        "unsupported": 16
+      },
+      "cases": 867,
+      "controls": 128,
+      "controls_verified": 128,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-reduce",
+      "before_report_sha256": "ba0b683ff7fa60f65b1a64ae19a8ef953f3bfd3fd611b1ca8bc2a1bf3a59cd6a",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-reduce.json",
+      "report_sha256": "4412ec3be1f345ba9e656c4776d53d7a8e2b2d8eddfcd8dd186aca7b20f281ae",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-reduce.log",
+      "log_sha256": "91d5ad469e17a28be131b6ec5d6ef0ad7cfb669b8c5548ce1f3bb1915e86f6d4",
+      "exit_code": 0,
+      "counts": {
+        "passed": 1018,
+        "unsupported": 16
+      },
+      "cases": 1034,
+      "controls": 128,
+      "controls_verified": 128,
+      "baseline": {
+        "path": "tests/conformance/test262-array-reduce-current.json",
+        "sha256": "aaced8d7d1c9b079067e2abff639657adf89bc5c349ec19188c28314c82aebce"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-sort",
+      "before_report_sha256": "3d53abe4ed8ba6dbeb09e52afa42bd637a47b3171fbe81fe8452325d137aaf54",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-sort.json",
+      "report_sha256": "7479251194b0a9ef5226e6330f20076a906a2ddabccddd86d7971ea27e6813c9",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-sort.log",
+      "log_sha256": "0fb7a425c7311dcea6a7fb1308651cbabc642a19ef569625798e4624c60181af",
+      "exit_code": 1,
+      "counts": {
+        "passed": 91,
+        "unsupported": 12,
+        "resource": 4
+      },
+      "cases": 107,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "array-splice",
+      "before_report_sha256": "40237994543ca2ccd53f79a13d017cb80de3aa32ecc4d3bb4598fc1680495aea",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-array-splice.json",
+      "report_sha256": "d63d857e33da63db39b42ea8c0a27d3f4f34bccfd7428ecc391b8ef7e4d78209",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-array-splice.log",
+      "log_sha256": "ccbacb220cab1daaf1903c33657670715a2334c3f2913ce77cad755d2fe9f5de",
+      "exit_code": 0,
+      "counts": {
+        "passed": 138,
+        "unsupported": 24
+      },
+      "cases": 162,
+      "controls": 96,
+      "controls_verified": 96,
+      "baseline": {
+        "path": "tests/conformance/test262-array-splice-current.json",
+        "sha256": "f101d6ecf1d515dfb4f1e37a8cab6b96818a46f09aff2039ddd4dae26e06eec1"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "compound-assignment",
+      "before_report_sha256": "9898e9afb79ad3abdcbdd8549c3d7bd4a61cc6381f5689d1d5d6449054c14ff6",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-compound-assignment.json",
+      "report_sha256": "3882c6312c9d952570743f1e69349949a711b1509f839098b359ab5ca3962765",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-compound-assignment.log",
+      "log_sha256": "48a6733950dbb06e1e39957d1aa2e5ec0bf43ade06521e45dd12614043d205ff",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 169,
+        "passed": 617
+      },
+      "cases": 786,
+      "controls": 128,
+      "controls_verified": 128,
+      "baseline": {
+        "path": "tests/conformance/test262-compound-assignment-current.json",
+        "sha256": "1ed2ffaad47349010ad532ba43e0cbaf59750c23d0d76c4e5174bc0090ea2dfd"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "core-iterators",
+      "before_report_sha256": "f14552be8920557efa6c691980ca847d21a76f16a0cad3c4f0cbebd1f0f8caa0",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-core-iterators.json",
+      "report_sha256": "e879a2a9998b9cd2889d5455fbc3d3ef1bd505910079f1e322eeeaad0dac2a9f",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-core-iterators.log",
+      "log_sha256": "236053f556b6f07a5777fb613a9f33e0ede80784b209503adf9fdd34eca20ca3",
+      "exit_code": 0,
+      "counts": {
+        "passed": 106,
+        "unsupported": 38
+      },
+      "cases": 144,
+      "controls": 132,
+      "controls_verified": 132,
+      "baseline": {
+        "path": "tests/conformance/test262-core-iterators-current.json",
+        "sha256": "02077518cb4bfa8c4ada143276c4224252eabd694a5a8e77a5520c5ac4a9cb1d"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "date",
+      "before_report_sha256": "032d189e47284ed2bd3f29e81bd02119ced92c5fdd1dd3f6e6313bbc8a73ba6d",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-date.json",
+      "report_sha256": "05099bb682de9194c32ffc429bf53fe25842626e5b352df40e434920ac3a7851",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-date.log",
+      "log_sha256": "b959535ad3be0f32db195b753706b044de4f484ff4f96fac1c952ff30d20609c",
+      "exit_code": 0,
+      "counts": {
+        "passed": 1166,
+        "unsupported": 22
+      },
+      "cases": 1188,
+      "controls": 340,
+      "controls_verified": 340,
+      "baseline": {
+        "path": "tests/conformance/test262-date-current.json",
+        "sha256": "8e282442518943971a743f512be6a5de368718f2f8029fb358355fb5d7f48bac"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "equality",
+      "before_report_sha256": "76d751724cad8d06b4edb0f9deaec9bad4098c09a2b2de9e674805d4db753a6b",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-equality.json",
+      "report_sha256": "97d15ce571c96b488f0be661e111d4083bf961349086812a871ab2205c21b266",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-equality.log",
+      "log_sha256": "278aef06a31a2b895bb716999c73d4a891890da7cfe928d522088a1b8df4bfac",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "cases": 286,
+      "controls": 128,
+      "controls_verified": 128,
+      "baseline": {
+        "path": "tests/conformance/test262-equality-current.json",
+        "sha256": "c1418e959a4936d94cb24960c379dccee01af48d932fe4ff7622964129b227df"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "for-of",
+      "before_report_sha256": "e490b455984a1d5a5c7eb24375d035e42dbe7166f20827b7bb874260f5ed7c09",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-for-of.json",
+      "report_sha256": "07eba14ba2e134fb11fd386b4ececac4ae38880d8e8340228bd6ce4dcd3af4b3",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-for-of.log",
+      "log_sha256": "5df5e6509a6bf038f06dfff1ba288018f35346264acc6d73d427483b52780d3f",
+      "exit_code": 0,
+      "counts": {
+        "passed": 137,
+        "unsupported": 1303,
+        "failed": 2
+      },
+      "cases": 1442,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": {
+        "path": "tests/conformance/test262-for-of-current.json",
+        "sha256": "c023e088a45ba866ba9436832a2a0ba6584f9261038ad26df72825523820cf06"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "function-constructor",
+      "before_report_sha256": "a540c6692e4a74641e6830da5f9d1a14a0e7e167deff466b9d42d1650eff1e12",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-function-constructor.json",
+      "report_sha256": "40f312c8f97559201f06aab4d22868d13444fcd8d5b98a1561702bb6fa6510a8",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-function-constructor.log",
+      "log_sha256": "64deef1494cf486dd9d70e742a744303d8d0de7bc5f16b33f0ef174cf68a195c",
+      "exit_code": 0,
+      "counts": {
+        "passed": 241,
+        "unsupported": 50
+      },
+      "cases": 291,
+      "controls": 64,
+      "controls_verified": 64,
+      "baseline": {
+        "path": "tests/conformance/test262-function-constructor-current.json",
+        "sha256": "f17ce66f9c4f5395ade2e9d607e806dce678c84558674d30e1a53e378e3136c0"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "functions",
+      "before_report_sha256": "46c2b5b6adabcc1b03932caa6f80af2fac3275b119caa2b28dc43414a31b744e",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-functions.json",
+      "report_sha256": "c7c0a811ff1f81d914101e29e80e5fb6f734ac6c11ca4867611c214cc5e13f0f",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-functions.log",
+      "log_sha256": "8ace29d352f4727ffb2103ae9b025d80ccc46206e492dd29680de2f9ea354937",
+      "exit_code": 0,
+      "counts": {
+        "passed": 546,
+        "unsupported": 585
+      },
+      "cases": 1131,
+      "controls": 48,
+      "controls_verified": 48,
+      "baseline": {
+        "path": "tests/conformance/test262-functions-current.json",
+        "sha256": "53627cfffdb3b01c7453aed80e750909ba0198a888747b2f3cb22674c3966040"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "global-values",
+      "before_report_sha256": "155ddf3d78ae430a70462971698028274e48169376ad9e2afdfc4b8c99c5270a",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-global-values.json",
+      "report_sha256": "3e12677d5c8359711bd1d564ecf592ddeb0346d925b412f30b9bdd713e393f65",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-global-values.log",
+      "log_sha256": "f5696cf80117065ff63a823c03c0258615b4a01b625c1a8da2ab4488dc9d9b70",
+      "exit_code": 0,
+      "counts": {
+        "passed": 70,
+        "unsupported": 18
+      },
+      "cases": 88,
+      "controls": 64,
+      "controls_verified": 64,
+      "baseline": {
+        "path": "tests/conformance/test262-global-values-current.json",
+        "sha256": "05a82b4c2f40643fa91df9905e4be566332f4106592c3f99e9397819cec18803"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "identifiers",
+      "before_report_sha256": "07dd11b495272f82541901c076f0cbee1669532d33b786ae0bd602a77beca82b",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-identifiers.json",
+      "report_sha256": "4c3d97f1b14fffc6876253ffdc9a9ae17c6842fa456c1ad753b9942f028d8231",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-identifiers.log",
+      "log_sha256": "e5441c1cb2ac8f5f2775495a9953a01e2dd398417fefd2fe2102fb1cbf2deb82",
+      "exit_code": 1,
+      "counts": {
+        "passed": 509,
+        "unsupported": 154,
+        "resource": 6
+      },
+      "cases": 669,
+      "controls": 88,
+      "controls_verified": 88,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "is-prototype-of",
+      "before_report_sha256": "57ec64e52450b5710602684aa647fc21db62be6a05e533d77171b33a34746e4d",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-is-prototype-of.json",
+      "report_sha256": "0b99fa8a660ce0852601f80d1a40db76017f5954b5eea99d32902079a477d42e",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-is-prototype-of.log",
+      "log_sha256": "d4bc8ca3efe2a64e86ac93fb7dd21494c5bbf00dd174ebc245e8c82eab43fd63",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 6,
+        "passed": 14
+      },
+      "cases": 20,
+      "controls": 64,
+      "controls_verified": 64,
+      "baseline": {
+        "path": "tests/conformance/test262-is-prototype-of-current.json",
+        "sha256": "0c6a95e3eca5d1d8949f0770ff7dc2557dedfff8c96cd62ce5173ca5a1745efe"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "labels",
+      "before_report_sha256": "2983ccf02ff11ebba27edc7fa6f94feb7006238655fd06913f4ef3e8c2cc38c9",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-labels.json",
+      "report_sha256": "a6bbd847497ab023cc8b2268c60fd1e007e51bac90e50ae057ed3207e8d9a90f",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-labels.log",
+      "log_sha256": "2e7b5897ebf9b03b489590ca9d8308b4cfd647fae78f2a93d277136536476d31",
+      "exit_code": 0,
+      "counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "cases": 125,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": {
+        "path": "tests/conformance/test262-labels-current.json",
+        "sha256": "035145ff2b1d5df31077936c86d4ca54dc58185f7fb32ca812fd2ea96c1f07f3"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "logical-assignment",
+      "before_report_sha256": "b99eb0a99e511c447d3a32e1256601a8fd10fc369e482859e6c1f8254813fb8e",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-logical-assignment.json",
+      "report_sha256": "8a4370fab25731a3ca9d1fc65b37c14fd017444099d1385da6190c796451d5fc",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-logical-assignment.log",
+      "log_sha256": "a700addba986bfa8d1adc2d8632f3e644fce5263d5bca0a66ff1747dc9ec9dfa",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 48,
+        "passed": 78,
+        "failed": 6
+      },
+      "cases": 132,
+      "controls": 104,
+      "controls_verified": 104,
+      "baseline": {
+        "path": "tests/conformance/test262-logical-assignment-current.json",
+        "sha256": "08550c1b03893e8b5e75ef8caa234b1ac7bb1c4f5f5e2dfaa37e69a0b38ac705"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "new-target",
+      "before_report_sha256": "44d9f8a9f14e66d7d929730f0b8061a949ba95dfb7985b1c8704f432586a8dcb",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-new-target.json",
+      "report_sha256": "01bb993878e12bcf2d76e96d0b430d7b7f35939c897d36ee6eb65a0181eddac2",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-new-target.log",
+      "log_sha256": "726a5da4cf29f30e0ab28dbb891e1e0c51ca9abfd29a511c8a876cb612ad5d22",
+      "exit_code": 0,
+      "counts": {
+        "passed": 20,
+        "unsupported": 8
+      },
+      "cases": 28,
+      "controls": 96,
+      "controls_verified": 96,
+      "baseline": {
+        "path": "tests/conformance/test262-new-target-current.json",
+        "sha256": "187696b419974db062b8eb5ddac457f7cc1fb849d3de6c495b91c7bb8026a2d7"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "number-statics",
+      "before_report_sha256": "15fd38cf5528ff32b0c4971d2ce775b5b8e5d32a817a54ae81dc2471ea29a373",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-number-statics.json",
+      "report_sha256": "ab3e51d6225f008093dcd5caaddb42f75e67a9c0b1897208a2c3db389f5bdac0",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-number-statics.log",
+      "log_sha256": "aacffb06845de5c574681f673c46cac0c7da26125ce53e980999c0126414f72a",
+      "exit_code": 0,
+      "counts": {
+        "passed": 260,
+        "unsupported": 80
+      },
+      "cases": 340,
+      "controls": 104,
+      "controls_verified": 104,
+      "baseline": {
+        "path": "tests/conformance/test262-number-statics-current.json",
+        "sha256": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "numeric-conversion",
+      "before_report_sha256": "2804e2572a16a9c58c66b54f78f2aec75b74ffb3cdcc0f72832af50b34f6b376",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-numeric-conversion.json",
+      "report_sha256": "6eed2be3a28587fb66a95795a15a2a8abc3a1a32d8dc0ff8aa8ad4895914efeb",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-numeric-conversion.log",
+      "log_sha256": "0e59517c922342ec4e237864bb0a294cb647ca08af050693bd4a2826df79daa4",
+      "exit_code": 0,
+      "counts": {
+        "passed": 32,
+        "unsupported": 28
+      },
+      "cases": 60,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": {
+        "path": "tests/conformance/test262-numeric-conversion-current.json",
+        "sha256": "2a14928428ef7fa112d0f4434eb7764a73b1685de2e494eaac9d3991a4cf187c"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "numeric-parsing",
+      "before_report_sha256": "32e48bd5701e648908f37eda3640b45265f5d9021a8196ab94b349bc4a955d99",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-numeric-parsing.json",
+      "report_sha256": "37085875ef493778093633d0dea7cb7899df6a186e1e52932953b7fa939b7448",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-numeric-parsing.log",
+      "log_sha256": "aee5ec7cd0bad9514b33b84ee3c163e923e9b10a89c94cd6d8df6239d917e459",
+      "exit_code": 1,
+      "counts": {
+        "passed": 176,
+        "unsupported": 34,
+        "resource": 8
+      },
+      "cases": 218,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "object-integrity",
+      "before_report_sha256": "44e5a501e9b87639ebe798fead2fddfdcd2bbd76ef57aa73988190c3b209b5a0",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-object-integrity.json",
+      "report_sha256": "2be3f43bc1914a93f34402fcd7b66cdcf9c273f689b2619d1a22e74d8fabfbaa",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-object-integrity.log",
+      "log_sha256": "625969b62078b745efc59e636d03afbec86ee5f1778422d53d1c309c7156befa",
+      "exit_code": 0,
+      "counts": {
+        "passed": 396,
+        "unsupported": 38,
+        "failed": 40
+      },
+      "cases": 474,
+      "controls": 224,
+      "controls_verified": 224,
+      "baseline": {
+        "path": "tests/conformance/test262-object-integrity-current.json",
+        "sha256": "59b2fff7ba920b4486cff5168cde5d4471ed7cefed080d6478399530da8d7736"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [
+        "test/built-ins/Object/seal/seal-arraybuffer.js:sloppy",
+        "test/built-ins/Object/seal/seal-arraybuffer.js:strict"
+      ],
+      "observation_changes": [
+        {
+          "id": "test/built-ins/Object/seal/seal-arraybuffer.js:sloppy",
+          "kind": "improvement",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'ArrayBuffer' is not defined",
+              "harness": ""
+            }
+          },
+          "candidate": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        },
+        {
+          "id": "test/built-ins/Object/seal/seal-arraybuffer.js:strict",
+          "kind": "improvement",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "ReferenceError",
+              "error_identity": "ReferenceError",
+              "message": "'ArrayBuffer' is not defined",
+              "harness": ""
+            }
+          },
+          "candidate": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            }
+          }
+        }
+      ],
+      "control_changes": []
+    },
+    {
+      "profile": "reflect-construction",
+      "before_report_sha256": "adbd193de3104fbc425e0be4ab76c10d6b91acba013f99ee089a071531967650",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-reflect-construction.json",
+      "report_sha256": "8c229fb3eeff3cdeff969b37bf24b2d5510ab8fb47a45ccf94a14ede3bab1852",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-reflect-construction.log",
+      "log_sha256": "12e91eafacc11165c652a3177d3f14d3937bfb08ba95f8068571cd84866dded6",
+      "exit_code": 0,
+      "counts": {
+        "passed": 38
+      },
+      "cases": 38,
+      "controls": 96,
+      "controls_verified": 96,
+      "baseline": {
+        "path": "tests/conformance/test262-reflect-construction-current.json",
+        "sha256": "160ece084c889dd5693207aa59dcf0a732f04548eb15dbdacbcae3203680a22a"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "regexp",
+      "before_report_sha256": "2ba185838818771e0ec7b0b01f2a0cd38ea8771dce33c81704762bc05322b48f",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp.json",
+      "report_sha256": "21c294a4f282a538579a79d5234620785262de3db1667136247a3cf8dbf6f0e9",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp.log",
+      "log_sha256": "06d2feda02ad03b23a9a61ce9459acbdb7d0e86345c83ce70cefbd3777d6b587",
+      "exit_code": 0,
+      "counts": {
+        "passed": 262,
+        "unsupported": 28
+      },
+      "cases": 290,
+      "controls": 44,
+      "controls_verified": 44,
+      "baseline": {
+        "path": "tests/conformance/test262-regexp-current.json",
+        "sha256": "07b65132730d23644e5405ba5990c7243870b2f3cef846864ad1d8dc3d5a43a5"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "regexp-constructor",
+      "before_report_sha256": "3e9f01c2abb6525eb7882c941cc49ba95b1bc89c65ff431fe0c965d9b216c6be",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-constructor.json",
+      "report_sha256": "d34f9516d3ca95c2e427e163ba90d54bb2b0e5833676dbb77da8b386490f024f",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-constructor.log",
+      "log_sha256": "6f862123e1d3d3ce4c60aef8bada2fbe5aada15eaa53694520c59335f4e2f4cb",
+      "exit_code": 1,
+      "counts": {
+        "passed": 774,
+        "unsupported": 200,
+        "resource": 2
+      },
+      "cases": 976,
+      "controls": 72,
+      "controls_verified": 72,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "regexp-match-search",
+      "before_report_sha256": "2656005fb181312e4788aa666324a105a1decc7bd56004e012237eb8b6c2a1d4",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-match-search.json",
+      "report_sha256": "a429cf740cc07ccdfb41b43f0d4e5c4488d0bc1ec5b2b92c4b5227e7e7515b21",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-match-search.log",
+      "log_sha256": "8f464d3cc495a4c1b7ed8895d5e5c535dd3dd13e1e13bce82efc1bf3cb3f2a48",
+      "exit_code": 0,
+      "counts": {
+        "passed": 316,
+        "unsupported": 20,
+        "failed": 4
+      },
+      "cases": 340,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": {
+        "path": "tests/conformance/test262-regexp-match-search-current.json",
+        "sha256": "364b8180ba234cee05fede0c681816d6b1675b1af19eb450058334bf7cf6345c"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "regexp-split",
+      "before_report_sha256": "b22602804a94616c508cf29205259f4f9423e6bf55056ef1a7036d03adf04573",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-split.json",
+      "report_sha256": "03c933e0cde0d45ad792b6d2e3f9d96b8ccd1eeae59d2b963570583abaedc94b",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-regexp-split.log",
+      "log_sha256": "4e2dc8a4b1fe0a27c59d92c587401d69e195362f65fc2e0c6be1a569e280717c",
+      "exit_code": 0,
+      "counts": {
+        "passed": 90,
+        "unsupported": 6
+      },
+      "cases": 96,
+      "controls": 72,
+      "controls_verified": 72,
+      "baseline": {
+        "path": "tests/conformance/test262-regexp-split-current.json",
+        "sha256": "8a8aa3820823be4e9208b4e738942b676884a93d78cd6f0ea12db51d65e665ab"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "relational",
+      "before_report_sha256": "fb48bb0b7500f386542d91d397110f2ce95c29ca0bc8cd17dce58140dd59a946",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-relational.json",
+      "report_sha256": "654265c7ebb55f29a102e28a8d7802b02658482e264cea4b2a8550b7d04df126",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-relational.log",
+      "log_sha256": "c2b29e6e77548ae7bf376086b26bc067758cd817b21118bf536613e048925a1b",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "cases": 364,
+      "controls": 128,
+      "controls_verified": 128,
+      "baseline": {
+        "path": "tests/conformance/test262-relational-current.json",
+        "sha256": "da9b25f56a36b1ff2b4997642fa26933ff534d9866ff155d0826f2599cb65fe9"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "rest-parameters",
+      "before_report_sha256": "7dfc8d182bcb6cde4bfa2e9292cbfa7afd1f7e804d1058645f3fbea6e163bd09",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-rest-parameters.json",
+      "report_sha256": "2fea128360ff66fa44fbbaf6b83c616ca169076e34e86b9aef2ccf49731ab5c4",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-rest-parameters.log",
+      "log_sha256": "f71972d9535beaf00106bf3a46df356e42930bdb8ff1e17524093d7fb57de9e2",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "cases": 22,
+      "controls": 64,
+      "controls_verified": 64,
+      "baseline": {
+        "path": "tests/conformance/test262-rest-parameters-current.json",
+        "sha256": "d2afff0d3de3fa2cf37c68ee4d8b5e7794688dd1b514e827e4b2c22e763310f3"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "string-concat",
+      "before_report_sha256": "9330952ddcc9866ccbaa7a4420440f7649a4a3baa9c04b3de6a46caa0d6aaa08",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-string-concat.json",
+      "report_sha256": "d5fec6ba461c214e92bcf3c5b15efec765fcf4f70e9c1f078f8a22d1673b62c4",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-string-concat.log",
+      "log_sha256": "ba4f00f3820810f60e14c8a53c628b8c86d2867943ddd25166f998975abf8011",
+      "exit_code": 0,
+      "counts": {
+        "passed": 44
+      },
+      "cases": 44,
+      "controls": 56,
+      "controls_verified": 56,
+      "baseline": {
+        "path": "tests/conformance/test262-string-concat-current.json",
+        "sha256": "00367d16ec166ff6d88482b36221dc444922578482d5212fd4732fe512668364"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "string-json",
+      "before_report_sha256": "31a625cd03412115c2bbe5e9ce3d9461f92fca21752eb9a400cf88cd04001f69",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-string-json.json",
+      "report_sha256": "a8210d0c1f2e5d64679aef385981647b8ddcd6fb91b495eb877bf8c2503fb7fc",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-string-json.log",
+      "log_sha256": "bbace2f434cedd0e7d4bf625b5b4fec38a0650163e1321214226b6f514cb2044",
+      "exit_code": 0,
+      "counts": {
+        "passed": 568,
+        "unsupported": 84
+      },
+      "cases": 652,
+      "controls": 32,
+      "controls_verified": 32,
+      "baseline": {
+        "path": "tests/conformance/test262-current.json",
+        "sha256": "988461016a336b25c74e36d19418b90d61193211ab9012dce0b0624e278a80ff"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "string-last-index-of",
+      "before_report_sha256": "3fb12080e0f9e80e013fb85a02e11806214d81ebb01ffa3bd5f91946dd7822a9",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-string-last-index-of.json",
+      "report_sha256": "5abac8dfd4d2179c17b5f38187d241b970ce98850c99175b01bd7e1c61c01256",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-string-last-index-of.log",
+      "log_sha256": "51dad0cb3cf26e4ba232e0562b39bad0bfcf522daf12a6d904231f438a94dbac",
+      "exit_code": 0,
+      "counts": {
+        "passed": 50
+      },
+      "cases": 50,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": {
+        "path": "tests/conformance/test262-string-last-index-of-current.json",
+        "sha256": "4db22ae25a830831125415e7f6a29f136c77e72203b25810c1595b8ee4207cf5"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "string-search",
+      "before_report_sha256": "f8ce5fbd3f0aa94cc80a1f7f6960cbe2471c0eddfedb20ffaf4355bd0ac51ab6",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-string-search.json",
+      "report_sha256": "a46009ee0d110316cc404b4ec4706f0d14663af65fd52a0defedaded67c6e9bb",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-string-search.log",
+      "log_sha256": "01d43eeb21a804c25db32fc4536b42fd55237289b7e04918c11666d11f978a18",
+      "exit_code": 0,
+      "counts": {
+        "passed": 470,
+        "unsupported": 12,
+        "failed": 2
+      },
+      "cases": 484,
+      "controls": 72,
+      "controls_verified": 72,
+      "baseline": {
+        "path": "tests/conformance/test262-string-search-current.json",
+        "sha256": "952b4d98851498b70d5ee7a60c25e3894002d875ca98dab57869e2a0cc9e883b"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "symbols",
+      "before_report_sha256": "1856c37202a1af7b2d9424899055ac95bb9174a5bc09da2090570ac6fc5e9ef1",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-symbols.json",
+      "report_sha256": "8610c841bb89c6d8c0b70dda355ccaaac58cd843ae52e1e5e9af494d5d159612",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-symbols.log",
+      "log_sha256": "9e4c1b80fe9c3988955331dfd342de4cb8c70b916af9e1e98554178cd60be2f4",
+      "exit_code": 0,
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "cases": 242,
+      "controls": 80,
+      "controls_verified": 80,
+      "baseline": {
+        "path": "tests/conformance/test262-symbols-current.json",
+        "sha256": "7ad674a89581e055552742645de0912233df9fbb0af7d731d974e188b803baea"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "template-literal",
+      "before_report_sha256": "a3101ba9076f4c978fb2dbfe6b7e8e4ebbff856ea553db1d27b30294208892d9",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-template-literal.json",
+      "report_sha256": "2d61f497f28ba91216caa6ca42f1645facee70d6a6158534e8f7f82991127103",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-template-literal.log",
+      "log_sha256": "bae4a8b21954609bc0ce9466d150c8d671161ca34b7d0b67fca9a2bf3307f61a",
+      "exit_code": 0,
+      "counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "cases": 114,
+      "controls": 44,
+      "controls_verified": 44,
+      "baseline": {
+        "path": "tests/conformance/test262-template-literal-current.json",
+        "sha256": "e990475ba6e02361403ab3e610758cd3a91dbf8e02c15cbf649f5b425fd622a8"
+      },
+      "baseline_gate_passed": true,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    },
+    {
+      "profile": "uri",
+      "before_report_sha256": "55d834f172b0a4467e6fb8c6b43950c19ddbdc91a8edaaaec9713959115f4e3a",
+      "report_path": "/tmp/eris-array-buffer-candidate-2/profile-uri.json",
+      "report_sha256": "188ad2a2a5c08328c20aff82b6ceec7b0b5a150b3e4b2197b7afcebf1d66454b",
+      "log_path": "/tmp/eris-array-buffer-candidate-2/profile-uri.log",
+      "log_sha256": "316e1fc3e027fbc77fc5c1372d24c72f3dd94d83b7a64b19869cb8a44e2972e4",
+      "exit_code": 1,
+      "counts": {
+        "resource": 112,
+        "passed": 234
+      },
+      "cases": 346,
+      "controls": 128,
+      "controls_verified": 128,
+      "baseline": null,
+      "baseline_gate_passed": null,
+      "baseline_regressions": [],
+      "baseline_improvements": [],
+      "observation_changes": [],
+      "control_changes": []
+    }
+  ],
+  "baselines_modified_by_replay": false,
+  "baseline_hashes_unchanged": true,
+  "counts": {
+    "profiles": 41,
+    "cases": 18121,
+    "controls": 4092,
+    "control_changes": 0,
+    "improvements": 4,
+    "regressions": 0,
+    "other_changes": 0,
+    "existing_baseline_gates_passed": 33
+  },
+  "elapsed_seconds": 49.56054823205341
+}
