@@ -4102,3 +4102,37 @@ debug-binary preflight refusal remain in the [raw record](evidence/vulkan-native
 Numeric limits and the original CPU painter are unchanged. These are correctness
 and admission checks, not Chromium or general performance measurements.
 The preceding DOM checkpoint passed all nine [CI jobs](evidence/document-append-ci.json).
+
+### DOM own properties and native-member shadows
+
+[DOM own properties](dom-own-properties.md) adds lazy per-object string/symbol
+descriptors, accessors and method replacement. The reached native attribute
+fallbacks now distinguish node kinds and element types, preventing ordinary
+properties on fragments/text nodes from coercing values or installing listeners.
+Real DOM prototypes and complete Document reflection remain unfinished.
+
+Rust 1.88 passes **1,424 default tests**, and Rust 1.98 passes **1,547 native-feature
+tests**, including ignored confinement tests. The 21 added groups include 19
+focused groups and direct-page/confined-worker checks of six literal pixels and
+result text on load and click. Native strict Clippy and formatting pass.
+Independent source and own-key consumer review found no remaining concrete
+defect within this scope. Numeric quotas and entry resets are unchanged.
+
+The frozen DOM corpus retains **54/58 verified expectations** and all 44 controls.
+Two method-replacement modes now stop at unsupported full Document enumeration;
+their ordinary-success expectations remain unmet. The other 56 complete case
+rows and all controls are unchanged. The Object.is local corpus preserves every
+complete case/control row (72/78 expectations, 60 controls).
+
+The complete existing symbols profile preserves all 242 source/status rows
+(184 passed, four failed, 54 unsupported). The array-descriptors profile has
+3,556 passed and 18 unsupported modes; the form getter-retention test gains both
+modes, with no lost pass. Both unchanged regression gates pass.
+
+Initial focused compilation/test failures and the first full-suite run remain in
+the [raw record](evidence/dom-own-properties.json). Two historical private tests
+needed corrections: Boolean native setters belong on input rather than div,
+and newly implemented own-descriptor reads return undefined for inherited DOM
+attributes. The original failing sources are retained; the frozen external
+oracle and all five Window reflection refusals are unchanged. The previous
+Vulkan zoom checkpoint passed all nine [CI jobs](evidence/vulkan-native-zoom-ci.json).

@@ -114,7 +114,7 @@ impl Runtime {
         .map(Value::Bool)
     }
 
-    fn object_is_values(&mut self, mut left: &Value, mut right: &Value) -> Result<bool> {
+    pub(super) fn object_is_values(&mut self, mut left: &Value, mut right: &Value) -> Result<bool> {
         self.work(4)?;
         let mut receiver_key = false;
         loop {

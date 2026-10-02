@@ -35,8 +35,11 @@ adds the ninth method and closes two further modes; that suite now verifies
 At the eight-method checkpoint, all 44 formal profiles retained their complete
 results and all 36 existing gates passed. Its 11 local suites gained 22 passes
 without regressions or control changes.
-Real interface prototypes and ordinary host method replacement remain ordinary
-unmet expectations. Broader DOM interfaces and reflection remain open work.
+[DOM own properties](dom-own-properties.md) now add per-object string/symbol
+storage, descriptors, accessors and method replacement. The unchanged frozen
+replacement case reaches the missing Document enumeration operation, so the
+suite remains at 54/58 verified expectations. Real interface prototypes and
+complete Document reflection remain open work.
 
 [Fallible runtime initialization](runtime-initialization.md) now carries checked
 bootstrap failures through the browser, adapter and stress tool. Partial realms

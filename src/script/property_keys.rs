@@ -87,7 +87,7 @@ impl Runtime {
         for _ in 0..MAX_DEPTH {
             let Some(value) = cursor else { return Ok(None) };
             self.tick()?;
-            if let Some(property) = self.own_property_key(&value, key) {
+            if let Some(property) = self.read_own_property_key(&value, key)? {
                 return Ok(Some(property));
             }
             cursor = self.prototype_of(&value);
@@ -148,7 +148,11 @@ impl Runtime {
                     writable: false, ..
                 } => return Self::failed_write(strict),
                 PropertyValue::Accessor { set, .. } => {
-                    self.call(set, vec![value], receiver, doc)?;
+                    if dom_own_properties::host(&receiver).is_some() {
+                        self.dom_call_setter(set, value, receiver, doc)?;
+                    } else {
+                        self.call(set, vec![value], receiver, doc)?;
+                    }
                     return Ok(());
                 }
                 _ => {}
@@ -157,7 +161,7 @@ impl Runtime {
         if !js_object(&receiver) {
             return Self::failed_write(strict);
         }
-        let desc = if self.own_property_key(&receiver, key).is_some() {
+        let desc = if self.read_own_property_key(&receiver, key)?.is_some() {
             PropertyDescriptor {
                 value: Some(value),
                 ..PropertyDescriptor::default()
@@ -177,6 +181,9 @@ impl Runtime {
         receiver: Value,
         key: &PropertyKey,
     ) -> Result<bool> {
+        if dom_own_properties::host(&receiver).is_some() {
+            return self.dom_delete_own(&receiver, key);
+        }
         if let PropertyKey::String(key) = key {
             return self.delete_property(receiver, key);
         }
@@ -201,7 +208,12 @@ impl Runtime {
 
     pub(super) fn own_symbol_keys(&mut self, receiver: &Value) -> Result<Vec<PropertyKey>> {
         let mut result = Vec::new();
-        if let Some(id) = self.symbol_property_object(receiver) {
+        let object = if dom_own_properties::host(receiver).is_some() {
+            self.dom_own_object(receiver)?
+        } else {
+            self.symbol_property_object(receiver)
+        };
+        if let Some(id) = object {
             self.work(self.objects[id].order.len() + 1)?;
             let count = self.objects[id]
                 .order

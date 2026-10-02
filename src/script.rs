@@ -24,6 +24,7 @@ mod construction;
 mod data_view;
 mod date_builtins;
 mod dom_bindings;
+mod dom_own_properties;
 mod iterators;
 mod machine;
 mod names;
@@ -4581,7 +4582,7 @@ impl Runtime {
             if value == Value::Window {
                 self.window_lookup_budget(key)?;
             }
-            if let Some(property) = self.own_property(&value, key) {
+            if let Some(property) = self.read_own_property(&value, key)? {
                 return Ok(Some(property));
             }
             cursor = self.prototype_of(&value);
@@ -4699,6 +4700,9 @@ impl Runtime {
         key: &PropertyKey,
         desc: PropertyDescriptor,
     ) -> Result<bool> {
+        if dom_own_properties::host(receiver).is_some() {
+            return self.dom_define_own(receiver, key, desc);
+        }
         self.work(1 + key.byte_len() / 2 / 8)?;
         let window_key = if receiver == &Value::Window {
             key.as_string()
@@ -4878,7 +4882,7 @@ impl Runtime {
         let mut descriptors = self.own_key_descriptors(keys.len())?;
         for key in keys {
             if !self
-                .own_property_key(&properties, &key)
+                .read_own_property_key(&properties, &key)?
                 .is_some_and(|p| p.enumerable)
             {
                 continue;
@@ -4896,6 +4900,9 @@ impl Runtime {
         Ok(())
     }
     fn delete_property(&mut self, receiver: Value, key: &JsString) -> Result<bool> {
+        if dom_own_properties::host(&receiver).is_some() {
+            return self.dom_delete_own(&receiver, &PropertyKey::String(key.clone()));
+        }
         if matches!(receiver, Value::Null | Value::Undefined) {
             return Err(ScriptError::type_error(
                 "cannot delete property of null or undefined",
@@ -5481,6 +5488,11 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<()> {
         self.work(1 + key.len() / 8)?;
+        if dom_own_properties::host(&receiver).is_some()
+            && self.dom_set_ordinary(&receiver, key, &value, strict, doc)?
+        {
+            return Ok(());
+        }
         if let Value::Style(id) = receiver {
             self.work(key.len().saturating_add(1))?;
             self.charge(24 + key.len().saturating_mul(6))?;
@@ -5585,10 +5597,18 @@ impl Runtime {
         }
     }
     fn get(&mut self, receiver: Value, key: &str, doc: &mut Document) -> Result<Value> {
+        if dom_own_properties::host(&receiver).is_some()
+            && let Some(value) = self.dom_own_get_utf8(&receiver, key, doc)?
+        {
+            return Ok(value);
+        }
+        let absent_dom_attribute = dom_own_properties::host(&receiver).is_some()
+            && self.dom_attribute_get(&receiver, key, doc)?;
         if let Value::Style(id) = receiver {
             return self.style_get(id, key, doc);
         }
-        if matches!(receiver, Value::Node(_) | Value::Document | Value::Window)
+        if !absent_dom_attribute
+            && matches!(receiver, Value::Node(_) | Value::Document | Value::Window)
             && event_handler_name(key)
         {
             let target = self.event_target(&receiver, doc)?;
@@ -5599,7 +5619,8 @@ impl Runtime {
         if let Some(value) = self.lookup_property(&receiver, &key.into(), doc)? {
             return Ok(value);
         }
-        if self.property_object(&receiver).is_some()
+        if absent_dom_attribute
+            || self.property_object(&receiver).is_some()
             || matches!(
                 receiver,
                 Value::String(_) | Value::Number(_) | Value::Bool(_)
@@ -8294,6 +8315,7 @@ impl Runtime {
                 let object = self.coerce_object(native.receiver.clone())?;
                 if self.property_object(&object).is_none()
                     && object != Value::Window
+                    && dom_own_properties::host(&object).is_none()
                     && matches!(key, PropertyKey::String(_))
                 {
                     return Err(ScriptError::unsupported(
@@ -8305,7 +8327,7 @@ impl Runtime {
                 {
                     self.window_reflected_property(key)?
                 } else {
-                    self.own_property_key(&object, &key)
+                    self.read_own_property_key(&object, &key)?
                 };
                 return Ok(Value::Bool(if name.ends_with("propertyIsEnumerable") {
                     property.is_some_and(|p| p.enumerable)
@@ -8350,6 +8372,7 @@ impl Runtime {
                     self.window_reflected_property(key)?
                 } else {
                     if self.property_object(&object).is_none()
+                        && dom_own_properties::host(&object).is_none()
                         && matches!(key, PropertyKey::String(_))
                     {
                         return Err(ScriptError::unsupported(
@@ -8357,7 +8380,7 @@ impl Runtime {
                         ));
                     }
                     self.work(1 + key.byte_len() / 16)?;
-                    self.own_property_key(&object, &key)
+                    self.read_own_property_key(&object, &key)?
                 };
                 let Some(property) = property else {
                     return Ok(Value::Undefined);
@@ -8466,7 +8489,7 @@ impl Runtime {
                     self.tick()?;
                     if name != "Object.getOwnPropertyNames"
                         && !self
-                            .own_property(&object, &key)
+                            .read_own_property(&object, &key)?
                             .is_some_and(|p| p.enumerable)
                     {
                         continue;
@@ -12330,13 +12353,17 @@ mod tests {
         for source in [
             "Object.getOwnPropertyDescriptor(window, 'onclick')",
             "window.onclick = function(){}; Object.getOwnPropertyDescriptor(window, 'onclick')",
-            "Object.getOwnPropertyDescriptor(document, 'title')",
-            "Object.getOwnPropertyDescriptor(document.createElement('div'), 'textContent')",
             "Object.defineProperty(window, 'onclick', {value: 1})",
             "delete window.onclick",
             "window.onclick = function(){}; delete window.onclick",
         ] {
             assert!(run(source).unwrap_err().is_unsupported(), "{source}");
+        }
+        for source in [
+            "Object.getOwnPropertyDescriptor(document, 'title')",
+            "Object.getOwnPropertyDescriptor(document.createElement('div'), 'textContent')",
+        ] {
+            assert_eq!(run(source).unwrap(), Value::Undefined, "{source}");
         }
         assert_eq!(
             run("Object.getOwnPropertyNames(window).indexOf('CSS') >= 0").unwrap(),

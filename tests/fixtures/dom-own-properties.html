@@ -1,0 +1,137 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>DOM own properties through page callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#expandos{left:0}#methods{left:50px}#descriptors{left:100px}#accessors{left:150px}#isolation{left:200px}#native{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="expandos" class="sample"></div><div id="methods" class="sample"></div>
+<div id="descriptors" class="sample"></div><div id="accessors" class="sample"></div>
+<div id="isolation" class="sample"></div><div id="native" class="sample"></div>
+<button id="change" type="button">Run own-property callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function typeError(action){let error;try{action();}catch(e){error=e;}check(error instanceof TypeError,'TypeError');}
+function descriptor(target,key,value,writable,enumerable,configurable){
+  const d=Object.getOwnPropertyDescriptor(target,key);
+  check(d!==undefined&&d.value===value,'own data value');
+  check(d.writable===writable&&d.enumerable===enumerable&&d.configurable===configurable,'own data flags');
+  check(d.get===undefined&&d.set===undefined,'data descriptor kind');
+}
+function strictWrite(target){'use strict';target.ownLocked=30;}
+const element=document.createElement('section'),sibling=document.createElement('section');
+const fragment=document.createDocumentFragment(),otherFragment=document.createDocumentFragment();
+const child=document.createElement('i'),fragmentChild=document.createElement('i');
+element.appendChild(child);fragment.appendChild(fragmentChild);
+const targets=[document,element,fragment];
+const saved=[document.querySelector,element.querySelector,fragment.querySelector];
+const selectors=['#result','i','i'];
+const result=document.getElementById('result'),expected=[result,child,fragmentChild];
+const symbol=Symbol('dom-own'),otherSymbol=Symbol('dom-own'),privateSymbol=Symbol('private');
+const change=document.getElementById('change'),clickMarker={kind:'click'};
+let runs=0;
+
+function methodShadow(target,nativeMethod,selector,answer){
+  check(typeof nativeMethod==='function'&&nativeMethod.call(target,selector)===answer,'native method prerequisite');
+  check(target.querySelector===nativeMethod&&Object.getOwnPropertyDescriptor(target,'querySelector')===undefined,'method starts inherited');
+  const replacement=function(){check(this===target,'ordinary method receiver');return 73;};
+  target.querySelector=replacement;
+  check(target.querySelector===replacement&&target.querySelector()===73,'own method shadows native');
+  descriptor(target,'querySelector',replacement,true,true,true);
+  check(nativeMethod.call(target,selector)===answer,'saved native bypasses shadow');
+  check(sibling.querySelector===saved[1]&&otherFragment.querySelector===saved[2],'sibling methods unchanged');
+  check(delete target.querySelector,'delete method shadow');
+  check(Object.getOwnPropertyDescriptor(target,'querySelector')===undefined,'method shadow removed');
+  check(target.querySelector===nativeMethod&&target.querySelector(selector)===answer,'same native restored');
+}
+function dataProperties(target){
+  Object.defineProperty(target,'ownLocked',{value:29,writable:false,enumerable:false,configurable:true});
+  descriptor(target,'ownLocked',29,false,false,true);
+  check(Object.prototype.hasOwnProperty.call(target,'ownLocked'),'has own descriptor');
+  check(!Object.prototype.propertyIsEnumerable.call(target,'ownLocked'),'nonenumerable descriptor');
+  typeError(function(){strictWrite(target);});check(target.ownLocked===29,'nonwritable value retained');
+  Object.defineProperty(target,'ownLocked',{writable:true});
+  target.ownLocked=31;descriptor(target,'ownLocked',31,true,false,true);
+  check(delete target.ownLocked,'configurable deletion');
+  check(Object.getOwnPropertyDescriptor(target,'ownLocked')===undefined,'deleted descriptor absent');
+  Object.defineProperty(target,'ownPermanent',{value:47,writable:false,enumerable:false,configurable:false});
+  check(!(delete target.ownPermanent),'nonconfigurable deletion refuses');
+  typeError(function(){Object.defineProperty(target,'ownPermanent',{value:48});});
+  descriptor(target,'ownPermanent',47,false,false,false);
+}
+function accessorProperty(target,nativeMethod,selector,answer){
+  let gets=0,sets=0,getReceiver,setReceiver,stored=nativeMethod;
+  const getter=function(){gets++;getReceiver=this;return stored;};
+  const setter=function(value){sets++;setReceiver=this;stored=value;};
+  Object.defineProperty(target,'querySelector',{get:getter,set:setter,enumerable:true,configurable:true});
+  const d=Object.getOwnPropertyDescriptor(target,'querySelector');
+  check(d.get===getter&&d.set===setter&&gets===0&&sets===0,'reflection does not invoke accessor');
+  check(d.enumerable&&d.configurable&&d.value===undefined&&d.writable===undefined,'accessor descriptor flags');
+  check(target.querySelector(selector)===answer&&getReceiver===target&&gets===1,'getter uses original public receiver');
+  target.querySelector=undefined;
+  check(setReceiver===target&&sets===1&&gets===1,'setter uses original receiver without Get');
+  check(target.querySelector===undefined&&gets===2,'undefined own accessor still shadows native');
+  check(delete target.querySelector,'delete accessor');
+  check(target.querySelector===nativeMethod&&target.querySelector(selector)===answer,'accessor deletion restores native');
+}
+function apply(color){
+  check(runs===(color==='green'?0:1),'load/click progression');
+  let conversions=0;
+  const payload={toString(){conversions++;throw new Error('expando must not coerce');}};
+  for(let i=0;i<targets.length;i++){
+    const target=targets[i];
+    check(target.ownRound===(runs===0?undefined:runs),'expando survives page callback');
+    target[symbol]=payload;target.ownPayload=payload;target.ownRound=runs+1;
+    target['\uD800']='value\uD800';
+    check(target[symbol]===payload&&target[otherSymbol]===undefined,'symbol identity');
+    check(target.ownPayload===payload&&target['\uD800']==='value\uD800','arbitrary values and UTF-16 keys');
+    descriptor(target,symbol,payload,true,true,true);
+    descriptor(target,'ownPayload',payload,true,true,true);
+  }
+  check(conversions===0,'ordinary writes perform no DOM string conversion');mark('expandos',color);
+
+  for(let i=0;i<targets.length;i++)methodShadow(targets[i],saved[i],selectors[i],expected[i]);
+  mark('methods',color);
+
+  for(let i=0;i<targets.length;i++)dataProperties(targets[i]);
+  mark('descriptors',color);
+
+  for(let i=0;i<targets.length;i++)accessorProperty(targets[i],saved[i],selectors[i],expected[i]);
+  mark('accessors',color);
+
+  element.onlyHere=runs+1;element[privateSymbol]=payload;fragment.onlyHere=runs+21;
+  check(sibling.onlyHere===undefined&&otherFragment.onlyHere===undefined&&document.onlyHere===undefined,'separate string bags');
+  check(sibling[privateSymbol]===undefined&&fragment[privateSymbol]===undefined&&document[privateSymbol]===undefined,'separate symbol bags');
+  check(element.onlyHere===runs+1&&fragment.onlyHere===runs+21,'fragment and element do not overwrite each other');
+  const holder=document.createElement('aside');holder.appendChild(element);holder.removeChild(element);
+  check(element.parentNode===null&&element.ownPayload===payload&&element[privateSymbol]===payload,'detach retains same object properties');
+  const clone=element.cloneNode(true);
+  check(clone.ownPayload===undefined&&clone[symbol]===undefined&&clone.onlyHere===undefined,'clone does not copy JavaScript own properties');
+  check(clone.querySelector===saved[1]&&clone.querySelector('i')!==child&&clone.querySelector('i').parentNode===clone,'clone keeps native DOM behavior');
+  mark('isolation',color);
+
+  const title=document.title;document.title='DOM own '+runs;
+  check(document.title==='DOM own '+runs,'Document title setter after own storage');document.title=title;
+  const node=document.createElement('section');node.ownMarker=payload;
+  node.id='native-own-node';node.textContent='before';node.setAttribute('data-native','yes');
+  check(node.id==='native-own-node'&&node.getAttribute('data-native')==='yes'&&node.textContent==='before','native attributes after own storage');
+  Object.defineProperty(node,'textContent',{value:payload,writable:true,configurable:true});
+  node.textContent=payload;
+  check(node.textContent===payload&&node.firstChild.textContent==='before'&&conversions===0,'own attribute shadow bypasses native conversion');
+  check(delete node.textContent,'delete attribute shadow');
+  check(node.textContent==='before','deletion reveals real native content');node.textContent='after';
+  check(node.textContent==='after'&&node.firstChild.textContent==='after'&&node.ownMarker===payload,'native setter restored');
+  const input=document.createElement('input');input.ownMarker=payload;input.value='native value';
+  check(input.value==='native value'&&input.ownMarker===payload,'input value setter after own storage');
+  check(change.ownMarker===clickMarker&&change.onclick===clicked,'native handler survives own storage');
+  mark('native',color);runs++;
+}
+function clicked(){
+  check(this===change&&this.ownMarker===clickMarker,'event callback original receiver and retained expando');
+  apply('blue');check(runs===2,'two complete runs');result.textContent='6';document.body.className='clicked';
+}
+change.ownMarker=clickMarker;change.onclick=clicked;
+apply('green');result.textContent='ready';document.body.className='ready';
+</script>

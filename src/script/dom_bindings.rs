@@ -920,8 +920,11 @@ mod tests {
             e.textContent=null;assert.sameValue(e.textContent,'');e.textContent=undefined;assert.sameValue(e.textContent,'');
             e.innerText=null;assert.sameValue(e.textContent,'');e.innerText=undefined;assert.sameValue(e.textContent,'undefined');
             e.innerHTML=null;assert.sameValue(e.textContent,'');
-            e.hidden=bad;assert.sameValue(e.hidden,true);e.disabled=Symbol();assert.sameValue(e.disabled,true);
-            e.checked=bad;assert.sameValue(e.checked,true);
+            e.hidden=bad;assert.sameValue(e.hidden,true);
+            var input=document.createElement('input');input.disabled=Symbol();assert.sameValue(input.disabled,true);
+            input.checked=bad;assert.sameValue(input.checked,true);
+            var disabled=Symbol();e.disabled=disabled;assert.sameValue(e.disabled,disabled);
+            e.checked=bad;assert.sameValue(e.checked,bad);
             var textarea=document.createElement('textarea');textarea.value=null;assert.sameValue(textarea.value,'');
             textarea.value=undefined;assert.sameValue(textarea.value,'undefined');
             var s=Symbol();assert.throws(TypeError,function(){textarea.value=s;});assert.sameValue(textarea.value,'undefined');

@@ -219,6 +219,14 @@ earlier temporary-fragment moves remain observable after later failures.
 The parser's internal insertion path is unchanged. This does not add arbitrary
 cross-document adoption, mutation observers or complete DOM allocation recovery.
 
+[DOM own properties](dom-own-properties.md) share lazy string/symbol storage keyed
+by the actual host identity. Reads and missing deletions allocate no bag. New
+descriptors and bag entries become visible only after work/storage admission and
+reservation; descriptor conversion runs before live validation. Accessors receive
+the original host object after internal borrows end. The private storage object
+does not expose a new prototype or admit host integrity operations. These checks
+cover the reached own-property paths, not general host allocation recovery.
+
 ## Representative limits
 
 | Resource | Bound |

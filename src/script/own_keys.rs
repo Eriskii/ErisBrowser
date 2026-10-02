@@ -98,8 +98,18 @@ impl Runtime {
         if receiver == &Value::Window {
             return self.window_own_keys();
         }
-        let object = self.property_object(receiver);
-        if object.is_none() && js_object(receiver) {
+        if matches!(receiver, Value::Document) {
+            return Err(ScriptError::unsupported(
+                "Document complete own-key enumeration is not implemented",
+            ));
+        }
+        let dom = dom_own_properties::host(receiver).is_some();
+        let object = if dom {
+            self.dom_own_object(receiver)?
+        } else {
+            self.property_object(receiver)
+        };
+        if object.is_none() && js_object(receiver) && !dom {
             return Err(ScriptError::unsupported(
                 "host own-property enumeration is not implemented",
             ));
@@ -291,7 +301,7 @@ impl Runtime {
                 let Entry::Vacant(entry) = names.entry(key.clone()) else {
                     return Ok(None);
                 };
-                let Some(property) = self.own_property(object, key) else {
+                let Some(property) = self.read_own_property(object, key)? else {
                     return Ok(None);
                 };
                 self.work(1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)))?;
@@ -300,7 +310,7 @@ impl Runtime {
                 Ok(Some(property))
             }
             Entry::Vacant(entry) => {
-                let Some(property) = self.own_property(object, key) else {
+                let Some(property) = self.read_own_property(object, key)? else {
                     return Ok(None);
                 };
                 // Pay both insertions before either tree changes: one new inner

@@ -10,8 +10,11 @@ BigInt and foreign-realm cases remain unmet. Existing query/append
 methods now have separate defining-interface identities, function properties
 and receiver checks. [Document.append](document-append.md) adds the ninth method
 and checked insertion, bringing the unchanged local suite to **54/58 verified
-expectations**, with 44 healthy controls. Real interface prototypes and
-host-member replacement remain ordinary failures. The earlier eight-method
+expectations**, with 44 healthy controls. [DOM own properties](dom-own-properties.md)
+now support individual string/symbol data, accessors and method replacement.
+The frozen replacement case progresses to the missing complete Document
+enumeration operation in both modes; its ordinary-success expectation remains
+unmet. Real interface prototypes also remain missing. The earlier eight-method
 checkpoint's complete 44-profile replay preserved all prior formal case/control
 observations and all 36 baseline gates.
 
