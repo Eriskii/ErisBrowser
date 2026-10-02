@@ -1,5 +1,31 @@
 # Validation record
 
+## Browser-owned raster adapter
+
+The optional root `raster-bridge` feature now exposes the existing display-list
+and font adapter as `graphics::raster_bridge`. The probe reexports the same
+types and functions. Four implementation/test files move with only import paths
+and formatting changed; their algorithms, bounds and fallback rules are preserved.
+The core, shaders, CPU painter, worker startup and native presenter are unchanged.
+
+Rust 1.88 and 1.98 pass formatting, strict all-target Clippy and all **28 moved
+test groups** in both bridge-only and bridge+presenter configurations. The probe
+passes its **13 remaining groups** on both toolchains. Exact test identities are
+checked, and CI explicitly discovers the 21 adapter and seven text groups before
+running them. No registry package changes; the standalone bridge dependency graph
+contains no wgpu, and combining it with the presenter does not enable core GPU
+encoding or WGSL.
+
+The unchanged glyph, browser and worker-text contracts pass on all three Vulkan
+adapters: **1,958,280 GPU-compared bytes**, with **154,152 CPU fallback reference
+bytes counted separately**. All twelve supervised processes exit zero with empty
+stderr and complete cleanup; six worker-to-GPU grants preserve capture ordering.
+The existing confined browser executable is reused as the snapshot producer;
+only the checker consumes the relocated adapter. See the
+[source-bound evidence](../tools/vulkan-raster-probe/evidence/host-adapter-relocation.json).
+This makes the adapter available to native integration; native scenes, rounded
+geometry, broader frame budgets and GPU presentation remain unfinished.
+
 ## Reusable raster core
 
 [`eris-raster-core`](../crates/raster-core/README.md) now owns the unchanged
@@ -40,6 +66,9 @@ Python protocols are unchanged. The [retained evidence](../tools/vulkan-raster-p
 records exact source, binary and run bindings. This extraction establishes no
 native-window rasterization or performance result; browser adapter relocation,
 scene construction, rounded geometry and presentation remain unfinished.
+All seven [CI jobs for `9765846`](https://github.com/Eriskii/ErisBrowser/actions/runs/36970711760)
+passed; the [terminal record](../tools/vulkan-raster-probe/evidence/host-core-extraction-ci.json)
+is retained.
 
 ## Vulkan text from actual worker snapshots
 

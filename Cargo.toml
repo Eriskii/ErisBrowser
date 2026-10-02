@@ -18,8 +18,10 @@ path = "src/main.rs"
 [features]
 default = []
 vulkan-presenter = ["dep:wgpu", "dep:close_fds"]
+raster-bridge = ["dep:eris-raster-core"]
 
 [dependencies]
+eris-raster-core = { path = "crates/raster-core", optional = true, default-features = false }
 ab_glyph = "0.2.32"
 arboard = { version = "3.6.1", default-features = false }
 image = { version = "0.25.10", default-features = false, features = ["png", "jpeg", "gif", "webp", "bmp"] }

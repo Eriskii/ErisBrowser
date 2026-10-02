@@ -1,5 +1,5 @@
 use super::*;
-use eris::graphics::Color;
+use crate::graphics::Color;
 
 fn text(value: &str) -> DrawCommand {
     DrawCommand::Text {
@@ -39,7 +39,7 @@ fn old_entry_keeps_text_fallback_while_new_entry_admits_masks() {
             .plan()
             .draws()
             .iter()
-            .any(|d| d.kind() == crate::DrawKind::Glyph)
+            .any(|d| d.kind() == eris_raster_core::DrawKind::Glyph)
     );
     assert_eq!(prepared.text_stats().preparation.occurrences, 2);
     assert_eq!(prepared.text_stats().preparation.cold_requests, 2);
@@ -97,7 +97,7 @@ fn text_charges_remaining_cpu_allowance_before_mask_allocation() {
     let f = Frame::new(250, 200, 0xffffff);
     let mut commands = vec![
         DrawCommand::Rect {
-            rect: eris::graphics::Rect::default(),
+            rect: crate::graphics::Rect::default(),
             color: Color::TRANSPARENT,
             radius: 0.0
         };
@@ -136,7 +136,7 @@ fn complete_structural_preflight_precedes_all_glyph_preparation() {
     let commands = [
         text("A"),
         DrawCommand::Rect {
-            rect: eris::graphics::Rect::default(),
+            rect: crate::graphics::Rect::default(),
             color: Color::TRANSPARENT,
             radius: 1.0,
         },
@@ -186,7 +186,7 @@ fn existing_cpu_font_cache_does_not_change_admission_or_packed_plan() {
     let fonts = Fonts::new();
     let commands = [text("AVA To")];
     let cold = plan_display_list_with_fonts(&commands, &empty(), frame(), &fonts).unwrap();
-    let mut canvas = eris::graphics::Canvas::new(64, 32).unwrap();
+    let mut canvas = crate::graphics::Canvas::new(64, 32).unwrap();
     canvas.paint_with_viewport(&commands, &fonts, &empty(), (0.0, 0.0), (0.0, 0.0));
     assert!(!canvas.exhausted());
     let warm = plan_display_list_with_fonts(&commands, &empty(), frame(), &fonts).unwrap();

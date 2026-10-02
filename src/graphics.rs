@@ -2,6 +2,8 @@
 use ab_glyph::{Font, FontArc, PxScale, ScaleFont, point};
 use std::{cell::RefCell, collections::HashMap, path::Path, sync::Arc};
 
+#[cfg(feature = "raster-bridge")]
+pub mod raster_bridge;
 pub mod text_masks;
 
 const MAX_PAINT_COMMANDS: usize = 200_000;

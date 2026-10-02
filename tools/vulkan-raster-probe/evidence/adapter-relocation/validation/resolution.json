@@ -1,0 +1,148 @@
+{
+  "root": {
+    "registry_packages_unchanged": 315,
+    "local_before": [
+      {
+        "name": "eris-browser",
+        "version": "0.1.0",
+        "dependencies": [
+          "ab_glyph",
+          "arboard",
+          "base64 0.22.1",
+          "close_fds",
+          "encoding_rs",
+          "image",
+          "landlock",
+          "libc",
+          "rustix 1.1.5",
+          "seccompiler",
+          "softbuffer",
+          "ureq",
+          "url",
+          "wgpu",
+          "winit"
+        ]
+      }
+    ],
+    "local_after": [
+      {
+        "name": "eris-browser",
+        "version": "0.1.0",
+        "dependencies": [
+          "ab_glyph",
+          "arboard",
+          "base64 0.22.1",
+          "close_fds",
+          "encoding_rs",
+          "eris-raster-core",
+          "image",
+          "landlock",
+          "libc",
+          "rustix 1.1.5",
+          "seccompiler",
+          "softbuffer",
+          "ureq",
+          "url",
+          "wgpu",
+          "winit"
+        ]
+      },
+      {
+        "name": "eris-raster-core",
+        "version": "0.1.0"
+      }
+    ]
+  },
+  "probe": {
+    "registry_packages_unchanged": 325,
+    "local_before": [
+      {
+        "name": "eris-browser",
+        "version": "0.1.0",
+        "dependencies": [
+          "ab_glyph",
+          "arboard",
+          "base64 0.22.1",
+          "encoding_rs",
+          "image",
+          "landlock",
+          "libc",
+          "rustix 1.1.5",
+          "seccompiler",
+          "softbuffer",
+          "ureq",
+          "url",
+          "winit"
+        ]
+      },
+      {
+        "name": "eris-raster-core",
+        "version": "0.1.0",
+        "dependencies": [
+          "wgpu"
+        ]
+      },
+      {
+        "name": "eris-vulkan-raster-prototype",
+        "version": "0.0.0",
+        "dependencies": [
+          "eris-browser",
+          "eris-raster-core",
+          "wgpu"
+        ]
+      }
+    ],
+    "local_after": [
+      {
+        "name": "eris-browser",
+        "version": "0.1.0",
+        "dependencies": [
+          "ab_glyph",
+          "arboard",
+          "base64 0.22.1",
+          "encoding_rs",
+          "eris-raster-core",
+          "image",
+          "landlock",
+          "libc",
+          "rustix 1.1.5",
+          "seccompiler",
+          "softbuffer",
+          "ureq",
+          "url",
+          "winit"
+        ]
+      },
+      {
+        "name": "eris-raster-core",
+        "version": "0.1.0",
+        "dependencies": [
+          "wgpu"
+        ]
+      },
+      {
+        "name": "eris-vulkan-raster-prototype",
+        "version": "0.0.0",
+        "dependencies": [
+          "eris-browser",
+          "eris-raster-core",
+          "wgpu"
+        ]
+      }
+    ]
+  },
+  "bridge_only_graph": {
+    "wgpu_absent": true,
+    "core_features": [],
+    "core_dependencies": []
+  },
+  "core_lock_unchanged": true,
+  "combined_graph": {
+    "core_features": [],
+    "core_dependencies": [],
+    "wgpu_features": [
+      "std",
+      "vulkan"
+    ]
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "result": "No concrete preservation defect found in this bounded source-only review.",
+  "baseline": "97658460bdadb55d3a4aabe01667a623d7f5ad44",
+  "owner_source_ready": {
+    "path": "/tmp/eris-raster-bridge-relocation-source-ready.json",
+    "bytes": 6484,
+    "sha256": "0b45c6276c4998f49da78b438ad3ddf3accca32e4292e54374d17cf9d039ebbc"
+  },
+  "candidate_source_manifest": {
+    "path": "/tmp/eris-raster-bridge-1/source.json",
+    "bytes": 32152,
+    "sha256": "8db24c1fd40e5000964846f2ef5991be06d4faa4e928f64576bc1ab54480714d"
+  },
+  "comparisons": [
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "before_sha256": "ef74f617036456661c0ff6ede702d6b721b7615031cb9085dc2d9b645fef9fa3",
+      "after": {
+        "path": "src/graphics/raster_bridge.rs",
+        "bytes": 17998,
+        "sha256": "919fc67e4fd0686155d77acf0a2fc91ef9e209844a794517938a05d3dadd9933"
+      },
+      "algorithms_assertions_and_literals_preserved": true,
+      "test_names_preserved": []
+    },
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter/text.rs",
+      "before_sha256": "d2db12bdef76b85f20dfb4b5586a12de44d8410fb0335fb9481b2251fe01947a",
+      "after": {
+        "path": "src/graphics/raster_bridge/text.rs",
+        "bytes": 15424,
+        "sha256": "e0a7560112145ee61e5b7dead7a59b1b64377b07d18ffd589865fc6986e771ae"
+      },
+      "algorithms_assertions_and_literals_preserved": true,
+      "test_names_preserved": []
+    },
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+      "before_sha256": "85f2a6a539b12cf88d21ab565eaa330758484cfe38ace0299d047ccb61db4ef8",
+      "after": {
+        "path": "src/graphics/raster_bridge/tests.rs",
+        "bytes": 28578,
+        "sha256": "633b03aee31c9b8fd3131211e4a20873d0741f433f5ad587cca55ffaf6a72688"
+      },
+      "algorithms_assertions_and_literals_preserved": true,
+      "test_names_preserved": [
+        "browser_bridge_rejects_unsupported_hidden_content_at_original_indices",
+        "browser_bridge_validates_original_scalars_before_alpha_or_missing_elision",
+        "browser_bridge_frame_caps_and_unconditional_clear_remain_exact",
+        "browser_bridge_original_command_and_cpu_work_caps_precede_lowering",
+        "browser_bridge_combined_typed_scopes_check_boundaries_and_mismatches",
+        "browser_bridge_map_capacity_is_bounded_before_a_sparse_iteration",
+        "browser_bridge_individual_key_limit_counts_utf8_bytes",
+        "browser_bridge_aggregate_key_limits_precede_sorting_and_lookup",
+        "browser_bridge_private_comparison_prechecks_cover_maximum_and_overflow",
+        "browser_bridge_borrowed_sort_and_binary_lookup_match_spelled_keys",
+        "browser_bridge_unused_and_hidden_bad_sources_are_refused",
+        "browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice",
+        "browser_bridge_source_ids_use_first_reference_then_lexical_unused_order",
+        "browser_bridge_randomized_map_insertion_does_not_change_plan_or_counts",
+        "browser_bridge_borrows_sources_during_planning_and_owns_only_finished_payload",
+        "browser_bridge_hidden_images_keep_reference_stats_without_arena_allocation",
+        "browser_bridge_full_source_packing_can_refuse_unchanged_gpu_byte_cap",
+        "browser_bridge_lines_keep_canvas_f32_order_and_original_endpoint_checks",
+        "browser_bridge_fixed_escape_restores_offsets_and_scopes_without_flattening",
+        "browser_bridge_translucent_clip_and_source_alpha_reach_existing_planner",
+        "browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation"
+      ]
+    },
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+      "before_sha256": "f21ac32fce15e97677933de907a52a5a8838c0b1b1f0c50c5e30d7310d830c92",
+      "after": {
+        "path": "src/graphics/raster_bridge/text/tests.rs",
+        "bytes": 6488,
+        "sha256": "a7511d8dfa053498b5ed4fe2255fa917c8b7ba1b4af6cc995d38a80d87ad5d60"
+      },
+      "algorithms_assertions_and_literals_preserved": true,
+      "test_names_preserved": [
+        "old_entry_keeps_text_fallback_while_new_entry_admits_masks",
+        "all_text_inputs_are_counted_even_when_coarsely_culled",
+        "no_outline_repetitions_consume_operations_and_cpu_work",
+        "text_charges_remaining_cpu_allowance_before_mask_allocation",
+        "complete_structural_preflight_precedes_all_glyph_preparation",
+        "image_and_mask_sources_share_the_existing_entry_budget",
+        "existing_cpu_font_cache_does_not_change_admission_or_packed_plan"
+      ]
+    }
+  ],
+  "comparison_method": "Independently read published Git blobs, apply only the documented core-validator/core-crate/browser-crate path substitutions, then compare non-whitespace bytes and sorted top-level imports. Separately compare every Rust string/raw-string literal exactly so whitespace normalization cannot hide literal changes.",
+  "test_groups": {
+    "adapter": 21,
+    "text": 7,
+    "total": 28,
+    "declarations_names_assertions_and_cfg_test_hooks_preserved": true,
+    "execution": "Not run by this review."
+  },
+  "private_removals": {
+    "scope_file_removed": true,
+    "source_pixels_alias_and_scope_hook_only_lib_changes": true,
+    "obsolete_adapter_modules_removed": true,
+    "scope_note": "Remaining unqualified scope::CoordinateState references in probe glyph_tests.rs are compiled only through the unchanged core test module, whose public scope is intact."
+  },
+  "graphics_module_hook_only": {
+    "path": "src/graphics.rs",
+    "bytes": 61048,
+    "sha256": "90be6472b709eb447c39faf08e2db2c022a92c2b29abe153ed3680d83ef579ef"
+  },
+  "compatibility_facade": {
+    "path": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+    "bytes": 118,
+    "sha256": "39e188ec6de1db53a497d543bdf469cc3c00fb026dc3d8b397f329ad9c24c215"
+  },
+  "manifest_bindings": [
+    {
+      "path": "Cargo.toml",
+      "bytes": 1541,
+      "sha256": "ecc8d98b63e9a5a1bc9f208c5590c38cdd056969037e0d2634fcd733a45a8801"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 927,
+      "sha256": "905c7d0272a12696e779e708011b14133927f878c497ca9ae1045244b4fb8a9b"
+    },
+    {
+      "path": "crates/raster-core/Cargo.toml",
+      "bytes": 450,
+      "sha256": "b5f776ce46bf7f8d3a8606b1cf1b8e4fd1bdb40ff5a37e785e592fc3b5368df4"
+    }
+  ],
+  "feature_review": "Manifest intent is exact: root default keeps neither core nor bridge; raster-bridge enables optional pure core with default-features=false; presenter remains the unchanged direct Vulkan-only dependency. Probe feature forwards eris/raster-bridge while its own separate core dependency supplies GPU. Resolved feature graphs are being validated by root and are not inferred solely from lockfiles here.",
+  "preserved_files": [
+    {
+      "path": "src/main.rs",
+      "bytes": 12866,
+      "sha256": "81e98514b9b51762d7cd20d0eda1c2e30b85ebec6b38f6d01b0a6ff2ebee2dbf"
+    },
+    {
+      "path": "src/worker/channel.rs",
+      "bytes": 10115,
+      "sha256": "fa5e11334ea0cace8ac7e5b43c770f77dcaa7ccbf245a71365ff3540d9226d44"
+    },
+    {
+      "path": "src/presenter.rs",
+      "bytes": 12330,
+      "sha256": "f9bd2a4d817fe0ded8abd695296abf5b4151dbe13a5a00313a1f981fcb0d3094"
+    },
+    {
+      "path": "src/presenter/vulkan.rs",
+      "bytes": 23596,
+      "sha256": "d3de9ac6382a8776448c48ebe571debe70e4eab85878429070f95fbaa40df68b"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "bytes": 19675,
+      "sha256": "24233c70d6ab550ee44303c098f944fc33551052fa00feebf660ef5302a89abd"
+    },
+    {
+      "path": "src/presenter/vulkan/transfer.rs",
+      "bytes": 4502,
+      "sha256": "b1ec4bd22469eccfd7caae685eb580733628c461148078470c9dfdc4869c4937"
+    },
+    {
+      "path": "src/graphics/text_masks.rs",
+      "bytes": 30247,
+      "sha256": "d47609697dbdf8b6cdcf310aa28ec36a8873c0339d30fc20a0e92fa036a1b4e6"
+    },
+    {
+      "path": "crates/raster-core/Cargo.toml",
+      "bytes": 450,
+      "sha256": "b5f776ce46bf7f8d3a8606b1cf1b8e4fd1bdb40ff5a37e785e592fc3b5368df4"
+    },
+    {
+      "path": "crates/raster-core/Cargo.lock",
+      "bytes": 23783,
+      "sha256": "5fe923bf47baaa9844ffb8c6300a4ed7a929a081a47137c1335bb6135fbaa30a"
+    },
+    {
+      "path": "crates/raster-core/src/glyph.wgsl",
+      "bytes": 3578,
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7"
+    },
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "bytes": 18801,
+      "sha256": "606f2bdbc8c68347e3d6c01f465ab43e3d7538791e0b0341295f43ba7c468efa"
+    },
+    {
+      "path": "crates/raster-core/src/image.wgsl",
+      "bytes": 2959,
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446"
+    },
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "bytes": 24348,
+      "sha256": "ed1a56b424d1ea4b60f998eae0c6e6bb1746c2c8b98ab5f8a7ba70e6690a191f"
+    },
+    {
+      "path": "crates/raster-core/src/rect.wgsl",
+      "bytes": 1593,
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa"
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "bytes": 3645,
+      "sha256": "415ca9027a583914626b5e1f2ac3bd8fc9206acea0fa7ac2af88bc323ee5f22a"
+    }
+  ],
+  "clean_exec": "src/main.rs and src/worker/channel.rs are byte-identical; clean-worker-launch remains gated by Linux plus vulkan-presenter. No new renderer initialization or worker authority.",
+  "review_preparation_note": "An initial data-only assertion guessed different facade comment wording and stopped after the four successful body comparisons. The completed check uses the observed exact comment and separate original shim-removal blocks; no production or test source changed.",
+  "scope": "Read-only Git/source/manifest comparisons and hashing; no compiler, tests, Canvas, workers, GPU or candidate execution. No repository edits.",
+  "review_script": {
+    "path": "/tmp/eris-raster-bridge-relocation-review.py",
+    "bytes": 7275,
+    "sha256": "82f7fb6e339e66ae049d743ec665c307fd2716fb051ac16672dfaf0c7f798d12"
+  }
+}

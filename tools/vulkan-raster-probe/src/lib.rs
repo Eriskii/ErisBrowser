@@ -9,9 +9,6 @@ pub use eris_raster_core::{
     plan_with_masks, rect,
 };
 
-#[cfg(feature = "browser-bridge")]
-pub(crate) use eris_raster_core::validate_source_images as source_pixels;
-
 pub mod alpha_fixtures;
 #[cfg(feature = "browser-bridge")]
 pub mod browser_adapter;
@@ -20,5 +17,3 @@ pub mod browser_fixtures;
 pub mod fixtures;
 pub mod gpu;
 pub mod image_fixtures;
-#[cfg(feature = "browser-bridge")]
-pub(crate) mod scope;

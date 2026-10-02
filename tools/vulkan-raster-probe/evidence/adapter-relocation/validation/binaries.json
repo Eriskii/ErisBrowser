@@ -1,0 +1,32 @@
+[
+  {
+    "path": "eris-vulkan-browser-check-1.88.0",
+    "bytes": 23920320,
+    "sha256": "1485f5e52d10ab21ae3955ac64fe3f84165b168621d543d1d48fe7f4cc095042"
+  },
+  {
+    "path": "eris-vulkan-glyph-check-1.88.0",
+    "bytes": 21578176,
+    "sha256": "034305decced8a12a538023e94c26adbba4f837edcd7bb37d4c09f3afa0ad5be"
+  },
+  {
+    "path": "eris-vulkan-worker-text-check-1.88.0",
+    "bytes": 24007440,
+    "sha256": "76168adf1161de63ca8347068e8d21387d07a202c671d2f178def0e49059d72f"
+  },
+  {
+    "path": "eris-vulkan-browser-check-1.98.0",
+    "bytes": 28999504,
+    "sha256": "bdb0625a4eb8c059b280c7879a83b26f5a36c5a00530a51351f10b6cf53d9022"
+  },
+  {
+    "path": "eris-vulkan-glyph-check-1.98.0",
+    "bytes": 26596112,
+    "sha256": "b2ba7fa9837f77c0b14398298e611cb8ad19a66cf3e01159d4948d04b9587768"
+  },
+  {
+    "path": "eris-vulkan-worker-text-check-1.98.0",
+    "bytes": 29105880,
+    "sha256": "6ddb15e32bafb61eee43754061ce693cdddaafbcbd9f727a2abfa11e2e25400d"
+  }
+]

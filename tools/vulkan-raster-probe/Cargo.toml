@@ -10,7 +10,7 @@ license = "MIT"
 
 [features]
 default = []
-browser-bridge = ["dep:eris"]
+browser-bridge = ["dep:eris", "eris/raster-bridge"]
 
 [[bin]]
 name = "eris-vulkan-browser-check"

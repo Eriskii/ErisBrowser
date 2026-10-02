@@ -2,11 +2,11 @@
 //! Coverage is retained only by a bounded frame session, then packed once into
 //! the plan. Neither callbacks nor the returned plan retain font or text leases.
 use super::*;
-use crate::{MAX_GPU_BUFFER_BYTES, PARAM_STRIDE, SourceMask, scope::CoordinateState};
-use eris::graphics::{
+use crate::graphics::{
     Fonts,
     text_masks::{self, MaskInfo, Session, TextRun},
 };
+use eris_raster_core::{MAX_GPU_BUFFER_BYTES, PARAM_STRIDE, SourceMask, scope::CoordinateState};
 use std::cell::Cell;
 
 const MAX_TEXT_BYTES: usize = 65_536;
@@ -122,7 +122,7 @@ impl PreparationLedger {
 }
 
 pub fn plan_snapshot_with_fonts(
-    snapshot: &eris::worker::Snapshot,
+    snapshot: &crate::worker::Snapshot,
     frame: Frame,
     fonts: &Fonts,
 ) -> Result<FontBridgePlan> {
@@ -206,7 +206,7 @@ pub fn plan_display_list_with_fonts(
             rgba: &image.rgba,
         });
     }
-    let total_rgba_bytes = crate::source_pixels(&sources)
+    let total_rgba_bytes = eris_raster_core::validate_source_images(&sources)
         .map_err(|_| FallbackReason::new(FallbackKind::InvalidImage, None))?
         * 4;
     let referenced_rgba_bytes = sources[..referenced_sources]
@@ -254,7 +254,7 @@ pub fn plan_display_list_with_fonts(
             } => {
                 let offset = state.offset();
                 let clip = state.clip();
-                let clip = eris::graphics::Rect {
+                let clip = crate::graphics::Rect {
                     x: clip.x,
                     y: clip.y,
                     width: clip.width,
@@ -384,7 +384,7 @@ pub fn plan_display_list_with_fonts(
     for row in &rows {
         row_tables.push(row.as_slice());
     }
-    let plan = crate::plan_with_masks(frame, &lowered, &sources, &masks, &row_tables)
+    let plan = eris_raster_core::plan_with_masks(frame, &lowered, &sources, &masks, &row_tables)
         .map_err(|_| FallbackReason::new(FallbackKind::PlannerLimit, None))?;
     if plan.gpu_buffer_bytes() > ledger.gpu_upper {
         return Err(FallbackReason::new(FallbackKind::PlannerLimit, None));

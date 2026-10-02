@@ -488,6 +488,7 @@ dependencies = [
  "arboard",
  "base64 0.22.1",
  "encoding_rs",
+ "eris-raster-core",
  "image",
  "landlock",
  "libc",

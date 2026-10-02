@@ -1,0 +1,180 @@
+[
+  {
+    "name": "root-fmt",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 0.7728055550251156,
+    "log": "1.98.0-root-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "probe-fmt",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "fmt",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 0.08464585395995528,
+    "log": "1.98.0-probe-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "root-clippy-bridge",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--all-targets",
+      "--features",
+      "raster-bridge",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 16.3338846960105,
+    "log": "1.98.0-root-clippy-bridge.log",
+    "sha256": "5e671b65142a3685375455ea852c37bcaad8068ac2d8a4e58731c99b4d81b346"
+  },
+  {
+    "name": "root-test-bridge",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--lib",
+      "--features",
+      "raster-bridge",
+      "graphics::raster_bridge::",
+      "--",
+      "--include-ignored"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 22.807378848083317,
+    "log": "1.98.0-root-test-bridge.log",
+    "sha256": "cbc35d1498daacaf8fc50722ffd7a716a70b8e52519a1254947bd738b4ee58f8"
+  },
+  {
+    "name": "root-clippy-combined",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--all-targets",
+      "--features",
+      "raster-bridge,vulkan-presenter",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 15.004620468011126,
+    "log": "1.98.0-root-clippy-combined.log",
+    "sha256": "3aec5e51cb3e526276ce9228b2187b0c578e0f7c08b64b60f969838d334cfee3"
+  },
+  {
+    "name": "root-test-combined",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--lib",
+      "--features",
+      "raster-bridge,vulkan-presenter",
+      "graphics::raster_bridge::",
+      "--",
+      "--include-ignored"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 23.431485407985747,
+    "log": "1.98.0-root-test-combined.log",
+    "sha256": "c741752fa0edcdd370fd324a5ac89cdb1166806570a268f9b5303b33cd956e62"
+  },
+  {
+    "name": "probe-clippy",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--all-targets",
+      "--features",
+      "browser-bridge",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 3.0736824070336297,
+    "log": "1.98.0-probe-clippy.log",
+    "sha256": "60b222a8533065d3683d4eeab5b9789fc98d370f2bdabc16c9d533b404489120"
+  },
+  {
+    "name": "probe-test",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 5.340090443962254,
+    "log": "1.98.0-probe-test.log",
+    "sha256": "20c1e53a3ba4f0eb5e86f163b0bc914f6107ad024cbb5b4f8ef90cbc654e646f"
+  },
+  {
+    "name": "probe-build",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "build",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "expected_count_matched": true,
+    "seconds": 0.11946038797032088,
+    "log": "1.98.0-probe-build.log",
+    "sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+  }
+]

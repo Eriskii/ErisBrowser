@@ -9,8 +9,9 @@ or general web typography support.
 
 The [raster-core extraction](../crates/raster-core/README.md) is now implemented:
 primitive planning and optional GPU encoding have a browser-independent owner.
-The browser adapter and native scene/presentation portions below remain work
-to implement. Existing probe imports continue through reexports.
+The browser adapter now lives in `graphics::raster_bridge`, enabled by a
+planner-only feature with no GPU dependency. Native scene/presentation portions
+below remain work to implement. Existing probe imports continue through reexports.
 
 ## Current seams
 

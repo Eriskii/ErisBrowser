@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "status": "source-ready; exact mechanical relocation verified; not compiled or executed",
+  "before_archive": "/tmp/eris-raster-bridge-relocation-before",
+  "bindings": [
+    {
+      "path": "src/graphics/raster_bridge.rs",
+      "bytes": 17998,
+      "sha256": "919fc67e4fd0686155d77acf0a2fc91ef9e209844a794517938a05d3dadd9933"
+    },
+    {
+      "path": "src/graphics/raster_bridge/text.rs",
+      "bytes": 15424,
+      "sha256": "e0a7560112145ee61e5b7dead7a59b1b64377b07d18ffd589865fc6986e771ae"
+    },
+    {
+      "path": "src/graphics/raster_bridge/tests.rs",
+      "bytes": 28578,
+      "sha256": "633b03aee31c9b8fd3131211e4a20873d0741f433f5ad587cca55ffaf6a72688"
+    },
+    {
+      "path": "src/graphics/raster_bridge/text/tests.rs",
+      "bytes": 6488,
+      "sha256": "a7511d8dfa053498b5ed4fe2255fa917c8b7ba1b4af6cc995d38a80d87ad5d60"
+    },
+    {
+      "path": "src/graphics.rs",
+      "bytes": 61048,
+      "sha256": "90be6472b709eb447c39faf08e2db2c022a92c2b29abe153ed3680d83ef579ef"
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 1541,
+      "sha256": "ecc8d98b63e9a5a1bc9f208c5590c38cdd056969037e0d2634fcd733a45a8801"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 927,
+      "sha256": "905c7d0272a12696e779e708011b14133927f878c497ca9ae1045244b4fb8a9b"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 730,
+      "sha256": "96e374a8a33055a7856785a486fb3baec491a15439d411521a8e31d1eb210fc0"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "bytes": 118,
+      "sha256": "39e188ec6de1db53a497d543bdf469cc3c00fb026dc3d8b397f329ad9c24c215"
+    }
+  ],
+  "relocation_comparisons": [
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "after": "src/graphics/raster_bridge.rs",
+      "equivalence": "exact bytes after the three explicit path substitutions and Rust 1.88 rustfmt only",
+      "tests": [],
+      "count": 0
+    },
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter/text.rs",
+      "after": "src/graphics/raster_bridge/text.rs",
+      "equivalence": "exact bytes after the three explicit path substitutions and Rust 1.88 rustfmt only",
+      "tests": [],
+      "count": 0
+    },
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+      "after": "src/graphics/raster_bridge/tests.rs",
+      "equivalence": "exact bytes after the three explicit path substitutions and Rust 1.88 rustfmt only",
+      "tests": [
+        "browser_bridge_rejects_unsupported_hidden_content_at_original_indices",
+        "browser_bridge_validates_original_scalars_before_alpha_or_missing_elision",
+        "browser_bridge_frame_caps_and_unconditional_clear_remain_exact",
+        "browser_bridge_original_command_and_cpu_work_caps_precede_lowering",
+        "browser_bridge_combined_typed_scopes_check_boundaries_and_mismatches",
+        "browser_bridge_map_capacity_is_bounded_before_a_sparse_iteration",
+        "browser_bridge_individual_key_limit_counts_utf8_bytes",
+        "browser_bridge_aggregate_key_limits_precede_sorting_and_lookup",
+        "browser_bridge_private_comparison_prechecks_cover_maximum_and_overflow",
+        "browser_bridge_borrowed_sort_and_binary_lookup_match_spelled_keys",
+        "browser_bridge_unused_and_hidden_bad_sources_are_refused",
+        "browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice",
+        "browser_bridge_source_ids_use_first_reference_then_lexical_unused_order",
+        "browser_bridge_randomized_map_insertion_does_not_change_plan_or_counts",
+        "browser_bridge_borrows_sources_during_planning_and_owns_only_finished_payload",
+        "browser_bridge_hidden_images_keep_reference_stats_without_arena_allocation",
+        "browser_bridge_full_source_packing_can_refuse_unchanged_gpu_byte_cap",
+        "browser_bridge_lines_keep_canvas_f32_order_and_original_endpoint_checks",
+        "browser_bridge_fixed_escape_restores_offsets_and_scopes_without_flattening",
+        "browser_bridge_translucent_clip_and_source_alpha_reach_existing_planner",
+        "browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation"
+      ],
+      "count": 21
+    },
+    {
+      "before": "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+      "after": "src/graphics/raster_bridge/text/tests.rs",
+      "equivalence": "exact bytes after the three explicit path substitutions and Rust 1.88 rustfmt only",
+      "tests": [
+        "old_entry_keeps_text_fallback_while_new_entry_admits_masks",
+        "all_text_inputs_are_counted_even_when_coarsely_culled",
+        "no_outline_repetitions_consume_operations_and_cpu_work",
+        "text_charges_remaining_cpu_allowance_before_mask_allocation",
+        "complete_structural_preflight_precedes_all_glyph_preparation",
+        "image_and_mask_sources_share_the_existing_entry_budget",
+        "existing_cpu_font_cache_does_not_change_admission_or_packed_plan"
+      ],
+      "count": 7
+    }
+  ],
+  "test_ownership": {
+    "root_base_adapter_groups": 21,
+    "root_font_adapter_groups": 7,
+    "root_total": 28,
+    "root_feature": "raster-bridge",
+    "probe": "same public adapter paths reexport root implementation; dependency tests require explicit root invocation"
+  },
+  "manifest_equivalence": "Parsed manifests identical after removing new optional root dependency/feature and reverting probe browser-bridge feature edge. No core/gpu activation added.",
+  "graphics_equivalence": "Exact original graphics.rs after removing two-line gated module hook.",
+  "facade_equivalence": "Probe lib differs only by removal of private source_pixels alias and scope hook; browser_adapter.rs is a root-module reexport.",
+  "deleted_paths": [
+    "tools/vulkan-raster-probe/src/browser_adapter/text.rs",
+    "tools/vulkan-raster-probe/src/browser_adapter/tests.rs",
+    "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+    "tools/vulkan-raster-probe/src/scope.rs"
+  ],
+  "preserved": "All three lockfiles byte-identical at handoff. Core, shaders, fixtures, Python tooling, worker/presenter and CI untouched.",
+  "operations": [
+    "source reads/copies and explicit substitutions",
+    "Rust 1.88 rustfmt on owned files with skip_children",
+    "inert byte, test-name and TOML equality checks"
+  ],
+  "not_run": [
+    "Cargo dependency resolution",
+    "Rust compiler/tests",
+    "worker/Canvas/font/GPU",
+    "conformance"
+  ]
+}

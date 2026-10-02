@@ -1,5 +1,12 @@
 # Offscreen browser display-list bridge
 
+The implementation now lives in the browser crate's `graphics::raster_bridge`
+module behind the optional `raster-bridge` feature. That feature enables only
+CPU planning; it does not load a graphics driver. The probe's `browser-bridge`
+feature forwards to it and preserves the original adapter imports by reexport.
+The 21 adapter and seven text-adapter test groups now run explicitly in the root
+crate. Native window rendering is unchanged.
+
 The optional `browser-bridge` feature connects Eris's own worker snapshots to
 the standalone custom WGSL rasterizer. The browser window still uses its CPU
 painter; its optional Vulkan presenter uploads completed CPU frames. This

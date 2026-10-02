@@ -21,9 +21,10 @@ not been demonstrated.
 The [raster core](../crates/raster-core/README.md) now owns primitive planning and
 optional GPU encoding. Its default build has no external dependencies; GPU
 callers own submission, completion and presentation. The four existing offscreen
-suites retain their results on all three adapters. Moving the browser adapter
-into the main crate, constructing native scenes and presenting GPU output are
-the next integration steps.
+suites retain their results on all three adapters. The browser adapter now lives
+in the main crate behind the planner-only `raster-bridge` feature; probe imports
+remain reexports. Constructing native scenes, supporting rounded chrome and
+presenting GPU output are the next integration steps.
 
 [Array concat](../tests/conformance/array-concat.md) now streams live
 spreadability, same-realm species and aliased results. Its complete upstream

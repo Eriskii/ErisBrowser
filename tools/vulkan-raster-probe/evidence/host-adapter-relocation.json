@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "subject": "Move the browser display-list and font adapter into the main crate",
+  "parent_commit": "97658460bdadb55d3a4aabe01667a623d7f5ad44",
+  "source_manifest_sha256": "8db24c1fd40e5000964846f2ef5991be06d4faa4e928f64576bc1ab54480714d",
+  "source_files": 181,
+  "implementation_change": "Four mechanical relocations; import paths and formatting only",
+  "root_feature": "raster-bridge",
+  "root_bridge_only_wgpu_absent": true,
+  "root_combined_core_gpu_disabled": true,
+  "registry_package_records_unchanged": true,
+  "core_cpu_painter_presenter_and_worker_startup_unchanged": true,
+  "tests": {
+    "toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "formatting": true,
+    "strict_all_target_clippy": true,
+    "root_bridge_groups": 28,
+    "root_bridge_presenter_groups": 28,
+    "probe_groups": 13,
+    "exact_28_test_identities_verified": true
+  },
+  "gpu_suites": [
+    {
+      "suite": "glyph-host-1",
+      "adapter_count": 3,
+      "gpu_compared_bytes": 1034868,
+      "fallback_reference_bytes": 0,
+      "host_results_sha256": "91a1a3a6956d384aa4cc62e7f2b3593b09cec73d94f858e97194c4d4a214a1ad"
+    },
+    {
+      "suite": "browser-host-1",
+      "adapter_count": 3,
+      "gpu_compared_bytes": 1812,
+      "fallback_reference_bytes": 552,
+      "host_results_sha256": "8a82c6b29d2d57c650f8ebb8626d90e929f644c138797bf8df6d3627bc982479"
+    },
+    {
+      "suite": "worker-text-host-1",
+      "adapter_count": 3,
+      "gpu_compared_bytes": 921600,
+      "fallback_reference_bytes": 153600,
+      "host_results_sha256": "987510944dce390f56f99a5a10cb9ddf551d2683742d37c1576b25951f6e6f21"
+    }
+  ],
+  "total_gpu_compared_bytes": 1958280,
+  "total_fallback_reference_bytes": 154152,
+  "supervised_processes": 12,
+  "all_clean_exit_zero_empty_stderr": true,
+  "worker_to_gpu_grants": 6,
+  "browser_reused": {
+    "path": "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+    "sha256": "4ce8139a186080e7cd68d6478b46e81a6234494ffd556e359d0d8a6eca63fb0e",
+    "role": "Unchanged confined snapshot producer; relocated bridge is linked into checkers"
+  },
+  "standalone_core_gpu_rerun": false,
+  "native_gpu_rasterization": false,
+  "full_web_compatibility": false,
+  "production_security_claimed": false,
+  "chromium_performance_target_demonstrated": false,
+  "artifact_index": "adapter-relocation/index.json",
+  "remote_ci": {
+    "status": "pending publication"
+  },
+  "artifact_index_sha256": "f84f5d5b9e4a376b64c21c8dbe79ff02951b1eb9d0150bf3c76301f40ba0bc59",
+  "artifact_publication": {
+    "path": "adapter-relocation/publication.json",
+    "sha256": "d08fa718f78cdb697b52330dc14abac3125d943cda141944861d3a3cb2b50e0b"
+  }
+}

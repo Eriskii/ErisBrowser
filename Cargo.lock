@@ -499,6 +499,7 @@ dependencies = [
  "base64 0.22.1",
  "close_fds",
  "encoding_rs",
+ "eris-raster-core",
  "image",
  "landlock",
  "libc",
@@ -510,6 +511,10 @@ dependencies = [
  "wgpu",
  "winit",
 ]
+
+[[package]]
+name = "eris-raster-core"
+version = "0.1.0"
 
 [[package]]
 name = "errno"

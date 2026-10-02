@@ -123,6 +123,41 @@ jobs:
       - run: rustup toolchain install ${{ matrix.toolchain }} --profile minimal --component clippy
       - run: cargo clippy --locked --all-targets ${{ matrix.cargo-args }} -- -D warnings
       - run: cargo test --locked ${{ matrix.cargo-args }} -- --include-ignored
+      - name: Check root raster bridge with and without presenter
+        if: matrix.cargo-args == '--features vulkan-presenter'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for bridge_features in raster-bridge raster-bridge,vulkan-presenter; do
+            cargo clippy --locked --all-targets --features "$bridge_features" -- -D warnings
+            listing="$RUNNER_TEMP/raster-bridge-$bridge_features.txt"
+            cargo test --locked --lib --features "$bridge_features" graphics::raster_bridge:: -- --list > "$listing"
+            # Dependency tests no longer run in the probe. Require every moved
+            # test to be discoverable before accepting a filtered test run.
+            python3 - "$listing" <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          modules = (
+              ('src/graphics/raster_bridge/tests.rs', 'graphics::raster_bridge::tests::', 21),
+              ('src/graphics/raster_bridge/text/tests.rs', 'graphics::raster_bridge::text::tests::', 7),
+          )
+          expected = set()
+          for source, prefix, count in modules:
+              names = re.findall(r'(?m)^#\[test\]\s*\nfn ([A-Za-z_]\w*)\(', Path(source).read_text())
+              if len(names) != count or len(set(names)) != count:
+                  raise SystemExit(f'{source}: expected {count} distinct test declarations, got {len(names)}')
+              expected.update(prefix + name for name in names)
+          found = [line.removesuffix(': test') for line in Path(sys.argv[1]).read_text().splitlines()
+                   if line.endswith(': test')]
+          if len(found) != 28 or set(found) != expected:
+              raise SystemExit(f'bridge test discovery mismatch: found={len(found)}, '
+                               f'missing={sorted(expected - set(found))}, extra={sorted(set(found) - expected)}')
+          print('Verified all 28 relocated raster bridge tests are discoverable.')
+          PY
+            cargo test --locked --lib --features "$bridge_features" graphics::raster_bridge:: -- --include-ignored
+          done
       # These tests cover CPU ownership, deadlines and transfer layout. A real
       # Vulkan surface/readback is a separate host check, never an inferred pass.
   vulkan-probe:

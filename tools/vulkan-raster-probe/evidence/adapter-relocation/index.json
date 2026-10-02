@@ -1,0 +1,945 @@
+{
+  "schema": 1,
+  "kind": "exact retained root-adapter relocation evidence; no new execution",
+  "parent": "97658460bdadb55d3a4aabe01667a623d7f5ad44",
+  "files": [
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-checks.json",
+      "raw_path": "validation/1.88.0-checks.json",
+      "path": "validation/1.88.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 4159,
+      "raw_sha256": "149b0c074bb738382c87df7622c5418aa58692a3f7be8d212cb8babdb0a2448c",
+      "stored_bytes": 4159,
+      "stored_sha256": "149b0c074bb738382c87df7622c5418aa58692a3f7be8d212cb8babdb0a2448c"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-probe-build.log",
+      "raw_path": "validation/1.88.0-probe-build.log",
+      "path": "validation/1.88.0-probe-build.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 60,
+      "raw_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527",
+      "stored_bytes": 60,
+      "stored_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-probe-clippy.log",
+      "raw_path": "validation/1.88.0-probe-clippy.log",
+      "path": "validation/1.88.0-probe-clippy.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 286,
+      "raw_sha256": "ea6122bf7ec9b8de946ff9a0cf92b7f14c8713bbbba38b1d0c6f8560c8d56638",
+      "stored_bytes": 286,
+      "stored_sha256": "ea6122bf7ec9b8de946ff9a0cf92b7f14c8713bbbba38b1d0c6f8560c8d56638"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-probe-fmt.log",
+      "raw_path": "validation/1.88.0-probe-fmt.log",
+      "path": "validation/1.88.0-probe-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-probe-test.log",
+      "raw_path": "validation/1.88.0-probe-test.log",
+      "path": "validation/1.88.0-probe-test.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3105,
+      "raw_sha256": "f681ad469669f9e2cf5df601a84d4ae993138fd407a2e876948ee040e641b309",
+      "stored_bytes": 3105,
+      "stored_sha256": "f681ad469669f9e2cf5df601a84d4ae993138fd407a2e876948ee040e641b309"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-root-clippy-bridge.log",
+      "raw_path": "validation/1.88.0-root-clippy-bridge.log",
+      "path": "validation/1.88.0-root-clippy-bridge.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 5056,
+      "raw_sha256": "46c58610f956ed234e8c51be5cdd44c35b4d9234c026f12da33d9431f4bcd52c",
+      "stored_bytes": 5056,
+      "stored_sha256": "46c58610f956ed234e8c51be5cdd44c35b4d9234c026f12da33d9431f4bcd52c"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-root-clippy-combined.log",
+      "raw_path": "validation/1.88.0-root-clippy-combined.log",
+      "path": "validation/1.88.0-root-clippy-combined.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1887,
+      "raw_sha256": "7e915a048c7a5280b72cd8b542c18127aa74001e48cb3eac3454427e543d90c2",
+      "stored_bytes": 1887,
+      "stored_sha256": "7e915a048c7a5280b72cd8b542c18127aa74001e48cb3eac3454427e543d90c2"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-root-fmt.log",
+      "raw_path": "validation/1.88.0-root-fmt.log",
+      "path": "validation/1.88.0-root-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-root-test-bridge.log",
+      "raw_path": "validation/1.88.0-root-test-bridge.log",
+      "path": "validation/1.88.0-root-test-bridge.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 7642,
+      "raw_sha256": "6e3cf0a164e6413a77fb17aa1ea38e48cc6b7d3d70c616833b6b01a62979be8d",
+      "stored_bytes": 7642,
+      "stored_sha256": "6e3cf0a164e6413a77fb17aa1ea38e48cc6b7d3d70c616833b6b01a62979be8d"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.88.0-root-test-combined.log",
+      "raw_path": "validation/1.88.0-root-test-combined.log",
+      "path": "validation/1.88.0-root-test-combined.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 6187,
+      "raw_sha256": "4f326f81ab64452a9c33ef5fc8a555ad278fcf436fa86a9ce930463e07e73783",
+      "stored_bytes": 6187,
+      "stored_sha256": "4f326f81ab64452a9c33ef5fc8a555ad278fcf436fa86a9ce930463e07e73783"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-checks.json",
+      "raw_path": "validation/1.98.0-checks.json",
+      "path": "validation/1.98.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 4161,
+      "raw_sha256": "6c78d9c5d3783ef19f3e1b5ae93f26e254b908f15d504b5c7fb15f36756479e4",
+      "stored_bytes": 4161,
+      "stored_sha256": "6c78d9c5d3783ef19f3e1b5ae93f26e254b908f15d504b5c7fb15f36756479e4"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-probe-build.log",
+      "raw_path": "validation/1.98.0-probe-build.log",
+      "path": "validation/1.98.0-probe-build.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 60,
+      "raw_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527",
+      "stored_bytes": 60,
+      "stored_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-probe-clippy.log",
+      "raw_path": "validation/1.98.0-probe-clippy.log",
+      "path": "validation/1.98.0-probe-clippy.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 286,
+      "raw_sha256": "60b222a8533065d3683d4eeab5b9789fc98d370f2bdabc16c9d533b404489120",
+      "stored_bytes": 286,
+      "stored_sha256": "60b222a8533065d3683d4eeab5b9789fc98d370f2bdabc16c9d533b404489120"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-probe-fmt.log",
+      "raw_path": "validation/1.98.0-probe-fmt.log",
+      "path": "validation/1.98.0-probe-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-probe-test.log",
+      "raw_path": "validation/1.98.0-probe-test.log",
+      "path": "validation/1.98.0-probe-test.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3099,
+      "raw_sha256": "20c1e53a3ba4f0eb5e86f163b0bc914f6107ad024cbb5b4f8ef90cbc654e646f",
+      "stored_bytes": 3099,
+      "stored_sha256": "20c1e53a3ba4f0eb5e86f163b0bc914f6107ad024cbb5b4f8ef90cbc654e646f"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-root-clippy-bridge.log",
+      "raw_path": "validation/1.98.0-root-clippy-bridge.log",
+      "path": "validation/1.98.0-root-clippy-bridge.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 5056,
+      "raw_sha256": "5e671b65142a3685375455ea852c37bcaad8068ac2d8a4e58731c99b4d81b346",
+      "stored_bytes": 5056,
+      "stored_sha256": "5e671b65142a3685375455ea852c37bcaad8068ac2d8a4e58731c99b4d81b346"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-root-clippy-combined.log",
+      "raw_path": "validation/1.98.0-root-clippy-combined.log",
+      "path": "validation/1.98.0-root-clippy-combined.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1887,
+      "raw_sha256": "3aec5e51cb3e526276ce9228b2187b0c578e0f7c08b64b60f969838d334cfee3",
+      "stored_bytes": 1887,
+      "stored_sha256": "3aec5e51cb3e526276ce9228b2187b0c578e0f7c08b64b60f969838d334cfee3"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-root-fmt.log",
+      "raw_path": "validation/1.98.0-root-fmt.log",
+      "path": "validation/1.98.0-root-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-root-test-bridge.log",
+      "raw_path": "validation/1.98.0-root-test-bridge.log",
+      "path": "validation/1.98.0-root-test-bridge.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 7641,
+      "raw_sha256": "cbc35d1498daacaf8fc50722ffd7a716a70b8e52519a1254947bd738b4ee58f8",
+      "stored_bytes": 7641,
+      "stored_sha256": "cbc35d1498daacaf8fc50722ffd7a716a70b8e52519a1254947bd738b4ee58f8"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/1.98.0-root-test-combined.log",
+      "raw_path": "validation/1.98.0-root-test-combined.log",
+      "path": "validation/1.98.0-root-test-combined.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 6186,
+      "raw_sha256": "c741752fa0edcdd370fd324a5ac89cdb1166806570a268f9b5303b33cd956e62",
+      "stored_bytes": 6186,
+      "stored_sha256": "c741752fa0edcdd370fd324a5ac89cdb1166806570a268f9b5303b33cd956e62"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/binaries.json",
+      "raw_path": "validation/binaries.json",
+      "path": "validation/binaries.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 973,
+      "raw_sha256": "64f1027f2e42d922eead1126c8cb9bcfa9d1e0aee7dfda55aabb36d5e5f4c5e8",
+      "stored_bytes": 973,
+      "stored_sha256": "64f1027f2e42d922eead1126c8cb9bcfa9d1e0aee7dfda55aabb36d5e5f4c5e8"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1-launcher.log",
+      "raw_path": "validation/browser-host-1-launcher.log",
+      "path": "validation/browser-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 111,
+      "raw_sha256": "a5155e2d2796e3bad3229160107ac10b6d51605236bfa935896bd57cdfbb4a5a",
+      "stored_bytes": 111,
+      "stored_sha256": "a5155e2d2796e3bad3229160107ac10b6d51605236bfa935896bd57cdfbb4a5a"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/check-rust.py",
+      "raw_path": "validation/check-rust.py",
+      "path": "validation/check-rust.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 2360,
+      "raw_sha256": "a25d6c3632ee517f4ae1a11b79c666e16d500147918959eacf3f91310abf2909",
+      "stored_bytes": 2360,
+      "stored_sha256": "a25d6c3632ee517f4ae1a11b79c666e16d500147918959eacf3f91310abf2909"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/combined-metadata.stderr.log",
+      "raw_path": "validation/combined-metadata.stderr.log",
+      "path": "validation/combined-metadata.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1-launcher.log",
+      "raw_path": "validation/glyph-host-1-launcher.log",
+      "path": "validation/glyph-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 109,
+      "raw_sha256": "9f9024ec7b5d015e63df7adaedd9e4647ba3233e92078ef9112dd01c775501be",
+      "stored_bytes": 109,
+      "stored_sha256": "9f9024ec7b5d015e63df7adaedd9e4647ba3233e92078ef9112dd01c775501be"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/gpu-runs.json",
+      "raw_path": "validation/gpu-runs.json",
+      "path": "validation/gpu-runs.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 2179,
+      "raw_sha256": "62002b0b90e8fb892fae7e36ea29564e9cf952703c6b07698586fd849693d51f",
+      "stored_bytes": 2179,
+      "stored_sha256": "62002b0b90e8fb892fae7e36ea29564e9cf952703c6b07698586fd849693d51f"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/launch.py",
+      "raw_path": "validation/launch.py",
+      "path": "validation/launch.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 236,
+      "raw_sha256": "607abd92921aa018479f61581415adb93b3776e8a84e043399e9ee6a4e0fd514",
+      "stored_bytes": 236,
+      "stored_sha256": "607abd92921aa018479f61581415adb93b3776e8a84e043399e9ee6a4e0fd514"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/probe-resolve.log",
+      "raw_path": "validation/probe-resolve.log",
+      "path": "validation/probe-resolve.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/resolution.json",
+      "raw_path": "validation/resolution.json",
+      "path": "validation/resolution.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 2977,
+      "raw_sha256": "06a281409b55eac922b8c8c4d7d0b5ea1d3a33d67a0b1a261309e58c13974cc8",
+      "stored_bytes": 2977,
+      "stored_sha256": "06a281409b55eac922b8c8c4d7d0b5ea1d3a33d67a0b1a261309e58c13974cc8"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/root-resolve.log",
+      "raw_path": "validation/root-resolve.log",
+      "path": "validation/root-resolve.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 177,
+      "raw_sha256": "0b79b250da38660e1dd6d95cac913d192a66426a4149f27862d509b5f0ba43a8",
+      "stored_bytes": 177,
+      "stored_sha256": "0b79b250da38660e1dd6d95cac913d192a66426a4149f27862d509b5f0ba43a8"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/run-gpu-suites.py",
+      "raw_path": "validation/run-gpu-suites.py",
+      "path": "validation/run-gpu-suites.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 1683,
+      "raw_sha256": "5cb1d6f80f25c99dea1c4a162ffa1931e09c3f5e5bf972c87c0974cd40833c76",
+      "stored_bytes": 1683,
+      "stored_sha256": "5cb1d6f80f25c99dea1c4a162ffa1931e09c3f5e5bf972c87c0974cd40833c76"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/source.json",
+      "raw_path": "validation/source.json",
+      "path": "validation/source.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 32152,
+      "raw_sha256": "8db24c1fd40e5000964846f2ef5991be06d4faa4e928f64576bc1ab54480714d",
+      "stored_bytes": 32152,
+      "stored_sha256": "8db24c1fd40e5000964846f2ef5991be06d4faa4e928f64576bc1ab54480714d"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/test-ownership.json",
+      "raw_path": "validation/test-ownership.json",
+      "path": "validation/test-ownership.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 3084,
+      "raw_sha256": "fe258ae9f2f1c4e6d654a7044eead0eb5360d0e2ad403871954e745390a6a157",
+      "stored_bytes": 3084,
+      "stored_sha256": "fe258ae9f2f1c4e6d654a7044eead0eb5360d0e2ad403871954e745390a6a157"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1-launcher.log",
+      "raw_path": "validation/worker-text-host-1-launcher.log",
+      "path": "validation/worker-text-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 115,
+      "raw_sha256": "fc498d70d94d8396c0500022af194af6462f59f9ad979703c506d6df29943e3a",
+      "stored_bytes": 115,
+      "stored_sha256": "fc498d70d94d8396c0500022af194af6462f59f9ad979703c506d6df29943e3a"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-0.json",
+      "raw_path": "hosts/glyph-host-1/adapter-0.json",
+      "path": "hosts/glyph-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 890,
+      "raw_sha256": "b15150d1b2d6f9f3c93ec15ec742b10ba571c6af619562ad7312a04170af29fa",
+      "stored_bytes": 890,
+      "stored_sha256": "b15150d1b2d6f9f3c93ec15ec742b10ba571c6af619562ad7312a04170af29fa"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-0.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-0.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-0.stdout.log",
+      "raw_path": "hosts/glyph-host-1/adapter-0.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c",
+      "stored_bytes": 9613,
+      "stored_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c",
+      "supervisor_stdout_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-1.json",
+      "raw_path": "hosts/glyph-host-1/adapter-1.json",
+      "path": "hosts/glyph-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 891,
+      "raw_sha256": "bd9693c6acb8ed51d884b7f686203a1432c646160231dcc05d6e5a17d765c3a6",
+      "stored_bytes": 891,
+      "stored_sha256": "bd9693c6acb8ed51d884b7f686203a1432c646160231dcc05d6e5a17d765c3a6"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-1.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-1.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-1.stdout.log",
+      "raw_path": "hosts/glyph-host-1/adapter-1.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9",
+      "stored_bytes": 9613,
+      "stored_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9",
+      "supervisor_stdout_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-2.json",
+      "raw_path": "hosts/glyph-host-1/adapter-2.json",
+      "path": "hosts/glyph-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 891,
+      "raw_sha256": "d86a9dbc0a3821d457c4c83e207431fcb5a1d726ca0ca9252b83ae7237435e3b",
+      "stored_bytes": 891,
+      "stored_sha256": "d86a9dbc0a3821d457c4c83e207431fcb5a1d726ca0ca9252b83ae7237435e3b"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-2.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-2.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-2.stdout.log",
+      "raw_path": "hosts/glyph-host-1/adapter-2.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+      "stored_bytes": 9613,
+      "stored_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+      "supervisor_stdout_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/enumeration.json",
+      "raw_path": "hosts/glyph-host-1/enumeration.json",
+      "path": "hosts/glyph-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 735,
+      "raw_sha256": "66ee221a2b67241efa68a6891abce3a1fb850aefbb0a47864ef0d6930146c26f",
+      "stored_bytes": 735,
+      "stored_sha256": "66ee221a2b67241efa68a6891abce3a1fb850aefbb0a47864ef0d6930146c26f"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/enumeration.stderr.log",
+      "raw_path": "hosts/glyph-host-1/enumeration.stderr.log",
+      "path": "hosts/glyph-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/enumeration.stdout.log",
+      "raw_path": "hosts/glyph-host-1/enumeration.stdout.log",
+      "path": "hosts/glyph-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "supervisor_stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/enumeration.supervisor.stderr.log",
+      "raw_path": "hosts/glyph-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/glyph-host-1/host-results.json",
+      "raw_path": "hosts/glyph-host-1/host-results.json",
+      "path": "hosts/glyph-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 56434,
+      "raw_sha256": "91a1a3a6956d384aa4cc62e7f2b3593b09cec73d94f858e97194c4d4a214a1ad",
+      "stored_bytes": 56434,
+      "stored_sha256": "91a1a3a6956d384aa4cc62e7f2b3593b09cec73d94f858e97194c4d4a214a1ad"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-0.json",
+      "raw_path": "hosts/browser-host-1/adapter-0.json",
+      "path": "hosts/browser-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 960,
+      "raw_sha256": "9215b34532014b0b8445ef80b9ee9db802b8dd119becb7a02b2fa8cdee6f2d8b",
+      "stored_bytes": 960,
+      "stored_sha256": "9215b34532014b0b8445ef80b9ee9db802b8dd119becb7a02b2fa8cdee6f2d8b"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-0.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-0.stderr.log",
+      "path": "hosts/browser-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-0.stdout.log",
+      "raw_path": "hosts/browser-host-1/adapter-0.stdout.log",
+      "path": "hosts/browser-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 14901,
+      "raw_sha256": "f094e60890a8d405b57bcf25e30eb867ca0a78428fef985fb339e19e7d0ed185",
+      "stored_bytes": 14901,
+      "stored_sha256": "f094e60890a8d405b57bcf25e30eb867ca0a78428fef985fb339e19e7d0ed185",
+      "supervisor_stdout_sha256": "f094e60890a8d405b57bcf25e30eb867ca0a78428fef985fb339e19e7d0ed185"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-0.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-1.json",
+      "raw_path": "hosts/browser-host-1/adapter-1.json",
+      "path": "hosts/browser-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 960,
+      "raw_sha256": "b5fc065b88fb796306e1a7f44e2b35dce64a0f647ad260968cbbdff54f32bd5c",
+      "stored_bytes": 960,
+      "stored_sha256": "b5fc065b88fb796306e1a7f44e2b35dce64a0f647ad260968cbbdff54f32bd5c"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-1.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-1.stderr.log",
+      "path": "hosts/browser-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-1.stdout.log",
+      "raw_path": "hosts/browser-host-1/adapter-1.stdout.log",
+      "path": "hosts/browser-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 14901,
+      "raw_sha256": "f3a17dc6cb8a25aad7ff09f61eb4fb72b835383e9c3493f79b96fb4549a9f86f",
+      "stored_bytes": 14901,
+      "stored_sha256": "f3a17dc6cb8a25aad7ff09f61eb4fb72b835383e9c3493f79b96fb4549a9f86f",
+      "supervisor_stdout_sha256": "f3a17dc6cb8a25aad7ff09f61eb4fb72b835383e9c3493f79b96fb4549a9f86f"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-1.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-2.json",
+      "raw_path": "hosts/browser-host-1/adapter-2.json",
+      "path": "hosts/browser-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 960,
+      "raw_sha256": "22c9948c67ffdbac2c2f341c8b79e623d29fe7bf470db446f57004998f7663eb",
+      "stored_bytes": 960,
+      "stored_sha256": "22c9948c67ffdbac2c2f341c8b79e623d29fe7bf470db446f57004998f7663eb"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-2.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-2.stderr.log",
+      "path": "hosts/browser-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-2.stdout.log",
+      "raw_path": "hosts/browser-host-1/adapter-2.stdout.log",
+      "path": "hosts/browser-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 14901,
+      "raw_sha256": "d7c237766cb27c7190c4e4167145dddc24118b7c10058cebfa855b809359d57f",
+      "stored_bytes": 14901,
+      "stored_sha256": "d7c237766cb27c7190c4e4167145dddc24118b7c10058cebfa855b809359d57f",
+      "supervisor_stdout_sha256": "d7c237766cb27c7190c4e4167145dddc24118b7c10058cebfa855b809359d57f"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/adapter-2.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/enumeration.json",
+      "raw_path": "hosts/browser-host-1/enumeration.json",
+      "path": "hosts/browser-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 738,
+      "raw_sha256": "9bb9297dccdea49fbe7cf595fe8011289f35d3abfda8fdbb52624a170d67ea2b",
+      "stored_bytes": 738,
+      "stored_sha256": "9bb9297dccdea49fbe7cf595fe8011289f35d3abfda8fdbb52624a170d67ea2b"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/enumeration.stderr.log",
+      "raw_path": "hosts/browser-host-1/enumeration.stderr.log",
+      "path": "hosts/browser-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/enumeration.stdout.log",
+      "raw_path": "hosts/browser-host-1/enumeration.stdout.log",
+      "path": "hosts/browser-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "supervisor_stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/enumeration.supervisor.stderr.log",
+      "raw_path": "hosts/browser-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/browser-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/browser-host-1/host-results.json",
+      "raw_path": "hosts/browser-host-1/host-results.json",
+      "path": "hosts/browser-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 117776,
+      "raw_sha256": "8a82c6b29d2d57c650f8ebb8626d90e929f644c138797bf8df6d3627bc982479",
+      "stored_bytes": 117776,
+      "stored_sha256": "8a82c6b29d2d57c650f8ebb8626d90e929f644c138797bf8df6d3627bc982479"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-0.json",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.json",
+      "path": "hosts/worker-text-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 964,
+      "raw_sha256": "6c801e7b690b49062fbe01af6268dd16958e2ee248031ba89b11ca1b439c8944",
+      "stored_bytes": 964,
+      "stored_sha256": "6c801e7b690b49062fbe01af6268dd16958e2ee248031ba89b11ca1b439c8944"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-0.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-0.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.stdout.log",
+      "path": "hosts/worker-text-host-1/adapter-0.stdout.log.gz",
+      "encoding": "gzip-mtime-0",
+      "uncompressed_bytes": 729716,
+      "raw_sha256": "9b7b6daf2d0e8cd81afa7f67772acdd84c117870338c238bb70892f50e7a89a5",
+      "stored_bytes": 17852,
+      "stored_sha256": "a7c97ec0a1458148b80331cf9dc509a074be7735f3e66ac675ff2f16cd562a03",
+      "supervisor_stdout_sha256": "9b7b6daf2d0e8cd81afa7f67772acdd84c117870338c238bb70892f50e7a89a5"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-0.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-1.json",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.json",
+      "path": "hosts/worker-text-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 964,
+      "raw_sha256": "703e55adae644882ccc9bca43f75c721f3e5fd2c995123b5bd8b77e10420ce87",
+      "stored_bytes": 964,
+      "stored_sha256": "703e55adae644882ccc9bca43f75c721f3e5fd2c995123b5bd8b77e10420ce87"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-1.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-1.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.stdout.log",
+      "path": "hosts/worker-text-host-1/adapter-1.stdout.log.gz",
+      "encoding": "gzip-mtime-0",
+      "uncompressed_bytes": 729716,
+      "raw_sha256": "5170a877168b60acdd0582eb8f68b876153ca7f10dc6d477878ceb340ff6f6f8",
+      "stored_bytes": 17853,
+      "stored_sha256": "d35e4ef65c0c2e909d3cbdf5304a3e6fb768c16e7298a706b3e19c7d56d78d9d",
+      "supervisor_stdout_sha256": "5170a877168b60acdd0582eb8f68b876153ca7f10dc6d477878ceb340ff6f6f8"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-1.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-2.json",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.json",
+      "path": "hosts/worker-text-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 964,
+      "raw_sha256": "cff9ea858454c38784cf19eb1b7864b16fed405a4039c8af34a4f323d40190e3",
+      "stored_bytes": 964,
+      "stored_sha256": "cff9ea858454c38784cf19eb1b7864b16fed405a4039c8af34a4f323d40190e3"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-2.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-2.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.stdout.log",
+      "path": "hosts/worker-text-host-1/adapter-2.stdout.log.gz",
+      "encoding": "gzip-mtime-0",
+      "uncompressed_bytes": 729716,
+      "raw_sha256": "dba733a6dc5529bf6bd2712b4b4fba09de6f0a58d728a6f5e76b6f9248023671",
+      "stored_bytes": 17853,
+      "stored_sha256": "90760ab3018f676d6b69b6dc3e40af2958e62eefbd84a994458cd443fa28200f",
+      "supervisor_stdout_sha256": "dba733a6dc5529bf6bd2712b4b4fba09de6f0a58d728a6f5e76b6f9248023671"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/adapter-2.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/enumeration.json",
+      "raw_path": "hosts/worker-text-host-1/enumeration.json",
+      "path": "hosts/worker-text-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 742,
+      "raw_sha256": "c398b3b3e1a466be37ac5b7fecc543d23375e8cbc1b0c05167e9d238c4e387a1",
+      "stored_bytes": 742,
+      "stored_sha256": "c398b3b3e1a466be37ac5b7fecc543d23375e8cbc1b0c05167e9d238c4e387a1"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/enumeration.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/enumeration.stderr.log",
+      "path": "hosts/worker-text-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/enumeration.stdout.log",
+      "raw_path": "hosts/worker-text-host-1/enumeration.stdout.log",
+      "path": "hosts/worker-text-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "supervisor_stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/enumeration.supervisor.stderr.log",
+      "raw_path": "hosts/worker-text-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/worker-text-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-1/worker-text-host-1/host-results.json",
+      "raw_path": "hosts/worker-text-host-1/host-results.json",
+      "path": "hosts/worker-text-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 42135,
+      "raw_sha256": "987510944dce390f56f99a5a10cb9ddf551d2683742d37c1576b25951f6e6f21",
+      "stored_bytes": 42135,
+      "stored_sha256": "987510944dce390f56f99a5a10cb9ddf551d2683742d37c1576b25951f6e6f21"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-relocation-source-ready.json",
+      "raw_path": "reviews/eris-raster-bridge-relocation-source-ready.json",
+      "path": "reviews/eris-raster-bridge-relocation-source-ready.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 6484,
+      "raw_sha256": "0b45c6276c4998f49da78b438ad3ddf3accca32e4292e54374d17cf9d039ebbc",
+      "stored_bytes": 6484,
+      "stored_sha256": "0b45c6276c4998f49da78b438ad3ddf3accca32e4292e54374d17cf9d039ebbc"
+    },
+    {
+      "source": "/tmp/eris-raster-bridge-relocation-peer-review.json",
+      "raw_path": "reviews/eris-raster-bridge-relocation-peer-review.json",
+      "path": "reviews/eris-raster-bridge-relocation-peer-review.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 10078,
+      "raw_sha256": "654deffb9fbe5875a61652724d9ac7ae82f6a17746661e05288aa71ec6f1c25e",
+      "stored_bytes": 10078,
+      "stored_sha256": "654deffb9fbe5875a61652724d9ac7ae82f6a17746661e05288aa71ec6f1c25e"
+    }
+  ],
+  "hash_bound_omissions": [
+    {
+      "path": "/tmp/eris-raster-bridge-1/Cargo.lock.before",
+      "bytes": 78862,
+      "sha256": "fc2d595602095e8a4333975b5f2e8ba748a1b82fbdc84505e64abcbd2b92a0de",
+      "reason": "Full Cargo metadata graph or before-lock copy; concise resolution.json and source/lock identities are copied."
+    },
+    {
+      "path": "/tmp/eris-raster-bridge-1/combined-metadata.json",
+      "bytes": 1704720,
+      "sha256": "c9aeafc443e0b6079622534fecff54584a111a1af325456ed040db2c64b159b7",
+      "reason": "Full Cargo metadata graph or before-lock copy; concise resolution.json and source/lock identities are copied."
+    },
+    {
+      "path": "/tmp/eris-raster-bridge-1/crates_raster-core_Cargo.lock.before",
+      "bytes": 23783,
+      "sha256": "5fe923bf47baaa9844ffb8c6300a4ed7a929a081a47137c1335bb6135fbaa30a",
+      "reason": "Full Cargo metadata graph or before-lock copy; concise resolution.json and source/lock identities are copied."
+    },
+    {
+      "path": "/tmp/eris-raster-bridge-1/probe-metadata.json",
+      "bytes": 1742107,
+      "sha256": "fb32a1f35da2c38ee7609ff2c4b334e71fa9a08740fe7a6f7fce6e2bf388129a",
+      "reason": "Full Cargo metadata graph or before-lock copy; concise resolution.json and source/lock identities are copied."
+    },
+    {
+      "path": "/tmp/eris-raster-bridge-1/root-metadata.json",
+      "bytes": 1458946,
+      "sha256": "1140256ca41a3b96d320574c5ca3e9d5406970e2345eb3cd23a27470866984a3",
+      "reason": "Full Cargo metadata graph or before-lock copy; concise resolution.json and source/lock identities are copied."
+    },
+    {
+      "path": "/tmp/eris-raster-bridge-1/tools_vulkan-raster-probe_Cargo.lock.before",
+      "bytes": 81535,
+      "sha256": "ed8f1b7f7b62e6388c777019dcd2e7f788a1d2670cbc62b26fd631792fccd977",
+      "reason": "Full Cargo metadata graph or before-lock copy; concise resolution.json and source/lock identities are copied."
+    }
+  ],
+  "totals": {
+    "payload_artifacts": 87,
+    "identity_copies": 84,
+    "compressed_stdout_logs": 3,
+    "uncompressed_payload_bytes": 2610565,
+    "stored_payload_bytes": 474975,
+    "current_source_bindings_verified": 181
+  },
+  "compression": "Large stdout logs only: deterministic gzip with an empty filename and mtime=0. Decompression recovers raw_path exactly; raw_sha256 and uncompressed_bytes match retained supervisor identities.",
+  "selection": "Both Rust toolchains: root bridge and bridge+presenter strict checks, exact 28-test ownership, retained probe checks/builds, source/binary/resolution identities, all logs and three three-adapter host suites, plus source-ready and independent static preservation review.",
+  "exclusions": [
+    "Executable binaries",
+    "Build/target/cache trees",
+    "Full Cargo metadata graphs and before-lock copies (hash-bound omissions)",
+    "Root-owned primary host-adapter-relocation.json",
+    "Existing source/fixture/font/reference populations (bound by the copied source manifest and host records)"
+  ],
+  "attribution": "Copied records retain their original scope and phase. GPU compared bytes, CPU differential/reference bytes and whole-frame fallback bytes remain separate in the unchanged host reports. This index reports byte identities and makes no new performance, security or compatibility claim."
+}

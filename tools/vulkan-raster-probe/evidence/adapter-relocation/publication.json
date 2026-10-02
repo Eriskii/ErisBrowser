@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "kind": "completed exact-byte publication ledger",
+  "index": {
+    "path": "index.json",
+    "bytes": 46120,
+    "sha256": "f84f5d5b9e4a376b64c21c8dbe79ff02951b1eb9d0150bf3c76301f40ba0bc59"
+  },
+  "source_review": {
+    "path": "reviews/eris-raster-bridge-relocation-peer-review.json",
+    "sha256": "654deffb9fbe5875a61652724d9ac7ae82f6a17746661e05288aa71ec6f1c25e"
+  },
+  "totals": {
+    "payload_artifacts": 87,
+    "identity_copies": 84,
+    "compressed_stdout_logs": 3,
+    "uncompressed_payload_bytes": 2610565,
+    "stored_payload_bytes": 474975,
+    "current_source_bindings_verified": 181
+  },
+  "verification": [
+    "Every copied artifact matches its unchanged original after copying.",
+    "Compressed stdout round-trips exactly and recompresses deterministically.",
+    "All stdout with a standalone supervisor receipt matches its stdout_sha256.",
+    "All 18 recorded check logs match their frozen receipt hashes.",
+    "The 181 source/fixture inputs match the retained source manifest before and after publication.",
+    "Omitted full Cargo metadata graphs and before-lock copies remain hash-bound; the concise resolution receipt is included."
+  ],
+  "execution": "Packaging, hashing and lossless compression only; no compiler/test/Canvas/worker/GPU/CI rerun."
+}

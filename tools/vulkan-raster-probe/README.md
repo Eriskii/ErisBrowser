@@ -4,8 +4,9 @@ This standalone probe executes custom WGSL for unrounded rectangles and nearest-
 
 The planner and reusable GPU encoding now live in
 [`eris-raster-core`](../../crates/raster-core/README.md). This crate preserves
-the original import paths through reexports and retains the fixture, adapter,
-supervision and readback-comparison harness. All four existing suites still pass
+the original import paths through reexports and retains the fixture,
+supervision and readback-comparison harness. The browser adapter now lives in
+the main crate's `graphics::raster_bridge` module. All four existing suites still pass
 on the three host adapters after extraction; see the
 [source-bound record](evidence/host-core-extraction.json).
 

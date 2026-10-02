@@ -1,5 +1,5 @@
 use super::*;
-use eris::graphics::{Color, Rect as BrowserRect};
+use crate::graphics::{Color, Rect as BrowserRect};
 
 fn frame() -> Frame {
     Frame::new(4, 3, 0xffffff)
@@ -49,7 +49,7 @@ fn expect_reason(
     );
 }
 fn parameter(plan: &Plan, draw: usize, field: usize) -> u32 {
-    let offset = draw * crate::PARAM_STRIDE + field * 4;
+    let offset = draw * eris_raster_core::PARAM_STRIDE + field * 4;
     u32::from_le_bytes(plan.parameters()[offset..offset + 4].try_into().unwrap())
 }
 fn hidden() -> DrawCommand {
@@ -516,9 +516,9 @@ fn browser_bridge_unused_and_hidden_bad_sources_are_refused() {
 #[test]
 fn browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice() {
     let maximum = Arc::new(RasterImage {
-        width: (crate::MAX_SOURCE_RGBA_BYTES / 4) as u32,
+        width: (eris_raster_core::MAX_SOURCE_RGBA_BYTES / 4) as u32,
         height: 1,
-        rgba: vec![0; crate::MAX_SOURCE_RGBA_BYTES],
+        rgba: vec![0; eris_raster_core::MAX_SOURCE_RGBA_BYTES],
     });
     let mut images = ImageStore::new();
     images.insert("a".into(), maximum.clone());
@@ -526,12 +526,12 @@ fn browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice
     let accepted = plan_display_list(&[], &images, frame()).unwrap();
     assert_eq!(
         accepted.stats().total_rgba_bytes,
-        crate::MAX_SOURCE_RGBA_BYTES
+        eris_raster_core::MAX_SOURCE_RGBA_BYTES
     );
     assert_eq!(accepted.stats().unique_sources, 1);
     assert!(accepted.plan().input_bytes().is_empty());
     images.clear();
-    let half = crate::MAX_SOURCE_RGBA_BYTES / 2;
+    let half = eris_raster_core::MAX_SOURCE_RGBA_BYTES / 2;
     for key in ["a", "b"] {
         images.insert(
             key.into(),
@@ -546,7 +546,7 @@ fn browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice
     assert_eq!(accepted.stats().unique_sources, 2);
     assert_eq!(
         accepted.stats().total_rgba_bytes,
-        crate::MAX_SOURCE_RGBA_BYTES
+        eris_raster_core::MAX_SOURCE_RGBA_BYTES
     );
     images.insert("c".into(), raster([0, 0, 0, 0]));
     expect_reason(&[], &images, frame(), FallbackKind::InvalidImage, None);
@@ -554,9 +554,9 @@ fn browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice
     images.insert(
         "over".into(),
         Arc::new(RasterImage {
-            width: (crate::MAX_SOURCE_RGBA_BYTES / 4 + 1) as u32,
+            width: (eris_raster_core::MAX_SOURCE_RGBA_BYTES / 4 + 1) as u32,
             height: 1,
-            rgba: vec![0; crate::MAX_SOURCE_RGBA_BYTES + 4],
+            rgba: vec![0; eris_raster_core::MAX_SOURCE_RGBA_BYTES + 4],
         }),
     );
     expect_reason(&[], &images, frame(), FallbackKind::InvalidImage, None);
@@ -689,9 +689,9 @@ fn browser_bridge_full_source_packing_can_refuse_unchanged_gpu_byte_cap() {
     images.insert(
         "unused".into(),
         Arc::new(RasterImage {
-            width: (crate::MAX_SOURCE_RGBA_BYTES / 4 - 1) as u32,
+            width: (eris_raster_core::MAX_SOURCE_RGBA_BYTES / 4 - 1) as u32,
             height: 1,
-            rgba: vec![0; crate::MAX_SOURCE_RGBA_BYTES - 4],
+            rgba: vec![0; eris_raster_core::MAX_SOURCE_RGBA_BYTES - 4],
         }),
     );
     // Metadata alone fits the source cap. A visible draw requires all source
@@ -856,17 +856,17 @@ fn browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation() {
     let mut images = ImageStore::new();
     let source = raster([1, 2, 3, 255]);
     images.insert("one".into(), source.clone());
-    let snapshot = eris::worker::Snapshot {
+    let snapshot = crate::worker::Snapshot {
         generation: 81,
         processed_edit_sequence: 0,
-        task_state: eris::page::TaskState::Idle,
-        layout: eris::layout::LayoutResult {
+        task_state: crate::page::TaskState::Idle,
+        layout: crate::layout::LayoutResult {
             commands: vec![image("one")],
             hit_regions: Vec::new(),
             content_height: 3.0,
         },
         images,
-        document: eris::dom::Document::default(),
+        document: crate::dom::Document::default(),
         title: "held".into(),
         url: "about:blank".into(),
         diagnostics: vec!["retained".into()],
