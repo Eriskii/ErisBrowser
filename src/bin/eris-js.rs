@@ -214,6 +214,14 @@ fn evaluate_with_host(
     request: Request,
     capture: impl FnOnce() -> Result<eris::date_host::DateHost, String>,
 ) -> Outcome {
+    evaluate_with_runtime(request, capture, Runtime::try_with_date_host)
+}
+
+fn evaluate_with_runtime(
+    request: Request,
+    capture: impl FnOnce() -> Result<eris::date_host::DateHost, String>,
+    initialize: impl FnOnce(eris::date_host::DateHost) -> Result<Runtime, ScriptError>,
+) -> Outcome {
     if request.mode == 3 {
         return Outcome {
             status: "unsupported",
@@ -257,7 +265,19 @@ fn evaluate_with_host(
             };
         }
     };
-    let mut runtime = Runtime::with_date_host(date_host);
+    let mut runtime = match initialize(date_host) {
+        Ok(runtime) => runtime,
+        Err(error) => {
+            return Outcome {
+                status: "adapter-error",
+                phase: "initialization",
+                error_type: String::new(),
+                error_identity: String::new(),
+                message: format!("script runtime initialization: {error}"),
+                harness: String::new(),
+            };
+        }
+    };
     let mut document = Document::parse("");
     for (name, source) in request.harness {
         if let Err(error) = runtime.execute(&source, &mut document) {
@@ -292,6 +312,51 @@ fn evaluate_with_host(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn adapter_initialization_failure_is_not_an_author_or_harness_exception() {
+        let mut test = request("throw new SyntaxError('author');");
+        test.harness
+            .push(("setup.js".into(), "throw 'harness';".into()));
+        let outcome = evaluate_with_runtime(
+            test,
+            || Ok(eris::date_host::DateHost::unconfigured()),
+            |_| Err(Runtime::parse_only("var =").unwrap_err()),
+        );
+        assert_eq!(outcome.status, "adapter-error");
+        assert_eq!(outcome.phase, "initialization");
+        assert!(outcome.error_type.is_empty());
+        assert!(outcome.error_identity.is_empty());
+        assert!(outcome.harness.is_empty());
+        assert!(
+            outcome
+                .message
+                .starts_with("script runtime initialization:")
+        );
+    }
+
+    #[test]
+    fn adapter_parse_only_and_early_errors_never_construct_a_runtime() {
+        let mut parse_only = request("throw 'never execute';");
+        parse_only.parse_only = true;
+        for (test, status) in [(parse_only, "complete"), (request("var ="), "exception")] {
+            let outcome = evaluate_with_runtime(
+                test,
+                || panic!("parse-only and early errors precede host capture"),
+                |_| panic!("parse-only and early errors precede realm construction"),
+            );
+            assert_eq!(outcome.status, status);
+            assert_eq!(outcome.phase, "parse");
+        }
+        let outcome = evaluate_with_runtime(
+            request("1;"),
+            || Err("missing host".into()),
+            |_| panic!("a failed host capture must not construct a realm"),
+        );
+        assert_eq!(outcome.status, "adapter-error");
+        assert_eq!(outcome.phase, "initialization");
+        assert!(outcome.message.contains("missing host"));
+    }
 
     #[test]
     fn adapter_parses_before_host_capture_and_reports_initialization_failure() {

@@ -1,5 +1,22 @@
 # Validation record
 
+## Runtime initialization
+
+The [fallible initialization checkpoint](runtime-initialization.md) passes all
+1,377 default and 1,494 native-feature tests on Rust 1.88 and 1.98, including
+ignored tests. Six strict Clippy variants and formatting pass. Sixteen tests
+were added; all prior identities and the exhaustive UTF-16 JSON test remain
+unchanged and pass. All twelve validation commands and the release build passed
+on their first attempts.
+
+The release preserves all complete observations across 44 formal profiles and
+11 local suites: 21,483 case modes and 5,152 controls, with no gains, losses or
+other changes. All 36 established gates and 48 local resource-policy rows are
+unchanged. The [summary](evidence/runtime-initialization.json) and
+[evidence index](evidence/runtime-initialization/index.json) retain the exact
+source, build and replay records. The result covers checked initialization
+failure propagation; it does not establish comprehensive allocation recovery.
+
 ## DOM defining-interface methods
 
 The [DOM method follow-up](../tests/conformance/dom-method-identity.md) separates

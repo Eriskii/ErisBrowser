@@ -617,7 +617,8 @@ fn exercise(
         ),
         Kind::Script => {
             let mut document = Document::parse(SCRIPT_DOCUMENT);
-            let mut runtime = Runtime::new();
+            let mut runtime = Runtime::try_new()
+                .map_err(|error| format!("script runtime initialization: {error}"))?;
             let mut rejected = runtime.execute(source, &mut document).is_err();
             if !rejected {
                 rejected |= runtime.dispatch_dom_content_loaded(&mut document).is_err();

@@ -525,16 +525,17 @@ pub fn serve() -> Result<(), String> {
                 if page.is_some() {
                     return Err("duplicate worker load".into());
                 }
-                page = Some(
-                    Page::load_navigation_with_date_host(
-                        &navigation,
-                        init.scripts,
-                        date_host.clone(),
-                    )
-                    .unwrap_or_else(|error| {
-                        Page::error_with_date_host(&navigation.address, &error, date_host.clone())
-                    }),
-                );
+                page = Some(finish_page_load(
+                    Page::load_navigation_for_worker(&navigation, init.scripts, date_host.clone()),
+                    |error| {
+                        Page::try_error_with_date_host(
+                            &navigation.address,
+                            error,
+                            date_host.clone(),
+                        )
+                    },
+                    &mut io::stdout().lock(),
+                )?);
             }
             Command::Click { node } => {
                 reply.navigation = page.as_mut().ok_or("no page")?.click(node)
@@ -604,6 +605,24 @@ pub fn serve() -> Result<(), String> {
         codec::write_frame(&mut io::stdout().lock(), &codec::encode_reply(&reply)?)?;
     }
 }
+fn finish_page_load(
+    loaded: Result<Page, crate::page::LoadError>,
+    fallback: impl FnOnce(&str) -> Result<Page, crate::script::ScriptError>,
+    output: &mut impl io::Write,
+) -> Result<Page, String> {
+    let result = match loaded {
+        Ok(page) => Ok(page),
+        Err(crate::page::LoadError::Initialization(error)) => {
+            Err(format!("script runtime initialization: {error}"))
+        }
+        Err(crate::page::LoadError::Document(message)) => fallback(&message)
+            .map_err(|error| format!("error-page runtime initialization: {error}")),
+    };
+    if let Err(error) = &result {
+        codec::write_frame(output, &codec::encode_error(error)?)?;
+    }
+    result
+}
 pub fn apply_edit(page: &mut Page, node: NodeId, value: &str) {
     if value.len() > 65_536 || !page.can_edit_control(node) {
         return;
@@ -629,6 +648,79 @@ pub fn apply_edit(page: &mut Page, node: NodeId, value: &str) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn assert_single_load_error_frame(bytes: Vec<u8>, expected: &str) {
+        let length = bytes.len();
+        let mut input = io::Cursor::new(bytes);
+        let frame = codec::read_frame(&mut input, codec::MAX_FRAME).unwrap();
+        assert!(matches!(codec::decode_reply(&frame), Err(error) if error == expected));
+        assert_eq!(input.position() as usize, length);
+    }
+
+    #[test]
+    fn failed_runtime_initialization_is_reported_without_an_error_page_retry() {
+        let error = crate::script::Runtime::parse_only("var =").unwrap_err();
+        let mut output = Vec::new();
+        let result = finish_page_load(
+            Err(crate::page::LoadError::Initialization(error)),
+            |_| panic!("bootstrap failure must not construct a second realm"),
+            &mut output,
+        );
+        let Err(message) = result else {
+            panic!("a failed bootstrap must not publish a Page");
+        };
+        assert!(message.starts_with("script runtime initialization:"));
+        assert_single_load_error_frame(output, &message);
+    }
+
+    #[test]
+    fn failed_error_page_initialization_is_terminal_and_reported_once() {
+        let mut attempts = 0;
+        let mut output = Vec::new();
+        let result = finish_page_load(
+            Err(crate::page::LoadError::Document("missing document".into())),
+            |message| {
+                attempts += 1;
+                assert_eq!(message, "missing document");
+                Err(crate::script::Runtime::parse_only("var =").unwrap_err())
+            },
+            &mut output,
+        );
+        assert_eq!(attempts, 1);
+        let Err(message) = result else {
+            panic!("failed error-page bootstrap must not publish a Page");
+        };
+        assert!(message.starts_with("error-page runtime initialization:"));
+        assert_single_load_error_frame(output, &message);
+    }
+
+    #[test]
+    fn ordinary_navigation_errors_still_construct_a_fallible_error_page() {
+        let mut output = Vec::new();
+        let page = finish_page_load(
+            Err(crate::page::LoadError::Document(
+                "<missing document>".into(),
+            )),
+            |message| {
+                Page::try_error_with_date_host(
+                    "https://example.test/<missing>",
+                    message,
+                    DateHost::unconfigured(),
+                )
+            },
+            &mut output,
+        )
+        .unwrap();
+        assert!(output.is_empty());
+        assert!(!page.scripts_enabled);
+        assert_eq!(page.title(), "Unable to open page");
+        assert!(
+            page.document
+                .text_content(page.document.root)
+                .contains("<missing document>")
+        );
+    }
+
     #[test]
     fn forged_task_metadata_cannot_schedule_work_when_scripts_are_disabled() {
         let page = Page::from_html(

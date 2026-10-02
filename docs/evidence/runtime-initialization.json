@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "scope": "Fallible checked runtime initialization and terminal host error propagation",
+  "full_browser_goal_achieved": false,
+  "production_security_claim": false,
+  "chromium_performance_claim": false,
+  "source_parent": "861b3ee72c5c401a0ec5e2062e94c91c924914e8",
+  "candidate": "candidate-1",
+  "production_input_sha256": "d0a34c85ba66f58608b92f6d0a40cc339dc693e045750456b8b1082b94b186ad",
+  "binaries": {
+    "eris-js": "1b011e2cb8bef7b4aec8759b7dde4d538763003bfb9e466fc712bc83ee57d58c",
+    "eris-browser": "a919f5f5ab55e4051817d8380bbcb6b3c575cae2d037a0be347c286eb7bc5e05"
+  },
+  "source_archive": {
+    "path": "/tmp/eris-runtime-bootstrap-1/candidate-1/source.tar",
+    "bytes": 12236800,
+    "sha256": "151dc36a5219edd88a8d2db7b0eb70a6981c480714a6a24befdc9e6d555cbf6a"
+  },
+  "source_inventory": {
+    "path": "/tmp/eris-runtime-bootstrap-1/candidate-1/archive-inputs.json",
+    "bytes": 71989,
+    "sha256": "479164cc5d43b66b4235203387c89ddc9375a1901e6940c64419377944b33493"
+  },
+  "source_member_count": 422,
+  "behavior": {
+    "fallible_runtime_apis": [
+      "Runtime::try_new",
+      "Runtime::try_with_date_host"
+    ],
+    "fallible_page_apis": [
+      "Page::try_from_html",
+      "Page::try_from_html_with_date_host",
+      "Page::try_error_with_date_host"
+    ],
+    "production_callers": [
+      "browser page loading and encoding reparse",
+      "JavaScript conformance adapter",
+      "script stress tool"
+    ],
+    "initialization_failure_retries": 0,
+    "worker_error_reply": "One bounded existing error frame on a writable channel, then termination before Load acknowledgement or snapshot.",
+    "ordinary_document_failure": "One fallible error-page attempt; an initialization failure there is terminal.",
+    "adapter_failure": "adapter-error/initialization before harness and author evaluation, with no author exception identity.",
+    "convenience_constructors_remain_panicking": true,
+    "all_allocator_failures_recoverable": false
+  },
+  "accounting": {
+    "bootstrap_steps_remaining": 70334,
+    "bootstrap_charged_bytes": 734594,
+    "bootstrap_objects": 351,
+    "reserved_object_slots": 512,
+    "native_registry_entries": 320,
+    "prototype_entries": 25,
+    "initial_fields_install_order_and_date_host_assignment_unchanged": true,
+    "quotas_fees_and_execution_reset_points_unchanged": true,
+    "logical_storage_not_physical_allocator_measurement": true
+  },
+  "validation": {
+    "per_toolchain": {
+      "1.88.0": {
+        "default": 1377,
+        "native": 1494
+      },
+      "1.98.0": {
+        "default": 1377,
+        "native": 1494
+      }
+    },
+    "focused_runtime_groups": 11,
+    "new_test_count": 16,
+    "strict_clippy_variants": 6,
+    "format_passed": true,
+    "ignored_tests_executed": true,
+    "parent_test_identities_and_statuses_retained": true,
+    "exhaustive_utf16_test_unchanged_and_passed_four_times": true,
+    "validation_commands": 12,
+    "all_first_attempts_passed": true,
+    "audit": {
+      "path": "/tmp/eris-runtime-bootstrap-1/validation-audit/result.json",
+      "bytes": 26673,
+      "sha256": "95cc1a925db0f06e260ae415df3655d9ac78054f48ed2adc6748f6b524710585"
+    },
+    "physical_allocator_failure_experiment": false,
+    "new_actual_gpu_window_run": false
+  },
+  "release_build": {
+    "path": "/tmp/eris-runtime-bootstrap-1/validation/release-default-build-1.json",
+    "bytes": 3651,
+    "sha256": "8989cf11dab40726f755148f07d02ecd67df2410e39f646f655dee53fbd5fd88"
+  },
+  "formal": {
+    "profiles": 44,
+    "cases": 19727,
+    "controls": 4564,
+    "improvements": 0,
+    "regressions": 0,
+    "other_changes": 0,
+    "control_changes": 0,
+    "baseline_gates_checked": 36,
+    "baseline_gates_passed": 36,
+    "audit": {
+      "path": "/tmp/eris-runtime-bootstrap-1/formal-audit/result-review.json",
+      "bytes": 7366,
+      "sha256": "b064da4317758008ca90a2558b8321d9a6be5e29abf043c3e0a692528da0388d"
+    },
+    "report": {
+      "path": "/tmp/eris-runtime-bootstrap-1/formal-candidate-1/profiles-comparison.json",
+      "bytes": 67167,
+      "sha256": "a482a9dca5a5aecdeab957cd29e26abe87b456a6050e91805fcc56a9aadfc3a9"
+    }
+  },
+  "local": {
+    "suites": 11,
+    "case_modes": 1756,
+    "controls": 588,
+    "unchanged_complete_rows": 2344,
+    "changed_case_rows": 0,
+    "changed_control_rows": 0,
+    "raw_pass_gains": 0,
+    "raw_pass_losses": 0,
+    "unchanged_policy_rows": 48,
+    "unchanged_dom_gap_modes": 6,
+    "all_controls_verified": true,
+    "audit": {
+      "path": "/tmp/eris-runtime-bootstrap-1/local-audit/result.json",
+      "bytes": 33506,
+      "sha256": "f7a0283f8f05c98189c4bc4f964a3674daea165c37c858bf7fadf06710a2ee52"
+    },
+    "comparison": {
+      "path": "/tmp/eris-runtime-bootstrap-1/local-candidate-1/comparison.json",
+      "bytes": 4061,
+      "sha256": "a8e2d68594e00598085f027e92dd4358928260ebe6c87de750c73ef241569a7a"
+    }
+  },
+  "retained_preparation_history": [
+    "Both first candidate-bound inert invocations lacked mandatory output-directory arguments and exited before any engine execution; corrected invocations passed without source/helper changes.",
+    "Validation audit corrected a reader-only assumption about a CLI test available only without the native feature.",
+    "Formal audit corrected a reader-only release field name from after to the actual after_build/after_copy/final_source_check fields."
+  ],
+  "known_limits": [
+    "Infallible initial binding, B-tree, Rc, string and DOM allocation paths remain.",
+    "Convenience constructors still panic on checked initialization failure; unrelated panics and allocator aborts are not converted.",
+    "Synthetic adapter/worker routing errors are separate from real quota failures exercised by Runtime tests.",
+    "No JavaScript/DOM feature support, baseline gate or resource-policy change. Existing ordinary failures and exclusions remain visible."
+  ],
+  "evidence": "runtime-initialization/index.json",
+  "before_evidence": "dom-method-identity-runtime/index.json",
+  "parent_ci": "dom-method-identity-runtime-ci.json"
+}

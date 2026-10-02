@@ -17,6 +17,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::rc::Rc;
 
+#[cfg(test)]
+mod bootstrap_tests;
 mod code;
 mod construction;
 mod data_view;
@@ -1557,13 +1559,28 @@ pub struct Runtime {
     global_non_scalar: BTreeMap<JsString, window::GlobalProperty>,
 }
 
+/// Uses the panicking convenience constructor [`Runtime::new`].
 impl Default for Runtime {
     fn default() -> Self {
         Self::new()
     }
 }
 impl Runtime {
+    /// Construct a realm, panicking if bounded initialization fails.
+    /// Embedders that need to report initialization failure should use
+    /// [`Runtime::try_new`]. This constructor does not access the filesystem.
     pub fn new() -> Self {
+        Self::try_new().expect("runtime bootstrap failed")
+    }
+
+    /// Construct a realm, returning checked initialization failures unchanged.
+    /// This constructor does not access the filesystem. Local Date operations
+    /// require an explicitly supplied host; UTC operations remain available.
+    pub fn try_new() -> Result<Self> {
+        Self::uninitialized().finish_bootstrap()
+    }
+
+    fn uninitialized() -> Self {
         let mut bindings = BTreeMap::new();
         for (order, (name, value)) in [
             ("undefined", Value::Undefined),
@@ -1652,7 +1669,7 @@ impl Runtime {
         let initial_binding_bytes = bindings.len()
             * (std::mem::size_of::<Option<Rc<BindingAccessor>>>() + std::mem::size_of::<u64>());
         let next_global_order = bindings.len() as u64;
-        let mut runtime = Self {
+        Self {
             date_host: DateHost::unconfigured(),
             environments: vec![
                 Environment {
@@ -1717,29 +1734,34 @@ impl Runtime {
             tracked_global_keys: TrackedGlobal::ALL.map(|kind| kind.name().into()),
             next_global_order,
             global_non_scalar: BTreeMap::new(),
-        };
-        runtime
-            .reserve_bootstrap_objects()
-            .expect("fixed bootstrap object arena fits runtime limits");
-        #[cfg(test)]
-        let bootstrap_object_capacity = runtime.objects.capacity();
-        machine::initialize(&mut runtime)
-            .expect("fixed expression frame bootstrap fits runtime limits");
-        runtime
-            .initialize_intrinsics()
-            .expect("fixed intrinsic bootstrap fits runtime limits");
-        #[cfg(test)]
-        assert_eq!(runtime.objects.capacity(), bootstrap_object_capacity);
-        runtime
+        }
     }
 
-    /// Construct a realm with an explicitly supplied clock and local timezone.
-    /// `new` stays free of filesystem access; local Date operations there require
-    /// configuration. Browser and adapter entry points inject their host snapshot.
+    fn finish_bootstrap(mut self) -> Result<Self> {
+        self.reserve_bootstrap_objects()?;
+        #[cfg(test)]
+        let bootstrap_object_capacity = self.objects.capacity();
+        machine::initialize(&mut self)?;
+        self.initialize_intrinsics()?;
+        #[cfg(test)]
+        assert_eq!(self.objects.capacity(), bootstrap_object_capacity);
+        Ok(self)
+    }
+
+    /// Construct a realm with an explicitly supplied clock and local timezone,
+    /// panicking if bounded initialization fails. Use [`Runtime::try_with_date_host`]
+    /// when the caller needs to report initialization failure.
     pub fn with_date_host(date_host: DateHost) -> Self {
-        let mut runtime = Self::new();
+        Self::try_with_date_host(date_host).expect("runtime bootstrap failed")
+    }
+
+    /// Construct a realm with an explicitly supplied clock and local timezone,
+    /// returning checked initialization failures unchanged. The supplied host is
+    /// installed after bootstrap; initialization does not read its clock or zone.
+    pub fn try_with_date_host(date_host: DateHost) -> Result<Self> {
+        let mut runtime = Self::try_new()?;
         runtime.date_host = date_host;
-        runtime
+        Ok(runtime)
     }
 
     pub fn parse_only(source: &str) -> Result<()> {

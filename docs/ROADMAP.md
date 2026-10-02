@@ -36,6 +36,13 @@ Document.append, real interface prototypes and ordinary host method replacement
 remain ordinary unmet expectations. Broader DOM interfaces and reflection remain
 open work.
 
+[Fallible runtime initialization](runtime-initialization.md) now carries checked
+bootstrap failures through the browser, adapter and stress tool. Partial realms
+are not published, and failed initialization does not trigger a second attempt
+to draw an error page. Existing budgets and all compatibility observations remain
+unchanged. Broader fallible allocation coverage and bootstrap optimization remain
+open work.
+
 The [native GPU route](vulkan-native-window.md) now connects the custom shaders
 to the actual browser window behind `vulkan-raster`. Admitted loaded pages,
 overlays and chrome share one bounded plan. Normal shader frames require no CPU

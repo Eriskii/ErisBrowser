@@ -306,6 +306,15 @@ avoiding later bootstrap growth. This is reserved capacity, not a new object
 limit. Logical requested-byte accounting excludes allocator rounding and retains
 the existing infallible B-tree/Rc allocation boundaries.
 
+The browser, adapter and stress tool now use [fallible runtime construction](runtime-initialization.md).
+Checked bootstrap failures discard the partial realm and propagate to the host.
+Worker initialization errors bypass error-page construction, emit one bounded
+error reply when the channel is writable, and terminate. Ordinary document
+errors still get one fallible error-page attempt. Convenience constructors remain
+panicking APIs, and existing infallible allocator paths are not converted into
+recoverable errors. Successful initialization accounting and execution reset
+points are unchanged.
+
 The [focused validation](../tests/conformance/dom-string-conversion.json) includes
 allocation refusals and looping/recursive callbacks that cannot catch resource
 exhaustion, with execution-state cleanup checked afterward. These checks do not

@@ -5,7 +5,7 @@ use crate::{
     graphics::{Fonts, ImageStore, RasterImage},
     layout::{self, LayoutResult},
     net::{self, Fetcher, ResourceKind},
-    script::Runtime,
+    script::{Runtime, ScriptError},
 };
 use std::{
     collections::{HashMap, HashSet},
@@ -58,6 +58,35 @@ pub struct Page {
     tasks_suspended: bool,
 }
 
+/// Keep failed realm construction distinct until the worker chooses whether a
+/// normal navigation error can be displayed in a fresh error page.
+#[derive(Debug)]
+pub(crate) enum LoadError {
+    Initialization(ScriptError),
+    Document(String),
+}
+
+impl From<String> for LoadError {
+    fn from(message: String) -> Self {
+        Self::Document(message)
+    }
+}
+
+impl From<ScriptError> for LoadError {
+    fn from(error: ScriptError) -> Self {
+        Self::Initialization(error)
+    }
+}
+
+impl std::fmt::Display for LoadError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Initialization(error) => write!(f, "script runtime initialization: {error}"),
+            Self::Document(message) => f.write_str(message),
+        }
+    }
+}
+
 impl Page {
     /// Apply a same-document URL change without reloading or refreezing a base.
     pub fn navigate_fragment(&mut self, target: Url) -> bool {
@@ -90,26 +119,38 @@ impl Page {
         scripts_enabled: bool,
         date_host: crate::date_host::DateHost,
     ) -> Result<Self, String> {
+        Self::load_navigation_for_worker(navigation, scripts_enabled, date_host)
+            .map_err(|error| error.to_string())
+    }
+    pub(crate) fn load_navigation_for_worker(
+        navigation: &Navigation,
+        scripts_enabled: bool,
+        date_host: crate::date_host::DateHost,
+    ) -> Result<Self, LoadError> {
         let start = Instant::now();
         let url = net::parse_address(&navigation.address)?;
         if navigation.form_body.is_some() && !matches!(url.scheme(), "http" | "https") {
-            return Err("POST form submissions require HTTP or HTTPS".into());
+            return Err(LoadError::Document(
+                "POST form submissions require HTTP or HTTPS".into(),
+            ));
         }
         if url.scheme() == "eris" && url.path() == "home" {
-            return Ok(Self::from_html_with_date_host(
+            return Self::try_from_html_with_date_host(
                 url,
                 include_str!("../assets/home.html"),
                 scripts_enabled,
                 date_host,
-            ));
+            )
+            .map_err(LoadError::Initialization);
         }
         if url.scheme() == "about" && url.path() == "blank" {
-            return Ok(Self::from_html_with_date_host(
+            return Self::try_from_html_with_date_host(
                 url,
                 "<!doctype html><title>Blank</title>",
                 scripts_enabled,
                 date_host,
-            ));
+            )
+            .map_err(LoadError::Initialization);
         }
         let mut fetcher = Fetcher::for_document(&url);
         let response = fetcher.fetch_document(&url, navigation.form_body.as_deref())?;
@@ -136,7 +177,7 @@ impl Page {
                 escape_html(&response.text())
             )
         };
-        let mut page = Self::unexecuted(response.url, &html, scripts_enabled, date_host.clone());
+        let mut page = Self::unexecuted(response.url, &html, scripts_enabled, date_host.clone())?;
         if let Some(selected) = html_encoding {
             let mut encoding = selected.encoding;
             if !selected.certain
@@ -148,7 +189,7 @@ impl Page {
                 // Reparse cached bytes before any author code or resource loads.
                 // The original navigation (including POST) is never repeated.
                 let decoded = crate::text_encoding::decode(&response.bytes, declared);
-                page = Self::unexecuted(page.url, &decoded, scripts_enabled, date_host);
+                page = Self::unexecuted(page.url, &decoded, scripts_enabled, date_host)?;
                 encoding = declared;
             }
             page.document.set_encoding(encoding);
@@ -369,13 +410,13 @@ impl Page {
         html: &str,
         scripts_enabled: bool,
         date_host: crate::date_host::DateHost,
-    ) -> Self {
+    ) -> Result<Self, ScriptError> {
         let mut document = Document::parse_with_scripting(html, scripts_enabled);
         document.initialize_url(url.clone());
-        Self {
+        Ok(Self {
             url,
             document,
-            runtime: Runtime::with_date_host(date_host),
+            runtime: Runtime::try_with_date_host(date_host)?,
             images: HashMap::new(),
             diagnostics: Vec::new(),
             load_ms: 0.0,
@@ -385,29 +426,46 @@ impl Page {
             inline_styles: HashMap::new(),
             policy_blocks_styles: false,
             tasks_suspended: false,
-        }
+        })
     }
+    /// Convenience constructor. Panics if the fixed runtime bootstrap fails.
+    /// Hosts that handle untrusted pages should use `try_from_html` or `load`.
     pub fn from_html(url: Url, html: &str, scripts_enabled: bool) -> Self {
-        Self::from_html_with_date_host(
+        Self::try_from_html(url, html, scripts_enabled)
+            .expect("fixed page runtime bootstrap fits runtime limits")
+    }
+    pub fn try_from_html(url: Url, html: &str, scripts_enabled: bool) -> Result<Self, ScriptError> {
+        Self::try_from_html_with_date_host(
             url,
             html,
             scripts_enabled,
             crate::date_host::DateHost::unconfigured(),
         )
     }
+    /// Convenience constructor; use `try_from_html_with_date_host` to handle
+    /// bootstrap failure without a panic.
     pub fn from_html_with_date_host(
         url: Url,
         html: &str,
         scripts_enabled: bool,
         date_host: crate::date_host::DateHost,
     ) -> Self {
+        Self::try_from_html_with_date_host(url, html, scripts_enabled, date_host)
+            .expect("fixed page runtime bootstrap fits runtime limits")
+    }
+    pub fn try_from_html_with_date_host(
+        url: Url,
+        html: &str,
+        scripts_enabled: bool,
+        date_host: crate::date_host::DateHost,
+    ) -> Result<Self, ScriptError> {
         let started = Instant::now();
-        let mut page = Self::unexecuted(url, html, scripts_enabled, date_host);
+        let mut page = Self::unexecuted(url, html, scripts_enabled, date_host)?;
         page.apply_author_policy(false);
         page.run_scripts(&HashMap::new());
         page.refresh_inline_svg();
         page.load_ms = started.elapsed().as_secs_f64() * 1000.0;
-        page
+        Ok(page)
     }
     fn apply_author_policy(&mut self, header_csp: bool) {
         let meta_csp = self
@@ -525,20 +583,31 @@ impl Page {
             }
         }
     }
+    /// Convenience error page; panics if its fixed runtime bootstrap fails.
     pub fn error(address: &str, message: &str) -> Self {
         Self::error_with_date_host(address, message, crate::date_host::DateHost::unconfigured())
     }
+    /// Convenience error page. Hosts use `try_error_with_date_host` so even an
+    /// error page's initialization failure can be reported without retrying.
     pub fn error_with_date_host(
         address: &str,
         message: &str,
         date_host: crate::date_host::DateHost,
     ) -> Self {
+        Self::try_error_with_date_host(address, message, date_host)
+            .expect("fixed error-page runtime bootstrap fits runtime limits")
+    }
+    pub fn try_error_with_date_host(
+        address: &str,
+        message: &str,
+        date_host: crate::date_host::DateHost,
+    ) -> Result<Self, ScriptError> {
         let html = format!(
             "<!doctype html><title>Unable to open page</title><style>body{{font-family:sans-serif;background:#131620;color:#edf0fa;margin:60px;max-width:850px}}h1{{font-size:36px}}p{{line-height:1.6;color:#bec7dc}}pre{{background:#202638;padding:24px;white-space:pre-wrap}}</style><h1>Unable to open page</h1><p>{}</p><pre>{}</pre><p>Use the address bar to try another address.</p>",
             escape_html(address),
             escape_html(message)
         );
-        Self::from_html_with_date_host(
+        Self::try_from_html_with_date_host(
             Url::parse("eris:error").expect("constant URL"),
             &html,
             false,
