@@ -193,7 +193,7 @@ fn final_nonscalar_policies_remain_explicit_without_outer_write() {
             } else {
                 runtime.execute(prefix, &mut doc)
             };
-            assert!(prefix_result.is_ok(), "{} prefix {prefix_result:?}", id);
+            assert!(prefix_result.is_ok(), "{id} prefix {prefix_result:?}");
             let before = format!("{doc:?}");
             let node = runtime.environments[0].bindings["n"].value.clone();
             let before_data = runtime.pi_native("data", node, &[], &mut doc).unwrap();
@@ -205,11 +205,7 @@ fn final_nonscalar_policies_remain_explicit_without_outer_write() {
             } else {
                 runtime.execute(source, &mut doc)
             };
-            assert!(
-                result.unwrap_err().is_unsupported(),
-                "{} strict={strict}",
-                id
-            );
+            assert!(result.unwrap_err().is_unsupported(), "{id} strict={strict}");
             assert_eq!(format!("{doc:?}"), before);
             let node = runtime.environments[0].bindings["n"].value.clone();
             assert_eq!(

@@ -4297,6 +4297,14 @@ unachieved.
 
 ### Five CharacterData methods
 
+The initial public run at `916d293` passed the default, minimum-Rust and two
+probe jobs, but Rust 1.88 presenter Clippy rejected two assertion diagnostic
+format strings. Four matrix jobs were cancelled by fail-fast. Inlining the
+same variables fixes the two diagnostics; the exact Rust 1.88 presenter Clippy
+command and formatting pass locally. Test expressions and production behavior
+are unchanged. The [CI fix receipt](evidence/character-data-ci-fix.json) retains
+the failed run, minimal patch and successful local check.
+
 [Evidence](evidence/character-data.json) records ordinary prototype substringData,
 appendData, insertData, deleteData and replaceData for Text, Comment and PI nodes.
 The previous PI commit passed all nine [CI jobs](evidence/processing-instruction-ci.json).

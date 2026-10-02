@@ -1,0 +1,181 @@
+{
+  "kind": "CharacterData exact-head CI Clippy diagnosis and minimal fix",
+  "base_commit": "916d293fb611e3ae56a372b397a5ed05d6da0bcf",
+  "run_url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37067853180",
+  "run_conclusion": "failure",
+  "jobs": [
+    {
+      "name": "test",
+      "conclusion": "success"
+    },
+    {
+      "name": "minimum-rust",
+      "conclusion": "success"
+    },
+    {
+      "name": "vulkan-probe",
+      "conclusion": "success"
+    },
+    {
+      "name": "presenter-variants (1.88.0, --features vulkan-raster)",
+      "conclusion": "cancelled"
+    },
+    {
+      "name": "vulkan-raster-probe",
+      "conclusion": "success"
+    },
+    {
+      "name": "presenter-variants (stable, --features vulkan-presenter)",
+      "conclusion": "cancelled"
+    },
+    {
+      "name": "presenter-variants (1.88.0, --features vulkan-presenter)",
+      "conclusion": "failure"
+    },
+    {
+      "name": "presenter-variants (1.88.0)",
+      "conclusion": "cancelled"
+    },
+    {
+      "name": "presenter-variants (stable, --features vulkan-raster)",
+      "conclusion": "cancelled"
+    }
+  ],
+  "failure": {
+    "lint": "clippy::uninlined_format_args",
+    "source": "src/script/processing_instruction/character_data/tests.rs",
+    "original_lines": [
+      196,
+      208
+    ],
+    "errors": 2,
+    "production_behavior_failure": false
+  },
+  "fix": "Inline existing id variable in two assertion diagnostic format strings; no test expressions, expected results, policies, quotas or production code changed.",
+  "source": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/script/processing_instruction/character_data/tests.rs",
+    "bytes": 11408,
+    "sha256": "046701098101c6d37a4e2d55031237717087e5b1badfb71ac783bb084d1a2867"
+  },
+  "validation": {
+    "format_188": {
+      "command": [
+        "rustup",
+        "run",
+        "1.88.0",
+        "rustfmt",
+        "--edition",
+        "2024",
+        "src/script/processing_instruction/character_data/tests.rs"
+      ],
+      "cwd": "/home/eriskii/Documents/Programming/Projects/ErisBrowser",
+      "environment_overrides": {
+        "CARGO_HOME": "/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv",
+        "CARGO_BUILD_JOBS": "4"
+      },
+      "exit_code": 0,
+      "elapsed_seconds": 0.017,
+      "log": "/tmp/eris-character-data-1/ci/format-188.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy_presenter_188": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--all-targets",
+        "--features",
+        "vulkan-presenter",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "/home/eriskii/Documents/Programming/Projects/ErisBrowser",
+      "environment_overrides": {
+        "CARGO_HOME": "/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME": "/tmp/eris-vulkan-rustup",
+        "CARGO_TARGET_DIR": "/tmp/eris-vulkan-raster-prototype/target-msrv",
+        "CARGO_BUILD_JOBS": "4"
+      },
+      "exit_code": 0,
+      "elapsed_seconds": 9.315,
+      "log": "/tmp/eris-character-data-1/ci/clippy-presenter-188.log",
+      "log_sha256": "bcbbf910d0f72151f079a900ebf9d28fbe32eabcb4e26e000ccb2d37a6e19612"
+    },
+    "git_diff_check": "passed",
+    "extra_engine_tests": "not run: diagnostic formatting only"
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/eris-character-data-1/ci/character-data-tests-after.rs",
+      "bytes": 11408,
+      "sha256": "046701098101c6d37a4e2d55031237717087e5b1badfb71ac783bb084d1a2867"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/character-data-tests-before.rs",
+      "bytes": 11474,
+      "sha256": "c306f401e4cf798191bc4799d4e96ca0c12cad674e72f2f3782cecd4bf07ccbd"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/clippy-presenter-188.json",
+      "bytes": 700,
+      "sha256": "98aab5f22aa78b23c6ab9c36db7bce890e0366ed55be4303d1ae683ac9591418"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/clippy-presenter-188.log",
+      "bytes": 164,
+      "sha256": "bcbbf910d0f72151f079a900ebf9d28fbe32eabcb4e26e000ccb2d37a6e19612"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/fix.patch",
+      "bytes": 1404,
+      "sha256": "8a73d427bfbb73d346b3ad22a8b6685ae297937986374d696bdb16fce10e6485"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/format-188.json",
+      "bytes": 664,
+      "sha256": "bd6adedf317db7dffe46ca9fa2e93a6de37b81e5ae20a8d206794c891a2448b3"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/format-188.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/run-37067853180-failed.log",
+      "bytes": 83911,
+      "sha256": "1dcacc8281ff950cea25468134f0605ff1e1d378fce2e081797e0a4dbcbbf3c7"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/run-37067853180-failed.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/run-37067853180.json",
+      "bytes": 26075,
+      "sha256": "3efc38879f6b3a8cb9b3adc573aaf3f51a2d439cb58e8f4f3057d93bae040879"
+    },
+    {
+      "path": "/tmp/eris-character-data-1/ci/run-37067853180.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "boundaries": {
+    "committed": false,
+    "pushed": false,
+    "isolated_storage_worktree_edited": false,
+    "ci_rerun_claim": false,
+    "cancelled_jobs": "remain unverified; passing local check is the exact feature/toolchain Clippy step only"
+  },
+  "archive": {
+    "path": "character-data-ci-fix.tar.gz",
+    "bytes": 15701,
+    "sha256": "54f774e380008b346758ccb88bd4cf71ebb88099ee8b74de9b591247e912dd89"
+  }
+}
