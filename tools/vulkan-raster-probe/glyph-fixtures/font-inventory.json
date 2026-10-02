@@ -1,0 +1,1078 @@
+{
+  "schema": 1,
+  "parent": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+  "classification": "reference-derived-parent-CPU-baselines",
+  "claim": "Input inventory only. Future immutable-parent CPU pixels test equivalent font raster/placement on GPU; they are not independent glyph coverage goldens.",
+  "reference_status": "not executed",
+  "baseline_file_encoding": "Four-byte little-endian 0x00RRGGBB per row-major pixel; <name>.rgb, no header",
+  "baseline_bytes_per_case": 24576,
+  "case_count": 14,
+  "cache_policy": "One fresh Fonts per case; render twice with same Fonts, require cold/warm exact equality, retain one packed-u32le frame file. No output generated during preparation.",
+  "font_facts_sha256": "2f50612404e6ff623db72496fa74dc52f2a68bfce455f2c2fa708d0c52173e5e",
+  "fonts": [
+    {
+      "font": "assets/DejaVuSans.ttf",
+      "bytes": 759676,
+      "sha256": "58568c88a01b80dfc056daca3eeafd434a0380df1a48dda53f0de0d716109bbd",
+      "units_per_em": 2048,
+      "glyph_count": 6253
+    },
+    {
+      "font": "assets/DejaVuSans-Bold.ttf",
+      "bytes": 708876,
+      "sha256": "7c7aef63328a765586cda41bf9d2c227ff1ad82816326dae4d7fe2fd1b7f613a",
+      "units_per_em": 2048,
+      "glyph_count": 6196
+    },
+    {
+      "font": "assets/DejaVuSansMono.ttf",
+      "bytes": 343096,
+      "sha256": "9d9bfebceb1c3f6f4ad383ded568a6926086208f43f7f92f92f7e93a1383fa38",
+      "units_per_em": 2048,
+      "glyph_count": 3377
+    }
+  ],
+  "cases": [
+    {
+      "name": "font-regular-kern-av-to",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "AV To VA",
+          "x": 3,
+          "y": 2,
+          "size": 16,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0020",
+            "U+0054",
+            "U+006F",
+            "U+0020",
+            "U+0056",
+            "U+0041"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Audited regular AV -131 and To -348 font-unit kerning."
+    },
+    {
+      "name": "font-bold-translucent",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 2113632,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "AV To",
+          "x": 3,
+          "y": 2,
+          "size": 16,
+          "rgba": [
+            230,
+            40,
+            90,
+            128
+          ],
+          "bold": true,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0020",
+            "U+0054",
+            "U+006F"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Bold face identity and audited kerning with translucent text."
+    },
+    {
+      "name": "font-mono-no-kern",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "AV To",
+          "x": 3,
+          "y": 2,
+          "size": 16,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": true,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0020",
+            "U+0054",
+            "U+006F"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Mono no kern table and constant 1233-unit advances."
+    },
+    {
+      "name": "font-mono-bold-precedence",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "AV To",
+          "x": 3,
+          "y": 2,
+          "size": 16,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": true,
+          "italic": false,
+          "monospace": true,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0020",
+            "U+0054",
+            "U+006F"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Same input as mono case; monospace wins bold."
+    },
+    {
+      "name": "font-italic-negative-bearing",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "jTy g",
+          "x": -0.5,
+          "y": 1.5,
+          "size": 18,
+          "rgba": [
+            120,
+            15,
+            220,
+            191
+          ],
+          "bold": false,
+          "italic": true,
+          "monospace": false,
+          "f32_bits": {
+            "x": "bf000000",
+            "y": "3fc00000",
+            "size": "41900000"
+          },
+          "unicode_scalars": [
+            "U+006A",
+            "U+0054",
+            "U+0079",
+            "U+0020",
+            "U+0067"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Synthetic italic has row-dependent rounded x; j and T negative bearings."
+    },
+    {
+      "name": "font-space-zero-advance",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "A \u200dV  A",
+          "x": 3,
+          "y": 2,
+          "size": 17,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41880000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0020",
+            "U+200D",
+            "U+0056",
+            "U+0020",
+            "U+0020",
+            "U+0041"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Regular space is empty with positive advance; U+200D empty with zero advance."
+    },
+    {
+      "name": "font-missing-regular",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "A\udbff\udfff\u4e2dV",
+          "x": 3,
+          "y": 2,
+          "size": 16,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+10FFFF",
+            "U+4E2D",
+            "U+0056"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Both absent cmap scalars select regular glyph0; no Unicode font fallback."
+    },
+    {
+      "name": "font-missing-bold",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "A\udbff\udfffV",
+          "x": 3,
+          "y": 2,
+          "size": 16,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": true,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+10FFFF",
+            "U+0056"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Absent scalar selects bold glyph0."
+    },
+    {
+      "name": "font-missing-mono",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "A\u200d\udbff\udfffV",
+          "x": 3,
+          "y": 2,
+          "size": 16,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": true,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+200D",
+            "U+10FFFF",
+            "U+0056"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Mono U+200D is absent, not empty; both missing scalars select glyph0."
+    },
+    {
+      "name": "font-composite-unicode",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "\u00e9 e\u0301 \u03a9 \u0416",
+          "x": 3,
+          "y": 2,
+          "size": 18,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "40000000",
+            "size": "41900000"
+          },
+          "unicode_scalars": [
+            "U+00E9",
+            "U+0020",
+            "U+0065",
+            "U+0301",
+            "U+0020",
+            "U+03A9",
+            "U+0020",
+            "U+0416"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Composite \u00e9, combining mark and present Greek/Cyrillic map IDs; no shaping claim."
+    },
+    {
+      "name": "font-subpixel-rounding",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "jA",
+          "x": -0.5,
+          "y": -0.5,
+          "size": 16,
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "bf000000",
+            "y": "bf000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+006A",
+            "U+0041"
+          ]
+        },
+        {
+          "kind": "Text",
+          "text": "jA",
+          "x": 31.5,
+          "y": 0.5,
+          "size": 16,
+          "rgba": [
+            0,
+            0,
+            255,
+            128
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "41fc0000",
+            "y": "3f000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+006A",
+            "U+0041"
+          ]
+        },
+        {
+          "kind": "Text",
+          "text": "jA",
+          "x": 63.499996185302734,
+          "y": 1.4999998807907104,
+          "size": 16,
+          "rgba": [
+            0,
+            128,
+            0,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "427dffff",
+            "y": "3fbfffff",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+006A",
+            "U+0041"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Signed half-away rounding and immediately-below positive f32 boundary."
+    },
+    {
+      "name": "font-shared-bitmap-quantum",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "AVTo",
+          "x": 3,
+          "y": 0,
+          "size": 16.01,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "00000000",
+            "size": "4180147b"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0054",
+            "U+006F"
+          ]
+        },
+        {
+          "kind": "Text",
+          "text": "AVTo",
+          "x": 3,
+          "y": 24,
+          "size": 16.04,
+          "rgba": [
+            190,
+            20,
+            40,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "40400000",
+            "y": "41c00000",
+            "size": "418051ec"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0054",
+            "U+006F"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Both bitmap sizes quantize to 16; original-size advances/kerning still differ."
+    },
+    {
+      "name": "font-bitmap-quantum-boundary",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          128,
+          48
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Text",
+          "text": "Tj",
+          "x": 0,
+          "y": 2,
+          "size": 16.062498092651367,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "00000000",
+            "y": "40000000",
+            "size": "41807fff"
+          },
+          "unicode_scalars": [
+            "U+0054",
+            "U+006A"
+          ]
+        },
+        {
+          "kind": "Text",
+          "text": "Tj",
+          "x": 36,
+          "y": 2,
+          "size": 16.0625,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "42100000",
+            "y": "40000000",
+            "size": "41808000"
+          },
+          "unicode_scalars": [
+            "U+0054",
+            "U+006A"
+          ]
+        },
+        {
+          "kind": "Text",
+          "text": "Tj",
+          "x": 72,
+          "y": 2,
+          "size": 16.062501907348633,
+          "rgba": [
+            20,
+            40,
+            90,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "42900000",
+            "y": "40000000",
+            "size": "41808001"
+          },
+          "unicode_scalars": [
+            "U+0054",
+            "U+006A"
+          ]
+        }
+      ],
+      "images": [],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Three neighboring f32 sizes straddle (size*8).round cache/raster boundary."
+    },
+    {
+      "name": "font-fixed-clip-image-order",
+      "frame": {
+        "width": 128,
+        "height": 48,
+        "clear": 16777215,
+        "caller_clip": [
+          1,
+          1,
+          125,
+          46
+        ],
+        "document_offset": [
+          3,
+          2
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            128,
+            48
+          ],
+          "rgba": [
+            20,
+            30,
+            40,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "PushClip",
+          "rect": [
+            0,
+            0,
+            40,
+            28
+          ]
+        },
+        {
+          "kind": "Text",
+          "text": "AVAV",
+          "x": 0,
+          "y": 0,
+          "size": 16,
+          "rgba": [
+            255,
+            30,
+            30,
+            128
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "00000000",
+            "y": "00000000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0041",
+            "U+0056"
+          ]
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "Text",
+          "text": "jTo",
+          "x": 40,
+          "y": 6,
+          "size": 16,
+          "rgba": [
+            20,
+            240,
+            80,
+            192
+          ],
+          "bold": false,
+          "italic": true,
+          "monospace": false,
+          "f32_bits": {
+            "x": "42200000",
+            "y": "40c00000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+006A",
+            "U+0054",
+            "U+006F"
+          ]
+        },
+        {
+          "kind": "Image",
+          "key": "dot",
+          "rect": [
+            46,
+            12,
+            12,
+            8
+          ]
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "Text",
+          "text": "AVAV",
+          "x": 0,
+          "y": 10,
+          "size": 16,
+          "rgba": [
+            30,
+            40,
+            255,
+            128
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "00000000",
+            "y": "41200000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056",
+            "U+0041",
+            "U+0056"
+          ]
+        },
+        {
+          "kind": "PopClip"
+        },
+        {
+          "kind": "Text",
+          "text": "AV",
+          "x": 94,
+          "y": 28,
+          "size": 16,
+          "rgba": [
+            250,
+            240,
+            0,
+            255
+          ],
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "f32_bits": {
+            "x": "42bc0000",
+            "y": "41e00000",
+            "size": "41800000"
+          },
+          "unicode_scalars": [
+            "U+0041",
+            "U+0056"
+          ]
+        }
+      ],
+      "images": [
+        {
+          "key": "dot",
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            255,
+            255,
+            255,
+            64
+          ]
+        }
+      ],
+      "classification": "reference-derived-parent-CPU",
+      "reference_status": "not executed",
+      "purpose": "Ordered text/image overlap, caller clip, document offset, fixed escape and restoration."
+    }
+  ]
+}

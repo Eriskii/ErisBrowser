@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "source ready; no new parser, test, host, renderer or GPU execution",
+  "owned_files": 3,
+  "synthetic_test_groups": 16,
+  "literal_cases": 12,
+  "font_cases": 14,
+  "gpu_compared_bytes_per_adapter": 344956,
+  "cpu_font_passes": 28,
+  "cpu_font_compared_bytes": 688128,
+  "literal_CPU_comparisons": 0,
+  "parent_manifest_sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b",
+  "sources": [
+    {
+      "path": "tools/vulkan-raster-probe/glyph_protocol.py",
+      "bytes": 13567,
+      "sha256": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_glyph_host.py",
+      "bytes": 7866,
+      "sha256": "c13eee38a20596afeae367d0b0fc71436f7fb71df9cdc184c99e3b27a122956c"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_glyph_protocol.py",
+      "bytes": 14157,
+      "sha256": "7f5a856c502c54811fc03ba913e4a480d399de07bd4419a7888d15629738516e"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_host.py",
+      "bytes": 15273,
+      "sha256": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6",
+      "unchanged_from_HEAD": true
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8453,
+      "sha256": "51ac06679b31bcfbc3f051df814850631b45fce1943ab6d89fb226349994de10",
+      "unchanged_from_HEAD": true
+    },
+    {
+      "path": "tools/vulkan-raster-probe/browser_protocol.py",
+      "bytes": 19063,
+      "sha256": "228b7d00dc3bd4554e0ae193ab2be67e0ed81e215ffbeaa8a0ccd78a41dd75ac",
+      "unchanged_from_HEAD": true
+    },
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 13678,
+      "sha256": "d38c129e010564c2ffa3903e1f86ae53d26667723749d9407659a14d188b32a8",
+      "unchanged_from_HEAD": true
+    }
+  ],
+  "protocol_read_from": {
+    "path": "tools/vulkan-raster-probe/src/bin/glyph-check.rs",
+    "sha256": "9f88ba6feb66fb2fb01b1b56c72354b0df587e94a442b91710ceeacf4d4d280a"
+  },
+  "process_policy": "Reuse existing supervised subreaper cleanup; no capture gate; all ordered enumerated adapters (1..16), stop first failure; empty checker/supervisor stderr; exact frozen pre/post fixtures, baseline pixels, executable and source identities.",
+  "peer_review": "pending layout final receipt"
+}

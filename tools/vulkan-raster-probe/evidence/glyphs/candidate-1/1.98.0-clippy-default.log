@@ -1,0 +1,24 @@
+    Checking eris-vulkan-raster-prototype v0.0.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe)
+error[E0004]: non-exhaustive patterns: `&Command::Glyph { .. }` not covered
+   --> src/alpha_fixtures.rs:571:23
+    |
+571 |                 match command {
+    |                       ^^^^^^^ pattern `&Command::Glyph { .. }` not covered
+    |
+note: `Command` defined here
+   --> src/lib.rs:72:10
+    |
+ 72 | pub enum Command {
+    |          ^^^^^^^
+...
+ 84 |     Glyph {
+    |     ----- not covered
+    = note: the matched value is of type `&Command`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+    |
+587 ~                     Command::Unsupported(_) => panic!("unsupported command in positive fixture"),
+588 ~                     &Command::Glyph { .. } => todo!(),
+    |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `eris-vulkan-raster-prototype` (lib test) due to 1 previous error

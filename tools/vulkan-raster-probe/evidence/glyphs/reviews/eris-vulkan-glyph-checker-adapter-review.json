@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "kind": "bounded-independent-static-review",
+  "reviewer": "layout",
+  "status": "no-unresolved-concrete-finding",
+  "execution_attribution": {
+    "engine_runs": 0,
+    "font_rasterizer_runs": 0,
+    "compiler_runs": 0,
+    "gpu_runs": 0,
+    "tests_run": 0,
+    "repository_edits": 0,
+    "activity": "Read source and compute file hashes; write this separate scratch receipt only."
+  },
+  "inputs": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/bin/glyph-check.rs",
+      "bytes": 11926,
+      "sha256": "9f88ba6feb66fb2fb01b1b56c72354b0df587e94a442b91710ceeacf4d4d280a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/browser_adapter/text.rs",
+      "bytes": 15379,
+      "sha256": "d2db12bdef76b85f20dfb4b5586a12de44d8410fb0335fb9481b2251fe01947a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs",
+      "bytes": 6473,
+      "sha256": "f21ac32fce15e97677933de907a52a5a8838c0b1b1f0c50c5e30d7310d830c92"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "bytes": 17953,
+      "sha256": "ef74f617036456661c0ff6ede702d6b721b7615031cb9085dc2d9b645fef9fa3"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 23376,
+      "sha256": "ab15afb4c3f4a363b957b5aaea394f9b1da61e8942e1e3ce2af1e24c4efea5b3"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/scope.rs",
+      "bytes": 3687,
+      "sha256": "258c1f8e2f9c36e46d0a0256cad3bcffb713325788540e572e66188d1db10efe"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/glyph_fixtures/literal_inventory.rs",
+      "bytes": 23628,
+      "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/glyph_fixtures/font_inventory.rs",
+      "bytes": 21064,
+      "sha256": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/graphics/text_masks.rs",
+      "bytes": 30247,
+      "sha256": "d47609697dbdf8b6cdcf310aa28ec36a8873c0339d30fc20a0e92fa036a1b4e6"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/graphics.rs",
+      "bytes": 60991,
+      "sha256": "71c5f89099aa9c622c56028dbf643f0c65562c649027cd9252e7a9e9075812e5"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph_protocol.py",
+      "bytes": 13099,
+      "sha256": "229105d6fc5bcd6f05ac821b37aa103c1156f25c875fd9114459c6251aab32f7"
+    }
+  ],
+  "private_groups": [
+    "old_entry_keeps_text_fallback_while_new_entry_admits_masks",
+    "all_text_inputs_are_counted_even_when_coarsely_culled",
+    "no_outline_repetitions_consume_operations_and_cpu_work",
+    "text_charges_remaining_cpu_allowance_before_mask_allocation",
+    "complete_structural_preflight_precedes_all_glyph_preparation",
+    "image_and_mask_sources_share_the_existing_entry_budget",
+    "existing_cpu_font_cache_does_not_change_admission_or_packed_plan"
+  ],
+  "checks": [
+    "The literal inventory crate imports resolve through glyph-check root Command/Frame/Rect imports; owned Plan and borrowed SourceMask lifetimes agree with Session API.",
+    "Both current CPU cold and warm frames compare every packed u32 pixel with the separately loaded parent reference; exhaustion and mismatches fail, with bounded full actual pixels retained on mismatch.",
+    "Private Session preparation does not populate the preexisting Fonts bitmap cache; cold Canvas starts cold and the second Canvas uses that same Fonts warm cache.",
+    "All original direct input commands/images, Fonts, temporary masks and warm comparison plans drop before prepare returns. Returned prepared cases own only plans and expected pixels; no font/input leases survive to Vulkan initialization.",
+    "Final cold/warm invariance checks include complete BridgeStats, complete TextBridgeStats, Draw records, invocation and GPU-buffer counts, parameter bytes and packed input bytes. Both plans use the same copied Frame.",
+    "Full structural/text/key/image preflight precedes mask preparation. Nontext conservative CPU charges and exact reached-mask max(area,1) charges share the original allowance; empty and repeated masks remain charged.",
+    "Preflight callbacks bound combined source counts, operation and row counts, coverage/storage estimates before new coverage allocation and raster draw; typed shared scope state preserves fixed restoration and exact x/y translation order.",
+    "Original rectangle-only entry retains Text fallback. The seven private groups have coherent setup/expectations for cache independence, hidden input limits, empty glyph repetitions, zero remaining CPU allowance, hidden unsupported scopes/shapes, and image/mask source sharing.",
+    "Fixed trusted inventories cap the number of retained plans/reference pixels; reported aggregate retained storage bounds are distinct from transient preparation/warm-plan storage and allocator/driver overhead."
+  ],
+  "resolved_findings": [
+    {
+      "issue": "Initial checker invariance check omitted dispatch Draw records and counters, and compared only the preparation subset of TextBridgeStats.",
+      "initial_checker_sha256": "829f1af2aa213309dfc3650080d6325b41e99189f45bc3862704ef6b8bfd6fb7",
+      "initial_adapter_sha256": "49efbd0592b4eb991bba5d7be98bc32a9f4796578d335c74a0073b9a13758589",
+      "resolution": "Root added Draw/invocation/GPU-buffer equality and full TextBridgeStats equality with Eq derive before source freeze; final source read and bound above. No expected pixel or input changes requested."
+    }
+  ],
+  "limits_and_followup": [
+    "Rust parent_pixels reads references without writes and checks fixed length/high byte, but does not itself authenticate content hashes. Publication/host execution must invoke glyph_protocol.check_baselines with the independently pinned manifest before and after runs. That function was inspected; orchestration execution is not claimed here.",
+    "Host pre/post hash checks establish experiment provenance, not protection against an adversarial host mutating and restoring files during execution (TOCTOU).",
+    "Sealed bundled-font and pinned dependency outline/scratch allocations remain the documented trusted boundary; no claim of wholly fallible font allocation or cancellable rasterization.",
+    "This review does not claim any compiler, CPU reference, Vulkan, worker, or test outcome. GPU invocation/preflight kernel review belongs to the independently assigned script review."
+  ]
+}

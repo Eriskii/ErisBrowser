@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "state": "audited input metadata frozen; no pixel oracle or fixture inventory",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3308,
+      "sha256": "93a84170539c868617266fa506c42f8ac4dea678b38d7aac8858c9a7df165d72"
+    },
+    {
+      "path": "audit.py",
+      "bytes": 17677,
+      "sha256": "2e6f8ac94922074d2c15f1a16b65b72c5e99bf2be20813052bb6b6baa99541ef"
+    },
+    {
+      "path": "facts.json",
+      "bytes": 136925,
+      "sha256": "2f50612404e6ff623db72496fa74dc52f2a68bfce455f2c2fa708d0c52173e5e"
+    },
+    {
+      "path": "freeze.json",
+      "bytes": 786,
+      "sha256": "54d3acd0d11c9f63d9aa72ba630354fbe5a579a87eaff018e89351a8fe1962d6"
+    },
+    {
+      "path": "source-provenance.json",
+      "bytes": 4520,
+      "sha256": "372a2c2ddaa61724b21c8356e4220b07a3c9ba379dc831d62c6f9b566a6dd6b2"
+    }
+  ],
+  "source_postcheck": true
+}

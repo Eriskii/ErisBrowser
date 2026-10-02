@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "status": "source held; no compiler, tests, planner, Canvas, font or GPU execution by this agent",
+  "owned_files": {
+    "tools/vulkan-raster-probe/src/lib.rs": {
+      "sha256": "ab15afb4c3f4a363b957b5aaea394f9b1da61e8942e1e3ce2af1e24c4efea5b3",
+      "bytes": 23376
+    },
+    "tools/vulkan-raster-probe/src/gpu.rs": {
+      "sha256": "f60141761316a3170a573937b0219e95e63181a415cf734a0bd7f720d040d6b2",
+      "bytes": 17494
+    },
+    "tools/vulkan-raster-probe/src/scope.rs": {
+      "sha256": "258c1f8e2f9c36e46d0a0256cad3bcffb713325788540e572e66188d1db10efe",
+      "bytes": 3687
+    },
+    "tools/vulkan-raster-probe/src/glyph.wgsl": {
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "bytes": 3578
+    },
+    "tools/vulkan-raster-probe/src/glyph_tests.rs": {
+      "sha256": "44c3339ff5df30becefbc8e6e434322a4898abc98e971f01b4c4e2e6ad3accbd",
+      "bytes": 13760
+    },
+    "tools/vulkan-raster-probe/src/tests.rs": {
+      "sha256": "0453f0431e7f352015876ee801c28bfcda49d9be6c5d4c5605144629534bef61",
+      "bytes": 38696
+    }
+  },
+  "old_shaders_unchanged": {
+    "tools/vulkan-raster-probe/src/rect.wgsl": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa",
+    "tools/vulkan-raster-probe/src/image.wgsl": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446"
+  },
+  "private_groups": 16,
+  "coverage": [
+    "literal legacy image-only arena and metadata layout",
+    "combined source packing and namespace/order",
+    "hidden/transparent reached ID/row validation",
+    "unused malformed source and row checks",
+    "canonical empty and combined source caps",
+    "mask axes/area/aggregate and row-entry ceilings",
+    "exact 1MiB GPU byte acceptance and one-word refusal",
+    "shared input and cumulative padded dispatch work",
+    "fractional clip and absolute origins through fixed scopes",
+    "full signed-i32 origins and negative y",
+    "typed scope restoration and depth",
+    "no coverage-alpha scan suppression",
+    "owned immutable packed inputs"
+  ],
+  "format_command": "RUSTUP_HOME=/tmp/eris-vulkan-rustup rustfmt +1.88.0 --edition 2024 --config skip_children=true tools/vulkan-raster-probe/src/{lib.rs,gpu.rs,scope.rs,glyph_tests.rs,tests.rs}",
+  "limits": "All old limits unchanged; new mask/row thresholds match selected contract. Old shaders and oracle files untouched."
+}

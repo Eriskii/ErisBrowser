@@ -32,6 +32,9 @@ pub enum FallbackKind {
     CpuPaintBudget,
     PlannerLimit,
     AllocationFailure,
+    TextLimit,
+    MaskPreparation,
+    GlyphRowLimit,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -64,6 +67,9 @@ impl FallbackReason {
             FallbackKind::CpuPaintBudget => "cpu-paint-budget",
             FallbackKind::PlannerLimit => "planner-budget",
             FallbackKind::AllocationFailure => "allocation-failure",
+            FallbackKind::TextLimit => "text-budget",
+            FallbackKind::MaskPreparation => "mask-preparation",
+            FallbackKind::GlyphRowLimit => "glyph-row-budget",
         }
     }
 }
@@ -238,6 +244,18 @@ fn line_rect(x1: f32, y1: f32, x2: f32, y2: f32, width: f32, index: usize) -> Re
 }
 
 fn preflight_commands(commands: &[DrawCommand]) -> Result<(usize, usize)> {
+    preflight_commands_by(commands, |index, _| {
+        Err(FallbackReason::new(
+            FallbackKind::UnsupportedText,
+            Some(index),
+        ))
+    })
+}
+
+fn preflight_commands_by(
+    commands: &[DrawCommand],
+    mut text: impl FnMut(usize, &DrawCommand) -> Result<()>,
+) -> Result<(usize, usize)> {
     let mut scopes = [ScopeTag::Clip; MAX_SCOPES];
     let mut depth = 0;
     let mut key_bytes = 0;
@@ -301,7 +319,7 @@ fn preflight_commands(commands: &[DrawCommand]) -> Result<(usize, usize)> {
                 }
             }
             DrawCommand::Text { .. } => {
-                return Err(FallbackReason::new(FallbackKind::UnsupportedText, at));
+                text(index, command)?;
             }
             DrawCommand::PushOpacity { .. } | DrawCommand::PopOpacity => {
                 return Err(FallbackReason::new(FallbackKind::UnsupportedOpacity, at));
@@ -487,3 +505,8 @@ pub fn plan_display_list(
 
 #[cfg(test)]
 mod tests;
+
+mod text;
+pub use text::{
+    FontBridgePlan, TextBridgeStats, plan_display_list_with_fonts, plan_snapshot_with_fonts,
+};

@@ -1,0 +1,45 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling eris-browser v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.90s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-browser-graph/target/debug/deps/eris-9fe5f42ac17124a1)
+
+running 34 tests
+test graphics::tests::clipping_and_alpha ... ok
+test graphics::tests::huge_viewports_rejected ... ok
+test graphics::tests::clip_coordinates_follow_display_list_translation ... ok
+test graphics::tests::fixed_scope_uses_viewport_origin_and_restores_document_clips ... ok
+test graphics::tests::group_opacity_composites_overlap_once_and_preserves_transparent_holes ... ok
+test graphics::tests::fixed_descendants_escape_clips_but_retain_group_opacity ... ok
+test graphics::tests::first_visible_pixel_materializes_pending_ancestors_once ... ok
+test graphics::tests::malformed_raster_dimensions_are_rejected_before_indexing ... ok
+test graphics::tests::nested_display_list_clips_intersect_and_restore_caller_viewport ... ok
+test graphics::tests::malformed_or_excessive_clip_scopes_cannot_escape_caller_clip ... ok
+test graphics::tests::nested_opacity_and_translucent_images_use_premultiplied_alpha ... ok
+test graphics::tests::opaque_fast_path_respects_fractional_clip_edges ... ok
+test graphics::tests::measured_text_is_painted ... ok
+test graphics::tests::offscreen_shapes_do_not_consume_visible_pixel_budget ... ok
+test graphics::tests::pending_groups_materialize_for_fixed_descendants_of_empty_document_clips ... ok
+test graphics::tests::offscreen_and_fully_transparent_opacity_content_keeps_surfaces_pending ... ok
+test graphics::text_masks::tests::text_masks_bound_information_and_signed_row_origins_without_allocation ... ok
+test graphics::text_masks::tests::text_masks_advance_uses_original_size_while_mask_identity_is_shared ... ok
+test graphics::tests::opacity_storage_caps_are_checked_before_allocation_and_zero_groups_allocate_nothing ... ok
+test graphics::text_masks::tests::text_masks_caller_refusal_precedes_mask_and_cache_allocation ... ok
+test graphics::text_masks::tests::text_masks_are_independent_of_warm_cache_and_preserve_published_mask_bytes ... ok
+test graphics::text_masks::tests::text_masks_cached_and_visitor_refusals_remain_terminal ... ok
+test graphics::text_masks::tests::text_masks_full_input_and_cold_limits_refuse_before_growth ... ok
+test graphics::text_masks::tests::text_masks_empty_records_repeat_in_first_acquisition_order ... ok
+test graphics::text_masks::tests::text_masks_quantization_and_monospace_override_are_explicit ... ok
+test graphics::text_masks::tests::text_masks_zero_allowance_culling_and_one_short_paint_work ... ok
+test graphics::tests::opacity_groups_include_text_coverage_and_opaque_background ... ok
+test graphics::tests::enormous_italic_size_is_clamped_before_coordinate_math ... ok
+test graphics::tests::invalid_and_exhausted_opacity_streams_release_surfaces_and_restore_caller ... ok
+test graphics::tests::empty_nested_opacity_groups_do_not_allocate_or_charge_surface_work ... ok
+test graphics::tests::transparent_drawing_still_charges_work_and_failed_materialization_is_discarded ... ok
+test graphics::tests::overlapping_page_paint_is_bounded_and_chrome_still_paints ... ok
+test graphics::tests::nested_viewport_surfaces_hit_peak_storage_before_the_pixel_work_limit ... ok
+test graphics::tests::zero_advance_text_has_a_glyph_work_limit ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 1043 filtered out; finished in 0.11s
+

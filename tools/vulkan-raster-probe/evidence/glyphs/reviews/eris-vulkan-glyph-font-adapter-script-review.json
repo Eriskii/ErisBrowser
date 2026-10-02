@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "read-only static review complete",
+  "findings": [],
+  "inputs": {
+    "tools/vulkan-raster-probe/src/browser_adapter/text.rs": "d2db12bdef76b85f20dfb4b5586a12de44d8410fb0335fb9481b2251fe01947a",
+    "tools/vulkan-raster-probe/src/browser_adapter/text/tests.rs": "f21ac32fce15e97677933de907a52a5a8838c0b1b1f0c50c5e30d7310d830c92",
+    "src/graphics/text_masks.rs": "d47609697dbdf8b6cdcf310aa28ec36a8873c0339d30fc20a0e92fa036a1b4e6",
+    "src/graphics.rs": "71c5f89099aa9c622c56028dbf643f0c65562c649027cd9252e7a9e9075812e5",
+    "tools/vulkan-raster-probe/src/scope.rs": "258c1f8e2f9c36e46d0a0256cad3bcffb713325788540e572e66188d1db10efe"
+  },
+  "scope": [
+    "complete bounded text input/geometry/structural preflight before font work",
+    "sorted borrowed image identities and all-source validation",
+    "per-occurrence CPU and row charges including cached/empty masks",
+    "pre-raster prospective source/arena/parameter budget",
+    "fallible row/key/command storage within pre-reserved capacities",
+    "session cache acquisition order matches mask ID ordering",
+    "shared typed f32 coordinate state, absolute glyph positions",
+    "separate old text fallback entry point; returned plan has no font/text/snapshot borrow"
+  ],
+  "limitations": [
+    "No compilation or runtime execution; tests are source-reviewed only.",
+    "Pinned trusted-font outline and raster dependency allocations remain infallible/noncancellable as documented; review does not claim complete dependency instruction/allocation control.",
+    "CPU reference byte comparison and GPU kernel execution remain root-owned future validation."
+  ]
+}

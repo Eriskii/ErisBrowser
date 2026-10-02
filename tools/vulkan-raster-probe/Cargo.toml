@@ -17,6 +17,11 @@ name = "eris-vulkan-browser-check"
 path = "src/bin/browser-check.rs"
 required-features = ["browser-bridge"]
 
+[[bin]]
+name = "eris-vulkan-glyph-check"
+path = "src/bin/glyph-check.rs"
+required-features = ["browser-bridge"]
+
 [dependencies]
 wgpu = { version = "=30.0.1", default-features = false, features = ["std", "vulkan", "wgsl"] }
 eris = { package = "eris-browser", path = "../..", default-features = false, optional = true }

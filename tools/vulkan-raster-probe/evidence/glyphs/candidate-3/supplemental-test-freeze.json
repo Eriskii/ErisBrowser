@@ -1,0 +1,9 @@
+{
+  "source": "tools/vulkan-raster-probe/tests/glyph_contracts.rs",
+  "sha256": "1d0b10a0b603f603fbb8510fdd703286b99e2c473d440e165b92d893008f1944",
+  "bytes": 7754,
+  "tests": 2,
+  "refusals": 25,
+  "positive_plans": 3,
+  "production_changes": false
+}

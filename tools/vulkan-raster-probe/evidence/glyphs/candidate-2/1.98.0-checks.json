@@ -1,0 +1,54 @@
+[
+  {
+    "name": "fmt-probe",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "fmt",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.10997993405908346,
+    "log": "1.98.0-fmt-probe.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "clippy-default",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 0.4350979790324345,
+    "log": "1.98.0-clippy-default.log",
+    "sha256": "2037acdf118c262a7805ddef93e568db55f1a9e65edffd545baec64469faeebd"
+  },
+  {
+    "name": "test-default",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml"
+    ],
+    "exit": 101,
+    "seconds": 1.8131254210602492,
+    "log": "1.98.0-test-default.log",
+    "sha256": "e946b339fa98e7ff4cfea568df93b9fad3b92f545232d9046a8b30669badf4b3"
+  }
+]

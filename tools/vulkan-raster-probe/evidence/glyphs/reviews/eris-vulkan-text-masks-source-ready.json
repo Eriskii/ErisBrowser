@@ -1,0 +1,45 @@
+{
+  "phase": "source ready, formatted with Rust1.88 rustfmt; no compiler/tests/font rasterizer/engine/GPU execution by author",
+  "parent": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+  "files": {
+    "src/graphics/text_masks.rs": {
+      "bytes": 30247,
+      "sha256": "d47609697dbdf8b6cdcf310aa28ec36a8873c0339d30fc20a0e92fa036a1b4e6"
+    },
+    "src/graphics.rs": {
+      "bytes": 60991,
+      "sha256": "71c5f89099aa9c622c56028dbf643f0c65562c649027cd9252e7a9e9075812e5"
+    }
+  },
+  "unchanged_cpu_graphics_sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2",
+  "cpu_delta": "Only pub mod text_masks declaration; all existing CPU bytes unchanged",
+  "private_tests": [
+    "text_masks_bound_information_and_signed_row_origins_without_allocation",
+    "text_masks_empty_records_repeat_in_first_acquisition_order",
+    "text_masks_are_independent_of_warm_cache_and_preserve_published_mask_bytes",
+    "text_masks_quantization_and_monospace_override_are_explicit",
+    "text_masks_advance_uses_original_size_while_mask_identity_is_shared",
+    "text_masks_caller_refusal_precedes_mask_and_cache_allocation",
+    "text_masks_cached_and_visitor_refusals_remain_terminal",
+    "text_masks_zero_allowance_culling_and_one_short_paint_work",
+    "text_masks_full_input_and_cold_limits_refuse_before_growth"
+  ],
+  "api": "Session::new(&Fonts,u64), Session::visit(TextRun,Rect,preflight,visitor), stats(), masks() ExactSizeIterator in stable first-acquisition order; MaskView coverage has explicit session lifetime",
+  "caps": {
+    "cold_requests": 256,
+    "mask_axis": 1024,
+    "mask_area": 262144,
+    "unique_coverage_bytes": 262144,
+    "run_utf8_bytes": 32768,
+    "frame_utf8_bytes": 65536,
+    "frame_full_scalars": 4096,
+    "cpu_pixel_allowance": 32000000
+  },
+  "notes": [
+    "Library outline Vec allocation and raster scratch remain trusted infallible pinned-font operations; cold debit precedes outline; own bytes/cache growth and draw follow dimensions, coverage, occurrence CPU budget and caller preflight.",
+    "No existing Fonts warm-cache access; empty records retain first-acquisition order and cost one pixel unit per occurrence.",
+    "CPU reference copies were archived independently before module hook.",
+    "Root text adapter boundary statically inspected: error mapping, per-occurrence preflight, borrowed final masks and shared coordinate state agree with this API.",
+    "Nine test groups authored but not executed."
+  ]
+}

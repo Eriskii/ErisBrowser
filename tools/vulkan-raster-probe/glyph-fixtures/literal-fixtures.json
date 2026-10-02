@@ -1,0 +1,3000 @@
+{
+  "schema": 1,
+  "classification": "independent-literal-mask-oracle",
+  "pixel_file_encoding": "RGB24: three bytes R,G,B per row-major pixel; JSON packed hex is 0x00RRGGBB",
+  "method": "Standalone integer/Fraction arithmetic over supplied literal coverage; no renderer, planner, fonts or engine imported/executed.",
+  "alpha_rule": "a=floor(color_alpha*coverage/255); channel=floor((src*a+dst*(255-a)+127)/255), independently for every ordered draw",
+  "coordinate_rule": "Glyph row origins and y absolute signed i32; never offset again. Current clip applies at integer pixel origins with exclusive upper edges.",
+  "caps": {
+    "source_entries": 256,
+    "row_tables": 256,
+    "row_table_entries": 1024,
+    "total_row_entries": 65536,
+    "commands": 256,
+    "scopes": 32,
+    "mask_axis": 1024,
+    "mask_area": 262144,
+    "total_coverage_bytes": 262144,
+    "gpu_buffer_bytes": 1048576,
+    "invocations": 4000000,
+    "width": 320,
+    "height": 240
+  },
+  "pixel_cases": [
+    {
+      "name": "coverage-alpha-floor",
+      "frame": {
+        "width": 6,
+        "height": 4,
+        "clear": 2113632,
+        "caller_clip": [
+          0,
+          0,
+          6,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 6,
+          "height": 1,
+          "coverage": [
+            0,
+            1,
+            127,
+            128,
+            254,
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          0
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            231,
+            93,
+            17,
+            255
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 1,
+          "rgba": [
+            231,
+            93,
+            17,
+            128
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 2,
+          "rgba": [
+            231,
+            93,
+            17,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 3,
+          "rgba": [
+            231,
+            93,
+            17,
+            254
+          ]
+        }
+      ],
+      "claim": "Coverage alpha truncates before each independently rounded channel blend.",
+      "expected_packed_rgb": [
+        "204060",
+        "214060",
+        "834e39",
+        "844f38",
+        "e65d11",
+        "e75d11",
+        "204060",
+        "204060",
+        "51474c",
+        "52474c",
+        "834e39",
+        "844f38",
+        "204060",
+        "204060",
+        "204060",
+        "204060",
+        "204060",
+        "214060",
+        "204060",
+        "204060",
+        "824e39",
+        "834e39",
+        "e55d12",
+        "e65d11"
+      ],
+      "expected_rgb24_bytes": 72,
+      "expected_rgb24_sha256": "3fb6dfa034589327d165025214583329bd3814c34b39772e24f4fb26edd2dbdb",
+      "expected_file": "literal-rgb/coverage-alpha-floor.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "packed_rgb": [
+            2113632,
+            2179168,
+            8605241,
+            8671032,
+            15097105,
+            15162641,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "packed_rgb": [
+            2113632,
+            2179168,
+            8605241,
+            8671032,
+            15097105,
+            15162641,
+            2113632,
+            2113632,
+            5326668,
+            5392204,
+            8605241,
+            8671032,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+          ],
+          "packed_rgb": [
+            2113632,
+            2179168,
+            8605241,
+            8671032,
+            15097105,
+            15162641,
+            2113632,
+            2113632,
+            5326668,
+            5392204,
+            8605241,
+            8671032,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2179168,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "packed_rgb": [
+            2113632,
+            2179168,
+            8605241,
+            8671032,
+            15097105,
+            15162641,
+            2113632,
+            2113632,
+            5326668,
+            5392204,
+            8605241,
+            8671032,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2113632,
+            2179168,
+            2113632,
+            2113632,
+            8539705,
+            8605241,
+            15031570,
+            15097105
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ordered-overlap",
+      "frame": {
+        "width": 4,
+        "height": 3,
+        "clear": 1056816,
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 2,
+          "height": 2,
+          "coverage": [
+            255,
+            128,
+            64,
+            0
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            128
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 1,
+          "y": 1,
+          "rgba": [
+            0,
+            255,
+            0,
+            192
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            0,
+            0,
+            255,
+            64
+          ]
+        }
+      ],
+      "claim": "",
+      "expected_packed_rgb": [
+        "660c52",
+        "42153f",
+        "102030",
+        "102030",
+        "102030",
+        "0abb19",
+        "0a741e",
+        "102030",
+        "0d4a27",
+        "102030",
+        "102030",
+        "102030"
+      ],
+      "expected_rgb24_bytes": 36,
+      "expected_rgb24_sha256": "7454d69fd1ec210b33f5d883eb6162c99e9010de32e45338376e5e47d0ffe697",
+      "expected_file": "literal-rgb/ordered-overlap.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1,
+            5,
+            6
+          ],
+          "packed_rgb": [
+            8917016,
+            4986916,
+            1056816,
+            1056816,
+            1056816,
+            3021866,
+            1056816,
+            1056816,
+            1056816,
+            1056816,
+            1056816,
+            1056816
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            5,
+            6,
+            8,
+            9
+          ],
+          "packed_rgb": [
+            8917016,
+            4986916,
+            1056816,
+            1056816,
+            1056816,
+            771850,
+            685086,
+            1056816,
+            870951,
+            1056816,
+            1056816,
+            1056816
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1,
+            5,
+            6
+          ],
+          "packed_rgb": [
+            6687826,
+            4330815,
+            1056816,
+            1056816,
+            1056816,
+            703257,
+            685086,
+            1056816,
+            870951,
+            1056816,
+            1056816,
+            1056816
+          ]
+        }
+      ]
+    },
+    {
+      "name": "repeated-low-alpha",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": 0,
+        "caller_clip": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 1,
+          "height": 1,
+          "coverage": [
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          0
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            1
+          ]
+        }
+      ],
+      "claim": "Eight individually rounded alpha-one operations; final 0x080808.",
+      "expected_packed_rgb": [
+        "080808"
+      ],
+      "expected_rgb24_bytes": 3,
+      "expected_rgb24_sha256": "79d95b7f2e0c9f6bd91827e6a281f67e21e07fa4a025c7ccf9c93025f3156c04",
+      "expected_file": "literal-rgb/repeated-low-alpha.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            65793
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            131586
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            197379
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            263172
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            328965
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            394758
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            460551
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0
+          ],
+          "packed_rgb": [
+            526344
+          ]
+        }
+      ]
+    },
+    {
+      "name": "interleaved-rect-image",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": 0,
+        "caller_clip": [
+          0,
+          0,
+          4,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 2,
+          "height": 2,
+          "coverage": [
+            255,
+            128,
+            64,
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "images": [
+        {
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            0,
+            255,
+            0,
+            64
+          ]
+        }
+      ],
+      "commands": [
+        {
+          "kind": "Rect",
+          "rect": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            0,
+            0,
+            255,
+            128
+          ]
+        },
+        {
+          "kind": "Image",
+          "source": 0,
+          "rect": [
+            1,
+            0,
+            2,
+            2
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 1,
+          "y": 0,
+          "rgba": [
+            255,
+            255,
+            0,
+            192
+          ]
+        }
+      ],
+      "claim": "",
+      "expected_packed_rgb": [
+        "7f0080",
+        "8f4030",
+        "efd000",
+        "ff6000",
+        "ff0000",
+        "a74018",
+        "7d644e",
+        "ffc000"
+      ],
+      "expected_rgb24_bytes": 24,
+      "expected_rgb24_sha256": "c205f801690c1b719726ad38dce37d9c8db80f7d085782f4ad179b0a657ff182",
+      "expected_file": "literal-rgb/interleaved-rect-image.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Rect",
+          "touched_pixel_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "packed_rgb": [
+            16711680,
+            16711680,
+            16711680,
+            16711680,
+            16711680,
+            16711680,
+            16711680,
+            16711680
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1,
+            5,
+            6
+          ],
+          "packed_rgb": [
+            8323200,
+            12517440,
+            16711680,
+            16711680,
+            16711680,
+            14614560,
+            8323200,
+            16711680
+          ]
+        },
+        {
+          "kind": "Image",
+          "touched_pixel_indices": [
+            1,
+            2,
+            5,
+            6
+          ],
+          "packed_rgb": [
+            8323200,
+            9388080,
+            12533760,
+            16711680,
+            16711680,
+            10960920,
+            6242400,
+            16711680
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            2,
+            3,
+            6,
+            7
+          ],
+          "packed_rgb": [
+            8323200,
+            9388080,
+            15716352,
+            16736256,
+            16711680,
+            10960920,
+            8217678,
+            16760832
+          ]
+        }
+      ]
+    },
+    {
+      "name": "signed-row-origins-and-y",
+      "frame": {
+        "width": 4,
+        "height": 3,
+        "clear": 15658734,
+        "caller_clip": [
+          0,
+          0,
+          4,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 3,
+          "height": 3,
+          "coverage": [
+            255,
+            128,
+            64,
+            32,
+            255,
+            128,
+            64,
+            32,
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          -2,
+          0,
+          2
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": -1,
+          "rgba": [
+            13,
+            117,
+            233,
+            223
+          ]
+        }
+      ],
+      "claim": "Negative y clips the first mask row, without advancing or flattening row origins.",
+      "expected_packed_rgb": [
+        "d6e1ed",
+        "2984ea",
+        "8cb9ec",
+        "eeeeee",
+        "eeeeee",
+        "eeeeee",
+        "bdd4ed",
+        "d6e1ed",
+        "eeeeee",
+        "eeeeee",
+        "eeeeee",
+        "eeeeee"
+      ],
+      "expected_rgb24_bytes": 36,
+      "expected_rgb24_sha256": "590ed21c4e3c8174274b49cd43be4f76a9bd85b7ad2a6af75d3a22d7f4e75738",
+      "expected_file": "literal-rgb/signed-row-origins-and-y.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1,
+            2,
+            6,
+            7
+          ],
+          "packed_rgb": [
+            14082541,
+            2721002,
+            9222636,
+            15658734,
+            15658734,
+            15658734,
+            12440813,
+            14082541,
+            15658734,
+            15658734,
+            15658734,
+            15658734
+          ]
+        }
+      ]
+    },
+    {
+      "name": "varying-row-origins",
+      "frame": {
+        "width": 4,
+        "height": 4,
+        "clear": 0,
+        "caller_clip": [
+          0,
+          0,
+          4,
+          4
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 3,
+          "height": 3,
+          "coverage": [
+            255,
+            128,
+            64,
+            32,
+            255,
+            128,
+            64,
+            32,
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          2,
+          -1,
+          1
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 1,
+          "rgba": [
+            250,
+            111,
+            27,
+            255
+          ]
+        }
+      ],
+      "claim": "",
+      "expected_packed_rgb": [
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "fa6f1b",
+        "7d380e",
+        "fa6f1b",
+        "7d380e",
+        "000000",
+        "000000",
+        "000000",
+        "3f1c07",
+        "1f0e03",
+        "fa6f1b"
+      ],
+      "expected_rgb24_bytes": 48,
+      "expected_rgb24_sha256": "fb1c0418ccd5e3d260618cd26d473d4b9cbd1236695cec8e2adae8b983239c6c",
+      "expected_file": "literal-rgb/varying-row-origins.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            6,
+            7,
+            8,
+            9,
+            13,
+            14,
+            15
+          ],
+          "packed_rgb": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            16412443,
+            8206350,
+            16412443,
+            8206350,
+            0,
+            0,
+            0,
+            4135943,
+            2035203,
+            16412443
+          ]
+        }
+      ]
+    },
+    {
+      "name": "fractional-clip-both-edges",
+      "frame": {
+        "width": 5,
+        "height": 3,
+        "clear": 16777215,
+        "caller_clip": [
+          0.5,
+          0.5,
+          3,
+          1.5
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 5,
+          "height": 3,
+          "coverage": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            128
+          ]
+        }
+      ],
+      "claim": "Only integer origins x=1,2,3 and y=1 satisfy the fractional clip; y=2 is excluded.",
+      "expected_packed_rgb": [
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ff7f7f",
+        "ff7f7f",
+        "ff7f7f",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff"
+      ],
+      "expected_rgb24_bytes": 45,
+      "expected_rgb24_sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023",
+      "expected_file": "literal-rgb/fractional-clip-both-edges.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            6,
+            7,
+            8
+          ],
+          "packed_rgb": [
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16744319,
+            16744319,
+            16744319,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        }
+      ]
+    },
+    {
+      "name": "fixed-escape-and-restoration",
+      "frame": {
+        "width": 6,
+        "height": 4,
+        "clear": 16777215,
+        "caller_clip": [
+          1,
+          0,
+          4,
+          4
+        ],
+        "document_offset": [
+          1,
+          -1
+        ],
+        "viewport_offset": [
+          2,
+          1
+        ]
+      },
+      "masks": [
+        {
+          "width": 2,
+          "height": 2,
+          "coverage": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "PushClip",
+          "rect": [
+            0,
+            1,
+            2,
+            2
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 1,
+          "y": 1,
+          "rgba": [
+            0,
+            0,
+            255,
+            255
+          ]
+        },
+        {
+          "kind": "PopFixed"
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 2,
+          "y": 0,
+          "rgba": [
+            0,
+            255,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "PopClip"
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 2,
+          "y": 2,
+          "rgba": [
+            0,
+            255,
+            0,
+            255
+          ]
+        }
+      ],
+      "claim": "Glyph positions are absolute even inside Fixed. Fixed escapes inner clip and Pop restores it; final PopClip restores caller clip.",
+      "expected_packed_rgb": [
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ff0000",
+        "ff0000",
+        "0000ff",
+        "0000ff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "0000ff",
+        "00ff00",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "ffffff",
+        "00ff00",
+        "ffffff"
+      ],
+      "expected_rgb24_bytes": 72,
+      "expected_rgb24_sha256": "72810ddf3241e94dea01107e8bc3a8bdc4f991b65e9eb36cc3ca8c3883f0d3ae",
+      "expected_file": "literal-rgb/fixed-escape-and-restoration.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "PushClip",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            1,
+            2,
+            7,
+            8
+          ],
+          "packed_rgb": [
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "kind": "PushFixed",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            9,
+            10,
+            15,
+            16
+          ],
+          "packed_rgb": [
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16711680,
+            16711680,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "kind": "PopFixed",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16711680,
+            16711680,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16711680,
+            16711680,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "kind": "PopClip",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16711680,
+            16711680,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            16,
+            22
+          ],
+          "packed_rgb": [
+            16777215,
+            16711680,
+            16711680,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16711680,
+            16711680,
+            255,
+            255,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            255,
+            65280,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            65280,
+            16777215
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absolute-origins-ignore-offset",
+      "frame": {
+        "width": 5,
+        "height": 3,
+        "clear": 0,
+        "caller_clip": [
+          0,
+          0,
+          5,
+          3
+        ],
+        "document_offset": [
+          1,
+          2
+        ],
+        "viewport_offset": [
+          -2,
+          -1
+        ]
+      },
+      "masks": [
+        {
+          "width": 2,
+          "height": 1,
+          "coverage": [
+            255,
+            128
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          0
+        ],
+        [
+          2
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "PushFixed"
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 1,
+          "y": 1,
+          "rgba": [
+            0,
+            255,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "PopFixed"
+        }
+      ],
+      "claim": "",
+      "expected_packed_rgb": [
+        "ff0000",
+        "800000",
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "00ff00",
+        "008000",
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "000000"
+      ],
+      "expected_rgb24_bytes": 45,
+      "expected_rgb24_sha256": "2ec0b918aac87995c232dd172cd15a047f172cae1cf10f3e7f7b63e29c4234c7",
+      "expected_file": "literal-rgb/absolute-origins-ignore-offset.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1
+          ],
+          "packed_rgb": [
+            16711680,
+            8388608,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "PushFixed",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            16711680,
+            8388608,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            7,
+            8
+          ],
+          "packed_rgb": [
+            16711680,
+            8388608,
+            0,
+            0,
+            0,
+            0,
+            0,
+            65280,
+            32768,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "PopFixed",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            16711680,
+            8388608,
+            0,
+            0,
+            0,
+            0,
+            0,
+            65280,
+            32768,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-zero-coverage-and-alpha",
+      "frame": {
+        "width": 3,
+        "height": 2,
+        "clear": 1193046,
+        "caller_clip": [
+          0,
+          0,
+          3,
+          2
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 0,
+          "height": 0,
+          "coverage": []
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "coverage": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "coverage": [
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [],
+        [
+          0,
+          0
+        ],
+        [
+          1
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 1,
+          "rows": 1,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 2,
+          "rows": 2,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "PushClip",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 2,
+          "rows": 2,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "PopClip"
+        }
+      ],
+      "claim": "Canonical empty has no dispatch; nonempty zero coverage still dispatches; alpha zero/empty clip omit only after validation.",
+      "expected_packed_rgb": [
+        "123456",
+        "123456",
+        "123456",
+        "123456",
+        "123456",
+        "123456"
+      ],
+      "expected_rgb24_bytes": 18,
+      "expected_rgb24_sha256": "f19fd9d10e4039b0f6c74562b0e99e2aa59cf2fbfe63d3007bf76941345f1b46",
+      "expected_file": "literal-rgb/empty-zero-coverage-and-alpha.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "packed_rgb": [
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            1
+          ],
+          "packed_rgb": [
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046
+          ]
+        },
+        {
+          "kind": "PushClip",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046
+          ]
+        },
+        {
+          "kind": "PopClip",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046,
+            1193046
+          ]
+        }
+      ]
+    },
+    {
+      "name": "signed-i32-extremes",
+      "frame": {
+        "width": 3,
+        "height": 3,
+        "clear": 66051,
+        "caller_clip": [
+          0,
+          0,
+          3,
+          3
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 3,
+          "height": 3,
+          "coverage": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          2147483647,
+          -2147483648,
+          0
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            0,
+            255,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 2147483647,
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": -2147483648,
+          "rgba": [
+            0,
+            0,
+            255,
+            255
+          ]
+        }
+      ],
+      "claim": "Only the final row of first operation is visible; signed origin/extent arithmetic must not wrap.",
+      "expected_packed_rgb": [
+        "010203",
+        "010203",
+        "010203",
+        "010203",
+        "010203",
+        "010203",
+        "00ff00",
+        "00ff00",
+        "00ff00"
+      ],
+      "expected_rgb24_bytes": 27,
+      "expected_rgb24_sha256": "1003ca8baa9f802c6847ac30e6e0ee1d25e9447d7e82fec20ee00aa1df74ce1e",
+      "expected_file": "literal-rgb/signed-i32-extremes.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            6,
+            7,
+            8
+          ],
+          "packed_rgb": [
+            66051,
+            66051,
+            66051,
+            66051,
+            66051,
+            66051,
+            65280,
+            65280,
+            65280
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            66051,
+            66051,
+            66051,
+            66051,
+            66051,
+            66051,
+            65280,
+            65280,
+            65280
+          ]
+        },
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [],
+          "packed_rgb": [
+            66051,
+            66051,
+            66051,
+            66051,
+            66051,
+            66051,
+            65280,
+            65280,
+            65280
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dispatch-tail-9x9",
+      "frame": {
+        "width": 9,
+        "height": 9,
+        "clear": 3359829,
+        "caller_clip": [
+          0,
+          0,
+          9,
+          9
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "masks": [
+        {
+          "width": 9,
+          "height": 9,
+          "coverage": [
+            0,
+            31,
+            62,
+            93,
+            124,
+            155,
+            186,
+            217,
+            248,
+            17,
+            48,
+            79,
+            110,
+            141,
+            172,
+            203,
+            234,
+            9,
+            34,
+            65,
+            96,
+            127,
+            158,
+            189,
+            220,
+            251,
+            26,
+            51,
+            82,
+            113,
+            144,
+            175,
+            206,
+            237,
+            12,
+            43,
+            68,
+            99,
+            130,
+            161,
+            192,
+            223,
+            254,
+            29,
+            60,
+            85,
+            116,
+            147,
+            178,
+            209,
+            240,
+            15,
+            46,
+            77,
+            102,
+            133,
+            164,
+            195,
+            226,
+            1,
+            32,
+            63,
+            94,
+            119,
+            150,
+            181,
+            212,
+            243,
+            18,
+            49,
+            80,
+            111,
+            136,
+            167,
+            198,
+            229,
+            4,
+            35,
+            66,
+            97,
+            128
+          ]
+        }
+      ],
+      "row_tables": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "images": [],
+      "commands": [
+        {
+          "kind": "Glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            215,
+            87,
+            39,
+            173
+          ]
+        }
+      ],
+      "claim": "Partial 8x8 workgroups must not write beyond the target or source.",
+      "expected_packed_rgb": [
+        "334455",
+        "414651",
+        "4e474d",
+        "5c494a",
+        "694a46",
+        "774c42",
+        "844d3e",
+        "924f3a",
+        "9f5137",
+        "3a4553",
+        "48464f",
+        "55484b",
+        "634a48",
+        "704b44",
+        "7e4d40",
+        "8b4e3c",
+        "995038",
+        "374454",
+        "424651",
+        "4f474d",
+        "5d4949",
+        "6a4a45",
+        "784c42",
+        "854e3e",
+        "934f3a",
+        "a05136",
+        "3e4552",
+        "49474f",
+        "56484b",
+        "644a47",
+        "714b44",
+        "7f4d40",
+        "8c4e3c",
+        "9a5038",
+        "384554",
+        "464650",
+        "51474d",
+        "5e4949",
+        "6c4b45",
+        "794c41",
+        "874e3e",
+        "944f3a",
+        "a25136",
+        "3f4552",
+        "4d474e",
+        "58484b",
+        "654a47",
+        "734b43",
+        "804d3f",
+        "8e4f3c",
+        "9b5038",
+        "394553",
+        "47464f",
+        "54484c",
+        "5f4949",
+        "6d4b45",
+        "7a4c41",
+        "884e3d",
+        "954f39",
+        "334455",
+        "414651",
+        "4e474d",
+        "5c494a",
+        "664a47",
+        "744c43",
+        "814d3f",
+        "8f4f3b",
+        "9c5037",
+        "3b4553",
+        "48464f",
+        "56484b",
+        "634a47",
+        "6e4b44",
+        "7c4c41",
+        "894e3d",
+        "975039",
+        "344455",
+        "424651",
+        "4f474d",
+        "5d4949",
+        "6a4a45"
+      ],
+      "expected_rgb24_bytes": 243,
+      "expected_rgb24_sha256": "eeee5a8624552d4ce1719c572b9ebb766c564703148716efc417ab5cbc99e15a",
+      "expected_file": "literal-rgb/dispatch-tail-9x9.rgb24",
+      "arithmetic_steps": [
+        {
+          "kind": "Glyph",
+          "touched_pixel_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80
+          ],
+          "packed_rgb": [
+            3359829,
+            4277841,
+            5130061,
+            6048074,
+            6900294,
+            7818306,
+            8670526,
+            9588538,
+            10441015,
+            3818835,
+            4736591,
+            5589067,
+            6507080,
+            7359300,
+            8277312,
+            9129532,
+            10047544,
+            3621972,
+            4343377,
+            5195597,
+            6113609,
+            6965829,
+            7883842,
+            8736318,
+            9654074,
+            10506550,
+            4080978,
+            4802383,
+            5654603,
+            6572615,
+            7424836,
+            8342848,
+            9195068,
+            10113080,
+            3687764,
+            4605520,
+            5326669,
+            6179145,
+            7097157,
+            7949377,
+            8867390,
+            9719610,
+            10637622,
+            4146514,
+            5064526,
+            5785675,
+            6638151,
+            7555907,
+            8408383,
+            9326396,
+            10178616,
+            3753299,
+            4671055,
+            5523532,
+            6244681,
+            7162693,
+            8014913,
+            8932925,
+            9785145,
+            3359829,
+            4277841,
+            5130061,
+            6048074,
+            6703687,
+            7621699,
+            8473919,
+            9391931,
+            10244151,
+            3884371,
+            4736591,
+            5654603,
+            6507079,
+            7228228,
+            8145985,
+            8998461,
+            9916473,
+            3425365,
+            4343377,
+            5195597,
+            6113609,
+            6965829
+          ]
+        }
+      ]
+    }
+  ],
+  "refusal_cases": [
+    {
+      "name": "source-index",
+      "expect": "refuse",
+      "family": "glyph-source-index",
+      "input_recipe": {
+        "base": "coverage-alpha-floor",
+        "replace_glyph_source": 1
+      },
+      "reason": "Mask-only source index is outside the single-mask table.",
+      "variants": [
+        "alpha0",
+        "empty_clip"
+      ]
+    },
+    {
+      "name": "row-index",
+      "expect": "refuse",
+      "family": "row-table-index",
+      "input_recipe": {
+        "base": "coverage-alpha-floor",
+        "replace_glyph_rows": 1
+      },
+      "reason": "Row-table-only index is outside the single table.",
+      "variants": [
+        "alpha0",
+        "empty_clip"
+      ]
+    },
+    {
+      "name": "row-height",
+      "expect": "refuse",
+      "family": "row-height-mismatch",
+      "input_recipe": {
+        "frame": [
+          1,
+          1
+        ],
+        "mask": [
+          1,
+          2,
+          {
+            "fill": 255,
+            "count": 2
+          }
+        ],
+        "rows": [
+          [
+            0
+          ]
+        ],
+        "glyph": {
+          "source": 0,
+          "rows": 0,
+          "y": 0
+        }
+      },
+      "reason": "Reached row table length must equal mask height.",
+      "variants": [
+        "alpha0",
+        "empty_clip"
+      ]
+    },
+    {
+      "name": "noncanonical-empty-0",
+      "expect": "refuse",
+      "family": "mask-empty-shape",
+      "input_recipe": {
+        "mask": [
+          0,
+          1,
+          []
+        ],
+        "commands": []
+      },
+      "reason": "Only 0x0 with empty coverage is valid empty.",
+      "variants": []
+    },
+    {
+      "name": "noncanonical-empty-1",
+      "expect": "refuse",
+      "family": "mask-empty-shape",
+      "input_recipe": {
+        "mask": [
+          1,
+          0,
+          []
+        ],
+        "commands": []
+      },
+      "reason": "Only 0x0 with empty coverage is valid empty.",
+      "variants": []
+    },
+    {
+      "name": "coverage-length",
+      "expect": "refuse",
+      "family": "mask-byte-length",
+      "input_recipe": {
+        "mask": [
+          2,
+          2,
+          [
+            255,
+            255,
+            255
+          ]
+        ],
+        "commands": []
+      },
+      "reason": "Unused malformed source is rejected before any dispatch.",
+      "variants": []
+    },
+    {
+      "name": "axis-width",
+      "expect": "refuse",
+      "family": "mask-axis",
+      "input_recipe": {
+        "mask": [
+          1025,
+          1,
+          {
+            "fill": 0,
+            "count": 1025
+          }
+        ],
+        "commands": []
+      },
+      "reason": "One mask axis exceeds 1024 even unused.",
+      "variants": []
+    },
+    {
+      "name": "axis-height",
+      "expect": "refuse",
+      "family": "mask-axis",
+      "input_recipe": {
+        "mask": [
+          1,
+          1025,
+          {
+            "fill": 0,
+            "count": 1025
+          }
+        ],
+        "commands": []
+      },
+      "reason": "One mask axis exceeds 1024 even unused.",
+      "variants": []
+    },
+    {
+      "name": "mask-area",
+      "expect": "refuse",
+      "family": "mask-area",
+      "input_recipe": {
+        "mask": [
+          513,
+          512,
+          {
+            "fill": 0,
+            "count": 262656
+          }
+        ],
+        "commands": []
+      },
+      "reason": "Each axis fits, but product exceeds 262144.",
+      "variants": []
+    },
+    {
+      "name": "aggregate-coverage",
+      "expect": "refuse",
+      "family": "mask-coverage-total",
+      "input_recipe": {
+        "masks": [
+          [
+            512,
+            512,
+            {
+              "fill": 0,
+              "count": 262144
+            }
+          ],
+          [
+            1,
+            1,
+            [
+              0
+            ]
+          ]
+        ],
+        "commands": []
+      },
+      "reason": "Valid individual shapes total 262145 coverage bytes.",
+      "variants": []
+    },
+    {
+      "name": "combined-sources",
+      "expect": "refuse",
+      "family": "combined-source-count",
+      "input_recipe": {
+        "images": [
+          [
+            1,
+            1,
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        ],
+        "masks": {
+          "repeat": [
+            0,
+            0,
+            []
+          ],
+          "count": 256
+        },
+        "commands": []
+      },
+      "reason": "Image and mask sources together total 257.",
+      "variants": []
+    },
+    {
+      "name": "row-table-count",
+      "expect": "refuse",
+      "family": "row-table-count",
+      "input_recipe": {
+        "rows": {
+          "repeat": [],
+          "count": 257
+        },
+        "commands": []
+      },
+      "reason": "257 supplied empty tables exceed table count.",
+      "variants": []
+    },
+    {
+      "name": "row-table-size",
+      "expect": "refuse",
+      "family": "row-table-length",
+      "input_recipe": {
+        "rows": [
+          {
+            "fill": 0,
+            "count": 1025
+          }
+        ],
+        "commands": []
+      },
+      "reason": "Unused row table exceeds length 1024.",
+      "variants": []
+    },
+    {
+      "name": "aggregate-rows",
+      "expect": "refuse",
+      "family": "row-entry-total",
+      "input_recipe": {
+        "rows": [
+          {
+            "repeat_table": {
+              "fill": 0,
+              "count": 1024
+            },
+            "count": 64
+          },
+          [
+            0
+          ]
+        ],
+        "commands": []
+      },
+      "reason": "65 tables individually fit but total 65537 entries.",
+      "variants": []
+    },
+    {
+      "name": "command-count",
+      "expect": "refuse",
+      "family": "operation-count",
+      "input_recipe": {
+        "commands": {
+          "repeat": {
+            "kind": "Glyph",
+            "source": 0,
+            "rows": 0,
+            "y": 0,
+            "rgba": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "count": 257
+        },
+        "masks": [
+          [
+            0,
+            0,
+            []
+          ]
+        ],
+        "rows": [
+          []
+        ]
+      },
+      "reason": "Transparent empty glyph operations still count before omission.",
+      "variants": []
+    },
+    {
+      "name": "scope-depth",
+      "expect": "refuse",
+      "family": "scope-depth",
+      "input_recipe": {
+        "commands": [
+          {
+            "repeat": "PushFixed",
+            "count": 33
+          },
+          {
+            "repeat": "PopFixed",
+            "count": 33
+          }
+        ]
+      },
+      "reason": "Balanced nesting depth 33 exceeds 32 independently of op count.",
+      "variants": []
+    },
+    {
+      "name": "gpu-buffer-cap",
+      "expect": "refuse",
+      "family": "explicit-gpu-bytes",
+      "input_recipe": {
+        "frame": [
+          1,
+          1
+        ],
+        "masks": [
+          [
+            512,
+            512,
+            {
+              "fill": 255,
+              "count": 262144
+            }
+          ]
+        ],
+        "rows": [
+          {
+            "fill": 0,
+            "count": 512
+          }
+        ],
+        "glyph": {
+          "source": 0,
+          "rows": 0,
+          "y": 0
+        }
+      },
+      "reason": "Visible glyph packs all coverage as u32: 1048576 coverage + 2048 rows + 512 uniforms + 8 target/readback = 1051144 > 1048576. No images/LUTs.",
+      "variants": []
+    },
+    {
+      "name": "invocation-cap",
+      "expect": "refuse",
+      "family": "gpu-invocations",
+      "input_recipe": {
+        "frame": [
+          320,
+          240
+        ],
+        "masks": [
+          [
+            320,
+            240,
+            {
+              "fill": 255,
+              "count": 76800
+            }
+          ]
+        ],
+        "rows": [
+          {
+            "fill": 0,
+            "count": 240
+          }
+        ],
+        "glyph_repeat": 52
+      },
+      "reason": "Unconditional clear plus 52 full-frame glyph draws: 53*76800 = 4070400 > 4000000. Explicit bytes 614400+307200+960+53*256=936128 stay below cap.",
+      "variants": []
+    },
+    {
+      "name": "target-high-byte",
+      "expect": "refuse",
+      "family": "opaque-target",
+      "input_recipe": {
+        "frame": [
+          1,
+          1
+        ],
+        "clear": 4278190080,
+        "commands": []
+      },
+      "reason": "Packed target clear must be 0x00RRGGBB, independent of text alpha.",
+      "variants": []
+    }
+  ],
+  "positive_cap_plans": [
+    {
+      "name": "invocation-near-cap",
+      "recipe": "invocation-cap with glyph_repeat=51",
+      "invocations": 3993600,
+      "gpu_buffer_bytes": 935872,
+      "expected": "accept"
+    },
+    {
+      "name": "exact-row-total",
+      "recipe": "64 row tables each length 1024, no commands or masks",
+      "row_entries": 65536,
+      "expected": "accept"
+    },
+    {
+      "name": "exact-combined-source-count",
+      "recipe": "256 canonical empty masks, no commands or rows",
+      "expected": "accept"
+    }
+  ]
+}

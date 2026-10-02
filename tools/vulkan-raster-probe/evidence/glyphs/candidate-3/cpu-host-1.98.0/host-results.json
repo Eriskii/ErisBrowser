@@ -1,0 +1,667 @@
+{
+  "schema": 1,
+  "success": true,
+  "mode": "cpu-check",
+  "runs": [
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-glyph-check-1.98.0",
+        "--cpu-check",
+        "--baselines",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph-fixtures/parent-baselines"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.018570297048427165,
+      "captured_bytes": 6312,
+      "observed_bytes": 6312,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "cpu-check",
+      "validation": {
+        "cases": 26,
+        "literal_cases": 12,
+        "font_cases": 14,
+        "worker_cases": 0,
+        "retained_gpu_bytes": 755524,
+        "metadata": [
+          {
+            "name": "font-regular-kern-av-to",
+            "bytes": 8,
+            "scalars": 8,
+            "visited": 8,
+            "occurrences": 8,
+            "masks": 5,
+            "coverage": 495,
+            "cold_work": 496,
+            "scratch": 544,
+            "rows": 71,
+            "cpu_upper": 761,
+            "gpu_upper": 53720,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-bold-translucent",
+            "bytes": 5,
+            "scalars": 5,
+            "visited": 5,
+            "occurrences": 5,
+            "masks": 5,
+            "coverage": 565,
+            "cold_work": 566,
+            "scratch": 640,
+            "rows": 47,
+            "cpu_upper": 566,
+            "gpu_upper": 53136,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-mono-no-kern",
+            "bytes": 5,
+            "scalars": 5,
+            "visited": 5,
+            "occurrences": 5,
+            "masks": 5,
+            "coverage": 448,
+            "cold_work": 449,
+            "scratch": 496,
+            "rows": 47,
+            "cpu_upper": 449,
+            "gpu_upper": 52668,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-mono-bold-precedence",
+            "bytes": 5,
+            "scalars": 5,
+            "visited": 5,
+            "occurrences": 5,
+            "masks": 5,
+            "coverage": 448,
+            "cold_work": 449,
+            "scratch": 496,
+            "rows": 47,
+            "cpu_upper": 449,
+            "gpu_upper": 52668,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-italic-negative-bearing",
+            "bytes": 5,
+            "scalars": 5,
+            "visited": 5,
+            "occurrences": 5,
+            "masks": 5,
+            "coverage": 587,
+            "cold_work": 588,
+            "scratch": 744,
+            "rows": 62,
+            "cpu_upper": 588,
+            "gpu_upper": 53284,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-space-zero-advance",
+            "bytes": 9,
+            "scalars": 7,
+            "visited": 7,
+            "occurrences": 7,
+            "masks": 4,
+            "coverage": 312,
+            "cold_work": 314,
+            "scratch": 640,
+            "rows": 39,
+            "cpu_upper": 472,
+            "gpu_upper": 52604,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-missing-regular",
+            "bytes": 9,
+            "scalars": 4,
+            "visited": 4,
+            "occurrences": 4,
+            "masks": 4,
+            "coverage": 534,
+            "cold_work": 534,
+            "scratch": 556,
+            "rows": 54,
+            "cpu_upper": 534,
+            "gpu_upper": 52784,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-missing-bold",
+            "bytes": 6,
+            "scalars": 3,
+            "visited": 3,
+            "occurrences": 3,
+            "masks": 3,
+            "coverage": 447,
+            "cold_work": 447,
+            "scratch": 640,
+            "rows": 39,
+            "cpu_upper": 447,
+            "gpu_upper": 52120,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-missing-mono",
+            "bytes": 9,
+            "scalars": 4,
+            "visited": 4,
+            "occurrences": 4,
+            "masks": 4,
+            "coverage": 510,
+            "cold_work": 510,
+            "scratch": 556,
+            "rows": 54,
+            "cpu_upper": 510,
+            "gpu_upper": 52688,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-composite-unicode",
+            "bytes": 12,
+            "scalars": 8,
+            "visited": 8,
+            "occurrences": 8,
+            "masks": 6,
+            "coverage": 787,
+            "cold_work": 788,
+            "scratch": 1136,
+            "rows": 59,
+            "cpu_upper": 790,
+            "gpu_upper": 54840,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-subpixel-rounding",
+            "bytes": 6,
+            "scalars": 6,
+            "visited": 6,
+            "occurrences": 6,
+            "masks": 2,
+            "coverage": 200,
+            "cold_work": 200,
+            "scratch": 544,
+            "rows": 87,
+            "cpu_upper": 600,
+            "gpu_upper": 52092,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-shared-bitmap-quantum",
+            "bytes": 8,
+            "scalars": 8,
+            "visited": 8,
+            "occurrences": 8,
+            "masks": 4,
+            "coverage": 495,
+            "cold_work": 495,
+            "scratch": 544,
+            "rows": 94,
+            "cpu_upper": 990,
+            "gpu_upper": 53812,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-bitmap-quantum-boundary",
+            "bytes": 6,
+            "scalars": 6,
+            "visited": 6,
+            "occurrences": 6,
+            "masks": 4,
+            "coverage": 400,
+            "cold_work": 400,
+            "scratch": 544,
+            "rows": 87,
+            "cpu_upper": 600,
+            "gpu_upper": 52892,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          },
+          {
+            "name": "font-fixed-clip-image-order",
+            "bytes": 13,
+            "scalars": 13,
+            "visited": 13,
+            "occurrences": 13,
+            "masks": 5,
+            "coverage": 563,
+            "cold_work": 563,
+            "scratch": 544,
+            "rows": 160,
+            "cpu_upper": 38483,
+            "gpu_upper": 57872,
+            "cold_warm": true,
+            "claim": "observed bounded metadata, not independent exact counter oracle"
+          }
+        ],
+        "ready": [
+          {
+            "name": "coverage-alpha-floor",
+            "population": "literal-mask",
+            "width": 6,
+            "height": 4,
+            "compared_bytes": 96,
+            "draws": 5,
+            "invocations": 320,
+            "gpu_buffers": 1500
+          },
+          {
+            "name": "ordered-overlap",
+            "population": "literal-mask",
+            "width": 4,
+            "height": 3,
+            "compared_bytes": 48,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1152
+          },
+          {
+            "name": "repeated-low-alpha",
+            "population": "literal-mask",
+            "width": 1,
+            "height": 1,
+            "compared_bytes": 4,
+            "draws": 9,
+            "invocations": 576,
+            "gpu_buffers": 2320
+          },
+          {
+            "name": "interleaved-rect-image",
+            "population": "literal-mask",
+            "width": 4,
+            "height": 2,
+            "compared_bytes": 32,
+            "draws": 5,
+            "invocations": 320,
+            "gpu_buffers": 1396
+          },
+          {
+            "name": "signed-row-origins-and-y",
+            "population": "literal-mask",
+            "width": 4,
+            "height": 3,
+            "compared_bytes": 48,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 656
+          },
+          {
+            "name": "varying-row-origins",
+            "population": "literal-mask",
+            "width": 4,
+            "height": 4,
+            "compared_bytes": 64,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 688
+          },
+          {
+            "name": "fractional-clip-both-edges",
+            "population": "literal-mask",
+            "width": 5,
+            "height": 3,
+            "compared_bytes": 60,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 704
+          },
+          {
+            "name": "fixed-escape-and-restoration",
+            "population": "literal-mask",
+            "width": 6,
+            "height": 4,
+            "compared_bytes": 96,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1256
+          },
+          {
+            "name": "absolute-origins-ignore-offset",
+            "population": "literal-mask",
+            "width": 5,
+            "height": 3,
+            "compared_bytes": 60,
+            "draws": 3,
+            "invocations": 192,
+            "gpu_buffers": 904
+          },
+          {
+            "name": "empty-zero-coverage-and-alpha",
+            "population": "literal-mask",
+            "width": 3,
+            "height": 2,
+            "compared_bytes": 24,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 592
+          },
+          {
+            "name": "signed-i32-extremes",
+            "population": "literal-mask",
+            "width": 3,
+            "height": 3,
+            "compared_bytes": 36,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 632
+          },
+          {
+            "name": "dispatch-tail-9x9",
+            "population": "literal-mask",
+            "width": 9,
+            "height": 9,
+            "compared_bytes": 324,
+            "draws": 2,
+            "invocations": 512,
+            "gpu_buffers": 1520
+          },
+          {
+            "name": "font-regular-kern-av-to",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 7,
+            "invocations": 7680,
+            "gpu_buffers": 53208
+          },
+          {
+            "name": "font-bold-translucent",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 5,
+            "invocations": 7168,
+            "gpu_buffers": 52880
+          },
+          {
+            "name": "font-mono-no-kern",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 5,
+            "invocations": 7040,
+            "gpu_buffers": 52412
+          },
+          {
+            "name": "font-mono-bold-precedence",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 5,
+            "invocations": 7040,
+            "gpu_buffers": 52412
+          },
+          {
+            "name": "font-italic-negative-bearing",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 5,
+            "invocations": 7104,
+            "gpu_buffers": 53028
+          },
+          {
+            "name": "font-space-zero-advance",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 4,
+            "invocations": 6912,
+            "gpu_buffers": 51580
+          },
+          {
+            "name": "font-missing-regular",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 5,
+            "invocations": 7168,
+            "gpu_buffers": 52784
+          },
+          {
+            "name": "font-missing-bold",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 4,
+            "invocations": 6912,
+            "gpu_buffers": 52120
+          },
+          {
+            "name": "font-missing-mono",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 5,
+            "invocations": 7168,
+            "gpu_buffers": 52688
+          },
+          {
+            "name": "font-composite-unicode",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 6,
+            "invocations": 7360,
+            "gpu_buffers": 54072
+          },
+          {
+            "name": "font-subpixel-rounding",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 7,
+            "invocations": 7488,
+            "gpu_buffers": 52092
+          },
+          {
+            "name": "font-shared-bitmap-quantum",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 9,
+            "invocations": 8192,
+            "gpu_buffers": 53812
+          },
+          {
+            "name": "font-bitmap-quantum-boundary",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 7,
+            "invocations": 7488,
+            "gpu_buffers": 52892
+          },
+          {
+            "name": "font-fixed-clip-image-order",
+            "population": "font-reference",
+            "width": 128,
+            "height": 48,
+            "compared_bytes": 24576,
+            "draws": 16,
+            "invocations": 15680,
+            "gpu_buffers": 56224
+          }
+        ],
+        "fixture_bindings": [
+          {
+            "path": "literal-fixtures.json",
+            "bytes": 58134,
+            "sha256": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa"
+          },
+          {
+            "path": "font-inventory.json",
+            "bytes": 23408,
+            "sha256": "ecb63ecb6ea172278eaed57acc4fe5f27ce6a8c4567aa35392be4fe7511cf7c1"
+          }
+        ],
+        "mode": "cpu-check",
+        "cpu_font_passes": 28,
+        "gpu_comparisons": 0,
+        "retained_reference_bytes": 344956,
+        "cpu_font_compared_bytes": 688128,
+        "literal_cpu_comparisons": 0
+      }
+    }
+  ],
+  "adapter_count": 0,
+  "binary": "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-glyph-check-1.98.0",
+  "binary_sha256": "8846323090fa749643bcbc2295d2f802aa5d42a6fde1402822737bfb87b8f044",
+  "fixture_directory": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph-fixtures",
+  "fixture_bindings": [
+    {
+      "path": "literal-fixtures.json",
+      "bytes": 58134,
+      "sha256": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa"
+    },
+    {
+      "path": "font-inventory.json",
+      "bytes": 23408,
+      "sha256": "ecb63ecb6ea172278eaed57acc4fe5f27ce6a8c4567aa35392be4fe7511cf7c1"
+    }
+  ],
+  "baseline_directory": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph-fixtures/parent-baselines",
+  "baselines": {
+    "manifest_sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b",
+    "parent_commit": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+    "encoding": "u32le-00RRGGBB",
+    "files": [
+      {
+        "path": "font-regular-kern-av-to.rgb",
+        "bytes": 24576,
+        "sha256": "d9bd9eb34f0482e922fe3d612a0c1d6418962ffb0c5ec74c063da8c997f3091b"
+      },
+      {
+        "path": "font-bold-translucent.rgb",
+        "bytes": 24576,
+        "sha256": "19b49c8abecde5f674a3aec0c63a3eec67d569a1049778932f61e62432ddc49f"
+      },
+      {
+        "path": "font-mono-no-kern.rgb",
+        "bytes": 24576,
+        "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+      },
+      {
+        "path": "font-mono-bold-precedence.rgb",
+        "bytes": 24576,
+        "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+      },
+      {
+        "path": "font-italic-negative-bearing.rgb",
+        "bytes": 24576,
+        "sha256": "36f187fbb057986d4ab3c5a7ad7bd55822071464d3f5fee422eccf7d0f69dded"
+      },
+      {
+        "path": "font-space-zero-advance.rgb",
+        "bytes": 24576,
+        "sha256": "763c17d2397f6a204d6160ac6d67c9c25fbd65c217c874666aa20c600c042bba"
+      },
+      {
+        "path": "font-missing-regular.rgb",
+        "bytes": 24576,
+        "sha256": "e6d65914d1179468b0dad80678125ee3633b0461467277a2dcb1494f8db87635"
+      },
+      {
+        "path": "font-missing-bold.rgb",
+        "bytes": 24576,
+        "sha256": "922d5b18e917bc1d9e7ecd899a1581ca565b76d19f13cbe4ec820b1036c2cf70"
+      },
+      {
+        "path": "font-missing-mono.rgb",
+        "bytes": 24576,
+        "sha256": "1f369fe2fecbb8275cc9efef86b94ba696bdb18cbc6c2338d45432841fdfc846"
+      },
+      {
+        "path": "font-composite-unicode.rgb",
+        "bytes": 24576,
+        "sha256": "c3e48f00f76c89f4fbbd6f5ac6eb69997b689b665ec4842f6be2c7254a65176e"
+      },
+      {
+        "path": "font-subpixel-rounding.rgb",
+        "bytes": 24576,
+        "sha256": "a113299b07088f266f4d9c7f3c49da8ffa83ecfc1851ebbfeece446f9305d36c"
+      },
+      {
+        "path": "font-shared-bitmap-quantum.rgb",
+        "bytes": 24576,
+        "sha256": "0211635cf6bd032cae4a54c383e943acdc82400b0a9d862bc029835b429f3c99"
+      },
+      {
+        "path": "font-bitmap-quantum-boundary.rgb",
+        "bytes": 24576,
+        "sha256": "b9f038af4b6360add819d450b2d1e9eeb86a078cb215b27f8ef1e78654ddd810"
+      },
+      {
+        "path": "font-fixed-clip-image-order.rgb",
+        "bytes": 24576,
+        "sha256": "bd188a01b46e098fd55e47d78a517cf819ff4ebc7dab8242f1ebd1b2ed21c71d"
+      }
+    ],
+    "bytes": 344064,
+    "pixel_claim": "reference-derived immutable-parent CPU"
+  },
+  "loader": {
+    "directory": null,
+    "files": [],
+    "environment": {
+      "LD_LIBRARY_PATH": null,
+      "VK_DRIVER_FILES": null,
+      "VK_ICD_FILENAMES": null,
+      "VK_LAYER_PATH": null
+    },
+    "scope": "explicit loader directory and selected environment; not a complete transitive system-library inventory"
+  },
+  "host_source_bindings": {
+    "run_glyph_host.py": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525",
+    "glyph_protocol.py": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4",
+    "run_browser_host.py": "51ac06679b31bcfbc3f051df814850631b45fce1943ab6d89fb226349994de10",
+    "run_host.py": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6",
+    "bridge_supervisor.py": "d38c129e010564c2ffa3903e1f86ae53d26667723749d9407659a14d188b32a8"
+  },
+  "timeout_seconds": 60,
+  "worker_cases": 0,
+  "scope": "offscreen direct lists; independent literal masks and parent-CPU-derived font references; no worker text capture, native-window or performance claim"
+}

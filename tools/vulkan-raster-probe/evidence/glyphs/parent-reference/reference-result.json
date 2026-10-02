@@ -1,0 +1,13 @@
+{
+  "fixture_freeze_sha256": "934ab6a31d3640f8cb29c849d2742cb4ac42f84399bf67c09078f70ec7459778",
+  "binary": "/tmp/eris-vulkan-glyph-reference-target/debug/glyph-reference",
+  "binary_sha256": "8cb5837ae4ad899f11875919005c156b5c393ccec2986f499782c73834151fd7",
+  "build_log_sha256": "dd543bcea2bcf5d8e99d5bc6b508576f15d40df2e4ff639ce8bec43343ee77bb",
+  "supervisor_record": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.json",
+  "baseline_freeze_sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b",
+  "toolchain": "1.98.0",
+  "profile": "dev",
+  "cold_warm_compared": true,
+  "cpu_passes": 28,
+  "unique_reference_bytes": 344064
+}

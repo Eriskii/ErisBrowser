@@ -585,6 +585,7 @@ mod tests {
                     Command::PopClip => assert_eq!(scopes.pop(), Some(false)),
                     Command::PopFixed => assert_eq!(scopes.pop(), Some(true)),
                     Command::Unsupported(_) => panic!("unsupported command in positive fixture"),
+                    Command::Glyph { .. } => panic!("glyph command in legacy alpha fixture"),
                 }
                 assert!(scopes.len() <= MAX_SCOPES);
             }

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "scope": "Source-only review of exact frozen contract-test transcription; no Rust/planner/font/render/GPU execution.",
+  "result": "no concrete finding",
+  "negative_recipes": 19,
+  "alpha_zero_or_empty_clip_variants": 6,
+  "positive_plans": 3,
+  "reviewed": [
+    "Every named recipe matches frozen dimensions, coverage, row-table contents, repetitions and cap distinction.",
+    "Source/row-index base recipes mutate all four original Glyph commands and preserve all other base data.",
+    "Alpha-zero variants mutate every Glyph alpha; empty-clip variants mutate only caller clip. IDs and row-height failures therefore remain hidden-culling checks.",
+    "Opaque black/white 1x1 defaults only fill unspecified input fields and do not alter named failure conditions.",
+    "Balanced 33 fixed pushes/pops isolate scope depth; 257 transparent empty Glyphs isolate original operation count.",
+    "Invocation positive removes exactly one draw (51 plus clear), retaining independent 3993600 invocations and 935872 explicit bytes.",
+    "Positive exact row/source counts retain no commands and all canonical empty masks.",
+    "Both groups assert complete unique label counts; expected error families remain refusal-only because frozen oracle does not specify implementation strings."
+  ],
+  "inputs": [
+    {
+      "path": "tools/vulkan-raster-probe/tests/glyph_contracts.rs",
+      "bytes": 7754,
+      "sha256": "1d0b10a0b603f603fbb8510fdd703286b99e2c473d440e165b92d893008f1944"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-fixtures.json",
+      "bytes": 58134,
+      "sha256": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_fixtures/literal_inventory.rs",
+      "bytes": 23628,
+      "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8"
+    }
+  ]
+}

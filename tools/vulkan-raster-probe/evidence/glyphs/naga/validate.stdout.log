@@ -1,0 +1,2 @@
+PASS glyph.wgsl Naga=30.0.1 parse=true validation=true flags=all capabilities=empty entry=glyph workgroup=8x8x1
+COMPLETE shaders=1 offline=true gpu_execution=false

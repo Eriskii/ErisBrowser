@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "parent": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+  "encoding": "u32le-00RRGGBB",
+  "cases": 14,
+  "bytes": 344064,
+  "files": [
+    {
+      "path": "font-regular-kern-av-to.rgb",
+      "bytes": 24576,
+      "sha256": "d9bd9eb34f0482e922fe3d612a0c1d6418962ffb0c5ec74c063da8c997f3091b"
+    },
+    {
+      "path": "font-bold-translucent.rgb",
+      "bytes": 24576,
+      "sha256": "19b49c8abecde5f674a3aec0c63a3eec67d569a1049778932f61e62432ddc49f"
+    },
+    {
+      "path": "font-mono-no-kern.rgb",
+      "bytes": 24576,
+      "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+    },
+    {
+      "path": "font-mono-bold-precedence.rgb",
+      "bytes": 24576,
+      "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+    },
+    {
+      "path": "font-italic-negative-bearing.rgb",
+      "bytes": 24576,
+      "sha256": "36f187fbb057986d4ab3c5a7ad7bd55822071464d3f5fee422eccf7d0f69dded"
+    },
+    {
+      "path": "font-space-zero-advance.rgb",
+      "bytes": 24576,
+      "sha256": "763c17d2397f6a204d6160ac6d67c9c25fbd65c217c874666aa20c600c042bba"
+    },
+    {
+      "path": "font-missing-regular.rgb",
+      "bytes": 24576,
+      "sha256": "e6d65914d1179468b0dad80678125ee3633b0461467277a2dcb1494f8db87635"
+    },
+    {
+      "path": "font-missing-bold.rgb",
+      "bytes": 24576,
+      "sha256": "922d5b18e917bc1d9e7ecd899a1581ca565b76d19f13cbe4ec820b1036c2cf70"
+    },
+    {
+      "path": "font-missing-mono.rgb",
+      "bytes": 24576,
+      "sha256": "1f369fe2fecbb8275cc9efef86b94ba696bdb18cbc6c2338d45432841fdfc846"
+    },
+    {
+      "path": "font-composite-unicode.rgb",
+      "bytes": 24576,
+      "sha256": "c3e48f00f76c89f4fbbd6f5ac6eb69997b689b665ec4842f6be2c7254a65176e"
+    },
+    {
+      "path": "font-subpixel-rounding.rgb",
+      "bytes": 24576,
+      "sha256": "a113299b07088f266f4d9c7f3c49da8ffa83ecfc1851ebbfeece446f9305d36c"
+    },
+    {
+      "path": "font-shared-bitmap-quantum.rgb",
+      "bytes": 24576,
+      "sha256": "0211635cf6bd032cae4a54c383e943acdc82400b0a9d862bc029835b429f3c99"
+    },
+    {
+      "path": "font-bitmap-quantum-boundary.rgb",
+      "bytes": 24576,
+      "sha256": "b9f038af4b6360add819d450b2d1e9eeb86a078cb215b27f8ef1e78654ddd810"
+    },
+    {
+      "path": "font-fixed-clip-image-order.rgb",
+      "bytes": 24576,
+      "sha256": "bd188a01b46e098fd55e47d78a517cf819ff4ebc7dab8242f1ebd1b2ed21c71d"
+    }
+  ]
+}

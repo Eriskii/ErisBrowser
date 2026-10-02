@@ -1,0 +1,112 @@
+[
+  {
+    "name": "fmt-probe",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "fmt",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.1036140889627859,
+    "log": "1.98.0-fmt-probe.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "clippy-default",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 0.2680573589168489,
+    "log": "1.98.0-clippy-default.log",
+    "sha256": "d42fc250bef62551ad0524dabeaefe62857f6bb92cd7e3bf9592a45736709896"
+  },
+  {
+    "name": "test-default",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml"
+    ],
+    "exit": 0,
+    "seconds": 1.4476479940349236,
+    "log": "1.98.0-test-default.log",
+    "sha256": "c37c4045589e7fb6c9ab4d779f784c633d24f325733ddaa110c9f2dbd27bb986"
+  },
+  {
+    "name": "clippy-feature",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--all-targets",
+      "--features",
+      "browser-bridge",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 2.907158490968868,
+    "log": "1.98.0-clippy-feature.log",
+    "sha256": "5f437d4e8da9085e8c68a5386ffedbdbea5fbc3c34f16a8800de2ccd9d0bb6c8"
+  },
+  {
+    "name": "test-feature",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "seconds": 6.175918877008371,
+    "log": "1.98.0-test-feature.log",
+    "sha256": "84d39f9ca6280d1b8caad07716916fcbd47884a3c787f1ab1d5f6618209beced"
+  },
+  {
+    "name": "build-feature",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "build",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "seconds": 0.6470615669386461,
+    "log": "1.98.0-build-feature.log",
+    "sha256": "5a71524689d5eecf5484e4f2d6a5c63565fbb8c90f1fa05b21c896018f71dda6"
+  }
+]

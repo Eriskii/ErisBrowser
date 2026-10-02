@@ -4,7 +4,10 @@ Status: an **optional Linux Vulkan upload presenter** is implemented. The browse
 default and headless paths remain software; both native presenters use Eris's
 custom CPU rasterizer. An optional offscreen bridge now borrows real confined-worker
 snapshots for custom GPU rectangle/image rasterization, with whole-frame CPU
-fallback. Native-window GPU rasterization and group compositing remain future work.
+fallback. The separate [glyph path](../tools/vulkan-raster-probe/GLYPHS.md) also
+prepares bounded bundled-font masks and blends them with custom WGSL. All 26
+literal-mask/font-reference cases match on three adapters. Native-window GPU
+rasterization and group compositing remain future work.
 No GPU speedup or Chromium performance result is established. Earlier isolated
 experiments and their failed compositor comparisons remain recorded below.
 
@@ -338,10 +341,13 @@ Its 400×250 minimum exceeds the bridge's 320×240 cap, and browser chrome needs
 text rendering. Native-window integration and larger frame limits therefore
 require separate implementation and validation.
 
-Subsequent bounded slices add existing CPU-generated glyph masks as a bounded
-atlas, rounded coverage and group opacity. Reusing
-`ab_glyph` masks preserves the custom text-layout path; it does not delegate
-HTML/CSS rendering to another engine. Alpha groups need isolated transparent
+The separate [bounded glyph slice](../tools/vulkan-raster-probe/GLYPHS.md) now
+prepares existing bundled-font masks and composites them with a third integer
+shader. Its 26 cases pass on all three adapters, including 14 comparisons against
+the preserved CPU painter. These direct lists do not extend the original
+worker-capture inventory. Reusing `ab_glyph` masks preserves the custom text-layout
+path; it does not delegate HTML/CSS rendering to another engine. Rounded coverage
+and alpha groups remain subsequent work. Alpha groups need isolated transparent
 targets, nested composition, fixed-descendant clip behavior and deferred
 allocation equivalent to the CPU implementation. Ordinary hardware blending
 must not silently change the current integer rounding or encoded-color-space

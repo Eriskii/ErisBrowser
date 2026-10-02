@@ -1,0 +1,11 @@
+{
+  "literal_cases": 12,
+  "literal_pixels": 223,
+  "literal_rgb_bytes": 669,
+  "semantic_refusals": 19,
+  "positive_cap_plans": 3,
+  "font_cases": 14,
+  "font_pixels": 86016,
+  "font_outputs_produced": 0,
+  "engines_fonts_planners_renderers_executed": false
+}

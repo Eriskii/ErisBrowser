@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "source-only supplemental test prepared; not executed",
+  "bindings": {
+    "tools/vulkan-raster-probe/tests/glyph_contracts.rs": "1d0b10a0b603f603fbb8510fdd703286b99e2c473d440e165b92d893008f1944",
+    "/tmp/eris-vulkan-glyph-fixtures/literal-fixtures.json": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa",
+    "tools/vulkan-raster-probe/src/glyph_fixtures/literal_inventory.rs": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8",
+    "/tmp/eris-vulkan-glyph-cap-coverage-map.json": "542b6b1678cc160578f2f06c95d89b322283e89fef630e81c4658810f8502ae7"
+  },
+  "counts": {
+    "Rust_test_groups": 2,
+    "named_base_refusals": 19,
+    "named_culling_variants": 6,
+    "total_refusals": 25,
+    "positive_cap_plans": 3
+  },
+  "defaults": {
+    "frame": "1x1 white clear, full clip, zero offsets",
+    "tables": "no images/masks/rows/commands unless specified",
+    "Glyph": "source0, rows0, y0, RGBA [0,0,0,255] when unspecified",
+    "base": "coverage-alpha-floor original fixture retained; requested ID changes apply to all Glyph commands",
+    "alpha0": "only all Glyph alpha bytes become0",
+    "empty_clip": "only caller clip becomes [0,0,0,0]"
+  },
+  "static_checks": [
+    "all19 ordered recipe names match frozen JSON exactly",
+    "six variant declarations match frozen population",
+    "all3 positive names present",
+    "formatted Rust1.88 and scoped whitespace check"
+  ],
+  "repository_delta": "Only new tests/glyph_contracts.rs; no production, existing tests, oracle or cap changes.",
+  "pending": "Independent source transcription review, root supplemental freeze and test/Clippy execution."
+}

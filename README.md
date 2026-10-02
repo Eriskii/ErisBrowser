@@ -9,7 +9,10 @@ resizable buffers, resizing, same-realm species-aware slicing, transfers and
 detachment. Typed arrays, DataView and shared memory remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
-fallback. Its 16 cases pass on three Vulkan adapters. Native browser painting
+fallback. Its 16 cases pass on three Vulkan adapters. A separate
+[glyph path](tools/vulkan-raster-probe/GLYPHS.md) now composites bounded bundled-font
+masks on the GPU; all 26 literal-mask and font-reference cases pass on those
+adapters. Native browser painting
 currently remains on the CPU; the [rendering docket](docs/vulkan-rendering.md)
 tracks the remaining integration work.
 
@@ -312,7 +315,7 @@ older observations remain identical; the full inventory reaches 9,418 modes and
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
-The browser has an optional [Linux Vulkan presenter](docs/vulkan-rendering.md): build with `--features vulkan-presenter`, then launch the binary with `--presenter=vulkan`. It uploads custom CPU-painted frames; software remains the default and headless path. A separate [custom Vulkan raster probe](tools/vulkan-raster-probe/README.md) renders unrounded rectangles and nearest-neighbor images with source alpha over opaque RGB, with 30 exact pixel fixtures on each of three adapters. Browser integration, text and group compositing remain on the [development docket](docs/ROADMAP.md); no performance comparison is established.
+The browser has an optional [Linux Vulkan presenter](docs/vulkan-rendering.md): build with `--features vulkan-presenter`, then launch the binary with `--presenter=vulkan`. It uploads custom CPU-painted frames; software remains the default and headless path. A separate [custom Vulkan raster probe](tools/vulkan-raster-probe/README.md) renders unrounded rectangles, nearest-neighbor images and bounded glyph masks with source alpha over opaque RGB. Its original 30 cases and separate 26 glyph cases pass on three adapters. Native-window rasterization, broader text support and group compositing remain on the [development docket](docs/ROADMAP.md); no performance comparison is established.
 
 JavaScript [parses directly into flat code records](tests/conformance/flat-parser.md)
 and uses [shared execution continuations](tests/conformance/activation-frames.md),

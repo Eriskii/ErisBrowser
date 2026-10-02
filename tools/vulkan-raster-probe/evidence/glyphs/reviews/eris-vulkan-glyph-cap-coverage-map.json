@@ -1,0 +1,376 @@
+{
+  "schema": 1,
+  "kind": "data-only declaration-to-test correspondence; no additional execution",
+  "bindings": {
+    "/tmp/eris-vulkan-glyph-fixtures/literal-fixtures.json": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/glyph_tests.rs": "44c3339ff5df30becefbc8e6e434322a4898abc98e971f01b4c4e2e6ad3accbd",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/tests.rs": "0453f0431e7f352015876ee801c28bfcda49d9be6c5d4c5605144629534bef61",
+    "/tmp/eris-vulkan-glyph-candidate-3/rust-source-freeze.json": "1da9a9e5c6778382c41a77935c19e1fcfaef5852c8666c528eeef9324e52057a"
+  },
+  "executed_test_logs": [
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-test-default.log",
+      "sha256": "f025e3e98511e87e0104e021a09e67208998729fb33010ab0378a1679ced8d2e",
+      "exit": 0
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-test-feature.log",
+      "sha256": "53cda39c4e7313454737e6c6cde590d41719f1c94f6c45ad6f10294eb05fa2c9",
+      "exit": 0
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-test-default.log",
+      "sha256": "c37c4045589e7fb6c9ab4d779f784c633d24f325733ddaa110c9f2dbd27bb986",
+      "exit": 0
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-test-feature.log",
+      "sha256": "84d39f9ca6280d1b8caad07716916fcbd47884a3c787f1ab1d5f6618209beced",
+      "exit": 0
+    }
+  ],
+  "new_private_groups": 16,
+  "summary": {
+    "refusal_declarations": 19,
+    "positive_declarations": 3,
+    "refusal_mapping_counts": {
+      "related_different_inputs": 10,
+      "declared_recipe_fields_match": 6,
+      "same_declared_data_helper_only": 2,
+      "no_direct_orientation_case": 1
+    },
+    "positive_mapping_counts": {
+      "declared_recipe_fields_match": 2,
+      "related_different_inputs": 1
+    },
+    "exact_frozen_inventory_batch_executed": false,
+    "declarations_not_matching_full_public_call": [
+      "source-index",
+      "row-index",
+      "row-height",
+      "coverage-length",
+      "axis-width",
+      "axis-height",
+      "mask-area",
+      "aggregate-coverage",
+      "combined-sources",
+      "aggregate-rows",
+      "command-count",
+      "scope-depth",
+      "gpu-buffer-cap",
+      "exact-combined-source-count"
+    ]
+  },
+  "mapping_definitions": {
+    "declared_recipe_fields_match": "Passed test reaches the public planner with the same explicitly declared recipe fields; omitted frame/color/default fields are detailed. This is source correspondence, not an executed frozen-JSON row or byte-identity proof.",
+    "same_declared_data_helper_only": "Matching data was passed directly to internal mask_storage; not the public planner as the recipe describes.",
+    "related_different_inputs": "The relevant validation branch/cap is tested, but dimensions, payload, command kind, source/table set, or entry point differ.",
+    "no_direct_orientation_case": "No direct case for this declared axis orientation; only the other orientation reaches the shared guard."
+  },
+  "refusal_cases": [
+    {
+      "name": "source-index",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 135,
+          "test": "glyph_reached_ids_and_height_validate_before_alpha_or_clip_culling"
+        }
+      ],
+      "details": "Frozen base is coverage-alpha-floor (6x4, six-cell mask, four Glyph commands) and bad source=1; private test uses 1x1, one cell/command and u32::MAX. Both alpha0 and empty-clip paths are exercised, but no exact base/variant replay.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "row-index",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 135,
+          "test": "glyph_reached_ids_and_height_validate_before_alpha_or_clip_culling"
+        }
+      ],
+      "details": "Frozen base is coverage-alpha-floor and bad rows=1; private test uses 1x1 and u32::MAX. Alpha0/empty-clip boundaries are tested with different inputs.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "row-height",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 135,
+          "test": "glyph_reached_ids_and_height_validate_before_alpha_or_clip_culling"
+        }
+      ],
+      "details": "Frozen mask is 1x2 with rows [0]; private case is 1x1 with empty rows. Both mismatch and culling-order branches covered, not the frozen data.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "noncanonical-empty-0",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 159,
+          "test": "glyph_unused_sources_and_row_tables_are_validated_without_a_draw"
+        }
+      ],
+      "details": "Public plan_with_masks receives mask 0x1 with empty coverage and no commands, images or row tables; private frame is 1x1 clear0, unspecified by recipe.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "noncanonical-empty-1",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 159,
+          "test": "glyph_unused_sources_and_row_tables_are_validated_without_a_draw"
+        }
+      ],
+      "details": "Public plan_with_masks receives mask 1x0 with empty coverage and no commands, images or row tables; private frame is 1x1 clear0, unspecified by recipe.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "coverage-length",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 159,
+          "test": "glyph_unused_sources_and_row_tables_are_validated_without_a_draw"
+        }
+      ],
+      "details": "Frozen mask 2x2 has three 255 bytes; private masks are 1x1 with no bytes and 0x0 with one zero byte. Same exact-length validation, different payloads.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "axis-width",
+      "mapping": "same_declared_data_helper_only",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 232,
+          "test": "glyph_mask_axis_area_and_aggregate_coverage_caps_are_distinct"
+        }
+      ],
+      "details": "Exact width1025/height1 and 1025 zero bytes reach mask_storage directly. Frozen declaration describes whole-plan refusal; no matching public-plan call.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "axis-height",
+      "mapping": "no_direct_orientation_case",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 232,
+          "test": "glyph_mask_axis_area_and_aggregate_coverage_caps_are_distinct"
+        }
+      ],
+      "details": "No mask with width1/height1025 appears in the new/old planner tests. Width1025 exercises the same combined axis guard; row-table length1025 is a separate rule.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "mask-area",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 232,
+          "test": "glyph_mask_axis_area_and_aggregate_coverage_caps_are_distinct"
+        }
+      ],
+      "details": "Frozen 513x512 zero mask (262656 cells) differs from private 1024x257 zero mask (263168 cells), tested only through mask_storage. Both axes individually fit.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "aggregate-coverage",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 232,
+          "test": "glyph_mask_axis_area_and_aggregate_coverage_caps_are_distinct"
+        }
+      ],
+      "details": "Frozen first mask 512x512 differs from private 1024x256; each adds a 1x1 zero mask for total262145. Private negative calls mask_storage directly.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "combined-sources",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 206,
+          "test": "glyph_empty_canonical_sources_count_but_create_no_gpu_input"
+        }
+      ],
+      "details": "Frozen one 1x1 RGBA image plus256 empty masks differs from public private test256 1x1 RGBA images plusone empty mask. Both total257; same-data split not replayed.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "row-table-count",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 159,
+          "test": "glyph_unused_sources_and_row_tables_are_validated_without_a_draw"
+        }
+      ],
+      "details": "Public plan_with_masks receives257 empty row tables, no masks/images/commands; private frame1x1 clear0 is unspecified in recipe.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "row-table-size",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 159,
+          "test": "glyph_unused_sources_and_row_tables_are_validated_without_a_draw"
+        }
+      ],
+      "details": "Public plan_with_masks receives one1025-zero row table, no masks/images/commands; private frame1x1 clear0 is unspecified in recipe.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "aggregate-rows",
+      "mapping": "same_declared_data_helper_only",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 275,
+          "test": "glyph_row_table_entry_total_is_bounded_including_unused_tables"
+        }
+      ],
+      "details": "Exact64 tables of1024 zero rows plusone single-zero table (65537 entries) calls mask_storage directly. Positive65536 counterpart also uses public planner.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "command-count",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/tests.rs",
+          "line": 166,
+          "test": "commands_overdraw_invocations_and_explicit_buffers_stay_bounded"
+        },
+        {
+          "path": "tools/vulkan-raster-probe/src/tests.rs",
+          "line": 1068,
+          "test": "transparent_commands_cannot_bypass_typed_scopes_counts_or_clear_validation"
+        }
+      ],
+      "details": "Existing tests reject257 rectangles (including transparent). Frozen257 transparent canonical-empty Glyph commands with mask/row record are not executed.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "scope-depth",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/tests.rs",
+          "line": 539,
+          "test": "image_geometry_scopes_and_unsupported_commands_refuse_whole_plan"
+        },
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 393,
+          "test": "glyph_shared_scope_state_preserves_typed_nesting_and_float_order"
+        }
+      ],
+      "details": "Old public test has exact33 PushFixed +33 PopFixed sequence, but also a supplied1x1 image and4x3 white frame. New state-only test attempts PushClip after32 PushFixed. No frozen no-source recipe replay.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "gpu-buffer-cap",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 285,
+          "test": "glyph_exact_combined_gpu_byte_ceiling_counts_all_mask_and_row_words"
+        }
+      ],
+      "details": "Frozen512x512 full255 mask and512 rows require1051144 bytes. Private case uses1023x255 coverage filled1,255 used rows plus895 unused rows and requires1048580 bytes (exact-limit positive has894 spare rows). It tests the same cap more tightly with different data.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "invocation-cap",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 312,
+          "test": "glyph_repeated_dispatches_share_masks_but_pay_full_invocation_work"
+        }
+      ],
+      "details": "Public call matches all specified fields:320x240 frame/mask filled255,240 zero rows,52 Glyph repeats, source0/rows0/y0. Recipe leaves RGBA/clear unspecified; private helper is [200,20,40,255], clear0. Expected refusal follows4070400 padded invocations; no claim of omitted-field byte identity.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "target-high-byte",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/tests.rs",
+          "line": 75,
+          "test": "invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected"
+        }
+      ],
+      "details": "Exact public plan(Frame::new(1,1,0xff000000),[]) call with no sources; plan delegates to plan_with_masks. Matches complete stated inputs.",
+      "executed_as_exact_frozen_inventory_row": false
+    }
+  ],
+  "positive_cap_plans": [
+    {
+      "name": "invocation-near-cap",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 312,
+          "test": "glyph_repeated_dispatches_share_masks_but_pay_full_invocation_work"
+        }
+      ],
+      "details": "Matches specified320x240 full mask/zero rows and51 Glyph repeats; asserts3993600 invocations and935872 GPU bytes. As refusal recipe, RGBA/clear are not fixed in declaration.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "exact-row-total",
+      "mapping": "declared_recipe_fields_match",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 275,
+          "test": "glyph_row_table_entry_total_is_bounded_including_unused_tables"
+        }
+      ],
+      "details": "Public call uses64 zero tables of1024 entries, no masks/images/commands; asserts helper total65536 then public acceptance. Frame1x1 clear0 fills unspecified fields.",
+      "executed_as_exact_frozen_inventory_row": false
+    },
+    {
+      "name": "exact-combined-source-count",
+      "mapping": "related_different_inputs",
+      "test_refs": [
+        {
+          "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+          "line": 206,
+          "test": "glyph_empty_canonical_sources_count_but_create_no_gpu_input"
+        }
+      ],
+      "details": "Frozen recipe specifies256 empty masks and no row tables. Private public acceptance supplies256 empty masks AND256 empty row tables. Counts at combined source ceiling are covered, but frozen exact input is not.",
+      "executed_as_exact_frozen_inventory_row": false
+    }
+  ],
+  "publication_wording": "Sixteen new planner groups passed in both Rust versions/default+feature, with older planner regressions also passing. Static mapping relates these tests to all19 frozen refusal declarations and3 positive declarations; it does not establish19+3 exact frozen-recipe passes. Axis-height1x1025 lacks a direct case; remaining nonmatching declarations have the precise differences listed.",
+  "limits": [
+    "No Rust, planner, font, Canvas, engine or GPU execution during this mapping.",
+    "Some frozen recipes intentionally omit frame/color fields; no unspecified values are invented as historical execution inputs.",
+    "Twelve independent literal pixel cases and actual GPU/font output are outside this mapping."
+  ]
+}

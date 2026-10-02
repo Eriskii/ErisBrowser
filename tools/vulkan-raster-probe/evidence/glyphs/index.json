@@ -1,0 +1,1420 @@
+{
+  "schema": 1,
+  "kind": "exact retained evidence packaging; not a new execution",
+  "files": [
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.88.0-checks.json",
+      "path": "candidate-1/1.88.0-checks.json",
+      "encoding": "identity",
+      "source_bytes": 829,
+      "source_sha256": "328cd5731fb3f18e2a6285c6754d5d7e78a51d6524b003f2391ff83d5c01836c",
+      "published_bytes": 829,
+      "published_sha256": "328cd5731fb3f18e2a6285c6754d5d7e78a51d6524b003f2391ff83d5c01836c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.88.0-clippy-default.log",
+      "path": "candidate-1/1.88.0-clippy-default.log",
+      "encoding": "identity",
+      "source_bytes": 1115,
+      "source_sha256": "5d64f55a56ebf6541ec8cc83e1f5d1cc21ee25835eb2cd78fd12b4eb36c7c1a6",
+      "published_bytes": 1115,
+      "published_sha256": "5d64f55a56ebf6541ec8cc83e1f5d1cc21ee25835eb2cd78fd12b4eb36c7c1a6"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.88.0-fmt-probe.log",
+      "path": "candidate-1/1.88.0-fmt-probe.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.88.0-root-graphics.log",
+      "path": "candidate-1/1.88.0-root-graphics.log",
+      "encoding": "identity",
+      "source_bytes": 3643,
+      "source_sha256": "c369ea1c0ed47f157b58e90e138dc4a7c2ea08434af4b46801048e70f8c23c7b",
+      "published_bytes": 3643,
+      "published_sha256": "c369ea1c0ed47f157b58e90e138dc4a7c2ea08434af4b46801048e70f8c23c7b"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.98.0-checks.json",
+      "path": "candidate-1/1.98.0-checks.json",
+      "encoding": "identity",
+      "source_bytes": 828,
+      "source_sha256": "7193c45aec874ca71901ec67989f7f626d39fc87f68bdfb5b92189e1f6e8ac40",
+      "published_bytes": 828,
+      "published_sha256": "7193c45aec874ca71901ec67989f7f626d39fc87f68bdfb5b92189e1f6e8ac40"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.98.0-clippy-default.log",
+      "path": "candidate-1/1.98.0-clippy-default.log",
+      "encoding": "identity",
+      "source_bytes": 1056,
+      "source_sha256": "cf6cadce1d18d060cb039e3b9ea60a1ee85302c5dc4b776f2dadcabf51b28b6d",
+      "published_bytes": 1056,
+      "published_sha256": "cf6cadce1d18d060cb039e3b9ea60a1ee85302c5dc4b776f2dadcabf51b28b6d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.98.0-fmt-probe.log",
+      "path": "candidate-1/1.98.0-fmt-probe.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/1.98.0-root-graphics.log",
+      "path": "candidate-1/1.98.0-root-graphics.log",
+      "encoding": "identity",
+      "source_bytes": 3630,
+      "source_sha256": "14cc827a4f26cf19f3368171e72f0da1f9e84198f0a68a73427322d3fff7fc44",
+      "published_bytes": 3630,
+      "published_sha256": "14cc827a4f26cf19f3368171e72f0da1f9e84198f0a68a73427322d3fff7fc44"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/check-rust.py",
+      "path": "candidate-1/check-rust.py",
+      "encoding": "identity",
+      "source_bytes": 1670,
+      "source_sha256": "9894798e94fcfdb53ea44902f2c6ade11c1f9409c03d0e4484eac7c3d7cffb65",
+      "published_bytes": 1670,
+      "published_sha256": "9894798e94fcfdb53ea44902f2c6ade11c1f9409c03d0e4484eac7c3d7cffb65"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-1/rust-source-freeze.json",
+      "path": "candidate-1/rust-source-freeze.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_bytes": 2426875,
+      "source_sha256": "e24d3bd6e99bcbee98d5af33fcc2de03f12dc534d4db03fac4295f98f4660229",
+      "published_bytes": 525792,
+      "published_sha256": "69154e3a50baeeb6dd3ba6b7160f694ad2abdc338200fca5570236d7f67decbf"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.88.0-checks.json",
+      "path": "candidate-2/1.88.0-checks.json",
+      "encoding": "identity",
+      "source_bytes": 1210,
+      "source_sha256": "7e709264dc49068abfa463bf933d8f9786d43238bb282c91128a63ef637a10ed",
+      "published_bytes": 1210,
+      "published_sha256": "7e709264dc49068abfa463bf933d8f9786d43238bb282c91128a63ef637a10ed"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.88.0-clippy-default.log",
+      "path": "candidate-2/1.88.0-clippy-default.log",
+      "encoding": "identity",
+      "source_bytes": 298,
+      "source_sha256": "bd99f616214d78c47b073345a7725fc8f0321613fdd06e66429b33377778f583",
+      "published_bytes": 298,
+      "published_sha256": "bd99f616214d78c47b073345a7725fc8f0321613fdd06e66429b33377778f583"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.88.0-fmt-probe.log",
+      "path": "candidate-2/1.88.0-fmt-probe.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.88.0-root-clippy.log",
+      "path": "candidate-2/1.88.0-root-clippy.log",
+      "encoding": "identity",
+      "source_bytes": 320,
+      "source_sha256": "4596559254dc4f4b40b8ea1a2cee055a6f10201e3c69b21160808682561ddd44",
+      "published_bytes": 320,
+      "published_sha256": "4596559254dc4f4b40b8ea1a2cee055a6f10201e3c69b21160808682561ddd44"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.88.0-root-fmt.log",
+      "path": "candidate-2/1.88.0-root-fmt.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.88.0-test-default.log",
+      "path": "candidate-2/1.88.0-test-default.log",
+      "encoding": "identity",
+      "source_bytes": 4871,
+      "source_sha256": "33c578f0edb554a1e2dd876fd53af1928827e7af6a81aa0aade8b628c4f5e35f",
+      "published_bytes": 4871,
+      "published_sha256": "33c578f0edb554a1e2dd876fd53af1928827e7af6a81aa0aade8b628c4f5e35f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.98.0-checks.json",
+      "path": "candidate-2/1.98.0-checks.json",
+      "encoding": "identity",
+      "source_bytes": 1211,
+      "source_sha256": "6c5e8f3cd72d36347182ee812ce3eed5ffd18adf92cacdaf23e9dcbab7244c34",
+      "published_bytes": 1211,
+      "published_sha256": "6c5e8f3cd72d36347182ee812ce3eed5ffd18adf92cacdaf23e9dcbab7244c34"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.98.0-clippy-default.log",
+      "path": "candidate-2/1.98.0-clippy-default.log",
+      "encoding": "identity",
+      "source_bytes": 298,
+      "source_sha256": "2037acdf118c262a7805ddef93e568db55f1a9e65edffd545baec64469faeebd",
+      "published_bytes": 298,
+      "published_sha256": "2037acdf118c262a7805ddef93e568db55f1a9e65edffd545baec64469faeebd"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.98.0-fmt-probe.log",
+      "path": "candidate-2/1.98.0-fmt-probe.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.98.0-root-clippy.log",
+      "path": "candidate-2/1.98.0-root-clippy.log",
+      "encoding": "identity",
+      "source_bytes": 268,
+      "source_sha256": "6ca62546ebcb2b878e0e9394f07f00b4d3fccc70c2d4d06db414366711530e21",
+      "published_bytes": 268,
+      "published_sha256": "6ca62546ebcb2b878e0e9394f07f00b4d3fccc70c2d4d06db414366711530e21"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.98.0-root-fmt.log",
+      "path": "candidate-2/1.98.0-root-fmt.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/1.98.0-test-default.log",
+      "path": "candidate-2/1.98.0-test-default.log",
+      "encoding": "identity",
+      "source_bytes": 4882,
+      "source_sha256": "e946b339fa98e7ff4cfea568df93b9fad3b92f545232d9046a8b30669badf4b3",
+      "published_bytes": 4882,
+      "published_sha256": "e946b339fa98e7ff4cfea568df93b9fad3b92f545232d9046a8b30669badf4b3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/check-rust.py",
+      "path": "candidate-2/check-rust.py",
+      "encoding": "identity",
+      "source_bytes": 1670,
+      "source_sha256": "9894798e94fcfdb53ea44902f2c6ade11c1f9409c03d0e4484eac7c3d7cffb65",
+      "published_bytes": 1670,
+      "published_sha256": "9894798e94fcfdb53ea44902f2c6ade11c1f9409c03d0e4484eac7c3d7cffb65"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-2/rust-source-freeze.json",
+      "path": "candidate-2/rust-source-freeze.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_bytes": 2426875,
+      "source_sha256": "9d10210e34075a86dfbc1e446404e18d6d207b9db14e64070f5797107c64db68",
+      "published_bytes": 525795,
+      "published_sha256": "d7fc414cc87d5b901350afabcfcb162ef1cd030d124e845c19a23f0779165f83"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-build-feature.log",
+      "path": "candidate-3/1.88.0-build-feature.log",
+      "encoding": "identity",
+      "source_bytes": 194,
+      "source_sha256": "26c18323155bb689e18c227305a29edccdd86a56b4f405be401498a038278f0f",
+      "published_bytes": 194,
+      "published_sha256": "26c18323155bb689e18c227305a29edccdd86a56b4f405be401498a038278f0f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-checks.json",
+      "path": "candidate-3/1.88.0-checks.json",
+      "encoding": "identity",
+      "source_bytes": 2563,
+      "source_sha256": "e944e65c521f2302db147105657d88867de42facba55795278cf6d72317e8d46",
+      "published_bytes": 2563,
+      "published_sha256": "e944e65c521f2302db147105657d88867de42facba55795278cf6d72317e8d46"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-clippy-default.log",
+      "path": "candidate-3/1.88.0-clippy-default.log",
+      "encoding": "identity",
+      "source_bytes": 194,
+      "source_sha256": "440b70acc02a5c99b77cda397355b76ef363514c1441a8249812455c1318b713",
+      "published_bytes": 194,
+      "published_sha256": "440b70acc02a5c99b77cda397355b76ef363514c1441a8249812455c1318b713"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-clippy-feature.log",
+      "path": "candidate-3/1.88.0-clippy-feature.log",
+      "encoding": "identity",
+      "source_bytes": 286,
+      "source_sha256": "6bc87e4725e6683333bbe12498ac0d4a54394fd7c3fbb3de99b617c322b0eaca",
+      "published_bytes": 286,
+      "published_sha256": "6bc87e4725e6683333bbe12498ac0d4a54394fd7c3fbb3de99b617c322b0eaca"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-fmt-probe.log",
+      "path": "candidate-3/1.88.0-fmt-probe.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-supplemental-clippy.log",
+      "path": "candidate-3/1.88.0-supplemental-clippy.log",
+      "encoding": "identity",
+      "source_bytes": 298,
+      "source_sha256": "130dfeb336a4a3743563f5e41953736542822ae88ec5dcd5e22004b8107fcf20",
+      "published_bytes": 298,
+      "published_sha256": "130dfeb336a4a3743563f5e41953736542822ae88ec5dcd5e22004b8107fcf20"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-supplemental-contracts.log",
+      "path": "candidate-3/1.88.0-supplemental-contracts.log",
+      "encoding": "identity",
+      "source_bytes": 595,
+      "source_sha256": "66b9d9ae330e5bc150600d96182023b206aabc4b3eae287ad22bf4b465608f60",
+      "published_bytes": 595,
+      "published_sha256": "66b9d9ae330e5bc150600d96182023b206aabc4b3eae287ad22bf4b465608f60"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-test-default.log",
+      "path": "candidate-3/1.88.0-test-default.log",
+      "encoding": "identity",
+      "source_bytes": 4368,
+      "source_sha256": "f025e3e98511e87e0104e021a09e67208998729fb33010ab0378a1679ced8d2e",
+      "published_bytes": 4368,
+      "published_sha256": "f025e3e98511e87e0104e021a09e67208998729fb33010ab0378a1679ced8d2e"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-test-feature.log",
+      "path": "candidate-3/1.88.0-test-feature.log",
+      "encoding": "identity",
+      "source_bytes": 8193,
+      "source_sha256": "53cda39c4e7313454737e6c6cde590d41719f1c94f6c45ad6f10294eb05fa2c9",
+      "published_bytes": 8193,
+      "published_sha256": "53cda39c4e7313454737e6c6cde590d41719f1c94f6c45ad6f10294eb05fa2c9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-build-feature.log",
+      "path": "candidate-3/1.98.0-build-feature.log",
+      "encoding": "identity",
+      "source_bytes": 194,
+      "source_sha256": "5a71524689d5eecf5484e4f2d6a5c63565fbb8c90f1fa05b21c896018f71dda6",
+      "published_bytes": 194,
+      "published_sha256": "5a71524689d5eecf5484e4f2d6a5c63565fbb8c90f1fa05b21c896018f71dda6"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-checks.json",
+      "path": "candidate-3/1.98.0-checks.json",
+      "encoding": "identity",
+      "source_bytes": 2561,
+      "source_sha256": "b261ffcb723c2eb1ea11c706c25ac7bfa19345a9b15fe1e73410f2ef570cf9b0",
+      "published_bytes": 2561,
+      "published_sha256": "b261ffcb723c2eb1ea11c706c25ac7bfa19345a9b15fe1e73410f2ef570cf9b0"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-clippy-default.log",
+      "path": "candidate-3/1.98.0-clippy-default.log",
+      "encoding": "identity",
+      "source_bytes": 194,
+      "source_sha256": "d42fc250bef62551ad0524dabeaefe62857f6bb92cd7e3bf9592a45736709896",
+      "published_bytes": 194,
+      "published_sha256": "d42fc250bef62551ad0524dabeaefe62857f6bb92cd7e3bf9592a45736709896"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-clippy-feature.log",
+      "path": "candidate-3/1.98.0-clippy-feature.log",
+      "encoding": "identity",
+      "source_bytes": 286,
+      "source_sha256": "5f437d4e8da9085e8c68a5386ffedbdbea5fbc3c34f16a8800de2ccd9d0bb6c8",
+      "published_bytes": 286,
+      "published_sha256": "5f437d4e8da9085e8c68a5386ffedbdbea5fbc3c34f16a8800de2ccd9d0bb6c8"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-fmt-probe.log",
+      "path": "candidate-3/1.98.0-fmt-probe.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-supplemental-clippy.log",
+      "path": "candidate-3/1.98.0-supplemental-clippy.log",
+      "encoding": "identity",
+      "source_bytes": 298,
+      "source_sha256": "130dfeb336a4a3743563f5e41953736542822ae88ec5dcd5e22004b8107fcf20",
+      "published_bytes": 298,
+      "published_sha256": "130dfeb336a4a3743563f5e41953736542822ae88ec5dcd5e22004b8107fcf20"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-supplemental-contracts.log",
+      "path": "candidate-3/1.98.0-supplemental-contracts.log",
+      "encoding": "identity",
+      "source_bytes": 594,
+      "source_sha256": "790714e2471fe14435798c1a5644bf208bc44e5d6148cbcb04f5f72b1fd75cad",
+      "published_bytes": 594,
+      "published_sha256": "790714e2471fe14435798c1a5644bf208bc44e5d6148cbcb04f5f72b1fd75cad"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-test-default.log",
+      "path": "candidate-3/1.98.0-test-default.log",
+      "encoding": "identity",
+      "source_bytes": 4366,
+      "source_sha256": "c37c4045589e7fb6c9ab4d779f784c633d24f325733ddaa110c9f2dbd27bb986",
+      "published_bytes": 4366,
+      "published_sha256": "c37c4045589e7fb6c9ab4d779f784c633d24f325733ddaa110c9f2dbd27bb986"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-test-feature.log",
+      "path": "candidate-3/1.98.0-test-feature.log",
+      "encoding": "identity",
+      "source_bytes": 8189,
+      "source_sha256": "84d39f9ca6280d1b8caad07716916fcbd47884a3c787f1ab1d5f6618209beced",
+      "published_bytes": 8189,
+      "published_sha256": "84d39f9ca6280d1b8caad07716916fcbd47884a3c787f1ab1d5f6618209beced"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/check-rust.py",
+      "path": "candidate-3/check-rust.py",
+      "encoding": "identity",
+      "source_bytes": 1670,
+      "source_sha256": "9894798e94fcfdb53ea44902f2c6ade11c1f9409c03d0e4484eac7c3d7cffb65",
+      "published_bytes": 1670,
+      "published_sha256": "9894798e94fcfdb53ea44902f2c6ade11c1f9409c03d0e4484eac7c3d7cffb65"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/python-glyph-host.log",
+      "path": "candidate-3/python-glyph-host.log",
+      "encoding": "identity",
+      "source_bytes": 100,
+      "source_sha256": "ada8287c158c47db545f6c9e762701c9fdb3de124ea9dbacac45d9e31b016b77",
+      "published_bytes": 100,
+      "published_sha256": "ada8287c158c47db545f6c9e762701c9fdb3de124ea9dbacac45d9e31b016b77"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/python-glyph-protocol.log",
+      "path": "candidate-3/python-glyph-protocol.log",
+      "encoding": "identity",
+      "source_bytes": 115,
+      "source_sha256": "0f58a40ff5597c4ef281f39b8a63341a79d5cedf9d9b36cbaae47018563cfccb",
+      "published_bytes": 115,
+      "published_sha256": "0f58a40ff5597c4ef281f39b8a63341a79d5cedf9d9b36cbaae47018563cfccb"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/python-source-final.json",
+      "path": "candidate-3/python-source-final.json",
+      "encoding": "identity",
+      "source_bytes": 1359,
+      "source_sha256": "ff092ba044b39e82e1f7f1881444a6e3495ab7b5db1983fe58e7175d03e723a7",
+      "published_bytes": 1359,
+      "published_sha256": "ff092ba044b39e82e1f7f1881444a6e3495ab7b5db1983fe58e7175d03e723a7"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/python-source-freeze.json",
+      "path": "candidate-3/python-source-freeze.json",
+      "encoding": "identity",
+      "source_bytes": 1190,
+      "source_sha256": "d31a162df8c6018f0e1bb694fc3233b4e65fc79880e648adb2ccb63664118244",
+      "published_bytes": 1190,
+      "published_sha256": "d31a162df8c6018f0e1bb694fc3233b4e65fc79880e648adb2ccb63664118244"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/rust-source-freeze.json",
+      "path": "candidate-3/rust-source-freeze.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_bytes": 2426875,
+      "source_sha256": "1da9a9e5c6778382c41a77935c19e1fcfaef5852c8666c528eeef9324e52057a",
+      "published_bytes": 525796,
+      "published_sha256": "f75a843a9baa2d118fad9a814f425de88e0a102c1277ede79352e9210aecca30"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/supplemental-test-freeze.json",
+      "path": "candidate-3/supplemental-test-freeze.json",
+      "encoding": "identity",
+      "source_bytes": 252,
+      "source_sha256": "8f54c9ffeb519d3498914fa4fc02a11f4bae52bd1f334239deb575a2d9bb0964",
+      "published_bytes": 252,
+      "published_sha256": "8f54c9ffeb519d3498914fa4fc02a11f4bae52bd1f334239deb575a2d9bb0964"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.json",
+      "path": "candidate-3/cpu-host-1.88.0/cpu-check.json",
+      "encoding": "identity",
+      "source_bytes": 894,
+      "source_sha256": "088f1f57cbd91546845d568d1e5e35131a6fb33f2157ad6f0e9b87f6c35b4354",
+      "published_bytes": 894,
+      "published_sha256": "088f1f57cbd91546845d568d1e5e35131a6fb33f2157ad6f0e9b87f6c35b4354"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.stderr.log",
+      "path": "candidate-3/cpu-host-1.88.0/cpu-check.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.stdout.log",
+      "path": "candidate-3/cpu-host-1.88.0/cpu-check.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 6312,
+      "source_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593",
+      "published_bytes": 6312,
+      "published_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.supervisor.stderr.log",
+      "path": "candidate-3/cpu-host-1.88.0/cpu-check.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/host-results.json",
+      "path": "candidate-3/cpu-host-1.88.0/host-results.json",
+      "encoding": "identity",
+      "source_bytes": 20967,
+      "source_sha256": "1cc07b79f4d75eb74424081c83ccbf966ebd6093002c77767108dad7f97e84dd",
+      "published_bytes": 20967,
+      "published_sha256": "1cc07b79f4d75eb74424081c83ccbf966ebd6093002c77767108dad7f97e84dd"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.json",
+      "path": "candidate-3/cpu-host-1.98.0/cpu-check.json",
+      "encoding": "identity",
+      "source_bytes": 894,
+      "source_sha256": "476d5b8050d95aab0da1b85483054af214cad4b1fb7ff1ec26f5a9fda3f63610",
+      "published_bytes": 894,
+      "published_sha256": "476d5b8050d95aab0da1b85483054af214cad4b1fb7ff1ec26f5a9fda3f63610"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.stderr.log",
+      "path": "candidate-3/cpu-host-1.98.0/cpu-check.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.stdout.log",
+      "path": "candidate-3/cpu-host-1.98.0/cpu-check.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 6312,
+      "source_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593",
+      "published_bytes": 6312,
+      "published_sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.supervisor.stderr.log",
+      "path": "candidate-3/cpu-host-1.98.0/cpu-check.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/host-results.json",
+      "path": "candidate-3/cpu-host-1.98.0/host-results.json",
+      "encoding": "identity",
+      "source_bytes": 20967,
+      "source_sha256": "a2c764903b59fc225c634d5160832328a030bb670e4e4b697debb5134c75e7c9",
+      "published_bytes": 20967,
+      "published_sha256": "a2c764903b59fc225c634d5160832328a030bb670e4e4b697debb5134c75e7c9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.json",
+      "path": "candidate-3/gpu-host-1/adapter-0.json",
+      "encoding": "identity",
+      "source_bytes": 900,
+      "source_sha256": "ad811456e3d1e38b48a86bdf84e58b930e9a584ad3aa9d713d1d312ad9003b2a",
+      "published_bytes": 900,
+      "published_sha256": "ad811456e3d1e38b48a86bdf84e58b930e9a584ad3aa9d713d1d312ad9003b2a"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.stderr.log",
+      "path": "candidate-3/gpu-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.stdout.log",
+      "path": "candidate-3/gpu-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 9613,
+      "source_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c",
+      "published_bytes": 9613,
+      "published_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.supervisor.stderr.log",
+      "path": "candidate-3/gpu-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.json",
+      "path": "candidate-3/gpu-host-1/adapter-1.json",
+      "encoding": "identity",
+      "source_bytes": 900,
+      "source_sha256": "4ac01246331e48931b92405c8c53979125462f0e7dc88b917e10f1bc545e0ada",
+      "published_bytes": 900,
+      "published_sha256": "4ac01246331e48931b92405c8c53979125462f0e7dc88b917e10f1bc545e0ada"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.stderr.log",
+      "path": "candidate-3/gpu-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.stdout.log",
+      "path": "candidate-3/gpu-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 9613,
+      "source_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9",
+      "published_bytes": 9613,
+      "published_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.supervisor.stderr.log",
+      "path": "candidate-3/gpu-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.json",
+      "path": "candidate-3/gpu-host-1/adapter-2.json",
+      "encoding": "identity",
+      "source_bytes": 900,
+      "source_sha256": "f72250f0985d0f9a6e1b2ab718dcd68bf206222a83e4513b541306724fcb432d",
+      "published_bytes": 900,
+      "published_sha256": "f72250f0985d0f9a6e1b2ab718dcd68bf206222a83e4513b541306724fcb432d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.stderr.log",
+      "path": "candidate-3/gpu-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.stdout.log",
+      "path": "candidate-3/gpu-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 9613,
+      "source_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+      "published_bytes": 9613,
+      "published_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.supervisor.stderr.log",
+      "path": "candidate-3/gpu-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.json",
+      "path": "candidate-3/gpu-host-1/enumeration.json",
+      "encoding": "identity",
+      "source_bytes": 743,
+      "source_sha256": "0fa6a061da93bde6e55d32f8d8cff9ca0e9c2425e0e34aecf2805e22f60420e6",
+      "published_bytes": 743,
+      "published_sha256": "0fa6a061da93bde6e55d32f8d8cff9ca0e9c2425e0e34aecf2805e22f60420e6"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.stderr.log",
+      "path": "candidate-3/gpu-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.stdout.log",
+      "path": "candidate-3/gpu-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 465,
+      "source_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "published_bytes": 465,
+      "published_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.supervisor.stderr.log",
+      "path": "candidate-3/gpu-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/host-results.json",
+      "path": "candidate-3/gpu-host-1/host-results.json",
+      "encoding": "identity",
+      "source_bytes": 55784,
+      "source_sha256": "2afd2c6a6621b972a2773765fedbb61a95f95c430a142bf863c5b2e0fd60c642",
+      "published_bytes": 55784,
+      "published_sha256": "2afd2c6a6621b972a2773765fedbb61a95f95c430a142bf863c5b2e0fd60c642"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-0.stderr.log",
+      "path": "candidate-3/original-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-0.stdout.log",
+      "path": "candidate-3/original-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 3854,
+      "source_sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c",
+      "published_bytes": 3854,
+      "published_sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-1.stderr.log",
+      "path": "candidate-3/original-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-1.stdout.log",
+      "path": "candidate-3/original-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 3854,
+      "source_sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472",
+      "published_bytes": 3854,
+      "published_sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-2.stderr.log",
+      "path": "candidate-3/original-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-2.stdout.log",
+      "path": "candidate-3/original-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 3854,
+      "source_sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f",
+      "published_bytes": 3854,
+      "published_sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/enumeration.stderr.log",
+      "path": "candidate-3/original-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/enumeration.stdout.log",
+      "path": "candidate-3/original-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 465,
+      "source_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "published_bytes": 465,
+      "published_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/host-results.json",
+      "path": "candidate-3/original-host-1/host-results.json",
+      "encoding": "identity",
+      "source_bytes": 14526,
+      "source_sha256": "987b22d57ff6f83d35130859f900f4ec7bbcc1b6d30cec561fc29583a2ea75b7",
+      "published_bytes": 14526,
+      "published_sha256": "987b22d57ff6f83d35130859f900f4ec7bbcc1b6d30cec561fc29583a2ea75b7"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.json",
+      "path": "candidate-3/browser-host-1/adapter-0.json",
+      "encoding": "identity",
+      "source_bytes": 964,
+      "source_sha256": "58c931dedaca5938ef926dc1354cdd08cd0d92ef0f592851b3b7b83356a53710",
+      "published_bytes": 964,
+      "published_sha256": "58c931dedaca5938ef926dc1354cdd08cd0d92ef0f592851b3b7b83356a53710"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.stderr.log",
+      "path": "candidate-3/browser-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.stdout.log",
+      "path": "candidate-3/browser-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 14901,
+      "source_sha256": "0d58a8c8360d62763a91ca979afc33cb3ac5ebff6d4ee8a9965c7b4f099538e5",
+      "published_bytes": 14901,
+      "published_sha256": "0d58a8c8360d62763a91ca979afc33cb3ac5ebff6d4ee8a9965c7b4f099538e5"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.supervisor.stderr.log",
+      "path": "candidate-3/browser-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.json",
+      "path": "candidate-3/browser-host-1/adapter-1.json",
+      "encoding": "identity",
+      "source_bytes": 965,
+      "source_sha256": "eb20b925b8d310c989593561deb24660401ae8ba3756f6b9aa98b6e00d6b8870",
+      "published_bytes": 965,
+      "published_sha256": "eb20b925b8d310c989593561deb24660401ae8ba3756f6b9aa98b6e00d6b8870"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.stderr.log",
+      "path": "candidate-3/browser-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.stdout.log",
+      "path": "candidate-3/browser-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 14901,
+      "source_sha256": "a0232a3d0545fb64cf14de07f96f46f26d1bc656654f7e708f55af43993048d3",
+      "published_bytes": 14901,
+      "published_sha256": "a0232a3d0545fb64cf14de07f96f46f26d1bc656654f7e708f55af43993048d3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.supervisor.stderr.log",
+      "path": "candidate-3/browser-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.json",
+      "path": "candidate-3/browser-host-1/adapter-2.json",
+      "encoding": "identity",
+      "source_bytes": 965,
+      "source_sha256": "70ba29f9201b50414ce936c302a1830a95e3ed5c9d1ff2c93a802bc25a04433c",
+      "published_bytes": 965,
+      "published_sha256": "70ba29f9201b50414ce936c302a1830a95e3ed5c9d1ff2c93a802bc25a04433c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.stderr.log",
+      "path": "candidate-3/browser-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.stdout.log",
+      "path": "candidate-3/browser-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 14901,
+      "source_sha256": "bae06eee165e2cf1f45a18a01815a0d28895d77b5f14ffcc4eac28e39d93e9b2",
+      "published_bytes": 14901,
+      "published_sha256": "bae06eee165e2cf1f45a18a01815a0d28895d77b5f14ffcc4eac28e39d93e9b2"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.supervisor.stderr.log",
+      "path": "candidate-3/browser-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.json",
+      "path": "candidate-3/browser-host-1/enumeration.json",
+      "encoding": "identity",
+      "source_bytes": 747,
+      "source_sha256": "c639dc11a6e28bad8f5e624da9f398b0295e80a1e750048ed3f5427cf88f2821",
+      "published_bytes": 747,
+      "published_sha256": "c639dc11a6e28bad8f5e624da9f398b0295e80a1e750048ed3f5427cf88f2821"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.stderr.log",
+      "path": "candidate-3/browser-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.stdout.log",
+      "path": "candidate-3/browser-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 465,
+      "source_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "published_bytes": 465,
+      "published_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.supervisor.stderr.log",
+      "path": "candidate-3/browser-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/host-results.json",
+      "path": "candidate-3/browser-host-1/host-results.json",
+      "encoding": "identity",
+      "source_bytes": 117804,
+      "source_sha256": "7c21df362fa68dca00e281c64b6f4b471ff02f44d4aff5cb2c152dff2d1df998",
+      "published_bytes": 117804,
+      "published_sha256": "7c21df362fa68dca00e281c64b6f4b471ff02f44d4aff5cb2c152dff2d1df998"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/reference-build.log",
+      "path": "parent-reference/reference-build.log",
+      "encoding": "identity",
+      "source_bytes": 4881,
+      "source_sha256": "dd543bcea2bcf5d8e99d5bc6b508576f15d40df2e4ff639ce8bec43343ee77bb",
+      "published_bytes": 4881,
+      "published_sha256": "dd543bcea2bcf5d8e99d5bc6b508576f15d40df2e4ff639ce8bec43343ee77bb"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/reference-result.json",
+      "path": "parent-reference/reference-result.json",
+      "encoding": "identity",
+      "source_bytes": 668,
+      "source_sha256": "c44418ef3217939650e78c8b4f168268254ea70de4f3242e35cd35821252944d",
+      "published_bytes": 668,
+      "published_sha256": "c44418ef3217939650e78c8b4f168268254ea70de4f3242e35cd35821252944d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-source-freeze.json",
+      "path": "parent-reference/parent-source-freeze.json",
+      "encoding": "identity",
+      "source_bytes": 14763,
+      "source_sha256": "2135a8d746d35316b974398d7871b2e103c66c5d50c57a6d741291fc7932082f",
+      "published_bytes": 14763,
+      "published_sha256": "2135a8d746d35316b974398d7871b2e103c66c5d50c57a6d741291fc7932082f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/freeze.json",
+      "path": "parent-reference/freeze.json",
+      "encoding": "identity",
+      "source_bytes": 4749,
+      "source_sha256": "934ab6a31d3640f8cb29c849d2742cb4ac42f84399bf67c09078f70ec7459778",
+      "published_bytes": 4749,
+      "published_sha256": "934ab6a31d3640f8cb29c849d2742cb4ac42f84399bf67c09078f70ec7459778"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/transcription-review.json",
+      "path": "parent-reference/transcription-review.json",
+      "encoding": "identity",
+      "source_bytes": 1581,
+      "source_sha256": "7f143667cd9ceeb560db2d0e4f939f752266ee492944b3f5ee359e296f963c55",
+      "published_bytes": 1581,
+      "published_sha256": "7f143667cd9ceeb560db2d0e4f939f752266ee492944b3f5ee359e296f963c55"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/preparation-summary.json",
+      "path": "parent-reference/preparation-summary.json",
+      "encoding": "identity",
+      "source_bytes": 261,
+      "source_sha256": "49640ce99244d4ef220809ab7113a9f2080e0143e7709a71d48044241bfef99d",
+      "published_bytes": 261,
+      "published_sha256": "49640ce99244d4ef220809ab7113a9f2080e0143e7709a71d48044241bfef99d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.json",
+      "path": "parent-reference/reference-run-1/reference.json",
+      "encoding": "identity",
+      "source_bytes": 805,
+      "source_sha256": "b3964e5107db02ad6e8fdd063b7dfcb45057cec16baa1c0847764e1801539292",
+      "published_bytes": 805,
+      "published_sha256": "b3964e5107db02ad6e8fdd063b7dfcb45057cec16baa1c0847764e1801539292"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.stderr.log",
+      "path": "parent-reference/reference-run-1/reference.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.stdout.log",
+      "path": "parent-reference/reference-run-1/reference.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 1861,
+      "source_sha256": "1905af31c76e43e3589ad4cd356ba5152ebb147cc28b724cd1b4e164f3f549cf",
+      "published_bytes": 1861,
+      "published_sha256": "1905af31c76e43e3589ad4cd356ba5152ebb147cc28b724cd1b4e164f3f549cf"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.supervisor.stderr.log",
+      "path": "parent-reference/reference-run-1/reference.supervisor.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/reference-parent/src/bin/glyph-reference.rs",
+      "path": "parent-reference/glyph-reference.rs",
+      "encoding": "identity",
+      "source_bytes": 3356,
+      "source_sha256": "cd6b38f2ebccba7c462a12086875076b4a5b086d46e72be40cf307e17508fb4c",
+      "published_bytes": 3356,
+      "published_sha256": "cd6b38f2ebccba7c462a12086875076b4a5b086d46e72be40cf307e17508fb4c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/freeze.json",
+      "path": "parent-reference/baseline-freeze.json",
+      "encoding": "identity",
+      "source_bytes": 2433,
+      "source_sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b",
+      "published_bytes": 2433,
+      "published_sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/before.json",
+      "path": "naga/before.json",
+      "encoding": "identity",
+      "source_bytes": 1687,
+      "source_sha256": "b98c563da112c7b4944fa33dc98c51d83f4fbe77da062e8e93fed1a26a4e15c2",
+      "published_bytes": 1687,
+      "published_sha256": "b98c563da112c7b4944fa33dc98c51d83f4fbe77da062e8e93fed1a26a4e15c2"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/compile.stderr.log",
+      "path": "naga/compile.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/compile.stdout.log",
+      "path": "naga/compile.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/glyph.wgsl",
+      "path": "naga/glyph.wgsl",
+      "encoding": "identity",
+      "source_bytes": 3578,
+      "source_sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "published_bytes": 3578,
+      "published_sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/result.json",
+      "path": "naga/result.json",
+      "encoding": "identity",
+      "source_bytes": 4701,
+      "source_sha256": "e13a1f5991048793d5cd02905e6d10e2aa4f76935458598761ebd948aa44780c",
+      "published_bytes": 4701,
+      "published_sha256": "e13a1f5991048793d5cd02905e6d10e2aa4f76935458598761ebd948aa44780c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/toolchain.stderr.log",
+      "path": "naga/toolchain.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/toolchain.stdout.log",
+      "path": "naga/toolchain.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 196,
+      "source_sha256": "3975d062e234a9f3921955bf6ae5b90f5819df94fa825d057f76b34a35ed0f4d",
+      "published_bytes": 196,
+      "published_sha256": "3975d062e234a9f3921955bf6ae5b90f5819df94fa825d057f76b34a35ed0f4d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/validate.stderr.log",
+      "path": "naga/validate.stderr.log",
+      "encoding": "identity",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_bytes": 0,
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/validate.stdout.log",
+      "path": "naga/validate.stdout.log",
+      "encoding": "identity",
+      "source_bytes": 164,
+      "source_sha256": "2e9d817e772de41bed9fe72d33e24431341709a98c79fb7bb7bc5f194c1383ef",
+      "published_bytes": 164,
+      "published_sha256": "2e9d817e772de41bed9fe72d33e24431341709a98c79fb7bb7bc5f194c1383ef"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-shader-validation/validate_wgsl.rs",
+      "path": "naga/validate_wgsl.rs",
+      "encoding": "identity",
+      "source_bytes": 970,
+      "source_sha256": "73007afb93836394fb5d6b889d0766913381369c4be17e1c12144b7ed650ce12",
+      "published_bytes": 970,
+      "published_sha256": "73007afb93836394fb5d6b889d0766913381369c4be17e1c12144b7ed650ce12"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-alpha-fixture-before.rs",
+      "path": "reviews/eris-vulkan-glyph-alpha-fixture-before.rs",
+      "encoding": "identity",
+      "source_bytes": 25687,
+      "source_sha256": "4904499c2fc209083a3c928e575963cfe4a63a553dcc3bb3183e5fa9320708d5",
+      "published_bytes": 25687,
+      "published_sha256": "4904499c2fc209083a3c928e575963cfe4a63a553dcc3bb3183e5fa9320708d5"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-alpha-fixture-correction.json",
+      "path": "reviews/eris-vulkan-glyph-alpha-fixture-correction.json",
+      "encoding": "identity",
+      "source_bytes": 1142,
+      "source_sha256": "f42d6e086d6a304a2c38dc9dfa1d992b82a2bb0ccd94c5698a4410cc41fc1399",
+      "published_bytes": 1142,
+      "published_sha256": "f42d6e086d6a304a2c38dc9dfa1d992b82a2bb0ccd94c5698a4410cc41fc1399"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-cap-coverage-map.json",
+      "path": "reviews/eris-vulkan-glyph-cap-coverage-map.json",
+      "encoding": "identity",
+      "source_bytes": 16662,
+      "source_sha256": "542b6b1678cc160578f2f06c95d89b322283e89fef630e81c4658810f8502ae7",
+      "published_bytes": 16662,
+      "published_sha256": "542b6b1678cc160578f2f06c95d89b322283e89fef630e81c4658810f8502ae7"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-checker-adapter-review.json",
+      "path": "reviews/eris-vulkan-glyph-checker-adapter-review.json",
+      "encoding": "identity",
+      "source_bytes": 7064,
+      "source_sha256": "fcc8aab7da8a3a871759703d43844b2ca47f310cee0fc7310920b4f58f66eeb3",
+      "published_bytes": 7064,
+      "published_sha256": "fcc8aab7da8a3a871759703d43844b2ca47f310cee0fc7310920b4f58f66eeb3"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-contract-tests-source-ready.json",
+      "path": "reviews/eris-vulkan-glyph-contract-tests-source-ready.json",
+      "encoding": "identity",
+      "source_bytes": 1670,
+      "source_sha256": "52d91447cf9725594f32dc5015b7726f79bc6bd6a5ee889dda1cbccc33fde7e6",
+      "published_bytes": 1670,
+      "published_sha256": "52d91447cf9725594f32dc5015b7726f79bc6bd6a5ee889dda1cbccc33fde7e6"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-contract-transcription-review.json",
+      "path": "reviews/eris-vulkan-glyph-contract-transcription-review.json",
+      "encoding": "identity",
+      "source_bytes": 1900,
+      "source_sha256": "799c75da5ebf5ddf4af4bf021fc07b7424c09111f7b897b5ba99e5a757663c55",
+      "published_bytes": 1900,
+      "published_sha256": "799c75da5ebf5ddf4af4bf021fc07b7424c09111f7b897b5ba99e5a757663c55"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures-peer-review.json",
+      "path": "reviews/eris-vulkan-glyph-fixtures-peer-review.json",
+      "encoding": "identity",
+      "source_bytes": 4147,
+      "source_sha256": "2a2067df922f6aaff340e15f9f6f1fb38c1700b866cb99db51a4f1b427270132",
+      "published_bytes": 4147,
+      "published_sha256": "2a2067df922f6aaff340e15f9f6f1fb38c1700b866cb99db51a4f1b427270132"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-font-adapter-script-review.json",
+      "path": "reviews/eris-vulkan-glyph-font-adapter-script-review.json",
+      "encoding": "identity",
+      "source_bytes": 1654,
+      "source_sha256": "71cf56156e280d2d9c74dde4796198dac4920d64468510a7315cb6de818d60f1",
+      "published_bytes": 1654,
+      "published_sha256": "71cf56156e280d2d9c74dde4796198dac4920d64468510a7315cb6de818d60f1"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-independent-data-review.py",
+      "path": "reviews/eris-vulkan-glyph-independent-data-review.py",
+      "encoding": "identity",
+      "source_bytes": 9062,
+      "source_sha256": "6c70ebf0056ba47984951d04a0ca70dcc3fea588cb4ada7242357b3a4cfd0de5",
+      "published_bytes": 9062,
+      "published_sha256": "6c70ebf0056ba47984951d04a0ca70dcc3fea588cb4ada7242357b3a4cfd0de5"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-mask-api-review.md",
+      "path": "reviews/eris-vulkan-glyph-mask-api-review.md",
+      "encoding": "identity",
+      "source_bytes": 18424,
+      "source_sha256": "b001d909f009148ab423c46899cd3ef1cda82ede2f9b246e8ccc9a73e083f331",
+      "published_bytes": 18424,
+      "published_sha256": "b001d909f009148ab423c46899cd3ef1cda82ede2f9b246e8ccc9a73e083f331"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-mask-bounds-review.md",
+      "path": "reviews/eris-vulkan-glyph-mask-bounds-review.md",
+      "encoding": "identity",
+      "source_bytes": 18277,
+      "source_sha256": "ed5f73fb6eb019dc2ee6f91d15c3894da16f7f8fff68a02509b814c56a8b6846",
+      "published_bytes": 18277,
+      "published_sha256": "ed5f73fb6eb019dc2ee6f91d15c3894da16f7f8fff68a02509b814c56a8b6846"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-mask-oracle-plan.md",
+      "path": "reviews/eris-vulkan-glyph-mask-oracle-plan.md",
+      "encoding": "identity",
+      "source_bytes": 14693,
+      "source_sha256": "0a772cf00fd9ffc28c486349cde046ba6339d348e220756e77a5fd3d84b8578a",
+      "published_bytes": 14693,
+      "published_sha256": "0a772cf00fd9ffc28c486349cde046ba6339d348e220756e77a5fd3d84b8578a"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-primitive-source-ready.json",
+      "path": "reviews/eris-vulkan-glyph-primitive-source-ready.json",
+      "encoding": "identity",
+      "source_bytes": 2396,
+      "source_sha256": "6648b2b1c6efa4be4c9046203ebc5aab80243bfd50db9939ec08ac9f4355f2fc",
+      "published_bytes": 2396,
+      "published_sha256": "6648b2b1c6efa4be4c9046203ebc5aab80243bfd50db9939ec08ac9f4355f2fc"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-protocol-peer-review.json",
+      "path": "reviews/eris-vulkan-glyph-protocol-peer-review.json",
+      "encoding": "identity",
+      "source_bytes": 7363,
+      "source_sha256": "6d47357b4a5eb5305e05db0c1e7beedaf52de0eaa407a4cc955365ec519fc189",
+      "published_bytes": 7363,
+      "published_sha256": "6d47357b4a5eb5305e05db0c1e7beedaf52de0eaa407a4cc955365ec519fc189"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-protocol-source-ready.json",
+      "path": "reviews/eris-vulkan-glyph-protocol-source-ready.json",
+      "encoding": "identity",
+      "source_bytes": 2331,
+      "source_sha256": "e8c6ac459141a24b7aca98059ee7f445006b9877a4d014ff02a495439891c740",
+      "published_bytes": 2331,
+      "published_sha256": "e8c6ac459141a24b7aca98059ee7f445006b9877a4d014ff02a495439891c740"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-root-notes.md",
+      "path": "reviews/eris-vulkan-glyph-root-notes.md",
+      "encoding": "identity",
+      "source_bytes": 3264,
+      "source_sha256": "7c549de4ab1505fb93aa459634cb908c331489e658ffbadc5091606b66d11881",
+      "published_bytes": 3264,
+      "published_sha256": "7c549de4ab1505fb93aa459634cb908c331489e658ffbadc5091606b66d11881"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-selected-contract.md",
+      "path": "reviews/eris-vulkan-glyph-selected-contract.md",
+      "encoding": "identity",
+      "source_bytes": 3035,
+      "source_sha256": "bc989a56a893cc96c528a122bfc02ec73d7f32bffa45d67b3efcbd87f4b5cf37",
+      "published_bytes": 3035,
+      "published_sha256": "bc989a56a893cc96c528a122bfc02ec73d7f32bffa45d67b3efcbd87f4b5cf37"
+    },
+    {
+      "source": "/tmp/eris-vulkan-text-masks-source-ready.json",
+      "path": "reviews/eris-vulkan-text-masks-source-ready.json",
+      "encoding": "identity",
+      "source_bytes": 2474,
+      "source_sha256": "51a4202fc93815698dc4537813670d3346e27c37821371cb21689153a101b701",
+      "published_bytes": 2474,
+      "published_sha256": "51a4202fc93815698dc4537813670d3346e27c37821371cb21689153a101b701"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-completed-run-review.json",
+      "path": "reviews/eris-vulkan-glyph-completed-run-review.json",
+      "encoding": "identity",
+      "source_bytes": 30939,
+      "source_sha256": "35c49c525cc28a30b48a2fa460e0fce81148c8c1dd8981f9070c65c0c0e5e793",
+      "published_bytes": 30939,
+      "published_sha256": "35c49c525cc28a30b48a2fa460e0fce81148c8c1dd8981f9070c65c0c0e5e793"
+    }
+  ],
+  "existing_published_parent_references": [
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-bitmap-quantum-boundary.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-bitmap-quantum-boundary.rgb",
+      "bytes": 24576,
+      "sha256": "b9f038af4b6360add819d450b2d1e9eeb86a078cb215b27f8ef1e78654ddd810"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-bold-translucent.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-bold-translucent.rgb",
+      "bytes": 24576,
+      "sha256": "19b49c8abecde5f674a3aec0c63a3eec67d569a1049778932f61e62432ddc49f"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-composite-unicode.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-composite-unicode.rgb",
+      "bytes": 24576,
+      "sha256": "c3e48f00f76c89f4fbbd6f5ac6eb69997b689b665ec4842f6be2c7254a65176e"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-fixed-clip-image-order.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-fixed-clip-image-order.rgb",
+      "bytes": 24576,
+      "sha256": "bd188a01b46e098fd55e47d78a517cf819ff4ebc7dab8242f1ebd1b2ed21c71d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-italic-negative-bearing.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-italic-negative-bearing.rgb",
+      "bytes": 24576,
+      "sha256": "36f187fbb057986d4ab3c5a7ad7bd55822071464d3f5fee422eccf7d0f69dded"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-missing-bold.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-missing-bold.rgb",
+      "bytes": 24576,
+      "sha256": "922d5b18e917bc1d9e7ecd899a1581ca565b76d19f13cbe4ec820b1036c2cf70"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-missing-mono.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-missing-mono.rgb",
+      "bytes": 24576,
+      "sha256": "1f369fe2fecbb8275cc9efef86b94ba696bdb18cbc6c2338d45432841fdfc846"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-missing-regular.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-missing-regular.rgb",
+      "bytes": 24576,
+      "sha256": "e6d65914d1179468b0dad80678125ee3633b0461467277a2dcb1494f8db87635"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-mono-bold-precedence.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-mono-bold-precedence.rgb",
+      "bytes": 24576,
+      "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-mono-no-kern.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-mono-no-kern.rgb",
+      "bytes": 24576,
+      "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-regular-kern-av-to.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-regular-kern-av-to.rgb",
+      "bytes": 24576,
+      "sha256": "d9bd9eb34f0482e922fe3d612a0c1d6418962ffb0c5ec74c063da8c997f3091b"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-shared-bitmap-quantum.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-shared-bitmap-quantum.rgb",
+      "bytes": 24576,
+      "sha256": "0211635cf6bd032cae4a54c383e943acdc82400b0a9d862bc029835b429f3c99"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-space-zero-advance.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-space-zero-advance.rgb",
+      "bytes": 24576,
+      "sha256": "763c17d2397f6a204d6160ac6d67c9c25fbd65c217c874666aa20c600c042bba"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-subpixel-rounding.rgb",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/font-subpixel-rounding.rgb",
+      "bytes": 24576,
+      "sha256": "a113299b07088f266f4d9c7f3c49da8ffa83ecfc1851ebbfeece446f9305d36c"
+    },
+    {
+      "source": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/freeze.json",
+      "path": "tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/freeze.json",
+      "bytes": 2433,
+      "sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b"
+    }
+  ],
+  "source_inventory_manifests": [
+    {
+      "path": "candidate-1/rust-source-freeze.json.gz",
+      "bound_files": 10778,
+      "bound_input_bytes": 114171500
+    },
+    {
+      "path": "candidate-2/rust-source-freeze.json.gz",
+      "bound_files": 10778,
+      "bound_input_bytes": 114171594
+    },
+    {
+      "path": "candidate-3/rust-source-freeze.json.gz",
+      "bound_files": 10778,
+      "bound_input_bytes": 114171675
+    }
+  ],
+  "totals": {
+    "copied_artifacts": 143,
+    "identity_copies": 140,
+    "deterministic_gzip_manifests": 3,
+    "original_artifact_bytes": 7903364,
+    "published_payload_bytes": 2200122,
+    "existing_parent_reference_files": 15,
+    "existing_parent_reference_bytes": 346497
+  },
+  "selection": "Candidate 1 and 2 failures and completed checks are retained separately from candidate 3 primary checks, supplemental checks, CPU/GPU hosts and unchanged-fixture host replays. Parent reference build/run and static preparation receipts preserve their original phase labels.",
+  "exclusions": [
+    "No executable binaries",
+    "No full parent-source tar",
+    "No target/build cache trees",
+    "No rewritten raw report or normalized failure",
+    "No new engine, compiler, test, GPU or CI execution"
+  ],
+  "attribution": "This index reports file selection and byte identities only. Execution status/count interpretation belongs to the original raw receipts and the root-owned host-glyphs.json summary."
+}

@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "reviewer": "layout",
+  "kind": "bounded-static-glyph-protocol-host-review",
+  "status": "no-unresolved-concrete-finding",
+  "inputs": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph_protocol.py",
+      "bytes": 13567,
+      "sha256": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_glyph_host.py",
+      "bytes": 8005,
+      "sha256": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/test_glyph_protocol.py",
+      "bytes": 14157,
+      "sha256": "7f5a856c502c54811fc03ba913e4a480d399de07bd4419a7888d15629738516e"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/test_glyph_host.py",
+      "bytes": 2137,
+      "sha256": "af74ab4487c22a19f866f00135db8cb300831debd79516f3c714ffe2fb8213ed"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/bin/glyph-check.rs",
+      "bytes": 11926,
+      "sha256": "9f88ba6feb66fb2fb01b1b56c72354b0df587e94a442b91710ceeacf4d4d280a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8453,
+      "sha256": "51ac06679b31bcfbc3f051df814850631b45fce1943ab6d89fb226349994de10"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_host.py",
+      "bytes": 15273,
+      "sha256": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 13678,
+      "sha256": "d38c129e010564c2ffa3903e1f86ae53d26667723749d9407659a14d188b32a8"
+    }
+  ],
+  "initial_source_ready": {
+    "path": "/tmp/eris-vulkan-glyph-protocol-source-ready.json",
+    "bytes": 2331,
+    "sha256": "e8c6ac459141a24b7aca98059ee7f445006b9877a4d014ff02a495439891c740"
+  },
+  "protocol_groups": [
+    "test_complete_gpu_and_cpu_populations_remain_distinct",
+    "test_listing_is_exact_ordered_and_portable",
+    "test_each_font_metadata_omission_and_duplicate_fails",
+    "test_each_prepared_frame_omission_and_duplicate_fails",
+    "test_each_gpu_pass_omission_duplicate_and_identity_fails",
+    "test_phase_order_and_cpu_gpu_completion_are_not_interchangeable",
+    "test_utf8_byte_and_scalar_counts_come_from_inputs",
+    "test_metadata_limits_and_accounting_relations",
+    "test_frame_sizes_and_dynamic_gpu_bounds",
+    "test_prepared_and_final_summaries_must_match_all_rows",
+    "test_noncanonical_truncated_and_extra_bytes_fail",
+    "test_fixture_json_bytes_are_pinned",
+    "test_parent_baseline_valid_and_manifest_pin_required",
+    "test_parent_baseline_all_files_and_lengths_are_bound",
+    "test_parent_baseline_semantic_identity_encoding_and_high_byte",
+    "test_parent_baseline_path_escape_and_symlink_refused"
+  ],
+  "new_host_groups": [
+    "test_exact_256_entries_are_bound_in_stable_order",
+    "test_257th_entry_refuses_before_any_file_hashing"
+  ],
+  "checks": [
+    "Exact checker grammar: fourteen FONT_META records, twenty-six ordered GLYPH_READY records, one aggregate preparation record, then either the sole CPU terminal or ordered adapter inventory plus twenty-six GPU passes and the exact GPU terminal. Trailing, omitted, duplicated, reordered, noncanonical, oversized and malformed records fail.",
+    "All frozen names, frame sizes, UTF-8/scalar counts and byte totals come from the two immutable JSON hashes. Dynamic font/planner counters are explicitly bounded observations, not independent exact counter goldens.",
+    "Per-case source/operation/row/mask/storage/CPU-work/dispatch caps and aggregate retained memory are checked. Counter arithmetic uses bounded Python integers and canonical decimal fields.",
+    "CPU-only reporting counts twenty-eight font comparisons and 688128 compared bytes; the 344956 retained reference bytes include literal inputs with zero literal CPU comparisons. GPU mode counts all twenty-six cases and 344956 bytes per adapter.",
+    "Parent reference identity requires the externally pinned manifest, schema/parent/encoding/count/byte identity, fourteen exact relative names, file hashes/lengths and zero packed high bytes. No reference output is regenerated or rewritten by this host.",
+    "Host verifies executable, fixed JSON, parent reference, its five execution modules and explicit loader bindings before/after successful processes. New outputs are exclusive; pre/post failures stop without further adapter starts and retain raw receipts/logs.",
+    "Successful acceptance requires normal checker exit, complete owned-descendant cleanup, zero surviving descendant count, empty checker and supervisor stderr, and no worker capture grant. Direct glyph mode launches no workers and correctly omits the browser capture gate.",
+    "Inherited supervisor keeps checker ownership until signalling and reaping. Cleanup failure or outer timeout cannot authorize another checker; the host retains an unsuccessful summary.",
+    "All sixteen synthetic protocol groups are source-only transcript/binding tests, with invented counters clearly distinguished from observed GPU/font outcomes. No synthetic expectation conflict found.",
+    "Supplemental loader tests use actual directories at exactly 256 and 257 entries; the accepted case checks all sorted bindings and digest caps, while the refused case asserts no file hash is attempted."
+  ],
+  "resolved_findings": [
+    {
+      "issue": "Initial loader_binding materialized and sorted the complete directory before applying its 256-entry limit.",
+      "initial_host_sha256": "c13eee38a20596afeae367d0b0fc71436f7fb71df9cdc184c99e3b27a122956c",
+      "resolution": "Root switched to os.scandir; the 257th entry is refused before append, sorting or hashing. At most 256 Path entries are retained and subsequently sorted. Final corrected host is bound above.",
+      "new_tests": "Two supplemental host-only boundary groups authored at root request; not executed by reviewer."
+    }
+  ],
+  "limits": [
+    "Source/loader/reference pre/post hashes provide experiment provenance, not protection against an adversarial host mutating and restoring inputs during a run.",
+    "Explicit loader-directory binding does not enumerate transitive system or driver libraries; the source says so.",
+    "Inherited supervisor cleanup has bounded attempts and can report unresolved ownership; this review does not promise that signals always terminate an uninterruptible process.",
+    "No broad inherited process-helper redesign was undertaken. Root owns all process, protocol and GPU execution outcomes."
+  ],
+  "execution_attribution": {
+    "tests_executed": 0,
+    "compiler_executions": 0,
+    "font_or_Canvas_executions": 0,
+    "checker_or_GPU_executions": 0,
+    "repository_edits": [
+      "tools/vulkan-raster-probe/test_glyph_host.py"
+    ],
+    "review_method": "Read held sources, author two authorized tests, compute hashes and write this separate scratch receipt."
+  }
+}

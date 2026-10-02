@@ -1,0 +1,15 @@
+REFERENCE name=font-regular-kern-av-to width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-bold-translucent width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-mono-no-kern width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-mono-bold-precedence width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-italic-negative-bearing width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-space-zero-advance width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-missing-regular width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-missing-bold width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-missing-mono width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-composite-unicode width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-subpixel-rounding width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-shared-bitmap-quantum width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-bitmap-quantum-boundary width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE name=font-fixed-clip-image-order width=128 height=48 bytes=24576 encoding=u32le-00RRGGBB cold_warm=equal exhausted=false
+REFERENCE_COMPLETE cases=14 bytes=344064 parent=5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0

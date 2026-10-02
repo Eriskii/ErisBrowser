@@ -1,0 +1,18 @@
+{
+  "status": "mechanical exhaustive match correction; no execution",
+  "before": {
+    "path": "/tmp/eris-vulkan-glyph-alpha-fixture-before.rs",
+    "sha256": "4904499c2fc209083a3c928e575963cfe4a63a553dcc3bb3183e5fa9320708d5"
+  },
+  "after": {
+    "path": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+    "sha256": "a67934fd08cb9095c6b00b1e2d875315d87b00dc7525b6d3252ccaaa2ebb61b7"
+  },
+  "delta": "One rejecting Command::Glyph arm added to existing alpha-fixture structural test. Removing that line exactly reproduces prior bytes, including all original data/expectations.",
+  "failure_logs": {
+    "/tmp/eris-vulkan-glyph-candidate-1/1.88.0-clippy-default.log": "5d64f55a56ebf6541ec8cc83e1f5d1cc21ee25835eb2cd78fd12b4eb36c7c1a6",
+    "/tmp/eris-vulkan-glyph-candidate-1/1.98.0-clippy-default.log": "cf6cadce1d18d060cb039e3b9ea60a1ee85302c5dc4b776f2dadcabf51b28b6d"
+  },
+  "scope": "Inspected all match expressions in probe src. Remaining probe Command matches either cover Glyph or intentionally use a wildcard; DrawCommand matches are a separate enum.",
+  "executions": "No tests, builds, planner, font, Canvas or GPU execution."
+}

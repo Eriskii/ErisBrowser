@@ -2,6 +2,8 @@
 use ab_glyph::{Font, FontArc, PxScale, ScaleFont, point};
 use std::{cell::RefCell, collections::HashMap, path::Path, sync::Arc};
 
+pub mod text_masks;
+
 const MAX_PAINT_COMMANDS: usize = 200_000;
 const MAX_PAINT_GLYPHS: usize = 100_000;
 const MAX_TEXT_GLYPHS: usize = 32_768;

@@ -54,6 +54,7 @@ struct Kernels {
     rectangle_layout: wgpu::BindGroupLayout,
     image: wgpu::ComputePipeline,
     image_layout: wgpu::BindGroupLayout,
+    glyph: Option<wgpu::ComputePipeline>,
 }
 
 fn raster(
@@ -116,18 +117,18 @@ fn raster(
             },
         ],
     });
-    // Rectangle-only plans allocate no input buffer or dummy binding. An image
-    // plan uploads original source pixels and separable source-index tables,
-    // never a CPU-painted target. Output deliberately has no COPY_DST usage.
-    let image_input = if p.has_images() {
+    // Rectangle-only plans allocate no input buffer or dummy binding. Inputs
+    // hold original source colors, coverage and index/row tables, never a
+    // CPU-painted target. Output deliberately has no COPY_DST usage.
+    let input_arena = if p.has_input() {
         let buffer = device.create_buffer(&wgpu::BufferDescriptor {
-            label: Some("bounded immutable source pixels and index tables"),
+            label: Some("bounded immutable colors, coverage and coordinate tables"),
             size: input.len() as u64,
             usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_DST,
             mapped_at_creation: false,
         });
         let group = device.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: Some("image output, uniform window and input arena"),
+            label: Some("input-backed output, uniform window and input arena"),
             layout: &kernels.image_layout,
             entries: &[
                 wgpu::BindGroupEntry {
@@ -170,7 +171,11 @@ fn raster(
             DrawKind::Rectangle => (&kernels.rectangle, &group),
             DrawKind::Image => (
                 &kernels.image,
-                &image_input.as_ref().ok_or("missing image arena")?.1,
+                &input_arena.as_ref().ok_or("missing image arena")?.1,
+            ),
+            DrawKind::Glyph => (
+                kernels.glyph.as_ref().ok_or("missing glyph pipeline")?,
+                &input_arena.as_ref().ok_or("missing glyph arena")?.1,
             ),
         };
         pass.set_pipeline(pipeline);
@@ -222,7 +227,7 @@ fn raster(
     output.destroy();
     readback.destroy();
     parameters.destroy();
-    if let Some((buffer, _)) = image_input {
+    if let Some((buffer, _)) = input_arena {
         buffer.destroy();
     }
     comparison
@@ -375,11 +380,32 @@ pub fn run_plans(
         compilation_options: Default::default(),
         cache: None,
     });
+    // Existing rectangle/image-only runs do not create an extra shader or
+    // pipeline. Glyphs reuse the exact input/output/uniform binding layout.
+    let glyph_pipeline = if plans.iter().any(|(_, _, plan)| plan.has_glyphs()) {
+        let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("custom integer glyph coverage"),
+            source: wgpu::ShaderSource::Wgsl(include_str!("glyph.wgsl").into()),
+        });
+        Some(
+            device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+                label: Some("ordered glyph coverage and source-over"),
+                layout: Some(&image_pipeline_layout),
+                module: &module,
+                entry_point: Some("glyph"),
+                compilation_options: Default::default(),
+                cache: None,
+            }),
+        )
+    } else {
+        None
+    };
     let kernels = Kernels {
         rectangle: pipeline,
         rectangle_layout: layout,
         image: image_pipeline,
         image_layout,
+        glyph: glyph_pipeline,
     };
     let outcome: Result<()> = (|| {
         for &(name, expected, plan) in plans {

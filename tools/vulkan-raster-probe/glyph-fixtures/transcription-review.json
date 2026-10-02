@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "method": "Restricted Rust literal parser independently reconstitutes all 26 fixture names/frames/commands/source and row tables; compares every scalar (including exact f32 bit values), Unicode string, image key, expected pixel and RGB24 byte to frozen JSON. No Rust/compiler/renderer/planner/font APIs executed.",
+  "literal_cases": 12,
+  "literal_pixels": 223,
+  "font_cases": 14,
+  "font_outputs_produced": 0,
+  "parent_files_exact": 91,
+  "files": [
+    {
+      "path": "literal-fixtures.json",
+      "bytes": 58134,
+      "sha256": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa"
+    },
+    {
+      "path": "font-inventory.json",
+      "bytes": 23408,
+      "sha256": "ecb63ecb6ea172278eaed57acc4fe5f27ce6a8c4567aa35392be4fe7511cf7c1"
+    },
+    {
+      "path": "literal_inventory.rs",
+      "bytes": 23628,
+      "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8"
+    },
+    {
+      "path": "font_inventory.rs",
+      "bytes": 21064,
+      "sha256": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd"
+    },
+    {
+      "path": "reference-parent/src/bin/glyph-reference.rs",
+      "bytes": 3356,
+      "sha256": "cd6b38f2ebccba7c462a12086875076b4a5b086d46e72be40cf307e17508fb4c"
+    },
+    {
+      "path": "prepare.py",
+      "bytes": 20784,
+      "sha256": "a1b799c87d31fda2d69f9b62c0b8010d0875f1f990a928c528dde7a9394bd3c7"
+    },
+    {
+      "path": "verify_transcription.py",
+      "bytes": 6014,
+      "sha256": "2ea9f6fc930d3c19553182accf488a479cacce23613602213647f133f618ff12"
+    }
+  ]
+}

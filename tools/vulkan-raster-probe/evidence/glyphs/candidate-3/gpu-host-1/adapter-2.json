@@ -1,0 +1,30 @@
+{
+  "status": "exited",
+  "returncode": 0,
+  "command": [
+    "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-glyph-check-1.98.0",
+    "--adapter",
+    "2",
+    "--baselines",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph-fixtures/parent-baselines"
+  ],
+  "timeout_seconds": 60.0,
+  "cleanup_seconds": 5.0,
+  "cleanup": {
+    "complete": true,
+    "reaped": 1,
+    "descendants": 0,
+    "checker_returncode": 0,
+    "error": null
+  },
+  "elapsed_seconds": 0.22972893400583416,
+  "captured_bytes": 9613,
+  "observed_bytes": 9613,
+  "output_limit_bytes": 2097152,
+  "cancellation_signal": null,
+  "capture_gate_required": false,
+  "capture_gate_granted": false,
+  "stdout_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "error": null
+}

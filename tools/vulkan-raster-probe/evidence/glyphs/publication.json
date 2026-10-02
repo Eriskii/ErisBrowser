@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "kind": "publication byte-verification ledger",
+  "index": {
+    "path": "index.json",
+    "bytes": 67011,
+    "sha256": "218bc21706d6270175a94c57dcc5309732414c5f17849aeab456ef35bdd3f43d"
+  },
+  "totals": {
+    "copied_artifacts": 143,
+    "identity_copies": 140,
+    "deterministic_gzip_manifests": 3,
+    "original_artifact_bytes": 7903364,
+    "published_payload_bytes": 2200122,
+    "existing_parent_reference_files": 15,
+    "existing_parent_reference_bytes": 346497
+  },
+  "verification": [
+    "Every identity copy equals its original source bytes.",
+    "Each gzip decodes to the exact original manifest and deterministic recompression is byte-identical.",
+    "Every selected original was rehashed after publication.",
+    "All fifteen existing parent-reference files equal the retained scratch originals."
+  ],
+  "execution": "Packaging and hashing only; no engine/compiler/test/GPU/CI rerun.",
+  "supplement": {
+    "completed_run_review": {
+      "path": "reviews/eris-vulkan-glyph-completed-run-review.json",
+      "sha256": "35c49c525cc28a30b48a2fa460e0fce81148c8c1dd8981f9070c65c0c0e5e793"
+    },
+    "contract_transcription_review": "Existing exact 799c75da5ebf5ddf4af4bf021fc07b7424c09111f7b897b5ba99e5a757663c55 copy verified unchanged.",
+    "supplemental_contract_logs": "Both existing exact 1.88.0/1.98.0 logs report two passed, zero failed; their copied bytes remain unchanged.",
+    "initial_index_sha256": "a97161b199cedacf65b8f829263ca7fd62f567609e54abec353bcbf329f3f309",
+    "initial_publication_sha256": "7c8ec4eca393678b9a0920e8b2d59315131058c7c2a4d62205d184d9019659c5"
+  }
+}

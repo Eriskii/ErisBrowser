@@ -1,5 +1,53 @@
 # Validation record
 
+## Bounded Vulkan glyph masks
+
+The [glyph path](../tools/vulkan-raster-probe/GLYPHS.md) composites bounded
+CPU-generated font coverage with a custom integer WGSL kernel. Its
+[host evidence](../tools/vulkan-raster-probe/evidence/host-glyphs.json) records
+**26 exact cases on NVIDIA, AMD and software Vulkan**: **344,956 compared GPU
+bytes per adapter, 1,034,868 total**. Twelve cases contain 223 independently
+calculated literal-mask pixels. Fourteen direct font lists contain 86,016 pixels
+from the preserved CPU implementation at `5ad2cfd`; those references are explicitly
+CPU-derived, not independent font goldens. They cover all three faces, monospace
+precedence, kerning, italic placement, Unicode/missing glyphs, fractional sizes,
+clipping, fixed coordinates and image/text order.
+
+The preserved parent produces identical cold/warm outputs for all fourteen
+references. Both candidate toolchains also match those full references with cold
+and warm CPU caches and retain identical GPU plans. Each admitted glyph uses
+absolute signed row origins and ordered source-over passes. The original CPU
+painter functions remain byte-identical; the root graphics file only adds the
+new preparation module. The session precharges mask/row/GPU storage and repeated
+paint work, while explicitly retaining the pinned font library's infallible
+outline/raster allocation boundary. No downloaded or system fonts are accepted.
+
+Rust **1.88.0 and 1.98.0** pass strict Clippy, builds, **41 default / 73
+feature-enabled probe tests**, and **34 root graphics tests**, including nine
+new mask-preparation groups. Two additional integration groups on each toolchain
+execute all **25 frozen refusal variants and three positive limit plans**.
+All **16 new protocol tests and two host-boundary tests** pass. Naga 30.0.1
+validates the new glyph shader offline. Original rectangle/image shaders retain
+their bytes and earlier validation. Neither dependency lock changes.
+
+The first probe checks find an omitted Glyph arm in an old positive-fixture test
+converter. The next default run passes 39 tests and fails two existing exact
+diagnostic assertions because the combined source check precedes the old image
+validator. A rejecting test-converter arm and restoration of image validation
+order resolve those failures. No original expectation or fixture changes.
+Static review also strengthens full cold/warm plan equality and bounds loader
+directory traversal before sorting. Initial failures and corrections are retained.
+
+After the shared planner change, all **30 original standalone cases** still
+match on all three adapters (**2,764,860 bytes**), and all **16 original browser
+bridge cases** pass with unchanged GPU/fallback populations. The glyph checker
+itself launches no page workers. Every supervised glyph/reference process has
+zero exit status, empty stderr and complete cleanup; device/readback failure
+never becomes fallback. Real-worker text capture, native-window rasterization,
+shaping, rounded geometry, opacity groups, full compatibility, production security
+and the Chromium performance target remain open. Remote CI for this checkpoint
+is recorded after publication.
+
 ## Vulkan bridge for actual browser snapshots
 
 The optional [browser bridge](../tools/vulkan-raster-probe/BROWSER_BRIDGE.md)

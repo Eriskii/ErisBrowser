@@ -1,0 +1,42 @@
+FONT_META font-regular-kern-av-to bytes=8 scalars=8 visited=8 occurrences=8 masks=5 coverage=495 cold_work=496 scratch=544 rows=71 cpu_upper=761 gpu_upper=53720 cold_warm=true
+FONT_META font-bold-translucent bytes=5 scalars=5 visited=5 occurrences=5 masks=5 coverage=565 cold_work=566 scratch=640 rows=47 cpu_upper=566 gpu_upper=53136 cold_warm=true
+FONT_META font-mono-no-kern bytes=5 scalars=5 visited=5 occurrences=5 masks=5 coverage=448 cold_work=449 scratch=496 rows=47 cpu_upper=449 gpu_upper=52668 cold_warm=true
+FONT_META font-mono-bold-precedence bytes=5 scalars=5 visited=5 occurrences=5 masks=5 coverage=448 cold_work=449 scratch=496 rows=47 cpu_upper=449 gpu_upper=52668 cold_warm=true
+FONT_META font-italic-negative-bearing bytes=5 scalars=5 visited=5 occurrences=5 masks=5 coverage=587 cold_work=588 scratch=744 rows=62 cpu_upper=588 gpu_upper=53284 cold_warm=true
+FONT_META font-space-zero-advance bytes=9 scalars=7 visited=7 occurrences=7 masks=4 coverage=312 cold_work=314 scratch=640 rows=39 cpu_upper=472 gpu_upper=52604 cold_warm=true
+FONT_META font-missing-regular bytes=9 scalars=4 visited=4 occurrences=4 masks=4 coverage=534 cold_work=534 scratch=556 rows=54 cpu_upper=534 gpu_upper=52784 cold_warm=true
+FONT_META font-missing-bold bytes=6 scalars=3 visited=3 occurrences=3 masks=3 coverage=447 cold_work=447 scratch=640 rows=39 cpu_upper=447 gpu_upper=52120 cold_warm=true
+FONT_META font-missing-mono bytes=9 scalars=4 visited=4 occurrences=4 masks=4 coverage=510 cold_work=510 scratch=556 rows=54 cpu_upper=510 gpu_upper=52688 cold_warm=true
+FONT_META font-composite-unicode bytes=12 scalars=8 visited=8 occurrences=8 masks=6 coverage=787 cold_work=788 scratch=1136 rows=59 cpu_upper=790 gpu_upper=54840 cold_warm=true
+FONT_META font-subpixel-rounding bytes=6 scalars=6 visited=6 occurrences=6 masks=2 coverage=200 cold_work=200 scratch=544 rows=87 cpu_upper=600 gpu_upper=52092 cold_warm=true
+FONT_META font-shared-bitmap-quantum bytes=8 scalars=8 visited=8 occurrences=8 masks=4 coverage=495 cold_work=495 scratch=544 rows=94 cpu_upper=990 gpu_upper=53812 cold_warm=true
+FONT_META font-bitmap-quantum-boundary bytes=6 scalars=6 visited=6 occurrences=6 masks=4 coverage=400 cold_work=400 scratch=544 rows=87 cpu_upper=600 gpu_upper=52892 cold_warm=true
+FONT_META font-fixed-clip-image-order bytes=13 scalars=13 visited=13 occurrences=13 masks=5 coverage=563 cold_work=563 scratch=544 rows=160 cpu_upper=38483 gpu_upper=57872 cold_warm=true
+GLYPH_READY coverage-alpha-floor population=literal-mask width=6 height=4 compared_bytes=96 draws=5 invocations=320 gpu_buffers=1500
+GLYPH_READY ordered-overlap population=literal-mask width=4 height=3 compared_bytes=48 draws=4 invocations=256 gpu_buffers=1152
+GLYPH_READY repeated-low-alpha population=literal-mask width=1 height=1 compared_bytes=4 draws=9 invocations=576 gpu_buffers=2320
+GLYPH_READY interleaved-rect-image population=literal-mask width=4 height=2 compared_bytes=32 draws=5 invocations=320 gpu_buffers=1396
+GLYPH_READY signed-row-origins-and-y population=literal-mask width=4 height=3 compared_bytes=48 draws=2 invocations=128 gpu_buffers=656
+GLYPH_READY varying-row-origins population=literal-mask width=4 height=4 compared_bytes=64 draws=2 invocations=128 gpu_buffers=688
+GLYPH_READY fractional-clip-both-edges population=literal-mask width=5 height=3 compared_bytes=60 draws=2 invocations=128 gpu_buffers=704
+GLYPH_READY fixed-escape-and-restoration population=literal-mask width=6 height=4 compared_bytes=96 draws=4 invocations=256 gpu_buffers=1256
+GLYPH_READY absolute-origins-ignore-offset population=literal-mask width=5 height=3 compared_bytes=60 draws=3 invocations=192 gpu_buffers=904
+GLYPH_READY empty-zero-coverage-and-alpha population=literal-mask width=3 height=2 compared_bytes=24 draws=2 invocations=128 gpu_buffers=592
+GLYPH_READY signed-i32-extremes population=literal-mask width=3 height=3 compared_bytes=36 draws=2 invocations=128 gpu_buffers=632
+GLYPH_READY dispatch-tail-9x9 population=literal-mask width=9 height=9 compared_bytes=324 draws=2 invocations=512 gpu_buffers=1520
+GLYPH_READY font-regular-kern-av-to population=font-reference width=128 height=48 compared_bytes=24576 draws=7 invocations=7680 gpu_buffers=53208
+GLYPH_READY font-bold-translucent population=font-reference width=128 height=48 compared_bytes=24576 draws=5 invocations=7168 gpu_buffers=52880
+GLYPH_READY font-mono-no-kern population=font-reference width=128 height=48 compared_bytes=24576 draws=5 invocations=7040 gpu_buffers=52412
+GLYPH_READY font-mono-bold-precedence population=font-reference width=128 height=48 compared_bytes=24576 draws=5 invocations=7040 gpu_buffers=52412
+GLYPH_READY font-italic-negative-bearing population=font-reference width=128 height=48 compared_bytes=24576 draws=5 invocations=7104 gpu_buffers=53028
+GLYPH_READY font-space-zero-advance population=font-reference width=128 height=48 compared_bytes=24576 draws=4 invocations=6912 gpu_buffers=51580
+GLYPH_READY font-missing-regular population=font-reference width=128 height=48 compared_bytes=24576 draws=5 invocations=7168 gpu_buffers=52784
+GLYPH_READY font-missing-bold population=font-reference width=128 height=48 compared_bytes=24576 draws=4 invocations=6912 gpu_buffers=52120
+GLYPH_READY font-missing-mono population=font-reference width=128 height=48 compared_bytes=24576 draws=5 invocations=7168 gpu_buffers=52688
+GLYPH_READY font-composite-unicode population=font-reference width=128 height=48 compared_bytes=24576 draws=6 invocations=7360 gpu_buffers=54072
+GLYPH_READY font-subpixel-rounding population=font-reference width=128 height=48 compared_bytes=24576 draws=7 invocations=7488 gpu_buffers=52092
+GLYPH_READY font-shared-bitmap-quantum population=font-reference width=128 height=48 compared_bytes=24576 draws=9 invocations=8192 gpu_buffers=53812
+GLYPH_READY font-bitmap-quantum-boundary population=font-reference width=128 height=48 compared_bytes=24576 draws=7 invocations=7488 gpu_buffers=52892
+GLYPH_READY font-fixed-clip-image-order population=font-reference width=128 height=48 compared_bytes=24576 draws=16 invocations=15680 gpu_buffers=56224
+GLYPH_PREPARED cases=26 literal=12 font=14 retained_gpu_bytes=755524 retained_reference_bytes=344956 worker_cases=0
+GLYPH_CPU_COMPLETE cases=26 literal=12 font=14 cpu_passes=28 exact=true

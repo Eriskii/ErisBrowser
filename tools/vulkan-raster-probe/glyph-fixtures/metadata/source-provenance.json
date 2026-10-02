@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "scope": "Read-only source and font identity bindings for metadata interpretation; none of these font APIs was executed.",
+  "files": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/graphics.rs",
+      "bytes": 60970,
+      "sha256": "1b51c4af2c8ae4eea66476397868022da35e566d3593f3fcddf29a156bae62a2"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/Cargo.lock",
+      "bytes": 78862,
+      "sha256": "fc2d595602095e8a4333975b5f2e8ba748a1b82fbdc84505e64abcbd2b92a0de"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/assets/FONTS-LICENSE.txt",
+      "bytes": 8816,
+      "sha256": "7a083b136e64d064794c3419751e5c7dd10d2f64c108fe5ba161eae5e5958a93"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/assets/DejaVuSans.ttf",
+      "bytes": 759676,
+      "sha256": "58568c88a01b80dfc056daca3eeafd434a0380df1a48dda53f0de0d716109bbd"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/assets/DejaVuSans-Bold.ttf",
+      "bytes": 708876,
+      "sha256": "7c7aef63328a765586cda41bf9d2c227ff1ad82816326dae4d7fe2fd1b7f613a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/assets/DejaVuSansMono.ttf",
+      "bytes": 343096,
+      "sha256": "9d9bfebceb1c3f6f4ad383ded568a6926086208f43f7f92f92f7e93a1383fa38"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ab_glyph-0.2.32/src/ttfp.rs",
+      "bytes": 12603,
+      "sha256": "6b4f515a31a4d271dc23671d63ac36480cc6f9b042f616457b0d1a36ea7fc127"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ab_glyph-0.2.32/src/outlined.rs",
+      "bytes": 6816,
+      "sha256": "a884185f073677b3682a4eae81edabac9c21f0d348c13d3f01ea709a85ee4a75"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ab_glyph-0.2.32/src/font.rs",
+      "bytes": 14889,
+      "sha256": "befa184014e6c4babd06f343a257b90bb745fc8e626d05934719ba11f0872a4f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ab_glyph-0.2.32/src/scale.rs",
+      "bytes": 8119,
+      "sha256": "1ba222e0473c71c3cd9a62be10eb623cb20b838ed85420735d7ced67b9926530"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/owned_ttf_parser-0.25.1/src/preparse.rs",
+      "bytes": 4598,
+      "sha256": "c92126a7296106859f99b0afdba5397f3d08850428dc7958a6757168efee5466"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ttf-parser-0.25.1/src/tables/cmap/mod.rs",
+      "bytes": 9900,
+      "sha256": "d28bee77c6fba712877da53512ff520ec21d8f3cee5facd8fc7f2ac207576a95"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ttf-parser-0.25.1/src/tables/cmap/format4.rs",
+      "bytes": 4338,
+      "sha256": "031e29ba168dd05c68d2b1e9b8221dd9e27ff81e24da6905e4654eb13c072116"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ttf-parser-0.25.1/src/tables/cmap/format12.rs",
+      "bytes": 2392,
+      "sha256": "6e6a2a2ffade2b5b69d613f6fe750c42f602cb3a445e2d96d7108cbd3958c026"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ttf-parser-0.25.1/src/tables/kern.rs",
+      "bytes": 15216,
+      "sha256": "ed3f95efdc3eb6d0e9950e6f475ae22e84b0616b7a55faa26e146ecf9dbaefd9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-browser-cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/ttf-parser-0.25.1/src/tables/glyf.rs",
+      "bytes": 20604,
+      "sha256": "6a03b8d92f12566fd1dc244f4fd0cd9a8babb7f79917d9cf5812eef1350df809"
+    }
+  ],
+  "facts": {
+    "path": "/tmp/eris-vulkan-font-metadata-audit/facts.json",
+    "bytes": 136925,
+    "sha256": "2f50612404e6ff623db72496fa74dc52f2a68bfce455f2c2fa708d0c52173e5e"
+  },
+  "original_metadata_freeze": {
+    "path": "/tmp/eris-vulkan-font-metadata-audit/freeze.json",
+    "bytes": 786,
+    "sha256": "54d3acd0d11c9f63d9aa72ba630354fbe5a579a87eaff018e89351a8fe1962d6"
+  },
+  "review_limit": "No transformed outline coordinates, curves, coverage or masks were computed. The sampled cmap/hmtx/kern facts are not a selected fixture inventory."
+}

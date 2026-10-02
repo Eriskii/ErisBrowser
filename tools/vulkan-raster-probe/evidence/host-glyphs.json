@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "subject": "bounded offscreen bundled-font glyph masks",
+  "parent_commit": "0c62ab36e0639fc6630fcd7e7013471737132c6e",
+  "cpu_reference_parent": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+  "candidate_manifest_sha256": "1da9a9e5c6778382c41a77935c19e1fcfaef5852c8666c528eeef9324e52057a",
+  "supplemental_tests_sha256": "1d0b10a0b603f603fbb8510fdd703286b99e2c473d440e165b92d893008f1944",
+  "python_final_manifest_sha256": "ff092ba044b39e82e1f7f1881444a6e3495ab7b5db1983fe58e7175d03e723a7",
+  "gpu": {
+    "adapters": 3,
+    "cases_per_adapter": 26,
+    "independent_literal_cases": 12,
+    "literal_pixels_per_adapter": 223,
+    "literal_gpu_bytes_per_adapter": 892,
+    "cpu_reference_font_cases": 14,
+    "font_pixels_per_adapter": 86016,
+    "font_gpu_bytes_per_adapter": 344064,
+    "compared_bytes_per_adapter": 344956,
+    "compared_bytes_total": 1034868,
+    "exact": true,
+    "all_processes_exit_zero": true,
+    "all_stderr_empty": true,
+    "all_cleanup_complete": true
+  },
+  "cpu_reference": {
+    "encoding": "u32le-00RRGGBB",
+    "classification": "preserved-parent-CPU-derived",
+    "cases": 14,
+    "bytes": 344064,
+    "manifest_sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b",
+    "both_candidate_toolchains_match_cold_and_warm": true,
+    "independent_font_correctness_claimed": false
+  },
+  "validation": {
+    "rust": {
+      "1.88.0": {
+        "default_probe_tests": 41,
+        "feature_probe_tests": 73,
+        "supplemental_integration_groups": 2,
+        "supplemental_refusals": 25,
+        "supplemental_acceptances": 3,
+        "root_graphics_tests": 34,
+        "strict_probe_clippy": true,
+        "strict_root_clippy": true
+      },
+      "1.98.0": {
+        "default_probe_tests": 41,
+        "feature_probe_tests": 73,
+        "supplemental_integration_groups": 2,
+        "supplemental_refusals": 25,
+        "supplemental_acceptances": 3,
+        "root_graphics_tests": 34,
+        "strict_probe_clippy": true,
+        "strict_root_clippy": true
+      }
+    },
+    "new_python_protocol_groups": 16,
+    "new_python_host_groups": 2,
+    "naga_version": "30.0.1",
+    "glyph_shader_validated": true,
+    "old_shader_bytes_unchanged": true,
+    "original_30_cases_pass_all_three_adapters": true,
+    "original_30_compared_bytes": 2764860,
+    "original_16_browser_cases_pass_all_three_adapters": true,
+    "original_browser_gpu_bytes_per_adapter": 604,
+    "original_browser_cpu_fallback_bytes_per_adapter": 184,
+    "initial_compile_and_diagnostic_failures_preserved": true
+  },
+  "limits": {
+    "viewport": [
+      320,
+      240
+    ],
+    "commands": 256,
+    "scopes": 32,
+    "explicit_gpu_bytes": 1048576,
+    "gpu_invocations": 4000000,
+    "combined_image_mask_sources": 256,
+    "text_scalars": 4096,
+    "text_bytes": 65536,
+    "mask_axis": 1024,
+    "mask_area": 262144,
+    "aggregate_coverage_bytes": 262144,
+    "row_entries": 65536
+  },
+  "trusted_font_boundary": "Pinned bundled fonts only; dependency outline vectors and raster scratch retain infallible allocations. No total allocator or curve instruction bound is claimed.",
+  "native_window_shader_rasterization": false,
+  "real_worker_text_capture": false,
+  "full_web_compatibility": false,
+  "production_security_claimed": false,
+  "chromium_performance_target_demonstrated": false,
+  "remote_ci": {
+    "status": "pending publication"
+  },
+  "artifact_index": "glyphs/index.json",
+  "artifact_index_sha256": "218bc21706d6270175a94c57dcc5309732414c5f17849aeab456ef35bdd3f43d",
+  "publication_ledger": "glyphs/publication.json",
+  "publication_ledger_sha256": "a78efff7374f2938eacda1cfd812566cef2b0e865c06e1b9a94e2340d1aede0d"
+}

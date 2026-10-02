@@ -1,0 +1,768 @@
+{
+  "schema": 1,
+  "result": "no concrete finding",
+  "method": "Read-only independent parsing and hashes of retained logs/receipts/binaries/input files; no engines, renderers, compilers, GPU, test or production protocol-parser reruns.",
+  "frozen_source_input_files_checked": 10778,
+  "frozen_python_files_checked": 8,
+  "immutable_parent_files_checked": 91,
+  "compiler_log_pass_totals": {
+    "1.88.0-test-default": 41,
+    "1.88.0-test-feature": 73,
+    "1.98.0-test-default": 41,
+    "1.98.0-test-feature": 73
+  },
+  "parent_reference": {
+    "invocations": 1,
+    "font_cases": 14,
+    "cold_warm_paints": 28,
+    "unique_u32le_bytes": 344064,
+    "gpu_bytes": 0
+  },
+  "candidate_cpu_checks": {
+    "toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "font_paints_each": 28,
+    "font_compared_bytes_each": 688128,
+    "font_compared_bytes_combined": 1376256,
+    "gpu_comparisons": 0,
+    "literal_cpu_comparisons": 0,
+    "stdout_identical": true
+  },
+  "glyph_gpu": {
+    "adapters": 3,
+    "cases_each": 26,
+    "literal_cases_each": 12,
+    "font_cases_each": 14,
+    "literal_bytes_each": 892,
+    "font_bytes_each": 344064,
+    "total_bytes_each": 344956,
+    "total_gpu_bytes": 1034868,
+    "retained_gpu_plan_bytes_each_observed": 755524,
+    "font_preparation_metadata": "observed, bounded; not independent exact counter goldens"
+  },
+  "original_probe_gpu": {
+    "cases_each": 30,
+    "adapters": 3,
+    "bytes_each": 921620,
+    "total_gpu_bytes": 2764860,
+    "cleanup_scope": "Original unchanged group-cleanup runner, not newer adopted-child receipt format."
+  },
+  "browser_bridge": {
+    "cases_each": 16,
+    "adapters": 3,
+    "gpu_cases_each": 9,
+    "fallback_cases_each": 7,
+    "gpu_bytes_each": 604,
+    "fallback_cpu_bytes_each": 184,
+    "combined_bytes_each": 788,
+    "total_gpu_bytes": 1812,
+    "total_fallback_cpu_bytes": 552,
+    "total_combined_bytes": 2364,
+    "worker_snapshots_each": 5,
+    "capture_gate_granted_and_clean": true
+  },
+  "adapter_inventory": [
+    "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+    "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+    "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+  ],
+  "bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 13678,
+      "sha256": "d38c129e010564c2ffa3903e1f86ae53d26667723749d9407659a14d188b32a8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/fixtures.json",
+      "bytes": 100169,
+      "sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/freeze.json",
+      "bytes": 6430,
+      "sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser_protocol.py",
+      "bytes": 19063,
+      "sha256": "228b7d00dc3bd4554e0ae193ab2be67e0ed81e215ffbeaa8a0ccd78a41dd75ac"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph-fixtures/parent-baselines/freeze.json",
+      "bytes": 2433,
+      "sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph_protocol.py",
+      "bytes": 13567,
+      "sha256": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8453,
+      "sha256": "51ac06679b31bcfbc3f051df814850631b45fce1943ab6d89fb226349994de10"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_glyph_host.py",
+      "bytes": 8005,
+      "sha256": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_host.py",
+      "bytes": 15273,
+      "sha256": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/tests/glyph_contracts.rs",
+      "bytes": 7754,
+      "sha256": "1d0b10a0b603f603fbb8510fdd703286b99e2c473d440e165b92d893008f1944"
+    },
+    {
+      "path": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so",
+      "bytes": 726704,
+      "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+    },
+    {
+      "path": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1",
+      "bytes": 726704,
+      "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+    },
+    {
+      "path": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+      "bytes": 726704,
+      "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+    },
+    {
+      "path": "/tmp/eris-array-buffer-candidate-2/eris-browser",
+      "bytes": 11705200,
+      "sha256": "8b88d35a175dc30de81b983e99ae38cd1460d0366c62db21604c941abd490932"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-build-feature.log",
+      "bytes": 194,
+      "sha256": "26c18323155bb689e18c227305a29edccdd86a56b4f405be401498a038278f0f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-checks.json",
+      "bytes": 2563,
+      "sha256": "e944e65c521f2302db147105657d88867de42facba55795278cf6d72317e8d46"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-clippy-default.log",
+      "bytes": 194,
+      "sha256": "440b70acc02a5c99b77cda397355b76ef363514c1441a8249812455c1318b713"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-clippy-feature.log",
+      "bytes": 286,
+      "sha256": "6bc87e4725e6683333bbe12498ac0d4a54394fd7c3fbb3de99b617c322b0eaca"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-fmt-probe.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-test-default.log",
+      "bytes": 4368,
+      "sha256": "f025e3e98511e87e0104e021a09e67208998729fb33010ab0378a1679ced8d2e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.88.0-test-feature.log",
+      "bytes": 8193,
+      "sha256": "53cda39c4e7313454737e6c6cde590d41719f1c94f6c45ad6f10294eb05fa2c9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-build-feature.log",
+      "bytes": 194,
+      "sha256": "5a71524689d5eecf5484e4f2d6a5c63565fbb8c90f1fa05b21c896018f71dda6"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-checks.json",
+      "bytes": 2561,
+      "sha256": "b261ffcb723c2eb1ea11c706c25ac7bfa19345a9b15fe1e73410f2ef570cf9b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-clippy-default.log",
+      "bytes": 194,
+      "sha256": "d42fc250bef62551ad0524dabeaefe62857f6bb92cd7e3bf9592a45736709896"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-clippy-feature.log",
+      "bytes": 286,
+      "sha256": "5f437d4e8da9085e8c68a5386ffedbdbea5fbc3c34f16a8800de2ccd9d0bb6c8"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-fmt-probe.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-test-default.log",
+      "bytes": 4366,
+      "sha256": "c37c4045589e7fb6c9ab4d779f784c633d24f325733ddaa110c9f2dbd27bb986"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/1.98.0-test-feature.log",
+      "bytes": 8189,
+      "sha256": "84d39f9ca6280d1b8caad07716916fcbd47884a3c787f1ab1d5f6618209beced"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.json",
+      "bytes": 964,
+      "sha256": "58c931dedaca5938ef926dc1354cdd08cd0d92ef0f592851b3b7b83356a53710"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.stdout.log",
+      "bytes": 14901,
+      "sha256": "0d58a8c8360d62763a91ca979afc33cb3ac5ebff6d4ee8a9965c7b4f099538e5"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-0.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.json",
+      "bytes": 965,
+      "sha256": "eb20b925b8d310c989593561deb24660401ae8ba3756f6b9aa98b6e00d6b8870"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.stdout.log",
+      "bytes": 14901,
+      "sha256": "a0232a3d0545fb64cf14de07f96f46f26d1bc656654f7e708f55af43993048d3"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-1.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.json",
+      "bytes": 965,
+      "sha256": "70ba29f9201b50414ce936c302a1830a95e3ed5c9d1ff2c93a802bc25a04433c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.stdout.log",
+      "bytes": 14901,
+      "sha256": "bae06eee165e2cf1f45a18a01815a0d28895d77b5f14ffcc4eac28e39d93e9b2"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/adapter-2.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.json",
+      "bytes": 747,
+      "sha256": "c639dc11a6e28bad8f5e624da9f398b0295e80a1e750048ed3f5427cf88f2821"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/enumeration.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/browser-host-1/host-results.json",
+      "bytes": 117804,
+      "sha256": "7c21df362fa68dca00e281c64b6f4b471ff02f44d4aff5cb2c152dff2d1df998"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.json",
+      "bytes": 894,
+      "sha256": "088f1f57cbd91546845d568d1e5e35131a6fb33f2157ad6f0e9b87f6c35b4354"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.stdout.log",
+      "bytes": 6312,
+      "sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/cpu-check.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.88.0/host-results.json",
+      "bytes": 20967,
+      "sha256": "1cc07b79f4d75eb74424081c83ccbf966ebd6093002c77767108dad7f97e84dd"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.json",
+      "bytes": 894,
+      "sha256": "476d5b8050d95aab0da1b85483054af214cad4b1fb7ff1ec26f5a9fda3f63610"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.stdout.log",
+      "bytes": 6312,
+      "sha256": "384257354cecfb0091debae777c88a23b409f3efffd3f6790260eba73d618593"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/cpu-check.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/cpu-host-1.98.0/host-results.json",
+      "bytes": 20967,
+      "sha256": "a2c764903b59fc225c634d5160832328a030bb670e4e4b697debb5134c75e7c9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-browser-check-1.88.0",
+      "bytes": 23961728,
+      "sha256": "f4751fca300829dbdfa55a97f7dce1036f72e0242941aab372a1f8b85afa4283"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-browser-check-1.98.0",
+      "bytes": 29095680,
+      "sha256": "ddee032912b0f78a1fcb4572dc6186124fa1f0086a20da56eb70ffaf8e95e321"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-glyph-check-1.88.0",
+      "bytes": 21589592,
+      "sha256": "3a8813dac47f765ab4d14b98e0a75c09b6914e75463e5a2710e622f75e295a7f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-glyph-check-1.98.0",
+      "bytes": 26618352,
+      "sha256": "8846323090fa749643bcbc2295d2f802aa5d42a6fde1402822737bfb87b8f044"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-raster-prototype-1.88.0",
+      "bytes": 18563344,
+      "sha256": "660030667e33b61b4f13187c386d73c0eee09fec3db93bd9c23c59976d8fac1a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/eris-vulkan-raster-prototype-1.98.0",
+      "bytes": 23488048,
+      "sha256": "0679f9152f86085c4a8a0c65e8e96b49491f361054135b4f9b67fb5294267a56"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.json",
+      "bytes": 900,
+      "sha256": "ad811456e3d1e38b48a86bdf84e58b930e9a584ad3aa9d713d1d312ad9003b2a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.stdout.log",
+      "bytes": 9613,
+      "sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-0.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.json",
+      "bytes": 900,
+      "sha256": "4ac01246331e48931b92405c8c53979125462f0e7dc88b917e10f1bc545e0ada"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.stdout.log",
+      "bytes": 9613,
+      "sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-1.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.json",
+      "bytes": 900,
+      "sha256": "f72250f0985d0f9a6e1b2ab718dcd68bf206222a83e4513b541306724fcb432d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.stdout.log",
+      "bytes": 9613,
+      "sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/adapter-2.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.json",
+      "bytes": 743,
+      "sha256": "0fa6a061da93bde6e55d32f8d8cff9ca0e9c2425e0e34aecf2805e22f60420e6"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/enumeration.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/gpu-host-1/host-results.json",
+      "bytes": 55784,
+      "sha256": "2afd2c6a6621b972a2773765fedbb61a95f95c430a142bf863c5b2e0fd60c642"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-0.stdout.log",
+      "bytes": 3854,
+      "sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-1.stdout.log",
+      "bytes": 3854,
+      "sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/adapter-2.stdout.log",
+      "bytes": 3854,
+      "sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/original-host-1/host-results.json",
+      "bytes": 14526,
+      "sha256": "987b22d57ff6f83d35130859f900f4ec7bbcc1b6d30cec561fc29583a2ea75b7"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/python-source-final.json",
+      "bytes": 1359,
+      "sha256": "ff092ba044b39e82e1f7f1881444a6e3495ab7b5db1983fe58e7175d03e723a7"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-candidate-3/rust-source-freeze.json",
+      "bytes": 2426875,
+      "sha256": "1da9a9e5c6778382c41a77935c19e1fcfaef5852c8666c528eeef9324e52057a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-contract-transcription-review.json",
+      "bytes": 1900,
+      "sha256": "799c75da5ebf5ddf4af4bf021fc07b7424c09111f7b897b5ba99e5a757663c55"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/README.md",
+      "bytes": 4438,
+      "sha256": "6fc0cf3a237fba73e4316603fbd1ce3439c575bcea7c35d13fe202ec9d2f5ea3"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/font-inventory.json",
+      "bytes": 23408,
+      "sha256": "ecb63ecb6ea172278eaed57acc4fe5f27ce6a8c4567aa35392be4fe7511cf7c1"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/font_inventory.rs",
+      "bytes": 21064,
+      "sha256": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/freeze.json",
+      "bytes": 4749,
+      "sha256": "934ab6a31d3640f8cb29c849d2742cb4ac42f84399bf67c09078f70ec7459778"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-fixtures.json",
+      "bytes": 58134,
+      "sha256": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/absolute-origins-ignore-offset.rgb24",
+      "bytes": 45,
+      "sha256": "2ec0b918aac87995c232dd172cd15a047f172cae1cf10f3e7f7b63e29c4234c7"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/coverage-alpha-floor.rgb24",
+      "bytes": 72,
+      "sha256": "3fb6dfa034589327d165025214583329bd3814c34b39772e24f4fb26edd2dbdb"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/dispatch-tail-9x9.rgb24",
+      "bytes": 243,
+      "sha256": "eeee5a8624552d4ce1719c572b9ebb766c564703148716efc417ab5cbc99e15a"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/empty-zero-coverage-and-alpha.rgb24",
+      "bytes": 18,
+      "sha256": "f19fd9d10e4039b0f6c74562b0e99e2aa59cf2fbfe63d3007bf76941345f1b46"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/fixed-escape-and-restoration.rgb24",
+      "bytes": 72,
+      "sha256": "72810ddf3241e94dea01107e8bc3a8bdc4f991b65e9eb36cc3ca8c3883f0d3ae"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/fractional-clip-both-edges.rgb24",
+      "bytes": 45,
+      "sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/interleaved-rect-image.rgb24",
+      "bytes": 24,
+      "sha256": "c205f801690c1b719726ad38dce37d9c8db80f7d085782f4ad179b0a657ff182"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/ordered-overlap.rgb24",
+      "bytes": 36,
+      "sha256": "7454d69fd1ec210b33f5d883eb6162c99e9010de32e45338376e5e47d0ffe697"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/repeated-low-alpha.rgb24",
+      "bytes": 3,
+      "sha256": "79d95b7f2e0c9f6bd91827e6a281f67e21e07fa4a025c7ccf9c93025f3156c04"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/signed-i32-extremes.rgb24",
+      "bytes": 27,
+      "sha256": "1003ca8baa9f802c6847ac30e6e0ee1d25e9447d7e82fec20ee00aa1df74ce1e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/signed-row-origins-and-y.rgb24",
+      "bytes": 36,
+      "sha256": "590ed21c4e3c8174274b49cd43be4f76a9bd85b7ad2a6af75d3a22d7f4e75738"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal-rgb/varying-row-origins.rgb24",
+      "bytes": 48,
+      "sha256": "fb1c0418ccd5e3d260618cd26d473d4b9cbd1236695cec8e2adae8b983239c6c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/literal_inventory.rs",
+      "bytes": 23628,
+      "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/metadata/facts.json",
+      "bytes": 136925,
+      "sha256": "2f50612404e6ff623db72496fa74dc52f2a68bfce455f2c2fa708d0c52173e5e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/metadata/final-freeze.json",
+      "bytes": 882,
+      "sha256": "09548ffadf036c5a3941ddf55253cd1e3f02391210a14e9a01c28b2f3a5b7d85"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/metadata/source-provenance.json",
+      "bytes": 4520,
+      "sha256": "372a2c2ddaa61724b21c8356e4220b07a3c9ba379dc831d62c6f9b566a6dd6b2"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-bitmap-quantum-boundary.rgb",
+      "bytes": 24576,
+      "sha256": "b9f038af4b6360add819d450b2d1e9eeb86a078cb215b27f8ef1e78654ddd810"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-bold-translucent.rgb",
+      "bytes": 24576,
+      "sha256": "19b49c8abecde5f674a3aec0c63a3eec67d569a1049778932f61e62432ddc49f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-composite-unicode.rgb",
+      "bytes": 24576,
+      "sha256": "c3e48f00f76c89f4fbbd6f5ac6eb69997b689b665ec4842f6be2c7254a65176e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-fixed-clip-image-order.rgb",
+      "bytes": 24576,
+      "sha256": "bd188a01b46e098fd55e47d78a517cf819ff4ebc7dab8242f1ebd1b2ed21c71d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-italic-negative-bearing.rgb",
+      "bytes": 24576,
+      "sha256": "36f187fbb057986d4ab3c5a7ad7bd55822071464d3f5fee422eccf7d0f69dded"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-missing-bold.rgb",
+      "bytes": 24576,
+      "sha256": "922d5b18e917bc1d9e7ecd899a1581ca565b76d19f13cbe4ec820b1036c2cf70"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-missing-mono.rgb",
+      "bytes": 24576,
+      "sha256": "1f369fe2fecbb8275cc9efef86b94ba696bdb18cbc6c2338d45432841fdfc846"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-missing-regular.rgb",
+      "bytes": 24576,
+      "sha256": "e6d65914d1179468b0dad80678125ee3633b0461467277a2dcb1494f8db87635"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-mono-bold-precedence.rgb",
+      "bytes": 24576,
+      "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-mono-no-kern.rgb",
+      "bytes": 24576,
+      "sha256": "3058c5193ab88ad6c93194845ae2e2575f8b6aab75d89243cdb96281648d8f0d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-regular-kern-av-to.rgb",
+      "bytes": 24576,
+      "sha256": "d9bd9eb34f0482e922fe3d612a0c1d6418962ffb0c5ec74c063da8c997f3091b"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-shared-bitmap-quantum.rgb",
+      "bytes": 24576,
+      "sha256": "0211635cf6bd032cae4a54c383e943acdc82400b0a9d862bc029835b429f3c99"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-space-zero-advance.rgb",
+      "bytes": 24576,
+      "sha256": "763c17d2397f6a204d6160ac6d67c9c25fbd65c217c874666aa20c600c042bba"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/font-subpixel-rounding.rgb",
+      "bytes": 24576,
+      "sha256": "a113299b07088f266f4d9c7f3c49da8ffa83ecfc1851ebbfeece446f9305d36c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-baselines/freeze.json",
+      "bytes": 2433,
+      "sha256": "da746d8cab49544a4294139b0a651ed018fa4913bd3210a4e19f9464cfa31d5b"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-source-freeze.json",
+      "bytes": 14763,
+      "sha256": "2135a8d746d35316b974398d7871b2e103c66c5d50c57a6d741291fc7932082f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/parent-source.tar",
+      "bytes": 5898240,
+      "sha256": "8acfd3a7cfd109cc327c6534707ac7e5069dcb6026157df5ddf819d680af5901"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/preparation-summary.json",
+      "bytes": 261,
+      "sha256": "49640ce99244d4ef220809ab7113a9f2080e0143e7709a71d48044241bfef99d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/prepare.py",
+      "bytes": 20784,
+      "sha256": "a1b799c87d31fda2d69f9b62c0b8010d0875f1f990a928c528dde7a9394bd3c7"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/reference-build.log",
+      "bytes": 4881,
+      "sha256": "dd543bcea2bcf5d8e99d5bc6b508576f15d40df2e4ff639ce8bec43343ee77bb"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/reference-result.json",
+      "bytes": 668,
+      "sha256": "c44418ef3217939650e78c8b4f168268254ea70de4f3242e35cd35821252944d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.json",
+      "bytes": 805,
+      "sha256": "b3964e5107db02ad6e8fdd063b7dfcb45057cec16baa1c0847764e1801539292"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.stdout.log",
+      "bytes": 1861,
+      "sha256": "1905af31c76e43e3589ad4cd356ba5152ebb147cc28b724cd1b4e164f3f549cf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/reference-run-1/reference.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/transcription-review.json",
+      "bytes": 1581,
+      "sha256": "7f143667cd9ceeb560db2d0e4f939f752266ee492944b3f5ee359e296f963c55"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-fixtures/verify_transcription.py",
+      "bytes": 6014,
+      "sha256": "2ea9f6fc930d3c19553182accf488a479cacce23613602213647f133f618ff12"
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-reference-target/debug/glyph-reference",
+      "bytes": 95712904,
+      "sha256": "8cb5837ae4ad899f11875919005c156b5c393ccec2986f499782c73834151fd7"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "authorization": "root authorized one utility compile and one offline glyph-only Naga validation; no GPU/engine",
+  "naga_version": "30.0.1",
+  "inputs": [
+    {
+      "path": "/tmp/eris-vulkan-glyph-shader-validation/validate_wgsl.rs",
+      "sha256": "73007afb93836394fb5d6b889d0766913381369c4be17e1c12144b7ed650ce12",
+      "bytes": 970
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-shader-validation/glyph.wgsl",
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "bytes": 3578
+    },
+    {
+      "path": "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sha256": "3167c4f49785f5048591fb3eb4745ccee0732ff4e01602d43b4e86af7ea7bca3",
+      "bytes": 649136
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-c23d5d5c4611f5f2.rlib",
+      "sha256": "d75103aa0edc3b24d140adb65c096e8177f56c6f42991a0040f79934743fc0c4",
+      "bytes": 28879212
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/.fingerprint/naga-c23d5d5c4611f5f2/lib-naga.json",
+      "sha256": "95a06ac96ea9cb9d924902963ee03c93349dd40fc9df6adf404e200987854bee",
+      "bytes": 1743
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/naga-c23d5d5c4611f5f2.d",
+      "sha256": "45694a2db89747be48c5812d90d90fcbbd8895844352ae0fd071e356d620c5d4",
+      "bytes": 45638
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/Cargo.lock",
+      "sha256": "c3ec1b8cecc74528ecb7e183cc782933124b879a7201e1978bce18ee046dd9d3",
+      "bytes": 81429
+    }
+  ],
+  "steps": [
+    {
+      "name": "toolchain",
+      "command": [
+        "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+        "--version",
+        "--verbose"
+      ],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.007342337048612535,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-glyph-shader-validation/toolchain.stdout.log",
+        "sha256": "3975d062e234a9f3921955bf6ae5b90f5819df94fa825d057f76b34a35ed0f4d",
+        "bytes": 196
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-glyph-shader-validation/toolchain.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "compile",
+      "command": [
+        "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+        "--edition=2024",
+        "/tmp/eris-vulkan-glyph-shader-validation/validate_wgsl.rs",
+        "--extern",
+        "naga=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-c23d5d5c4611f5f2.rlib",
+        "-L",
+        "dependency=/tmp/eris-vulkan-raster-prototype/target-198/debug/deps",
+        "-o",
+        "/tmp/eris-vulkan-glyph-shader-validation/validate_wgsl"
+      ],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.11335476499516517,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-glyph-shader-validation/compile.stdout.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-glyph-shader-validation/compile.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "name": "validate",
+      "command": [
+        "/tmp/eris-vulkan-glyph-shader-validation/validate_wgsl"
+      ],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.007287714048288763,
+      "stdout": {
+        "path": "/tmp/eris-vulkan-glyph-shader-validation/validate.stdout.log",
+        "sha256": "2e9d817e772de41bed9fe72d33e24431341709a98c79fb7bb7bc5f194c1383ef",
+        "bytes": 164
+      },
+      "stderr": {
+        "path": "/tmp/eris-vulkan-glyph-shader-validation/validate.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    }
+  ],
+  "validator_binary": {
+    "path": "/tmp/eris-vulkan-glyph-shader-validation/validate_wgsl",
+    "sha256": "ba0d8250f178633672f8207cf1c6950430496ee937d02c447060b4f99b4fa6d9",
+    "bytes": 10957456
+  },
+  "success": true,
+  "shader_after": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/src/glyph.wgsl",
+    "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+    "bytes": 3578
+  },
+  "source_unchanged": true,
+  "old_shader_validation": "Not repeated: rect.wgsl and image.wgsl remain byte-identical; reuse published prior validation."
+}

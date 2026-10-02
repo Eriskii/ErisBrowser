@@ -291,6 +291,9 @@ fn interpret(p: &Plan) -> Vec<u32> {
         for dy in 0..height {
             for dx in 0..width {
                 let color = match draw.kind() {
+                    DrawKind::Glyph => {
+                        panic!("legacy image interpreter does not accept glyph plans")
+                    }
                     DrawKind::Rectangle => read(6),
                     DrawKind::Image => {
                         let (source, sw, sh, count) = (read(8), read(9), read(10), read(11));

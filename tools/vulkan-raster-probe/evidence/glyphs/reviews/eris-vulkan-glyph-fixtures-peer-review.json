@@ -1,0 +1,87 @@
+{
+  "scope": "Read-only independent arithmetic/data/source review, no candidate/font/planner/Canvas execution",
+  "input_hashes": {
+    "/tmp/eris-vulkan-glyph-fixtures/prepare.py": "a1b799c87d31fda2d69f9b62c0b8010d0875f1f990a928c528dde7a9394bd3c7",
+    "/tmp/eris-vulkan-glyph-fixtures/literal-fixtures.json": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa",
+    "/tmp/eris-vulkan-glyph-fixtures/literal_inventory.rs": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8",
+    "/tmp/eris-vulkan-glyph-fixtures/font-inventory.json": "ecb63ecb6ea172278eaed57acc4fe5f27ce6a8c4567aa35392be4fe7511cf7c1",
+    "/tmp/eris-vulkan-glyph-fixtures/font_inventory.rs": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd",
+    "/tmp/eris-vulkan-glyph-fixtures/parent-source-freeze.json": "2135a8d746d35316b974398d7871b2e103c66c5d50c57a6d741291fc7932082f",
+    "/tmp/eris-vulkan-glyph-fixtures/reference-parent/src/bin/glyph-reference.rs": "cd6b38f2ebccba7c462a12086875076b4a5b086d46e72be40cf307e17508fb4c"
+  },
+  "literal_rows": [
+    {
+      "name": "coverage-alpha-floor",
+      "pixels": 24,
+      "rgb24_sha256": "3fb6dfa034589327d165025214583329bd3814c34b39772e24f4fb26edd2dbdb"
+    },
+    {
+      "name": "ordered-overlap",
+      "pixels": 12,
+      "rgb24_sha256": "7454d69fd1ec210b33f5d883eb6162c99e9010de32e45338376e5e47d0ffe697"
+    },
+    {
+      "name": "repeated-low-alpha",
+      "pixels": 1,
+      "rgb24_sha256": "79d95b7f2e0c9f6bd91827e6a281f67e21e07fa4a025c7ccf9c93025f3156c04"
+    },
+    {
+      "name": "interleaved-rect-image",
+      "pixels": 8,
+      "rgb24_sha256": "c205f801690c1b719726ad38dce37d9c8db80f7d085782f4ad179b0a657ff182"
+    },
+    {
+      "name": "signed-row-origins-and-y",
+      "pixels": 12,
+      "rgb24_sha256": "590ed21c4e3c8174274b49cd43be4f76a9bd85b7ad2a6af75d3a22d7f4e75738"
+    },
+    {
+      "name": "varying-row-origins",
+      "pixels": 16,
+      "rgb24_sha256": "fb1c0418ccd5e3d260618cd26d473d4b9cbd1236695cec8e2adae8b983239c6c"
+    },
+    {
+      "name": "fractional-clip-both-edges",
+      "pixels": 15,
+      "rgb24_sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023"
+    },
+    {
+      "name": "fixed-escape-and-restoration",
+      "pixels": 24,
+      "rgb24_sha256": "72810ddf3241e94dea01107e8bc3a8bdc4f991b65e9eb36cc3ca8c3883f0d3ae"
+    },
+    {
+      "name": "absolute-origins-ignore-offset",
+      "pixels": 15,
+      "rgb24_sha256": "2ec0b918aac87995c232dd172cd15a047f172cae1cf10f3e7f7b63e29c4234c7"
+    },
+    {
+      "name": "empty-zero-coverage-and-alpha",
+      "pixels": 6,
+      "rgb24_sha256": "f19fd9d10e4039b0f6c74562b0e99e2aa59cf2fbfe63d3007bf76941345f1b46"
+    },
+    {
+      "name": "signed-i32-extremes",
+      "pixels": 9,
+      "rgb24_sha256": "1003ca8baa9f802c6847ac30e6e0ee1d25e9447d7e82fec20ee00aa1df74ce1e"
+    },
+    {
+      "name": "dispatch-tail-9x9",
+      "pixels": 81,
+      "rgb24_sha256": "eeee5a8624552d4ce1719c572b9ebb766c564703148716efc417ab5cbc99e15a"
+    }
+  ],
+  "literal_rust_exact": true,
+  "font_input_rust_exact": true,
+  "font_inputs": 14,
+  "all_parent_files_verified": 91,
+  "cap_arithmetic": true,
+  "findings": [],
+  "notes": [
+    "Destination-oriented per-cell arithmetic independently recomputed all223 pixels; exact integer endpoint clipping covers all supplied half-integer/integer geometry.",
+    "Rust source-data decoder compared every fixture field, source cell, row origin, command, literal target and source f32 value, without compiling or evaluating Rust.",
+    "Harness source statically checked: preserved parent-only eris dependency, fresh output directory/create_new files, independent fresh Fonts per fixture, two original Canvas passes compared cold/warm, exhausted/high-byte refusal, every pixel written u32 little-endian.",
+    "No actual-font pixels have been produced or judged by this review.",
+    "Preparation-only checks stopped first on the in-flight expected_rgb24 field rename, then on this independent decoder treating literal Glyph.y as f32. Type-aware decoding fixed the checker; no fixture/pixel/oracle bytes changed or mismatch was normalized."
+  ]
+}

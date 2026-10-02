@@ -1,0 +1,10 @@
+   Compiling eris-vulkan-raster-prototype v0.0.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe)
+    Finished `test` profile [unoptimized] target(s) in 1.36s
+     Running tests/glyph_contracts.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/glyph_contracts-5499a994cd06c953)
+
+running 2 tests
+test frozen_refusal_inventory_covers_nineteen_recipes_and_six_culling_variants ... ok
+test frozen_positive_inventory_covers_all_three_exact_cap_plans ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

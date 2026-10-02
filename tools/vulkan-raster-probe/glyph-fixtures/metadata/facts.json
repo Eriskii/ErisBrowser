@@ -1,0 +1,5012 @@
+{
+  "schema": 1,
+  "scope": "Audited bundled-font input facts only; not mask/pixel goldens or a selected fixture inventory.",
+  "parent": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+  "fonts": [
+    {
+      "font": "assets/DejaVuSans.ttf",
+      "bytes": 759676,
+      "sha256": "58568c88a01b80dfc056daca3eeafd434a0380df1a48dda53f0de0d716109bbd",
+      "units_per_em": 2048,
+      "glyph_count": 6253,
+      "number_of_hmetrics": 6238,
+      "head_declared_bbox": [
+        -2090,
+        -948,
+        3673,
+        2524
+      ],
+      "hhea": {
+        "ascender": 1901,
+        "descender": -483,
+        "line_gap": 0
+      },
+      "loca_format": 1,
+      "declared_maxp": {
+        "numGlyphs": 6253,
+        "maxPoints": 852,
+        "maxContours": 43,
+        "maxCompositePoints": 104,
+        "maxCompositeContours": 12,
+        "maxZones": 2,
+        "maxTwilightPoints": 16,
+        "maxStorage": 153,
+        "maxFunctionDefs": 8,
+        "maxInstructionDefs": 0,
+        "maxStackElements": 1045,
+        "maxSizeOfInstructions": 534,
+        "maxComponentElements": 8,
+        "maxComponentDepth": 4
+      },
+      "global_record_observations": {
+        "class_counts": {
+          "empty-loca": 63,
+          "zero-contours": 0,
+          "simple": 3583,
+          "composite": 2607
+        },
+        "component_graph_acyclic": true,
+        "max_simple_points": {
+          "value": 852,
+          "glyph_ids": [
+            3803
+          ]
+        },
+        "max_simple_contours": {
+          "value": 43,
+          "glyph_ids": [
+            3497
+          ]
+        },
+        "max_component_records": {
+          "value": 8,
+          "glyph_ids": [
+            4443
+          ]
+        },
+        "max_component_graph_depth": {
+          "value": 4,
+          "glyph_ids": [
+            2670,
+            2671,
+            2672,
+            2673,
+            2678,
+            2679,
+            2680,
+            2681,
+            2686,
+            2687,
+            2688,
+            2689,
+            2694,
+            2695,
+            2696,
+            2697,
+            2702,
+            2703,
+            2704,
+            2705,
+            2710,
+            2711,
+            2712,
+            2713
+          ]
+        },
+        "max_instruction_bytes": {
+          "value": 534,
+          "glyph_ids": [
+            2990
+          ]
+        },
+        "max_glyf_record_bytes": {
+          "value": 2276,
+          "glyph_ids": [
+            3803
+          ]
+        },
+        "component_references": 5524,
+        "component_point_alignment_records": 0,
+        "per_glyph_metadata_canonical_sha256": "1fbb18bd42abb61fc4c3c0c35b10322697a407b65392156d67bdc67eb93d2fbe"
+      },
+      "table_inventory": [
+        {
+          "tag": "GDEF",
+          "offset": 316,
+          "bytes": 658,
+          "directory_checksum": "8eec94c3",
+          "sha256": "0a7017ecf3ae8bff4441bd6aea721fb435602240707b48592756424817f13e9b"
+        },
+        {
+          "tag": "GPOS",
+          "offset": 976,
+          "bytes": 40586,
+          "directory_checksum": "5680c435",
+          "sha256": "0c7e4d2914e5fa09454e6fbfadb8c9f249309495563be80c94223a306a892c1b"
+        },
+        {
+          "tag": "GSUB",
+          "offset": 41564,
+          "bytes": 5598,
+          "directory_checksum": "c1d04059",
+          "sha256": "f795122722ca922dbbd0fd2589ba5b29f3dea94d1b9c7548ea296aca156fe05c"
+        },
+        {
+          "tag": "MATH",
+          "offset": 47164,
+          "bytes": 1598,
+          "directory_checksum": "a732387d",
+          "sha256": "dad6ba691d14c267fd5ef7273da5c5c8c0c8895be4839d62b43472e8ba438dae"
+        },
+        {
+          "tag": "OS/2",
+          "offset": 48764,
+          "bytes": 86,
+          "directory_checksum": "592d762d",
+          "sha256": "e791b61a6bf40330c026fab5c2e96207015af2e04dfc7aa017068a2cf5cc7f80"
+        },
+        {
+          "tag": "cmap",
+          "offset": 48852,
+          "bytes": 7056,
+          "directory_checksum": "f209532d",
+          "sha256": "dfec2c792bb68be22107cfeb5533008d8117681444e6b354225028617099a2ab"
+        },
+        {
+          "tag": "cvt ",
+          "offset": 55908,
+          "bytes": 510,
+          "directory_checksum": "00691d39",
+          "sha256": "857075c3f367703a43b3eebc0badf2a3d0050c6314cbbb837b5b4ee1c5fb5158"
+        },
+        {
+          "tag": "fpgm",
+          "offset": 56420,
+          "bytes": 171,
+          "directory_checksum": "7134766a",
+          "sha256": "ef2bbb131b050c024c54eba425c900bb97f2f0f5a54258d9cebf1bb139bf28f5"
+        },
+        {
+          "tag": "gasp",
+          "offset": 56592,
+          "bytes": 12,
+          "directory_checksum": "00070007",
+          "sha256": "fa3a38cf37ba7443e57d44732c9e63082d42f317a72ad001974ebcd1c9b41e6e"
+        },
+        {
+          "tag": "glyf",
+          "offset": 56604,
+          "bytes": 557508,
+          "directory_checksum": "07202840",
+          "sha256": "de115e9eeddd536a7aee64af0a88e94578c6f68eeb23796cd7f195722eb0b3f5"
+        },
+        {
+          "tag": "head",
+          "offset": 614112,
+          "bytes": 54,
+          "directory_checksum": "834c56de",
+          "sha256": "acc2698ebf3d40e812257aac0fbab83c18b3e119748b928e56c6fe29d4362ff7"
+        },
+        {
+          "tag": "hhea",
+          "offset": 614168,
+          "bytes": 36,
+          "directory_checksum": "0d9f1fcb",
+          "sha256": "9854cac171ad717f4ba9b2844e4e7f93fbaaf44e91b5591f206a54d7ecc22c3a"
+        },
+        {
+          "tag": "hmtx",
+          "offset": 614204,
+          "bytes": 24982,
+          "directory_checksum": "25a2dbe7",
+          "sha256": "06af7653a940be8b7cced2eeba4686321b77015d39d9d6e02949008671dc9e86"
+        },
+        {
+          "tag": "kern",
+          "offset": 639188,
+          "bytes": 16380,
+          "directory_checksum": "0c99083b",
+          "sha256": "93682eebd3413472a4275629d6dc80afdc4d1f752756fde7fe6c079d365124e2"
+        },
+        {
+          "tag": "loca",
+          "offset": 655568,
+          "bytes": 25016,
+          "directory_checksum": "612061cc",
+          "sha256": "f52ee9e0aa53c147f0237cc921a4be3daafc3f29d25a53afe554fe844525ee5f"
+        },
+        {
+          "tag": "maxp",
+          "offset": 680584,
+          "bytes": 32,
+          "directory_checksum": "1cda0671",
+          "sha256": "521f0038f423e2e965a7281a82bbba828e336aa756e12079991bcd7cde9fe04f"
+        },
+        {
+          "tag": "name",
+          "offset": 680616,
+          "bytes": 15624,
+          "directory_checksum": "1f6f4da3",
+          "sha256": "3263a385f444770906587b2d5275354a9ef31d7dfc92ddb3b41d57d1ea0a5ac1"
+        },
+        {
+          "tag": "post",
+          "offset": 696240,
+          "bytes": 62052,
+          "directory_checksum": "49229654",
+          "sha256": "52104a42034ff065f010a334ccc411d44697674e9ba1f47adf7f4f76a1402953"
+        },
+        {
+          "tag": "prep",
+          "offset": 758292,
+          "bytes": 1384,
+          "directory_checksum": "3b07f100",
+          "sha256": "a683d604aab58b8d6d7fe4ce1c705836f24ae85e3bcb91691bb5cb6e4407b96c"
+        }
+      ],
+      "cmap_records": [
+        {
+          "record": 0,
+          "platform": 0,
+          "encoding": 3,
+          "format": 4,
+          "offset": 44,
+          "bytes": 3102,
+          "sha256": "de1f00d6c51934a0c6300d04d1a1582472dc8252f68421ce851923556af281b8",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 1,
+          "platform": 0,
+          "encoding": 4,
+          "format": 12,
+          "offset": 3146,
+          "bytes": 3388,
+          "sha256": "033372f9448ef59581c499aa6a437be0c437f092d6fbc4a9a9f1a0b8b471acaa",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 2,
+          "platform": 1,
+          "encoding": 0,
+          "format": 6,
+          "offset": 6534,
+          "bytes": 522,
+          "sha256": "53cd9a6b9db44e6cc3bd6df0f947b97d44c62b9f697d0e008e33a6fc64cd70de",
+          "used_by_pinned_unicode_selection": false
+        },
+        {
+          "record": 3,
+          "platform": 3,
+          "encoding": 1,
+          "format": 4,
+          "offset": 44,
+          "bytes": 3102,
+          "sha256": "de1f00d6c51934a0c6300d04d1a1582472dc8252f68421ce851923556af281b8",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 4,
+          "platform": 3,
+          "encoding": 10,
+          "format": 12,
+          "offset": 3146,
+          "bytes": 3388,
+          "sha256": "033372f9448ef59581c499aa6a437be0c437f092d6fbc4a9a9f1a0b8b471acaa",
+          "used_by_pinned_unicode_selection": true
+        }
+      ],
+      "sampled_codepoints": [
+        {
+          "codepoint": "U+0020",
+          "character": " ",
+          "mapped_glyph_id": 3,
+          "effective_ab_glyph_id": 3,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 3
+            },
+            {
+              "record": 1,
+              "glyph_id": 3
+            },
+            {
+              "record": 3,
+              "glyph_id": 3
+            },
+            {
+              "record": 4,
+              "glyph_id": 3
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 3,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 651,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+200D",
+          "character": "\u200d",
+          "mapped_glyph_id": 2800,
+          "effective_ab_glyph_id": 2800,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 2800
+            },
+            {
+              "record": 1,
+              "glyph_id": 2800
+            },
+            {
+              "record": 3,
+              "glyph_id": 2800
+            },
+            {
+              "record": 4,
+              "glyph_id": 2800
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 2800,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 0,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+10FFFF",
+          "character": "\udbff\udfff",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 68,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 26,
+            "declared_bbox": [
+              102,
+              -362,
+              1126,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 68,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1229,
+          "left_side_bearing_font_units": 102,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0041",
+          "character": "A",
+          "mapped_glyph_id": 36,
+          "effective_ab_glyph_id": 36,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 36
+            },
+            {
+              "record": 1,
+              "glyph_id": 36
+            },
+            {
+              "record": 3,
+              "glyph_id": 36
+            },
+            {
+              "record": 4,
+              "glyph_id": 36
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 36,
+            "bytes": 252,
+            "components": [],
+            "points": 11,
+            "contours": 2,
+            "instructions_bytes": 194,
+            "declared_bbox": [
+              16,
+              0,
+              1384,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 29,
+            "parsed_record_bytes": 250,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1401,
+          "left_side_bearing_font_units": 16,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0056",
+          "character": "V",
+          "mapped_glyph_id": 57,
+          "effective_ab_glyph_id": 57,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 57
+            },
+            {
+              "record": 1,
+              "glyph_id": 57
+            },
+            {
+              "record": 3,
+              "glyph_id": 57
+            },
+            {
+              "record": 4,
+              "glyph_id": 57
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 57,
+            "bytes": 224,
+            "components": [],
+            "points": 7,
+            "contours": 1,
+            "instructions_bytes": 183,
+            "declared_bbox": [
+              16,
+              0,
+              1384,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 20,
+            "parsed_record_bytes": 224,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1401,
+          "left_side_bearing_font_units": 16,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0054",
+          "character": "T",
+          "mapped_glyph_id": 55,
+          "effective_ab_glyph_id": 55,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 55
+            },
+            {
+              "record": 1,
+              "glyph_id": 55
+            },
+            {
+              "record": 3,
+              "glyph_id": 55
+            },
+            {
+              "record": 4,
+              "glyph_id": 55
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 55,
+            "bytes": 112,
+            "components": [],
+            "points": 8,
+            "contours": 1,
+            "instructions_bytes": 74,
+            "declared_bbox": [
+              -6,
+              0,
+              1257,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 15,
+            "parsed_record_bytes": 111,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1251,
+          "left_side_bearing_font_units": -6,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+006F",
+          "character": "o",
+          "mapped_glyph_id": 82,
+          "effective_ab_glyph_id": 82,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 82
+            },
+            {
+              "record": 1,
+              "glyph_id": 82
+            },
+            {
+              "record": 3,
+              "glyph_id": 82
+            },
+            {
+              "record": 4,
+              "glyph_id": 82
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 82,
+            "bytes": 164,
+            "components": [],
+            "points": 24,
+            "contours": 2,
+            "instructions_bytes": 74,
+            "declared_bbox": [
+              113,
+              -29,
+              1141,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 48,
+            "parsed_record_bytes": 162,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1253,
+          "left_side_bearing_font_units": 113,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0061",
+          "character": "a",
+          "mapped_glyph_id": 68,
+          "effective_ab_glyph_id": 68,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 68
+            },
+            {
+              "record": 1,
+              "glyph_id": 68
+            },
+            {
+              "record": 3,
+              "glyph_id": 68
+            },
+            {
+              "record": 4,
+              "glyph_id": 68
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 68,
+            "bytes": 300,
+            "components": [],
+            "points": 38,
+            "contours": 2,
+            "instructions_bytes": 188,
+            "declared_bbox": [
+              123,
+              -29,
+              1069,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 57,
+            "parsed_record_bytes": 299,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1255,
+          "left_side_bearing_font_units": 123,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0057",
+          "character": "W",
+          "mapped_glyph_id": 58,
+          "effective_ab_glyph_id": 58,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 58
+            },
+            {
+              "record": 1,
+              "glyph_id": 58
+            },
+            {
+              "record": 3,
+              "glyph_id": 58
+            },
+            {
+              "record": 4,
+              "glyph_id": 58
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 58,
+            "bytes": 444,
+            "components": [],
+            "points": 13,
+            "contours": 1,
+            "instructions_bytes": 379,
+            "declared_bbox": [
+              68,
+              0,
+              1958,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 36,
+            "parsed_record_bytes": 442,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2025,
+          "left_side_bearing_font_units": 68,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0059",
+          "character": "Y",
+          "mapped_glyph_id": 60,
+          "effective_ab_glyph_id": 60,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 60
+            },
+            {
+              "record": 1,
+              "glyph_id": 60
+            },
+            {
+              "record": 3,
+              "glyph_id": 60
+            },
+            {
+              "record": 4,
+              "glyph_id": 60
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 60,
+            "bytes": 196,
+            "components": [],
+            "points": 9,
+            "contours": 1,
+            "instructions_bytes": 148,
+            "declared_bbox": [
+              -4,
+              0,
+              1255,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 22,
+            "parsed_record_bytes": 193,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1251,
+          "left_side_bearing_font_units": -4,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0066",
+          "character": "f",
+          "mapped_glyph_id": 73,
+          "effective_ab_glyph_id": 73,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 73
+            },
+            {
+              "record": 1,
+              "glyph_id": 73
+            },
+            {
+              "record": 3,
+              "glyph_id": 73
+            },
+            {
+              "record": 4,
+              "glyph_id": 73
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 73,
+            "bytes": 152,
+            "components": [],
+            "points": 20,
+            "contours": 1,
+            "instructions_bytes": 89,
+            "declared_bbox": [
+              47,
+              0,
+              760,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 29,
+            "parsed_record_bytes": 152,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 721,
+          "left_side_bearing_font_units": 47,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0069",
+          "character": "i",
+          "mapped_glyph_id": 76,
+          "effective_ab_glyph_id": 76,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 76
+            },
+            {
+              "record": 1,
+              "glyph_id": 76
+            },
+            {
+              "record": 3,
+              "glyph_id": 76
+            },
+            {
+              "record": 4,
+              "glyph_id": 76
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 76,
+            "bytes": 80,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 43,
+            "declared_bbox": [
+              193,
+              0,
+              377,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 12,
+            "parsed_record_bytes": 79,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 569,
+          "left_side_bearing_font_units": 193,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+006A",
+          "character": "j",
+          "mapped_glyph_id": 77,
+          "effective_ab_glyph_id": 77,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 77
+            },
+            {
+              "record": 1,
+              "glyph_id": 77
+            },
+            {
+              "record": 3,
+              "glyph_id": 77
+            },
+            {
+              "record": 4,
+              "glyph_id": 77
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 77,
+            "bytes": 124,
+            "components": [],
+            "points": 16,
+            "contours": 2,
+            "instructions_bytes": 68,
+            "declared_bbox": [
+              -37,
+              -426,
+              377,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 22,
+            "parsed_record_bytes": 122,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 569,
+          "left_side_bearing_font_units": -37,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0067",
+          "character": "g",
+          "mapped_glyph_id": 74,
+          "effective_ab_glyph_id": 74,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 74
+            },
+            {
+              "record": 1,
+              "glyph_id": 74
+            },
+            {
+              "record": 3,
+              "glyph_id": 74
+            },
+            {
+              "record": 4,
+              "glyph_id": 74
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 74,
+            "bytes": 200,
+            "components": [],
+            "points": 41,
+            "contours": 2,
+            "instructions_bytes": 74,
+            "declared_bbox": [
+              113,
+              -426,
+              1114,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 68,
+            "parsed_record_bytes": 199,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1300,
+          "left_side_bearing_font_units": 113,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0079",
+          "character": "y",
+          "mapped_glyph_id": 92,
+          "effective_ab_glyph_id": 92,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 92
+            },
+            {
+              "record": 1,
+              "glyph_id": 92
+            },
+            {
+              "record": 3,
+              "glyph_id": 92
+            },
+            {
+              "record": 4,
+              "glyph_id": 92
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 92,
+            "bytes": 460,
+            "components": [],
+            "points": 16,
+            "contours": 1,
+            "instructions_bytes": 395,
+            "declared_bbox": [
+              61,
+              -426,
+              1151,
+              1120
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 32,
+            "parsed_record_bytes": 457,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1212,
+          "left_side_bearing_font_units": 61,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+00A0",
+          "character": "\u00a0",
+          "mapped_glyph_id": 98,
+          "effective_ab_glyph_id": 98,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 98
+            },
+            {
+              "record": 1,
+              "glyph_id": 98
+            },
+            {
+              "record": 3,
+              "glyph_id": 98
+            },
+            {
+              "record": 4,
+              "glyph_id": 98
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 98,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 651,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+00E9",
+          "character": "\u00e9",
+          "mapped_glyph_id": 171,
+          "effective_ab_glyph_id": 171,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 171
+            },
+            {
+              "record": 1,
+              "glyph_id": 171
+            },
+            {
+              "record": 3,
+              "glyph_id": 171
+            },
+            {
+              "record": 4,
+              "glyph_id": 171
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 171,
+            "bytes": 24,
+            "components": [
+              {
+                "glyph_id": 72,
+                "flags": 4646,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              },
+              {
+                "glyph_id": 118,
+                "flags": 4103,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              }
+            ],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              113,
+              -29,
+              1151,
+              1638
+            ],
+            "kind": "composite",
+            "parsed_record_bytes": 24,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 1,
+          "advance_width_font_units": 1260,
+          "left_side_bearing_font_units": 113,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0301",
+          "character": "\u0301",
+          "mapped_glyph_id": 690,
+          "effective_ab_glyph_id": 690,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 690
+            },
+            {
+              "record": 1,
+              "glyph_id": 690
+            },
+            {
+              "record": 3,
+              "glyph_id": 690
+            },
+            {
+              "record": 4,
+              "glyph_id": 690
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 690,
+            "bytes": 88,
+            "components": [],
+            "points": 5,
+            "contours": 2,
+            "instructions_bytes": 54,
+            "declared_bbox": [
+              -655,
+              1147,
+              -176,
+              1638
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 12,
+            "parsed_record_bytes": 87,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 0,
+          "left_side_bearing_font_units": -655,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+03A9",
+          "character": "\u03a9",
+          "mapped_glyph_id": 830,
+          "effective_ab_glyph_id": 830,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 830
+            },
+            {
+              "record": 1,
+              "glyph_id": 830
+            },
+            {
+              "record": 3,
+              "glyph_id": 830
+            },
+            {
+              "record": 4,
+              "glyph_id": 830
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 830,
+            "bytes": 176,
+            "components": [],
+            "points": 39,
+            "contours": 1,
+            "instructions_bytes": 51,
+            "declared_bbox": [
+              78,
+              0,
+              1487,
+              1511
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 69,
+            "parsed_record_bytes": 173,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1565,
+          "left_side_bearing_font_units": 78,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0416",
+          "character": "\u0416",
+          "mapped_glyph_id": 939,
+          "effective_ab_glyph_id": 939,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 939
+            },
+            {
+              "record": 1,
+              "glyph_id": 939
+            },
+            {
+              "record": 3,
+              "glyph_id": 939
+            },
+            {
+              "record": 4,
+              "glyph_id": 939
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 939,
+            "bytes": 244,
+            "components": [],
+            "points": 20,
+            "contours": 1,
+            "instructions_bytes": 152,
+            "declared_bbox": [
+              40,
+              0,
+              2166,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 56,
+            "parsed_record_bytes": 242,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2206,
+          "left_side_bearing_font_units": 40,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+05D0",
+          "character": "\u05d0",
+          "mapped_glyph_id": 1319,
+          "effective_ab_glyph_id": 1319,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 1319
+            },
+            {
+              "record": 1,
+              "glyph_id": 1319
+            },
+            {
+              "record": 3,
+              "glyph_id": 1319
+            },
+            {
+              "record": 4,
+              "glyph_id": 1319
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 1319,
+            "bytes": 232,
+            "components": [],
+            "points": 40,
+            "contours": 1,
+            "instructions_bytes": 111,
+            "declared_bbox": [
+              186,
+              0,
+              1183,
+              1120
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 80,
+            "parsed_record_bytes": 231,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1369,
+          "left_side_bearing_font_units": 186,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0627",
+          "character": "\u0627",
+          "mapped_glyph_id": 1365,
+          "effective_ab_glyph_id": 1365,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 1365
+            },
+            {
+              "record": 1,
+              "glyph_id": 1365
+            },
+            {
+              "record": 3,
+              "glyph_id": 1365
+            },
+            {
+              "record": 4,
+              "glyph_id": 1365
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 1365,
+            "bytes": 28,
+            "components": [],
+            "points": 4,
+            "contours": 1,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              193,
+              0,
+              377,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 7,
+            "parsed_record_bytes": 25,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 569,
+          "left_side_bearing_font_units": 193,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+4E2D",
+          "character": "\u4e2d",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 68,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 26,
+            "declared_bbox": [
+              102,
+              -362,
+              1126,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 68,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1229,
+          "left_side_bearing_font_units": 102,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+1F600",
+          "character": "\ud83d\ude00",
+          "mapped_glyph_id": 5857,
+          "effective_ab_glyph_id": 5857,
+          "selected_cmap_record": 1,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": 5857
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": 5857
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 5857,
+            "bytes": 256,
+            "components": [],
+            "points": 71,
+            "contours": 9,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              170,
+              -150,
+              1965,
+              1646
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 155,
+            "parsed_record_bytes": 256,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2135,
+          "left_side_bearing_font_units": 170,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+FFFD",
+          "character": "\ufffd",
+          "mapped_glyph_id": 5372,
+          "effective_ab_glyph_id": 5372,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 5372
+            },
+            {
+              "record": 1,
+              "glyph_id": 5372
+            },
+            {
+              "record": 3,
+              "glyph_id": 5372
+            },
+            {
+              "record": 4,
+              "glyph_id": 5372
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 5372,
+            "bytes": 140,
+            "components": [],
+            "points": 43,
+            "contours": 3,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              30,
+              -172,
+              2070,
+              1868
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 80,
+            "parsed_record_bytes": 138,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2100,
+          "left_side_bearing_font_units": 30,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        }
+      ],
+      "kern_subtables": [
+        {
+          "subtable": 0,
+          "offset": 4,
+          "bytes": 16376,
+          "format": 0,
+          "coverage": 1,
+          "horizontal": true,
+          "cross_stream": false,
+          "pairs": 2727,
+          "nonzero_pairs": 2727,
+          "sha256": "06a2964770f5095d68a4230bff7b27c456c89c4a3fffd16a6963535f70582dd5"
+        }
+      ],
+      "sampled_kern_pairs": [
+        {
+          "characters": "AV",
+          "glyph_ids": [
+            36,
+            57
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -131
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -131
+        },
+        {
+          "characters": "VA",
+          "glyph_ids": [
+            57,
+            36
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -131
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -131
+        },
+        {
+          "characters": "To",
+          "glyph_ids": [
+            55,
+            82
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -348
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -348
+        },
+        {
+          "characters": "Ta",
+          "glyph_ids": [
+            55,
+            68
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -339
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -339
+        },
+        {
+          "characters": "WA",
+          "glyph_ids": [
+            58,
+            36
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -112
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -112
+        },
+        {
+          "characters": "Yo",
+          "glyph_ids": [
+            60,
+            82
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -272
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -272
+        },
+        {
+          "characters": "LT",
+          "glyph_ids": [
+            47,
+            55
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -282
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -282
+        },
+        {
+          "characters": "Ty",
+          "glyph_ids": [
+            55,
+            92
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -319
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -319
+        },
+        {
+          "characters": "ff",
+          "glyph_ids": [
+            73,
+            73
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "fi",
+          "glyph_ids": [
+            73,
+            76
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "oo",
+          "glyph_ids": [
+            82,
+            82
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": " A",
+          "glyph_ids": [
+            3,
+            36
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "A ",
+          "glyph_ids": [
+            36,
+            3
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        }
+      ],
+      "notdef_record": {
+        "glyph_id": 0,
+        "bytes": 68,
+        "components": [],
+        "points": 8,
+        "contours": 2,
+        "instructions_bytes": 26,
+        "declared_bbox": [
+          102,
+          -362,
+          1126,
+          1444
+        ],
+        "kind": "simple",
+        "coordinate_bytes": 18,
+        "parsed_record_bytes": 68,
+        "trailing_bytes": 0,
+        "advance_width_font_units": 1229,
+        "left_side_bearing_font_units": 102
+      },
+      "checks": {
+        "file_hash_expected": true,
+        "whole_font_checksum": true,
+        "all_table_checksums": true,
+        "bounded_table_slices": true,
+        "monotonic_loca": true,
+        "simple_flag_and_coordinate_byte_lengths": true,
+        "component_ids_in_range": true
+      }
+    },
+    {
+      "font": "assets/DejaVuSans-Bold.ttf",
+      "bytes": 708876,
+      "sha256": "7c7aef63328a765586cda41bf9d2c227ff1ad82816326dae4d7fe2fd1b7f613a",
+      "units_per_em": 2048,
+      "glyph_count": 6196,
+      "number_of_hmetrics": 6195,
+      "head_declared_bbox": [
+        -2190,
+        -850,
+        4045,
+        2407
+      ],
+      "hhea": {
+        "ascender": 1901,
+        "descender": -483,
+        "line_gap": 0
+      },
+      "loca_format": 1,
+      "declared_maxp": {
+        "numGlyphs": 6196,
+        "maxPoints": 846,
+        "maxContours": 43,
+        "maxCompositePoints": 120,
+        "maxCompositeContours": 12,
+        "maxZones": 2,
+        "maxTwilightPoints": 16,
+        "maxStorage": 64,
+        "maxFunctionDefs": 8,
+        "maxInstructionDefs": 0,
+        "maxStackElements": 1517,
+        "maxSizeOfInstructions": 545,
+        "maxComponentElements": 8,
+        "maxComponentDepth": 4
+      },
+      "global_record_observations": {
+        "class_counts": {
+          "empty-loca": 63,
+          "zero-contours": 0,
+          "simple": 3543,
+          "composite": 2590
+        },
+        "component_graph_acyclic": true,
+        "max_simple_points": {
+          "value": 846,
+          "glyph_ids": [
+            3803
+          ]
+        },
+        "max_simple_contours": {
+          "value": 43,
+          "glyph_ids": [
+            3497
+          ]
+        },
+        "max_component_records": {
+          "value": 8,
+          "glyph_ids": [
+            4443
+          ]
+        },
+        "max_component_graph_depth": {
+          "value": 4,
+          "glyph_ids": [
+            2670,
+            2671,
+            2672,
+            2673,
+            2678,
+            2679,
+            2680,
+            2681,
+            2686,
+            2687,
+            2688,
+            2689,
+            2694,
+            2695,
+            2696,
+            2697,
+            2702,
+            2703,
+            2704,
+            2705,
+            2710,
+            2711,
+            2712,
+            2713
+          ]
+        },
+        "max_instruction_bytes": {
+          "value": 545,
+          "glyph_ids": [
+            3541
+          ]
+        },
+        "max_glyf_record_bytes": {
+          "value": 2264,
+          "glyph_ids": [
+            3803
+          ]
+        },
+        "component_references": 5472,
+        "component_point_alignment_records": 0,
+        "per_glyph_metadata_canonical_sha256": "f170d6d9533e73ddfa8327182dccbb144669a166140a7f7c099f9f8784da564b"
+      },
+      "table_inventory": [
+        {
+          "tag": "GDEF",
+          "offset": 300,
+          "bytes": 566,
+          "directory_checksum": "87f78db4",
+          "sha256": "85732548b4610c2b527f39a30a5d23655c43e4176cba24a6878e8a814cfa686e"
+        },
+        {
+          "tag": "GPOS",
+          "offset": 868,
+          "bytes": 34870,
+          "directory_checksum": "d41c60a8",
+          "sha256": "58a16904bd65335f4efd61692b7a74b14d6d6cd8bc2adf066580fb5a2b671f70"
+        },
+        {
+          "tag": "GSUB",
+          "offset": 35740,
+          "bytes": 5592,
+          "directory_checksum": "bd7f2c56",
+          "sha256": "9b56ac41e256ef6a18f75f3c7f584e52e81bdb02ecedfb7ec9bda0f33b596d71"
+        },
+        {
+          "tag": "OS/2",
+          "offset": 41332,
+          "bytes": 86,
+          "directory_checksum": "5a579894",
+          "sha256": "deede4c4eb7f7b7b698298aa1324b0d17ed749adbd39e5b6ca62f4c4b6348e27"
+        },
+        {
+          "tag": "cmap",
+          "offset": 41420,
+          "bytes": 6860,
+          "directory_checksum": "989ddf45",
+          "sha256": "aa871045168082c686f4f15bc1fe4be45d7ef9a3f9e48afdb06290113f99693f"
+        },
+        {
+          "tag": "cvt ",
+          "offset": 48280,
+          "bytes": 596,
+          "directory_checksum": "3eb93108",
+          "sha256": "f846efd5129a39cda6b8bf6bf56d5413b30997414bc58201b101c0f8b57dc82f"
+        },
+        {
+          "tag": "fpgm",
+          "offset": 48876,
+          "bytes": 172,
+          "directory_checksum": "5b026bf0",
+          "sha256": "f8188ab04100f275e7881371584f35271d110f414d128be10ea7c004f62c26f7"
+        },
+        {
+          "tag": "gasp",
+          "offset": 49048,
+          "bytes": 12,
+          "directory_checksum": "00070007",
+          "sha256": "fa3a38cf37ba7443e57d44732c9e63082d42f317a72ad001974ebcd1c9b41e6e"
+        },
+        {
+          "tag": "glyf",
+          "offset": 49060,
+          "bytes": 522040,
+          "directory_checksum": "6e2612cf",
+          "sha256": "e3fa1a039412de9124a9e718f27285bf6374a0db0ffe06ba77f8d369b2109199"
+        },
+        {
+          "tag": "head",
+          "offset": 571100,
+          "bytes": 54,
+          "directory_checksum": "845d56cb",
+          "sha256": "10bcab8502f7af04ab0c89ef4bbec882eed965feaa662415ee1176e2950472f2"
+        },
+        {
+          "tag": "hhea",
+          "offset": 571156,
+          "bytes": 36,
+          "directory_checksum": "0eaf1fa4",
+          "sha256": "9316c446f282ac0abfd310a8571dfc540a7ad27fcb27f72ac685219d2453f549"
+        },
+        {
+          "tag": "hmtx",
+          "offset": 571192,
+          "bytes": 24782,
+          "directory_checksum": "7c3a0dc2",
+          "sha256": "88f6b876bd17df8e63121bc9e918e1243987da1afcd550482011d981be0268b8"
+        },
+        {
+          "tag": "kern",
+          "offset": 595976,
+          "bytes": 9246,
+          "directory_checksum": "a101bc75",
+          "sha256": "4f16448a749f7da8c1e4ae08fe1e29e5670d9cb31deea60d34c236a725b4b842"
+        },
+        {
+          "tag": "loca",
+          "offset": 605224,
+          "bytes": 24788,
+          "directory_checksum": "5874e894",
+          "sha256": "ba545b6d971eccf2f55c966ab6fac3911823505a466af82bfe0cf79bdc6b8426"
+        },
+        {
+          "tag": "maxp",
+          "offset": 630012,
+          "bytes": 32,
+          "directory_checksum": "1e79062d",
+          "sha256": "25dc7a36d48494dafe0b7f13c3073190d9589fa4127abe2fc9685c2918f08019"
+        },
+        {
+          "tag": "name",
+          "offset": 630044,
+          "bytes": 15669,
+          "directory_checksum": "72229be8",
+          "sha256": "628a0c99a1f35a4b9cf988b47ae4398563c5f6db2c540e834dc623e9d5b4633f"
+        },
+        {
+          "tag": "post",
+          "offset": 645716,
+          "bytes": 61197,
+          "directory_checksum": "bc7560b9",
+          "sha256": "033f1701ee65a2006e57ea13fb12978f2e90bdb272b626b4d927508fe8839fb3"
+        },
+        {
+          "tag": "prep",
+          "offset": 706916,
+          "bytes": 1959,
+          "directory_checksum": "7c61a2e7",
+          "sha256": "66b1a1685340f5ab7d8cc89d10bb0cb2b2e588df40134f2c1a8458ec147fcf96"
+        }
+      ],
+      "cmap_records": [
+        {
+          "record": 0,
+          "platform": 0,
+          "encoding": 3,
+          "format": 4,
+          "offset": 44,
+          "bytes": 3086,
+          "sha256": "a027c70ef81d71dfc03e6023e40e59841cc3486b2efc3d6cbaa9ec52ce40a1a2",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 1,
+          "platform": 0,
+          "encoding": 4,
+          "format": 12,
+          "offset": 3130,
+          "bytes": 3208,
+          "sha256": "741133c0519c3b2ab6ab686a70c644b6dbe04ca3e669116f824b8670ed1922d5",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 2,
+          "platform": 1,
+          "encoding": 0,
+          "format": 6,
+          "offset": 6338,
+          "bytes": 522,
+          "sha256": "f9edea686ead0dee47da1ba015aa697b15511741f1a7c614dbc5623457a51bbc",
+          "used_by_pinned_unicode_selection": false
+        },
+        {
+          "record": 3,
+          "platform": 3,
+          "encoding": 1,
+          "format": 4,
+          "offset": 44,
+          "bytes": 3086,
+          "sha256": "a027c70ef81d71dfc03e6023e40e59841cc3486b2efc3d6cbaa9ec52ce40a1a2",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 4,
+          "platform": 3,
+          "encoding": 10,
+          "format": 12,
+          "offset": 3130,
+          "bytes": 3208,
+          "sha256": "741133c0519c3b2ab6ab686a70c644b6dbe04ca3e669116f824b8670ed1922d5",
+          "used_by_pinned_unicode_selection": true
+        }
+      ],
+      "sampled_codepoints": [
+        {
+          "codepoint": "U+0020",
+          "character": " ",
+          "mapped_glyph_id": 3,
+          "effective_ab_glyph_id": 3,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 3
+            },
+            {
+              "record": 1,
+              "glyph_id": 3
+            },
+            {
+              "record": 3,
+              "glyph_id": 3
+            },
+            {
+              "record": 4,
+              "glyph_id": 3
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 3,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 713,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+200D",
+          "character": "\u200d",
+          "mapped_glyph_id": 2800,
+          "effective_ab_glyph_id": 2800,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 2800
+            },
+            {
+              "record": 1,
+              "glyph_id": 2800
+            },
+            {
+              "record": 3,
+              "glyph_id": 2800
+            },
+            {
+              "record": 4,
+              "glyph_id": 2800
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 2800,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 0,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+10FFFF",
+          "character": "\udbff\udfff",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 76,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 31,
+            "declared_bbox": [
+              102,
+              -362,
+              1126,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 73,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1229,
+          "left_side_bearing_font_units": 102,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0041",
+          "character": "A",
+          "mapped_glyph_id": 36,
+          "effective_ab_glyph_id": 36,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 36
+            },
+            {
+              "record": 1,
+              "glyph_id": 36
+            },
+            {
+              "record": 3,
+              "glyph_id": 36
+            },
+            {
+              "record": 4,
+              "glyph_id": 36
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 36,
+            "bytes": 316,
+            "components": [],
+            "points": 11,
+            "contours": 2,
+            "instructions_bytes": 254,
+            "declared_bbox": [
+              10,
+              0,
+              1575,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 32,
+            "parsed_record_bytes": 313,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1585,
+          "left_side_bearing_font_units": 10,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0056",
+          "character": "V",
+          "mapped_glyph_id": 57,
+          "effective_ab_glyph_id": 57,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 57
+            },
+            {
+              "record": 1,
+              "glyph_id": 57
+            },
+            {
+              "record": 3,
+              "glyph_id": 57
+            },
+            {
+              "record": 4,
+              "glyph_id": 57
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 57,
+            "bytes": 176,
+            "components": [],
+            "points": 7,
+            "contours": 1,
+            "instructions_bytes": 131,
+            "declared_bbox": [
+              10,
+              0,
+              1575,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 21,
+            "parsed_record_bytes": 173,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1585,
+          "left_side_bearing_font_units": 10,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0054",
+          "character": "T",
+          "mapped_glyph_id": 55,
+          "effective_ab_glyph_id": 55,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 55
+            },
+            {
+              "record": 1,
+              "glyph_id": 55
+            },
+            {
+              "record": 3,
+              "glyph_id": 55
+            },
+            {
+              "record": 4,
+              "glyph_id": 55
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 55,
+            "bytes": 92,
+            "components": [],
+            "points": 8,
+            "contours": 1,
+            "instructions_bytes": 51,
+            "declared_bbox": [
+              10,
+              0,
+              1386,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 17,
+            "parsed_record_bytes": 90,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1397,
+          "left_side_bearing_font_units": 10,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+006F",
+          "character": "o",
+          "mapped_glyph_id": 82,
+          "effective_ab_glyph_id": 82,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 82
+            },
+            {
+              "record": 1,
+              "glyph_id": 82
+            },
+            {
+              "record": 3,
+              "glyph_id": 82
+            },
+            {
+              "record": 4,
+              "glyph_id": 82
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 82,
+            "bytes": 140,
+            "components": [],
+            "points": 24,
+            "contours": 2,
+            "instructions_bytes": 45,
+            "declared_bbox": [
+              88,
+              -29,
+              1319,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 52,
+            "parsed_record_bytes": 137,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1407,
+          "left_side_bearing_font_units": 88,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0061",
+          "character": "a",
+          "mapped_glyph_id": 68,
+          "effective_ab_glyph_id": 68,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 68
+            },
+            {
+              "record": 1,
+              "glyph_id": 68
+            },
+            {
+              "record": 3,
+              "glyph_id": 68
+            },
+            {
+              "record": 4,
+              "glyph_id": 68
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 68,
+            "bytes": 276,
+            "components": [],
+            "points": 38,
+            "contours": 2,
+            "instructions_bytes": 157,
+            "declared_bbox": [
+              88,
+              -29,
+              1221,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 63,
+            "parsed_record_bytes": 274,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1382,
+          "left_side_bearing_font_units": 88,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0057",
+          "character": "W",
+          "mapped_glyph_id": 58,
+          "effective_ab_glyph_id": 58,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 58
+            },
+            {
+              "record": 1,
+              "glyph_id": 58
+            },
+            {
+              "record": 3,
+              "glyph_id": 58
+            },
+            {
+              "record": 4,
+              "glyph_id": 58
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 58,
+            "bytes": 436,
+            "components": [],
+            "points": 13,
+            "contours": 1,
+            "instructions_bytes": 365,
+            "declared_bbox": [
+              61,
+              0,
+              2195,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 41,
+            "parsed_record_bytes": 433,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2259,
+          "left_side_bearing_font_units": 61,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0059",
+          "character": "Y",
+          "mapped_glyph_id": 60,
+          "effective_ab_glyph_id": 60,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 60
+            },
+            {
+              "record": 1,
+              "glyph_id": 60
+            },
+            {
+              "record": 3,
+              "glyph_id": 60
+            },
+            {
+              "record": 4,
+              "glyph_id": 60
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 60,
+            "bytes": 200,
+            "components": [],
+            "points": 9,
+            "contours": 1,
+            "instructions_bytes": 149,
+            "declared_bbox": [
+              -20,
+              0,
+              1503,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 25,
+            "parsed_record_bytes": 197,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1483,
+          "left_side_bearing_font_units": -20,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0066",
+          "character": "f",
+          "mapped_glyph_id": 73,
+          "effective_ab_glyph_id": 73,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 73
+            },
+            {
+              "record": 1,
+              "glyph_id": 73
+            },
+            {
+              "record": 3,
+              "glyph_id": 73
+            },
+            {
+              "record": 4,
+              "glyph_id": 73
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 73,
+            "bytes": 148,
+            "components": [],
+            "points": 20,
+            "contours": 1,
+            "instructions_bytes": 81,
+            "declared_bbox": [
+              39,
+              0,
+              909,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 32,
+            "parsed_record_bytes": 147,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 891,
+          "left_side_bearing_font_units": 39,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0069",
+          "character": "i",
+          "mapped_glyph_id": 76,
+          "effective_ab_glyph_id": 76,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 76
+            },
+            {
+              "record": 1,
+              "glyph_id": 76
+            },
+            {
+              "record": 3,
+              "glyph_id": 76
+            },
+            {
+              "record": 4,
+              "glyph_id": 76
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 76,
+            "bytes": 84,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 41,
+            "declared_bbox": [
+              172,
+              0,
+              530,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 17,
+            "parsed_record_bytes": 82,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 702,
+          "left_side_bearing_font_units": 172,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+006A",
+          "character": "j",
+          "mapped_glyph_id": 77,
+          "effective_ab_glyph_id": 77,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 77
+            },
+            {
+              "record": 1,
+              "glyph_id": 77
+            },
+            {
+              "record": 3,
+              "glyph_id": 77
+            },
+            {
+              "record": 4,
+              "glyph_id": 77
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 77,
+            "bytes": 120,
+            "components": [],
+            "points": 16,
+            "contours": 2,
+            "instructions_bytes": 61,
+            "declared_bbox": [
+              -68,
+              -442,
+              530,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 26,
+            "parsed_record_bytes": 119,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 702,
+          "left_side_bearing_font_units": -68,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0067",
+          "character": "g",
+          "mapped_glyph_id": 74,
+          "effective_ab_glyph_id": 74,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 74
+            },
+            {
+              "record": 1,
+              "glyph_id": 74
+            },
+            {
+              "record": 3,
+              "glyph_id": 74
+            },
+            {
+              "record": 4,
+              "glyph_id": 74
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 74,
+            "bytes": 204,
+            "components": [],
+            "points": 41,
+            "contours": 2,
+            "instructions_bytes": 75,
+            "declared_bbox": [
+              92,
+              -442,
+              1294,
+              1145
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 72,
+            "parsed_record_bytes": 204,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1466,
+          "left_side_bearing_font_units": 92,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0079",
+          "character": "y",
+          "mapped_glyph_id": 92,
+          "effective_ab_glyph_id": 92,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 92
+            },
+            {
+              "record": 1,
+              "glyph_id": 92
+            },
+            {
+              "record": 3,
+              "glyph_id": 92
+            },
+            {
+              "record": 4,
+              "glyph_id": 92
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 92,
+            "bytes": 376,
+            "components": [],
+            "points": 16,
+            "contours": 1,
+            "instructions_bytes": 310,
+            "declared_bbox": [
+              25,
+              -442,
+              1298,
+              1120
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 34,
+            "parsed_record_bytes": 374,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1335,
+          "left_side_bearing_font_units": 25,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+00A0",
+          "character": "\u00a0",
+          "mapped_glyph_id": 98,
+          "effective_ab_glyph_id": 98,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 98
+            },
+            {
+              "record": 1,
+              "glyph_id": 98
+            },
+            {
+              "record": 3,
+              "glyph_id": 98
+            },
+            {
+              "record": 4,
+              "glyph_id": 98
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 98,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 713,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+00E9",
+          "character": "\u00e9",
+          "mapped_glyph_id": 171,
+          "effective_ab_glyph_id": 171,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 171
+            },
+            {
+              "record": 1,
+              "glyph_id": 171
+            },
+            {
+              "record": 3,
+              "glyph_id": 171
+            },
+            {
+              "record": 4,
+              "glyph_id": 171
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 171,
+            "bytes": 24,
+            "components": [
+              {
+                "glyph_id": 72,
+                "flags": 4646,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              },
+              {
+                "glyph_id": 118,
+                "flags": 4103,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              }
+            ],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              88,
+              -29,
+              1290,
+              1638
+            ],
+            "kind": "composite",
+            "parsed_record_bytes": 24,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 1,
+          "advance_width_font_units": 1389,
+          "left_side_bearing_font_units": 88,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0301",
+          "character": "\u0301",
+          "mapped_glyph_id": 690,
+          "effective_ab_glyph_id": 690,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 690
+            },
+            {
+              "record": 1,
+              "glyph_id": 690
+            },
+            {
+              "record": 3,
+              "glyph_id": 690
+            },
+            {
+              "record": 4,
+              "glyph_id": 690
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 690,
+            "bytes": 20,
+            "components": [
+              {
+                "glyph_id": 118,
+                "flags": 4103,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              }
+            ],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              -667,
+              1262,
+              -102,
+              1638
+            ],
+            "kind": "composite",
+            "parsed_record_bytes": 18,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 1,
+          "advance_width_font_units": 0,
+          "left_side_bearing_font_units": -667,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+03A9",
+          "character": "\u03a9",
+          "mapped_glyph_id": 830,
+          "effective_ab_glyph_id": 830,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 830
+            },
+            {
+              "record": 1,
+              "glyph_id": 830
+            },
+            {
+              "record": 3,
+              "glyph_id": 830
+            },
+            {
+              "record": 4,
+              "glyph_id": 830
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 830,
+            "bytes": 212,
+            "components": [],
+            "points": 32,
+            "contours": 1,
+            "instructions_bytes": 98,
+            "declared_bbox": [
+              55,
+              0,
+              1685,
+              1520
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 68,
+            "parsed_record_bytes": 212,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1741,
+          "left_side_bearing_font_units": 55,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0416",
+          "character": "\u0416",
+          "mapped_glyph_id": 939,
+          "effective_ab_glyph_id": 939,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 939
+            },
+            {
+              "record": 1,
+              "glyph_id": 939
+            },
+            {
+              "record": 3,
+              "glyph_id": 939
+            },
+            {
+              "record": 4,
+              "glyph_id": 939
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 939,
+            "bytes": 236,
+            "components": [],
+            "points": 20,
+            "contours": 1,
+            "instructions_bytes": 147,
+            "declared_bbox": [
+              30,
+              0,
+              2477,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 55,
+            "parsed_record_bytes": 236,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2507,
+          "left_side_bearing_font_units": 30,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+05D0",
+          "character": "\u05d0",
+          "mapped_glyph_id": 1319,
+          "effective_ab_glyph_id": 1319,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 1319
+            },
+            {
+              "record": 1,
+              "glyph_id": 1319
+            },
+            {
+              "record": 3,
+              "glyph_id": 1319
+            },
+            {
+              "record": 4,
+              "glyph_id": 1319
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 1319,
+            "bytes": 156,
+            "components": [],
+            "points": 30,
+            "contours": 1,
+            "instructions_bytes": 53,
+            "declared_bbox": [
+              172,
+              0,
+              1319,
+              1120
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 64,
+            "parsed_record_bytes": 155,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1491,
+          "left_side_bearing_font_units": 172,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0627",
+          "character": "\u0627",
+          "mapped_glyph_id": 1365,
+          "effective_ab_glyph_id": 1365,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 1365
+            },
+            {
+              "record": 1,
+              "glyph_id": 1365
+            },
+            {
+              "record": 3,
+              "glyph_id": 1365
+            },
+            {
+              "record": 4,
+              "glyph_id": 1365
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 1365,
+            "bytes": 28,
+            "components": [],
+            "points": 4,
+            "contours": 1,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              172,
+              0,
+              530,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 9,
+            "parsed_record_bytes": 27,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 702,
+          "left_side_bearing_font_units": 172,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+4E2D",
+          "character": "\u4e2d",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 76,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 31,
+            "declared_bbox": [
+              102,
+              -362,
+              1126,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 73,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1229,
+          "left_side_bearing_font_units": 102,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+1F600",
+          "character": "\ud83d\ude00",
+          "mapped_glyph_id": 5837,
+          "effective_ab_glyph_id": 5837,
+          "selected_cmap_record": 1,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": 5837
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": 5837
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 5837,
+            "bytes": 256,
+            "components": [],
+            "points": 71,
+            "contours": 9,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              170,
+              -150,
+              1965,
+              1646
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 155,
+            "parsed_record_bytes": 256,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2135,
+          "left_side_bearing_font_units": 170,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+FFFD",
+          "character": "\ufffd",
+          "mapped_glyph_id": 5368,
+          "effective_ab_glyph_id": 5368,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 5368
+            },
+            {
+              "record": 1,
+              "glyph_id": 5368
+            },
+            {
+              "record": 3,
+              "glyph_id": 5368
+            },
+            {
+              "record": 4,
+              "glyph_id": 5368
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 5368,
+            "bytes": 128,
+            "components": [],
+            "points": 38,
+            "contours": 3,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              50,
+              -284,
+              2230,
+              1896
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 74,
+            "parsed_record_bytes": 126,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 2280,
+          "left_side_bearing_font_units": 50,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        }
+      ],
+      "kern_subtables": [
+        {
+          "subtable": 0,
+          "offset": 4,
+          "bytes": 9242,
+          "format": 0,
+          "coverage": 1,
+          "horizontal": true,
+          "cross_stream": false,
+          "pairs": 1538,
+          "nonzero_pairs": 1538,
+          "sha256": "c89d30d85ac6be16fb29c99e7c90190fb557b3cb3e6f4ce4621f61315d000b22"
+        }
+      ],
+      "sampled_kern_pairs": [
+        {
+          "characters": "AV",
+          "glyph_ids": [
+            36,
+            57
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -139
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -139
+        },
+        {
+          "characters": "VA",
+          "glyph_ids": [
+            57,
+            36
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -139
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -139
+        },
+        {
+          "characters": "To",
+          "glyph_ids": [
+            55,
+            82
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -272
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -272
+        },
+        {
+          "characters": "Ta",
+          "glyph_ids": [
+            55,
+            68
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -264
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -264
+        },
+        {
+          "characters": "WA",
+          "glyph_ids": [
+            58,
+            36
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -92
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -92
+        },
+        {
+          "characters": "Yo",
+          "glyph_ids": [
+            60,
+            82
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -188
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -188
+        },
+        {
+          "characters": "LT",
+          "glyph_ids": [
+            47,
+            55
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -339
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -339
+        },
+        {
+          "characters": "Ty",
+          "glyph_ids": [
+            55,
+            92
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": -243
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": -243
+        },
+        {
+          "characters": "ff",
+          "glyph_ids": [
+            73,
+            73
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "fi",
+          "glyph_ids": [
+            73,
+            76
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "oo",
+          "glyph_ids": [
+            82,
+            82
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": " A",
+          "glyph_ids": [
+            3,
+            36
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "A ",
+          "glyph_ids": [
+            36,
+            3
+          ],
+          "horizontal_subtable_results": [
+            {
+              "subtable": 0,
+              "value_font_units": null
+            }
+          ],
+          "effective_ab_glyph_kern_font_units": 0
+        }
+      ],
+      "notdef_record": {
+        "glyph_id": 0,
+        "bytes": 76,
+        "components": [],
+        "points": 8,
+        "contours": 2,
+        "instructions_bytes": 31,
+        "declared_bbox": [
+          102,
+          -362,
+          1126,
+          1444
+        ],
+        "kind": "simple",
+        "coordinate_bytes": 18,
+        "parsed_record_bytes": 73,
+        "trailing_bytes": 3,
+        "advance_width_font_units": 1229,
+        "left_side_bearing_font_units": 102
+      },
+      "checks": {
+        "file_hash_expected": true,
+        "whole_font_checksum": true,
+        "all_table_checksums": true,
+        "bounded_table_slices": true,
+        "monotonic_loca": true,
+        "simple_flag_and_coordinate_byte_lengths": true,
+        "component_ids_in_range": true
+      }
+    },
+    {
+      "font": "assets/DejaVuSansMono.ttf",
+      "bytes": 343096,
+      "sha256": "9d9bfebceb1c3f6f4ad383ded568a6926086208f43f7f92f92f7e93a1383fa38",
+      "units_per_em": 2048,
+      "glyph_count": 3377,
+      "number_of_hmetrics": 4,
+      "head_declared_bbox": [
+        -1144,
+        -767,
+        1470,
+        2106
+      ],
+      "hhea": {
+        "ascender": 1901,
+        "descender": -483,
+        "line_gap": 0
+      },
+      "loca_format": 1,
+      "declared_maxp": {
+        "numGlyphs": 3377,
+        "maxPoints": 548,
+        "maxContours": 43,
+        "maxCompositePoints": 107,
+        "maxCompositeContours": 6,
+        "maxZones": 2,
+        "maxTwilightPoints": 16,
+        "maxStorage": 153,
+        "maxFunctionDefs": 8,
+        "maxInstructionDefs": 0,
+        "maxStackElements": 1367,
+        "maxSizeOfInstructions": 273,
+        "maxComponentElements": 5,
+        "maxComponentDepth": 4
+      },
+      "global_record_observations": {
+        "class_counts": {
+          "empty-loca": 22,
+          "zero-contours": 0,
+          "simple": 2050,
+          "composite": 1305
+        },
+        "component_graph_acyclic": true,
+        "max_simple_points": {
+          "value": 548,
+          "glyph_ids": [
+            2856
+          ]
+        },
+        "max_simple_contours": {
+          "value": 43,
+          "glyph_ids": [
+            2286
+          ]
+        },
+        "max_component_records": {
+          "value": 5,
+          "glyph_ids": [
+            2121
+          ]
+        },
+        "max_component_graph_depth": {
+          "value": 4,
+          "glyph_ids": [
+            1691,
+            1692,
+            1693,
+            1694,
+            1695,
+            1696,
+            1699,
+            1700,
+            1701,
+            1702,
+            1703,
+            1704,
+            1707,
+            1708,
+            1709,
+            1710,
+            1711,
+            1712,
+            1715,
+            1716,
+            1717,
+            1718,
+            1719,
+            1720,
+            1723,
+            1724,
+            1725,
+            1726,
+            1727,
+            1728,
+            1731,
+            1732,
+            1733,
+            1734,
+            1735,
+            1736,
+            1770,
+            1783
+          ]
+        },
+        "max_instruction_bytes": {
+          "value": 273,
+          "glyph_ids": [
+            90
+          ]
+        },
+        "max_glyf_record_bytes": {
+          "value": 1556,
+          "glyph_ids": [
+            2856
+          ]
+        },
+        "component_references": 2348,
+        "component_point_alignment_records": 0,
+        "per_glyph_metadata_canonical_sha256": "0bd1d4941e97d821674c0d7cd05818b04e26ddbaeca697fef632adc6faf51dba"
+      },
+      "table_inventory": [
+        {
+          "tag": "GDEF",
+          "offset": 284,
+          "bytes": 174,
+          "directory_checksum": "7423801f",
+          "sha256": "d4f30a8974bafb6d39dca4cb69366d995e780548ce9fc60737d539967585ae35"
+        },
+        {
+          "tag": "GPOS",
+          "offset": 460,
+          "bytes": 14838,
+          "directory_checksum": "2f20d5c9",
+          "sha256": "6ad48e6909837079fec914dab829e7c5d9ab98dd5d8c332e2a9fa445ffdb6ad0"
+        },
+        {
+          "tag": "GSUB",
+          "offset": 15300,
+          "bytes": 1236,
+          "directory_checksum": "5c8a9086",
+          "sha256": "c2ae96135f4f1e6f7013e6cf0bf7895a50c91dfaceb140a5375d8d71129c7805"
+        },
+        {
+          "tag": "OS/2",
+          "offset": 16536,
+          "bytes": 86,
+          "directory_checksum": "8cfc8ab2",
+          "sha256": "9712eb4dc69414409916d9b4b4e2cec93923908ff4c33783843e809398a37189"
+        },
+        {
+          "tag": "cmap",
+          "offset": 16624,
+          "bytes": 6284,
+          "directory_checksum": "68f13a72",
+          "sha256": "705694b56b494c8727cf56717f84f77499e9dc74ef01e1ae380a4816d8f39b46"
+        },
+        {
+          "tag": "cvt ",
+          "offset": 22908,
+          "bytes": 560,
+          "directory_checksum": "e997070c",
+          "sha256": "14136560ff6213f819b80fee78d2db969210f8b2c9c481c1f347bd1503f3b35c"
+        },
+        {
+          "tag": "fpgm",
+          "offset": 23468,
+          "bytes": 172,
+          "directory_checksum": "5b026bdf",
+          "sha256": "42885299f0288e1a9ba166568eddfb2ec6615092e3adddc65426705332203e5e"
+        },
+        {
+          "tag": "gasp",
+          "offset": 23640,
+          "bytes": 12,
+          "directory_checksum": "00070007",
+          "sha256": "fa3a38cf37ba7443e57d44732c9e63082d42f317a72ad001974ebcd1c9b41e6e"
+        },
+        {
+          "tag": "glyf",
+          "offset": 23652,
+          "bytes": 256584,
+          "directory_checksum": "e8e265f0",
+          "sha256": "f6a4071fa2489481f5c8cb81d49b10a93ea783c6433bb89f23a3b289a9bc3024"
+        },
+        {
+          "tag": "head",
+          "offset": 280236,
+          "bytes": 54,
+          "directory_checksum": "7e6355f1",
+          "sha256": "0f7074888390f72a46b5dfd0ab991a90e5b48841dd38cadec09244b2b1023854"
+        },
+        {
+          "tag": "hhea",
+          "offset": 280292,
+          "bytes": 36,
+          "directory_checksum": "08b60207",
+          "sha256": "722235ec65ae7c187f536375e64d3a4573069e8ee7892ab2e48a977075da9758"
+        },
+        {
+          "tag": "hmtx",
+          "offset": 280328,
+          "bytes": 6762,
+          "directory_checksum": "48804b61",
+          "sha256": "e4f58306ea2b4f6b97812239b15f3ff9e0382ce22372134a87645de1d6343697"
+        },
+        {
+          "tag": "loca",
+          "offset": 287092,
+          "bytes": 13512,
+          "directory_checksum": "18be9768",
+          "sha256": "27a5666c3f54134a64c84dee1467cd01dbd99552e552b8e911f1afabdc67b787"
+        },
+        {
+          "tag": "maxp",
+          "offset": 300604,
+          "bytes": 32,
+          "directory_checksum": "12d7043f",
+          "sha256": "cee6411cac0c07186871adfc3001d8df63b2d396cefcab341dd280da154ab853"
+        },
+        {
+          "tag": "name",
+          "offset": 300636,
+          "bytes": 8469,
+          "directory_checksum": "60e7ea8c",
+          "sha256": "ed8d9e077dc437492bbecb5a6fe632817bcba7657b3ff799820f0d95c213d72c"
+        },
+        {
+          "tag": "post",
+          "offset": 309108,
+          "bytes": 32165,
+          "directory_checksum": "faf864ea",
+          "sha256": "6ca3dc8577224a2011449204507a1e2d08d3f50aa5fe236df0f8d52fad509cab"
+        },
+        {
+          "tag": "prep",
+          "offset": 341276,
+          "bytes": 1819,
+          "directory_checksum": "3ac7c007",
+          "sha256": "1579d1512103f3c602809d47d9d7fe11b6cb3ba6a143f2514e7a94332fcd688e"
+        }
+      ],
+      "cmap_records": [
+        {
+          "record": 0,
+          "platform": 0,
+          "encoding": 3,
+          "format": 4,
+          "offset": 44,
+          "bytes": 2630,
+          "sha256": "58a7d41b738a3c87ffd20515cbe64ffaffba7ec924aceadfbb0d2232e4209138",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 1,
+          "platform": 0,
+          "encoding": 4,
+          "format": 12,
+          "offset": 2674,
+          "bytes": 3088,
+          "sha256": "50fcafe35a9a9bacbb18c229b4acf68a3b533cbb50ce742d1e23c69309ffc02f",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 2,
+          "platform": 1,
+          "encoding": 0,
+          "format": 6,
+          "offset": 5762,
+          "bytes": 522,
+          "sha256": "5ffbc01d1564bd158cc058a17a47e84377a82b39d0f09c78a1617c4b54f8042b",
+          "used_by_pinned_unicode_selection": false
+        },
+        {
+          "record": 3,
+          "platform": 3,
+          "encoding": 1,
+          "format": 4,
+          "offset": 44,
+          "bytes": 2630,
+          "sha256": "58a7d41b738a3c87ffd20515cbe64ffaffba7ec924aceadfbb0d2232e4209138",
+          "used_by_pinned_unicode_selection": true
+        },
+        {
+          "record": 4,
+          "platform": 3,
+          "encoding": 10,
+          "format": 12,
+          "offset": 2674,
+          "bytes": 3088,
+          "sha256": "50fcafe35a9a9bacbb18c229b4acf68a3b533cbb50ce742d1e23c69309ffc02f",
+          "used_by_pinned_unicode_selection": true
+        }
+      ],
+      "sampled_codepoints": [
+        {
+          "codepoint": "U+0020",
+          "character": " ",
+          "mapped_glyph_id": 3,
+          "effective_ab_glyph_id": 3,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 3
+            },
+            {
+              "record": 1,
+              "glyph_id": 3
+            },
+            {
+              "record": 3,
+              "glyph_id": 3
+            },
+            {
+              "record": 4,
+              "glyph_id": 3
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 3,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+200D",
+          "character": "\u200d",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 76,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 31,
+            "declared_bbox": [
+              104,
+              -362,
+              1128,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 73,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 104,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+10FFFF",
+          "character": "\udbff\udfff",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 76,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 31,
+            "declared_bbox": [
+              104,
+              -362,
+              1128,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 73,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 104,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0041",
+          "character": "A",
+          "mapped_glyph_id": 36,
+          "effective_ab_glyph_id": 36,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 36
+            },
+            {
+              "record": 1,
+              "glyph_id": 36
+            },
+            {
+              "record": 3,
+              "glyph_id": 36
+            },
+            {
+              "record": 4,
+              "glyph_id": 36
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 36,
+            "bytes": 208,
+            "components": [],
+            "points": 11,
+            "contours": 2,
+            "instructions_bytes": 152,
+            "declared_bbox": [
+              37,
+              0,
+              1196,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 28,
+            "parsed_record_bytes": 207,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 37,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0056",
+          "character": "V",
+          "mapped_glyph_id": 57,
+          "effective_ab_glyph_id": 57,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 57
+            },
+            {
+              "record": 1,
+              "glyph_id": 57
+            },
+            {
+              "record": 3,
+              "glyph_id": 57
+            },
+            {
+              "record": 4,
+              "glyph_id": 57
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 57,
+            "bytes": 116,
+            "components": [],
+            "points": 7,
+            "contours": 1,
+            "instructions_bytes": 76,
+            "declared_bbox": [
+              57,
+              0,
+              1176,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 115,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 57,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0054",
+          "character": "T",
+          "mapped_glyph_id": 55,
+          "effective_ab_glyph_id": 55,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 55
+            },
+            {
+              "record": 1,
+              "glyph_id": 55
+            },
+            {
+              "record": 3,
+              "glyph_id": 55
+            },
+            {
+              "record": 4,
+              "glyph_id": 55
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 55,
+            "bytes": 68,
+            "components": [],
+            "points": 8,
+            "contours": 1,
+            "instructions_bytes": 28,
+            "declared_bbox": [
+              47,
+              0,
+              1186,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 15,
+            "parsed_record_bytes": 65,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 47,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+006F",
+          "character": "o",
+          "mapped_glyph_id": 82,
+          "effective_ab_glyph_id": 82,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 82
+            },
+            {
+              "record": 1,
+              "glyph_id": 82
+            },
+            {
+              "record": 3,
+              "glyph_id": 82
+            },
+            {
+              "record": 4,
+              "glyph_id": 82
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 82,
+            "bytes": 120,
+            "components": [],
+            "points": 24,
+            "contours": 2,
+            "instructions_bytes": 35,
+            "declared_bbox": [
+              137,
+              -29,
+              1096,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 44,
+            "parsed_record_bytes": 119,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 137,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0061",
+          "character": "a",
+          "mapped_glyph_id": 68,
+          "effective_ab_glyph_id": 68,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 68
+            },
+            {
+              "record": 1,
+              "glyph_id": 68
+            },
+            {
+              "record": 3,
+              "glyph_id": 68
+            },
+            {
+              "record": 4,
+              "glyph_id": 68
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 68,
+            "bytes": 236,
+            "components": [],
+            "points": 42,
+            "contours": 2,
+            "instructions_bytes": 110,
+            "declared_bbox": [
+              133,
+              -29,
+              1059,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 65,
+            "parsed_record_bytes": 233,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 133,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0057",
+          "character": "W",
+          "mapped_glyph_id": 58,
+          "effective_ab_glyph_id": 58,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 58
+            },
+            {
+              "record": 1,
+              "glyph_id": 58
+            },
+            {
+              "record": 3,
+              "glyph_id": 58
+            },
+            {
+              "record": 4,
+              "glyph_id": 58
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 58,
+            "bytes": 280,
+            "components": [],
+            "points": 13,
+            "contours": 1,
+            "instructions_bytes": 225,
+            "declared_bbox": [
+              0,
+              0,
+              1233,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 28,
+            "parsed_record_bytes": 280,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0059",
+          "character": "Y",
+          "mapped_glyph_id": 60,
+          "effective_ab_glyph_id": 60,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 60
+            },
+            {
+              "record": 1,
+              "glyph_id": 60
+            },
+            {
+              "record": 3,
+              "glyph_id": 60
+            },
+            {
+              "record": 4,
+              "glyph_id": 60
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 60,
+            "bytes": 136,
+            "components": [],
+            "points": 9,
+            "contours": 1,
+            "instructions_bytes": 89,
+            "declared_bbox": [
+              37,
+              0,
+              1196,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 22,
+            "parsed_record_bytes": 134,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 37,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0066",
+          "character": "f",
+          "mapped_glyph_id": 73,
+          "effective_ab_glyph_id": 73,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 73
+            },
+            {
+              "record": 1,
+              "glyph_id": 73
+            },
+            {
+              "record": 3,
+              "glyph_id": 73
+            },
+            {
+              "record": 4,
+              "glyph_id": 73
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 73,
+            "bytes": 120,
+            "components": [],
+            "points": 20,
+            "contours": 1,
+            "instructions_bytes": 52,
+            "declared_bbox": [
+              195,
+              0,
+              1063,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 31,
+            "parsed_record_bytes": 117,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 195,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0069",
+          "character": "i",
+          "mapped_glyph_id": 76,
+          "effective_ab_glyph_id": 76,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 76
+            },
+            {
+              "record": 1,
+              "glyph_id": 76
+            },
+            {
+              "record": 3,
+              "glyph_id": 76
+            },
+            {
+              "record": 4,
+              "glyph_id": 76
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 76,
+            "bytes": 104,
+            "components": [],
+            "points": 14,
+            "contours": 2,
+            "instructions_bytes": 46,
+            "declared_bbox": [
+              178,
+              0,
+              1092,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 27,
+            "parsed_record_bytes": 103,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 178,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+006A",
+          "character": "j",
+          "mapped_glyph_id": 77,
+          "effective_ab_glyph_id": 77,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 77
+            },
+            {
+              "record": 1,
+              "glyph_id": 77
+            },
+            {
+              "record": 3,
+              "glyph_id": 77
+            },
+            {
+              "record": 4,
+              "glyph_id": 77
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 77,
+            "bytes": 120,
+            "components": [],
+            "points": 18,
+            "contours": 2,
+            "instructions_bytes": 56,
+            "declared_bbox": [
+              186,
+              -426,
+              784,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 27,
+            "parsed_record_bytes": 117,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 186,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0067",
+          "character": "g",
+          "mapped_glyph_id": 74,
+          "effective_ab_glyph_id": 74,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 74
+            },
+            {
+              "record": 1,
+              "glyph_id": 74
+            },
+            {
+              "record": 3,
+              "glyph_id": 74
+            },
+            {
+              "record": 4,
+              "glyph_id": 74
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 74,
+            "bytes": 200,
+            "components": [],
+            "points": 42,
+            "contours": 2,
+            "instructions_bytes": 72,
+            "declared_bbox": [
+              123,
+              -440,
+              1042,
+              1147
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 68,
+            "parsed_record_bytes": 197,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 123,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0079",
+          "character": "y",
+          "mapped_glyph_id": 92,
+          "effective_ab_glyph_id": 92,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 92
+            },
+            {
+              "record": 1,
+              "glyph_id": 92
+            },
+            {
+              "record": 3,
+              "glyph_id": 92
+            },
+            {
+              "record": 4,
+              "glyph_id": 92
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 92,
+            "bytes": 236,
+            "components": [],
+            "points": 19,
+            "contours": 1,
+            "instructions_bytes": 160,
+            "declared_bbox": [
+              104,
+              -426,
+              1153,
+              1120
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 40,
+            "parsed_record_bytes": 233,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 104,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+00A0",
+          "character": "\u00a0",
+          "mapped_glyph_id": 98,
+          "effective_ab_glyph_id": 98,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 98
+            },
+            {
+              "record": 1,
+              "glyph_id": 98
+            },
+            {
+              "record": 3,
+              "glyph_id": 98
+            },
+            {
+              "record": 4,
+              "glyph_id": 98
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 98,
+            "bytes": 0,
+            "components": [],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "kind": "empty-loca"
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 0,
+          "outline_metadata": "no glyf outline record"
+        },
+        {
+          "codepoint": "U+00E9",
+          "character": "\u00e9",
+          "mapped_glyph_id": 171,
+          "effective_ab_glyph_id": 171,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 171
+            },
+            {
+              "record": 1,
+              "glyph_id": 171
+            },
+            {
+              "record": 3,
+              "glyph_id": 171
+            },
+            {
+              "record": 4,
+              "glyph_id": 171
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 171,
+            "bytes": 24,
+            "components": [
+              {
+                "glyph_id": 72,
+                "flags": 4134,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              },
+              {
+                "glyph_id": 118,
+                "flags": 4102,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              }
+            ],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              123,
+              -29,
+              1112,
+              1638
+            ],
+            "kind": "composite",
+            "parsed_record_bytes": 22,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 1,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 123,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0301",
+          "character": "\u0301",
+          "mapped_glyph_id": 649,
+          "effective_ab_glyph_id": 649,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 649
+            },
+            {
+              "record": 1,
+              "glyph_id": 649
+            },
+            {
+              "record": 3,
+              "glyph_id": 649
+            },
+            {
+              "record": 4,
+              "glyph_id": 649
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 649,
+            "bytes": 16,
+            "components": [
+              {
+                "glyph_id": 118,
+                "flags": 4102,
+                "transform_bytes_hex": "",
+                "args_are_xy": true
+              }
+            ],
+            "points": 0,
+            "contours": 0,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              475,
+              1262,
+              954,
+              1638
+            ],
+            "kind": "composite",
+            "parsed_record_bytes": 16,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 1,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 475,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+03A9",
+          "character": "\u03a9",
+          "mapped_glyph_id": 759,
+          "effective_ab_glyph_id": 759,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 759
+            },
+            {
+              "record": 1,
+              "glyph_id": 759
+            },
+            {
+              "record": 3,
+              "glyph_id": 759
+            },
+            {
+              "record": 4,
+              "glyph_id": 759
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 759,
+            "bytes": 168,
+            "components": [],
+            "points": 32,
+            "contours": 1,
+            "instructions_bytes": 64,
+            "declared_bbox": [
+              74,
+              0,
+              1159,
+              1460
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 57,
+            "parsed_record_bytes": 167,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 74,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0416",
+          "character": "\u0416",
+          "mapped_glyph_id": 853,
+          "effective_ab_glyph_id": 853,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 853
+            },
+            {
+              "record": 1,
+              "glyph_id": 853
+            },
+            {
+              "record": 3,
+              "glyph_id": 853
+            },
+            {
+              "record": 4,
+              "glyph_id": 853
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 853,
+            "bytes": 204,
+            "components": [],
+            "points": 20,
+            "contours": 1,
+            "instructions_bytes": 120,
+            "declared_bbox": [
+              15,
+              0,
+              1218,
+              1493
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 50,
+            "parsed_record_bytes": 204,
+            "trailing_bytes": 0
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 15,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+05D0",
+          "character": "\u05d0",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 76,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 31,
+            "declared_bbox": [
+              104,
+              -362,
+              1128,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 73,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 104,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+0627",
+          "character": "\u0627",
+          "mapped_glyph_id": 1117,
+          "effective_ab_glyph_id": 1117,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 1117
+            },
+            {
+              "record": 1,
+              "glyph_id": 1117
+            },
+            {
+              "record": 3,
+              "glyph_id": 1117
+            },
+            {
+              "record": 4,
+              "glyph_id": 1117
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 1117,
+            "bytes": 28,
+            "components": [],
+            "points": 4,
+            "contours": 1,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              524,
+              0,
+              708,
+              1556
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 8,
+            "parsed_record_bytes": 26,
+            "trailing_bytes": 2
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 524,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+4E2D",
+          "character": "\u4e2d",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 76,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 31,
+            "declared_bbox": [
+              104,
+              -362,
+              1128,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 73,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 104,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+1F600",
+          "character": "\ud83d\ude00",
+          "mapped_glyph_id": null,
+          "effective_ab_glyph_id": 0,
+          "selected_cmap_record": null,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": null
+            },
+            {
+              "record": 1,
+              "glyph_id": null
+            },
+            {
+              "record": 3,
+              "glyph_id": null
+            },
+            {
+              "record": 4,
+              "glyph_id": null
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 0,
+            "bytes": 76,
+            "components": [],
+            "points": 8,
+            "contours": 2,
+            "instructions_bytes": 31,
+            "declared_bbox": [
+              104,
+              -362,
+              1128,
+              1444
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 18,
+            "parsed_record_bytes": 73,
+            "trailing_bytes": 3
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 104,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        },
+        {
+          "codepoint": "U+FFFD",
+          "character": "\ufffd",
+          "mapped_glyph_id": 3261,
+          "effective_ab_glyph_id": 3261,
+          "selected_cmap_record": 0,
+          "unicode_subtable_results": [
+            {
+              "record": 0,
+              "glyph_id": 3261
+            },
+            {
+              "record": 1,
+              "glyph_id": 3261
+            },
+            {
+              "record": 3,
+              "glyph_id": 3261
+            },
+            {
+              "record": 4,
+              "glyph_id": 3261
+            }
+          ],
+          "glyf_record": {
+            "glyph_id": 3261,
+            "bytes": 152,
+            "components": [],
+            "points": 53,
+            "contours": 3,
+            "instructions_bytes": 0,
+            "declared_bbox": [
+              82,
+              -172,
+              1150,
+              1816
+            ],
+            "kind": "simple",
+            "coordinate_bytes": 80,
+            "parsed_record_bytes": 151,
+            "trailing_bytes": 1
+          },
+          "component_graph_depth": 0,
+          "advance_width_font_units": 1233,
+          "left_side_bearing_font_units": 82,
+          "outline_metadata": "nonempty structural outline record; not a rasterizer outcome"
+        }
+      ],
+      "kern_subtables": [],
+      "sampled_kern_pairs": [
+        {
+          "characters": "AV",
+          "glyph_ids": [
+            36,
+            57
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "VA",
+          "glyph_ids": [
+            57,
+            36
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "To",
+          "glyph_ids": [
+            55,
+            82
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "Ta",
+          "glyph_ids": [
+            55,
+            68
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "WA",
+          "glyph_ids": [
+            58,
+            36
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "Yo",
+          "glyph_ids": [
+            60,
+            82
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "LT",
+          "glyph_ids": [
+            47,
+            55
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "Ty",
+          "glyph_ids": [
+            55,
+            92
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "ff",
+          "glyph_ids": [
+            73,
+            73
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "fi",
+          "glyph_ids": [
+            73,
+            76
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "oo",
+          "glyph_ids": [
+            82,
+            82
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": " A",
+          "glyph_ids": [
+            3,
+            36
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        },
+        {
+          "characters": "A ",
+          "glyph_ids": [
+            36,
+            3
+          ],
+          "horizontal_subtable_results": [],
+          "effective_ab_glyph_kern_font_units": 0
+        }
+      ],
+      "notdef_record": {
+        "glyph_id": 0,
+        "bytes": 76,
+        "components": [],
+        "points": 8,
+        "contours": 2,
+        "instructions_bytes": 31,
+        "declared_bbox": [
+          104,
+          -362,
+          1128,
+          1444
+        ],
+        "kind": "simple",
+        "coordinate_bytes": 18,
+        "parsed_record_bytes": 73,
+        "trailing_bytes": 3,
+        "advance_width_font_units": 1233,
+        "left_side_bearing_font_units": 104
+      },
+      "checks": {
+        "file_hash_expected": true,
+        "whole_font_checksum": true,
+        "all_table_checksums": true,
+        "bounded_table_slices": true,
+        "monotonic_loca": true,
+        "simple_flag_and_coordinate_byte_lengths": true,
+        "component_ids_in_range": true
+      }
+    }
+  ],
+  "method": "Standard Python bounded SFNT/head/maxp/hhea/hmtx/loca/glyf/cmap/kern byte reads; no installed font parser or rasterizer called.",
+  "cmap_and_kerning_selection": "Matches inspected owned_ttf_parser 0.25.1 first available Unicode cmap result and first horizontal kern result; ab_glyph absent result maps to zero.",
+  "limits": [
+    "Simple coordinate stream lengths are checked, but point coordinates, component transforms and curves are not expanded.",
+    "Declared maxp/head values are retained separately from observed record counts and component graph depth.",
+    "Nonempty glyf structure does not establish runtime outline validity, raster bounds or coverage.",
+    "No hinted execution, GPOS shaping, coverage, rasterization, Canvas, planner, compiler or GPU execution.",
+    "No glyph API caps or actual fixture inventory are selected by this metadata audit."
+  ],
+  "primary_sources": [
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/head",
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/maxp",
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/hhea",
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/hmtx",
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/loca",
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/glyf",
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/cmap",
+    "https://learn.microsoft.com/en-us/typography/opentype/spec/kern"
+  ],
+  "auditor_sha256": "2e6f8ac94922074d2c15f1a16b65b72c5e99bf2be20813052bb6b6baa99541ef"
+}

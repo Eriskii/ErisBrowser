@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "authorization": "root authorized one utility compile and one offline glyph-only Naga validation; no GPU/engine",
+  "naga_version": "30.0.1",
+  "inputs": [
+    {
+      "path": "/tmp/eris-vulkan-glyph-shader-validation/validate_wgsl.rs",
+      "sha256": "73007afb93836394fb5d6b889d0766913381369c4be17e1c12144b7ed650ce12",
+      "bytes": 970
+    },
+    {
+      "path": "/tmp/eris-vulkan-glyph-shader-validation/glyph.wgsl",
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7",
+      "bytes": 3578
+    },
+    {
+      "path": "/tmp/eris-vulkan-rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sha256": "3167c4f49785f5048591fb3eb4745ccee0732ff4e01602d43b4e86af7ea7bca3",
+      "bytes": 649136
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/libnaga-c23d5d5c4611f5f2.rlib",
+      "sha256": "d75103aa0edc3b24d140adb65c096e8177f56c6f42991a0040f79934743fc0c4",
+      "bytes": 28879212
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/.fingerprint/naga-c23d5d5c4611f5f2/lib-naga.json",
+      "sha256": "95a06ac96ea9cb9d924902963ee03c93349dd40fc9df6adf404e200987854bee",
+      "bytes": 1743
+    },
+    {
+      "path": "/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/naga-c23d5d5c4611f5f2.d",
+      "sha256": "45694a2db89747be48c5812d90d90fcbbd8895844352ae0fd071e356d620c5d4",
+      "bytes": 45638
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/Cargo.lock",
+      "sha256": "c3ec1b8cecc74528ecb7e183cc782933124b879a7201e1978bce18ee046dd9d3",
+      "bytes": 81429
+    }
+  ],
+  "steps": []
+}

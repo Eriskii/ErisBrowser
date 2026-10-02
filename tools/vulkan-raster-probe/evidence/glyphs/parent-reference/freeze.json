@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "status": "prepared; no compiler, rasterizer, renderer, planner, worker or GPU execution",
+  "literal_cases": 12,
+  "literal_pixels": 223,
+  "literal_rgb24_bytes": 669,
+  "font_input_cases": 14,
+  "font_reference_pixels": 86016,
+  "future_font_baseline_u32le_bytes": 344064,
+  "font_outputs_produced": 0,
+  "parent_commit": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+  "parent_archive_binding": "parent-source-freeze.json",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4438,
+      "sha256": "6fc0cf3a237fba73e4316603fbd1ce3439c575bcea7c35d13fe202ec9d2f5ea3"
+    },
+    {
+      "path": "font-inventory.json",
+      "bytes": 23408,
+      "sha256": "ecb63ecb6ea172278eaed57acc4fe5f27ce6a8c4567aa35392be4fe7511cf7c1"
+    },
+    {
+      "path": "font_inventory.rs",
+      "bytes": 21064,
+      "sha256": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd"
+    },
+    {
+      "path": "literal-fixtures.json",
+      "bytes": 58134,
+      "sha256": "1a23a33fc1e7e45b3bb825583316cee889eab46a4111af85485b717fb009b5aa"
+    },
+    {
+      "path": "literal-rgb/absolute-origins-ignore-offset.rgb24",
+      "bytes": 45,
+      "sha256": "2ec0b918aac87995c232dd172cd15a047f172cae1cf10f3e7f7b63e29c4234c7"
+    },
+    {
+      "path": "literal-rgb/coverage-alpha-floor.rgb24",
+      "bytes": 72,
+      "sha256": "3fb6dfa034589327d165025214583329bd3814c34b39772e24f4fb26edd2dbdb"
+    },
+    {
+      "path": "literal-rgb/dispatch-tail-9x9.rgb24",
+      "bytes": 243,
+      "sha256": "eeee5a8624552d4ce1719c572b9ebb766c564703148716efc417ab5cbc99e15a"
+    },
+    {
+      "path": "literal-rgb/empty-zero-coverage-and-alpha.rgb24",
+      "bytes": 18,
+      "sha256": "f19fd9d10e4039b0f6c74562b0e99e2aa59cf2fbfe63d3007bf76941345f1b46"
+    },
+    {
+      "path": "literal-rgb/fixed-escape-and-restoration.rgb24",
+      "bytes": 72,
+      "sha256": "72810ddf3241e94dea01107e8bc3a8bdc4f991b65e9eb36cc3ca8c3883f0d3ae"
+    },
+    {
+      "path": "literal-rgb/fractional-clip-both-edges.rgb24",
+      "bytes": 45,
+      "sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023"
+    },
+    {
+      "path": "literal-rgb/interleaved-rect-image.rgb24",
+      "bytes": 24,
+      "sha256": "c205f801690c1b719726ad38dce37d9c8db80f7d085782f4ad179b0a657ff182"
+    },
+    {
+      "path": "literal-rgb/ordered-overlap.rgb24",
+      "bytes": 36,
+      "sha256": "7454d69fd1ec210b33f5d883eb6162c99e9010de32e45338376e5e47d0ffe697"
+    },
+    {
+      "path": "literal-rgb/repeated-low-alpha.rgb24",
+      "bytes": 3,
+      "sha256": "79d95b7f2e0c9f6bd91827e6a281f67e21e07fa4a025c7ccf9c93025f3156c04"
+    },
+    {
+      "path": "literal-rgb/signed-i32-extremes.rgb24",
+      "bytes": 27,
+      "sha256": "1003ca8baa9f802c6847ac30e6e0ee1d25e9447d7e82fec20ee00aa1df74ce1e"
+    },
+    {
+      "path": "literal-rgb/signed-row-origins-and-y.rgb24",
+      "bytes": 36,
+      "sha256": "590ed21c4e3c8174274b49cd43be4f76a9bd85b7ad2a6af75d3a22d7f4e75738"
+    },
+    {
+      "path": "literal-rgb/varying-row-origins.rgb24",
+      "bytes": 48,
+      "sha256": "fb1c0418ccd5e3d260618cd26d473d4b9cbd1236695cec8e2adae8b983239c6c"
+    },
+    {
+      "path": "literal_inventory.rs",
+      "bytes": 23628,
+      "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8"
+    },
+    {
+      "path": "metadata/facts.json",
+      "bytes": 136925,
+      "sha256": "2f50612404e6ff623db72496fa74dc52f2a68bfce455f2c2fa708d0c52173e5e"
+    },
+    {
+      "path": "metadata/final-freeze.json",
+      "bytes": 882,
+      "sha256": "09548ffadf036c5a3941ddf55253cd1e3f02391210a14e9a01c28b2f3a5b7d85"
+    },
+    {
+      "path": "metadata/source-provenance.json",
+      "bytes": 4520,
+      "sha256": "372a2c2ddaa61724b21c8356e4220b07a3c9ba379dc831d62c6f9b566a6dd6b2"
+    },
+    {
+      "path": "parent-source-freeze.json",
+      "bytes": 14763,
+      "sha256": "2135a8d746d35316b974398d7871b2e103c66c5d50c57a6d741291fc7932082f"
+    },
+    {
+      "path": "preparation-summary.json",
+      "bytes": 261,
+      "sha256": "49640ce99244d4ef220809ab7113a9f2080e0143e7709a71d48044241bfef99d"
+    },
+    {
+      "path": "prepare.py",
+      "bytes": 20784,
+      "sha256": "a1b799c87d31fda2d69f9b62c0b8010d0875f1f990a928c528dde7a9394bd3c7"
+    },
+    {
+      "path": "reference-parent/src/bin/glyph-reference.rs",
+      "bytes": 3356,
+      "sha256": "cd6b38f2ebccba7c462a12086875076b4a5b086d46e72be40cf307e17508fb4c"
+    },
+    {
+      "path": "transcription-review.json",
+      "bytes": 1581,
+      "sha256": "7f143667cd9ceeb560db2d0e4f939f752266ee492944b3f5ee359e296f963c55"
+    },
+    {
+      "path": "verify_transcription.py",
+      "bytes": 6014,
+      "sha256": "2ea9f6fc930d3c19553182accf488a479cacce23613602213647f133f618ff12"
+    }
+  ]
+}
