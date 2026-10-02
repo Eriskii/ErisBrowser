@@ -2761,6 +2761,7 @@ impl Runtime {
     }
     fn dom_exception(&mut self, name: JsString, message: JsString) -> Result<Value> {
         let code = match name.to_utf8().as_deref() {
+            Ok("IndexSizeError") => 1.0,
             Ok("InvalidStateError") => 11.0,
             Ok("NotSupportedError") => 9.0,
             Ok("SyntaxError") => 12.0,

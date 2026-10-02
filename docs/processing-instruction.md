@@ -35,9 +35,11 @@ admission. Existing work, heap, document byte and node limits remain unchanged.
 This is partial CharacterData/ProcessingInstruction support. Lone UTF-16
 surrogates in data remain explicitly unsupported because document strings use
 UTF-8; lone surrogates in a target are invalid XML names. PI pseudo-attribute
-methods and their update hooks, mutation observers, range maintenance, remaining
-CharacterData methods, complete Node attribute descriptors and host prototype
+methods and their update hooks, mutation observers, range maintenance,
+complete Node attribute descriptors and host prototype
 mutation are unfinished. Independent Document construction remains unsupported.
+The [CharacterData follow-up](character-data.md) adds the five substring and
+mutation methods with exact UTF-16 substring results and checked scalar storage.
 
 The independent local fixture checks 20 cases in both script modes: 38 of 40
 expectations pass. Both modes of the original host-prototype-mutation case remain

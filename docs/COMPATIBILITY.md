@@ -19,7 +19,9 @@ HTML, SVG and MathML chains, interface metadata, mutable ParentNode operations
 and Text, Comment and DocumentFragment construction.
 [Processing instructions](processing-instruction.md) add genuine construction,
 the Document factory, target and CharacterData data/length accessors for scalar
-strings. PI pseudo-attributes, lone-surrogate data and mutation notifications
+strings. Five [CharacterData methods](character-data.md) now add exact UTF-16
+substring results and checked splicing, including repaired surrogate boundaries.
+PI pseudo-attributes, lone-surrogate DOM data and mutation notifications
 remain unfinished. Complete interface members,
 Document reflection and host prototype mutation remain incomplete. The unchanged
 DOM suite now verifies **56/58 expectations**, with all 44 controls healthy; the

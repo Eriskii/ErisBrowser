@@ -1676,6 +1676,65 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    fn character_data_methods_refresh_connected_text_style_title_and_clean_textarea() {
+        let mut page = Page::from_html(
+            Url::parse("https://example.test/").unwrap(),
+            r#"<!doctype html><title id=heading>initial</title>
+            <style id=theme>#sample{color:red}</style><p id=sample>initial</p>
+            <form action=/submit><textarea id=field name=body>initial</textarea>
+            <button type=button id=change>Change</button><button id=send>Send</button></form>
+            <script>
+            const heading=document.getElementById('heading').firstChild;
+            const theme=document.getElementById('theme').firstChild;
+            const sample=document.getElementById('sample').firstChild;
+            const field=document.getElementById('field'), fieldText=field.firstChild;
+            function update(state,color){
+              heading.replaceData(0,heading.length,state);
+              sample.replaceData(0,sample.length,state);
+              theme.replaceData(0,theme.length,'#sample{color:'+color+'}');
+              fieldText.replaceData(0,fieldText.length,state);
+              if(field.value!==state)throw new Error('clean textarea value');
+            }
+            document.getElementById('change').onclick=function(){update('changed','blue');};
+            update('ready','green');
+            </script>"#,
+            true,
+        );
+        let fonts = Fonts::new();
+        let sample = page.document.query_selector("#sample").unwrap();
+        let text = page.document.nodes[sample].children[0];
+        let field = page.document.query_selector("#field").unwrap();
+        for (state, color) in [
+            ("ready", crate::graphics::Color::rgb(0, 128, 0)),
+            ("changed", crate::graphics::Color::rgb(0, 0, 255)),
+        ] {
+            if state == "changed" {
+                let change = page.document.query_selector("#change").unwrap();
+                assert!(page.click(change).is_none());
+            }
+            assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+            assert_eq!(page.title(), state);
+            assert_eq!(page.document.nodes[sample].children, [text]);
+            assert_eq!(page.document.nodes[text].parent, Some(sample));
+            assert_eq!(page.document.text_content(text), state);
+            assert_eq!(page.document.text_content(field), state);
+            let layout = page.layout(400.0, 300.0, &fonts);
+            assert!(layout.commands.iter().any(|command| matches!(command,
+                crate::graphics::DrawCommand::Text { text, color: actual, .. }
+                    if text == state && *actual == color)));
+            let send = page.document.query_selector("#send").unwrap();
+            let navigation = page.click(send).unwrap();
+            let address = Url::parse(&navigation.address).unwrap();
+            assert_eq!(address.path(), "/submit");
+            assert_eq!(
+                address.query_pairs().collect::<Vec<_>>(),
+                [("body".into(), state.into())]
+            );
+        }
+    }
+
     #[test]
     fn initial_loading_and_recollection_share_style_type_and_text_rules() {
         // Initial loading caches only accepted direct child text. Invalid style

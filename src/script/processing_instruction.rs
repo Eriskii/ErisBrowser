@@ -4,12 +4,13 @@
 use super::*;
 use crate::dom::DomDataError;
 
+mod character_data;
 #[cfg(test)]
 mod tests;
 mod xml_name;
 
 pub(super) const PREFIX: &str = "DOM.PI.";
-pub(super) const METADATA_OBJECTS: usize = 5;
+pub(super) const METADATA_OBJECTS: usize = 10;
 
 fn dom_data_error(error: DomDataError) -> ScriptError {
     match error {
@@ -104,6 +105,15 @@ impl Runtime {
                         configurable: true,
                     },
                 )?;
+                self.work(character_data::METHODS.len())?;
+                for &(name, length) in character_data::METHODS {
+                    let function = self.pi_function(name, name, length)?;
+                    self.dom_proto_named(
+                        prototype,
+                        name,
+                        Property::data(function, true, true, true),
+                    )?;
+                }
             }
             _ => {}
         }
@@ -244,6 +254,9 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<Value> {
         self.work(8 + method.len())?;
+        if method.ends_with("Data") && method != "setData" {
+            return self.character_data_native(method, receiver, args, doc);
+        }
         if method == "create" {
             if receiver != Value::Document {
                 return Err(ScriptError::type_error(

@@ -4293,3 +4293,60 @@ APIs, exact surrogate-preserving document storage, mutation observers and live
 ranges remain unfinished. No new GPU pixel or Chromium performance measurement
 is assigned to this DOM change; full compatibility and production security remain
 unachieved.
+
+
+### Five CharacterData methods
+
+[Evidence](evidence/character-data.json) records ordinary prototype substringData,
+appendData, insertData, deleteData and replaceData for Text, Comment and PI nodes.
+The previous PI commit passed all nine [CI jobs](evidence/processing-instruction-ci.json).
+Rust 1.88 passes **1,520 default tests** and Rust 1.98 passes **1,643 native-feature
+tests**, with no failures or ignored tests. Strict native all-target Clippy and
+formatting checks pass. Focused CharacterData and bootstrap filters pass 27 and
+22 groups respectively, including 20 new method groups.
+
+The independent 13-case fixture passes all **26 ordinary modes**. Four separate
+unchanged policy sources, each in two modes, reach the documented terminal
+Unsupported boundary for final lone-surrogate DOM data. Their eight ordinary
+standards-success expectations remain unmet; policy observations are counted
+separately. The combined release replay moves from **0/34 to 26/34 standards
+expectations**. Substring results may contain individual surrogate units, and
+mutations that repair a pair across the complete splice succeed.
+
+A 5,046-byte browser fixture retains one connected Text node and changes its
+visible data from ready to 6 on click. Direct and confined-worker checks verify
+literal draw-command text, all six green/blue pixel samples and complete
+worker/direct pixel equality. A separate Page test checks connected text and
+style changes, title updates, clean textarea values and form serialization.
+Dirty/default textarea separation and complete children-changed reactions remain
+unfinished.
+
+Exact and one-short work/heap witnesses cover all five operations across all
+three supported brands. Additional checks cover fresh post-conversion bounds,
+retained-byte refusal after callback effects, authentic receivers, prototype
+replacement/deletion, call cleanup, whole-splice repairs and selected substring
+reads from a node larger than the JavaScript string limit. Substring avoids an
+untouched-tail scan; mutation scans and exact output storage are prepaid.
+Raw bootstrap leaves **8,246 work units**, charges **1,777,574 cumulative bytes**
+and reserves **673 objects**. Native/legacy prototype registries remain 321/25;
+quotas and raw exact/one-short bootstrap contracts are unchanged.
+
+All case/control observations, fingerprints and expectations remain unchanged
+in the DOM method, Object.is, Symbol, array-descriptor and Reflect-construction
+replays. Their counts remain 56/58 verified, 72/78 verified, 184/54/4
+passed/unsupported/failed, 3,556/18 passed/unsupported, and 38 passed; all controls
+are healthy. The previous PI replay remains 38/40 ordinary expectations, with
+host prototype mutation still unmet. The array gate's two improvements over its
+older baseline predate this change.
+
+The initial compile failure referenced an unavailable serde_json test dependency.
+Four static fixture files were then extracted byte-for-byte from the original
+JSON source fields, with their hashes checked and no dependency added. No
+production correction followed the first draft. The final formatter collapsed
+one worker-test call and removed its optional trailing comma; exact comparison
+confirmed that sole formatting change. A whitespace-only comparison initially
+rejected that comma removal; its corrected result and the original source are
+retained. Independent source reviews cover production scan bounds, metadata,
+browser outcomes and policy extraction. Full DOM compatibility, exact arbitrary
+UTF-16 document storage, reaction hooks, production security and Chromium
+performance remain unachieved.

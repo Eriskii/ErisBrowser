@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>CharacterData methods through callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#connected{left:0}#saved{left:50px}#substring{left:100px}#repair{left:150px}#current{left:200px}#prototype{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="connected" class="sample"></div><div id="saved" class="sample"></div>
+<div id="substring" class="sample"></div><div id="repair" class="sample"></div>
+<div id="current" class="sample"></div><div id="prototype" class="sample"></div>
+<button id="change" type="button">Run text callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+const change=document.getElementById('change'),result=document.getElementById('result');
+const live=new Text('loading');result.appendChild(live);
+const names=['substringData','appendData','insertData','deleteData','replaceData'];
+const lengths=[2,1,2,2,3],saved=[];
+for(let i=0;i<names.length;i++)saved.push(CharacterData.prototype[names[i]]);
+let runs=0,retainedRepair;
+function apply(color){
+  check(runs===(color==='green'?0:1),'load then one click');
+  if(runs===1)check(live.data==='ready'&&live.parentNode===result&&retainedRepair.data==='A\uD834\uDD1E\uD834\uDD1EB','retained state');
+  live.replaceData(0,live.length,'abc');live.appendData('d');live.insertData(1,'X');live.deleteData(2,1);
+  check(live.data==='aXcd'&&live.substringData(1,2)==='Xc','connected method sequence');
+  live.replaceData(0,live.length,runs===0?'ready':'6');
+  check(live.parentNode===result&&result.firstChild===live&&result.textContent===(runs===0?'ready':'6'),'visible retained Text');
+  mark('connected',color);
+
+  for(let i=0;i<names.length;i++){
+    const d=Object.getOwnPropertyDescriptor(CharacterData.prototype,names[i]);
+    check(typeof saved[i]==='function'&&d.value===saved[i]&&live[names[i]]===saved[i],'saved method identity');
+    check(d.writable&&d.enumerable&&d.configurable&&saved[i].name===names[i]&&saved[i].length===lengths[i],'operation metadata');
+  }
+  const comment=new Comment('kept'),pi=new ProcessingInstruction('probe','old');
+  check(saved[1].call(comment,'!')===undefined&&comment.data==='kept!','saved append on Comment');
+  check(saved[4].call(pi,0,3,'next')===undefined&&pi.data==='next'&&pi.target==='probe','saved replace on PI');
+  mark('saved',color);
+
+  const pair=new Text('A\uD834\uDD1EB');
+  check(pair.substringData(1,1)==='\uD834'&&pair.substringData(2,1)==='\uDD1E','substring preserves individual units');
+  check(pair.substringData(4294967297,2)==='\uD834\uDD1E'&&pair.substringData(4,99)==='','modulo offset and end');
+  let range;try{pair.substringData(5,0);}catch(error){range=error;}
+  check(range instanceof DOMException&&range.name==='IndexSizeError'&&range.code===1,'range error identity');
+  mark('substring',color);
+
+  pair.replaceData(1,1,'\uD834');pair.replaceData(2,1,'\uDD1E');pair.deleteData(2,0);
+  check(pair.data==='A\uD834\uDD1EB','complete-splice repair and empty deletion');
+  pair.insertData(2,'\uDD1E\uD834');
+  check(pair.data==='A\uD834\uDD1E\uD834\uDD1EB'&&pair.length===6,'both splice boundaries repair');
+  retainedRepair=pair;mark('repair',color);
+
+  const current=new Text('old');let trace='';
+  current.replaceData(
+    {valueOf(){trace+='O';current.data='abcd';return 1;}},
+    {valueOf(){trace+='C';current.data='uvwxyz';return 2;}},
+    {toString(){trace+='D';current.data='WXYZ';return '!';}});
+  check(trace==='OCD'&&current.data==='W!Z','conversions finish before current splice');
+  current.appendData({toString(){current.data='newer';return '!';}});
+  check(current.data==='newer!','append uses length after conversion');mark('current',color);
+
+  const original=Object.getOwnPropertyDescriptor(CharacterData.prototype,'appendData'),token={};
+  try{
+    CharacterData.prototype.appendData=function(value){check(this===comment&&value==='x','replacement receiver');return token;};
+    check(comment.appendData('x')===token,'prototype replacement');
+    check(delete CharacterData.prototype.appendData,'prototype deletion');
+    check(comment.appendData===undefined,'no deleted method resurrection');
+    saved[1].call(comment,'?');check(comment.data==='kept!?','saved native survives deletion');
+  }finally{Object.defineProperty(CharacterData.prototype,'appendData',original);}
+  let conversions=0,brand;
+  try{saved[1].call(Object.create(CharacterData.prototype),{toString(){conversions++;return 'x';}});}catch(error){brand=error;}
+  check(brand instanceof TypeError&&conversions===0&&comment.appendData===saved[1],'authentic brand and restored identity');
+  mark('prototype',color);runs++;
+}
+change.onclick=function(){check(this===change,'click receiver');apply('blue');check(runs===2,'two runs');document.body.className='clicked';};
+apply('green');document.body.className='ready';
+</script>

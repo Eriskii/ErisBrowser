@@ -1,0 +1,1290 @@
+{
+  "schema": 1,
+  "parent": "40db8623d36c32e998e1a5eb1c8adc9b30dc537c",
+  "change": "Five ordinary CharacterData methods with exact UTF-16 substring results and checked whole-splice scalar storage.",
+  "source_files": [
+    {
+      "path": "src/script/processing_instruction/character_data.rs",
+      "sha256": "971270d560b85f0893d7bf27bacf76ad7303fd1dc5ea27f3b801a4c7b1080ee0",
+      "bytes": 8022
+    },
+    {
+      "path": "src/script/processing_instruction/character_data/tests.rs",
+      "sha256": "c306f401e4cf798191bc4799d4e96ca0c12cad674e72f2f3782cecd4bf07ccbd",
+      "bytes": 11474
+    },
+    {
+      "path": "tests/fixtures/character-data-policy-append-lone-high-unit.js",
+      "sha256": "e00dd52bdbc77e6067cdd42920edd94607e9cdd35c6e0091cabaf42e1c978873",
+      "bytes": 153
+    },
+    {
+      "path": "tests/fixtures/character-data-policy-delete-leaves-low-unit.js",
+      "sha256": "3bc4996074ea814ce395e9bffba33c2f66ee7159c6eeb53b07c4e5d0bd825289",
+      "bytes": 217
+    },
+    {
+      "path": "tests/fixtures/character-data-policy-insert-between-pair-leaves-unpaired-units.js",
+      "sha256": "17f73aea9146731a367accc017226482dd5b76f18a635538bcfd5e18232889bf",
+      "bytes": 174
+    },
+    {
+      "path": "tests/fixtures/character-data-policy-replace-leaves-lone-high-unit.js",
+      "sha256": "194ffc5e13de4accfca94266bde96636a86db09284f7d68337975fc87a171928",
+      "bytes": 185
+    },
+    {
+      "path": "tests/fixtures/character-data-policy.json",
+      "sha256": "1c328f0b7d2750f6f60ae8633e82294b18fd6f521b212c696bc665b2faaf3952",
+      "bytes": 3130
+    },
+    {
+      "path": "tests/fixtures/character-data.html",
+      "sha256": "91a236990835ec0a487f8ff38459b010fe72526e8222c086843a6784b2f03282",
+      "bytes": 5046
+    },
+    {
+      "path": "tests/fixtures/character-data.js",
+      "sha256": "dde6c7970bd18b49565a5f78990eb47b659dbad65a549855f724478646f6fc7f",
+      "bytes": 10042
+    },
+    {
+      "path": "src/page.rs",
+      "sha256": "5086d9f0bfce68e176247a396fd63c091e028a8c2e472fec39251431e0798c1c",
+      "bytes": 84661
+    },
+    {
+      "path": "src/script.rs",
+      "sha256": "3e721de968c7727537d06e74e497a05a528af9ac6eb634130fe95e57ce0eda3d",
+      "bytes": 884260
+    },
+    {
+      "path": "src/script/bootstrap_tests.rs",
+      "sha256": "1e6100d72dd6d5c61c1500d17e20040215bb4719b2ae85d33d5f7782e5507fad",
+      "bytes": 15507
+    },
+    {
+      "path": "src/script/dom_bindings/identity_tests.rs",
+      "sha256": "16431fe17a704373f869eeb1f0f649da7052d728b60e20950db348e64a8e9e8b",
+      "bytes": 35727
+    },
+    {
+      "path": "src/script/dom_prototypes.rs",
+      "sha256": "a23e16036ead2e2a3b84d739f40ba98cf1a4ac8dbf08ae5a0ba801f82bbd6c66",
+      "bytes": 31480
+    },
+    {
+      "path": "src/script/processing_instruction.rs",
+      "sha256": "f0354929aecad6a9663d8424e5a156dd2ead784b53cf229228d934197d7f5557",
+      "bytes": 12304
+    },
+    {
+      "path": "tests/pipeline.rs",
+      "sha256": "76c1778532e01dbbc6b6b5ba58f6085fcfd4cacd9cf6adf21c9bcb9f11a18d1d",
+      "bytes": 51068
+    },
+    {
+      "path": "tests/worker.rs",
+      "sha256": "621ea31252504a5d14dc48a5d2dda988e837e924d55591ae1317aa7a8d96ed3c",
+      "bytes": 84658
+    }
+  ],
+  "binary": {
+    "path": "eris-js",
+    "sha256": "5a1d8caec418e47d3dd7636f6e48176281bfafd608931616f679f0f335b71fac"
+  },
+  "validation": {
+    "default_rust": "1.88.0",
+    "default_passed": 1520,
+    "native_rust": "1.98.0",
+    "native_feature": "vulkan-raster",
+    "native_passed": 1643,
+    "failed": 0,
+    "ignored": 0,
+    "strict_clippy": "passed",
+    "formatting": "passed after one worker call formatting change",
+    "focused_method_filter": 27,
+    "focused_bootstrap_filter": 22,
+    "new_method_groups": 20,
+    "browser": "Connected ready\u21926 Text, literal draw commands, six green/blue samples and worker/direct pixel equality; Page title/style/clean textarea/form witness"
+  },
+  "raw_bootstrap": {
+    "remaining_work": 8246,
+    "charged_heap": 1777574,
+    "objects": 673,
+    "object_capacity": 673,
+    "native_registry": 321,
+    "legacy_prototypes": 25
+  },
+  "compatibility": [
+    {
+      "profile": "dom-method-identity",
+      "before_sha256": "21641614acbb29e838e103d2c61634e3a6d64453fc1ba49d38d1db822fefcc1c",
+      "after_sha256": "c3688be9bf7cae1f8557fb647daba4f51872eef6686a2c5c3c323ab982b789c1",
+      "counts": {
+        "passed": 52,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "total": 58,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 44,
+      "controls_verified": 44,
+      "before_verified": 56,
+      "after_verified": 56
+    },
+    {
+      "profile": "object-is",
+      "before_sha256": "f7cebbdb9fb9c713d32c46d6b6001ee841be24994e8f41253b5d565333a5c35b",
+      "after_sha256": "984c7ae56568dc9f27bb41ea77935ba35fdfc8c72ccfe456d0b7e4a5b9714bdf",
+      "counts": {
+        "passed": 68,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "total": 78,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 60,
+      "controls_verified": 60,
+      "before_verified": 72,
+      "after_verified": 72
+    },
+    {
+      "profile": "symbols",
+      "before_sha256": "1a5c7ab91ff00e47214db2aba1b614795acafbf44a32516fbf0d258c692d4236",
+      "after_sha256": "e6ff5c35e05479de6248a633b9d5fa07bc74cd2ce7ef0e143c13467adc6dd2f7",
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "total": 242,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 80,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "array-descriptors",
+      "before_sha256": "d08d7b4078dbb73e69fe15afbc2fc06e9b2417fa76f1e0825e5fb8ef5c669da3",
+      "after_sha256": "e7efd307e892e4d6f7090bbf1f70cb4ed1571bb475ae0903f47cb0a78aa1554c",
+      "counts": {
+        "passed": 3556,
+        "unsupported": 18
+      },
+      "total": 3574,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 84,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "reflect-construction",
+      "before_sha256": "6caf22b95090cbf5cdfd19678daa0ea283fd380b39728c359972aa79fef2797d",
+      "after_sha256": "c00a647479c65a939f5722a3c14c4f2aedba05962a493c27e9c9508bb6a519dc",
+      "counts": {
+        "passed": 38
+      },
+      "total": 38,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 96,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "new-independent-CharacterData-cases",
+      "before_sha256": "b1f77cbf1bcd8cd009512ee7a19ad5d1a2bb6afedaa644ec2e8474739a056d56",
+      "after_sha256": "382e90d0b621a5dfa75009410ecd45a90b41e29eefd9edd6a2888e4e313af2a2",
+      "cases_changes": [
+        {
+          "id": "metadata#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "metadata#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "scalar_family_and_tree#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "scalar_family_and_tree#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "substring_half_pairs_and_bounds#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "substring_half_pairs_and_bounds#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "unsigned_long_modulo_and_defaults#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "unsigned_long_modulo_and_defaults#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "brands_and_arity_precede_conversion#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "brands_and_arity_precede_conversion#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "replace_conversion_order_and_fresh_data#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "replace_conversion_order_and_fresh_data#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "callback_growth_and_shrink_change_bounds#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "callback_growth_and_shrink_change_bounds#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "append_uses_length_after_data_conversion#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "append_uses_length_after_data_conversion#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "substring_and_delete_read_after_both_numbers#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "substring_and_delete_read_after_both_numbers#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "abrupt_identity_precedes_range_check#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "abrupt_identity_precedes_range_check#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "domstring_null_and_extra_arguments#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "domstring_null_and_extra_arguments#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "complete_splice_repairs_surrogate_boundaries#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "complete_splice_repairs_surrogate_boundaries#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "pi_mutation_does_not_repeat_creation_validation#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "pi_mutation_does_not_repeat_creation_validation#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "delete-leaves-low-unit#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "delete-leaves-low-unit#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "insert-between-pair-leaves-unpaired-units#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "insert-between-pair-leaves-unpaired-units#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "append-lone-high-unit#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "append-lone-high-unit#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "replace-leaves-lone-high-unit#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "replace-leaves-lone-high-unit#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        }
+      ],
+      "total": 34,
+      "before_verified": 0,
+      "after_verified": 26,
+      "unmet": [
+        "delete-leaves-low-unit#sloppy",
+        "delete-leaves-low-unit#strict",
+        "insert-between-pair-leaves-unpaired-units#sloppy",
+        "insert-between-pair-leaves-unpaired-units#strict",
+        "append-lone-high-unit#sloppy",
+        "append-lone-high-unit#strict",
+        "replace-leaves-lone-high-unit#sloppy",
+        "replace-leaves-lone-high-unit#strict"
+      ]
+    },
+    {
+      "profile": "prior-PI-regression",
+      "before_sha256": "7cba766991aaa0bb7c1f58b4838322bd8319286e08a7270aa1baef8b225931fc",
+      "after_sha256": "0e624b0f8294512e601af8c11db6d856b4b4a679c897085142824d8105e14c89",
+      "cases_changes": [],
+      "total": 40,
+      "before_verified": 38,
+      "after_verified": 38
+    }
+  ],
+  "policy": {
+    "standard_expectations_met": 26,
+    "total_standard_expectations": 34,
+    "terminal_unsupported_modes": 8,
+    "policy_observations_are_not_standards_passes": true
+  },
+  "first_failure": "Attempt1 test-only E0433 missing serde_json; corrected by exact static source extraction with no dependency, production, or oracle change",
+  "formatting": "One worker test call collapsed and optional trailing comma removed; exact before/after replacement verified after an overstrict whitespace-only comparison failed",
+  "reviews": [
+    {
+      "path": "production-review.json",
+      "sha256": "c0f509942c4336112b1cc2b85c5cbdec5277f8b20689287e04cd2616091eaae4"
+    },
+    {
+      "path": "test-extraction-review.json",
+      "sha256": "9bafd50d97e207089900a05d22dc8670b682ed80ef6276d845483c5140428e5a"
+    },
+    {
+      "path": "parent-consumers-review.json",
+      "sha256": "d25515d4847f7318b0c71f51ab47b6a51414236a67c9d01026b8a5dbf0dad3c0"
+    }
+  ],
+  "archive": {
+    "path": "character-data.tar.gz",
+    "sha256": "06b804f2930e7610b458d438cf0cf799273a138ff4995b90fc7a99d05a19791c",
+    "bytes": 1899644,
+    "files": 156,
+    "manifest_sha256": "31d2f11acd79a2ae92cb969ebf88cd520315451395000ef456988915cb26da74"
+  },
+  "limits_unchanged": true,
+  "unmet": [
+    "Final lone-surrogate DOM data; eight independent modes remain standards failures",
+    "MutationObservers, live Ranges and PI pseudo-attribute updates",
+    "Textarea dirty/default value separation",
+    "Complete Node attributes and remaining Text operations",
+    "Full web compatibility, production security and Chromium performance requirement"
+  ]
+}

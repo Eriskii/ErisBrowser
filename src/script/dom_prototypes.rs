@@ -457,7 +457,7 @@ impl Runtime {
                     + usize::from(!unscopables.is_empty())
                     + match interface.name {
                         "Document" | "ProcessingInstruction" => 1,
-                        "CharacterData" => 2,
+                        "CharacterData" => 7,
                         _ => 0,
                     },
             )?;

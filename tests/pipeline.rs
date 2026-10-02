@@ -226,6 +226,14 @@ fn assert_six_scripted_samples(source: &str) {
 }
 
 fn assert_six_scripted_samples_with_result_text(source: &str, result_text: Option<[&str; 2]>) {
+    assert_six_scripted_samples_with_result_rendering(source, result_text, false);
+}
+
+fn assert_six_scripted_samples_with_result_rendering(
+    source: &str,
+    result_text: Option<[&str; 2]>,
+    check_text_commands: bool,
+) {
     let mut p = page(source);
     let fonts = Fonts::new();
     for (index, (state, color)) in [("ready", 0x008000), ("clicked", 0x0000ff)]
@@ -244,6 +252,15 @@ fn assert_six_scripted_samples_with_result_text(source: &str, result_text: Optio
             assert_eq!(p.document.text_content(result), expected[index], "{state}");
         }
         let layout = p.layout(320.0, 240.0, &fonts);
+        if check_text_commands {
+            let expected = result_text.expect("text commands require expected result text")[index];
+            assert!(
+                layout.commands.iter().any(
+                    |command| matches!(command, DrawCommand::Text { text, .. } if text == expected)
+                ),
+                "result text must reach a draw command in {state}"
+            );
+        }
         let mut canvas = Canvas::new(320, 240).unwrap();
         canvas.clear(Color::WHITE);
         canvas.paint(&layout.commands, &fonts, &p.images, 0.0, 0.0);
@@ -1293,5 +1310,14 @@ fn processing_instruction_and_character_data_survive_page_callbacks() {
     assert_six_scripted_samples_with_result_text(
         include_str!("fixtures/processing-instruction.html"),
         Some(["ready", "6"]),
+    );
+}
+
+#[test]
+fn character_data_methods_update_connected_text_and_pixels_through_callbacks() {
+    assert_six_scripted_samples_with_result_rendering(
+        include_str!("fixtures/character-data.html"),
+        Some(["ready", "6"]),
+        true,
     );
 }

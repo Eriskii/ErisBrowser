@@ -248,6 +248,13 @@ without truncation or partial mutation. These paths retain the explicit
 unsupported boundary for lone-surrogate data and the existing infallible Rc and
 B-tree allocations.
 
+The five [CharacterData methods](character-data.md) finish argument conversion
+before reading live node data. Substring traverses only the reached code units
+and admits the selected UTF-16 result before allocation. Mutations prepay scans,
+validate the complete UTF-16 splice, reserve exact scalar output and move it
+through checked replacement. A terminal refusal preserves existing outer data
+and earlier author effects; final lone-surrogate DOM strings remain unsupported.
+
 ## Representative limits
 
 [Runtime construction](runtime-budget-boundary.md) has a separate fixed work
@@ -348,7 +355,7 @@ searches and temporary native call-name copies are prepaid. A refused name copy
 still releases the call's stack ownership; prior author effects remain on later
 conversion failure. Distinct mutable metadata bags share only immutable strings.
 The earlier method checkpoint prepaid a 512-slot object-arena reservation.
-The interface installer now prepays 668 slots before initialization, avoiding
+The interface installer now prepays 673 slots before initialization, avoiding
 later bootstrap growth. This is reserved capacity, not a new object
 limit. Logical requested-byte accounting excludes allocator rounding and retains
 the existing infallible B-tree/Rc allocation boundaries.

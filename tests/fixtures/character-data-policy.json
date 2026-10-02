@@ -1,0 +1,60 @@
+{
+  "status": "preparation only; no execution; policies are explicit implementation gaps",
+  "cases": [
+    {
+      "id": "delete-leaves-low-unit",
+      "standard_final_utf16": [
+        65,
+        56606,
+        66
+      ],
+      "source": "function check(v){if(!v)throw new Error('policy prerequisite');}\nvar n=new Text('A\\uD834\\uDD1EB'); check(n.substringData(1,2)==='\\uD834\\uDD1E'); n.deleteData(2,0); check(n.data==='A\\uD834\\uDD1EB');\nn.deleteData(1,1);\n",
+      "sha256": "3bc4996074ea814ce395e9bffba33c2f66ee7159c6eeb53b07c4e5d0bd825289",
+      "proposed_policy_expectation": "terminal Unsupported; no outer write",
+      "standard_expectation": "success returning undefined and retaining standard_final_utf16 as DOM data",
+      "private_postcheck": "After terminal return inspect unchanged data/tree/retained bytes; do not attempt an in-script catch."
+    },
+    {
+      "id": "insert-between-pair-leaves-unpaired-units",
+      "standard_final_utf16": [
+        65,
+        55348,
+        120,
+        56606,
+        66
+      ],
+      "source": "function check(v){if(!v)throw new Error('policy prerequisite');}\nvar n=new Text('A\\uD834\\uDD1EB'); n.insertData(0,''); check(n.data==='A\\uD834\\uDD1EB');\nn.insertData(2,'x');\n",
+      "sha256": "17f73aea9146731a367accc017226482dd5b76f18a635538bcfd5e18232889bf",
+      "proposed_policy_expectation": "terminal Unsupported; no outer write",
+      "standard_expectation": "success returning undefined and retaining standard_final_utf16 as DOM data",
+      "private_postcheck": "After terminal return inspect unchanged data/tree/retained bytes; do not attempt an in-script catch."
+    },
+    {
+      "id": "append-lone-high-unit",
+      "standard_final_utf16": [
+        111,
+        108,
+        100,
+        55296
+      ],
+      "source": "function check(v){if(!v)throw new Error('policy prerequisite');}\nvar n=new Text('old'); n.appendData(''); check(n.data==='old');\nn.appendData('\\uD800');\n",
+      "sha256": "e00dd52bdbc77e6067cdd42920edd94607e9cdd35c6e0091cabaf42e1c978873",
+      "proposed_policy_expectation": "terminal Unsupported; no outer write",
+      "standard_expectation": "success returning undefined and retaining standard_final_utf16 as DOM data",
+      "private_postcheck": "After terminal return inspect unchanged data/tree/retained bytes; do not attempt an in-script catch."
+    },
+    {
+      "id": "replace-leaves-lone-high-unit",
+      "standard_final_utf16": [
+        65,
+        55348,
+        66
+      ],
+      "source": "function check(v){if(!v)throw new Error('policy prerequisite');}\nvar n=new Text('A\\uD834\\uDD1EB'); n.replaceData(2,1,'\\uDD1E'); check(n.data==='A\\uD834\\uDD1EB');\nn.replaceData(2,1,'');\n",
+      "sha256": "194ffc5e13de4accfca94266bde96636a86db09284f7d68337975fc87a171928",
+      "proposed_policy_expectation": "terminal Unsupported; no outer write",
+      "standard_expectation": "success returning undefined and retaining standard_final_utf16 as DOM data",
+      "private_postcheck": "After terminal return inspect unchanged data/tree/retained bytes; do not attempt an in-script catch."
+    }
+  ]
+}

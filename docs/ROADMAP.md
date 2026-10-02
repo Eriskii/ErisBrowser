@@ -48,9 +48,10 @@ verifies 56/58 expectations with all 44 controls healthy.
 
 [Processing instructions](processing-instruction.md) add checked construction,
 the Document factory, a target accessor and CharacterData data/UTF-16 length.
-PI pseudo-attribute parsing and methods, remaining CharacterData operations,
-exact surrogate-preserving document strings and mutation notifications remain
-open work.
+Five [CharacterData methods](character-data.md) add UTF-16 substring and checked
+append, insert, delete and replace operations. PI pseudo-attribute parsing and
+methods, remaining Node/Text operations, exact surrogate-preserving document
+strings and mutation notifications remain open work.
 
 [Fallible runtime initialization](runtime-initialization.md) now carries checked
 bootstrap failures through the browser, adapter and stress tool. Partial realms

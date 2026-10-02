@@ -21,7 +21,9 @@ now support per-object data, accessors and method replacement.
 MathML inheritance, mutable ParentNode operations and genuine Text, Comment and
 DocumentFragment construction. [Processing instructions](docs/processing-instruction.md)
 now add construction, the Document factory, target and CharacterData data/length
-accessors. Complete interface members and Document reflection remain unfinished. The
+accessors. Five [CharacterData methods](docs/character-data.md) add UTF-16
+substring and checked append, insert, delete and replace operations. Complete
+interface members and Document reflection remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate

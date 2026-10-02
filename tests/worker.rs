@@ -317,7 +317,21 @@ fn assert_six_scripted_samples_through_worker_with_result_text(
     generation: u64,
     result_text: Option<[&str; 2]>,
 ) {
-    use eris::graphics::{Canvas, Color, Fonts};
+    assert_six_scripted_samples_through_worker_with_result_rendering(
+        source,
+        generation,
+        result_text,
+        false,
+    );
+}
+
+fn assert_six_scripted_samples_through_worker_with_result_rendering(
+    source: &str,
+    generation: u64,
+    result_text: Option<[&str; 2]>,
+    check_text_commands: bool,
+) {
+    use eris::graphics::{Canvas, Color, DrawCommand, Fonts};
     let fixture = Fixture::new(source);
     let mut client = fixture.spawn(true, generation);
     load(&mut client, &fixture.navigation);
@@ -363,15 +377,24 @@ fn assert_six_scripted_samples_through_worker_with_result_text(
             "{:?}",
             snapshot.diagnostics
         );
+        let direct_layout = direct.layout(320.0, 240.0, &fonts);
+        if check_text_commands {
+            let expected = result_text.expect("text commands require expected result text")[index];
+            for (route, commands) in [
+                ("direct", &direct_layout.commands),
+                ("worker", &snapshot.layout.commands),
+            ] {
+                assert!(
+                    commands.iter().any(
+                        |command| matches!(command, DrawCommand::Text { text, .. } if text == expected)
+                    ),
+                    "{route} result text must reach a draw command in {state}"
+                );
+            }
+        }
         let mut expected = Canvas::new(320, 240).unwrap();
         expected.clear(Color::WHITE);
-        expected.paint(
-            &direct.layout(320.0, 240.0, &fonts).commands,
-            &fonts,
-            &direct.images,
-            0.0,
-            0.0,
-        );
+        expected.paint(&direct_layout.commands, &fonts, &direct.images, 0.0, 0.0);
         let mut actual = Canvas::new(320, 240).unwrap();
         actual.clear(Color::WHITE);
         actual.paint(
@@ -2141,5 +2164,16 @@ fn confined_processing_instruction_and_character_data_survive_page_callbacks() {
         include_str!("fixtures/processing-instruction.html"),
         202,
         Some(["ready", "6"]),
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_character_data_methods_update_connected_text_and_pixels_through_callbacks() {
+    assert_six_scripted_samples_through_worker_with_result_rendering(
+        include_str!("fixtures/character-data.html"),
+        203,
+        Some(["ready", "6"]),
+        true,
     );
 }

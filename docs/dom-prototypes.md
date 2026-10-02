@@ -47,8 +47,9 @@ function identity. Static node mapping returns the same index directly. New
 global bindings use one admitted sorted merge; creation order remains independent
 of map order. At the prototype checkpoint, raw bootstrap left 11,133 of 100,000
 work units and charged 1,746,193 cumulative bytes, with 663 objects. The
-processing-instruction members bring these measurements to 9,511 remaining
-units, 1,761,677 bytes and 668 objects. Successful initialization grants
+processing-instruction members brought these measurements to 9,511 remaining
+units, 1,761,677 bytes and 668 objects. The five CharacterData methods now leave
+8,246 units and charge 1,777,574 bytes, with 673 objects. Successful initialization grants
 the existing author allowance; it never resets the cumulative heap ledger.
 
 The comprehensive original JavaScript fixture still exceeds the fixed author
