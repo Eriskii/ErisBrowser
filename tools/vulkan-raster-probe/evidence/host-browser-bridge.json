@@ -60,6 +60,12 @@
   "production_security_claimed": false,
   "chromium_performance_target_demonstrated": false,
   "remote_ci": {
-    "status": "pending publication"
+    "status": "completed",
+    "conclusion": "success",
+    "commit": "5ad2cfd3582f92f8368a0a0fa2fd3bb7dd7af2f0",
+    "jobs": 7,
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36962835734",
+    "record": "host-browser-bridge-ci.json",
+    "sha256": "2645316f09ddb83dae28734e6c3721b622498507a85f28e0413ddf15dd7998fe"
   }
 }

@@ -50,8 +50,11 @@ browser runtime source change. Native window rendering, text, rounded geometry,
 group opacity, broader web compatibility, production security and performance
 within 30% of Chromium remain open. Existing browser conformance and CPU pixel
 results retain their earlier attribution; no new full-browser suite is claimed
-as part of the local bridge checks. Remote CI is pending publication of this
-checkpoint.
+as part of the local bridge checks. All seven
+[remote CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/36962835734)
+passed for published commit `5ad2cfd`; the
+[terminal record](../tools/vulkan-raster-probe/evidence/host-browser-bridge-ci.json)
+includes the full job and step results.
 
 ## ArrayBuffer storage, resizing, slicing and transfers
 
