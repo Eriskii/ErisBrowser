@@ -25,6 +25,12 @@ Typed arrays, BigInt codecs, shared memory, Proxy and foreign realms remain ahea
 closes two metadata-heavy local work stops without raising quotas;
 broader interpreter performance and accounting remain open work.
 
+The [Object.is preparation](../tests/conformance/object-is.md) freezes all 42
+upstream modes and 78 independent local modes before implementation. Original
+results and guarded controls expose the missing intrinsic. The scoped next
+change adds SameValue comparisons under existing budgets; distinct identities
+for Document and Element query methods remain a separate DOM follow-up.
+
 The [native GPU route](vulkan-native-window.md) now connects the custom shaders
 to the actual browser window behind `vulkan-raster`. Admitted loaded pages,
 overlays and chrome share one bounded plan. Normal shader frames require no CPU

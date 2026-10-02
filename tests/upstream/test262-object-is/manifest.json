@@ -1,0 +1,260 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all .js files in the complete recursive built-ins/Object/is subtree; original root-linked Git proofs; no implementation",
+  "directories": {
+    "Object/is": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "not-same-value-x-y-boolean.js",
+      "not-same-value-x-y-null.js",
+      "not-same-value-x-y-number.js",
+      "not-same-value-x-y-object.js",
+      "not-same-value-x-y-string.js",
+      "not-same-value-x-y-symbol.js",
+      "not-same-value-x-y-type.js",
+      "not-same-value-x-y-undefined.js",
+      "object-is.js",
+      "same-value-x-y-boolean.js",
+      "same-value-x-y-empty.js",
+      "same-value-x-y-null.js",
+      "same-value-x-y-number.js",
+      "same-value-x-y-object.js",
+      "same-value-x-y-string.js",
+      "same-value-x-y-symbol.js",
+      "same-value-x-y-undefined.js",
+      "symbol-object-is-same-value.js"
+    ]
+  },
+  "test_files": 21,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Object/is/length.js",
+      "upstream_path": "test/built-ins/Object/is/length.js",
+      "bytes": 408,
+      "sha256": "8e71b4fa74a5cced4c5d2990917bb9f94e01d6ba4f8122278c9afd53c02e6aab"
+    },
+    {
+      "path": "test/built-ins/Object/is/name.js",
+      "upstream_path": "test/built-ins/Object/is/name.js",
+      "bytes": 409,
+      "sha256": "77b51ea1237bfa9068aebceacd3e1504acbc3a85c643dcbf587a8038b902b2a1"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/is/not-a-constructor.js",
+      "bytes": 851,
+      "sha256": "277565db20a5f2d688f2625b8e46ce77032c4374c1b1771c71bd18783cae04d4"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-boolean.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-boolean.js",
+      "bytes": 1749,
+      "sha256": "0d0b4dc487cc9c6e73459c814417b0316f5a4ead5e184f5a9796d64f28cb7db6"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-null.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-null.js",
+      "bytes": 552,
+      "sha256": "fb26906ab614a792d1e6df97dafdced0479b2f3b9e14fec4e68e20d255d8ff2b"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-number.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-number.js",
+      "bytes": 838,
+      "sha256": "5a82cbae041cd66a7567bf90714b7300d5eb6311dc10c187b21656abc9623012"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-object.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-object.js",
+      "bytes": 895,
+      "sha256": "d1df9c806eed1717df607427e91a12367723eb257636d78addb04d5425f022e5"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-string.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-string.js",
+      "bytes": 1001,
+      "sha256": "7bed8b4a32835d6860dc1ff0ca1f9282728f4ce5bd8be5425cd0139b777ae758"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-symbol.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-symbol.js",
+      "bytes": 669,
+      "sha256": "83d95a61841432dd9480fdf6394913fd960020ac5535f71b60b5070871b6a9d8"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-type.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-type.js",
+      "bytes": 2758,
+      "sha256": "6e631af09a024b43e236025fd5ee7c088c894f537a36bfdc09221f4b427f75de"
+    },
+    {
+      "path": "test/built-ins/Object/is/not-same-value-x-y-undefined.js",
+      "upstream_path": "test/built-ins/Object/is/not-same-value-x-y-undefined.js",
+      "bytes": 407,
+      "sha256": "9d9186def02d058a0f7b72079be9f381c1b81102f83abf572364875226d1ed6c"
+    },
+    {
+      "path": "test/built-ins/Object/is/object-is.js",
+      "upstream_path": "test/built-ins/Object/is/object-is.js",
+      "bytes": 437,
+      "sha256": "e327fc8e4e17a7e9280035f4c37cf5689aecfaad0e571e69171beddfeacbe643"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-boolean.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-boolean.js",
+      "bytes": 566,
+      "sha256": "977c78fed59e1045a421951e80019a384d9985e3393cc56565fcaeb3a4f8c5a5"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-empty.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-empty.js",
+      "bytes": 375,
+      "sha256": "f5268070bb143747a3a4f684500937a846e33de2e472281df6e0b2bd9ab5a874"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-null.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-null.js",
+      "bytes": 461,
+      "sha256": "80e1939420c1779e78cf57c0cf1e55962a3381c62730e0708373b3b5c9001813"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-number.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-number.js",
+      "bytes": 814,
+      "sha256": "c940cae08c7b92722e9528daeded8688bc221e6636061d21171efccb0f61cac1"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-object.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-object.js",
+      "bytes": 876,
+      "sha256": "f88693a36826bdec7fb2febd4f080356ed2ee56e29d531f0cb0e749622d562c1"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-string.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-string.js",
+      "bytes": 788,
+      "sha256": "a47bbe26679f7b09146c4b5f5a42e62b210652cb5007b77352f9332ed2cd2bc2"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-symbol.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-symbol.js",
+      "bytes": 591,
+      "sha256": "c36f362334baa2c471e91330897c6ae5b10d7fa76a577d2ac3abc6203b7cb440"
+    },
+    {
+      "path": "test/built-ins/Object/is/same-value-x-y-undefined.js",
+      "upstream_path": "test/built-ins/Object/is/same-value-x-y-undefined.js",
+      "bytes": 502,
+      "sha256": "be8c13dc002f56c638b82d6e3ef766dcf24153882b220f99c4750fb8d81f89cd"
+    },
+    {
+      "path": "test/built-ins/Object/is/symbol-object-is-same-value.js",
+      "upstream_path": "test/built-ins/Object/is/symbol-object-is-same-value.js",
+      "bytes": 568,
+      "sha256": "6dd6e921745e7f43faef8ff56055383aecf7f5caf565daaadfb3dae20c1a4611"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-root-linked-recursive-git-subtrees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "prefix": "test/built-ins",
+    "subtree_trees": {
+      "Object/is": "04a0f3e25947dbc1100ba4b4138765366d9704b4"
+    },
+    "directory_trees": {
+      "Object/is": "04a0f3e25947dbc1100ba4b4138765366d9704b4"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/recursive-04a0f3e25947dbc1100ba4b4138765366d9704b4.json",
+        "bytes": 4939,
+        "sha256": "90d6653b7a6996ba2774e4c19bab1ae2e4adf3f1c1e55b9131865b2220e7b538",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/04a0f3e25947dbc1100ba4b4138765366d9704b4?recursive=1"
+      },
+      {
+        "path": "inventory-proof/tree-0d01cdef5daae0a168799f8e263ba72ed0dd475f.json",
+        "bytes": 18712,
+        "sha256": "971407f49f2ae7670feaf0c0ba20e77a7a5d5c69b2187e1d6563766e91769ba9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/0d01cdef5daae0a168799f8e263ba72ed0dd475f"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      }
+    ]
+  }
+}

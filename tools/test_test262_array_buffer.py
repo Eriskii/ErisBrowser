@@ -189,7 +189,7 @@ class ArrayBufferCorpusTests(unittest.TestCase):
                 with self.assertRaises(ValueError): runner.load_corpus(dest, PROFILE)
 
     def test_all_41_previous_profile_contracts_are_byte_identical(self):
-        contract = capture_contracts(excluded={'data-view', PROFILE})
+        contract = capture_contracts(excluded={'object-is', 'data-view', PROFILE})
         self.assertEqual(contract['counts'], dict(profiles=41, cases=18121, preflights=4092))
         self.assertEqual(runner.digest(canonical(contract)),
                          '7e56c9b8281e5e2944dc0d70d96a8ddeaf6f7769074561e6da53abc65191cceb')

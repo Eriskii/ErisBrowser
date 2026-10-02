@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "phase": "Preparation; no Object.is runtime implementation",
+  "parent_commit": "f55911e2fd3ead3f42fa59718016c215b6c4a48f",
+  "archive": {
+    "path": "records.tar.gz",
+    "bytes": 3143534,
+    "sha256": "04dc587dfd23dfefed7859b4df3aff472c95048f23d122e75ac33db4c2744d5b"
+  },
+  "manifest_sha256": "5b5c527257d8012cce75eb6f601f26541a6d1209a9feab487e4ed2a8bd55e3eb",
+  "payloads": 198,
+  "raw_bytes": 23929475,
+  "upstream": {
+    "sources": 21,
+    "cases": 42,
+    "controls": 80,
+    "exclusions": 0,
+    "report": "formal-before/object-is.json"
+  },
+  "local": {
+    "sources": 39,
+    "cases": 78,
+    "feature_controls": 48,
+    "common_controls": 12,
+    "report": "local-before/report.json"
+  },
+  "omissions": [
+    {
+      "path": "spec/abstract-operations.html",
+      "bytes": 876706,
+      "sha256": "e14cf12aa61b732c7177492845556a7db0ebb812990d301a1ad38820dfb7484c",
+      "reason": "Full specification page remains in scratch; linked section and page hashes retained."
+    },
+    {
+      "path": "spec/ecmascript-data-types-and-values.html",
+      "bytes": 923385,
+      "sha256": "3d6b80c0eec3ba6c736c95cd2b93da4387a40c5f7466c8f7637ac381e2c2633a",
+      "reason": "Full specification page remains in scratch; linked section and page hashes retained."
+    },
+    {
+      "path": "spec/ecmascript-standard-built-in-objects.html",
+      "bytes": 584107,
+      "sha256": "45ae28f32b493a491447e31be4b414a9d985f5c5b52b7ac97548e344c39b9a61",
+      "reason": "Full specification page remains in scratch; linked section and page hashes retained."
+    },
+    {
+      "path": "spec/fundamental-objects.html",
+      "bytes": 766037,
+      "sha256": "54a300a6c436b37408dd8e4bad7bd640a77093c238b89caca0d00cdbf5b6f6dc",
+      "reason": "Full specification page remains in scratch; linked section and page hashes retained."
+    }
+  ],
+  "provenance": [
+    "Original and corrected drafts, static errors and reviewer retractions are retained.",
+    "Complete current runtime source archive and executable hashes bind the published DataView parent; binaries are not repackaged.",
+    "No prior contract, baseline, source expectation, or execution quota changes."
+  ],
+  "before_results_review": {
+    "path": "records.tar.gz:layout-before-results-review.json",
+    "sha256": "69a596204f3380248e7ebe636a5a7382eeca8bd98f924117ab3bf59657f668de"
+  }
+}

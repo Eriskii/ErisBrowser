@@ -55,6 +55,7 @@ REGEXP_MATCH_SEARCH_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_DESCRIPTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_PREDICATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 OBJECT_INTEGRITY_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
+OBJECT_IS_FEATURES = OBJECT_INTEGRITY_FEATURES | {'Object.is'}
 DATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 FOR_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'for-of', 'let', 'const'}
 CORE_ITERATOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'Array.prototype.values'}
@@ -75,7 +76,7 @@ ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'object-is': OBJECT_IS_FEATURES, 'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -202,13 +203,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -519,6 +520,30 @@ def core_iterator_preflight_variants():
     return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def object_is_preflight_variants():
+    """Exact independent Object.is pairs; original positive/wrong IDs are retained."""
+    guard = "assert.sameValue(typeof Object.is,'function');assert.sameValue(Object.is(NaN,NaN),true);assert.sameValue(Object.is(0,-0),false);\n"
+    pairs = [
+        ('nan', '', 'Object.is(NaN,0/0)', 'true', 'false'),
+        ('signed-zero', '', 'Object.is(0,-0)', 'false', 'true'),
+        ('missing', '', 'Object.is()', 'true', 'false'),
+        ('different-type', '', "Object.is(1,'1')", 'false', 'true'),
+        ('utf16', "var a='\\uD800',b='\\uDC00';", 'Object.is(a,b)', 'false', 'true'),
+        ('object-identity', 'var a={};', 'Object.is(a,a)', 'true', 'false'),
+        ('distinct-arrays', '', 'Object.is([],[])', 'false', 'true'),
+        ('symbol-identity', "var a=Symbol('x'),b=Symbol('x');", 'Object.is(a,b)', 'false', 'true'),
+        ('no-coercion', "var n=0,a={valueOf:function(){n++;throw 'bad';}};assert.sameValue(Object.is(a,1),false);", 'n', '0', '1'),
+        ('native-alias', "assert.sameValue(typeof parseInt,'function');assert.sameValue(typeof Number.parseInt,'function');", 'Object.is(parseInt,Number.parseInt)', 'true', 'false'),
+        ('receiver-ignored', '', 'Object.is.call(null,NaN,NaN)', 'true', 'false'),
+        ('metadata', "var d=Object.getOwnPropertyDescriptor(Object,'is');", 'd.enumerable', 'false', 'true'),
+    ]
+    return [('object-is-' + name + '-' + variant,
+             guard + setup + '\n' + f'assert.sameValue({actual},{value});', expected, mode)
+            for name, setup, actual, good, bad in pairs
+            for variant, value, expected in (('positive', good, 'passed'), ('wrong', bad, 'failed'))
+            for mode in ('sloppy', 'strict')]
 
 
 def data_view_preflight_variants():
@@ -2281,6 +2306,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         variants += array_buffer_preflight_variants()
     if profile == 'data-view':
         variants += data_view_preflight_variants()
+    if profile == 'object-is':
+        variants += object_is_preflight_variants()
     if profile == 'array-concat':
         variants += array_concat_preflight_variants()
     if profile == 'array-splice':
@@ -2312,6 +2339,20 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         for item in outcomes:
             if item['name'].startswith(profile + '-') and item['name'].endswith('-mismatch'):
                 partner = positives[(item['name'].removesuffix('-mismatch'), item['result']['mode'])]
+                result = partner['result']
+                item['prerequisite'] = dict(name=partner['name'], mode=result['mode'],
+                    case_sha256=result['case_sha256'], source_sha256=result['source_sha256'],
+                    expected=partner['expected'], verified=partner['verified'])
+                item['verified'] = item['verified'] and partner['verified']
+    if profile == 'object-is':
+        # Preserve the independently authored positive/wrong names and require
+        # the positive source to succeed in the same mode before verifying it.
+        positives = {(item['name'], item['result']['mode']): item for item in outcomes
+                     if item['name'].startswith('object-is-') and item['expected'] == 'passed'}
+        for item in outcomes:
+            if item['name'].startswith('object-is-') and item['name'].endswith('-wrong'):
+                partner = positives[(item['name'].removesuffix('-wrong') + '-positive',
+                                     item['result']['mode'])]
                 result = partner['result']
                 item['prerequisite'] = dict(name=partner['name'], mode=result['mode'],
                     case_sha256=result['case_sha256'], source_sha256=result['source_sha256'],
