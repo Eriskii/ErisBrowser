@@ -1,5 +1,45 @@
 # Validation record
 
+## Native frame prerequisites
+
+The reusable core adds a closed `Profile::Native` alongside the unchanged Probe
+policy. Native plans admit up to 1280×1024, with 16 MiB of explicit planned
+buffers and the existing four-million invocation ceiling. Both limits include
+the padded surface-conversion buffer, its 16-byte uniform and its complete
+dispatch. Original command, scope, image and mask limits remain in force.
+
+Rounded preparation computes geometry-only coverage using the CPU painter's
+exact arithmetic, including fractional clipping, radius clamping and coverage
+below 255 for radii below 0.5. It exposes a checked work/storage estimate before
+fallible allocation. GPU kernels apply color and ordered blending. The new
+conversion kernel emits opaque BGRA/RGBA words into padded rows, owns the source
+frame until completion, and never receives expected pixels or performs readback.
+
+Both Rust 1.88 and 1.98 pass formatting, strict all-target Clippy and **66 core
+default / 77 core GPU test groups**; the probe passes **6 default / 14 feature
+groups**, and all **28 browser adapter groups** pass. Seven new Python host tests
+cover strict protocol handling and mocked process outcomes. Initial compilation
+caught a test-only u32 cast and two redundant conversions of wgpu's u64 limits;
+those were corrected before GPU execution. Review also corrected the host's
+bytes-to-text decoding before the first real run.
+
+All **11 cases × two byte formats × three adapters** pass complete active-pixel
+and alpha comparison: **81,393,120 GPU-compared bytes**. This comprises
+**56,471,520 bytes from independent literal geometry/coverage references** and
+**24,921,600 bytes from the existing Canvas painting a normal-sized address bar**.
+The latter is a CPU differential reference, not an independent rounded oracle.
+Padding is allocated/accounted but excluded from pixel counts. Existing 30-case
+rectangle/image/alpha and 26-case glyph suites also pass all three adapters,
+adding **3,799,728 regression bytes**. Every process exits zero with empty stderr;
+eight new/glyph processes have complete subreaper cleanup, while the four old
+standalone processes retain their existing process-group supervision contract.
+
+The [evidence](../tools/vulkan-raster-probe/evidence/host-native-prerequisites.json)
+binds sources, binaries, initial correction and host runs. The new checker is
+offscreen: it acquires no window surface, runs no renderer worker and establishes
+no native-browser or performance result. Native scene construction and actual
+surface integration remain unfinished.
+
 ## Browser-owned raster adapter
 
 The optional root `raster-bridge` feature now exposes the existing display-list
@@ -25,6 +65,10 @@ only the checker consumes the relocated adapter. See the
 [source-bound evidence](../tools/vulkan-raster-probe/evidence/host-adapter-relocation.json).
 This makes the adapter available to native integration; native scenes, rounded
 geometry, broader frame budgets and GPU presentation remain unfinished.
+All seven [CI jobs for `6aa7daa`](https://github.com/Eriskii/ErisBrowser/actions/runs/36971638243)
+passed, including explicit discovery/execution of the moved tests; the
+[terminal result](../tools/vulkan-raster-probe/evidence/host-adapter-relocation-ci.json)
+is retained.
 
 ## Reusable raster core
 

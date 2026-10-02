@@ -1,0 +1,17 @@
+{
+  "reason": "wgpu30 binding limits are u64; remove redundant conversions and incorrect test-only u32 cast",
+  "changes": [
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "before": "5adc2fc351814bf5f08c1c47129b7b68758f3d3a99a983b65e63a4bbee56fb0f",
+      "after": "a8057e3641f98120a7a4e3bd4445facf814cad51f0490cf50a7c7090e4575869"
+    },
+    {
+      "path": "crates/raster-core/src/surface_tests.rs",
+      "before": "b02462ed7ea2fcbfa758cc5502f7c72e2912b62cb5ee1ad216182b3d8b41a8d6",
+      "after": "0c2a5cf68bc28fcf2f3ede54142616dc7d18193b55bbf7ea91783a915d358543"
+    }
+  ],
+  "successful_default_checks_retained_from": "/tmp/eris-native-prerequisites-1",
+  "default_core_groups": 66
+}

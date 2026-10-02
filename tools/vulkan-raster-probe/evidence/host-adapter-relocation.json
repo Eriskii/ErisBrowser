@@ -62,7 +62,13 @@
   "chromium_performance_target_demonstrated": false,
   "artifact_index": "adapter-relocation/index.json",
   "remote_ci": {
-    "status": "pending publication"
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": 7,
+    "run_id": 36971638243,
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36971638243",
+    "record": "host-adapter-relocation-ci.json",
+    "sha256": "2b2dccaa1248fd7e2d05ca3d07911548882c16bc6e48d28d9fc749fc2f751b2f"
   },
   "artifact_index_sha256": "f84f5d5b9e4a376b64c21c8dbe79ff02951b1eb9d0150bf3c76301f40ba0bc59",
   "artifact_publication": {

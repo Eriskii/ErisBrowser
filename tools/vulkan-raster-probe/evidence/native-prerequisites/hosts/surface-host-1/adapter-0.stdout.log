@@ -1,0 +1,26 @@
+ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name="NVIDIA GeForce RTX 4070 SUPER" driver="NVIDIA" info="595.99.02"
+ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name="AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)" driver="radv" info="Mesa 26.2.3"
+ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name="llvmpipe (LLVM 21.1.8, 256 bits)" driver="llvmpipe" info="Mesa 26.2.3 (LLVM 21.1.8)"
+PASS round-corner format=Bgra8Unorm width=2 height=2 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=1080 compared_bytes=16 reference=literal-coverage exact=true
+PASS round-corner format=Rgba8Unorm width=2 height=2 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=1080 compared_bytes=16 reference=literal-coverage exact=true
+PASS round-alpha-twice format=Bgra8Unorm width=2 height=2 draws=3 raster_invocations=192 conversion_invocations=64 planned_bytes=1336 compared_bytes=16 reference=literal-coverage exact=true
+PASS round-alpha-twice format=Rgba8Unorm width=2 height=2 draws=3 raster_invocations=192 conversion_invocations=64 planned_bytes=1336 compared_bytes=16 reference=literal-coverage exact=true
+PASS round-clamped format=Bgra8Unorm width=2 height=2 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=1080 compared_bytes=16 reference=literal-coverage exact=true
+PASS round-clamped format=Rgba8Unorm width=2 height=2 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=1080 compared_bytes=16 reference=literal-coverage exact=true
+PASS round-quarter format=Bgra8Unorm width=1 height=1 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=796 compared_bytes=4 reference=literal-coverage exact=true
+PASS round-quarter format=Rgba8Unorm width=1 height=1 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=796 compared_bytes=4 reference=literal-coverage exact=true
+PASS round-fractional format=Bgra8Unorm width=2 height=1 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=804 compared_bytes=8 reference=literal-coverage exact=true
+PASS round-fractional format=Rgba8Unorm width=2 height=1 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=804 compared_bytes=8 reference=literal-coverage exact=true
+PASS round-clipped format=Bgra8Unorm width=2 height=1 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=800 compared_bytes=8 reference=literal-coverage exact=true
+PASS round-clipped format=Rgba8Unorm width=2 height=1 draws=2 raster_invocations=128 conversion_invocations=64 planned_bytes=800 compared_bytes=8 reference=literal-coverage exact=true
+PASS asymmetric-colors format=Bgra8Unorm width=3 height=2 draws=7 raster_invocations=448 conversion_invocations=64 planned_bytes=2344 compared_bytes=24 reference=literal-geometry exact=true
+PASS asymmetric-colors format=Rgba8Unorm width=3 height=2 draws=7 raster_invocations=448 conversion_invocations=64 planned_bytes=2344 compared_bytes=24 reference=literal-geometry exact=true
+PASS desktop-padded format=Bgra8Unorm width=1180 height=880 draws=2 raster_invocations=1042304 conversion_invocations=1041920 planned_bytes=8434448 compared_bytes=4153600 reference=literal-geometry exact=true
+PASS desktop-padded format=Rgba8Unorm width=1180 height=880 draws=2 raster_invocations=1042304 conversion_invocations=1041920 planned_bytes=8434448 compared_bytes=4153600 reference=literal-geometry exact=true
+PASS native-maximum format=Bgra8Unorm width=1280 height=1024 draws=1 raster_invocations=1310720 conversion_invocations=1310720 planned_bytes=10486032 compared_bytes=5242880 reference=literal-geometry exact=true
+PASS native-maximum format=Rgba8Unorm width=1280 height=1024 draws=1 raster_invocations=1310720 conversion_invocations=1310720 planned_bytes=10486032 compared_bytes=5242880 reference=literal-geometry exact=true
+PASS odd-width-last-pixel format=Bgra8Unorm width=1279 height=3 draws=2 raster_invocations=10304 conversion_invocations=10240 planned_bytes=31236 compared_bytes=15348 reference=literal-geometry exact=true
+PASS odd-width-last-pixel format=Rgba8Unorm width=1279 height=3 draws=2 raster_invocations=10304 conversion_invocations=10240 planned_bytes=31236 compared_bytes=15348 reference=literal-geometry exact=true
+PASS desktop-address-bar format=Bgra8Unorm width=1180 height=880 draws=2 raster_invocations=1081280 conversion_invocations=1041920 planned_bytes=8568408 compared_bytes=4153600 reference=Canvas-differential exact=true
+PASS desktop-address-bar format=Rgba8Unorm width=1180 height=880 draws=2 raster_invocations=1081280 conversion_invocations=1041920 planned_bytes=8568408 compared_bytes=4153600 reference=Canvas-differential exact=true
+COMPLETE adapter=0 cases=11 formats=2 compared_bytes=27131040 offscreen=true acquired_surface=false exact=true

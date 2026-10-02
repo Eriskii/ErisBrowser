@@ -13,6 +13,11 @@ default = []
 browser-bridge = ["dep:eris", "eris/raster-bridge"]
 
 [[bin]]
+name = "eris-vulkan-surface-check"
+path = "src/bin/surface-check.rs"
+required-features = ["browser-bridge"]
+
+[[bin]]
 name = "eris-vulkan-browser-check"
 path = "src/bin/browser-check.rs"
 required-features = ["browser-bridge"]

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "subject": "Native profile, exact geometry coverage, and integer padded surface conversion prerequisites",
+  "parent_commit": "6aa7daa07573383f8789968ae8e178a4f3ce1b1d",
+  "source_files": 192,
+  "source_manifest_sha256": "cd0ae11b2a7939d881c45c7afa7793a0526ca6101acb8243c50850ec668f2f67",
+  "native_profile": {
+    "max_width": 1280,
+    "max_height": 1024,
+    "planned_gpu_bytes": 16777216,
+    "total_invocations_including_conversion": 4000000,
+    "conversion_rows_alignment": 256,
+    "conversion_uniform_bytes": 16,
+    "probe_policy_unchanged": true,
+    "other_input_limits_unchanged": true
+  },
+  "rounded_preparation": "bounded exact CPU geometry-only coverage, integer GPU color/compositing; no full GPU geometry claim",
+  "converted_frame_owns_source_and_conversion_through_completion": true,
+  "production_conversion_has_no_expected_pixels_readback_or_submission": true,
+  "rust": {
+    "toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "strict_all_target_clippy_and_formatting": true,
+    "core_default_groups": 66,
+    "core_gpu_groups": 77,
+    "probe_default_groups": 6,
+    "probe_browser_feature_groups": 14,
+    "root_bridge_groups": 28,
+    "initial_failure": "wgpu30 binding limits are u64; two redundant conversions and one test-only u32 cast corrected before GPU execution",
+    "default_results_retained_from_initial_attempt": true
+  },
+  "new_python_host_groups": 7,
+  "host_decoding_seam_corrected_before_gpu": true,
+  "locks_unchanged": true,
+  "gpu_suites": [
+    {
+      "suite": "surface-host-1",
+      "host_results_sha256": "429fa0a65b4cee63ee5b494b230264685bc607b09282ae5a9b048b0d075a8065",
+      "adapter_count": 3,
+      "gpu_compared_bytes": 81393120
+    },
+    {
+      "suite": "standalone-host-1",
+      "host_results_sha256": "2a233d605cd2e4f791d3bd99d93c8fbebafa1d9cb50ca46f3632261db3f108e2",
+      "adapter_count": 3,
+      "gpu_compared_bytes": 2764860
+    },
+    {
+      "suite": "glyph-host-1",
+      "host_results_sha256": "2490192cefd841cb64674093e4d90dbbab13b9be14fe12bf0b2942ce70fa9291",
+      "adapter_count": 3,
+      "gpu_compared_bytes": 1034868
+    }
+  ],
+  "surface_comparison": {
+    "cases_per_adapter": 11,
+    "formats_per_case": 2,
+    "gpu_bytes": 81393120,
+    "independent_literal_reference_bytes": 56471520,
+    "Canvas_address_bar_differential_bytes": 24921600,
+    "padding_included_in_comparison_count": false,
+    "acquired_surface": false
+  },
+  "total_gpu_compared_bytes": 85192848,
+  "supervision": {
+    "subreaper_clean_processes": 8,
+    "legacy_process_group_processes": 4,
+    "all_exit_zero_empty_stderr": true,
+    "worker_capture_grants": 0
+  },
+  "native_browser_rendering": false,
+  "full_web_compatibility": false,
+  "production_security_claimed": false,
+  "chromium_performance_target_demonstrated": false,
+  "artifact_index": "native-prerequisites/index.json",
+  "remote_ci": {
+    "status": "pending publication"
+  },
+  "artifact_index_sha256": "8d02703f3f2fc82d6526acaa98162fa25d9a4d52a98284198a55557ab0f915f7",
+  "artifact_publication": {
+    "path": "native-prerequisites/publication.json",
+    "sha256": "08f52870dc8cc498fb8dc915227ffe215160c6f9b258ddd447964ebfa10c6065"
+  }
+}

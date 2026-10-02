@@ -21,16 +21,16 @@ impl Wake for ThreadWake {
         self.0.unpark();
     }
 }
-struct Deadline(Instant);
+pub(crate) struct Deadline(pub(crate) Instant);
 impl Deadline {
-    fn remaining(&self) -> Result<Duration> {
+    pub(crate) fn remaining(&self) -> Result<Duration> {
         self.0
             .checked_duration_since(Instant::now())
             .filter(|d| !d.is_zero())
             .map(|d| d.min(API_TIMEOUT))
             .ok_or_else(|| "whole application deadline".into())
     }
-    fn wait<F: Future>(&self, future: F) -> Result<F::Output> {
+    pub(crate) fn wait<F: Future>(&self, future: F) -> Result<F::Output> {
         let until = Instant::now() + self.remaining()?;
         let waker = Waker::from(Arc::new(ThreadWake(thread::current())));
         let mut context = Context::from_waker(&waker);

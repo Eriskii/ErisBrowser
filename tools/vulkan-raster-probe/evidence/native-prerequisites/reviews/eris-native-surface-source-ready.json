@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "source held for root freeze and first compilation",
+  "scope": "Only three new surface conversion files authored; no prior core/probe/native source modified by this owner.",
+  "files": [
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "bytes": 16159,
+      "sha256": "5adc2fc351814bf5f08c1c47129b7b68758f3d3a99a983b65e63a4bbee56fb0f"
+    },
+    {
+      "path": "crates/raster-core/src/surface.wgsl",
+      "bytes": 1077,
+      "sha256": "8b58a0ad05a2c7721da1891c18e9dc33b84ce1ef6abff818a8ed901321748def"
+    },
+    {
+      "path": "crates/raster-core/src/surface_tests.rs",
+      "bytes": 10476,
+      "sha256": "b02462ed7ea2fcbfa758cc5502f7c72e2912b62cb5ee1ad216182b3d8b41a8d6"
+    }
+  ],
+  "integration_inputs": [
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "bytes": 25993,
+      "sha256": "276590bb66028d4383fc03c73ca01d7908b724feb1238e5165d3f284cc4369df"
+    },
+    {
+      "path": "crates/raster-core/src/profile.rs",
+      "bytes": 3825,
+      "sha256": "6ab8d215d4e90603814f892f4e3d81d1a7ec03dd184e283e905852a69a1bc86a"
+    },
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "bytes": 21803,
+      "sha256": "6897765438995db542e40a2f91223a597c3dcc2e2bb8dd89beca1576050a9f69"
+    }
+  ],
+  "private_groups": [
+    "surface_requires_native_reservation_and_only_two_unorm_formats",
+    "surface_rows_cross_alignment_boundaries_without_charging_padding_as_pixels",
+    "surface_native_maximum_and_normal_window_have_exact_combined_storage",
+    "surface_shape_and_reserved_storage_fail_before_any_device_is_needed",
+    "surface_total_cap_and_conversion_work_are_not_independent_allowances",
+    "surface_uniform_literals_define_channel_order_stride_and_opaque_targets",
+    "surface_device_preflight_checks_each_required_limit_before_allocation"
+  ],
+  "contract": {
+    "profile": "Native only",
+    "formats": [
+      "Bgra8Unorm",
+      "Rgba8Unorm"
+    ],
+    "row_alignment": 256,
+    "uniform_bytes": 16,
+    "ownership": "ConvertedFrame owns EncodedFrame, output, uniform, bindings and Arc pipeline; explicit destruction requires caller-proved completion.",
+    "submission": "caller owns encoder, device/queue identity, scopes, staged-write retirement, submission and completion",
+    "reserved_storage": "core-owned + padded destination + uniform16 exactly equals admitted native Plan bytes",
+    "reserved_work": "native padded 8x8 conversion work must match private Plan/EncodedFrame metadata; entire plan remains at most 4000000",
+    "no_surfaces_readback_or_cpu_pixels": true
+  },
+  "checks": {
+    "formatting": "Direct installed Rust1.88 rustfmt succeeded on owned Rust files. Initial rustup-shim attempt failed before formatting because rustup temporary directory was read-only; no compiler was run.",
+    "static_review": "Self-review complete; independent script review requested and pending separately.",
+    "builds_tests_engines_gpu_executed": false,
+    "channel_literals": "Pure tests validate host-selected shift metadata against independent byte literals; actual WGSL requires root-owned end-to-end execution."
+  }
+}

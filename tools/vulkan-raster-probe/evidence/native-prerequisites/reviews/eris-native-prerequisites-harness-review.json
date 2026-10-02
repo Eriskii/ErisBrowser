@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "kind": "bounded independent rounded and surface-check source review",
+  "files": [
+    {
+      "path": "crates/raster-core/src/rounded.rs",
+      "sha256": "b410aa8a65dae1b630c6bd951f3fac94c8bee074d9e89dccb6ba0ad1429eb6d4"
+    },
+    {
+      "path": "crates/raster-core/src/rounded_tests.rs",
+      "sha256": "a947006126aa5dc012b7e42253560013eb1c5b96425e2b2e8f39c73117d7a79a"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/surface_gpu.rs",
+      "sha256": "162d04ae22dd43d88c676cbd51f7add2545134ba8e57302750d68bcbb6dc1856"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/surface-check.rs",
+      "sha256": "db549d89cac285703eb78b4f1c45f9606f7b80789e5a12cdcdb6348329f0e657"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_surface_host.py",
+      "sha256": "60a35ad10b3cd51e62dbe11c7bab8c4a517a9b80ecc4a014efee91d7672d85f1"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_surface_host.py",
+      "sha256": "5cc00fc1d28aa648fc3608a6b753ddea50b9f7a624b2350d82b33f401a12af53"
+    }
+  ],
+  "result": "no unresolved concrete finding",
+  "findings": [
+    {
+      "status": "corrected before first execution",
+      "issue": "run_supervised returns bytes, while initial surface validator compared byte lines with string adapter records; original synthetic fixtures used only str.",
+      "correction": "Strict UTF-8 decode at validate_run entry and a mocked complete host test using supervised bytes; invalid UTF-8 refusal also checked in the held tests."
+    }
+  ],
+  "reviewed": [
+    "Rounded helper preserves Canvas f32 intersection, radius and coverage order, full loop debit versus cropped storage, typed zero disposition and caller preflight and fallible reserve ordering; 18 private groups inspected.",
+    "Six tiny RGB expectations agree with literal coverage/alpha arithmetic; desktop rectangle and odd-width last-pixel indexing agree with geometry.",
+    "Address-bar expected pixels are explicitly Canvas-differential; active pixel alpha is compared, padding is excluded from compared-byte counts.",
+    "Native allocation preflight includes padded conversion plus separately admitted readback before Vulkan creation and per-case encode.",
+    "ConvertedFrame retains both encoders' dependencies; explicit destruction follows completion and mapping. Errors do not become fallback passes.",
+    "Host requires complete protocol, clean statuses/cleanup and empty stderr, with binary/loader/host-source checks before and after each child."
+  ],
+  "limits": "Static source review only; no compiler/test/Canvas/worker/GPU execution by this reviewer. Final Rust checks and host runs are separately retained parent executions."
+}

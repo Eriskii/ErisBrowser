@@ -6,7 +6,7 @@ prepare fonts, start workers, create windows or select a graphics adapter.
 The default feature set has no external dependencies. The `gpu` feature adds
 the same pinned Vulkan/WGSL implementation used by the probe.
 
-The planner accepts rectangles, decoded images, glyph coverage and typed
+The planner accepts unrounded rectangles, decoded images, glyph coverage and typed
 clip/fixed scopes. It validates the complete input before producing an owned,
 immutable `Plan`. Existing limits, validation order, integer blending and
 floating-point coordinate arithmetic are preserved from the standalone probe.
@@ -14,6 +14,37 @@ floating-point coordinate arithmetic are preserved from the standalone probe.
 and bundled-font preparation belong to the separate browser adapter.
 Adapters using the shared `CoordinateState` must stop on any error and discard
 that state; failed scope operations are not a recoverable transaction.
+
+## Admission profiles and rounded coverage
+
+Existing `plan`, `plan_with_images`, `plan_with_masks` and
+`CoordinateState::new` select `Profile::Probe`. Their limits and encoded drawing
+bytes remain unchanged. The additive `plan_with_masks_for_profile` and
+`CoordinateState::new_for_profile` accept the closed `Profile` enum:
+
+| Limit | Probe | Native |
+| --- | --- | --- |
+| Maximum viewport | 320×240 | 1280×1024 |
+| Planned explicit GPU buffers | 1 MiB | 16 MiB |
+| Padded compute invocations | 4,000,000 | 4,000,000, including conversion |
+| Image lookup-table entries | 143,360 | 589,824 |
+
+Both profiles retain 256 commands, 32 typed scopes, 256 combined image/mask
+sources, 1 MiB of supplied image RGBA, 1,024 pixels per mask axis, 262,144
+aggregate coverage bytes and 65,536 row origins. The larger lookup-table bound
+is derived from viewport axes and command count; its storage remains charged.
+A Native viewport is an upper bound, not a promise that any scene at that size
+fits the other limits.
+
+`rounded::RoundedShape::prepare` validates already translated rectangle/clip
+geometry and computes placement, cropped coverage size and the full CPU loop
+debit without allocating a mask. Its disposition distinguishes empty geometry,
+zero radius and a positive-radius shape. `materialize` calls the caller's
+cumulative preflight before fallible coverage/row allocation. It preserves the
+CPU painter's floating-point coverage arithmetic and returns coverage plus
+absolute row origins for `Command::Glyph`; it never paints RGB. Zero radius
+must use the ordinary rectangle path. Positive-radius `Command::Rect` remains
+unsupported unless the caller explicitly performs this lowering.
 
 ## GPU ownership
 
@@ -25,17 +56,26 @@ The caller supplies cancellation/deadline checks before preparation and each
 draw, owns error scopes, and retains the returned frame resources until the
 submission completes. On encoding failure, discard the incomplete encoder.
 
-The output is packed `0x00RRGGBB`, with `STORAGE | COPY_SRC` usage and no
-`COPY_DST`. It still needs a presentation conversion pass before use with a
-native RGBA/BGRA surface. Explicit destruction does not wait for GPU completion;
-the caller must already have confirmed completion before requesting it.
+The raster output is packed `0x00RRGGBB`, with `STORAGE | COPY_SRC` usage and no
+`COPY_DST`. The `surface` module, also gated by `gpu`, converts a Native frame
+to padded `Bgra8Unorm` or `Rgba8Unorm` bytes with alpha 255. It performs no color
+space conversion and accepts neither sRGB formats nor Probe plans.
 
-`Plan::gpu_buffer_bytes()` retains the original allowance for **two** targets,
-parameters and optional input storage. A caller that does not allocate readback
-uses only one target, while retaining the stricter admission allowance. The
-probe allocates the second target separately and verifies that its readback
-plus core-owned buffer bytes exactly match the plan's allowance. These counters
-exclude opaque driver, pipeline, bind-group and staging allocations.
+Preflight `SurfaceLayout::for_plan` before raster encoding. Then append
+`SurfaceConverter::encode` in the same caller-owned encoder; it consumes the
+`EncodedFrame` and returns a `ConvertedFrame` owning both stages' resources.
+The caller handles submission, error scopes, cancellation, surface acquisition
+and any later texture copy. Explicit destruction does not wait for completion;
+the caller must already have confirmed completion of every use.
+
+Probe `Plan::gpu_buffer_bytes()` retains the original allowance for **two**
+packed targets, parameters and input storage. The probe allocates its readback
+separately and checks this total. Native instead reserves one packed target,
+the conversion destination with 256-byte-aligned rows, its 16-byte uniform,
+raster parameters and input storage. Native `Plan::invocations()` also includes
+one mandatory padded 8×8 conversion dispatch. Optional Native readback is
+additional caller-owned storage. These counters exclude opaque driver,
+pipeline, bind-group, staging and allocator overhead.
 
 ## Compatibility and tests
 
@@ -60,8 +100,13 @@ cargo test --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml --featu
 CPU-only tests do not initialize a graphics device. Actual Vulkan execution
 uses the separate supervised probe commands and their retained evidence.
 
-This extraction does not connect custom GPU rasterization to the browser
-window. The 320×240 viewport, operation, source, storage and work caps are
-unchanged. Rounded geometry, opacity groups, larger native scenes, presentation
-and broader web compatibility remain separate work; see the
+These APIs do not connect custom GPU rasterization to the browser window.
+The [native prerequisite checker](../../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
+exercises larger offscreen targets, rounded coverage and byte conversion.
+Its eleven cases pass in both formats on three Vulkan adapters, with
+81,393,120 bytes compared. Both Rust 1.88 and 1.98 pass 66 default and 77
+GPU-enabled core test groups; the initial GPU compilation correction and
+exact result logs remain in the linked evidence.
+Browser composition, acquired-surface presentation, opacity groups, broader
+compatibility and performance remain separate work; see the
 [native integration proposal](../../docs/vulkan-native-plan.md).

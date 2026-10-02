@@ -1,0 +1,208 @@
+[
+  {
+    "name": "core-fmt",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "fmt",
+      "--manifest-path",
+      "crates/raster-core/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.09189121797680855,
+    "log": "1.88.0-core-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "core-clippy-gpu",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "crates/raster-core/Cargo.toml",
+      "--all-targets",
+      "--features",
+      "gpu",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 0.7390338089317083,
+    "log": "1.88.0-core-clippy-gpu.log",
+    "sha256": "ec51a0ac441f248e1722ac96deb6bfdff26abb8e80ec33d0f490da70da237c01"
+  },
+  {
+    "name": "core-test-gpu",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "crates/raster-core/Cargo.toml",
+      "--features",
+      "gpu"
+    ],
+    "exit": 0,
+    "seconds": 2.237451563938521,
+    "log": "1.88.0-core-test-gpu.log",
+    "sha256": "e568dac965bd58fb2151539b4d3a0a1d814bc174f56fd784b22dd068ec31e1e2"
+  },
+  {
+    "name": "probe-fmt",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "fmt",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.09389848599676043,
+    "log": "1.88.0-probe-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "probe-clippy-default",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 0.6069427980110049,
+    "log": "1.88.0-probe-clippy-default.log",
+    "sha256": "b419148fd60999f4403af085e06bb9e7fb8e8888524f9fb8d28164d0ee45fde9"
+  },
+  {
+    "name": "probe-test-default",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml"
+    ],
+    "exit": 0,
+    "seconds": 1.957344138994813,
+    "log": "1.88.0-probe-test-default.log",
+    "sha256": "0d63c815da72fae33e1f4574e360afdd1ad782ee0609c363c4bc4f8c73fbea02"
+  },
+  {
+    "name": "probe-clippy-feature",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--all-targets",
+      "--features",
+      "browser-bridge",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 2.767619529971853,
+    "log": "1.88.0-probe-clippy-feature.log",
+    "sha256": "aa1e7eccbe826530331a171d0bd57c84be898c33048f9267d623658811e427a4"
+  },
+  {
+    "name": "probe-test-feature",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "seconds": 7.900695718009956,
+    "log": "1.88.0-probe-test-feature.log",
+    "sha256": "44f6ff4547ef0a1e1dbc46e5b0086127c88418be6eb63d9172b6bfd4301400e4"
+  },
+  {
+    "name": "probe-build-feature",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "build",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "seconds": 0.2052784760016948,
+    "log": "1.88.0-probe-build-feature.log",
+    "sha256": "1b06c206522a9ad6653edd56b1bb9e19254f4cd592480fbc8b10cbddc2b994e9"
+  },
+  {
+    "name": "root-bridge-clippy",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--all-targets",
+      "--features",
+      "raster-bridge",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 7.988339549978264,
+    "log": "1.88.0-root-bridge-clippy.log",
+    "sha256": "cff35d6e250220c8447dbc2ae8c418ae121232a47c77e8faf9b2204704b2520d"
+  },
+  {
+    "name": "root-bridge-tests",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--lib",
+      "--features",
+      "raster-bridge",
+      "graphics::raster_bridge::",
+      "--",
+      "--include-ignored"
+    ],
+    "exit": 0,
+    "seconds": 9.677306002005935,
+    "log": "1.88.0-root-bridge-tests.log",
+    "sha256": "be54a85ea5d6737da343930d77539cd1e522d982d5fb68031439fa7745bed088"
+  }
+]

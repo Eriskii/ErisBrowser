@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "status": "formatted and held; no compiler/unit/GPU execution",
+  "baseline": "6aa7daa07573383f8789968ae8e178a4f3ce1b1d",
+  "files": [
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "sha256": "276590bb66028d4383fc03c73ca01d7908b724feb1238e5165d3f284cc4369df",
+      "bytes": 25993
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "sha256": "0063bb14a2deb78d117971f0c7cfcc58c4c6617d45287526d5aab340c7482898",
+      "bytes": 3613
+    },
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "sha256": "6897765438995db542e40a2f91223a597c3dcc2e2bb8dd89beca1576050a9f69",
+      "bytes": 21803
+    },
+    {
+      "path": "crates/raster-core/src/profile.rs",
+      "sha256": "6ab8d215d4e90603814f892f4e3d81d1a7ec03dd184e283e905852a69a1bc86a",
+      "bytes": 3825
+    },
+    {
+      "path": "crates/raster-core/src/profile_tests.rs",
+      "sha256": "bb0e572cb15dae4e8659ff5793f3af0f7e1783b5e4624fee9aaf52dd9fffc537",
+      "bytes": 8254
+    }
+  ],
+  "static_preservation": {
+    "old_constants_unchanged": true,
+    "source_mask_and_glyph_coverage_bodies_unchanged": true,
+    "rectangle_coverage_sampling_and_serialization_unchanged": true,
+    "scope_apply_finish_unchanged": true,
+    "gpu_pipeline_body_unchanged": true,
+    "gpu_upload_and_dispatch_bodies_unchanged": true,
+    "rect_shader_unchanged": true,
+    "image_shader_unchanged": true,
+    "glyph_shader_unchanged": true
+  },
+  "api": {
+    "profile": "Profile::{Probe,Native}; limits are closed enum policy, no arbitrary caller limits",
+    "planner": "plan_with_masks_for_profile(profile, frame, commands, sources, masks, row_tables); existing APIs select Probe",
+    "coordinates": "CoordinateState::new_for_profile(profile,frame); new(frame) selects Probe",
+    "plan_and_encoded": "profile(), conversion_invocations(), conversion_buffer_bytes(), invocations(); Plan additionally raster_invocations()",
+    "native_limits": {
+      "width": 1280,
+      "height": 1024,
+      "explicit_gpu_buffers": 16777216,
+      "total_padded_invocations": 4000000,
+      "derived_lut_entries": 589824
+    },
+    "native_storage": "packed output + align_up(width*4,256)*height +16 conversion uniform + raster params/input; optional readback is outside this plan and needs the root-approved separate active ledger",
+    "probe_storage": "unchanged two packed targets + params/input; conversion fields zero",
+    "conversion": "reservation only; the separate surface helper is responsible for encoding conversion and checking reserved metadata"
+  },
+  "tests": {
+    "new_std_only_groups": 8,
+    "new_gpu_feature_accounting_groups": 1,
+    "scopes": [
+      "old probe geometry refusal",
+      "1180x880 simple-scene totals",
+      "native exact dimensions and one-over",
+      "padded conversion work included at exactly4M and extra draw refusal",
+      "synthetic arithmetic overflow",
+      "alignment and synthetic exact16MiB/one-over accounting",
+      "same small serialized payload across profiles",
+      "native derived LUT versus existing source/scope/mask/row limits",
+      "fixed escape/restoration"
+    ],
+    "caveat": "Synthetic absolute-byte/counter boundary tests are private helper coverage, not claims all such totals are reachable through unchanged scene caps."
+  },
+  "peer_hooks": [
+    "pub mod rounded; cfg(test) rounded_tests",
+    "cfg(feature=gpu) pub mod surface; cfg(all(test,feature=gpu)) surface_tests"
+  ],
+  "not_done": [
+    "native presentation integration",
+    "readback policy implementation",
+    "compiler/tests/GPU execution"
+  ]
+}

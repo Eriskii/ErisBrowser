@@ -1,0 +1,33 @@
+   Compiling eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+   Compiling eris-vulkan-raster-prototype v0.0.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe)
+    Finished `test` profile [unoptimized] target(s) in 0.79s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/eris_vulkan_raster_prototype-a22f0ecae4130dac)
+
+running 4 tests
+test alpha_fixtures::tests::alpha_fixture_frozen_counter_arithmetic ... ok
+test surface_gpu::tests::comparison_checks_both_byte_orders_and_alpha_with_padded_rows ... ok
+test alpha_fixtures::tests::alpha_fixture_inputs_and_literal_outputs_are_bounded ... ok
+test gpu::tests::pending_future_uses_finite_deadline_without_gpu ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/eris_vulkan_raster_prototype-177c7f6f3c4baa41)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/glyph_contracts.rs (/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/glyph_contracts-b24735bfce6f62b0)
+
+running 2 tests
+test frozen_refusal_inventory_covers_nineteen_recipes_and_six_culling_variants ... ok
+test frozen_positive_inventory_covers_all_three_exact_cap_plans ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests eris_vulkan_raster_prototype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

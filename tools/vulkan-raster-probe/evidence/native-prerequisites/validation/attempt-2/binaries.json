@@ -1,0 +1,32 @@
+[
+  {
+    "path": "eris-vulkan-raster-prototype-1.88.0",
+    "bytes": 18573688,
+    "sha256": "822865854ebfde207a0062290da3aaaef9cd241e12ed72c7d183baf718c3c9fc"
+  },
+  {
+    "path": "eris-vulkan-glyph-check-1.88.0",
+    "bytes": 21589728,
+    "sha256": "4dc3d2088bbe5279f959f31424822216d1a6d716cc9af754a7ba44fa593efcee"
+  },
+  {
+    "path": "eris-vulkan-surface-check-1.88.0",
+    "bytes": 18506040,
+    "sha256": "e487587609f6608a6deb178113ce4b0fb8f45bfad1ea7481e39e06b179f57d6e"
+  },
+  {
+    "path": "eris-vulkan-raster-prototype-1.98.0",
+    "bytes": 23512160,
+    "sha256": "e91a1895ebf5bba97de5550642fea98822e3c7feabfdd8f646f0f1930c716cae"
+  },
+  {
+    "path": "eris-vulkan-glyph-check-1.98.0",
+    "bytes": 26607360,
+    "sha256": "1cd64315c9d3974248fd980c80a61c29c684d51a1e70033d818e0870e4fc35ba"
+  },
+  {
+    "path": "eris-vulkan-surface-check-1.98.0",
+    "bytes": 23396936,
+    "sha256": "e142700cc674362fce52d71675b1aa74d16129b8bbd0559819b4a6e23731f44a"
+  }
+]

@@ -1,5 +1,11 @@
 # Vulkan rendering milestones
 
+The [native drawing prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
+now pass offscreen checks at browser-window sizes: a separately bounded native
+profile, CPU rounded coverage with GPU compositing, and integer padded BGRA/RGBA
+conversion. Actual browser scene construction and surface presentation are still
+pending. This does not change the optional CPU-frame upload presenter.
+
 Status: an **optional Linux Vulkan upload presenter** is implemented. The browser's
 default and headless paths remain software; both native presenters use Eris's
 custom CPU rasterizer. An optional offscreen bridge now borrows real confined-worker
@@ -18,7 +24,8 @@ experiments and their failed compositor comparisons remain recorded below.
 The reusable [raster core](../crates/raster-core/README.md) now separates
 primitive planning and GPU encoding from probe-only device selection, readback
 and comparison. Callers receive owned frame resources on their existing device.
-The browser adapter still lives in the probe; native call sites are unchanged.
+The browser adapter lives in the main crate behind `raster-bridge`; native call
+sites are unchanged.
 
 Build and select the experimental presenter explicitly:
 

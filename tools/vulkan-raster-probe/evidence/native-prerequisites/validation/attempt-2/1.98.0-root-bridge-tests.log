@@ -1,0 +1,37 @@
+   Compiling eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+   Compiling eris-browser v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.95s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/eris-0eb56bc1309a0a71)
+
+running 28 tests
+test graphics::raster_bridge::tests::browser_bridge_lines_keep_canvas_f32_order_and_original_endpoint_checks ... ok
+test graphics::raster_bridge::tests::browser_bridge_source_ids_use_first_reference_then_lexical_unused_order ... ok
+test graphics::raster_bridge::tests::browser_bridge_translucent_clip_and_source_alpha_reach_existing_planner ... ok
+test graphics::raster_bridge::tests::browser_bridge_hidden_images_keep_reference_stats_without_arena_allocation ... ok
+test graphics::raster_bridge::tests::browser_bridge_original_command_and_cpu_work_caps_precede_lowering ... ok
+test graphics::raster_bridge::tests::browser_bridge_unused_and_hidden_bad_sources_are_refused ... ok
+test graphics::raster_bridge::tests::browser_bridge_validates_original_scalars_before_alpha_or_missing_elision ... ok
+test graphics::raster_bridge::tests::browser_bridge_borrowed_sort_and_binary_lookup_match_spelled_keys ... ok
+test graphics::raster_bridge::tests::browser_bridge_individual_key_limit_counts_utf8_bytes ... ok
+test graphics::raster_bridge::tests::browser_bridge_borrows_sources_during_planning_and_owns_only_finished_payload ... ok
+test graphics::raster_bridge::tests::browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation ... ok
+test graphics::raster_bridge::tests::browser_bridge_combined_typed_scopes_check_boundaries_and_mismatches ... ok
+test graphics::raster_bridge::text::tests::complete_structural_preflight_precedes_all_glyph_preparation ... ok
+test graphics::raster_bridge::text::tests::all_text_inputs_are_counted_even_when_coarsely_culled ... ok
+test graphics::raster_bridge::tests::browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice ... ok
+test graphics::raster_bridge::text::tests::old_entry_keeps_text_fallback_while_new_entry_admits_masks ... ok
+test graphics::raster_bridge::tests::browser_bridge_map_capacity_is_bounded_before_a_sparse_iteration ... ok
+test graphics::raster_bridge::text::tests::existing_cpu_font_cache_does_not_change_admission_or_packed_plan ... ok
+test graphics::raster_bridge::tests::browser_bridge_private_comparison_prechecks_cover_maximum_and_overflow ... ok
+test graphics::raster_bridge::tests::browser_bridge_rejects_unsupported_hidden_content_at_original_indices ... ok
+test graphics::raster_bridge::text::tests::image_and_mask_sources_share_the_existing_entry_budget ... ok
+test graphics::raster_bridge::tests::browser_bridge_fixed_escape_restores_offsets_and_scopes_without_flattening ... ok
+test graphics::raster_bridge::tests::browser_bridge_aggregate_key_limits_precede_sorting_and_lookup ... ok
+test graphics::raster_bridge::tests::browser_bridge_full_source_packing_can_refuse_unchanged_gpu_byte_cap ... ok
+test graphics::raster_bridge::tests::browser_bridge_frame_caps_and_unconditional_clear_remain_exact ... ok
+test graphics::raster_bridge::text::tests::text_charges_remaining_cpu_allowance_before_mask_allocation ... ok
+test graphics::raster_bridge::text::tests::no_outline_repetitions_consume_operations_and_cpu_work ... ok
+test graphics::raster_bridge::tests::browser_bridge_randomized_map_insertion_does_not_change_plan_or_counts ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 1077 filtered out; finished in 0.00s
+

@@ -1,0 +1,31 @@
+    Checking eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+error[E0308]: mismatched types
+   --> src/surface_tests.rs:284:45
+    |
+284 |     exact.max_storage_buffer_binding_size = layout.storage_bytes() as u32;
+    |     -------------------------------------   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `u64`, found `u32`
+    |     |
+    |     expected due to the type of this binding
+
+error: useless conversion to the same type: `u64`
+   --> src/surface.rs:216:37
+    |
+216 |             || self.storage_bytes > u64::from(limits.max_storage_buffer_binding_size)
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider removing `u64::from()`: `limits.max_storage_buffer_binding_size`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#useless_conversion
+    = note: `-D clippy::useless-conversion` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::useless_conversion)]`
+
+error: useless conversion to the same type: `u64`
+   --> src/surface.rs:217:32
+    |
+217 |             || UNIFORM_BYTES > u64::from(limits.max_uniform_buffer_binding_size)
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider removing `u64::from()`: `limits.max_uniform_buffer_binding_size`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#useless_conversion
+
+error: could not compile `eris-raster-core` (lib) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `eris-raster-core` (lib test) due to 1 previous error

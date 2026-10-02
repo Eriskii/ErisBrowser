@@ -19,6 +19,9 @@ currently remains on the CPU; the [rendering docket](docs/vulkan-rendering.md)
 tracks the remaining integration work.
 Drawing plans and GPU encoding now live in the reusable
 [raster core](crates/raster-core/README.md), separate from the comparison tools.
+Its [native-size drawing and surface conversion checks](tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
+pass in BGRA and RGBA on all three adapters. Connecting those components to the
+browser's complete window scene is underway.
 
 ## Open the browser
 

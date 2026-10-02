@@ -9,9 +9,10 @@
 //! Retain each [`EncodedFrame`] through submission completion. Its output is
 //! exposed by a shared buffer reference for subsequent GPU reads or copying;
 //! callers remain responsible for their own commands and shared wgpu handles.
-//! The unchanged planner budget includes a second target-sized buffer even when
-//! a caller does not need readback. Driver and allocator overhead are excluded.
-use crate::{DrawKind, Frame, MAX_GPU_BUFFER_BYTES, PARAM_STRIDE, Plan, Result};
+//! Probe admission retains its original second packed target. Native admission
+//! reserves padded conversion storage and its uniform instead; any native
+//! readback requires a separate caller ledger. Driver/allocator overhead is excluded.
+use crate::{DrawKind, Frame, PARAM_STRIDE, Plan, Profile, Result};
 use std::sync::Arc;
 
 struct Kernels {
@@ -29,12 +30,19 @@ struct BufferAccounting {
     planned_buffer_bytes: u64,
 }
 impl BufferAccounting {
-    fn checked(output: u64, parameters: u64, input: u64, planned: u64) -> Result<Self> {
+    fn checked(
+        profile: Profile,
+        output: u64,
+        parameters: u64,
+        input: u64,
+        reserved: u64,
+        planned: u64,
+    ) -> Result<Self> {
         let owned = output
             .checked_add(parameters)
             .and_then(|bytes| bytes.checked_add(input));
-        let total = owned.and_then(|bytes| bytes.checked_add(output));
-        if total != Some(planned) || planned > MAX_GPU_BUFFER_BYTES {
+        let total = owned.and_then(|bytes| bytes.checked_add(reserved));
+        if total != Some(planned) || planned > profile.max_gpu_buffer_bytes() {
             return Err("explicit GPU allocation budget mismatch".into());
         }
         Ok(Self {
@@ -50,10 +58,16 @@ impl BufferAccounting {
         }
         let frame = plan.frame();
         let output_bytes = u64::from(frame.width) * u64::from(frame.height) * 4;
+        let reserved = match plan.profile() {
+            Profile::Probe => output_bytes,
+            Profile::Native => plan.conversion_buffer_bytes(),
+        };
         let accounting = Self::checked(
+            plan.profile(),
             output_bytes,
             plan.parameters().len() as u64,
             plan.input_bytes().len() as u64,
+            reserved,
             plan.gpu_buffer_bytes(),
         )?;
         if alignment == 0 || !(PARAM_STRIDE as u32).is_multiple_of(alignment) {
@@ -322,6 +336,10 @@ impl Rasterizer {
         }
         Ok(EncodedFrame {
             frame: p.frame(),
+            profile: p.profile(),
+            conversion_invocations: p.conversion_invocations(),
+            conversion_buffer_bytes: p.conversion_buffer_bytes(),
+            invocations: p.invocations(),
             accounting,
             output,
             parameters,
@@ -338,6 +356,10 @@ impl Rasterizer {
 /// there is no COPY_DST usage or readback allocation in the core.
 pub struct EncodedFrame {
     frame: Frame,
+    profile: Profile,
+    conversion_invocations: u64,
+    conversion_buffer_bytes: u64,
+    invocations: u64,
     accounting: BufferAccounting,
     output: wgpu::Buffer,
     parameters: wgpu::Buffer,
@@ -346,6 +368,18 @@ pub struct EncodedFrame {
     _kernels: Arc<Kernels>,
 }
 impl EncodedFrame {
+    pub fn profile(&self) -> Profile {
+        self.profile
+    }
+    pub fn conversion_invocations(&self) -> u64 {
+        self.conversion_invocations
+    }
+    pub fn conversion_buffer_bytes(&self) -> u64 {
+        self.conversion_buffer_bytes
+    }
+    pub fn invocations(&self) -> u64 {
+        self.invocations
+    }
     pub fn output_buffer(&self) -> &wgpu::Buffer {
         &self.output
     }
@@ -359,7 +393,7 @@ impl EncodedFrame {
     pub fn owned_buffer_bytes(&self) -> u64 {
         self.accounting.owned_buffer_bytes
     }
-    /// The unchanged plan charge, including a second target-sized buffer.
+    /// Full admitted charge, including Probe readback or Native conversion.
     pub fn planned_buffer_bytes(&self) -> u64 {
         self.accounting.planned_buffer_bytes
     }
@@ -380,18 +414,39 @@ impl EncodedFrame {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{Command, SourceMask, plan, plan_with_masks};
+    use crate::{
+        Command, MAX_GPU_BUFFER_BYTES, SourceMask, plan, plan_with_masks,
+        plan_with_masks_for_profile,
+    };
 
     #[test]
     fn two_target_admission_accepts_exact_cap_and_rejects_overflow_or_mismatch() {
         let input = MAX_GPU_BUFFER_BYTES - 8 - 256;
-        let exact = BufferAccounting::checked(4, 256, input, MAX_GPU_BUFFER_BYTES).unwrap();
+        let exact =
+            BufferAccounting::checked(Profile::Probe, 4, 256, input, 4, MAX_GPU_BUFFER_BYTES)
+                .unwrap();
         assert_eq!(exact.owned_buffer_bytes, MAX_GPU_BUFFER_BYTES - 4);
         assert_eq!(exact.output_bytes, 4);
-        assert!(BufferAccounting::checked(4, 256, input + 1, MAX_GPU_BUFFER_BYTES + 1).is_err());
-        assert!(BufferAccounting::checked(4, 256, input, MAX_GPU_BUFFER_BYTES - 1).is_err());
-        assert!(BufferAccounting::checked(u64::MAX, 256, 0, 255).is_err());
-        assert!(BufferAccounting::checked(u64::MAX / 2 + 1, 0, 0, 0).is_err());
+        assert!(
+            BufferAccounting::checked(
+                Profile::Probe,
+                4,
+                256,
+                input + 1,
+                4,
+                MAX_GPU_BUFFER_BYTES + 1
+            )
+            .is_err()
+        );
+        assert!(
+            BufferAccounting::checked(Profile::Probe, 4, 256, input, 4, MAX_GPU_BUFFER_BYTES - 1)
+                .is_err()
+        );
+        assert!(BufferAccounting::checked(Profile::Probe, u64::MAX, 256, 0, 0, 255).is_err());
+        assert!(
+            BufferAccounting::checked(Profile::Probe, u64::MAX / 2 + 1, 0, 0, u64::MAX / 2 + 1, 0)
+                .is_err()
+        );
     }
 
     #[test]
@@ -443,5 +498,51 @@ mod tests {
         assert_eq!(bytes.output_bytes, 4);
         assert_eq!(bytes.owned_buffer_bytes, 524);
         assert_eq!(bytes.planned_buffer_bytes, 528);
+    }
+    #[test]
+    fn native_accounting_reserves_padded_conversion_and_uses_only_selected_cap() {
+        let plan = plan_with_masks_for_profile(
+            Profile::Native,
+            Frame::new(1180, 880, 0),
+            &[],
+            &[],
+            &[],
+            &[],
+        )
+        .unwrap();
+        let bytes = BufferAccounting::for_plan(&plan, 256, false).unwrap();
+        assert_eq!(bytes.output_bytes, 4_153_600);
+        assert_eq!(bytes.owned_buffer_bytes, 4_153_856);
+        assert_eq!(plan.conversion_buffer_bytes(), 4_280_336);
+        assert_eq!(bytes.planned_buffer_bytes, 8_434_192);
+        assert!(
+            BufferAccounting::checked(
+                Profile::Probe,
+                bytes.output_bytes,
+                256,
+                0,
+                plan.conversion_buffer_bytes(),
+                bytes.planned_buffer_bytes
+            )
+            .is_err()
+        );
+        // Synthetic accounting boundaries, not a claim that public source/work
+        // limits can reach every byte of this absolute allocation ceiling.
+        let cap = Profile::Native.max_gpu_buffer_bytes();
+        assert!(
+            BufferAccounting::checked(Profile::Native, 4, 256, cap - 4 - 256 - 272, 272, cap)
+                .is_ok()
+        );
+        assert!(
+            BufferAccounting::checked(
+                Profile::Native,
+                4,
+                256,
+                cap - 4 - 256 - 272 + 1,
+                272,
+                cap + 1
+            )
+            .is_err()
+        );
     }
 }

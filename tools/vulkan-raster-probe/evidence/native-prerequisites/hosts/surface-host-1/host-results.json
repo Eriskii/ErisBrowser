@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "success": true,
+  "binary": "/tmp/eris-native-prerequisites-2/eris-vulkan-surface-check-1.98.0",
+  "binary_sha256": "e142700cc674362fce52d71675b1aa74d16129b8bbd0559819b4a6e23731f44a",
+  "loader": {
+    "directory": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib",
+    "files": [
+      {
+        "name": "libvulkan.so",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      },
+      {
+        "name": "libvulkan.so.1",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      },
+      {
+        "name": "libvulkan.so.1.4.357",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      }
+    ],
+    "environment": {
+      "LD_LIBRARY_PATH": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib:/nix/store/bn8fa50wbg41yf72aalbjcaaq4r4j6kn-wayland-1.26.0/lib:/nix/store/n2wqk78za8grzs9088ya5qy6vw280p8x-libxkbcommon-1.13.2/lib:/nix/store/7gwd2kvkx1s369cwiv5z4x2xjxbppav6-libx11-1.8.13/lib:/nix/store/i88qpfah2j0yq7nihbm626abbhzkc21g-libX11-1.8.10/lib:/nix/store/09aq563zkqcw9ikxn02p4bm13i2hz51r-libxcb-1.17.0/lib:/nix/store/ljxnc3sy590a8rzf59rvclkxg8h71qdf-libxcursor-1.2.3/lib:/nix/store/rywxisd25h7ymiydgcg0188c0ap0shgx-libXcursor-1.2.1/lib:/nix/store/0kx9jb9qcvh9kg9qi8kxwxymbvbpykdj-libxrandr-1.5.5/lib:/nix/store/40r89hwph88md7jk5vhqx57k36c8f5jh-libXrandr-1.5.4/lib:/nix/store/fxwwv4xllvcxcpf7s2xm572sc95r851c-libxi-1.8.3/lib:/nix/store/68wclazg6vj6jqq03sqhdn4x7ji082cr-libXi-1.8.1/lib",
+      "VK_DRIVER_FILES": null,
+      "VK_ICD_FILENAMES": null,
+      "VK_LAYER_PATH": null
+    },
+    "scope": "explicit loader directory and selected environment; not a complete transitive system-library inventory"
+  },
+  "host_source_bindings": {
+    "run_surface_host.py": "60a35ad10b3cd51e62dbe11c7bab8c4a517a9b80ecc4a014efee91d7672d85f1",
+    "run_browser_host.py": "1e07e300d75e8d71a652f7795e89b62c88a98e7ef5b44bc88bcbd5ad29421abc",
+    "run_glyph_host.py": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525",
+    "glyph_protocol.py": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4",
+    "run_host.py": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6",
+    "bridge_supervisor.py": "bfecc971df88c6543f50272313f12b71873713f931070dfa2a7ff4d5f566f9f5"
+  },
+  "runs": [
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-prerequisites-2/eris-vulkan-surface-check-1.98.0",
+        "--list"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.21928218309767544,
+      "captured_bytes": 465,
+      "observed_bytes": 465,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "enumeration",
+      "validation": {
+        "adapters": [
+          "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+          "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+          "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+        ]
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-prerequisites-2/eris-vulkan-surface-check-1.98.0",
+        "--adapter",
+        "0"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.44868310494348407,
+      "captured_bytes": 4872,
+      "observed_bytes": 4872,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "2eaf5116979eaa1e2c8c6c75b27e40a737cfcc66e6838d705a03306f4dab91a5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-0",
+      "validation": {
+        "cases": 11,
+        "formats": 2,
+        "gpu_compared_bytes": 27131040,
+        "independent_literal_bytes": 18823840,
+        "Canvas_differential_bytes": 8307200,
+        "acquired_surface": false
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-prerequisites-2/eris-vulkan-surface-check-1.98.0",
+        "--adapter",
+        "1"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.2548063090071082,
+      "captured_bytes": 4872,
+      "observed_bytes": 4872,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "3bef9a0b90d6db647baee746cbc10ddc77c06640738def6c60038c7ab8e52020",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-1",
+      "validation": {
+        "cases": 11,
+        "formats": 2,
+        "gpu_compared_bytes": 27131040,
+        "independent_literal_bytes": 18823840,
+        "Canvas_differential_bytes": 8307200,
+        "acquired_surface": false
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-prerequisites-2/eris-vulkan-surface-check-1.98.0",
+        "--adapter",
+        "2"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.2989688200177625,
+      "captured_bytes": 4872,
+      "observed_bytes": 4872,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "85de1120fa25d3773d6273d0ebe66e1b625fdf3061c3851c473ac655dc6c28a2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-2",
+      "validation": {
+        "cases": 11,
+        "formats": 2,
+        "gpu_compared_bytes": 27131040,
+        "independent_literal_bytes": 18823840,
+        "Canvas_differential_bytes": 8307200,
+        "acquired_surface": false
+      }
+    }
+  ],
+  "adapter_count": 3,
+  "scope": "offscreen raster and conversion only; no acquired native surface or performance claim"
+}

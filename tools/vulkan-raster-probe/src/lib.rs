@@ -17,3 +17,4 @@ pub mod browser_fixtures;
 pub mod fixtures;
 pub mod gpu;
 pub mod image_fixtures;
+pub mod surface_gpu;

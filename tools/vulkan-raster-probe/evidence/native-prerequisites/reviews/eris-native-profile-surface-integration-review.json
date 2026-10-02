@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "review": "bounded static native profile/surface integration",
+  "result": "no concrete mismatch found",
+  "files": [
+    {
+      "path": "crates/raster-core/src/profile.rs",
+      "sha256": "6ab8d215d4e90603814f892f4e3d81d1a7ec03dd184e283e905852a69a1bc86a"
+    },
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "sha256": "276590bb66028d4383fc03c73ca01d7908b724feb1238e5165d3f284cc4369df"
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "sha256": "0063bb14a2deb78d117971f0c7cfcc58c4c6617d45287526d5aab340c7482898"
+    },
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "sha256": "6897765438995db542e40a2f91223a597c3dcc2e2bb8dd89beca1576050a9f69"
+    },
+    {
+      "path": "crates/raster-core/src/profile_tests.rs",
+      "sha256": "bb0e572cb15dae4e8659ff5793f3af0f7e1783b5e4624fee9aaf52dd9fffc537"
+    },
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "sha256": "5adc2fc351814bf5f08c1c47129b7b68758f3d3a99a983b65e63a4bbee56fb0f"
+    },
+    {
+      "path": "crates/raster-core/src/surface_tests.rs",
+      "sha256": "b02462ed7ea2fcbfa758cc5502f7c72e2912b62cb5ee1ad216182b3d8b41a8d6"
+    }
+  ],
+  "findings": [],
+  "verified": [
+    "Probe constants and two-packed-target formula remain; existing APIs choose Probe.",
+    "Native reserves align256(width*4)*height+16 conversion bytes and full padded8x8 conversion work before allocation, counting it with raster work under4M.",
+    "Surface preflight independently recomputes padded bytes, compares exact reservation, and recomputes core-owned bytes from Plan output/parameters/input.",
+    "Native Plan and EncodedFrame metadata agree; source frame private metadata and owned conversion lifetime avoid borrowed-frame loss.",
+    "Normal1180x880 clear total8434192 bytes, conversion4280336 bytes, total2083840 invocations; maximum1280x1024 clear total10486032 bytes and2621440 invocations.",
+    "Native derived LUT589824 remains byte charged; source/mask/row/command/scope caps unchanged.",
+    "Coordinate constructor selects profile while apply/finish preserve scope behavior.",
+    "Exact method names used by root surface_gpu.rs match this implementation; readback remains outside Plan and root checks planned+readback<=24MiB."
+  ],
+  "execution": "No builds, unit tests, planner, renderer, worker or GPU execution."
+}

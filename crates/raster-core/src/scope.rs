@@ -1,7 +1,5 @@
 //! The planner and fonts-aware adapter share the same typed coordinate state.
-use crate::{
-    Command, Frame, MAX_COORDINATE, MAX_HEIGHT, MAX_SCOPES, MAX_WIDTH, Rect, Result, reserved,
-};
+use crate::{Command, Frame, MAX_COORDINATE, MAX_SCOPES, Profile, Rect, Result, reserved};
 
 #[derive(Clone, Copy)]
 enum Scope {
@@ -20,13 +18,11 @@ pub struct CoordinateState {
 
 impl CoordinateState {
     pub fn new(frame: Frame) -> Result<Self> {
-        if frame.width == 0
-            || frame.height == 0
-            || frame.width > MAX_WIDTH
-            || frame.height > MAX_HEIGHT
-        {
-            return Err("viewport budget".into());
-        }
+        Self::new_for_profile(Profile::Probe, frame)
+    }
+
+    pub fn new_for_profile(profile: Profile, frame: Frame) -> Result<Self> {
+        profile.validate_viewport(frame.width, frame.height)?;
         if frame.clear > 0x00ff_ffff {
             return Err("clear color must be packed RGB".into());
         }

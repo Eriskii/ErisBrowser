@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "completed exact-byte publication",
+  "index": {
+    "path": "index.json",
+    "bytes": 45614,
+    "sha256": "8d02703f3f2fc82d6526acaa98162fa25d9a4d52a98284198a55557ab0f915f7"
+  },
+  "totals": {
+    "payload_artifacts": 95,
+    "stored_payload_bytes": 299729,
+    "source_bindings_verified": 192,
+    "binary_bindings_verified": 6,
+    "check_log_bindings_verified": 30,
+    "host_process_records": 12
+  },
+  "verified": [
+    "All published payloads equal their original bytes after copying.",
+    "The final 192 source bindings hold before and after copying.",
+    "The two initial/final source changes exactly match compile-correction.json.",
+    "All six retained executable identities and all thirty check-log hashes match.",
+    "All twelve completed process records are normal exits; stderr is empty; supervised cleanup and stdout hashes match."
+  ],
+  "execution": "Packaging and hashing only; no compiler/test/Canvas/worker/GPU/CI rerun."
+}

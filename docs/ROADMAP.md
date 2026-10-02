@@ -26,6 +26,13 @@ in the main crate behind the planner-only `raster-bridge` feature; probe imports
 remain reexports. Constructing native scenes, supporting rounded chrome and
 presenting GPU output are the next integration steps.
 
+The [native prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
+now include a separate 1280×1024 admission profile, exact CPU-prepared rounded
+coverage and integer GPU conversion into padded opaque BGRA/RGBA pixels. Eleven
+offscreen cases pass in both formats on all three adapters, including normal
+browser-sized frames. Complete native scene construction and acquired-surface
+presentation remain ahead; the browser window still uses CPU painting.
+
 [Array concat](../tests/conformance/array-concat.md) now streams live
 spreadability, same-realm species and aliased results. Its complete upstream
 profile gains 99 passes with no lost pass; four typed-array failures, eighteen

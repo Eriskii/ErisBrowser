@@ -13,6 +13,12 @@ The browser adapter now lives in `graphics::raster_bridge`, enabled by a
 planner-only feature with no GPU dependency. Native scene/presentation portions
 below remain work to implement. Existing probe imports continue through reexports.
 
+The [native prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
+also implement the fixed native profile, geometry-only rounded coverage and
+integer padded surface conversion. They pass offscreen checks; the complete
+scene/owner-loop integration and acquired-surface acceptance below are still
+proposed work.
+
 ## Current seams
 
 [`Browser::draw`](../src/browser.rs) paints the page, focus outline, scrollbar,

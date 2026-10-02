@@ -1,0 +1,76 @@
+[
+  {
+    "name": "core-clippy-default",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "crates/raster-core/Cargo.toml",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 0.37894625996705145,
+    "log": "1.98.0-core-clippy-default.log",
+    "sha256": "60466a30202014e7910c0bdc1226c000aaa4ca3d753429d3b10d2477d24fb405"
+  },
+  {
+    "name": "core-test-default",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "crates/raster-core/Cargo.toml"
+    ],
+    "exit": 0,
+    "seconds": 1.628870881977491,
+    "log": "1.98.0-core-test-default.log",
+    "sha256": "b4d0525fa7dbae01de575910fb628116a2036c4bc737a573f356536b0ca3ae60"
+  },
+  {
+    "name": "core-fmt",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "fmt",
+      "--manifest-path",
+      "crates/raster-core/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.08119085000362247,
+    "log": "1.98.0-core-fmt.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "core-clippy-gpu",
+    "command": [
+      "cargo",
+      "+1.98.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "crates/raster-core/Cargo.toml",
+      "--all-targets",
+      "--features",
+      "gpu",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 101,
+    "seconds": 0.488839752972126,
+    "log": "1.98.0-core-clippy-gpu.log",
+    "sha256": "45fd84cfa55a8f04806a33c74bd497c7e3c5932a2325ede1df4128c7af9626fc"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "status": "exited",
+  "returncode": 0,
+  "command": [
+    "/tmp/eris-native-prerequisites-2/eris-vulkan-surface-check-1.98.0",
+    "--adapter",
+    "1"
+  ],
+  "timeout_seconds": 60.0,
+  "cleanup_seconds": 5.0,
+  "cleanup": {
+    "complete": true,
+    "reaped": 1,
+    "descendants": 0,
+    "checker_returncode": 0,
+    "error": null
+  },
+  "elapsed_seconds": 0.2548063090071082,
+  "captured_bytes": 4872,
+  "observed_bytes": 4872,
+  "output_limit_bytes": 2097152,
+  "cancellation_signal": null,
+  "capture_gate_required": false,
+  "capture_gate_granted": false,
+  "stdout_sha256": "3bef9a0b90d6db647baee746cbc10ddc77c06640738def6c60038c7ab8e52020",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "error": null
+}

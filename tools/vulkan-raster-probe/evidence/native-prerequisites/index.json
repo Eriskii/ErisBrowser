@@ -1,0 +1,981 @@
+{
+  "schema": 1,
+  "kind": "exact retained native-profile, rounded-coverage and offscreen-conversion evidence",
+  "parent": "6aa7daa07573383f8789968ae8e178a4f3ce1b1d",
+  "files": [
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.88.0-checks.json",
+      "path": "validation/attempt-1/1.88.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 1686,
+      "raw_sha256": "c5c55a357b4d3e4668ed0472de3a6926885f48258fae1bf9173dc20f01b36f48",
+      "stored_bytes": 1686,
+      "stored_sha256": "c5c55a357b4d3e4668ed0472de3a6926885f48258fae1bf9173dc20f01b36f48"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.88.0-core-clippy-default.log",
+      "path": "validation/attempt-1/1.88.0-core-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 175,
+      "raw_sha256": "1c1cccdb044bf83fb0845e0cf4e71a2bd7b53f0d09882872b4226bb906fb12f1",
+      "stored_bytes": 175,
+      "stored_sha256": "1c1cccdb044bf83fb0845e0cf4e71a2bd7b53f0d09882872b4226bb906fb12f1"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.88.0-core-clippy-gpu.log",
+      "path": "validation/attempt-1/1.88.0-core-clippy-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1811,
+      "raw_sha256": "0f1f0efc56e270af70662936629e21c21fa67513148964a772871100e51293cb",
+      "stored_bytes": 1811,
+      "stored_sha256": "0f1f0efc56e270af70662936629e21c21fa67513148964a772871100e51293cb"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.88.0-core-fmt.log",
+      "path": "validation/attempt-1/1.88.0-core-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.88.0-core-test-default.log",
+      "path": "validation/attempt-1/1.88.0-core-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 6339,
+      "raw_sha256": "4ca7fc1eeff1298e1f17457ed2e959ec9e64febcb816e0a0ba04962dd3796e41",
+      "stored_bytes": 6339,
+      "stored_sha256": "4ca7fc1eeff1298e1f17457ed2e959ec9e64febcb816e0a0ba04962dd3796e41"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.98.0-checks.json",
+      "path": "validation/attempt-1/1.98.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 1689,
+      "raw_sha256": "1473b01ae35e8cbbb41e2117b8900012b3c6a7ad52559750a6a005eeaad84e96",
+      "stored_bytes": 1689,
+      "stored_sha256": "1473b01ae35e8cbbb41e2117b8900012b3c6a7ad52559750a6a005eeaad84e96"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.98.0-core-clippy-default.log",
+      "path": "validation/attempt-1/1.98.0-core-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 175,
+      "raw_sha256": "60466a30202014e7910c0bdc1226c000aaa4ca3d753429d3b10d2477d24fb405",
+      "stored_bytes": 175,
+      "stored_sha256": "60466a30202014e7910c0bdc1226c000aaa4ca3d753429d3b10d2477d24fb405"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.98.0-core-clippy-gpu.log",
+      "path": "validation/attempt-1/1.98.0-core-clippy-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1821,
+      "raw_sha256": "45fd84cfa55a8f04806a33c74bd497c7e3c5932a2325ede1df4128c7af9626fc",
+      "stored_bytes": 1821,
+      "stored_sha256": "45fd84cfa55a8f04806a33c74bd497c7e3c5932a2325ede1df4128c7af9626fc"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.98.0-core-fmt.log",
+      "path": "validation/attempt-1/1.98.0-core-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/1.98.0-core-test-default.log",
+      "path": "validation/attempt-1/1.98.0-core-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 6338,
+      "raw_sha256": "b4d0525fa7dbae01de575910fb628116a2036c4bc737a573f356536b0ca3ae60",
+      "stored_bytes": 6338,
+      "stored_sha256": "b4d0525fa7dbae01de575910fb628116a2036c4bc737a573f356536b0ca3ae60"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/check-rust.py",
+      "path": "validation/attempt-1/check-rust.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 2573,
+      "raw_sha256": "9f8414d766ff9c87f8014cf15fae166195bd6f2b500825fb6ad901486d4d1b16",
+      "stored_bytes": 2573,
+      "stored_sha256": "9f8414d766ff9c87f8014cf15fae166195bd6f2b500825fb6ad901486d4d1b16"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/python-surface.log",
+      "path": "validation/attempt-1/python-surface.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 105,
+      "raw_sha256": "86c967a00f06ad033ecab8fdfd48f0dfe4f7c54ecd2a5af426df39e10af79aa8",
+      "stored_bytes": 105,
+      "stored_sha256": "86c967a00f06ad033ecab8fdfd48f0dfe4f7c54ecd2a5af426df39e10af79aa8"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-1/source.json",
+      "path": "validation/attempt-1/source.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 34077,
+      "raw_sha256": "43c183073f42734999950de436ea6b14e0fcaf601a2cdf9f5605e66618a53804",
+      "stored_bytes": 34077,
+      "stored_sha256": "43c183073f42734999950de436ea6b14e0fcaf601a2cdf9f5605e66618a53804"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-checks.json",
+      "path": "validation/attempt-2/1.88.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 4759,
+      "raw_sha256": "fc55cd5f5d2fbea64b79f0db99ec960879bd4d60a10aad0b902141e44029c2ac",
+      "stored_bytes": 4759,
+      "stored_sha256": "fc55cd5f5d2fbea64b79f0db99ec960879bd4d60a10aad0b902141e44029c2ac"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-core-clippy-gpu.log",
+      "path": "validation/attempt-2/1.88.0-core-clippy-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 175,
+      "raw_sha256": "ec51a0ac441f248e1722ac96deb6bfdff26abb8e80ec33d0f490da70da237c01",
+      "stored_bytes": 175,
+      "stored_sha256": "ec51a0ac441f248e1722ac96deb6bfdff26abb8e80ec33d0f490da70da237c01"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-core-fmt.log",
+      "path": "validation/attempt-2/1.88.0-core-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-core-test-gpu.log",
+      "path": "validation/attempt-2/1.88.0-core-test-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 7376,
+      "raw_sha256": "e568dac965bd58fb2151539b4d3a0a1d814bc174f56fd784b22dd068ec31e1e2",
+      "stored_bytes": 7376,
+      "stored_sha256": "e568dac965bd58fb2151539b4d3a0a1d814bc174f56fd784b22dd068ec31e1e2"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-probe-build-feature.log",
+      "path": "validation/attempt-2/1.88.0-probe-build-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 60,
+      "raw_sha256": "1b06c206522a9ad6653edd56b1bb9e19254f4cd592480fbc8b10cbddc2b994e9",
+      "stored_bytes": 60,
+      "stored_sha256": "1b06c206522a9ad6653edd56b1bb9e19254f4cd592480fbc8b10cbddc2b994e9"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-probe-clippy-default.log",
+      "path": "validation/attempt-2/1.88.0-probe-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 309,
+      "raw_sha256": "b419148fd60999f4403af085e06bb9e7fb8e8888524f9fb8d28164d0ee45fde9",
+      "stored_bytes": 309,
+      "stored_sha256": "b419148fd60999f4403af085e06bb9e7fb8e8888524f9fb8d28164d0ee45fde9"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-probe-clippy-feature.log",
+      "path": "validation/attempt-2/1.88.0-probe-clippy-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 401,
+      "raw_sha256": "aa1e7eccbe826530331a171d0bd57c84be898c33048f9267d623658811e427a4",
+      "stored_bytes": 401,
+      "stored_sha256": "aa1e7eccbe826530331a171d0bd57c84be898c33048f9267d623658811e427a4"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-probe-fmt.log",
+      "path": "validation/attempt-2/1.88.0-probe-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-probe-test-default.log",
+      "path": "validation/attempt-2/1.88.0-probe-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1699,
+      "raw_sha256": "0d63c815da72fae33e1f4574e360afdd1ad782ee0609c363c4bc4f8c73fbea02",
+      "stored_bytes": 1699,
+      "stored_sha256": "0d63c815da72fae33e1f4574e360afdd1ad782ee0609c363c4bc4f8c73fbea02"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-probe-test-feature.log",
+      "path": "validation/attempt-2/1.88.0-probe-test-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3577,
+      "raw_sha256": "44f6ff4547ef0a1e1dbc46e5b0086127c88418be6eb63d9172b6bfd4301400e4",
+      "stored_bytes": 3577,
+      "stored_sha256": "44f6ff4547ef0a1e1dbc46e5b0086127c88418be6eb63d9172b6bfd4301400e4"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-root-bridge-clippy.log",
+      "path": "validation/attempt-2/1.88.0-root-bridge-clippy.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 279,
+      "raw_sha256": "cff35d6e250220c8447dbc2ae8c418ae121232a47c77e8faf9b2204704b2520d",
+      "stored_bytes": 279,
+      "stored_sha256": "cff35d6e250220c8447dbc2ae8c418ae121232a47c77e8faf9b2204704b2520d"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.88.0-root-bridge-tests.log",
+      "path": "validation/attempt-2/1.88.0-root-bridge-tests.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3651,
+      "raw_sha256": "be54a85ea5d6737da343930d77539cd1e522d982d5fb68031439fa7745bed088",
+      "stored_bytes": 3651,
+      "stored_sha256": "be54a85ea5d6737da343930d77539cd1e522d982d5fb68031439fa7745bed088"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-checks.json",
+      "path": "validation/attempt-2/1.98.0-checks.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 4761,
+      "raw_sha256": "f2611ca81eca8c7113f02b9988e1a7e6038b018bba85032e16f1d5b9c7f9c97d",
+      "stored_bytes": 4761,
+      "stored_sha256": "f2611ca81eca8c7113f02b9988e1a7e6038b018bba85032e16f1d5b9c7f9c97d"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-core-clippy-gpu.log",
+      "path": "validation/attempt-2/1.98.0-core-clippy-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 175,
+      "raw_sha256": "53b2efd8630a24158599b8b46b7c391b0b1fa5533ec3f0ecb145562bddde6197",
+      "stored_bytes": 175,
+      "stored_sha256": "53b2efd8630a24158599b8b46b7c391b0b1fa5533ec3f0ecb145562bddde6197"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-core-fmt.log",
+      "path": "validation/attempt-2/1.98.0-core-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-core-test-gpu.log",
+      "path": "validation/attempt-2/1.98.0-core-test-gpu.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 7375,
+      "raw_sha256": "847279a35c7ee3b83ea2105c81740fb866c85064b45707f6e3ee51059c38fd11",
+      "stored_bytes": 7375,
+      "stored_sha256": "847279a35c7ee3b83ea2105c81740fb866c85064b45707f6e3ee51059c38fd11"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-probe-build-feature.log",
+      "path": "validation/attempt-2/1.98.0-probe-build-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 60,
+      "raw_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527",
+      "stored_bytes": 60,
+      "stored_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-probe-clippy-default.log",
+      "path": "validation/attempt-2/1.98.0-probe-clippy-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 309,
+      "raw_sha256": "fb573d4bf088c409530ae9dd8956576aea333314773dca82f215c519d5da9804",
+      "stored_bytes": 309,
+      "stored_sha256": "fb573d4bf088c409530ae9dd8956576aea333314773dca82f215c519d5da9804"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-probe-clippy-feature.log",
+      "path": "validation/attempt-2/1.98.0-probe-clippy-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 401,
+      "raw_sha256": "81f10668e1cc87208bd37d8d234c7498ec778a3604765551344e7fc93398fafb",
+      "stored_bytes": 401,
+      "stored_sha256": "81f10668e1cc87208bd37d8d234c7498ec778a3604765551344e7fc93398fafb"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-probe-fmt.log",
+      "path": "validation/attempt-2/1.98.0-probe-fmt.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-probe-test-default.log",
+      "path": "validation/attempt-2/1.98.0-probe-test-default.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 1696,
+      "raw_sha256": "86b16ac8226209c2a01ded8ba6e1305f4f3f06bc3b565d632eeffdb731bbf8b8",
+      "stored_bytes": 1696,
+      "stored_sha256": "86b16ac8226209c2a01ded8ba6e1305f4f3f06bc3b565d632eeffdb731bbf8b8"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-probe-test-feature.log",
+      "path": "validation/attempt-2/1.98.0-probe-test-feature.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3570,
+      "raw_sha256": "916991788f5be96acb09b35e6669f99e86616e05553867983502ddcef9f2e52a",
+      "stored_bytes": 3570,
+      "stored_sha256": "916991788f5be96acb09b35e6669f99e86616e05553867983502ddcef9f2e52a"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-root-bridge-clippy.log",
+      "path": "validation/attempt-2/1.98.0-root-bridge-clippy.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 279,
+      "raw_sha256": "9bc494b1fbe65ddcbac4bf19ebe028b926f97c673dbb7221dcd67267e912b6b6",
+      "stored_bytes": 279,
+      "stored_sha256": "9bc494b1fbe65ddcbac4bf19ebe028b926f97c673dbb7221dcd67267e912b6b6"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/1.98.0-root-bridge-tests.log",
+      "path": "validation/attempt-2/1.98.0-root-bridge-tests.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3650,
+      "raw_sha256": "88b3b040dd8a9e516f848fff9508b7a0afcf3fe56550e06c2ea2ecc62eb90374",
+      "stored_bytes": 3650,
+      "stored_sha256": "88b3b040dd8a9e516f848fff9508b7a0afcf3fe56550e06c2ea2ecc62eb90374"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/binaries.json",
+      "path": "validation/attempt-2/binaries.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 971,
+      "raw_sha256": "dd8d75e5d33c074e0ef071c98eaccbd6491d4557a8ed0b16d2ae0b2fe6cf424b",
+      "stored_bytes": 971,
+      "stored_sha256": "dd8d75e5d33c074e0ef071c98eaccbd6491d4557a8ed0b16d2ae0b2fe6cf424b"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/check-rust.py",
+      "path": "validation/attempt-2/check-rust.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 2591,
+      "raw_sha256": "31d5fffff893cfe8e9d7cb084b9fd3a4e0eed1a1e85e53f447c56e1a6a7713d9",
+      "stored_bytes": 2591,
+      "stored_sha256": "31d5fffff893cfe8e9d7cb084b9fd3a4e0eed1a1e85e53f447c56e1a6a7713d9"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/compile-correction.json",
+      "path": "validation/attempt-2/compile-correction.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 706,
+      "raw_sha256": "b4a848b4af8bd9144dfca127fffef19cd38bff88cbc9393de0f9554955d603da",
+      "stored_bytes": 706,
+      "stored_sha256": "b4a848b4af8bd9144dfca127fffef19cd38bff88cbc9393de0f9554955d603da"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1-launcher.log",
+      "path": "validation/attempt-2/glyph-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 116,
+      "raw_sha256": "45799053824976d12e07422d124fd366f4069508c2fafdc40dbe2e3e0c40ee0b",
+      "stored_bytes": 116,
+      "stored_sha256": "45799053824976d12e07422d124fd366f4069508c2fafdc40dbe2e3e0c40ee0b"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/gpu-runs.json",
+      "path": "validation/attempt-2/gpu-runs.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 2065,
+      "raw_sha256": "cd72d9f4ba710cbb77e60e94d5e4870928aa434a9c333607ccf0760e173426a2",
+      "stored_bytes": 2065,
+      "stored_sha256": "cd72d9f4ba710cbb77e60e94d5e4870928aa434a9c333607ccf0760e173426a2"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/launch.py",
+      "path": "validation/attempt-2/launch.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 236,
+      "raw_sha256": "607abd92921aa018479f61581415adb93b3776e8a84e043399e9ee6a4e0fd514",
+      "stored_bytes": 236,
+      "stored_sha256": "607abd92921aa018479f61581415adb93b3776e8a84e043399e9ee6a4e0fd514"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/run-gpu-suites.py",
+      "path": "validation/attempt-2/run-gpu-suites.py",
+      "encoding": "identity",
+      "uncompressed_bytes": 1628,
+      "raw_sha256": "ce232cd012687bc43c7bf73070bc0b9924721a5f9ddb31de77037058e381264f",
+      "stored_bytes": 1628,
+      "stored_sha256": "ce232cd012687bc43c7bf73070bc0b9924721a5f9ddb31de77037058e381264f"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/source.json",
+      "path": "validation/attempt-2/source.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 34077,
+      "raw_sha256": "cd0ae11b2a7939d881c45c7afa7793a0526ca6101acb8243c50850ec668f2f67",
+      "stored_bytes": 34077,
+      "stored_sha256": "cd0ae11b2a7939d881c45c7afa7793a0526ca6101acb8243c50850ec668f2f67"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1-launcher.log",
+      "path": "validation/attempt-2/standalone-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 116,
+      "raw_sha256": "abba21d9e8684d5a279c22bcbf63deba9741c8b59a2a5360df9f905b5020cd01",
+      "stored_bytes": 116,
+      "stored_sha256": "abba21d9e8684d5a279c22bcbf63deba9741c8b59a2a5360df9f905b5020cd01"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1-launcher.log",
+      "path": "validation/attempt-2/surface-host-1-launcher.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 118,
+      "raw_sha256": "12a4eb98b5fe0e0ef0ab126defd5f1d1994f8abaffea88fd8f380874357fa76b",
+      "stored_bytes": 118,
+      "stored_sha256": "12a4eb98b5fe0e0ef0ab126defd5f1d1994f8abaffea88fd8f380874357fa76b"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-0.json",
+      "path": "hosts/surface-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 759,
+      "raw_sha256": "80ab18e9b45125347741eabc0726c8106af30ac676af447b054f8e12885f97e0",
+      "stored_bytes": 759,
+      "stored_sha256": "80ab18e9b45125347741eabc0726c8106af30ac676af447b054f8e12885f97e0"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-0.stderr.log",
+      "path": "hosts/surface-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-0.stdout.log",
+      "path": "hosts/surface-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 4872,
+      "raw_sha256": "2eaf5116979eaa1e2c8c6c75b27e40a737cfcc66e6838d705a03306f4dab91a5",
+      "stored_bytes": 4872,
+      "stored_sha256": "2eaf5116979eaa1e2c8c6c75b27e40a737cfcc66e6838d705a03306f4dab91a5"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/surface-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-1.json",
+      "path": "hosts/surface-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 758,
+      "raw_sha256": "451e75f354368b854054b556c16ba74c732820b0233cb41d46b7fcab7735ac85",
+      "stored_bytes": 758,
+      "stored_sha256": "451e75f354368b854054b556c16ba74c732820b0233cb41d46b7fcab7735ac85"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-1.stderr.log",
+      "path": "hosts/surface-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-1.stdout.log",
+      "path": "hosts/surface-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 4872,
+      "raw_sha256": "3bef9a0b90d6db647baee746cbc10ddc77c06640738def6c60038c7ab8e52020",
+      "stored_bytes": 4872,
+      "stored_sha256": "3bef9a0b90d6db647baee746cbc10ddc77c06640738def6c60038c7ab8e52020"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/surface-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-2.json",
+      "path": "hosts/surface-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 758,
+      "raw_sha256": "bc3a74fdad3c71e4c01183a26781e4d9fcba425c538e825fb80b2af45ebff14d",
+      "stored_bytes": 758,
+      "stored_sha256": "bc3a74fdad3c71e4c01183a26781e4d9fcba425c538e825fb80b2af45ebff14d"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-2.stderr.log",
+      "path": "hosts/surface-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-2.stdout.log",
+      "path": "hosts/surface-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 4872,
+      "raw_sha256": "85de1120fa25d3773d6273d0ebe66e1b625fdf3061c3851c473ac655dc6c28a2",
+      "stored_bytes": 4872,
+      "stored_sha256": "85de1120fa25d3773d6273d0ebe66e1b625fdf3061c3851c473ac655dc6c28a2"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/surface-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/enumeration.json",
+      "path": "hosts/surface-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 745,
+      "raw_sha256": "4feacdc1a8924d802c941eb4440a150a9e000e956612cc908d0307b92afa5e05",
+      "stored_bytes": 745,
+      "stored_sha256": "4feacdc1a8924d802c941eb4440a150a9e000e956612cc908d0307b92afa5e05"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/enumeration.stderr.log",
+      "path": "hosts/surface-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/enumeration.stdout.log",
+      "path": "hosts/surface-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/surface-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/surface-host-1/host-results.json",
+      "path": "hosts/surface-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 7818,
+      "raw_sha256": "429fa0a65b4cee63ee5b494b230264685bc607b09282ae5a9b048b0d075a8065",
+      "stored_bytes": 7818,
+      "stored_sha256": "429fa0a65b4cee63ee5b494b230264685bc607b09282ae5a9b048b0d075a8065"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/adapter-0.stderr.log",
+      "path": "hosts/standalone-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/adapter-0.stdout.log",
+      "path": "hosts/standalone-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3854,
+      "raw_sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c",
+      "stored_bytes": 3854,
+      "stored_sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/adapter-1.stderr.log",
+      "path": "hosts/standalone-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/adapter-1.stdout.log",
+      "path": "hosts/standalone-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3854,
+      "raw_sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472",
+      "stored_bytes": 3854,
+      "stored_sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/adapter-2.stderr.log",
+      "path": "hosts/standalone-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/adapter-2.stdout.log",
+      "path": "hosts/standalone-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 3854,
+      "raw_sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f",
+      "stored_bytes": 3854,
+      "stored_sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/enumeration.stderr.log",
+      "path": "hosts/standalone-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/enumeration.stdout.log",
+      "path": "hosts/standalone-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/standalone-host-1/host-results.json",
+      "path": "hosts/standalone-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 14523,
+      "raw_sha256": "2a233d605cd2e4f791d3bd99d93c8fbebafa1d9cb50ca46f3632261db3f108e2",
+      "stored_bytes": 14523,
+      "stored_sha256": "2a233d605cd2e4f791d3bd99d93c8fbebafa1d9cb50ca46f3632261db3f108e2"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-0.json",
+      "path": "hosts/glyph-host-1/adapter-0.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 898,
+      "raw_sha256": "ff3bd49e6dff6f0a1501dd06ed6b6bf80d454f56732e28144e1ce3662443e22c",
+      "stored_bytes": 898,
+      "stored_sha256": "ff3bd49e6dff6f0a1501dd06ed6b6bf80d454f56732e28144e1ce3662443e22c"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-0.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-0.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-0.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-0.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c",
+      "stored_bytes": 9613,
+      "stored_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-0.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-1.json",
+      "path": "hosts/glyph-host-1/adapter-1.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 897,
+      "raw_sha256": "adbe82f606213c565755fb6e2bc593c820432525858ce25ee079a38e34f0b380",
+      "stored_bytes": 897,
+      "stored_sha256": "adbe82f606213c565755fb6e2bc593c820432525858ce25ee079a38e34f0b380"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-1.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-1.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-1.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-1.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9",
+      "stored_bytes": 9613,
+      "stored_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-1.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-2.json",
+      "path": "hosts/glyph-host-1/adapter-2.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 897,
+      "raw_sha256": "57b68f1557a02e64778b27466f7c33450e6b1195b53913457c3c6c7bf87c2031",
+      "stored_bytes": 897,
+      "stored_sha256": "57b68f1557a02e64778b27466f7c33450e6b1195b53913457c3c6c7bf87c2031"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-2.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-2.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-2.stdout.log",
+      "path": "hosts/glyph-host-1/adapter-2.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 9613,
+      "raw_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+      "stored_bytes": 9613,
+      "stored_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/adapter-2.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/enumeration.json",
+      "path": "hosts/glyph-host-1/enumeration.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 743,
+      "raw_sha256": "c7b1f76b2a8423c854e9f64e03f6ea5f55fca33ad8e5600f2a596418121839a8",
+      "stored_bytes": 743,
+      "stored_sha256": "c7b1f76b2a8423c854e9f64e03f6ea5f55fca33ad8e5600f2a596418121839a8"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/enumeration.stderr.log",
+      "path": "hosts/glyph-host-1/enumeration.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/enumeration.stdout.log",
+      "path": "hosts/glyph-host-1/enumeration.stdout.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 465,
+      "raw_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stored_bytes": 465,
+      "stored_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/enumeration.supervisor.stderr.log",
+      "path": "hosts/glyph-host-1/enumeration.supervisor.stderr.log",
+      "encoding": "identity",
+      "uncompressed_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-2/glyph-host-1/host-results.json",
+      "path": "hosts/glyph-host-1/host-results.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 56469,
+      "raw_sha256": "2490192cefd841cb64674093e4d90dbbab13b9be14fe12bf0b2942ce70fa9291",
+      "stored_bytes": 56469,
+      "stored_sha256": "2490192cefd841cb64674093e4d90dbbab13b9be14fe12bf0b2942ce70fa9291"
+    },
+    {
+      "source": "/tmp/eris-native-profile-source-ready.json",
+      "path": "reviews/eris-native-profile-source-ready.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 3575,
+      "raw_sha256": "e1aefe67bf1715603a5bcd3121691b8214c7ea93b7913ee0457510a997d26152",
+      "stored_bytes": 3575,
+      "stored_sha256": "e1aefe67bf1715603a5bcd3121691b8214c7ea93b7913ee0457510a997d26152"
+    },
+    {
+      "source": "/tmp/eris-rounded-source-ready.json",
+      "path": "reviews/eris-rounded-source-ready.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 2341,
+      "raw_sha256": "591507702b563588b8c876a4a37bb13238c25b430bb990cf209fe724f252d4be",
+      "stored_bytes": 2341,
+      "stored_sha256": "591507702b563588b8c876a4a37bb13238c25b430bb990cf209fe724f252d4be"
+    },
+    {
+      "source": "/tmp/eris-native-surface-source-ready.json",
+      "path": "reviews/eris-native-surface-source-ready.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 3116,
+      "raw_sha256": "9550516ff1b3d1afa69b6476f65fc4cce79708627d66719a5232043ba055c6a2",
+      "stored_bytes": 3116,
+      "stored_sha256": "9550516ff1b3d1afa69b6476f65fc4cce79708627d66719a5232043ba055c6a2"
+    },
+    {
+      "source": "/tmp/eris-native-profile-surface-integration-review.json",
+      "path": "reviews/eris-native-profile-surface-integration-review.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 2351,
+      "raw_sha256": "6ac3d7f038ff20f6b8e199c588f01170f853c86f9281cf1b3aa2126188a4b573",
+      "stored_bytes": 2351,
+      "stored_sha256": "6ac3d7f038ff20f6b8e199c588f01170f853c86f9281cf1b3aa2126188a4b573"
+    },
+    {
+      "source": "/tmp/eris-native-prerequisites-harness-review.json",
+      "path": "reviews/eris-native-prerequisites-harness-review.json",
+      "encoding": "identity",
+      "uncompressed_bytes": 2694,
+      "raw_sha256": "8d4f2e0e6abfc093424d2d541466fd9171ae73d985eb4ca5f5e1004d42ccb8ee",
+      "stored_bytes": 2694,
+      "stored_sha256": "8d4f2e0e6abfc093424d2d541466fd9171ae73d985eb4ca5f5e1004d42ccb8ee"
+    }
+  ],
+  "totals": {
+    "payload_artifacts": 95,
+    "stored_payload_bytes": 299729,
+    "source_bindings_verified": 192,
+    "binary_bindings_verified": 6,
+    "check_log_bindings_verified": 30,
+    "host_process_records": 12
+  },
+  "initial_failures": [
+    {
+      "attempt": 1,
+      "toolchain": "1.88.0",
+      "name": "core-clippy-gpu",
+      "exit": 101,
+      "log": "1.88.0-core-clippy-gpu.log"
+    },
+    {
+      "attempt": 1,
+      "toolchain": "1.98.0",
+      "name": "core-clippy-gpu",
+      "exit": 101,
+      "log": "1.98.0-core-clippy-gpu.log"
+    }
+  ],
+  "source_delta": [
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "before": "5adc2fc351814bf5f08c1c47129b7b68758f3d3a99a983b65e63a4bbee56fb0f",
+      "after": "a8057e3641f98120a7a4e3bd4445facf814cad51f0490cf50a7c7090e4575869"
+    },
+    {
+      "path": "crates/raster-core/src/surface_tests.rs",
+      "before": "b02462ed7ea2fcbfa758cc5502f7c72e2912b62cb5ee1ad216182b3d8b41a8d6",
+      "after": "0c2a5cf68bc28fcf2f3ede54142616dc7d18193b55bbf7ea91783a915d358543"
+    }
+  ],
+  "host_stdout_bindings": [
+    {
+      "host": "surface-host-1",
+      "name": "enumeration",
+      "stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "surface-host-1",
+      "name": "adapter-0",
+      "stdout_sha256": "2eaf5116979eaa1e2c8c6c75b27e40a737cfcc66e6838d705a03306f4dab91a5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "surface-host-1",
+      "name": "adapter-1",
+      "stdout_sha256": "3bef9a0b90d6db647baee746cbc10ddc77c06640738def6c60038c7ab8e52020",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "surface-host-1",
+      "name": "adapter-2",
+      "stdout_sha256": "85de1120fa25d3773d6273d0ebe66e1b625fdf3061c3851c473ac655dc6c28a2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "standalone-host-1",
+      "name": "enumeration",
+      "stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "standalone-host-1",
+      "name": "adapter-0",
+      "stdout_sha256": "a26a8bda066a19373385f55faa40146200a6dff8c55a6c76545999094415d68c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "standalone-host-1",
+      "name": "adapter-1",
+      "stdout_sha256": "fa07469bc41234b92472e7ec4053d45fba836215bee3b393353acc99bf184472",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "standalone-host-1",
+      "name": "adapter-2",
+      "stdout_sha256": "b9144976b3f73a8d29de8b85012c2db291f3d6981ce03851061f8981be26e10f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "glyph-host-1",
+      "name": "enumeration",
+      "stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "glyph-host-1",
+      "name": "adapter-0",
+      "stdout_sha256": "f4c09162126579d4aae37fab038727dafc7abfcc84c965f08240d14f1297da1c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "glyph-host-1",
+      "name": "adapter-1",
+      "stdout_sha256": "82d9b41c9fd915d862d841f857afd55725af0d47ec93c35c0aabd5339a0942a9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "host": "glyph-host-1",
+      "name": "adapter-2",
+      "stdout_sha256": "d57398020d112455156a593c9a04d75c2b6e6a3f1e900faaf85911889417588d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "selection": "Both Rust attempts with source manifests, initial GPU compilation failures, successful default checks, final checks/builds, minimal type correction, binary identity manifest, check/launch scripts; all three completed host suites and the new Python host log; concise source/readiness reviews.",
+  "encoding": "All retained artifacts are small enough for exact uncompressed copies; raw and stored hashes are both explicit.",
+  "exclusions": [
+    "Executable binaries (identities in validation/attempt-2/binaries.json)",
+    "Build/cache trees",
+    "Duplicate source/fixture/reference trees and lockfiles (192 identities in the source manifests)",
+    "Root-owned primary host record and documentation"
+  ],
+  "attribution": "Literal-reference and Canvas-differential GPU comparisons retain their separate labels. Original standalone and glyph populations remain separate. Raw statuses, timings and first failures are unmodified. No native-window presentation, compatibility, security or performance claim is added by this index."
+}

@@ -17,6 +17,9 @@ pub const MAX_ROW_ENTRIES: usize = 65_536;
 pub const MAX_LUT_ENTRIES: usize = MAX_COMMANDS * (MAX_WIDTH + MAX_HEIGHT) as usize;
 pub type Result<T> = std::result::Result<T, String>;
 
+pub mod profile;
+pub use profile::Profile;
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Rect {
     pub x: f32,
@@ -187,6 +190,9 @@ impl Draw {
 #[derive(Debug)]
 pub struct Plan {
     frame: Frame,
+    profile: Profile,
+    conversion_invocations: u64,
+    conversion_buffer_bytes: u64,
     draws: Vec<Draw>,
     invocations: u64,
     gpu_buffer_bytes: u64,
@@ -194,12 +200,27 @@ pub struct Plan {
     input: Vec<u8>,
 }
 impl Plan {
+    pub fn profile(&self) -> Profile {
+        self.profile
+    }
+    /// Work reserved for the mandatory Native packed-to-surface pass.
+    pub fn conversion_invocations(&self) -> u64 {
+        self.conversion_invocations
+    }
+    /// Native padded conversion output plus its uniform; excludes readback.
+    pub fn conversion_buffer_bytes(&self) -> u64 {
+        self.conversion_buffer_bytes
+    }
+    pub fn raster_invocations(&self) -> u64 {
+        self.invocations - self.conversion_invocations
+    }
     pub fn frame(&self) -> Frame {
         self.frame
     }
     pub fn draws(&self) -> &[Draw] {
         &self.draws
     }
+    /// Total admitted work, including Native conversion when selected.
     pub fn invocations(&self) -> u64 {
         self.invocations
     }
@@ -339,14 +360,7 @@ fn glyph_coverage(
 }
 
 fn add_invocations(total: u64, draw: Draw) -> Result<u64> {
-    let total = total
-        .checked_add(draw.invocations())
-        .ok_or("invocation overflow")?;
-    if total > MAX_INVOCATIONS {
-        Err("GPU invocation budget".into())
-    } else {
-        Ok(total)
-    }
+    profile::add_work(total, draw.invocations())
 }
 fn coverage(rect: Rect, clip: Rect, frame: Frame, blend: bool) -> Option<(u32, u32, u32, u32)> {
     if rect.width <= 0.0 || rect.height <= 0.0 {
@@ -457,17 +471,26 @@ pub fn plan_with_masks(
     masks: &[SourceMask<'_>],
     row_tables: &[&[i32]],
 ) -> Result<Plan> {
-    if frame.width == 0 || frame.height == 0 || frame.width > MAX_WIDTH || frame.height > MAX_HEIGHT
-    {
-        return Err("viewport budget".into());
-    }
+    plan_with_masks_for_profile(Profile::Probe, frame, commands, sources, masks, row_tables)
+}
+/// Additive policy selection; old entry points retain the exact Probe policy.
+/// Native admission reserves conversion work/storage but performs no presentation.
+pub fn plan_with_masks_for_profile(
+    profile: Profile,
+    frame: Frame,
+    commands: &[Command],
+    sources: &[SourceImage<'_>],
+    masks: &[SourceMask<'_>],
+    row_tables: &[&[i32]],
+) -> Result<Plan> {
+    profile.validate_viewport(frame.width, frame.height)?;
     if frame.clear > 0x00ff_ffff {
         return Err("clear color must be packed RGB".into());
     }
     if commands.len() > MAX_COMMANDS {
         return Err("command budget".into());
     }
-    let mut coordinates = scope::CoordinateState::new(frame)?;
+    let mut coordinates = scope::CoordinateState::new_for_profile(profile, frame)?;
     // Preserve the image-only API's original source validation and diagnostics.
     let source_words = source_pixels(sources)?;
     if sources
@@ -487,13 +510,15 @@ pub fn plan_with_masks(
         color: 0xff00_0000 | frame.clear,
         image: None,
     };
+    let conversion_invocations = profile.conversion_invocations(frame.width, frame.height)?;
+    let conversion_buffer_bytes = profile.conversion_buffer_bytes(frame.width, frame.height)?;
+    let mut invocations = profile::add_work(clear.invocations(), conversion_invocations)?;
     let mut pending = reserved(commands.len() + 1)?;
     pending.push(PendingDraw {
         draw: clear,
         image: None,
         glyph: None,
     });
-    let mut invocations = clear.invocations();
     let mut lut_words = 0usize;
     let mut has_input = false;
     for command in commands {
@@ -587,7 +612,7 @@ pub fn plan_with_masks(
             lut_words = lut_words
                 .checked_add(width as usize + height as usize)
                 .ok_or("LUT count overflow")?;
-            if lut_words > MAX_LUT_ENTRIES {
+            if lut_words > profile.max_lut_entries() {
                 return Err("LUT entry budget".into());
             }
         }
@@ -612,13 +637,17 @@ pub fn plan_with_masks(
         .len()
         .checked_mul(PARAM_STRIDE)
         .ok_or("parameter overflow")?;
-    let gpu_buffer_bytes = (u64::from(frame.width) * u64::from(frame.height) * 8)
-        .checked_add(parameter_size as u64)
+    let packed_target_bytes = u64::from(frame.width) * u64::from(frame.height) * 4;
+    let second_buffer_bytes = match profile {
+        Profile::Probe => packed_target_bytes,
+        Profile::Native => conversion_buffer_bytes,
+    };
+    let gpu_buffer_bytes = packed_target_bytes
+        .checked_add(second_buffer_bytes)
+        .and_then(|n| n.checked_add(parameter_size as u64))
         .and_then(|n| n.checked_add(arena_bytes as u64))
         .ok_or("GPU buffer overflow")?;
-    if gpu_buffer_bytes > MAX_GPU_BUFFER_BYTES {
-        return Err("GPU buffer budget".into());
-    }
+    profile.validate_buffer_bytes(gpu_buffer_bytes)?;
     // Allocation/scanning below has already been bounded by the complete plan.
     // Input alpha/coverage never triggers a CPU scan or draw suppression. If
     // an input-backed draw is visible, all supplied sources and row tables
@@ -698,6 +727,9 @@ pub fn plan_with_masks(
     let parameters = parameter_bytes(frame, &draws)?;
     Ok(Plan {
         frame,
+        profile,
+        conversion_invocations,
+        conversion_buffer_bytes,
         draws,
         invocations,
         gpu_buffer_bytes,
@@ -717,7 +749,16 @@ pub fn validate_source_images(sources: &[SourceImage<'_>]) -> Result<usize> {
 
 #[cfg(feature = "gpu")]
 pub mod gpu;
+#[cfg(test)]
+mod profile_tests;
+pub mod rounded;
+#[cfg(test)]
+mod rounded_tests;
 pub mod scope;
+#[cfg(feature = "gpu")]
+pub mod surface;
+#[cfg(all(test, feature = "gpu"))]
+mod surface_tests;
 
 // Keep the original unit-test bodies and independent fixture bytes in one
 // repository-owned location. Only core test builds compile these modules;

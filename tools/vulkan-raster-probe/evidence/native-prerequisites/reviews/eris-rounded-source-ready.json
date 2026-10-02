@@ -1,0 +1,49 @@
+{
+  "kind": "rounded-geometry-source-ready",
+  "implementation": "CPU geometry coverage only; GPU coloring/compositing is separate",
+  "files": {
+    "crates/raster-core/src/rounded.rs": {
+      "sha256": "b410aa8a65dae1b630c6bd951f3fac94c8bee074d9e89dccb6ba0ad1429eb6d4",
+      "bytes": 9913
+    },
+    "crates/raster-core/src/rounded_tests.rs": {
+      "sha256": "a947006126aa5dc012b7e42253560013eb1c5b96425e2b2e8f39c73117d7a79a",
+      "bytes": 15793
+    }
+  },
+  "private_test_groups": 18,
+  "format": {
+    "command": "rustfmt 1.88.0 --edition 2024 --config skip_children=true on the two owned files",
+    "exit_code": 0
+  },
+  "execution": {
+    "compiler": false,
+    "tests": false,
+    "Canvas_or_planner": false,
+    "GPU": false
+  },
+  "reference_note": {
+    "path": "/tmp/eris-rounded-rectangle-next-plan.md",
+    "sha256": "69ed2f714d3571d31f6369613b4e4df73e9f4617c4ccafaa200df911a87047f9"
+  },
+  "api": [
+    "RoundedShape::prepare(Profile, Frame, Rect, Rect, f32) -> Result<RoundedDisposition>",
+    "RoundedDisposition::{Empty { loop_work }, ZeroRadius { loop_work }, Shape(RoundedShape)}",
+    "RoundedShape::{info,materialize}",
+    "RoundedCoverage::{info,mask,row_origins,origin,origin_y}"
+  ],
+  "limits": "Existing Profile viewport, translated position <= 2*MAX_COORDINATE, extents/radius <= MAX_COORDINATE, shared mask/coverage/row limits. Caller aggregates source, work, payload, arena, parameters and target budgets before materialization.",
+  "scope": "Only two new files; layout owns module hooks. Old entrypoints, shaders and fixture bytes untouched.",
+  "arithmetic_preparation": "A bounded standalone Python f32 subtract/add search, without renderer or planner imports, found the clip reconstruction example x=bits0xbfffec57, visible width=bits0x403ff62c, rebuilt right=bits0x3f800001. The corresponding test charges the original two-pixel loop and retains one mask pixel.",
+  "coverage": [
+    "independent 202/191/63/127/255 literals",
+    "clamping and signed/subnormal zero disposition",
+    "fractional and negative placement, integer clip edges",
+    "full loop work before upper-clip cropping",
+    "validation before hidden/empty omission",
+    "profile and shared source boundaries",
+    "callback precedes both reserves",
+    "each reserve failure and caller one-short budgets"
+  ],
+  "hold": true
+}
