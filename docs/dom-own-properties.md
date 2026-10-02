@@ -34,11 +34,13 @@ Failed admission cannot publish the new descriptor or host-map entry. These
 checks do not establish complete fallible allocation coverage or production
 security.
 
-Real DOM interface prototypes and constructors, complete Document reflection,
+Complete DOM interface members and construction, complete Document reflection,
 host integrity operations, JSON serialization of host properties and broader
-generic Array behavior remain unfinished. The current coarse EventTarget/Object
-prototype chain can still intercept a virtual native member through an inherited
-property; complete interface precedence requires those missing DOM prototypes.
+generic Array behavior remain unfinished. At that checkpoint, the coarse EventTarget/Object
+prototype chain could still intercept a virtual native member through an inherited
+property. The subsequent [interface prototype work](dom-prototypes.md) supplies
+represented node chains and moves nine ParentNode operations onto their defining
+prototypes; remaining virtual members still need migration.
 
 Nineteen focused groups cover identity, descriptor flags, live callbacks, key
 ordering, receiver classification and exact/one-short resource admission. A

@@ -75,13 +75,14 @@ impl Runtime {
         }
     }
 
-    pub(super) fn find_property_key(
+    pub(super) fn find_property_key_in(
         &mut self,
         receiver: &Value,
         key: &PropertyKey,
+        doc: &Document,
     ) -> Result<Option<Property>> {
         if let PropertyKey::String(key) = key {
-            return self.find_property(receiver, key);
+            return self.find_property_in(receiver, key, doc);
         }
         let mut cursor = Some(receiver.clone());
         for _ in 0..MAX_DEPTH {
@@ -90,7 +91,7 @@ impl Runtime {
             if let Some(property) = self.read_own_property_key(&value, key)? {
                 return Ok(Some(property));
             }
-            cursor = self.prototype_of(&value);
+            cursor = self.prototype_of_in(&value, doc)?;
         }
         Err(ScriptError::resource("prototype chain limit exceeded"))
     }
@@ -109,7 +110,7 @@ impl Runtime {
                 "cannot read property of null or undefined",
             ));
         }
-        let Some(property) = self.find_property_key(&receiver, key)? else {
+        let Some(property) = self.find_property_key_in(&receiver, key, doc)? else {
             return Ok(Value::Undefined);
         };
         match property.value {
@@ -138,7 +139,7 @@ impl Runtime {
                 "cannot write property of null or undefined",
             ));
         }
-        if let Some(property) = self.find_property_key(&receiver, key)? {
+        if let Some(property) = self.find_property_key_in(&receiver, key, doc)? {
             match property.value {
                 PropertyValue::Accessor {
                     set: Value::Undefined,

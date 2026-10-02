@@ -203,6 +203,14 @@ fn dom_parent_pinned_leaf_and_payload_bounds_use_actual_types() {
 fn install_setup(ordinal: usize) -> Runtime {
     let (mut runtime, _) = fresh();
     runtime.native_properties.clear();
+    // Replay the early installer after a completed bootstrap. Its production
+    // slots are prepaid before installation; prepare equivalent spare slots
+    // here, outside the work and heap measurements below.
+    runtime
+        .objects
+        .try_reserve_exact(PARENT_INSTALL_ORDER.len())
+        .unwrap();
+    assert!(runtime.objects.capacity() - runtime.objects.len() >= PARENT_INSTALL_ORDER.len());
     let keys = [PropertyKey::from("name"), PropertyKey::from("length")];
     for (n, &index) in PARENT_INSTALL_ORDER[..ordinal].iter().enumerate() {
         let row = &PARENT_METHODS[index];
@@ -940,7 +948,7 @@ fn dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities() {
     );
     assert!(runtime.steps < MAX_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
-    assert_eq!(runtime.objects.len(), 352);
+    assert_eq!(runtime.objects.len(), 663);
     assert!(runtime.objects.capacity() >= BOOTSTRAP_OBJECT_CAPACITY);
     // Runtime::new additionally compares this capacity to its actual immediate
     // post-reserve capacity on every test build, detecting any later growth.

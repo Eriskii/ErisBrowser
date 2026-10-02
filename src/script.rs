@@ -25,6 +25,7 @@ mod data_view;
 mod date_builtins;
 mod dom_bindings;
 mod dom_own_properties;
+mod dom_prototypes;
 mod iterators;
 mod machine;
 mod names;
@@ -86,10 +87,20 @@ pub enum Value {
     Native(Rc<Native>),
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Native {
     name: String,
     receiver: Value,
+    // A private eagerly allocated property bag, independent of callable
+    // identity. Legacy native functions continue using the name registry.
+    properties: Option<std::num::NonZeroUsize>,
+}
+const NATIVE_METADATA_BYTES: usize = std::mem::size_of::<Option<std::num::NonZeroUsize>>();
+
+impl PartialEq for Native {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name && self.receiver == other.receiver
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -1536,6 +1547,7 @@ pub struct Runtime {
     iterators: iterators::State,
     array_buffers: array_buffer::State,
     data_views: data_view::State,
+    dom_prototypes: dom_prototypes::State,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
@@ -1619,7 +1631,7 @@ impl Runtime {
                 },
             );
         }
-        for name in [
+        let native_names = [
             "String",
             "Number",
             "Boolean",
@@ -1654,7 +1666,8 @@ impl Runtime {
             "EvalError",
             "URIError",
             "eval",
-        ] {
+        ];
+        for name in native_names {
             let global_order = bindings.len() as u64;
             bindings.insert(
                 name.to_owned(),
@@ -1708,6 +1721,7 @@ impl Runtime {
             iterators: iterators::State::default(),
             array_buffers: array_buffer::State::default(),
             data_views: data_view::State::default(),
+            dom_prototypes: dom_prototypes::State::default(),
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
@@ -1723,8 +1737,10 @@ impl Runtime {
                 + std::mem::size_of::<iterators::State>()
                 + std::mem::size_of::<array_buffer::State>()
                 + std::mem::size_of::<data_view::State>()
+                + std::mem::size_of::<dom_prototypes::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
+                + native_names.len() * NATIVE_METADATA_BYTES
                 + TrackedGlobal::ALL
                     .iter()
                     .map(|kind| 64 + kind.name().len() * 6)
@@ -1844,7 +1860,7 @@ impl Runtime {
             .insert_hidden("name".into(), Value::String(JsString::default()));
         self.objects[self.prototypes["Function"]]
             .insert_hidden("length".into(), Value::Number(0.0));
-        let thrower = Self::native("ThrowTypeError", Value::Undefined);
+        let thrower = self.alloc_native("ThrowTypeError", Value::Undefined)?;
         for name in ["caller", "arguments"] {
             self.objects[self.prototypes["Function"]].insert_property(
                 name.into(),
@@ -1891,7 +1907,7 @@ impl Runtime {
             "AbortController",
             "AbortSignal",
         ] {
-            let constructor = Self::native(name, Value::Window);
+            let constructor = self.alloc_native(name, Value::Window)?;
             let prototype = self.prototypes[name];
             let Value::Object(properties) = self.object_ordered([
                 (
@@ -1956,7 +1972,8 @@ impl Runtime {
             ("Boolean", "valueOf", "Boolean.valueOf"),
         ] {
             let id = self.prototypes[prototype];
-            self.objects[id].insert_hidden(key.into(), Self::native(method, Value::Undefined));
+            let value = self.alloc_native(method, Value::Undefined)?;
+            self.objects[id].insert_hidden(key.into(), value);
         }
         let properties = self.native_properties["Object"];
         for method in [
@@ -1972,10 +1989,8 @@ impl Runtime {
             "preventExtensions",
             "isExtensible",
         ] {
-            self.objects[properties].insert_hidden(
-                method.into(),
-                Self::native(&format!("Object.{method}"), Value::Undefined),
-            );
+            let value = self.alloc_native(&format!("Object.{method}"), Value::Undefined)?;
+            self.objects[properties].insert_hidden(method.into(), value);
         }
         let properties = self.native_properties["Number"];
         for (key, value) in [
@@ -2220,6 +2235,7 @@ impl Runtime {
                 ..PropertyDescriptor::default()
             },
         )?;
+        self.initialize_dom_prototypes()?;
         Ok(())
     }
 
@@ -2258,6 +2274,9 @@ impl Runtime {
     }
 
     fn intrinsic_function(&mut self, full: &str, name: &str, length: usize) -> Result<Value> {
+        // Admit the returned native's metadata slot before publishing its bag.
+        // The raw factory below consumes this debit without a late failure.
+        self.charge(NATIVE_METADATA_BYTES)?;
         if !self.native_properties.contains_key(full) {
             let Value::Object(id) = self.object_ordered([
                 ("name".into(), Value::String(name.into())),
@@ -2305,11 +2324,11 @@ impl Runtime {
 
     fn initialize_events(&mut self) -> Result<()> {
         self.objects[self.native_properties["CustomEvent"]].prototype =
-            Some(Self::native("Event", Value::Window));
+            Some(self.alloc_native("Event", Value::Window)?);
         self.objects[self.native_properties["ToggleEvent"]].prototype =
-            Some(Self::native("Event", Value::Window));
+            Some(self.alloc_native("Event", Value::Window)?);
         self.objects[self.native_properties["AbortSignal"]].prototype =
-            Some(Self::native("EventTarget", Value::Window));
+            Some(self.alloc_native("EventTarget", Value::Window)?);
         for (owner, key, length) in [
             ("EventTarget", "addEventListener", 2),
             ("EventTarget", "removeEventListener", 2),
@@ -2571,11 +2590,12 @@ impl Runtime {
             self.prototypes[if custom { "CustomEvent" } else { "Event" }],
         ));
         self.objects[id].event = Some(self.events.len());
+        let trusted_getter = self.alloc_native("Event.get.isTrusted", Value::Undefined)?;
         self.objects[id].insert_property(
             "isTrusted".into(),
             Property {
                 value: PropertyValue::Accessor {
-                    get: Self::native("Event.get.isTrusted", Value::Undefined),
+                    get: trusted_getter,
                     set: Value::Undefined,
                 },
                 enumerable: true,
@@ -3569,7 +3589,7 @@ impl Runtime {
         self.charge(320)?;
         self.objects[id].insert_hidden("length".into(), Value::Number(values.len() as f64));
         if strict {
-            let thrower = Self::native("ThrowTypeError", Value::Undefined);
+            let thrower = self.alloc_native("ThrowTypeError", Value::Undefined)?;
             self.objects[id].insert_property(
                 "callee".into(),
                 Property {
@@ -3662,7 +3682,12 @@ impl Runtime {
     fn global_key(&self, kind: TrackedGlobal) -> JsString {
         self.tracked_global_keys[kind as usize].clone()
     }
-    fn resolve_binding(&mut self, env: usize, name: &str) -> Result<Option<usize>> {
+    fn resolve_binding_in(
+        &mut self,
+        env: usize,
+        name: &str,
+        doc: &Document,
+    ) -> Result<Option<usize>> {
         if name == "this" {
             let mut cursor = env;
             loop {
@@ -3680,7 +3705,7 @@ impl Runtime {
             return Ok(Some(owner));
         }
         let key = self.global_name_key(name)?;
-        if self.find_property(&Value::Window, &key)?.is_some() {
+        if self.find_property_in(&Value::Window, &key, doc)?.is_some() {
             return Ok(Some(0));
         }
         Ok(None)
@@ -3931,8 +3956,15 @@ impl Runtime {
         )?;
         Ok(())
     }
+    // Preserve existing legacy allocation allowances while explicitly paying
+    // for the new optional direct-metadata slot before each reached Rc factory.
+    fn alloc_native(&mut self, name: &str, receiver: Value) -> Result<Value> {
+        self.charge(NATIVE_METADATA_BYTES)?;
+        Ok(Self::native(name, receiver))
+    }
     fn native(name: &str, receiver: Value) -> Value {
         Value::Native(Rc::new(Native {
+            properties: None,
             name: name.into(),
             receiver,
         }))
@@ -4032,7 +4064,7 @@ impl Runtime {
             return Ok(None);
         };
         let constructor = self.get(value.clone(), "constructor", doc)?;
-        Ok((constructor == Self::native(name, Value::Window)).then_some(name))
+        Ok((constructor == self.alloc_native(name, Value::Window)?).then_some(name))
     }
     #[cfg(test)]
     fn eval(
@@ -4246,7 +4278,9 @@ impl Runtime {
             {
                 return self.style_has(id, key, doc).map(Value::Bool);
             }
-            return Ok(Value::Bool(self.find_property_key(&right, &key)?.is_some()));
+            return Ok(Value::Bool(
+                self.find_property_key_in(&right, &key, doc)?.is_some(),
+            ));
         }
         if matches!(op, "===" | "!==") {
             let equal = left == right;
@@ -4361,7 +4395,7 @@ impl Runtime {
                     return Ok(());
                 }
                 let key = self.global_name_key(name)?;
-                if strict && self.find_property(&Value::Window, &key)?.is_none() {
+                if strict && self.find_property_in(&Value::Window, &key, doc)?.is_none() {
                     return Err(ScriptError::reference(format!("'{name}' is not defined")));
                 }
                 return self.set_key_strict(Value::Window, &key, value, strict, doc);
@@ -4428,7 +4462,10 @@ impl Runtime {
             Value::Object(id) => Some(*id),
             Value::Function(id) => Some(self.functions[*id].properties),
             Value::Array(id) => Some(self.array_properties[*id]),
-            Value::Native(native) => self.native_properties.get(&native.name).copied(),
+            Value::Native(native) => native
+                .properties
+                .map(std::num::NonZeroUsize::get)
+                .or_else(|| self.native_properties.get(&native.name).copied()),
             Value::Json => self.native_properties.get("JSON").copied(),
             Value::Math => self.native_properties.get("Math").copied(),
             _ => None,
@@ -4452,7 +4489,12 @@ impl Runtime {
         };
         self.prototypes.get(name).copied().map(Value::Object)
     }
-    fn object_is_prototype_of(&mut self, receiver: Value, mut value: Value) -> Result<Value> {
+    fn object_is_prototype_of_in(
+        &mut self,
+        receiver: Value,
+        mut value: Value,
+        doc: &Document,
+    ) -> Result<Value> {
         self.tick()?;
         // Unlike most Object methods, a primitive argument returns before ToObject(this).
         if !js_object(&value) {
@@ -4461,7 +4503,7 @@ impl Runtime {
         let object = self.coerce_object(receiver)?;
         for _ in 0..MAX_DEPTH {
             self.tick()?;
-            let Some(prototype) = self.prototype_of(&value) else {
+            let Some(prototype) = self.prototype_of_in(&value, doc)? else {
                 return Ok(Value::Bool(false));
             };
             if prototype == object {
@@ -4471,7 +4513,12 @@ impl Runtime {
         }
         Err(ScriptError::resource("prototype chain limit exceeded"))
     }
-    fn set_object_prototype(&mut self, object: &Value, prototype: Value) -> Result<()> {
+    fn set_object_prototype_in(
+        &mut self,
+        object: &Value,
+        prototype: Value,
+        doc: &Document,
+    ) -> Result<()> {
         let id = self.property_object(object).ok_or_else(|| {
             ScriptError::unsupported("host object prototype mutation is unsupported")
         })?;
@@ -4497,7 +4544,7 @@ impl Runtime {
             if depth == MAX_DEPTH {
                 return Err(ScriptError::resource("prototype chain limit exceeded"));
             }
-            cursor = self.prototype_of(&value);
+            cursor = self.prototype_of_in(&value, doc)?;
         }
         self.objects[id].prototype = next;
         Ok(())
@@ -4576,7 +4623,29 @@ impl Runtime {
         }
         None
     }
-    fn find_property(&mut self, receiver: &Value, key: &JsString) -> Result<Option<Property>> {
+    #[cfg(test)]
+    fn resolve_binding(&mut self, env: usize, name: &str) -> Result<Option<usize>> {
+        self.resolve_binding_in(env, name, &Document::parse(""))
+    }
+    #[cfg(test)]
+    fn reduce_property(&mut self, receiver: &Value, key: &JsString) -> Result<Option<Property>> {
+        self.reduce_property_in(receiver, key, &Document::parse(""))
+    }
+    #[cfg(test)]
+    fn object_is_prototype_of(&mut self, receiver: Value, value: Value) -> Result<Value> {
+        self.object_is_prototype_of_in(receiver, value, &Document::parse(""))
+    }
+    #[cfg(test)]
+    fn set_object_prototype(&mut self, object: &Value, prototype: Value) -> Result<()> {
+        self.set_object_prototype_in(object, prototype, &Document::parse(""))
+    }
+
+    fn find_property_in(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        doc: &Document,
+    ) -> Result<Option<Property>> {
         let mut cursor = Some(receiver.clone());
         for _ in 0..MAX_DEPTH {
             let Some(value) = cursor else {
@@ -4589,7 +4658,7 @@ impl Runtime {
             if let Some(property) = self.read_own_property(&value, key)? {
                 return Ok(Some(property));
             }
-            cursor = self.prototype_of(&value);
+            cursor = self.prototype_of_in(&value, doc)?;
         }
         Err(ScriptError::resource("prototype chain limit exceeded"))
     }
@@ -4599,7 +4668,7 @@ impl Runtime {
         key: &JsString,
         doc: &mut Document,
     ) -> Result<Option<Value>> {
-        let Some(property) = self.find_property(receiver, key)? else {
+        let Some(property) = self.find_property_in(receiver, key, doc)? else {
             return Ok(None);
         };
         Ok(Some(match property.value {
@@ -4632,7 +4701,7 @@ impl Runtime {
             "get",
             "set",
         ] {
-            if self.find_property(&object, &key.into())?.is_none() {
+            if self.find_property_in(&object, &key.into(), doc)?.is_none() {
                 continue;
             }
             let value = self.get(object.clone(), key, doc)?;
@@ -4978,7 +5047,12 @@ impl Runtime {
         self.objects[id].boxed = Some(value);
         Ok(result)
     }
-    fn reduce_property(&mut self, receiver: &Value, key: &JsString) -> Result<Option<Property>> {
+    fn reduce_property_in(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        doc: &Document,
+    ) -> Result<Option<Property>> {
         // Bounded short-key comparisons still depend on the stored tree's
         // size. Empty trees need no comparison allowance. Ordinary key work
         // uses eight-unit chunks, as the existing per-edge charge does.
@@ -4993,7 +5067,7 @@ impl Runtime {
             };
             self.work(1 + key.len() / 8)?;
             let native_name = match &value {
-                Value::Native(native) => Some(native.name.as_str()),
+                Value::Native(native) if native.properties.is_none() => Some(native.name.as_str()),
                 Value::Json => Some("JSON"),
                 Value::Math => Some("Math"),
                 _ => None,
@@ -5038,7 +5112,7 @@ impl Runtime {
             if let Some(property) = self.own_property(&value, key) {
                 return Ok(Some(property));
             }
-            cursor = self.prototype_of(&value);
+            cursor = self.prototype_of_in(&value, doc)?;
         }
         Err(ScriptError::resource("prototype chain limit exceeded"))
     }
@@ -5048,7 +5122,7 @@ impl Runtime {
         key: &JsString,
         doc: &mut Document,
     ) -> Result<Value> {
-        let Some(property) = self.reduce_property(receiver, key)? else {
+        let Some(property) = self.reduce_property_in(receiver, key, doc)? else {
             return Ok(Value::Undefined);
         };
         match property.value {
@@ -5116,7 +5190,7 @@ impl Runtime {
                 ReduceDirection::Right => length - visited - 1,
             };
             let key = self.reduce_index_key(index)?;
-            if self.reduce_property(&object, &key)?.is_none() {
+            if self.reduce_property_in(&object, &key, doc)?.is_none() {
                 continue;
             }
             let value = self.reduce_get(&object, &key, doc)?;
@@ -5184,7 +5258,7 @@ impl Runtime {
         // presence/values, but the saved length remains the traversal boundary.
         for index in 0..length {
             let key = self.sort_index_key(index)?;
-            if self.find_property(&object, &key)?.is_some() {
+            if self.find_property_in(&object, &key, doc)?.is_some() {
                 items.push(self.get_key(object.clone(), &key, doc)?);
             }
         }
@@ -5350,12 +5424,12 @@ impl Runtime {
             self.charge(96)?;
             let upper_key = JsString::from((length - lower - 1).to_string());
             let lower_key = JsString::from(lower.to_string());
-            let lower_value = if self.find_property(&object, &lower_key)?.is_some() {
+            let lower_value = if self.find_property_in(&object, &lower_key, doc)?.is_some() {
                 Some(self.get_key(object.clone(), &lower_key, doc)?)
             } else {
                 None
             };
-            let upper_value = if self.find_property(&object, &upper_key)?.is_some() {
+            let upper_value = if self.find_property_in(&object, &upper_key, doc)?.is_some() {
                 Some(self.get_key(object.clone(), &upper_key, doc)?)
             } else {
                 None
@@ -5528,7 +5602,7 @@ impl Runtime {
         {
             return Self::failed_write(strict);
         }
-        if let Some(property) = self.find_property(&receiver, key)? {
+        if let Some(property) = self.find_property_in(&receiver, key, doc)? {
             match property.value {
                 PropertyValue::Accessor {
                     set: Value::Undefined,
@@ -5688,22 +5762,22 @@ impl Runtime {
                 ]
                 .contains(&key)
                 {
-                    return Ok(Self::native(key, receiver));
+                    return self.alloc_native(key, receiver);
                 }
             }
             Value::Native(native)
                 if native.name == "String" && matches!(key, "fromCharCode" | "fromCodePoint") =>
             {
-                return Ok(Self::native(key, receiver));
+                return self.alloc_native(key, receiver);
             }
             Value::Number(_) | Value::Bool(_) if key == "toString" => {
-                return Ok(Self::native(key, receiver));
+                return self.alloc_native(key, receiver);
             }
             Value::Console if ["log", "warn", "error", "info", "debug"].contains(&key) => {
-                return Ok(Self::native(key, receiver));
+                return self.alloc_native(key, receiver);
             }
             Value::Json if ["parse", "stringify"].contains(&key) => {
-                return Ok(Self::native(key, receiver));
+                return self.alloc_native(key, receiver);
             }
             Value::Math => {
                 if key == "PI" {
@@ -5718,7 +5792,7 @@ impl Runtime {
                 ]
                 .contains(&key)
                 {
-                    return Ok(Self::native(key, receiver));
+                    return self.alloc_native(key, receiver);
                 }
             }
             Value::Document => match key {
@@ -5751,34 +5825,13 @@ impl Runtime {
                     return self.string(doc.title());
                 }
                 "readyState" => return self.string("complete"),
-                "querySelector" => {
-                    return self.dom_parent_method(
-                        &receiver,
-                        dom_bindings::ParentOperation::QuerySelector,
-                        doc,
-                    );
-                }
-                "querySelectorAll" => {
-                    return self.dom_parent_method(
-                        &receiver,
-                        dom_bindings::ParentOperation::QuerySelectorAll,
-                        doc,
-                    );
-                }
-                "append" => {
-                    return self.dom_parent_method(
-                        &receiver,
-                        dom_bindings::ParentOperation::Append,
-                        doc,
-                    );
-                }
                 "getElementById"
                 | "getElementsByTagName"
                 | "getElementsByClassName"
                 | "createElement"
                 | "createTextNode"
                 | "createDocumentFragment" => return self.dom_method(key, false),
-                "createEvent" => return Ok(Self::native(key, receiver)),
+                "createEvent" => return self.alloc_native(key, receiver),
                 _ => {}
             },
             Value::Node(id) => {
@@ -5889,27 +5942,6 @@ impl Runtime {
                     "classList" => return Ok(Value::ClassList(id)),
                     "checked" | "disabled" | "hidden" => {
                         return Ok(Value::Bool(doc.attr(id, key).is_some()));
-                    }
-                    "querySelector" => {
-                        return self.dom_parent_method(
-                            &receiver,
-                            dom_bindings::ParentOperation::QuerySelector,
-                            doc,
-                        );
-                    }
-                    "querySelectorAll" => {
-                        return self.dom_parent_method(
-                            &receiver,
-                            dom_bindings::ParentOperation::QuerySelectorAll,
-                            doc,
-                        );
-                    }
-                    "append" => {
-                        return self.dom_parent_method(
-                            &receiver,
-                            dom_bindings::ParentOperation::Append,
-                            doc,
-                        );
                     }
                     "appendChild" | "removeChild" | "remove" | "setAttribute" | "getAttribute"
                     | "hasAttribute" | "removeAttribute" => return self.dom_method(key, false),
@@ -7522,7 +7554,9 @@ impl Runtime {
     fn style_get(&mut self, id: NodeId, key: &str, doc: &mut Document) -> Result<Value> {
         self.work(key.len().saturating_add(1))?;
         if let Some(method) = style_method(key) {
-            self.charge(64 + method.len())?;
+            self.charge(
+                std::mem::size_of::<Native>() + 2 * std::mem::size_of::<usize>() + method.len(),
+            )?;
             return Ok(Self::native(method, Value::Undefined));
         }
         if key == "parentRule" {
@@ -7570,7 +7604,9 @@ impl Runtime {
                 return Ok(index < self.style_parse(id, name.len(), doc)?.len());
             }
         }
-        Ok(self.find_property(&Value::Style(id), key)?.is_some())
+        Ok(self
+            .find_property_in(&Value::Style(id), key, doc)?
+            .is_some())
     }
 
     fn style_set(
@@ -7794,6 +7830,12 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if dom_prototypes::is_interface_name(&native.name) {
+            self.dom_interface_exists(&native.name)?;
+            return Err(ScriptError::type_error(
+                "DOM interface constructor requires new",
+            ));
+        }
         if native.name == "Object.is" {
             return self.object_is(&args);
         }
@@ -7963,9 +8005,10 @@ impl Runtime {
         }
         if native.name == "Object.isPrototypeOf" {
             // Only identities and prototype links are examined, not argument contents.
-            return self.object_is_prototype_of(
+            return self.object_is_prototype_of_in(
                 native.receiver.clone(),
                 args.first().cloned().unwrap_or(Value::Undefined),
+                doc,
             );
         }
         if let Some(method) = native.name.strip_prefix("CSSStyleDeclaration.") {
@@ -8054,7 +8097,7 @@ impl Runtime {
             && !matches!(method, "toString" | "valueOf")
         {
             let receiver = if matches!(method, "fromCharCode" | "fromCodePoint") {
-                Self::native("String", Value::Window)
+                self.alloc_native("String", Value::Window)?
             } else {
                 if matches!(native.receiver, Value::Null | Value::Undefined) {
                     return Err(ScriptError::type_error(
@@ -8064,6 +8107,7 @@ impl Runtime {
                 Value::String(self.string_hint(native.receiver.clone(), doc)?)
             };
             normalized = Native {
+                properties: native.properties,
                 name: method.into(),
                 receiver,
             };
@@ -8077,18 +8121,21 @@ impl Runtime {
                 ));
             }
             normalized = Native {
+                properties: native.properties,
                 name: method.into(),
                 receiver: native.receiver.clone(),
             };
             &normalized
         } else if let Some(method) = native.name.strip_prefix("JSON.") {
             normalized = Native {
+                properties: native.properties,
                 name: method.into(),
                 receiver: Value::Json,
             };
             &normalized
         } else if let Some(method) = native.name.strip_prefix("Math.") {
             normalized = Native {
+                properties: native.properties,
                 name: method.into(),
                 receiver: Value::Math,
             };
@@ -8139,6 +8186,7 @@ impl Runtime {
                 } else {
                     self.native_call(
                         &Native {
+                            properties: None,
                             name: "Object.toString".into(),
                             receiver: object,
                         },
@@ -8443,7 +8491,7 @@ impl Runtime {
             }
             "Object.getPrototypeOf" => {
                 let object = self.coerce_object(arg(0))?;
-                return Ok(self.prototype_of(&object).unwrap_or(Value::Null));
+                return Ok(self.prototype_of_in(&object, doc)?.unwrap_or(Value::Null));
             }
             "Object.setPrototypeOf" => {
                 let object = arg(0);
@@ -8461,7 +8509,7 @@ impl Runtime {
                 if !js_object(&object) {
                     return Ok(object);
                 }
-                self.set_object_prototype(&object, prototype)?;
+                self.set_object_prototype_in(&object, prototype, doc)?;
                 return Ok(object);
             }
             "Object.getOwnPropertySymbols" | "Reflect.ownKeys" => {
@@ -8570,7 +8618,8 @@ impl Runtime {
         }
         if native.receiver == Value::Window {
             if name == "Function" {
-                return self.dynamic_function(args, Self::native("Function", Value::Window), doc);
+                let target = self.alloc_native("Function", Value::Window)?;
+                return self.dynamic_function(args, target, doc);
             }
             if name.ends_with("Error") && self.native_properties.contains_key(name) {
                 let message = if matches!(arg(0), Value::Undefined) {
@@ -11396,6 +11445,7 @@ mod tests {
             runtime
                 .native_call(
                     &Native {
+                        properties: None,
                         name: "Object.isPrototypeOf".into(),
                         receiver: Value::Null
                     },
@@ -12390,6 +12440,7 @@ mod tests {
 
         let mut runtime = Runtime::new();
         let descriptor = Native {
+            properties: None,
             name: "Object.getOwnPropertyDescriptor".into(),
             receiver: Value::Undefined,
         };
@@ -18533,6 +18584,7 @@ mod tests {
             runtime
                 .native_call(
                     &Native {
+                        properties: None,
                         name: "Array.sort".into(),
                         receiver: object.clone()
                     },
@@ -19639,6 +19691,7 @@ mod tests {
         let error = runtime
             .native_call(
                 &Native {
+                    properties: None,
                     name: "DOM.setAttribute".into(),
                     receiver: Value::Node(base),
                 },
@@ -19856,6 +19909,7 @@ mod tests {
         let error = runtime
             .native_call(
                 &Native {
+                    properties: None,
                     name: "DOM.appendChild".into(),
                     receiver: Value::Node(target),
                 },
@@ -19888,6 +19942,7 @@ mod tests {
             let error = runtime
                 .native_call(
                     &Native {
+                        properties: None,
                         name: format!("DOM.{method}"),
                         receiver: Value::Node(receiver),
                     },

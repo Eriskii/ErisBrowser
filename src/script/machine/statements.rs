@@ -439,7 +439,7 @@ pub(super) fn step(
             let next_value = for_of_get(runtime, &result, "value", doc)?;
             for_of_assign(runtime, frame, state, next_value, doc)
         }
-        Phase::ForInValue => for_in_start(runtime, frame, value(output)),
+        Phase::ForInValue => for_in_start(runtime, frame, value(output), doc),
         Phase::ForInTarget { state, key } => {
             runtime.write_reference(reference(output), key, doc)?;
             for_in_body(runtime, frame, state, env)
@@ -448,7 +448,7 @@ pub(super) fn step(
             if let Err(flow) = flow(output).loop_step(frame.label(), &mut state.last) {
                 return done(flow.consume_break());
             }
-            for_in_next(runtime, frame, state)
+            for_in_next(runtime, frame, state, doc)
         }
         Phase::TryBody
         | Phase::TryCatch
@@ -829,7 +829,12 @@ fn finish_try(
         completion.and_then(|flow| done(flow.update_empty(Some(&Value::Undefined))))
     }
 }
-fn for_in_start(runtime: &mut Runtime, frame: Frame, value: Value) -> Result<Option<Output>> {
+fn for_in_start(
+    runtime: &mut Runtime,
+    frame: Frame,
+    value: Value,
+    doc: &Document,
+) -> Result<Option<Output>> {
     if matches!(value, Value::Null | Value::Undefined) {
         return normal(Value::Undefined);
     }
@@ -842,12 +847,13 @@ fn for_in_start(runtime: &mut Runtime, frame: Frame, value: Value) -> Result<Opt
         depth: 1,
         last: Value::Undefined,
     };
-    for_in_next(runtime, frame, state)
+    for_in_next(runtime, frame, state, doc)
 }
 fn for_in_next(
     runtime: &mut Runtime,
     frame: Frame,
     mut state: ForInState,
+    doc: &Document,
 ) -> Result<Option<Output>> {
     let unit = frame.unit.clone();
     let code::Stmt::ForIn(binding, _, _) = unit.stmt(frame.id()) else {
@@ -893,7 +899,7 @@ fn for_in_next(
             };
             return for_in_body(runtime, frame, state, scope);
         }
-        let Some(next) = runtime.prototype_of(&state.object) else {
+        let Some(next) = runtime.prototype_of_in(&state.object, doc)? else {
             return normal(state.last);
         };
         if state.depth >= MAX_DEPTH {
@@ -987,9 +993,11 @@ fn for_of_assign(
         code::ForBinding::Declaration(name, DeclarationKind::Var) => {
             // Resolve in the current lexical environment, including a catch
             // parameter; hoisting does not dictate the assignment reference.
-            let result = runtime.resolve_binding(env, name).and_then(|owner| {
-                runtime.write_name(owner, name, runtime.environments[env].strict, value, doc)
-            });
+            let result = runtime
+                .resolve_binding_in(env, name, doc)
+                .and_then(|owner| {
+                    runtime.write_name(owner, name, runtime.environments[env].strict, value, doc)
+                });
             if let Err(error) = result {
                 return for_of_close(runtime, frame, state, Err(error), doc);
             }

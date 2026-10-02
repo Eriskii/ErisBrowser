@@ -4181,3 +4181,57 @@ outcomes. There is no conformance or timing gain claimed. All checks passed on
 their first attempts; the [raw results](evidence/runtime-budget-boundary.json)
 retain commands, observations, the source diff and review. The prior DOM
 own-property commit passed all nine [CI jobs](evidence/dom-own-properties-ci.json).
+
+
+### Represented DOM interface prototypes
+
+The [interface prototype implementation](dom-prototypes.md) eagerly installs
+154 interface records, including reused EventTarget, with represented HTML,
+SVG and MathML inheritance. The existing nine ParentNode operations now live
+on their defining prototypes; saved calls, replacement and deletion use those
+ordinary mutable bags. Text, Comment and DocumentFragment constructors create
+authentic nodes after ordered conversion, prototype access and fresh admission.
+
+Rust 1.88 passes **1,460 default tests** and Rust 1.98 passes **1,583 native-feature
+tests**, both including every ignored test. Strict native all-target Clippy and
+format checks pass. The 31 focused prototype groups include six separately
+executable JavaScript categories in both modes, namespace mapping, cached native
+identity, constructor callbacks and exact/one-short admission. The unchanged HTML
+fixture passes direct and confined worker checks with six green samples on load,
+six blue samples after clicking, and result text changing from `ready` to `6`.
+
+The first integrated full run retained six failures. Three private installer
+witnesses lacked the scratch capacity needed to replay an early bootstrap stage
+after the larger completed realm. Their setup now reserves nine slots before
+measurement; the full-capacity guard and exact/one-short assertions are unchanged.
+A newly added native-slot charge ran after generic intrinsic publication; moving
+it before publication restores the Object.is failure contract without changing
+successful cost. AbortSignal now owns its required class-string tag, so the new
+EventTarget tag cannot mask it. Value-member evaluation now consumes its reference
+in one continuation, removing a redundant frame and restoring the unchanged
+5,000-member unbound-base ReferenceError witness within the same heap limit.
+
+Early per-entry and then bulk name-map algorithms exceeded bootstrap work.
+Eager indexed records remove two redundant name registries; cached native bag IDs
+and direct node mapping remove actual lookups. No work/storage limit increased.
+Final raw bootstrap leaves **11,133 of 100,000 work units**, charges **1,746,193
+cumulative bytes**, and uses 663 objects. Successful author allowance remains
+100,000 and cumulative heap remains 8 MiB.
+
+The original 12,699-byte aggregate fixture is retained unchanged. Both of its
+ordinary-success expectations still reach the author work limit; smaller cases
+are separate coverage and do not reclassify those outcomes. Complete native
+members, Document reflection, host prototype mutation and further constructors
+remain unfinished. The [evidence record](evidence/dom-prototypes.json) retains
+attempts, integration failures and compatibility observations.
+
+Frozen local replays change only the two real-interface-prototype modes: the
+DOM method suite verifies **56/58 expectations**, with all 44 controls healthy.
+Object.is retains **72/78** and all 60 controls. Compared with the preceding
+own-property reports, Symbol retains 184 passes, 54 unsupported and four failed
+modes (80 controls), and array descriptors retain 3,556 passes and 18 unsupported
+modes (84 controls). Reflect construction retains all 38 passes and 96 controls
+against a fresh replay of the prior release. Every compared case fingerprint,
+expectation, corpus/policy hash and control observation remains unchanged except
+the two stated DOM gains. The array-descriptor gate's two gains over its older
+baseline were already present before this change; they are not new gains here.

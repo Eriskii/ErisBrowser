@@ -108,7 +108,7 @@ impl Runtime {
         self.charge(1024)?;
         let constructor = self.native_properties["ArrayBuffer"];
         let prototype = self.prototypes["ArrayBuffer"];
-        self.array_buffers.intrinsic = Some(Self::native("ArrayBuffer", Value::Window));
+        self.array_buffers.intrinsic = Some(self.alloc_native("ArrayBuffer", Value::Window)?);
         self.array_buffers.prototype = Some(prototype);
         self.buffer_install_function(
             constructor,

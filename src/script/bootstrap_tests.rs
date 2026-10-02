@@ -184,10 +184,10 @@ fn bootstrap_late_heap_boundary_returns_error_or_the_complete_realm() {
 #[test]
 fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     let reference = Runtime::uninitialized().finish_bootstrap().unwrap();
-    // The ninth DOM method costs 140 more bootstrap work units than the
-    // previous 70,796-unit remainder. No script-entry reset has happened.
-    assert_eq!(reference.steps, 70_656);
-    assert_eq!(reference.objects.len(), 352);
+    // Eager represented DOM interface metadata is included in this raw
+    // initialization witness. No author-entry reset has happened.
+    assert_eq!(reference.steps, 11_133);
+    assert_eq!(reference.objects.len(), 663);
     assert_eq!(reference.native_properties.len(), 321);
     assert_eq!(reference.prototypes.len(), 25);
     for mut runtime in [

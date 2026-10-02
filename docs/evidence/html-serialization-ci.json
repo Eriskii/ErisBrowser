@@ -1,0 +1,80 @@
+{
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374",
+  "headSha": "23c89e45daf579c20f9f10d671da3f3094917be2",
+  "jobs": [
+    {
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:07:05Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253104"
+    },
+    {
+      "name": "presenter-variants (stable, --features vulkan-presenter)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:02:58Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253330"
+    },
+    {
+      "name": "vulkan-raster-probe",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:02:12Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253380"
+    },
+    {
+      "name": "minimum-rust",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:00:25Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253407"
+    },
+    {
+      "name": "vulkan-probe",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:00:13Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253429"
+    },
+    {
+      "name": "presenter-variants (1.88.0)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:01:29Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253538"
+    },
+    {
+      "name": "presenter-variants (1.88.0, --features vulkan-presenter)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:04:31Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253615"
+    },
+    {
+      "name": "presenter-variants (1.88.0, --features vulkan-raster)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:02:26Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253635"
+    },
+    {
+      "name": "presenter-variants (stable, --features vulkan-raster)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-10-02T19:59:29Z",
+      "completedAt": "2026-10-02T20:01:57Z",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37057667374/job/111006253732"
+    }
+  ]
+}

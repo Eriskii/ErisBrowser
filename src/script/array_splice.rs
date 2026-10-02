@@ -144,7 +144,7 @@ impl Runtime {
 
     fn splice_native_budget(&mut self, value: &Value, passes: usize) -> Result<()> {
         let name = match value {
-            Value::Native(native) => Some(native.name.as_str()),
+            Value::Native(native) if native.properties.is_none() => Some(native.name.as_str()),
             Value::Json => Some("JSON"),
             Value::Math => Some("Math"),
             _ => None,

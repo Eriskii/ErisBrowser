@@ -74,7 +74,6 @@ enum Phase {
         index: usize,
         output: Vec<u16>,
     },
-    Member,
     AssignReference,
     AssignValue {
         reference: Reference,
@@ -330,11 +329,17 @@ fn step(
             };
             eval_child(runtime, frame, Phase::ReferenceKey(value(output)), *key)
         }
-        Phase::ReferenceKey(object) => Ok(Some(Output::Reference(Reference::Property(
-            object,
-            value(output),
-            runtime.environments[env].strict,
-        )))),
+        Phase::ReferenceKey(object) => {
+            let mut reference =
+                Reference::Property(object, value(output), runtime.environments[env].strict);
+            if frame.reference {
+                Ok(Some(Output::Reference(reference)))
+            } else {
+                runtime
+                    .read_reference(&mut reference, doc)
+                    .map(|value| Some(Output::Value(value)))
+            }
+        }
         Phase::Unary => {
             unary(runtime, &unit, id, value(output), doc).map(|v| Some(Output::Value(v)))
         }
@@ -416,7 +421,7 @@ fn step(
         Phase::ObjectPrototype { index, object } => {
             let prototype = value(output);
             if js_object(&prototype) || prototype == Value::Null {
-                runtime.set_object_prototype(&object, prototype)?;
+                runtime.set_object_prototype_in(&object, prototype, doc)?;
             }
             object_next(runtime, frame, index + 1, object)
         }
@@ -443,12 +448,6 @@ fn step(
             } else {
                 runtime.string(text).map(|v| Some(Output::Value(v)))
             }
-        }
-        Phase::Member => {
-            let mut reference = reference(output);
-            runtime
-                .read_reference(&mut reference, doc)
-                .map(|v| Some(Output::Value(v)))
         }
         Phase::AssignReference => assign_reference(runtime, frame, reference(output), doc),
         Phase::AssignValue {
@@ -529,7 +528,7 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
     if frame.reference {
         return match unit.expr(id) {
             code::Expr::Ident(name) => {
-                let owner = runtime.resolve_binding(env, name)?;
+                let owner = runtime.resolve_binding_in(env, name, doc)?;
                 Ok(Some(Output::Reference(Reference::CodeName {
                     unit: unit.clone(),
                     expression: id,
@@ -552,7 +551,7 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
             .map(|v| Some(Output::Value(v))),
         code::Expr::Ident(name) => {
             let owner = runtime
-                .resolve_binding(env, name)?
+                .resolve_binding_in(env, name, doc)?
                 .ok_or_else(|| ScriptError::reference(format!("'{name}' is not defined")))?;
             runtime
                 .binding_value(owner, name, doc)
@@ -565,14 +564,15 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
                         return reference_child(runtime, frame, Phase::Delete, *expression);
                     }
                     code::Expr::Ident(name) => {
-                        return delete_name(runtime, env, name).map(|v| Some(Output::Value(v)));
+                        return delete_name(runtime, env, name, doc)
+                            .map(|v| Some(Output::Value(v)));
                     }
                     _ => {}
                 }
             }
             if op == "typeof"
                 && let code::Expr::Ident(name) = unit.expr(*expression)
-                && runtime.resolve_binding(env, name)?.is_none()
+                && runtime.resolve_binding_in(env, name, doc)?.is_none()
             {
                 return runtime.string("undefined").map(|v| Some(Output::Value(v)));
             }
@@ -612,7 +612,12 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
                 None => runtime.string(output).map(|v| Some(Output::Value(v))),
             }
         }
-        code::Expr::Member(..) => reference_child(runtime, frame, Phase::Member, id),
+        // A value member can consume its reference in this same continuation.
+        // Keep the raw key until that read; assignment/call/delete references
+        // still return the reference to their own consuming continuation.
+        code::Expr::Member(object, _) => {
+            eval_child(runtime, frame, Phase::ReferenceObject, *object)
+        }
         code::Expr::Assign(_, left, _) => {
             reference_child(runtime, frame, Phase::AssignReference, *left)
         }
@@ -689,11 +694,11 @@ fn unary(
         _ => Err(ScriptError::new("unknown unary operator")),
     }
 }
-fn delete_name(runtime: &mut Runtime, env: usize, name: &str) -> Result<Value> {
+fn delete_name(runtime: &mut Runtime, env: usize, name: &str, doc: &Document) -> Result<Value> {
     if name == "this" {
         return Ok(Value::Bool(true));
     }
-    if let Some(owner) = runtime.resolve_binding(env, name)? {
+    if let Some(owner) = runtime.resolve_binding_in(env, name, doc)? {
         if owner == 0 {
             let key = runtime.global_name_key(name)?;
             return runtime

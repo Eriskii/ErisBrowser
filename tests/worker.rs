@@ -2123,3 +2123,13 @@ fn confined_dom_own_properties_and_native_fallback_survive_page_callbacks() {
         Some(["ready", "6"]),
     );
 }
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_dom_prototypes_and_native_constructors_survive_page_callbacks() {
+    assert_six_scripted_samples_through_worker_with_result_text(
+        include_str!("fixtures/dom-prototypes.html"),
+        201,
+        Some(["ready", "6"]),
+    );
+}

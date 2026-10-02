@@ -43,7 +43,7 @@ impl Runtime {
         for index in (0..=start as u64).rev() {
             self.tick()?;
             let key = self.reduce_index_key(index)?;
-            if self.reduce_property(&object, &key)?.is_none() {
+            if self.reduce_property_in(&object, &key, doc)?.is_none() {
                 continue;
             }
             let element = self.reduce_get(&object, &key, doc)?;

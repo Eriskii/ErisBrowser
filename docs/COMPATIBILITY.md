@@ -14,7 +14,12 @@ expectations**, with 44 healthy controls. [DOM own properties](dom-own-propertie
 now support individual string/symbol data, accessors and method replacement.
 The frozen replacement case progresses to the missing complete Document
 enumeration operation in both modes; its ordinary-success expectation remains
-unmet. Real interface prototypes also remain missing. The earlier eight-method
+unmet. [DOM interface prototypes](dom-prototypes.md) now provide represented
+HTML, SVG and MathML chains, interface metadata, mutable ParentNode operations
+and Text, Comment and DocumentFragment construction. Complete interface members,
+Document reflection and host prototype mutation remain incomplete. The unchanged
+DOM suite now verifies **56/58 expectations**, with all 44 controls healthy; the
+two complete-Document-enumeration expectations remain unmet. The earlier eight-method
 checkpoint's complete 44-profile replay preserved all prior formal case/control
 observations and all 36 baseline gates.
 
@@ -210,7 +215,7 @@ constructor conformance remain incomplete.
 cover the supported creation, query, attribute, tree and class-list operations.
 String hooks run in argument order before those operations; borrowed methods use
 their actual receiver. Nullable text and Boolean properties retain distinct
-conversion rules. Complete DOMString storage, interface prototypes, XML name
+conversion rules. Complete DOMString storage, remaining interface members, XML name
 validation, live collections and DOM hierarchy semantics remain incomplete.
 
 [Symbol primitives and property keys](../tests/conformance/symbols.md) now include

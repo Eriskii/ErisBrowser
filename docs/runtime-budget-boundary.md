@@ -13,7 +13,7 @@ event entry points already grant their own fixed allowances; those reset points
 are unchanged. Calls, getters, conversions, constructors and nested script-driven
 event dispatch continue sharing the current turn's remaining work.
 
-Raw initialization still leaves 70,656 units, with 738,522 charged bytes,
+At this checkpoint, raw initialization left 70,656 units, with 738,522 charged bytes,
 352 objects, 321 native entries and 25 prototype entries. Bootstrap diagnostics
 now observe that raw phase directly. Their cost, exact/one-short refusal and
 allocation assertions remain intact. The returned runtime starts at 100,000;

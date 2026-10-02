@@ -227,6 +227,18 @@ the original host object after internal borrows end. The private storage object
 does not expose a new prototype or admit host integrity operations. These checks
 cover the reached own-property paths, not general host allocation recovery.
 
+
+[DOM interface prototypes](dom-prototypes.md) use eagerly admitted interface
+records and ordinary mutable metadata bags. Private cached bag IDs do not alter
+native function identity. Node brands still depend on authentic node identity
+and kind, independently of mutable prototype membership. Text, Comment and
+DocumentFragment constructors finish argument conversion and new-target
+prototype access before checking live document capacity and reserving retained
+storage. An alternate prototype is published only with its successful node;
+ordinary own-property bags remain separate. Lone UTF-16 surrogates are rejected
+explicitly on these UTF-8 storage paths. Work limits and cumulative heap limits
+are unchanged; the larger bootstrap object reservation is charged in full.
+
 ## Representative limits
 
 [Runtime construction](runtime-budget-boundary.md) has a separate fixed work
@@ -326,8 +338,9 @@ required arguments or conversion hooks. Their metadata, getter wrappers, row
 searches and temporary native call-name copies are prepaid. A refused name copy
 still releases the call's stack ownership; prior author effects remain on later
 conversion failure. Distinct mutable metadata bags share only immutable strings.
-Bootstrap now prepays a 512-slot object-arena reservation before initialization,
-avoiding later bootstrap growth. This is reserved capacity, not a new object
+The earlier method checkpoint prepaid a 512-slot object-arena reservation.
+The interface installer now prepays 663 slots before initialization, avoiding
+later bootstrap growth. This is reserved capacity, not a new object
 limit. Logical requested-byte accounting excludes allocator rounding and retains
 the existing infallible B-tree/Rc allocation boundaries.
 

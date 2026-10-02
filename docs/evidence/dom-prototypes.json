@@ -1,0 +1,502 @@
+{
+  "schema": 1,
+  "parent": "23c89e45daf579c20f9f10d671da3f3094917be2",
+  "change": "Represented DOM interface prototype chains, mutable ParentNode operations and authentic Text, Comment and DocumentFragment construction.",
+  "source_files": [
+    {
+      "path": "src/script.rs",
+      "sha256": "809ee371477281d23c704a7a13a80ca72c793c120b9bccda87a6d126a0588f9e",
+      "bytes": 884012
+    },
+    {
+      "path": "src/script/array_buffer.rs",
+      "sha256": "36a556b30e738f84c70ae81783d22149ea90c4055025b0922ad178f5f18dd302",
+      "bytes": 23422
+    },
+    {
+      "path": "src/script/array_builtins.rs",
+      "sha256": "9c69f6c01717f421b59f10ad366cc58cfa7677aa2c6015b6070d8bde95471b25",
+      "bytes": 5647
+    },
+    {
+      "path": "src/script/array_from.rs",
+      "sha256": "a242e39ef3f698c0f98b9de687c89e8a6fd0fcf9946770fef3adc4a66ab825ab",
+      "bytes": 16705
+    },
+    {
+      "path": "src/script/array_methods.rs",
+      "sha256": "704705e3c92e88f885e6e881d193d6b80ab7be0c9619504a9aa2bfc10689315a",
+      "bytes": 41292
+    },
+    {
+      "path": "src/script/array_splice.rs",
+      "sha256": "a90873f01d5f6774a4c1fb41019781fef241d0ee04da4bf8cc94d043cc825035",
+      "bytes": 23330
+    },
+    {
+      "path": "src/script/bootstrap_tests.rs",
+      "sha256": "9153ee1d7916a31378ea08d261c0287f8cfd1453697de72dba71f70628c7a262",
+      "bytes": 15508
+    },
+    {
+      "path": "src/script/construction.rs",
+      "sha256": "fda5854e35f9a7e3981979864a8197bf2838eeca27c4190788b4f74023134772",
+      "bytes": 26598
+    },
+    {
+      "path": "src/script/data_view.rs",
+      "sha256": "f340a1ffe6a31a71f33b9bf29f0cefe5aadea40fd3dd89d85d9d714a3689f89d",
+      "bytes": 22883
+    },
+    {
+      "path": "src/script/dom_bindings.rs",
+      "sha256": "271dcb6e91ba1b79849f0d3aebe585cdaff61d552ad8abc4e0267701ea55049b",
+      "bytes": 43502
+    },
+    {
+      "path": "src/script/dom_bindings/identity_tests.rs",
+      "sha256": "e6ab791eaa7d2d98fc953d1e370fa72bfa3fb387e8b14bd699e741dc9f098212",
+      "bytes": 35727
+    },
+    {
+      "path": "src/script/dom_own_properties.rs",
+      "sha256": "23cfd5dc1ec6965a769f04dcd27767f1d2ba8aae9c662dd9717b40fff08ffea4",
+      "bytes": 23736
+    },
+    {
+      "path": "src/script/dom_prototypes.rs",
+      "sha256": "5f768e1f73d2dc23c20f8160ce064b3fa54e963412bf270390389b38e3c12c47",
+      "bytes": 30029
+    },
+    {
+      "path": "src/script/dom_prototypes/interfaces.rs",
+      "sha256": "721295ecac0e86b3aff3635f8c4a13eefa56abf914eac41fb00f0cd61d6abdbd",
+      "bytes": 73244
+    },
+    {
+      "path": "src/script/dom_prototypes/tests.rs",
+      "sha256": "b71029429a5201b2a8cc1c3d4e41dec63930d9b5c07db4bd221f85a82e3e2a64",
+      "bytes": 24255
+    },
+    {
+      "path": "src/script/machine.rs",
+      "sha256": "b4fee53fed84c3bba86715a2f04d470507ca90b20c1836e2975a43990cb7417c",
+      "bytes": 43104
+    },
+    {
+      "path": "src/script/machine/calls.rs",
+      "sha256": "862a80ff8e00ea8ad1244a56cad6e4eee3265be64ece103b5abbd96acc95626c",
+      "bytes": 31753
+    },
+    {
+      "path": "src/script/machine/statements.rs",
+      "sha256": "bdb7705941a5fb61a156fed67b94a6389f966d62ce5d07b32e431b4cfcc268f0",
+      "bytes": 45280
+    },
+    {
+      "path": "src/script/object_integrity/tests.rs",
+      "sha256": "b99bf06dbfb8e6f7f5a0883494e2a99115a2523bcdca4130f1941d1d2de1e762",
+      "bytes": 35846
+    },
+    {
+      "path": "src/script/object_is/tests.rs",
+      "sha256": "625bb8c2beb963ef7458fdb8f276ade00b187f3e86feafec84ab75da132cd24e",
+      "bytes": 21988
+    },
+    {
+      "path": "src/script/property_keys.rs",
+      "sha256": "70cd65bcfeeb60edd4d799ac51d37696c521eab5d2fb18b105abe08cd87dcd29",
+      "bytes": 8854
+    },
+    {
+      "path": "src/script/regexp_builtins.rs",
+      "sha256": "fe0f1e5c076529cfeb6d4d997b42ff2e91470bc7bb834963a58a6b7ccdcd41ac",
+      "bytes": 26990
+    },
+    {
+      "path": "src/script/symbols.rs",
+      "sha256": "5f548fd19ce5e1f71995d409ae2b8577195603eefc05a480924528f4e9557e2a",
+      "bytes": 37942
+    },
+    {
+      "path": "tests/fixtures/dom-interface-mapping.js",
+      "sha256": "1b8003d5ed7e175439484a8313c3438c180496f9c8e7c53426c8f2a05672439d",
+      "bytes": 2441
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes-core-interface-descriptors.js",
+      "sha256": "b86386e3f4fe45dc9dd06129b04141880f014874e3f46a8c7a8a493757ef68a5",
+      "bytes": 3294
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes-core-node-constants.js",
+      "sha256": "45168d4616d98468e0b5e16444e99cf5706d22614c451bca6119662891d65cbe",
+      "bytes": 1313
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes-document-parent-methods.js",
+      "sha256": "745595d64b3f6fdfb552e798c33d87510f579d64200590e0f60a5b3285e144be",
+      "bytes": 3666
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes-element-parent-methods.js",
+      "sha256": "4b5239864da3d61038c1d8a2c24ff1ff0b7a55dd21c95e6932026959cc41caba",
+      "bytes": 3707
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes-fragment-parent-methods.js",
+      "sha256": "4e71458c9d7f48ad32279e04faf4876d5c63c3fcf9164325c4c64e0d0c7d0a9f",
+      "bytes": 3725
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes-parent-method-identities.js",
+      "sha256": "6a2d80faa52b5670c325f91acb0159f5d5f35dcfca345e9d3ec47576383dac0b",
+      "bytes": 1424
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes.html",
+      "sha256": "307f5608563b7d846351800080bae2c1d5577348614845248e3c7a43d1d3cbe9",
+      "bytes": 10141
+    },
+    {
+      "path": "tests/fixtures/dom-prototypes.js",
+      "sha256": "dd05b044d6ff66e5e3705881af2f44575e91e642f608608b7d0bba9a0c35734e",
+      "bytes": 12699
+    },
+    {
+      "path": "tests/pipeline.rs",
+      "sha256": "5ce07c77988c0bb419d11e6348d53aa00b27f6e7d32d882c7f94832d8716d863",
+      "bytes": 49946
+    },
+    {
+      "path": "tests/worker.rs",
+      "sha256": "25aa43f0748981396152469393e1266a53ad436b797fe0ae4ab972b41ef4e828",
+      "bytes": 83003
+    }
+  ],
+  "binary_sha256": "832dd51c5791f6d53c2440b9cd339befcb1037bdfe69d348e5a63635090488ae",
+  "budget": {
+    "bootstrap_work": 100000,
+    "author_work": 100000,
+    "raw_bootstrap_remaining": 11133,
+    "cumulative_charged_bytes": 1746193,
+    "objects": 663,
+    "object_capacity": 663,
+    "interface_records": 154,
+    "legacy_native_registry_entries": 321,
+    "legacy_prototype_registry_entries": 25,
+    "max_heap_bytes": 8388608,
+    "limits_raised": false
+  },
+  "tests": {
+    "rust_1_88_default": 1460,
+    "rust_1_98_vulkan_raster": 1583,
+    "failed_final": 0,
+    "ignored_final": 0,
+    "new_groups": 33,
+    "focused_prototype_groups": 31,
+    "strict_native_all_target_clippy": "passed",
+    "format": "passed",
+    "browser_fixture": "Unchanged six-sample load/click pixel and result-text checks pass directly and through the confined worker."
+  },
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.017,
+      "log": "clippy-native-198-1.log",
+      "sha256": "486a3b92599f16fa103a6e8fbb3a5769e77239c3965e24851cd9a40d0c697538"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 26.482,
+      "log": "full-default-188-1.log",
+      "sha256": "b267118804fc4df286f3a1e0d6d34d65d87093568636c718da9a2ea28ec70ec2"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 21.596,
+      "log": "full-default-188-2.log",
+      "sha256": "43cf44332de2d004d4f091fefd622cb2299ce2147c776ef0a1292d6da39f586d"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 23.792,
+      "log": "full-native-198-1.log",
+      "sha256": "d443e1225442e5ef86c3e265bd5119cb250de8000424f24444a48b319dfc5173"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--lib",
+        "dom_prototypes",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.783,
+      "log": "prototype-focus-after-integration-fixes.log",
+      "sha256": "f242f670d5f17eb17b1cf06480e2cb4216d93cd65ce2cb80cea30797994767ab"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 36.256,
+      "log": "release-adapter-188-1.log",
+      "sha256": "4105ef2b445386cde2a667178fe05c60420ced3094985c7ea3b4de8c29a12c05"
+    }
+  ],
+  "compatibility": [
+    {
+      "profile": "dom-method-identity",
+      "before_path": "/tmp/eris-runtime-budget-boundary-1/dom-method-identity-after.json",
+      "before_sha256": "889a53926ef55991d0d2a351e88bb7f0de5264653458480acc21509d498c03fb",
+      "after_path": "dom-method-identity-after.json",
+      "after_sha256": "0efaf5cc260974b95634ce046310077dfce033daff5b43a1fe7d4bd29bcd92c5",
+      "counts": {
+        "passed": 52,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "total": 58,
+      "before_verified": 54,
+      "after_verified": 56,
+      "cases_changes": [
+        {
+          "id": "real-interface-prototypes-standard-prerequisite#sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "real-interface-prototypes-standard-prerequisite#strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Test262Error",
+              "error_identity": "",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        }
+      ],
+      "controls_verified": 44,
+      "controls_total": 44,
+      "controls_changes": []
+    },
+    {
+      "profile": "object-is",
+      "before_path": "/tmp/eris-runtime-budget-boundary-1/object-is-after.json",
+      "before_sha256": "8ec4ac9a0d981a304699fbf3c0c400b29db905ec62b0b2cf4cb0912753e316aa",
+      "after_path": "object-is-after.json",
+      "after_sha256": "616d13aa7604b3d83e3b7e286285a7c4c6febc2a642b07f570f899fbb9cec345",
+      "counts": {
+        "passed": 68,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "total": 78,
+      "before_verified": 72,
+      "after_verified": 72,
+      "cases_changes": [],
+      "controls_verified": 60,
+      "controls_total": 60,
+      "controls_changes": []
+    },
+    {
+      "profile": "symbols",
+      "before_path": "/tmp/eris-dom-own-properties-1/symbols-release.json",
+      "before_sha256": "c8c93acc146b27ee45a4d8004c1414c2c908d6ae9897020fa861ac4c2352cdf5",
+      "after_path": "symbols-after.json",
+      "after_sha256": "3c194fce40561e5ca389dc2e6c22800f44c6c7567d64c6df399e01b6c07d9264",
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "total": 242,
+      "baseline_regressions": [],
+      "cases_changes": [],
+      "controls_verified": 80,
+      "controls_total": 80,
+      "controls_changes": []
+    },
+    {
+      "profile": "array-descriptors",
+      "before_path": "/tmp/eris-dom-own-properties-1/array-descriptors-release.json",
+      "before_sha256": "2662a5dfbc722cc4c81db58313bd5cf1f5ef37e9b18f16b97e1afeef9e310b28",
+      "after_path": "array-descriptors-after.json",
+      "after_sha256": "e2416ee6086e826fcc88c5edcbc78e54826e7e520fdcfe1bf71299a1742c3885",
+      "counts": {
+        "passed": 3556,
+        "unsupported": 18
+      },
+      "total": 3574,
+      "baseline_regressions": [],
+      "cases_changes": [],
+      "controls_verified": 84,
+      "controls_total": 84,
+      "controls_changes": []
+    },
+    {
+      "profile": "reflect-construction",
+      "before_path": "/tmp/eris-dom-prototypes-1/reflect-construction-before.json",
+      "before_sha256": "5c74e9f756e81e1f35ae05441e1445f2a202e86d3292a1cc5c0fdab415b7cd11",
+      "after_path": "reflect-construction-after.json",
+      "after_sha256": "272a99be752807b95e888e6e82ed9e5acc9bd61283cc75a0eeba0116323cf324",
+      "counts": {
+        "passed": 38
+      },
+      "total": 38,
+      "baseline_regressions": [],
+      "cases_changes": [],
+      "controls_verified": 96,
+      "controls_total": 96,
+      "controls_changes": []
+    }
+  ],
+  "original_aggregate": {
+    "source_sha256": "dd05b044d6ff66e5e3705881af2f44575e91e642f608608b7d0bba9a0c35734e",
+    "bytes": 12699,
+    "expected": "ordinary runtime completion in both modes",
+    "before": "ReferenceError: Node absent in both modes",
+    "after": "author work-limit stop in both modes",
+    "expectations_met": 0,
+    "expectations_total": 2,
+    "reclassified": false
+  },
+  "initial_integration_failure": {
+    "passed": 1234,
+    "failed": 6,
+    "log": "validation/full-default-188-1.log",
+    "corrections": [
+      "Private ParentNode replay setup reserves nine scratch slots before measurement; full-capacity guard and exact/one-short contracts unchanged.",
+      "Generic intrinsic helper pays new Native slot before publication; successful costs unchanged.",
+      "AbortSignal receives its own Web IDL class-string descriptor.",
+      "Value member evaluation uses one continuation rather than a separate reference frame; unchanged 5000-member ReferenceError restored."
+    ]
+  },
+  "algorithm_attempts": "1/2 compile-placement corrections; 3 first admission refusal; 4 inference correction; 5/6/7 bulk admission refusals; 8 eager-index success with aggregate resource; 9 direct mapping and aggregate resource; 10 retained aggregate diagnostic; 11 bootstrap/Clippy pass; 12 final focused pass",
+  "limitations": [
+    "Complete web compatibility, production security and Chromium performance threshold remain unachieved.",
+    "Complete native DOM members, Document reflection, independent document ownership, custom-element registry and host prototype mutation remain incomplete.",
+    "New Document and ProcessingInstruction remain explicit Unsupported.",
+    "Lone-surrogate storage in new Text/Comment remains explicit Unsupported.",
+    "Cumulative script memory is bounded without garbage collection; generic allocation gaps remain."
+  ],
+  "archive": {
+    "path": "dom-prototypes.tar.gz",
+    "sha256": "6fa4da809a1219b5d0d9c4fe0b4fdf281d0ac3b30a94d7cbbbd4d854001253f6",
+    "bytes": 3507457,
+    "files": 320,
+    "manifest_sha256": "ce5023e52f9e42d87b529a58955f9f8206f40e7c59a184e9bcf043c229cc011a"
+  }
+}

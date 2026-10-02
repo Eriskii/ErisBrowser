@@ -39,7 +39,7 @@ impl Runtime {
                         self.tick()?;
                         let source = self.reduce_index_key(from)?;
                         let destination = self.reduce_index_key(from + count)?;
-                        if self.reduce_property(&object, &source)?.is_some() {
+                        if self.reduce_property_in(&object, &source, doc)?.is_some() {
                             let value = self.reduce_get(&object, &source, doc)?;
                             self.set_key_strict(object.clone(), &destination, value, true, doc)?;
                         } else {
@@ -75,7 +75,7 @@ impl Runtime {
                         self.tick()?;
                         let source = self.reduce_index_key(from)?;
                         let destination = self.reduce_index_key(from - 1)?;
-                        if self.reduce_property(&object, &source)?.is_some() {
+                        if self.reduce_property_in(&object, &source, doc)?.is_some() {
                             let value = self.reduce_get(&object, &source, doc)?;
                             self.set_key_strict(object.clone(), &destination, value, true, doc)?;
                         } else {
@@ -147,7 +147,7 @@ impl Runtime {
                 for index in start..length {
                     self.tick()?;
                     let key = self.reduce_index_key(index)?;
-                    if !includes && self.reduce_property(&object, &key)?.is_none() {
+                    if !includes && self.reduce_property_in(&object, &key, doc)?.is_none() {
                         continue;
                     }
                     let value = self.reduce_get(&object, &key, doc)?;
@@ -183,7 +183,7 @@ impl Runtime {
                 for offset in 0..count {
                     self.tick()?;
                     let key = self.reduce_index_key(start + offset)?;
-                    if self.reduce_property(&object, &key)?.is_some() {
+                    if self.reduce_property_in(&object, &key, doc)?.is_some() {
                         let value = self.reduce_get(&object, &key, doc)?;
                         self.array_method_create(&result, offset, value, doc)?;
                     }
@@ -253,7 +253,7 @@ impl Runtime {
                 for index in 0..length {
                     self.tick()?;
                     let key = self.reduce_index_key(index)?;
-                    if self.reduce_property(&object, &key)?.is_none() {
+                    if self.reduce_property_in(&object, &key, doc)?.is_none() {
                         continue;
                     }
                     let value = self.reduce_get(&object, &key, doc)?;

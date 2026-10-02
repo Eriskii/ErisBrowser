@@ -171,6 +171,7 @@ fn object_is_dispatch_ignores_receiver_and_extra_payloads() {
     let (mut runtime, mut doc) = fresh();
     let ignored = Value::String(vec![0xd800; MAX_STRING].into());
     let native = Native {
+        properties: None,
         name: "Object.is".into(),
         receiver: ignored.clone(),
     };

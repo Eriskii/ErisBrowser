@@ -12,9 +12,10 @@ impl Runtime {
         // Classification precedes identity, source access and allocation, even
         // when an actual RegExp's internal source will subsequently be copied.
         let is_regexp = self.is_regexp(pattern.clone(), doc)?;
-        let target = new_target
-            .clone()
-            .unwrap_or_else(|| Self::native("RegExp", Value::Window));
+        let target = match new_target.clone() {
+            Some(target) => target,
+            None => self.alloc_native("RegExp", Value::Window)?,
+        };
         if new_target.is_none()
             && is_regexp
             && flags == Value::Undefined
@@ -49,7 +50,8 @@ impl Runtime {
     ) -> Result<Value> {
         // RegExpCreate is not a call to the RegExp constructor: String protocol
         // fallback directly stringifies its pattern without IsRegExp or identity.
-        let object = self.regexp_allocate(Self::native("RegExp", Value::Window), doc)?;
+        let target = self.alloc_native("RegExp", Value::Window)?;
+        let object = self.regexp_allocate(target, doc)?;
         self.regexp_initialize(object, pattern, flags, doc)
     }
 
@@ -202,7 +204,7 @@ impl Runtime {
     }
 
     fn regexp_species(&mut self, receiver: Value, doc: &mut Document) -> Result<Value> {
-        let default = Self::native("RegExp", Value::Window);
+        let default = self.alloc_native("RegExp", Value::Window)?;
         let constructor = self.get(receiver, "constructor", doc)?;
         if constructor == Value::Undefined {
             return Ok(default);

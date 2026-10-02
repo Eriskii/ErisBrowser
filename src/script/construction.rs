@@ -98,34 +98,35 @@ impl Runtime {
                 }
                 Value::Native(native) => {
                     return Ok(native.receiver == Value::Window
-                        && matches!(
-                            native.name.as_str(),
-                            "Object"
-                                | "Function"
-                                | "Array"
-                                | "ArrayBuffer"
-                                | "DataView"
-                                | "String"
-                                | "Number"
-                                | "Boolean"
-                                | "Symbol"
-                                | "RegExp"
-                                | "Date"
-                                | "Error"
-                                | "TypeError"
-                                | "SyntaxError"
-                                | "ReferenceError"
-                                | "RangeError"
-                                | "EvalError"
-                                | "URIError"
-                                | "Event"
-                                | "CustomEvent"
-                                | "ToggleEvent"
-                                | "EventTarget"
-                                | "DOMException"
-                                | "AbortController"
-                                | "AbortSignal"
-                        ));
+                        && (self.dom_interface_exists(&native.name)?
+                            || matches!(
+                                native.name.as_str(),
+                                "Object"
+                                    | "Function"
+                                    | "Array"
+                                    | "ArrayBuffer"
+                                    | "DataView"
+                                    | "String"
+                                    | "Number"
+                                    | "Boolean"
+                                    | "Symbol"
+                                    | "RegExp"
+                                    | "Date"
+                                    | "Error"
+                                    | "TypeError"
+                                    | "SyntaxError"
+                                    | "ReferenceError"
+                                    | "RangeError"
+                                    | "EvalError"
+                                    | "URIError"
+                                    | "Event"
+                                    | "CustomEvent"
+                                    | "ToggleEvent"
+                                    | "EventTarget"
+                                    | "DOMException"
+                                    | "AbortController"
+                                    | "AbortSignal"
+                            )));
                 }
                 _ => return Ok(false),
             }
@@ -264,6 +265,9 @@ impl Runtime {
             }
             Value::Native(native) if native.receiver == Value::Window => {
                 let name = native.name.as_str();
+                if dom_prototypes::is_interface_name(name) {
+                    return self.dom_interface_construct(name, &arguments, new_target, doc);
+                }
                 match name {
                     // Symbol has [[Construct]] and can serve as another constructor's
                     // newTarget. Its own construction always throws before coercion.

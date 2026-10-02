@@ -475,7 +475,7 @@ impl Runtime {
                     "constructor prototype is not an object",
                 ));
             }
-            let mut cursor = self.prototype_of(&value);
+            let mut cursor = self.prototype_of_in(&value, doc)?;
             for _ in 0..MAX_DEPTH {
                 self.tick()?;
                 let Some(current) = cursor else {
@@ -484,7 +484,7 @@ impl Runtime {
                 if current == prototype {
                     return Ok(true);
                 }
-                cursor = self.prototype_of(&current);
+                cursor = self.prototype_of_in(&current, doc)?;
             }
             return Err(ScriptError::resource("prototype chain limit exceeded"));
         }

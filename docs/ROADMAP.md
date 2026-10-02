@@ -38,8 +38,13 @@ without regressions or control changes.
 [DOM own properties](dom-own-properties.md) now add per-object string/symbol
 storage, descriptors, accessors and method replacement. The unchanged frozen
 replacement case reaches the missing Document enumeration operation, so the
-suite remains at 54/58 verified expectations. Real interface prototypes and
-complete Document reflection remain open work.
+suite remained at 54/58 verified expectations at that checkpoint.
+[DOM interface prototypes](dom-prototypes.md) add represented HTML, SVG and
+MathML inheritance, interface metadata, mutable ParentNode methods and genuine
+Text, Comment and DocumentFragment construction. Complete native members,
+Document reflection, independent document ownership, host prototype mutation and
+custom-element registration remain open work. The unchanged DOM suite now
+verifies 56/58 expectations with all 44 controls healthy.
 
 [Fallible runtime initialization](runtime-initialization.md) now carries checked
 bootstrap failures through the browser, adapter and stress tool. Partial realms

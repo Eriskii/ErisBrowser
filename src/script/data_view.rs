@@ -317,7 +317,7 @@ impl Runtime {
             bag.order.push(key);
             entry.insert(Property::data(value, false, false, true));
         }
-        let function = Self::native(full, Value::Undefined);
+        let function = self.alloc_native(full, Value::Undefined)?;
         let property = if getter {
             Property {
                 value: PropertyValue::Accessor {

@@ -1279,3 +1279,11 @@ fn dom_own_properties_and_native_fallback_survive_page_callbacks() {
         Some(["ready", "6"]),
     );
 }
+
+#[test]
+fn dom_prototypes_and_native_constructors_survive_page_callbacks() {
+    assert_six_scripted_samples_with_result_text(
+        include_str!("fixtures/dom-prototypes.html"),
+        Some(["ready", "6"]),
+    );
+}

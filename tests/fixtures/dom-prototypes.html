@@ -1,0 +1,137 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>DOM prototypes through page callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#chains{left:0}#methods{left:50px}#mutation{left:100px}#brands{left:150px}#constructors{left:200px}#newtarget{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="chains" class="sample"></div><div id="methods" class="sample"></div>
+<div id="mutation" class="sample"></div><div id="brands" class="sample"></div>
+<div id="constructors" class="sample"></div><div id="newtarget" class="sample"></div>
+<button id="change" type="button">Run prototype callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function typeError(action){let error;try{action();}catch(e){error=e;}check(error instanceof TypeError,'TypeError');}
+function data(target,key,value,writable,enumerable,configurable){
+  const d=Object.getOwnPropertyDescriptor(target,key);
+  check(d!==undefined&&d.value===value,'own data value');
+  check(d.writable===writable&&d.enumerable===enumerable&&d.configurable===configurable,'own data flags');
+  check(d.get===undefined&&d.set===undefined,'data descriptor kind');return d;
+}
+function countKey(target,wanted){let count=0;for(const key in target)if(key===wanted)count++;return count;}
+const change=document.getElementById('change'),result=document.getElementById('result');
+const element=document.createElement('section'),child=document.createElement('i');
+const fragment=document.createDocumentFragment(),fragmentChild=document.createElement('i');
+element.appendChild(child);fragment.appendChild(fragmentChild);
+const owners=[Document.prototype,Element.prototype,DocumentFragment.prototype];
+const targets=[document,element,fragment],selectors=['#result','i','i'],answers=[result,child,fragmentChild];
+const names=['querySelector','querySelectorAll','append'],saved=[];
+for(let i=0;i<owners.length;i++)for(let j=0;j<names.length;j++)saved.push(targets[i][names[j]]);
+const constructors=[DocumentFragment,Text,Comment];
+let runs=0,retainedFragment,retainedText,retainedComment,retainedCustom;
+
+function prototypeMutation(index){
+  const owner=owners[index],target=targets[index],nativeQuery=saved[index*3];
+  const original=Object.getOwnPropertyDescriptor(owner,'querySelector'),token={};
+  const replacement=function(){check(this===target,'prototype replacement receiver');return token;};
+  try{
+    owner.querySelector=replacement;
+    check(target.querySelector===replacement&&target.querySelector()===token,'replacement lookup and call');
+    check(Object.getOwnPropertyDescriptor(target,'querySelector')===undefined,'no instance method copy');
+    check(delete owner.querySelector,'prototype method deletion');
+    check(target.querySelector===undefined,'no deleted-method resurrection');
+    check(nativeQuery.call(target,selectors[index])===answers[index],'saved function survives deletion');
+    if(index===1)check(countKey(target,'querySelector')===0,'deleted method absent from for-in');
+  }finally{Object.defineProperty(owner,'querySelector',original);}
+  check(target.querySelector===nativeQuery&&target.querySelector(selectors[index])===answers[index],'explicit restoration');
+  if(index===1)check(countKey(target,'querySelector')===1,'restored method appears once in for-in');
+}
+function apply(color){
+  check(runs===(color==='green'?0:1),'load then one click');
+  check(HTMLDocument===Document&&Object.getPrototypeOf(document)===Document.prototype,'Document alias and prototype');
+  check(Object.getPrototypeOf(Node.prototype)===EventTarget.prototype,'Node inherits EventTarget');
+  check(Object.getPrototypeOf(Element.prototype)===Node.prototype&&Object.getPrototypeOf(Document.prototype)===Node.prototype,'Element and Document inherit Node');
+  check(Object.getPrototypeOf(DocumentFragment.prototype)===Node.prototype&&Object.getPrototypeOf(CharacterData.prototype)===Node.prototype,'Fragment and CharacterData inherit Node');
+  check(Object.getPrototypeOf(Text.prototype)===CharacterData.prototype&&Object.getPrototypeOf(Comment.prototype)===CharacterData.prototype,'Text and Comment inherit CharacterData');
+  check(element instanceof Element&&element instanceof Node&&element instanceof EventTarget,'element instance chain');
+  check(Element.prototype.isPrototypeOf(element)&&Node.prototype.isPrototypeOf(document),'prototype membership agrees');
+  check(fragment instanceof DocumentFragment&&!(fragment instanceof Element),'fragment branch');
+  data(Document.prototype,Symbol.toStringTag,'Document',false,false,true);
+  check(Object.prototype.toString.call(document)==='[object Document]','Document interface tag');
+  data(Node,'ELEMENT_NODE',1,false,true,false);data(Node.prototype,'TEXT_NODE',3,false,true,false);
+  mark('chains',color);
+
+  for(let i=0;i<owners.length;i++){
+    const unscopables=owners[i][Symbol.unscopables];
+    data(owners[i],Symbol.unscopables,unscopables,false,false,true);
+    check(Object.getPrototypeOf(unscopables)===null&&unscopables.append===true,'append unscopables');
+    for(let j=0;j<names.length;j++){
+      const method=saved[i*3+j],name=names[j];
+      check(typeof method==='function'&&targets[i][name]===method,'saved identity across callbacks');
+      data(owners[i],name,method,true,true,true);
+      check(Object.getOwnPropertyDescriptor(targets[i],name)===undefined,'inherited native method');
+      data(method,'name',name,false,false,true);data(method,'length',j===2?0:1,false,false,true);
+      if(j===0)check(method.call(targets[i],selectors[i])===answers[i],'saved selector call');
+      else if(j===1){const list=method.call(targets[i],selectors[i]);check(list.length===1&&list[0]===answers[i],'saved selector-all call');}
+      else check(method.call(targets[i])===undefined,'saved empty append');
+      for(let k=0;k<i*3+j;k++)check(saved[k]!==method,'nine distinct defining-interface functions');
+    }
+  }
+  mark('methods',color);
+
+  for(let i=0;i<owners.length;i++)prototypeMutation(i);
+  mark('mutation',color);
+
+  for(let i=0;i<owners.length;i++){
+    const forged=Object.create(owners[i]);let converted=0;
+    check(forged instanceof owners[i].constructor&&owners[i].isPrototypeOf(forged),'forged prototype membership');
+    const argument={toString(){converted++;return 'i';}};
+    typeError(function(){saved[i*3].call(forged,argument);});
+    typeError(function(){saved[i*3+2].call(forged,argument);});
+    check(converted===0,'authentic brand before argument conversion');
+  }
+  const other=document.createElement('section'),otherChild=document.createElement('i');other.appendChild(otherChild);
+  check(saved[3].call(other,'i')===otherChild,'saved method borrows a distinct valid receiver');
+  typeError(function(){saved[0].call(other,'i');});
+  mark('brands',color);
+
+  check(constructors[0]===DocumentFragment&&constructors[1]===Text&&constructors[2]===Comment,'interface identities persist');
+  if(runs===1){
+    check(retainedFragment.childNodes[0]===retainedText&&retainedFragment.childNodes[1]===retainedComment,'constructed node identity survives callback');
+    check(retainedText.textContent==='text0'&&retainedComment.textContent==='comment0','constructed data survives callback');
+  }
+  retainedFragment=new DocumentFragment();retainedText=new Text('text'+runs);retainedComment=new Comment('comment'+runs);
+  check(Object.getPrototypeOf(retainedFragment)===DocumentFragment.prototype&&retainedFragment.nodeType===11,'genuine fragment construction');
+  check(Object.getPrototypeOf(retainedText)===Text.prototype&&retainedText.nodeType===3,'genuine text construction');
+  check(Object.getPrototypeOf(retainedComment)===Comment.prototype&&retainedComment.nodeType===8,'genuine comment construction');
+  check(retainedText instanceof CharacterData&&retainedComment instanceof Node,'constructed prototype membership');
+  retainedFragment.append(retainedText,retainedComment);
+  check(retainedFragment.childNodes.length===2&&retainedFragment.textContent==='text'+runs,'native tree accepts constructed nodes');
+  let converted=0;const noConversion={toString(){converted++;return 'x';}};
+  typeError(function(){new Node(noConversion);});typeError(function(){Element(noConversion);});
+  typeError(function(){new CharacterData(noConversion);});typeError(function(){Text(noConversion);});
+  check(converted===0,'illegal calls/construction precede conversion');
+  mark('constructors',color);
+
+  if(runs===1)check(retainedCustom instanceof Text&&retainedCustom.textContent==='custom0','newTarget node survives callback');
+  let trace='';const customPrototype=Object.create(Text.prototype),NewTarget=(function(){}).bind(null);
+  Object.defineProperty(NewTarget,'prototype',{get(){trace+='P';return customPrototype;},configurable:true});
+  retainedCustom=Reflect.construct(Text,[{toString(){trace+='S';return 'custom'+runs;}}],NewTarget);
+  check(trace==='SP'&&Object.getPrototypeOf(retainedCustom)===customPrototype,'conversion before newTarget prototype');
+  check(retainedCustom instanceof Text&&retainedCustom.nodeType===3&&retainedCustom.textContent==='custom'+runs,'newTarget retains native brand and data');
+  trace='';const marker={};let caught;
+  try{Reflect.construct(Text,[{toString(){trace+='S';throw marker;}}],NewTarget);}catch(error){caught=error;}
+  check(caught===marker&&trace==='S','abrupt conversion prevents prototype access');
+  Object.defineProperty(NewTarget,'prototype',{value:1,configurable:true});
+  const ordinary=Reflect.construct(Comment,['note'],NewTarget);
+  check(Object.getPrototypeOf(ordinary)===Comment.prototype&&ordinary.textContent==='note','primitive newTarget prototype uses interface default');
+  mark('newtarget',color);runs++;
+}
+function clicked(){
+  check(this===change,'event callback receiver');apply('blue');
+  check(runs===2,'two complete runs');result.textContent='6';document.body.className='clicked';
+}
+change.onclick=clicked;apply('green');result.textContent='ready';document.body.className='ready';
+</script>

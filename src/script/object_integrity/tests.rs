@@ -208,6 +208,7 @@ fn integrity_native_dispatch_ignores_extra_contents_and_shares_entry_work() {
         ];
         let omitted = Vec::new();
         let native = Native {
+            properties: None,
             name: name.into(),
             receiver: poison,
         };

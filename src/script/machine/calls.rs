@@ -128,7 +128,9 @@ fn invoke_native(
     if !already_guarded {
         runtime.enter_stack(4)?;
     }
-    let result = if NumberPredicate::from_name(&native.name).is_some() {
+    let result = if NumberPredicate::from_name(&native.name).is_some()
+        || crate::script::dom_prototypes::is_interface_name(&native.name)
+    {
         runtime.native_call(&native, arguments, doc)
     } else if crate::script::dom_bindings::is_parent_method_name(&native.name) {
         // Keep failure inside `result`: the stack ownership below must unwind
@@ -138,6 +140,7 @@ fn invoke_native(
             .and_then(|()| {
                 runtime.native_call(
                     &Native {
+                        properties: native.properties,
                         name: native.name.clone(),
                         receiver,
                     },
@@ -148,6 +151,7 @@ fn invoke_native(
     } else if native.name.contains('.') {
         runtime.native_call(
             &Native {
+                properties: native.properties,
                 name: native.name.clone(),
                 receiver,
             },

@@ -387,7 +387,7 @@ impl Runtime {
         }
         let property = match own {
             Some(property) => Some(property),
-            None => self.find_property(receiver, key)?,
+            None => self.find_property_in(receiver, key, doc)?,
         };
         if let Some(property) = property {
             match property.value {

@@ -130,6 +130,7 @@ static PARENT_METHODS: [ParentMethod; 9] = [
     },
 ];
 
+#[cfg(test)]
 fn parent_method(
     interface: ParentInterface,
     operation: ParentOperation,
@@ -171,7 +172,7 @@ pub(super) fn is_parent_method_name(name: &str) -> bool {
 
 // A bootstrap reservation, not a runtime object limit. The current complete
 // intrinsic inventory fits this existing capacity; private checks bind that fact.
-const BOOTSTRAP_OBJECT_CAPACITY: usize = 512;
+const BOOTSTRAP_OBJECT_CAPACITY: usize = dom_prototypes::BOOTSTRAP_OBJECTS;
 const PARENT_INSTALL_ORDER: [usize; 9] = [8, 0, 3, 7, 2, 5, 6, 1, 4];
 const PARENT_SHARED_WORK: usize = 8 + 90 + 4;
 
@@ -222,6 +223,25 @@ enum AppendValue {
 }
 
 impl Runtime {
+    pub(super) fn install_dom_parent_prototype(&mut self, name: &str, owner: usize) -> Result<()> {
+        self.work(3 * PARENT_METHODS.len())?;
+        for row in &PARENT_METHODS {
+            let interface = match row.interface {
+                ParentInterface::Document => "Document",
+                ParentInterface::Element => "Element",
+                ParentInterface::DocumentFragment => "DocumentFragment",
+            };
+            if interface != name {
+                continue;
+            }
+            self.work(8 + row.full.len())?;
+            self.charge(std::mem::size_of::<Native>() + 32 + row.full.len())?;
+            let function = Self::native(row.full, Value::Undefined);
+            self.dom_proto_named(owner, row.name, Property::data(function, true, true, true))?;
+        }
+        Ok(())
+    }
+
     pub(super) fn initialize_dom_bindings(&mut self) -> Result<()> {
         for &(full, length) in METHODS {
             self.work(full.len() + 1)?;
@@ -328,6 +348,7 @@ impl Runtime {
         Ok(())
     }
 
+    #[cfg(test)]
     pub(super) fn dom_parent_method(
         &mut self,
         receiver: &Value,
@@ -379,7 +400,7 @@ impl Runtime {
             .expect("known DOM method");
         self.work(1 + METHODS.len() / 8 + full.len() / 8)?;
         self.charge(128 + full.len())?;
-        Ok(Self::native(full, Value::Undefined))
+        self.alloc_native(full, Value::Undefined)
     }
 
     // DOM storage currently uses UTF-8. Preserve the checked JavaScript

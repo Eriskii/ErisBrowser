@@ -16,8 +16,11 @@ separates Document, Element and DocumentFragment function identities and
 checks their receivers before conversion. [Document.append](docs/document-append.md)
 now shares checked insertion with Element and DocumentFragment, including
 hierarchy errors and ordered partial effects. [DOM own properties](docs/dom-own-properties.md)
-now support per-object data, accessors and method replacement. Interface prototypes
-and complete Document reflection remain unfinished. The
+now support per-object data, accessors and method replacement.
+[DOM interface prototypes](docs/dom-prototypes.md) add represented HTML, SVG and
+MathML inheritance, mutable ParentNode operations and genuine Text, Comment and
+DocumentFragment construction. Complete interface members and Document reflection
+remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate
