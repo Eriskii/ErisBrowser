@@ -32,6 +32,7 @@ PR_SET_CHILD_SUBREAPER = 36
 PR_GET_CHILD_SUBREAPER = 37
 WAIT_FLAGS = os.WEXITED | os.WNOHANG | os.WNOWAIT
 CAPTURE = re.compile(rb'CAPTURE_COMPLETE cases=16 worker_cases=5 own_tasks=([1-9][0-9]?) owned_children=0')
+TEXT_CAPTURE = re.compile(rb'TEXT_CAPTURE_COMPLETE cases=7 worker_cases=7 own_tasks=([1-9][0-9]?) owned_children=0')
 
 
 def enable_subreaper() -> None:
@@ -135,7 +136,12 @@ def cleanup(checker_pid: int, drain, seconds: float) -> dict:
 
 def supervise(command: list[str], timeout: float, output_limit: int,
               cleanup_seconds: float = CLEANUP_SECONDS,
-              capture_gate: bool = False) -> tuple[dict, bytes, bytes]:
+              capture_gate: bool = False,
+              worker_text_gate: bool = False) -> tuple[dict, bytes, bytes]:
+    if capture_gate and worker_text_gate:
+        raise ValueError('capture gate modes are mutually exclusive')
+    gate_pattern = TEXT_CAPTURE if worker_text_gate else CAPTURE
+    capture_gate = capture_gate or worker_text_gate
     if not math.isfinite(timeout) or not 0.05 <= timeout <= 120:
         raise ValueError("timeout must be finite and in 0.05..120 seconds")
     if not 128 <= output_limit <= 4 * 1024 * 1024:
@@ -185,8 +191,8 @@ def supervise(command: list[str], timeout: float, output_limit: int,
                 while (end := data.find(b'\n', parsed_stdout)) != -1:
                     line = bytes(data[parsed_stdout:end])
                     parsed_stdout = end + 1
-                    if line.startswith(b'CAPTURE_COMPLETE'):
-                        match = CAPTURE.fullmatch(line)
+                    if line.startswith((b'CAPTURE_COMPLETE', b'TEXT_CAPTURE_COMPLETE')):
+                        match = gate_pattern.fullmatch(line)
                         if gate_granted or not match or int(match[1]) > 64:
                             raise RuntimeError('invalid or repeated capture gate record')
                         # Checker has already dropped every worker, checked all
@@ -281,7 +287,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--timeout', type=float, default=60)
     parser.add_argument('--output-limit', type=int, default=OUTPUT_LIMIT)
-    parser.add_argument('--capture-gate', action='store_true')
+    gates = parser.add_mutually_exclusive_group()
+    gates.add_argument('--capture-gate', action='store_true')
+    gates.add_argument('--worker-text-gate', action='store_true')
     parser.add_argument('--result', type=Path, required=True)
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
@@ -290,7 +298,8 @@ def main() -> int:
         parser.error('a checker command is required')
     try:
         record, stdout, stderr = supervise(command, args.timeout, args.output_limit,
-                                          capture_gate=args.capture_gate)
+                                          capture_gate=args.capture_gate,
+                                          worker_text_gate=args.worker_text_gate)
     except (OSError, RuntimeError, ValueError) as exc:
         record, stdout, stderr = dict(status='setup_error', error=str(exc)), b'', b''
     args.result.parent.mkdir(parents=True, exist_ok=True)

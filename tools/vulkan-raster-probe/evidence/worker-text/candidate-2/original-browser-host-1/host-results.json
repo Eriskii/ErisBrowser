@@ -1,0 +1,2606 @@
+{
+  "schema": 1,
+  "success": true,
+  "runs": [
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-vulkan-worker-text-2/eris-vulkan-browser-check-1.98.0",
+        "--list"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.12348567100707442,
+      "captured_bytes": 465,
+      "observed_bytes": 465,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "enumeration"
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-vulkan-worker-text-2/eris-vulkan-browser-check-1.98.0",
+        "--adapter",
+        "0",
+        "--browser",
+        "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+        "--fixtures",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.32291672902647406,
+      "captured_bytes": 14901,
+      "observed_bytes": 14901,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": true,
+      "capture_gate_granted": true,
+      "stdout_sha256": "4e5418e9e18b734f92ae46391413699d954c98cdcc02fe911c0b11185f0c3715",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-0",
+      "validation": {
+        "schema": 1,
+        "adapter": 0,
+        "adapters": [
+          "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+          "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+          "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+        ],
+        "stdout_sha256": "4e5418e9e18b734f92ae46391413699d954c98cdcc02fe911c0b11185f0c3715",
+        "oracle_sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130",
+        "oracle_freeze_sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1",
+        "snapshots": {
+          "html-ordered-rectangles": {
+            "bytes": 608,
+            "sha256": "61e6d4b6a5773f3eeba27060f5b719adcd2b131dd0c89f35ad105080dd87cae5",
+            "hex": "455742310600000004000000d90700000000000000000000000000000000008040944e24986a660e409300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d6f7264657265642d72656374616e676c65732e68746d6c9300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d6f7264657265642d72656374616e676c65732e68746d6c030000000600000000000000000000c04000008040ffffffff00000000060000803f0000803f0000804000000040ff0000ff0000000006000040400000000000000040000040400000ffff0000000000000000000000000200000055000000506167652070726f6365737320313338333339363a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333339373a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 6,
+              "height": 4,
+              "generation": 2009,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 4.0,
+              "load_ms": 3.800008,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-ordered-rectangles.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-ordered-rectangles.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    6.0,
+                    4.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    4.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    3.0,
+                    0.0,
+                    2.0,
+                    3.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383396: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383397: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-fixed-child-escapes-scrolling-clip": {
+            "bytes": 685,
+            "sha256": "e89605fe0b650c71a22b831ef9034898829a554a5b4a9260ec286d8f51005e2e",
+            "hex": "455742310800000004000000da070000000000000000000000000000000000804081e7dec325070e40a300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d66697865642d6368696c642d657363617065732d7363726f6c6c696e672d636c69702e68746d6ca300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d66697865642d6368696c642d657363617065732d7363726f6c6c696e672d636c69702e68746d6c080000000600000000000000000000004100008040ffffffff00000000060000803f0000803f0000004000000040ff0000ff00000000000000803f0000803f0000004000000040060000004000000040000000400000004000ff00ff000000000102060000a04000000000000000400000803f0000ffff000000000300000000000000000200000055000000506167652070726f6365737320313338333339383a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333339393a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 8,
+              "height": 4,
+              "generation": 2010,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 4.0,
+              "load_ms": 3.7534899999999998,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    8.0,
+                    4.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PushClip",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    2.0,
+                    2.0
+                  ]
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    2.0,
+                    2.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    0,
+                    255,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PopClip"
+                },
+                {
+                  "kind": "PushFixed"
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    5.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PopFixed"
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383398: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383399: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-repeated-decoded-image-key": {
+            "bytes": 686,
+            "sha256": "fbfd37cf0f82e52be0a9c3446d33aefa75622a719c4d345d092fa31cefcfb05d",
+            "hex": "455742310600000002000000db0700000000000000000000000000000000000040e92b483316cd0f409b00000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d72657065617465642d6465636f6465642d696d6167652d6b65792e68746d6c9b00000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d72657065617465642d6465636f6465642d696d6167652d6b65792e68746d6c030000000600000000000000000000c04000000040ffffffff00000000080000000000000000000080400000803f0e00000074776f2d706978656c732e706e6708000000400000803f000080400000803f0e00000074776f2d706978656c732e706e67010000000e00000074776f2d706978656c732e706e670000000001000000020000000100000008000000ff0000ff0000ff800200000055000000506167652070726f6365737320313338333430303a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333430313a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 6,
+              "height": 2,
+              "generation": 2011,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 2.0,
+              "load_ms": 3.97514,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-repeated-decoded-image-key.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-repeated-decoded-image-key.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    6.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    1.0
+                  ],
+                  "key": "two-pixels.png"
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    2.0,
+                    1.0,
+                    4.0,
+                    1.0
+                  ],
+                  "key": "two-pixels.png"
+                }
+              ],
+              "image_keys": [
+                {
+                  "key": "two-pixels.png",
+                  "source_id": 0
+                }
+              ],
+              "sources": [
+                {
+                  "width": 2,
+                  "height": 1,
+                  "rgba_hex": "ff0000ff0000ff80",
+                  "sha256": "b941a72bb457e9a63cfffb428df83fe72d1e38ce5fd42b9351cf7181e6d04f1b"
+                }
+              ],
+              "diagnostics": [
+                "Page process 1383400: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383401: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-unavailable-image-keeps-placeholder": {
+            "bytes": 756,
+            "sha256": "4fb9f71d21d6c364061944eb87b433beb824753cb1c71a951762eff599d3785a",
+            "hex": "455742310400000002000000dc0700000000000000000000000000000000000040b1169f02601c1040a400000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d756e617661696c61626c652d696d6167652d6b656570732d706c616365686f6c6465722e68746d6ca400000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d756e617661696c61626c652d696d6167652d6b656570732d706c616365686f6c6465722e68746d6c040000000600000000000000000000804000000040ffffffff00000000060000803f00000000000000400000803feceef2ff00000000080000803f00000000000000400000803f1700000064656c696265726174656c792d616273656e742e706e6706000040400000803f0000803f0000803f0000ffff00000000000000000000000003000000420000007265736f757263652064656c696265726174656c792d616273656e742e706e673a20696d616765206c6f6164696e67206f72206465636f64696e67206661696c656455000000506167652070726f6365737320313338333430323a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333430333a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 4,
+              "height": 2,
+              "generation": 2012,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 2.0,
+              "load_ms": 4.02771,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-unavailable-image-keeps-placeholder.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-unavailable-image-keeps-placeholder.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "color": [
+                    236,
+                    238,
+                    242,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "key": "deliberately-absent.png"
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    3.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "resource deliberately-absent.png: image loading or decoding failed",
+                "Page process 1383402: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383403: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-rounded-page-requires-full-cpu-fallback": {
+            "bytes": 650,
+            "sha256": "d4f22116b93288078cc8f90ca6e43c17c9ef5bada5aa82dc7315f18de120c5a4",
+            "hex": "455742310400000003000000dd0700000000000000000000000000000000004040ca83f41439840f40a800000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d726f756e6465642d706167652d72657175697265732d66756c6c2d6370752d66616c6c6261636b2e68746d6ca800000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d726f756e6465642d706167652d72657175697265732d66756c6c2d6370752d66616c6c6261636b2e68746d6c030000000600000000000000000000804000004040ffffffff00000000060000803f0000000000000040000000400000ffff0000803f0600000000000000400000803f0000803fff0000ff0000000000000000000000000200000055000000506167652070726f6365737320313338333430353a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333430363a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 4,
+              "height": 3,
+              "generation": 2013,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 3.0,
+              "load_ms": 3.9395619999999996,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    3.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 1.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    2.0,
+                    1.0,
+                    1.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383405: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383406: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          }
+        },
+        "capture": {
+          "cases": 16,
+          "worker_cases": 5,
+          "own_tasks": 1,
+          "owned_children": 0
+        },
+        "cases": [
+          {
+            "name": "direct-hidden-text-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-text",
+            "command_index": 2,
+            "width": 4,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 32,
+            "packed": "00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+            "expected_packed_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e"
+          },
+          {
+            "name": "direct-rounded-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 0,
+            "width": 4,
+            "height": 3,
+            "commands": 2,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 48,
+            "packed": "00ffffff,003535ff,003535ff,00ffffff,00ffffff,003535ff,003535ff,00ffffff,00ff0000,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+            "expected_packed_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003"
+          },
+          {
+            "name": "direct-unit-opacity-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-opacity",
+            "command_index": 1,
+            "width": 3,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 24,
+            "packed": "00ff0000,00ff0000,000000ff,000000ff,000000ff,0000ff00",
+            "exact": true,
+            "expected_rgb_sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264",
+            "expected_packed_sha256": "116c7a436fd61b0951218f575d6ebc19a4fa0035bbc2cf6b03b0100aed404487"
+          },
+          {
+            "name": "direct-transparent-hidden-rounded-still-refuses",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 2,
+            "width": 3,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 24,
+            "packed": "00ff0000,00ffffff,00ffffff,00ffffff,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0",
+            "expected_packed_sha256": "30cac8663319637fb69700672bde4c3bbc22126c3747f04fcf41259c815e1756"
+          },
+          {
+            "name": "html-rounded-page-requires-full-cpu-fallback",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 1,
+            "width": 4,
+            "height": 3,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 48,
+            "packed": "00ffffff,003535ff,003535ff,00ffffff,00ffffff,003535ff,003535ff,00ffffff,00ff0000,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+            "expected_packed_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003"
+          },
+          {
+            "name": "direct-command-cap-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "command-budget",
+            "command_index": null,
+            "width": 1,
+            "height": 1,
+            "commands": 257,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 4,
+            "packed": "00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+            "expected_packed_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060"
+          },
+          {
+            "name": "direct-scope-cap-refuses-balanced-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "scope-budget",
+            "command_index": 32,
+            "width": 1,
+            "height": 1,
+            "commands": 66,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 4,
+            "packed": "00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+            "expected_packed_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060"
+          },
+          {
+            "name": "direct-fixed-escape-and-nested-restoration",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 4,
+            "commands": 15,
+            "image_entries": 0,
+            "lowered_commands": 15,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 8,
+            "invocations": 512,
+            "gpu_buffers": 2240,
+            "compared_bytes": 96,
+            "packed": "00ffffff,00ff0000,0000ffff,00ff0000,00ff0000,00ffffff,00ffffff,000000ff,00ff00ff,00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffff00,00000000,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa",
+            "expected_packed_sha256": "e06b77c7245721ce310c364bfbc2dcfe267cb535d52ff8ebb9e55ad23e1f71ce"
+          },
+          {
+            "name": "direct-translucent-fractional-clip-edges",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 5,
+            "height": 3,
+            "commands": 1,
+            "image_entries": 0,
+            "lowered_commands": 1,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 632,
+            "compared_bytes": 60,
+            "packed": "00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ff7f7f,00ff7f7f,00ff7f7f,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023",
+            "expected_packed_sha256": "ac259693470046a1c4b20b8a2a05e74d8140b19cb6acac3b4dfe6383f5b9c631"
+          },
+          {
+            "name": "direct-repeated-key-alias-and-alpha",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 2,
+            "lowered_commands": 3,
+            "unique_sources": 1,
+            "referenced_sources": 1,
+            "total_rgba_bytes": 8,
+            "referenced_rgba_bytes": 8,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1156,
+            "compared_bytes": 32,
+            "packed": "009e1f36,009e1f36,00204060,00204060,00742a44,00742a44,00204060,00204060",
+            "exact": true,
+            "expected_rgb_sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140",
+            "expected_packed_sha256": "a49ae1fe7d7099865fd36ed64351b1b96ff2e2980c9d68cbb8e3bbe9d6ed380e"
+          },
+          {
+            "name": "direct-missing-image-is-a-legal-noop",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 2,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 1,
+            "draws": 3,
+            "invocations": 192,
+            "gpu_buffers": 832,
+            "compared_bytes": 32,
+            "packed": "00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+            "expected_packed_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e"
+          },
+          {
+            "name": "direct-lines-are-bounding-rectangles",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 5,
+            "height": 4,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1184,
+            "compared_bytes": 80,
+            "packed": "0000ff00,0000ff00,000000ff,000000ff,00ffffff,0000ff00,0000ff00,000000ff,000000ff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ff0000,00ff0000,00ff0000,00ff0000,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c",
+            "expected_packed_sha256": "ae88c1d6c56db68457be1aad843a8f40391aaa05cd3a5b04c94ea7ad80296110"
+          },
+          {
+            "name": "html-ordered-rectangles",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 4,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1216,
+            "compared_bytes": 96,
+            "packed": "00ffffff,00ffffff,00ffffff,000000ff,000000ff,00ffffff,00ffffff,00ff0000,00ff0000,000000ff,000000ff,00ffffff,00ffffff,00ff0000,00ff0000,000000ff,000000ff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a",
+            "expected_packed_sha256": "7800588c8cbaf5c9df058d321e6233ccee109062bd0ef220ccf6776670ffe8b3"
+          },
+          {
+            "name": "html-fixed-child-escapes-scrolling-clip",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 8,
+            "height": 4,
+            "commands": 8,
+            "image_entries": 0,
+            "lowered_commands": 8,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 5,
+            "invocations": 320,
+            "gpu_buffers": 1536,
+            "compared_bytes": 128,
+            "packed": "00ffffff,00ff0000,00ff0000,00ffffff,00ffffff,000000ff,000000ff,00ffffff,00ffffff,00ff0000,0000ff00,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53",
+            "expected_packed_sha256": "108960d22cf8a743f82c8d419d095db5f6d91c827f94054e06957a7636a7ea25"
+          },
+          {
+            "name": "html-repeated-decoded-image-key",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 1,
+            "lowered_commands": 3,
+            "unique_sources": 1,
+            "referenced_sources": 1,
+            "total_rgba_bytes": 8,
+            "referenced_rgba_bytes": 8,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1168,
+            "compared_bytes": 48,
+            "packed": "00ff0000,00ff0000,007f7fff,007f7fff,00ffffff,00ffffff,00ffffff,00ffffff,00ff0000,00ff0000,007f7fff,007f7fff",
+            "exact": true,
+            "expected_rgb_sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f",
+            "expected_packed_sha256": "22d529014eb5f8946179e25bcfe30c2f2a85ec37718ae55af9f57bfc07a5297f"
+          },
+          {
+            "name": "html-unavailable-image-keeps-placeholder",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 4,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 1,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1088,
+            "compared_bytes": 32,
+            "packed": "00ffffff,00eceef2,00eceef2,00ffffff,00ffffff,00ffffff,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785",
+            "expected_packed_sha256": "ecc6575c7d7a8695765d2bc99e881a5691eaa897f15f59796b4d5ec2c321eaac"
+          }
+        ],
+        "counts": {
+          "cases": 16,
+          "gpu": 9,
+          "fallback": 7,
+          "pixels": 197,
+          "compared_bytes": 788
+        },
+        "gpu_counter_policy": "bounds only; bridge input statistics and literal pixels are exact",
+        "exact": true,
+        "custom_wgsl": true
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-vulkan-worker-text-2/eris-vulkan-browser-check-1.98.0",
+        "--adapter",
+        "1",
+        "--browser",
+        "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+        "--fixtures",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.23174137400928885,
+      "captured_bytes": 14901,
+      "observed_bytes": 14901,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": true,
+      "capture_gate_granted": true,
+      "stdout_sha256": "5e99c0ef750961888352918018a37794d56a1c0bac446a54ccd944503b05a715",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-1",
+      "validation": {
+        "schema": 1,
+        "adapter": 1,
+        "adapters": [
+          "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+          "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+          "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+        ],
+        "stdout_sha256": "5e99c0ef750961888352918018a37794d56a1c0bac446a54ccd944503b05a715",
+        "oracle_sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130",
+        "oracle_freeze_sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1",
+        "snapshots": {
+          "html-ordered-rectangles": {
+            "bytes": 608,
+            "sha256": "c684fa871a57c738876ed3e924a75c2de707250ba04d01191874adff3bba242c",
+            "hex": "455742310600000004000000d90700000000000000000000000000000000008040cae1934e242810409300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d6f7264657265642d72656374616e676c65732e68746d6c9300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d6f7264657265642d72656374616e676c65732e68746d6c030000000600000000000000000000c04000008040ffffffff00000000060000803f0000803f0000804000000040ff0000ff0000000006000040400000000000000040000040400000ffff0000000000000000000000000200000055000000506167652070726f6365737320313338333433393a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333434303a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 6,
+              "height": 4,
+              "generation": 2009,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 4.0,
+              "load_ms": 4.039201,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-ordered-rectangles.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-ordered-rectangles.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    6.0,
+                    4.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    4.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    3.0,
+                    0.0,
+                    2.0,
+                    3.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383439: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383440: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-fixed-child-escapes-scrolling-clip": {
+            "bytes": 685,
+            "sha256": "dd5a1829f2657c2d24a49d451caf7ad84fcb137c9b7b2619382171967399f9f8",
+            "hex": "455742310800000004000000da0700000000000000000000000000000000008040857ea65eb7280e40a300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d66697865642d6368696c642d657363617065732d7363726f6c6c696e672d636c69702e68746d6ca300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d66697865642d6368696c642d657363617065732d7363726f6c6c696e672d636c69702e68746d6c080000000600000000000000000000004100008040ffffffff00000000060000803f0000803f0000004000000040ff0000ff00000000000000803f0000803f0000004000000040060000004000000040000000400000004000ff00ff000000000102060000a04000000000000000400000803f0000ffff000000000300000000000000000200000055000000506167652070726f6365737320313338333434333a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333434353a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 8,
+              "height": 4,
+              "generation": 2010,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 4.0,
+              "load_ms": 3.7698810000000003,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    8.0,
+                    4.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PushClip",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    2.0,
+                    2.0
+                  ]
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    2.0,
+                    2.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    0,
+                    255,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PopClip"
+                },
+                {
+                  "kind": "PushFixed"
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    5.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PopFixed"
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383443: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383445: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-repeated-decoded-image-key": {
+            "bytes": 686,
+            "sha256": "8f399245542c468c8330ed9f770f1845617392ef093b8098d48fcbe9a0908da6",
+            "hex": "455742310600000002000000db07000000000000000000000000000000000000409f8b868c47f912409b00000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d72657065617465642d6465636f6465642d696d6167652d6b65792e68746d6c9b00000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d72657065617465642d6465636f6465642d696d6167652d6b65792e68746d6c030000000600000000000000000000c04000000040ffffffff00000000080000000000000000000080400000803f0e00000074776f2d706978656c732e706e6708000000400000803f000080400000803f0e00000074776f2d706978656c732e706e67010000000e00000074776f2d706978656c732e706e670000000001000000020000000100000008000000ff0000ff0000ff800200000055000000506167652070726f6365737320313338333434363a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333434373a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 6,
+              "height": 2,
+              "generation": 2011,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 2.0,
+              "load_ms": 4.743436999999999,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-repeated-decoded-image-key.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-repeated-decoded-image-key.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    6.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    1.0
+                  ],
+                  "key": "two-pixels.png"
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    2.0,
+                    1.0,
+                    4.0,
+                    1.0
+                  ],
+                  "key": "two-pixels.png"
+                }
+              ],
+              "image_keys": [
+                {
+                  "key": "two-pixels.png",
+                  "source_id": 0
+                }
+              ],
+              "sources": [
+                {
+                  "width": 2,
+                  "height": 1,
+                  "rgba_hex": "ff0000ff0000ff80",
+                  "sha256": "b941a72bb457e9a63cfffb428df83fe72d1e38ce5fd42b9351cf7181e6d04f1b"
+                }
+              ],
+              "diagnostics": [
+                "Page process 1383446: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383447: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-unavailable-image-keeps-placeholder": {
+            "bytes": 756,
+            "sha256": "807da8bdd28fae181d1d79bf1a7bee6e763224cbdc82e09a00688c98f7930aad",
+            "hex": "455742310400000002000000dc07000000000000000000000000000000000000400dddec0f943b1140a400000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d756e617661696c61626c652d696d6167652d6b656570732d706c616365686f6c6465722e68746d6ca400000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d756e617661696c61626c652d696d6167652d6b656570732d706c616365686f6c6465722e68746d6c040000000600000000000000000000804000000040ffffffff00000000060000803f00000000000000400000803feceef2ff00000000080000803f00000000000000400000803f1700000064656c696265726174656c792d616273656e742e706e6706000040400000803f0000803f0000803f0000ffff00000000000000000000000003000000420000007265736f757263652064656c696265726174656c792d616273656e742e706e673a20696d616765206c6f6164696e67206f72206465636f64696e67206661696c656455000000506167652070726f6365737320313338333434383a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333434393a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 4,
+              "height": 2,
+              "generation": 2012,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 2.0,
+              "load_ms": 4.3081819999999995,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-unavailable-image-keeps-placeholder.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-unavailable-image-keeps-placeholder.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "color": [
+                    236,
+                    238,
+                    242,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "key": "deliberately-absent.png"
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    3.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "resource deliberately-absent.png: image loading or decoding failed",
+                "Page process 1383448: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383449: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-rounded-page-requires-full-cpu-fallback": {
+            "bytes": 650,
+            "sha256": "d340e16e2f843ebe29dc179fcef92c604bb1213e0912d53824734f51032efa3e",
+            "hex": "455742310400000003000000dd0700000000000000000000000000000000004040f277efa831911140a800000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d726f756e6465642d706167652d72657175697265732d66756c6c2d6370752d66616c6c6261636b2e68746d6ca800000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d726f756e6465642d706167652d72657175697265732d66756c6c2d6370752d66616c6c6261636b2e68746d6c030000000600000000000000000000804000004040ffffffff00000000060000803f0000000000000040000000400000ffff0000803f0600000000000000400000803f0000803fff0000ff0000000000000000000000000200000055000000506167652070726f6365737320313338333435303a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333435313a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 4,
+              "height": 3,
+              "generation": 2013,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 3.0,
+              "load_ms": 4.391791,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    3.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 1.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    2.0,
+                    1.0,
+                    1.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383450: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383451: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          }
+        },
+        "capture": {
+          "cases": 16,
+          "worker_cases": 5,
+          "own_tasks": 1,
+          "owned_children": 0
+        },
+        "cases": [
+          {
+            "name": "direct-hidden-text-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-text",
+            "command_index": 2,
+            "width": 4,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 32,
+            "packed": "00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+            "expected_packed_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e"
+          },
+          {
+            "name": "direct-rounded-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 0,
+            "width": 4,
+            "height": 3,
+            "commands": 2,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 48,
+            "packed": "00ffffff,003535ff,003535ff,00ffffff,00ffffff,003535ff,003535ff,00ffffff,00ff0000,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+            "expected_packed_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003"
+          },
+          {
+            "name": "direct-unit-opacity-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-opacity",
+            "command_index": 1,
+            "width": 3,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 24,
+            "packed": "00ff0000,00ff0000,000000ff,000000ff,000000ff,0000ff00",
+            "exact": true,
+            "expected_rgb_sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264",
+            "expected_packed_sha256": "116c7a436fd61b0951218f575d6ebc19a4fa0035bbc2cf6b03b0100aed404487"
+          },
+          {
+            "name": "direct-transparent-hidden-rounded-still-refuses",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 2,
+            "width": 3,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 24,
+            "packed": "00ff0000,00ffffff,00ffffff,00ffffff,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0",
+            "expected_packed_sha256": "30cac8663319637fb69700672bde4c3bbc22126c3747f04fcf41259c815e1756"
+          },
+          {
+            "name": "html-rounded-page-requires-full-cpu-fallback",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 1,
+            "width": 4,
+            "height": 3,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 48,
+            "packed": "00ffffff,003535ff,003535ff,00ffffff,00ffffff,003535ff,003535ff,00ffffff,00ff0000,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+            "expected_packed_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003"
+          },
+          {
+            "name": "direct-command-cap-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "command-budget",
+            "command_index": null,
+            "width": 1,
+            "height": 1,
+            "commands": 257,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 4,
+            "packed": "00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+            "expected_packed_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060"
+          },
+          {
+            "name": "direct-scope-cap-refuses-balanced-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "scope-budget",
+            "command_index": 32,
+            "width": 1,
+            "height": 1,
+            "commands": 66,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 4,
+            "packed": "00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+            "expected_packed_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060"
+          },
+          {
+            "name": "direct-fixed-escape-and-nested-restoration",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 4,
+            "commands": 15,
+            "image_entries": 0,
+            "lowered_commands": 15,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 8,
+            "invocations": 512,
+            "gpu_buffers": 2240,
+            "compared_bytes": 96,
+            "packed": "00ffffff,00ff0000,0000ffff,00ff0000,00ff0000,00ffffff,00ffffff,000000ff,00ff00ff,00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffff00,00000000,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa",
+            "expected_packed_sha256": "e06b77c7245721ce310c364bfbc2dcfe267cb535d52ff8ebb9e55ad23e1f71ce"
+          },
+          {
+            "name": "direct-translucent-fractional-clip-edges",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 5,
+            "height": 3,
+            "commands": 1,
+            "image_entries": 0,
+            "lowered_commands": 1,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 632,
+            "compared_bytes": 60,
+            "packed": "00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ff7f7f,00ff7f7f,00ff7f7f,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023",
+            "expected_packed_sha256": "ac259693470046a1c4b20b8a2a05e74d8140b19cb6acac3b4dfe6383f5b9c631"
+          },
+          {
+            "name": "direct-repeated-key-alias-and-alpha",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 2,
+            "lowered_commands": 3,
+            "unique_sources": 1,
+            "referenced_sources": 1,
+            "total_rgba_bytes": 8,
+            "referenced_rgba_bytes": 8,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1156,
+            "compared_bytes": 32,
+            "packed": "009e1f36,009e1f36,00204060,00204060,00742a44,00742a44,00204060,00204060",
+            "exact": true,
+            "expected_rgb_sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140",
+            "expected_packed_sha256": "a49ae1fe7d7099865fd36ed64351b1b96ff2e2980c9d68cbb8e3bbe9d6ed380e"
+          },
+          {
+            "name": "direct-missing-image-is-a-legal-noop",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 2,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 1,
+            "draws": 3,
+            "invocations": 192,
+            "gpu_buffers": 832,
+            "compared_bytes": 32,
+            "packed": "00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+            "expected_packed_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e"
+          },
+          {
+            "name": "direct-lines-are-bounding-rectangles",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 5,
+            "height": 4,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1184,
+            "compared_bytes": 80,
+            "packed": "0000ff00,0000ff00,000000ff,000000ff,00ffffff,0000ff00,0000ff00,000000ff,000000ff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ff0000,00ff0000,00ff0000,00ff0000,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c",
+            "expected_packed_sha256": "ae88c1d6c56db68457be1aad843a8f40391aaa05cd3a5b04c94ea7ad80296110"
+          },
+          {
+            "name": "html-ordered-rectangles",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 4,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1216,
+            "compared_bytes": 96,
+            "packed": "00ffffff,00ffffff,00ffffff,000000ff,000000ff,00ffffff,00ffffff,00ff0000,00ff0000,000000ff,000000ff,00ffffff,00ffffff,00ff0000,00ff0000,000000ff,000000ff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a",
+            "expected_packed_sha256": "7800588c8cbaf5c9df058d321e6233ccee109062bd0ef220ccf6776670ffe8b3"
+          },
+          {
+            "name": "html-fixed-child-escapes-scrolling-clip",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 8,
+            "height": 4,
+            "commands": 8,
+            "image_entries": 0,
+            "lowered_commands": 8,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 5,
+            "invocations": 320,
+            "gpu_buffers": 1536,
+            "compared_bytes": 128,
+            "packed": "00ffffff,00ff0000,00ff0000,00ffffff,00ffffff,000000ff,000000ff,00ffffff,00ffffff,00ff0000,0000ff00,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53",
+            "expected_packed_sha256": "108960d22cf8a743f82c8d419d095db5f6d91c827f94054e06957a7636a7ea25"
+          },
+          {
+            "name": "html-repeated-decoded-image-key",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 1,
+            "lowered_commands": 3,
+            "unique_sources": 1,
+            "referenced_sources": 1,
+            "total_rgba_bytes": 8,
+            "referenced_rgba_bytes": 8,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1168,
+            "compared_bytes": 48,
+            "packed": "00ff0000,00ff0000,007f7fff,007f7fff,00ffffff,00ffffff,00ffffff,00ffffff,00ff0000,00ff0000,007f7fff,007f7fff",
+            "exact": true,
+            "expected_rgb_sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f",
+            "expected_packed_sha256": "22d529014eb5f8946179e25bcfe30c2f2a85ec37718ae55af9f57bfc07a5297f"
+          },
+          {
+            "name": "html-unavailable-image-keeps-placeholder",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 4,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 1,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1088,
+            "compared_bytes": 32,
+            "packed": "00ffffff,00eceef2,00eceef2,00ffffff,00ffffff,00ffffff,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785",
+            "expected_packed_sha256": "ecc6575c7d7a8695765d2bc99e881a5691eaa897f15f59796b4d5ec2c321eaac"
+          }
+        ],
+        "counts": {
+          "cases": 16,
+          "gpu": 9,
+          "fallback": 7,
+          "pixels": 197,
+          "compared_bytes": 788
+        },
+        "gpu_counter_policy": "bounds only; bridge input statistics and literal pixels are exact",
+        "exact": true,
+        "custom_wgsl": true
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-vulkan-worker-text-2/eris-vulkan-browser-check-1.98.0",
+        "--adapter",
+        "2",
+        "--browser",
+        "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+        "--fixtures",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle"
+      ],
+      "timeout_seconds": 60.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.21462066902313381,
+      "captured_bytes": 14901,
+      "observed_bytes": 14901,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": true,
+      "capture_gate_granted": true,
+      "stdout_sha256": "96288c3ee8c8bf6cdfae16215b0d5e60c696ea7389a1c3c1fe78acc0ba92e911",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-2",
+      "validation": {
+        "schema": 1,
+        "adapter": 2,
+        "adapters": [
+          "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+          "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+          "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+        ],
+        "stdout_sha256": "96288c3ee8c8bf6cdfae16215b0d5e60c696ea7389a1c3c1fe78acc0ba92e911",
+        "oracle_sha256": "d85574775ec6a2eb3537b498fe24678a888b930fe0e06efc52b410c8f15c0130",
+        "oracle_freeze_sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1",
+        "snapshots": {
+          "html-ordered-rectangles": {
+            "bytes": 608,
+            "sha256": "d02eb5af108c0a8132da4b695c261f45462b8fb276da8c051f33f6bc5874b21d",
+            "hex": "455742310600000004000000d907000000000000000000000000000000000080400fd1e80e621711409300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d6f7264657265642d72656374616e676c65732e68746d6c9300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d6f7264657265642d72656374616e676c65732e68746d6c030000000600000000000000000000c04000008040ffffffff00000000060000803f0000803f0000804000000040ff0000ff0000000006000040400000000000000040000040400000ffff0000000000000000000000000200000055000000506167652070726f6365737320313338333437323a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333437333a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 6,
+              "height": 4,
+              "generation": 2009,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 4.0,
+              "load_ms": 4.272835,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-ordered-rectangles.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-ordered-rectangles.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    6.0,
+                    4.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    4.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    3.0,
+                    0.0,
+                    2.0,
+                    3.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383472: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383473: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-fixed-child-escapes-scrolling-clip": {
+            "bytes": 685,
+            "sha256": "dfef9e76ab16dc5b9616aa1ec0219754b78498c98d454867a683c9220cb9aa7e",
+            "hex": "455742310800000004000000da0700000000000000000000000000000000008040ac90f2936adf0e40a300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d66697865642d6368696c642d657363617065732d7363726f6c6c696e672d636c69702e68746d6ca300000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d66697865642d6368696c642d657363617065732d7363726f6c6c696e672d636c69702e68746d6c080000000600000000000000000000004100008040ffffffff00000000060000803f0000803f0000004000000040ff0000ff00000000000000803f0000803f0000004000000040060000004000000040000000400000004000ff00ff000000000102060000a04000000000000000400000803f0000ffff000000000300000000000000000200000055000000506167652070726f6365737320313338333437343a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333437353a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 8,
+              "height": 4,
+              "generation": 2010,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 4.0,
+              "load_ms": 3.85909,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-fixed-child-escapes-scrolling-clip.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    8.0,
+                    4.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PushClip",
+                  "rect": [
+                    1.0,
+                    1.0,
+                    2.0,
+                    2.0
+                  ]
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    2.0,
+                    2.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    0,
+                    255,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PopClip"
+                },
+                {
+                  "kind": "PushFixed"
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    5.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "PopFixed"
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383474: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383475: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-repeated-decoded-image-key": {
+            "bytes": 686,
+            "sha256": "41ea02139e6517c1cda0bfe4f913beb24c7bdeab789e2ccb4f4e808f30ff3f5b",
+            "hex": "455742310600000002000000db070000000000000000000000000000000000004095f430b43ad912409b00000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d72657065617465642d6465636f6465642d696d6167652d6b65792e68746d6c9b00000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d72657065617465642d6465636f6465642d696d6167652d6b65792e68746d6c030000000600000000000000000000c04000000040ffffffff00000000080000000000000000000080400000803f0e00000074776f2d706978656c732e706e6708000000400000803f000080400000803f0e00000074776f2d706978656c732e706e67010000000e00000074776f2d706978656c732e706e670000000001000000020000000100000008000000ff0000ff0000ff800200000055000000506167652070726f6365737320313338333437363a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333437383a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 6,
+              "height": 2,
+              "generation": 2011,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 2.0,
+              "load_ms": 4.712138,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-repeated-decoded-image-key.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-repeated-decoded-image-key.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    6.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    1.0
+                  ],
+                  "key": "two-pixels.png"
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    2.0,
+                    1.0,
+                    4.0,
+                    1.0
+                  ],
+                  "key": "two-pixels.png"
+                }
+              ],
+              "image_keys": [
+                {
+                  "key": "two-pixels.png",
+                  "source_id": 0
+                }
+              ],
+              "sources": [
+                {
+                  "width": 2,
+                  "height": 1,
+                  "rgba_hex": "ff0000ff0000ff80",
+                  "sha256": "b941a72bb457e9a63cfffb428df83fe72d1e38ce5fd42b9351cf7181e6d04f1b"
+                }
+              ],
+              "diagnostics": [
+                "Page process 1383476: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383478: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-unavailable-image-keeps-placeholder": {
+            "bytes": 756,
+            "sha256": "429868c419e0fbf18d548be142740fc59864733f97b636edc603c44c75c9a2d3",
+            "hex": "455742310400000002000000dc070000000000000000000000000000000000004001f4fbfecd1b1140a400000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d756e617661696c61626c652d696d6167652d6b656570732d706c616365686f6c6465722e68746d6ca400000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d756e617661696c61626c652d696d6167652d6b656570732d706c616365686f6c6465722e68746d6c040000000600000000000000000000804000000040ffffffff00000000060000803f00000000000000400000803feceef2ff00000000080000803f00000000000000400000803f1700000064656c696265726174656c792d616273656e742e706e6706000040400000803f0000803f0000803f0000ffff00000000000000000000000003000000420000007265736f757263652064656c696265726174656c792d616273656e742e706e673a20696d616765206c6f6164696e67206f72206465636f64696e67206661696c656455000000506167652070726f6365737320313338333437393a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333438313a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 4,
+              "height": 2,
+              "generation": 2012,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 2.0,
+              "load_ms": 4.277152999999999,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-unavailable-image-keeps-placeholder.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-unavailable-image-keeps-placeholder.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    2.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "color": [
+                    236,
+                    238,
+                    242,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Image",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    1.0
+                  ],
+                  "key": "deliberately-absent.png"
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    3.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "resource deliberately-absent.png: image loading or decoding failed",
+                "Page process 1383479: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383481: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          },
+          "html-rounded-page-requires-full-cpu-fallback": {
+            "bytes": 650,
+            "sha256": "fde98c414911450034c687311e6d54dc0c6dc0002d3988cac30241f22decb027",
+            "hex": "455742310400000003000000dd0700000000000000000000000000000000004040f5dbd78173260c40a800000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d726f756e6465642d706167652d72657175697265732d66756c6c2d6370752d66616c6c6261636b2e68746d6ca800000066696c653a2f2f2f686f6d652f657269736b69692f446f63756d656e74732f50726f6772616d6d696e672f50726f6a656374732f4572697342726f777365722f746f6f6c732f76756c6b616e2d7261737465722d70726f62652f62726f777365722d66697874757265732f6f7261636c652f68746d6c2f68746d6c2d726f756e6465642d706167652d72657175697265732d66756c6c2d6370752d66616c6c6261636b2e68746d6c030000000600000000000000000000804000004040ffffffff00000000060000803f0000000000000040000000400000ffff0000803f0600000000000000400000803f0000803fff0000ff0000000000000000000000000200000055000000506167652070726f6365737320313338333438323a204c616e646c6f636b20414249203620616e6420736563636f6d703a206e6f20646972656374207265736f75726365206f7220736f636b657420616363657373510000005265736f757263652062726f6b657220313338333438333a20636f6d6d69747465642055524c20616e6420666574636820706f6c69637920656e666f72636564206f7574736964652072656e6465726572",
+            "decoded": {
+              "width": 4,
+              "height": 3,
+              "generation": 2013,
+              "processed_edit_sequence": 0,
+              "task_state": 0,
+              "content_height": 3.0,
+              "load_ms": 3.518775,
+              "title": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+              "url": "file:///home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/html/html-rounded-page-requires-full-cpu-fallback.html",
+              "commands": [
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    0.0,
+                    4.0,
+                    3.0
+                  ],
+                  "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                  ],
+                  "radius": 0.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    1.0,
+                    0.0,
+                    2.0,
+                    2.0
+                  ],
+                  "color": [
+                    0,
+                    0,
+                    255,
+                    255
+                  ],
+                  "radius": 1.0
+                },
+                {
+                  "kind": "Rect",
+                  "rect": [
+                    0.0,
+                    2.0,
+                    1.0,
+                    1.0
+                  ],
+                  "color": [
+                    255,
+                    0,
+                    0,
+                    255
+                  ],
+                  "radius": 0.0
+                }
+              ],
+              "image_keys": [],
+              "sources": [],
+              "diagnostics": [
+                "Page process 1383482: Landlock ABI 6 and seccomp: no direct resource or socket access",
+                "Resource broker 1383483: committed URL and fetch policy enforced outside renderer"
+              ]
+            }
+          }
+        },
+        "capture": {
+          "cases": 16,
+          "worker_cases": 5,
+          "own_tasks": 1,
+          "owned_children": 0
+        },
+        "cases": [
+          {
+            "name": "direct-hidden-text-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-text",
+            "command_index": 2,
+            "width": 4,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 32,
+            "packed": "00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+            "expected_packed_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e"
+          },
+          {
+            "name": "direct-rounded-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 0,
+            "width": 4,
+            "height": 3,
+            "commands": 2,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 48,
+            "packed": "00ffffff,003535ff,003535ff,00ffffff,00ffffff,003535ff,003535ff,00ffffff,00ff0000,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+            "expected_packed_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003"
+          },
+          {
+            "name": "direct-unit-opacity-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "unsupported-opacity",
+            "command_index": 1,
+            "width": 3,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 24,
+            "packed": "00ff0000,00ff0000,000000ff,000000ff,000000ff,0000ff00",
+            "exact": true,
+            "expected_rgb_sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264",
+            "expected_packed_sha256": "116c7a436fd61b0951218f575d6ebc19a4fa0035bbc2cf6b03b0100aed404487"
+          },
+          {
+            "name": "direct-transparent-hidden-rounded-still-refuses",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 2,
+            "width": 3,
+            "height": 2,
+            "commands": 5,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 24,
+            "packed": "00ff0000,00ffffff,00ffffff,00ffffff,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0",
+            "expected_packed_sha256": "30cac8663319637fb69700672bde4c3bbc22126c3747f04fcf41259c815e1756"
+          },
+          {
+            "name": "html-rounded-page-requires-full-cpu-fallback",
+            "path": "cpu-fallback",
+            "reason": "unsupported-rounded-rectangle",
+            "command_index": 1,
+            "width": 4,
+            "height": 3,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 48,
+            "packed": "00ffffff,003535ff,003535ff,00ffffff,00ffffff,003535ff,003535ff,00ffffff,00ff0000,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+            "expected_packed_sha256": "ebc292386a40ba296bba8da64eae10bdc2403797ec31cb04503ea4cf89e42003"
+          },
+          {
+            "name": "direct-command-cap-refuses-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "command-budget",
+            "command_index": null,
+            "width": 1,
+            "height": 1,
+            "commands": 257,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 4,
+            "packed": "00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+            "expected_packed_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060"
+          },
+          {
+            "name": "direct-scope-cap-refuses-balanced-whole-frame",
+            "path": "cpu-fallback",
+            "reason": "scope-budget",
+            "command_index": 32,
+            "width": 1,
+            "height": 1,
+            "commands": 66,
+            "image_entries": 0,
+            "lowered_commands": null,
+            "unique_sources": null,
+            "referenced_sources": null,
+            "total_rgba_bytes": null,
+            "referenced_rgba_bytes": null,
+            "missing_images": null,
+            "draws": 0,
+            "invocations": 0,
+            "gpu_buffers": 0,
+            "compared_bytes": 4,
+            "packed": "00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+            "expected_packed_sha256": "6fc6f4524161c3ae0d316812d7088e3fcd372023edaea2d7821093be40ae1060"
+          },
+          {
+            "name": "direct-fixed-escape-and-nested-restoration",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 4,
+            "commands": 15,
+            "image_entries": 0,
+            "lowered_commands": 15,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 8,
+            "invocations": 512,
+            "gpu_buffers": 2240,
+            "compared_bytes": 96,
+            "packed": "00ffffff,00ff0000,0000ffff,00ff0000,00ff0000,00ffffff,00ffffff,000000ff,00ff00ff,00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffff00,00000000,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa",
+            "expected_packed_sha256": "e06b77c7245721ce310c364bfbc2dcfe267cb535d52ff8ebb9e55ad23e1f71ce"
+          },
+          {
+            "name": "direct-translucent-fractional-clip-edges",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 5,
+            "height": 3,
+            "commands": 1,
+            "image_entries": 0,
+            "lowered_commands": 1,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 2,
+            "invocations": 128,
+            "gpu_buffers": 632,
+            "compared_bytes": 60,
+            "packed": "00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ff7f7f,00ff7f7f,00ff7f7f,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023",
+            "expected_packed_sha256": "ac259693470046a1c4b20b8a2a05e74d8140b19cb6acac3b4dfe6383f5b9c631"
+          },
+          {
+            "name": "direct-repeated-key-alias-and-alpha",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 2,
+            "lowered_commands": 3,
+            "unique_sources": 1,
+            "referenced_sources": 1,
+            "total_rgba_bytes": 8,
+            "referenced_rgba_bytes": 8,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1156,
+            "compared_bytes": 32,
+            "packed": "009e1f36,009e1f36,00204060,00204060,00742a44,00742a44,00204060,00204060",
+            "exact": true,
+            "expected_rgb_sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140",
+            "expected_packed_sha256": "a49ae1fe7d7099865fd36ed64351b1b96ff2e2980c9d68cbb8e3bbe9d6ed380e"
+          },
+          {
+            "name": "direct-missing-image-is-a-legal-noop",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 2,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 1,
+            "draws": 3,
+            "invocations": 192,
+            "gpu_buffers": 832,
+            "compared_bytes": 32,
+            "packed": "00ff0000,00ff0000,00ffffff,00ffffff,00ff0000,00ff0000,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+            "expected_packed_sha256": "3e2bae00e7122e9f459a457136c2449a019ec5cbd45db02b7e635228caefef9e"
+          },
+          {
+            "name": "direct-lines-are-bounding-rectangles",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 5,
+            "height": 4,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1184,
+            "compared_bytes": 80,
+            "packed": "0000ff00,0000ff00,000000ff,000000ff,00ffffff,0000ff00,0000ff00,000000ff,000000ff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ff0000,00ff0000,00ff0000,00ff0000,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c",
+            "expected_packed_sha256": "ae88c1d6c56db68457be1aad843a8f40391aaa05cd3a5b04c94ea7ad80296110"
+          },
+          {
+            "name": "html-ordered-rectangles",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 4,
+            "commands": 3,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1216,
+            "compared_bytes": 96,
+            "packed": "00ffffff,00ffffff,00ffffff,000000ff,000000ff,00ffffff,00ffffff,00ff0000,00ff0000,000000ff,000000ff,00ffffff,00ffffff,00ff0000,00ff0000,000000ff,000000ff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a",
+            "expected_packed_sha256": "7800588c8cbaf5c9df058d321e6233ccee109062bd0ef220ccf6776670ffe8b3"
+          },
+          {
+            "name": "html-fixed-child-escapes-scrolling-clip",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 8,
+            "height": 4,
+            "commands": 8,
+            "image_entries": 0,
+            "lowered_commands": 8,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 0,
+            "draws": 5,
+            "invocations": 320,
+            "gpu_buffers": 1536,
+            "compared_bytes": 128,
+            "packed": "00ffffff,00ff0000,00ff0000,00ffffff,00ffffff,000000ff,000000ff,00ffffff,00ffffff,00ff0000,0000ff00,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff,00ffffff",
+            "exact": true,
+            "expected_rgb_sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53",
+            "expected_packed_sha256": "108960d22cf8a743f82c8d419d095db5f6d91c827f94054e06957a7636a7ea25"
+          },
+          {
+            "name": "html-repeated-decoded-image-key",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 6,
+            "height": 2,
+            "commands": 3,
+            "image_entries": 1,
+            "lowered_commands": 3,
+            "unique_sources": 1,
+            "referenced_sources": 1,
+            "total_rgba_bytes": 8,
+            "referenced_rgba_bytes": 8,
+            "missing_images": 0,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1168,
+            "compared_bytes": 48,
+            "packed": "00ff0000,00ff0000,007f7fff,007f7fff,00ffffff,00ffffff,00ffffff,00ffffff,00ff0000,00ff0000,007f7fff,007f7fff",
+            "exact": true,
+            "expected_rgb_sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f",
+            "expected_packed_sha256": "22d529014eb5f8946179e25bcfe30c2f2a85ec37718ae55af9f57bfc07a5297f"
+          },
+          {
+            "name": "html-unavailable-image-keeps-placeholder",
+            "path": "gpu",
+            "reason": "none",
+            "command_index": null,
+            "width": 4,
+            "height": 2,
+            "commands": 4,
+            "image_entries": 0,
+            "lowered_commands": 3,
+            "unique_sources": 0,
+            "referenced_sources": 0,
+            "total_rgba_bytes": 0,
+            "referenced_rgba_bytes": 0,
+            "missing_images": 1,
+            "draws": 4,
+            "invocations": 256,
+            "gpu_buffers": 1088,
+            "compared_bytes": 32,
+            "packed": "00ffffff,00eceef2,00eceef2,00ffffff,00ffffff,00ffffff,00ffffff,000000ff",
+            "exact": true,
+            "expected_rgb_sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785",
+            "expected_packed_sha256": "ecc6575c7d7a8695765d2bc99e881a5691eaa897f15f59796b4d5ec2c321eaac"
+          }
+        ],
+        "counts": {
+          "cases": 16,
+          "gpu": 9,
+          "fallback": 7,
+          "pixels": 197,
+          "compared_bytes": 788
+        },
+        "gpu_counter_policy": "bounds only; bridge input statistics and literal pixels are exact",
+        "exact": true,
+        "custom_wgsl": true
+      }
+    }
+  ],
+  "adapter_count": 3,
+  "binary_bindings": {
+    "/tmp/eris-vulkan-worker-text-2/eris-vulkan-browser-check-1.98.0": "7af4cbaad745d8019850126fba58773a9598236ecbe189c8122bad8f104c7144",
+    "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped": "4ce8139a186080e7cd68d6478b46e81a6234494ffd556e359d0d8a6eca63fb0e"
+  },
+  "oracle": {
+    "freeze_sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1",
+    "files": 29
+  },
+  "scope": "offscreen snapshot bridge; no native window or performance claim"
+}

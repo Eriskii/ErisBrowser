@@ -1,0 +1,8 @@
+{
+  "path": "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+  "bytes": 44580224,
+  "sha256": "4ce8139a186080e7cd68d6478b46e81a6234494ffd556e359d0d8a6eca63fb0e",
+  "source": "binaries.json: eris-browser",
+  "command": "strip --strip-debug -o eris-browser-stripped eris-browser",
+  "reason": "Debug-only sections made the original 202215256-byte build exceed the unchanged128MiB host binary admission cap; initial host call refused before any subprocess or output directory creation."
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "name": "fmt-probe",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "fmt",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.11987124499864876,
+    "log": "1.88.0-fmt-probe.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "clippy-feature",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--all-targets",
+      "--features",
+      "browser-bridge",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit": 0,
+    "seconds": 0.41509350307751447,
+    "log": "1.88.0-clippy-feature.log",
+    "sha256": "e0e7d7f638591b063eeabab1106d5a8a68ce2ef0072420d1bdfcc8f339f0b520"
+  },
+  {
+    "name": "test-feature",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "test",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "seconds": 3.7733604529639706,
+    "log": "1.88.0-test-feature.log",
+    "sha256": "b95bcb45a61bfa1fce67ffc5f06f2580cf13301d7b5590e048009e58f8fea6ae"
+  },
+  {
+    "name": "build-feature",
+    "command": [
+      "cargo",
+      "+1.88.0",
+      "build",
+      "--locked",
+      "--offline",
+      "--manifest-path",
+      "tools/vulkan-raster-probe/Cargo.toml",
+      "--features",
+      "browser-bridge"
+    ],
+    "exit": 0,
+    "seconds": 0.11244671198073775,
+    "log": "1.88.0-build-feature.log",
+    "sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+  }
+]

@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "source held; formatted with Rust1.88; no compilation or engine/GPU execution by author",
+  "files": [
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 828,
+      "sha256": "a5bdf9aa44c9dc1d8db466f9d73578c79dc220495b583edc94abada391292303"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/worker-text-check.rs",
+      "bytes": 22379,
+      "sha256": "1ff049f0494086171630a3d618707d1b39256154486ebed0afa649d29d4ab934"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/browser-check.rs",
+      "bytes": 22413,
+      "sha256": "c61193f5fc625ba78a13d74a14bacb0f55e0b0a2c33d8e30c5f83dee04150451"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+      "bytes": 13330,
+      "sha256": "3716cf3c921ef02fb5fd955bbd07599f7143dfcf40e95a2d30dc59c0b45b7cdf"
+    }
+  ],
+  "fixture_freeze": {
+    "path": "tools/vulkan-raster-probe/worker-text-fixtures/freeze.json",
+    "bytes": 2232,
+    "sha256": "3051d5e67f91896a9a6f26c5ab832323d693a4a812757e77085689e33343b26f"
+  },
+  "original_browser_checker": {
+    "path": "/tmp/eris-vulkan-worker-text-browser-check-before.rs",
+    "bytes": 35152,
+    "sha256": "ea5f41fb64cad07338bb0b11d85222a9b76f31cb306ae40e95e7bf572112a9cc"
+  },
+  "extraction_receipt": {
+    "path": "/tmp/eris-vulkan-worker-text-support-extraction.json",
+    "bytes": 435,
+    "sha256": "14febe9c5c383e64d2bb6c0c5efa26bdc96992975daa7879dbdf10d07e82b2ed"
+  },
+  "initial_extraction_peer_review": {
+    "path": "/tmp/eris-vulkan-worker-text-support-script-review.json",
+    "bytes": 1942,
+    "sha256": "aa113e8e4df2e2a06974e6b78278c16e7c174f05d7822ac3a4db5c189430d827"
+  },
+  "scopes": [
+    "New separate scripts=false seven-worker text suite: six admitted GPU plans and one expected whole-frame rounded fallback.",
+    "All seven use 160x80 original Canvas cold/warm differential references on the same exact worker snapshot; no independent font golden is claimed.",
+    "Literal frame/text/style/scope/image assumptions remain external frozen fixture inputs; mismatch refuses without changing them.",
+    "Original browser16 capture/verification/protocol bodies retained; bounded helpers and their four tests moved into shared checker_support module.",
+    "Original standalone30 and glyph26 source/protocol fixtures were not edited.",
+    "Every input snapshot, worker client and Fonts is dropped before final capture marker; GPU mode alone requires exact GPU_READY token before any Vulkan call.",
+    "Full original EWB1 records and u32le CPU targets are emitted under existing 2MiB output cap; full GPU readback comparison precedes TEXT_PASS.",
+    "Inherited WorkerClient drop may block; outer subreaper remains required for bounded cleanup. No unbounded-cleanup guarantee is asserted."
+  ],
+  "bounds": {
+    "cases": 7,
+    "max_width": 160,
+    "max_height": 80,
+    "retained_reference_bytes": 358400,
+    "retained_gpu_plan_bytes": 7340032,
+    "retained_draws": 1799,
+    "snapshot_dump_bytes_each": 65536,
+    "capture_deadline_seconds": 180,
+    "own_tasks": 64,
+    "worker_generations": "3000..3006"
+  },
+  "cli": [
+    "--list",
+    "--cpu-check --browser PATH --fixtures DIR",
+    "--adapter N --browser PATH --fixtures DIR"
+  ],
+  "expected_output_totals": {
+    "reference_bytes": 358400,
+    "cpu_passes": 14,
+    "gpu_compared_bytes": 307200,
+    "fallback_reference_bytes": 51200
+  },
+  "execution_attribution": {
+    "compiler": 0,
+    "tests": 0,
+    "Canvas": 0,
+    "worker": 0,
+    "GPU": 0,
+    "formatting": "rustfmt1.88 on only three owned Rust files with skip_children=true"
+  }
+}

@@ -11,6 +11,12 @@ runs of all original 30 standalone and 16 browser-bridge cases. The original
 bridge entry point still refuses Text; only its separate fonts-aware API admits
 this bounded subset.
 
+The [worker-text checker](WORKER_TEXT.md) now uses that API on seven real
+HTML snapshots. Six frames match the same-snapshot CPU reference on each of
+three Vulkan adapters (**921,600 GPU bytes total**); one rounded frame per
+adapter uses complete CPU fallback. These are differential comparisons, not
+independent font goldens. See the [worker-text evidence](evidence/host-worker-text.json).
+
 The [alpha host record](evidence/host-alpha.json) records all **30 fixtures passing on each of the NVIDIA, AMD and software Vulkan adapters**: **921,620 exact compared bytes per adapter, 2,764,860 total**. All four processes, including enumeration, exited normally with empty stderr. It binds the actual source, binary, loader, adapter identities and raw output.
 
 The earlier [image host record](evidence/host-images.json) retains its 21 opaque fixtures and **2,763,816 exact compared bytes** across the three adapters. Its source, binary and raw results remain attributed to that checkpoint. The original seven rectangle and fourteen image fixture definitions, expected pixels and protocol tuples remain unchanged in the current 30-case run.

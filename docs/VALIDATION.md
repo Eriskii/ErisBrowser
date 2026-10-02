@@ -1,5 +1,42 @@
 # Validation record
 
+## Vulkan text from actual worker snapshots
+
+The [worker-text checker](../tools/vulkan-raster-probe/WORKER_TEXT.md) loads seven
+frozen local documents through confined `WorkerClient` processes, retains each
+complete snapshot and verifies its text, styles, scopes, paint order and decoded
+image bytes. Six 160×80 frames match the original `Canvas` painting the exact
+same inputs on **NVIDIA, AMD and software Vulkan**: **307,200 GPU-compared bytes
+per adapter, 921,600 total**. The rounded-rectangle frame selects complete CPU
+fallback; its **51,200 reference bytes per adapter** are excluded from GPU totals.
+The [evidence](../tools/vulkan-raster-probe/evidence/host-worker-text.json) keeps
+these same-snapshot differential results separate from independent glyph oracles.
+
+Both Rust 1.88 and 1.98 checkers pass CPU-only capture: seven workers, fourteen
+cold/warm paints and **716,800 compared CPU bytes per run**, with no GPU work.
+Cold/warm plans match in their complete drawing parameters, input buffers and
+metadata. Worker handles, snapshots and font objects are dropped before a
+distinct supervisor grant permits Vulkan initialization. Every successful
+capture and GPU process exits zero with empty stderr and complete cleanup;
+no device error becomes fallback.
+
+Formatting, strict feature-enabled all-target Clippy and **79 feature-enabled
+Rust tests** pass on both toolchains. Fourteen supervisor groups exercise real
+disposable process trees, eighteen protocol groups use synthetic snapshots,
+and nine mocked host groups check failure ordering and input bindings. Initial
+compilation exposed a fixture lifetime error; explicit const contexts fix the
+representation without changing any fixture values. Review corrected an
+empty-diagnostics assumption and tightened metadata accounting before actual
+worker runs. An oversized debug browser was refused before process creation;
+stripping debug sections fits the unchanged executable-size limit.
+
+The old browser checker now shares its unchanged capture helpers with the new
+binary. Its original sixteen cases retain their GPU/fallback populations on
+all three adapters. Existing WGSL and renderer admission limits are unchanged.
+Native-window rasterization, shaping, rounded geometry, group opacity,
+production security, full web compatibility and the Chromium performance target
+remain unfinished.
+
 ## Bounded Vulkan glyph masks
 
 The [glyph path](../tools/vulkan-raster-probe/GLYPHS.md) composites bounded
@@ -43,10 +80,13 @@ match on all three adapters (**2,764,860 bytes**), and all **16 original browser
 bridge cases** pass with unchanged GPU/fallback populations. The glyph checker
 itself launches no page workers. Every supervised glyph/reference process has
 zero exit status, empty stderr and complete cleanup; device/readback failure
-never becomes fallback. Real-worker text capture, native-window rasterization,
-shaping, rounded geometry, opacity groups, full compatibility, production security
-and the Chromium performance target remain open. Remote CI for this checkpoint
-is recorded after publication.
+never becomes fallback. The later worker-text suite above adds actual text
+captures. Native-window rasterization, shaping, rounded geometry, opacity groups,
+full compatibility, production security and the Chromium performance target
+remain open. All seven
+[remote CI jobs for `f0987e2`](https://github.com/Eriskii/ErisBrowser/actions/runs/36966972245)
+passed; the exact terminal result is retained in
+[the CI record](../tools/vulkan-raster-probe/evidence/host-glyphs-ci.json).
 
 ## Vulkan bridge for actual browser snapshots
 

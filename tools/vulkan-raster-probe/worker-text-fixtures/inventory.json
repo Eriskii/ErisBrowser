@@ -1,0 +1,712 @@
+{
+  "schema": 1,
+  "status": "source-only expectations; no worker capture or pixel output observed",
+  "reference_policy": "Original Canvas over the exact unpruned captured commands/images is a same-snapshot differential reference; no independent text-mask or pixel-golden claim.",
+  "case_count": 7,
+  "gpu_cases": 6,
+  "fallback_cases": 1,
+  "frame_bytes_each": 51200,
+  "total_frame_bytes": 358400,
+  "gpu_frame_bytes": 307200,
+  "fallback_frame_bytes": 51200,
+  "observation_rules": {
+    "texts": "All Text commands in exact display-list order; exact text UTF-8/content, size, RGBA and flags. Text x/y remain captured layout facts, not fixed expectations.",
+    "fixed": "True iff inside active fixed coordinates; fixed scopes reset ancestor clipping to caller clip.",
+    "clipped": "True iff the effective active clip after fixed resets is strictly restrictive relative to caller/frame viewport; apply current document or viewport offset to nested clip rectangles.",
+    "drawing_order": "Ignore scope commands and only transparent/empty radius-zero Rects. Retain every Text, Image, Line and every other Rect. Require exact remaining kind sequence.",
+    "images": "Require exact full ImageStore key inventory, dimensions, decoded RGBA and number of references. Preserve every original command and image for CPU/GPU input.",
+    "fallback": "Require complete-frame refusal with exact expected reason category. Record original rejection index as observation, do not invent or filter it.",
+    "unexpected": "Any assumption mismatch fails capture validation; retain full raw snapshot and do not revise expected route/content from outcomes."
+  },
+  "cases": [
+    {
+      "name": "worker-text-flow-unicode",
+      "html_file": "html/worker-text-flow-unicode.html",
+      "html_sha256": "3cf0aecc9136273cc139c5895c49759321db4203da2af5418ad8a8092f89958d",
+      "request": {
+        "generation": 3000,
+        "scripts": false,
+        "method": "GET",
+        "navigation": "file URI of the exact html_file under explicit fixtures directory",
+        "render_width": 160,
+        "render_height": 80,
+        "expected_edit_sequence": 0,
+        "expected_task": "idle",
+        "expected_title": "worker-text-flow-unicode",
+        "load_reply_snapshot": false,
+        "load_reply_navigation": false,
+        "render_reply_navigation": false
+      },
+      "frame": {
+        "width": 160,
+        "height": 80,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          160,
+          80
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "texts": [
+        {
+          "text": "AV",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": " ",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": "To",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": "\u00e9",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": " ",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": "\u03a9",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        }
+      ],
+      "drawing_order": [
+        "Rect",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ],
+      "images": [],
+      "expected_route": "gpu",
+      "expected_fallback": null,
+      "purpose": "Real block/inline flow, ASCII interword spaces and two present Unicode scalars; full exact Text sequence from static tokenizer assumptions."
+    },
+    {
+      "name": "worker-text-font-flags",
+      "html_file": "html/worker-text-font-flags.html",
+      "html_sha256": "471f030127784f7bd86670abc641815a3361b987085bf1f9a8d6d879c1f44b4a",
+      "request": {
+        "generation": 3001,
+        "scripts": false,
+        "method": "GET",
+        "navigation": "file URI of the exact html_file under explicit fixtures directory",
+        "render_width": 160,
+        "render_height": 80,
+        "expected_edit_sequence": 0,
+        "expected_task": "idle",
+        "expected_title": "worker-text-font-flags",
+        "load_reply_snapshot": false,
+        "load_reply_navigation": false,
+        "render_reply_navigation": false
+      },
+      "frame": {
+        "width": 160,
+        "height": 80,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          160,
+          80
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "texts": [
+        {
+          "text": "AV",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": "To",
+          "bold": true,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            160,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": "jTy",
+          "bold": false,
+          "italic": true,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            120,
+            20,
+            200,
+            128
+          ]
+        },
+        {
+          "text": "MM",
+          "bold": true,
+          "italic": false,
+          "monospace": true,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            0,
+            128,
+            64,
+            255
+          ]
+        }
+      ],
+      "drawing_order": [
+        "Rect",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ],
+      "images": [],
+      "expected_route": "gpu",
+      "expected_fallback": null,
+      "purpose": "All layout Text flags, exact font size and RGBA; monospace+bold preserves both flags while renderer selects mono; italic has alpha128."
+    },
+    {
+      "name": "worker-text-overflow-restoration",
+      "html_file": "html/worker-text-overflow-restoration.html",
+      "html_sha256": "f9fdf0b877ef317112e280283de4654bc9923c826b218794e9d7c08de85b2eee",
+      "request": {
+        "generation": 3002,
+        "scripts": false,
+        "method": "GET",
+        "navigation": "file URI of the exact html_file under explicit fixtures directory",
+        "render_width": 160,
+        "render_height": 80,
+        "expected_edit_sequence": 0,
+        "expected_task": "idle",
+        "expected_title": "worker-text-overflow-restoration",
+        "load_reply_snapshot": false,
+        "load_reply_navigation": false,
+        "render_reply_navigation": false
+      },
+      "frame": {
+        "width": 160,
+        "height": 80,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          160,
+          80
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "texts": [
+        {
+          "text": "AVAVAV",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": true,
+          "size": 20,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": "AFTER",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        }
+      ],
+      "drawing_order": [
+        "Rect",
+        "Text",
+        "Text"
+      ],
+      "images": [],
+      "expected_route": "gpu",
+      "expected_fallback": null,
+      "purpose": "First complete word emitted under restrictive clip; following sibling Text must be outside that clip, with no text pruning in capture."
+    },
+    {
+      "name": "worker-text-scroll-fixed",
+      "html_file": "html/worker-text-scroll-fixed.html",
+      "html_sha256": "104accc652268a760fb6361d80c6328f8567305889174a5d8fbc583a24c5e2c0",
+      "request": {
+        "generation": 3003,
+        "scripts": false,
+        "method": "GET",
+        "navigation": "file URI of the exact html_file under explicit fixtures directory",
+        "render_width": 160,
+        "render_height": 80,
+        "expected_edit_sequence": 0,
+        "expected_task": "idle",
+        "expected_title": "worker-text-scroll-fixed",
+        "load_reply_snapshot": false,
+        "load_reply_navigation": false,
+        "render_reply_navigation": false
+      },
+      "frame": {
+        "width": 160,
+        "height": 80,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          160,
+          80
+        ],
+        "document_offset": [
+          0,
+          -24
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "texts": [
+        {
+          "text": "SCROLL",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": true,
+          "size": 16,
+          "rgba": [
+            16,
+            32,
+            48,
+            255
+          ]
+        },
+        {
+          "text": "FIXED",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": true,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            0,
+            0,
+            255,
+            255
+          ]
+        },
+        {
+          "text": "AFTER",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            0,
+            128,
+            0,
+            255
+          ]
+        }
+      ],
+      "drawing_order": [
+        "Rect",
+        "Text",
+        "Text",
+        "Text"
+      ],
+      "images": [],
+      "expected_route": "gpu",
+      "expected_fallback": null,
+      "purpose": "Worker layout remains in document coordinates. Paint-time scroll is -24y; fixed descendant escapes ancestor clip and keeps viewport offset zero, then document/unclipped Text follows."
+    },
+    {
+      "name": "worker-text-image-order",
+      "html_file": "html/worker-text-image-order.html",
+      "html_sha256": "0d42ce451c27f6b9cfe84b2dfe15417cc7aaa831760b936c2a8b037fc2f1e9e1",
+      "request": {
+        "generation": 3004,
+        "scripts": false,
+        "method": "GET",
+        "navigation": "file URI of the exact html_file under explicit fixtures directory",
+        "render_width": 160,
+        "render_height": 80,
+        "expected_edit_sequence": 0,
+        "expected_task": "idle",
+        "expected_title": "worker-text-image-order",
+        "load_reply_snapshot": false,
+        "load_reply_navigation": false,
+        "render_reply_navigation": false
+      },
+      "frame": {
+        "width": 160,
+        "height": 80,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          160,
+          80
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "texts": [
+        {
+          "text": "AV",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 20,
+          "rgba": [
+            0,
+            128,
+            0,
+            255
+          ]
+        },
+        {
+          "text": "To",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 20,
+          "rgba": [
+            128,
+            0,
+            0,
+            128
+          ]
+        }
+      ],
+      "drawing_order": [
+        "Rect",
+        "Text",
+        "Image",
+        "Text",
+        "Image"
+      ],
+      "images": [
+        {
+          "key": "two-pixels.png",
+          "width": 2,
+          "height": 1,
+          "rgba": [
+            255,
+            0,
+            0,
+            255,
+            0,
+            0,
+            255,
+            128
+          ],
+          "references": 2,
+          "asset_file": "html/two-pixels.png",
+          "asset_sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+        }
+      ],
+      "expected_route": "gpu",
+      "expected_fallback": null,
+      "purpose": "Two references to one decoded image key, interleaved with overlapping opaque/translucent text; source alpha and DOM paint order are retained."
+    },
+    {
+      "name": "worker-text-alpha-underline",
+      "html_file": "html/worker-text-alpha-underline.html",
+      "html_sha256": "8b23367f9f44e75af5e05b3ebc87f66b3cfc6be1215e51bd4b8527c1d07eacfc",
+      "request": {
+        "generation": 3005,
+        "scripts": false,
+        "method": "GET",
+        "navigation": "file URI of the exact html_file under explicit fixtures directory",
+        "render_width": 160,
+        "render_height": 80,
+        "expected_edit_sequence": 0,
+        "expected_task": "idle",
+        "expected_title": "worker-text-alpha-underline",
+        "load_reply_snapshot": false,
+        "load_reply_navigation": false,
+        "render_reply_navigation": false
+      },
+      "frame": {
+        "width": 160,
+        "height": 80,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          160,
+          80
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "texts": [
+        {
+          "text": "AA",
+          "bold": false,
+          "italic": false,
+          "monospace": true,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            0,
+            0,
+            128,
+            128
+          ]
+        },
+        {
+          "text": "AA",
+          "bold": false,
+          "italic": false,
+          "monospace": true,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            128,
+            0,
+            0,
+            128
+          ]
+        }
+      ],
+      "drawing_order": [
+        "Rect",
+        "Text",
+        "Line",
+        "Text",
+        "Line"
+      ],
+      "images": [],
+      "expected_route": "gpu",
+      "expected_fallback": null,
+      "purpose": "Fractional layout origins, repeated glyph masks, alpha128 source-over and real underline Line commands interleaved after each Text."
+    },
+    {
+      "name": "worker-text-rounded-fallback",
+      "html_file": "html/worker-text-rounded-fallback.html",
+      "html_sha256": "a5eb2659554d3768c4aa0797ebe071d001ab1a9d98d1ab9da39cc681820df39d",
+      "request": {
+        "generation": 3006,
+        "scripts": false,
+        "method": "GET",
+        "navigation": "file URI of the exact html_file under explicit fixtures directory",
+        "render_width": 160,
+        "render_height": 80,
+        "expected_edit_sequence": 0,
+        "expected_task": "idle",
+        "expected_title": "worker-text-rounded-fallback",
+        "load_reply_snapshot": false,
+        "load_reply_navigation": false,
+        "render_reply_navigation": false
+      },
+      "frame": {
+        "width": 160,
+        "height": 80,
+        "clear": 16777215,
+        "caller_clip": [
+          0,
+          0,
+          160,
+          80
+        ],
+        "document_offset": [
+          0,
+          0
+        ],
+        "viewport_offset": [
+          0,
+          0
+        ]
+      },
+      "texts": [
+        {
+          "text": "ROUND",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            64,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "text": "AFTER",
+          "bold": false,
+          "italic": false,
+          "monospace": false,
+          "fixed": false,
+          "clipped": false,
+          "size": 16,
+          "rgba": [
+            0,
+            0,
+            128,
+            255
+          ]
+        }
+      ],
+      "drawing_order": [
+        "Rect",
+        "Rect",
+        "Text",
+        "Text"
+      ],
+      "images": [],
+      "expected_route": "cpu-fallback",
+      "expected_fallback": "unsupported-rounded-rectangle",
+      "purpose": "A visible nonzero-radius primitive requires whole-frame fallback, including all following Text; no partial GPU plan or discarded paint."
+    }
+  ]
+}

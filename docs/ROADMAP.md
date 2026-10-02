@@ -11,8 +11,10 @@ The [Vulkan milestones](vulkan-rendering.md) now include an optional offscreen
 bridge from real confined-worker snapshots to custom GPU drawing, with explicit
 whole-frame CPU fallback. A separate [bounded glyph path](../tools/vulkan-raster-probe/GLYPHS.md)
 now composites CPU-generated bundled-font masks with custom WGSL. Its 26 cases
-pass on all three adapters. Real-worker text capture, native-window integration,
-shaping, rounded edges and compositing remain ahead. The browser window still paints on the CPU; its optional
+pass on all three adapters. Seven [real-worker text cases](../tools/vulkan-raster-probe/WORKER_TEXT.md)
+now pass too: six GPU frames and one complete CPU fallback per adapter.
+[Native-window integration](vulkan-native-plan.md), shaping, rounded edges and
+compositing remain ahead. The browser window still paints on the CPU; its optional
 Vulkan presenter uploads those frames. Performance within 30% of Chromium has
 not been demonstrated.
 
@@ -210,7 +212,9 @@ minimum and text chrome exceed this subset; its upload presenter continues to
 use CPU-painted frames. A subsequent [glyph checkpoint](../tools/vulkan-raster-probe/GLYPHS.md)
 passes 12 independent mask cases and 14 parent-CPU font comparisons on all three
 adapters, using a separate fonts-aware entry point and unchanged GPU caps.
-Native-window integration, real-worker text capture, shaping, rounded coverage, group
+Seven [worker-text snapshots](../tools/vulkan-raster-probe/WORKER_TEXT.md) now
+also pass on those adapters: six GPU frames and one complete CPU fallback.
+Native-window integration, shaping, rounded coverage, group
 opacity, color conversion, full compatibility, production security and Chromium
 performance comparisons remain open.
 

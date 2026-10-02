@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "status": "all seven typed source projections match JSON; no worker/render/font/GPU execution",
+  "cases": 7,
+  "texts": 21,
+  "font_or_pixel_goldens_authored": false,
+  "generator": {
+    "path": "/tmp/eris-worker-text-prepare.py",
+    "sha256": "44551019736e384856e8d8c3cb1d505bba8a53c30dcc60797ee7b32d494f6513"
+  },
+  "checker": {
+    "path": "/tmp/eris-worker-text-verify.py",
+    "sha256": "c1d2be2275ba96a48f18cdb9364d08d1be9706cfaad644bad3e0fddf6a282e7c"
+  },
+  "files": [
+    {
+      "path": "fixture_inventory.rs",
+      "bytes": 15805,
+      "sha256": "7a053989fa8df5b3e2edd52796ecc9ab95004bbbbd62ec38501318840f6c927f"
+    },
+    {
+      "path": "html/two-pixels.png",
+      "bytes": 71,
+      "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+    },
+    {
+      "path": "html/worker-text-alpha-underline.html",
+      "bytes": 554,
+      "sha256": "8b23367f9f44e75af5e05b3ebc87f66b3cfc6be1215e51bd4b8527c1d07eacfc"
+    },
+    {
+      "path": "html/worker-text-flow-unicode.html",
+      "bytes": 374,
+      "sha256": "3cf0aecc9136273cc139c5895c49759321db4203da2af5418ad8a8092f89958d"
+    },
+    {
+      "path": "html/worker-text-font-flags.html",
+      "bytes": 565,
+      "sha256": "471f030127784f7bd86670abc641815a3361b987085bf1f9a8d6d879c1f44b4a"
+    },
+    {
+      "path": "html/worker-text-image-order.html",
+      "bytes": 771,
+      "sha256": "0d42ce451c27f6b9cfe84b2dfe15417cc7aaa831760b936c2a8b037fc2f1e9e1"
+    },
+    {
+      "path": "html/worker-text-overflow-restoration.html",
+      "bytes": 592,
+      "sha256": "f9fdf0b877ef317112e280283de4654bc9923c826b218794e9d7c08de85b2eee"
+    },
+    {
+      "path": "html/worker-text-rounded-fallback.html",
+      "bytes": 591,
+      "sha256": "a5eb2659554d3768c4aa0797ebe071d001ab1a9d98d1ab9da39cc681820df39d"
+    },
+    {
+      "path": "html/worker-text-scroll-fixed.html",
+      "bytes": 703,
+      "sha256": "104accc652268a760fb6361d80c6328f8567305889174a5d8fbc583a24c5e2c0"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 18243,
+      "sha256": "2b433848063481c59814310c610be80a7b013735dfae81102b31478b7486a63b"
+    }
+  ]
+}

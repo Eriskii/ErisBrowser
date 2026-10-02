@@ -12,7 +12,9 @@ real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate
 [glyph path](tools/vulkan-raster-probe/GLYPHS.md) now composites bounded bundled-font
 masks on the GPU; all 26 literal-mask and font-reference cases pass on those
-adapters. Native browser painting
+adapters. The [worker-text checker](tools/vulkan-raster-probe/WORKER_TEXT.md)
+also passes seven actual HTML snapshots on all three adapters, including
+whole-frame fallback. Native browser painting
 currently remains on the CPU; the [rendering docket](docs/vulkan-rendering.md)
 tracks the remaining integration work.
 

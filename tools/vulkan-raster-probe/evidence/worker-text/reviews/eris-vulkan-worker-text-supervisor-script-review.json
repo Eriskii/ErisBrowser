@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "status": "read-only delta review; no concrete finding",
+  "inputs": {
+    "tools/vulkan-raster-probe/bridge_supervisor.py": "bfecc971df88c6543f50272313f12b71873713f931070dfa2a7ff4d5f566f9f5",
+    "tools/vulkan-raster-probe/run_browser_host.py": "1e07e300d75e8d71a652f7795e89b62c88a98e7ef5b44bc88bcbd5ad29421abc",
+    "tools/vulkan-raster-probe/test_bridge_supervisor.py": "a89d0c2bf89aaa4b77b8301a8c973bc43b06d6f958c9304f4785b20cb32c64d1"
+  },
+  "scope": "New worker-text capture gate and fake-child tests against prior published bridge gate; source-only, no execution",
+  "checks": [
+    "Both gate flags rejected together before child creation at CLI and callable wrappers.",
+    "Exact TEXT_CAPTURE_COMPLETE seven-case/seven-worker marker and existing sixteen-case/five-worker marker use separate fullmatches; either recognized prefix with wrong selected mode is refused before grant.",
+    "Task-count1..64 constraint retained; count65 and wrong inventory have explicit tests.",
+    "Grant still requires own_children()==[live unreaped checker], WNOWAIT observation, no cancellation and unexpired deadline; fixed ten-byte GPU_READY newline unchanged.",
+    "Cleanup functions and ownership/reaping boundaries are byte-unchanged; cleanup disables further grants.",
+    "Outer timeout/interruption behavior and receipt/stdout hash checks unchanged.",
+    "New fake-child source tests cover a successful text grant, both cross-suite directions, wrong count/tasks, and an adopted detached orphan blocking text grant."
+  ],
+  "limitations": [
+    "Tests were only source-reviewed here.",
+    "Existing driver call/teardown limitations and trusted checker protocol assumptions remain; this change does not add a native renderer or broader confinement claim."
+  ]
+}

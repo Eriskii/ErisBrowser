@@ -6,8 +6,12 @@ custom CPU rasterizer. An optional offscreen bridge now borrows real confined-wo
 snapshots for custom GPU rectangle/image rasterization, with whole-frame CPU
 fallback. The separate [glyph path](../tools/vulkan-raster-probe/GLYPHS.md) also
 prepares bounded bundled-font masks and blends them with custom WGSL. All 26
-literal-mask/font-reference cases match on three adapters. Native-window GPU
-rasterization and group compositing remain future work.
+literal-mask/font-reference cases match on three adapters. Seven
+[real-worker text cases](../tools/vulkan-raster-probe/WORKER_TEXT.md) also pass,
+with six GPU frames and one complete CPU fallback per adapter. The
+[native integration proposal](vulkan-native-plan.md) covers reusable renderer
+code, browser chrome, frame budgets and presentation ownership. Native-window
+GPU rasterization and group compositing remain future work.
 No GPU speedup or Chromium performance result is established. Earlier isolated
 experiments and their failed compositor comparisons remain recorded below.
 
@@ -353,6 +357,12 @@ allocation equivalent to the CPU implementation. Ordinary hardware blending
 must not silently change the current integer rounding or encoded-color-space
 behavior. An intentional color-model correction would be a separate,
 independently validated change.
+
+The [worker-text suite](../tools/vulkan-raster-probe/WORKER_TEXT.md) adds seven
+actual HTML captures without changing those earlier inventories. Six frames
+use the fonts-aware GPU adapter and one uses complete CPU fallback. All match
+their same-snapshot Canvas references on NVIDIA, AMD and software Vulkan;
+worker cleanup is verified before each capture process initializes Vulkan.
 
 Milestone B needs its own pixel and resource tests before integration into
 normal page rendering. Completing A does not complete B or the broader Vulkan

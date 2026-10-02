@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "publication byte-verification ledger",
+  "index": {
+    "path": "index.json",
+    "bytes": 47006,
+    "sha256": "ab5163ed74c44ead815a4864edd93248d589ced3b1751389fbe5ed0abde33f17"
+  },
+  "completed_run_review": {
+    "path": "reviews/eris-vulkan-worker-text-completed-run-review.json",
+    "sha256": "e41134eb89ae159ca83bc55001aaa31e0c7822724ddd386cec1a05c60833c716"
+  },
+  "totals": {
+    "payload_artifacts": 86,
+    "identity_copies": 81,
+    "compressed_stdout_logs": 5,
+    "uncompressed_payload_bytes": 4100323,
+    "stored_payload_bytes": 542148,
+    "existing_fixture_bindings": 13
+  },
+  "verification": [
+    "Every selected source was verified after copying.",
+    "Identity copies preserve exact bytes.",
+    "Gzip decompression and deterministic recompression both match.",
+    "All stdout with supervisor receipts matches its retained stdout_sha256.",
+    "Current published fixture files match their corrected frozen manifest."
+  ],
+  "execution": "Packaging and hashing only; no compiler/tests/worker/Canvas/GPU/CI rerun."
+}

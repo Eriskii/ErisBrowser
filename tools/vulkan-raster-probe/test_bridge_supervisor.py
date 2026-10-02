@@ -15,14 +15,15 @@ ROOT = Path(__file__).resolve().parent
 @unittest.skipUnless(sys.platform == 'linux', 'Linux subreaper ownership contract')
 class SupervisorTests(unittest.TestCase):
     def run_checker(self, code, *, timeout=2, output_limit=16384, cancel=False,
-                    cancel_during_cleanup=False, capture_gate=False):
+                    cancel_during_cleanup=False, capture_gate=False, worker_text_gate=False):
         with tempfile.TemporaryDirectory(prefix='eris-bridge-supervisor-') as temp:
             result = Path(temp) / 'receipt.json'
             ready = Path(temp) / 'ready'
             command = [sys.executable, str(ROOT / 'bridge_supervisor.py'),
                        '--result', str(result), '--timeout', str(timeout),
                        '--output-limit', str(output_limit),
-                       *(['--capture-gate'] if capture_gate else []), '--', sys.executable,
+                       *(['--capture-gate'] if capture_gate else []),
+                       *(['--worker-text-gate'] if worker_text_gate else []), '--', sys.executable,
                        '-c', code, str(ready)]
             if cancel_during_cleanup:
                 wrapper = f'''import sys,os,signal
@@ -178,6 +179,54 @@ print('incorrectly-granted',flush=True)
     def test_clean_exit_without_required_gate_is_failure(self):
         record, _, _ = self.run_checker('pass', capture_gate=True)
         self.assertEqual(record['status'], 'missing_capture_gate')
+
+    def test_worker_text_grant_uses_distinct_complete_inventory(self):
+        code = '''import sys
+print('TEXT_CAPTURE_COMPLETE cases=7 worker_cases=7 own_tasks=1 owned_children=0',flush=True)
+assert sys.stdin.buffer.read(10)==b'GPU_READY\\n'
+print('granted',flush=True)
+'''
+        record, out, _ = self.run_checker(code, worker_text_gate=True)
+        self.assertEqual(record['status'], 'exited')
+        self.assertTrue(record['capture_gate_granted'])
+        self.assertTrue(out.endswith(b'granted\n'))
+
+    def test_capture_modes_refuse_wrong_inventory_and_cross_suite_marker(self):
+        markers = (
+            'CAPTURE_COMPLETE cases=16 worker_cases=5 own_tasks=1 owned_children=0',
+            'TEXT_CAPTURE_COMPLETE cases=6 worker_cases=7 own_tasks=1 owned_children=0',
+            'TEXT_CAPTURE_COMPLETE cases=7 worker_cases=7 own_tasks=65 owned_children=0',
+        )
+        for marker in markers:
+            with self.subTest(marker=marker):
+                code = f'import sys; print({marker!r},flush=True); sys.stdin.buffer.read(10)'
+                record, _, _ = self.run_checker(code, worker_text_gate=True)
+                self.assertEqual(record['status'], 'error')
+                self.assertFalse(record['capture_gate_granted'])
+        code = "import sys; print('TEXT_CAPTURE_COMPLETE cases=7 worker_cases=7 own_tasks=1 owned_children=0',flush=True); sys.stdin.buffer.read(10)"
+        record, _, _ = self.run_checker(code, capture_gate=True)
+        self.assertEqual(record['status'], 'error')
+        self.assertFalse(record['capture_gate_granted'])
+
+    def test_worker_text_orphan_prevents_grant(self):
+        code = '''import os,sys,time
+r,w=os.pipe()
+child=os.fork()
+if child==0:
+    os.close(r)
+    if os.fork()==0:
+        os.setsid();os.write(w,b'r');os.close(w);time.sleep(5);os._exit(0)
+    os._exit(0)
+os.close(w);os.read(r,1);os.close(r);os.waitpid(child,0)
+print('TEXT_CAPTURE_COMPLETE cases=7 worker_cases=7 own_tasks=1 owned_children=0',flush=True)
+sys.stdin.buffer.read(10)
+print('incorrectly-granted',flush=True)
+'''
+        record, out, _ = self.run_checker(code, worker_text_gate=True)
+        self.assertEqual(record['status'], 'error')
+        self.assertFalse(record['capture_gate_granted'])
+        self.assertNotIn(b'incorrectly-granted', out)
+        self.assertEqual(record['cleanup']['descendants'], 1)
 
 
 if __name__ == '__main__':

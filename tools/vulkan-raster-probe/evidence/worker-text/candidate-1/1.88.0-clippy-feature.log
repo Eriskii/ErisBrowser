@@ -1,0 +1,190 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Checking eris-vulkan-raster-prototype v0.0.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe)
+error[E0716]: temporary value dropped while borrowed
+   --> src/bin/../../worker-text-fixtures/fixture_inventory.rs:54:21
+    |
+37  | /       vec![
+38  | |           WorkerTextFixture {
+39  | |               name: "worker-text-flow-unicode",
+40  | |               html_file: "html/worker-text-flow-unicode.html",
+...   |
+54  | |               texts: &[
+    | |  ____________________-^
+    | | |_____________________|
+55  | |||                 ExpectedText {
+56  | |||                     text: "AV",
+57  | |||                     bold: false,
+...   |||
+114 | |||                 },
+115 | |||             ],
+    | |||             ^
+    | |||_____________|
+    | | |_____________creates a temporary value which is freed while still in use
+    | |               this usage requires that borrow lasts for `'static`
+...   |
+443 | |           },
+444 | |       ]
+    | |_______- temporary value is freed at the end of this statement
+
+error[E0716]: temporary value dropped while borrowed
+   --> src/bin/../../worker-text-fixtures/fixture_inventory.rs:144:21
+    |
+37  | /       vec![
+38  | |           WorkerTextFixture {
+39  | |               name: "worker-text-flow-unicode",
+40  | |               html_file: "html/worker-text-flow-unicode.html",
+...   |
+144 | |               texts: &[
+    | |  ____________________-^
+    | | |_____________________|
+145 | |||                 ExpectedText {
+146 | |||                     text: "AV",
+147 | |||                     bold: false,
+...   |||
+184 | |||                 },
+185 | |||             ],
+    | |||             ^
+    | |||_____________|
+    | | |_____________creates a temporary value which is freed while still in use
+    | |               this usage requires that borrow lasts for `'static`
+...   |
+443 | |           },
+444 | |       ]
+    | |_______- temporary value is freed at the end of this statement
+
+error[E0716]: temporary value dropped while borrowed
+   --> src/bin/../../worker-text-fixtures/fixture_inventory.rs:212:21
+    |
+37  | /       vec![
+38  | |           WorkerTextFixture {
+39  | |               name: "worker-text-flow-unicode",
+40  | |               html_file: "html/worker-text-flow-unicode.html",
+...   |
+212 | |               texts: &[
+    | |  ____________________-^
+    | | |_____________________|
+213 | |||                 ExpectedText {
+214 | |||                     text: "AVAVAV",
+215 | |||                     bold: false,
+...   |||
+232 | |||                 },
+233 | |||             ],
+    | |||             ^
+    | |||_____________|
+    | | |_____________creates a temporary value which is freed while still in use
+    | |               this usage requires that borrow lasts for `'static`
+...   |
+443 | |           },
+444 | |       ]
+    | |_______- temporary value is freed at the end of this statement
+
+error[E0716]: temporary value dropped while borrowed
+   --> src/bin/../../worker-text-fixtures/fixture_inventory.rs:254:21
+    |
+37  | /       vec![
+38  | |           WorkerTextFixture {
+39  | |               name: "worker-text-flow-unicode",
+40  | |               html_file: "html/worker-text-flow-unicode.html",
+...   |
+254 | |               texts: &[
+    | |  ____________________-^
+    | | |_____________________|
+255 | |||                 ExpectedText {
+256 | |||                     text: "SCROLL",
+257 | |||                     bold: false,
+...   |||
+284 | |||                 },
+285 | |||             ],
+    | |||             ^
+    | |||_____________|
+    | | |_____________creates a temporary value which is freed while still in use
+    | |               this usage requires that borrow lasts for `'static`
+...   |
+443 | |           },
+444 | |       ]
+    | |_______- temporary value is freed at the end of this statement
+
+error[E0716]: temporary value dropped while borrowed
+   --> src/bin/../../worker-text-fixtures/fixture_inventory.rs:311:21
+    |
+37  | /       vec![
+38  | |           WorkerTextFixture {
+39  | |               name: "worker-text-flow-unicode",
+40  | |               html_file: "html/worker-text-flow-unicode.html",
+...   |
+311 | |               texts: &[
+    | |  ____________________-^
+    | | |_____________________|
+312 | |||                 ExpectedText {
+313 | |||                     text: "AV",
+314 | |||                     bold: false,
+...   |||
+331 | |||                 },
+332 | |||             ],
+    | |||             ^
+    | |||_____________|
+    | | |_____________creates a temporary value which is freed while still in use
+    | |               this usage requires that borrow lasts for `'static`
+...   |
+443 | |           },
+444 | |       ]
+    | |_______- temporary value is freed at the end of this statement
+
+error[E0716]: temporary value dropped while borrowed
+   --> src/bin/../../worker-text-fixtures/fixture_inventory.rs:365:21
+    |
+37  | /       vec![
+38  | |           WorkerTextFixture {
+39  | |               name: "worker-text-flow-unicode",
+40  | |               html_file: "html/worker-text-flow-unicode.html",
+...   |
+365 | |               texts: &[
+    | |  ____________________-^
+    | | |_____________________|
+366 | |||                 ExpectedText {
+367 | |||                     text: "AA",
+368 | |||                     bold: false,
+...   |||
+385 | |||                 },
+386 | |||             ],
+    | |||             ^
+    | |||_____________|
+    | | |_____________creates a temporary value which is freed while still in use
+    | |               this usage requires that borrow lasts for `'static`
+...   |
+443 | |           },
+444 | |       ]
+    | |_______- temporary value is freed at the end of this statement
+
+error[E0716]: temporary value dropped while borrowed
+   --> src/bin/../../worker-text-fixtures/fixture_inventory.rs:413:21
+    |
+37  | /       vec![
+38  | |           WorkerTextFixture {
+39  | |               name: "worker-text-flow-unicode",
+40  | |               html_file: "html/worker-text-flow-unicode.html",
+...   |
+413 | |               texts: &[
+    | |  ____________________-^
+    | | |_____________________|
+414 | |||                 ExpectedText {
+415 | |||                     text: "ROUND",
+416 | |||                     bold: false,
+...   |||
+433 | |||                 },
+434 | |||             ],
+    | |||             ^
+    | |||_____________|
+    | | |_____________creates a temporary value which is freed while still in use
+    | |               this usage requires that borrow lasts for `'static`
+...   |
+443 | |           },
+444 | |       ]
+    | |_______- temporary value is freed at the end of this statement
+
+For more information about this error, try `rustc --explain E0716`.
+error: could not compile `eris-vulkan-raster-prototype` (bin "eris-vulkan-worker-text-check") due to 7 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `eris-vulkan-raster-prototype` (bin "eris-vulkan-worker-text-check" test) due to 7 previous errors

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "status": "read-only extraction review; no concrete finding",
+  "source_stage": "reviewed on-disk draft; owner has not yet declared final formatting/hash freeze",
+  "bindings": {
+    "/tmp/eris-vulkan-worker-text-browser-check-before.rs": "ea5f41fb64cad07338bb0b11d85222a9b76f31cb306ae40e95e7bf572112a9cc",
+    "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs": "3716cf3c921ef02fb5fd955bbd07599f7143dfcf40e95a2d30dc59c0b45b7cdf",
+    "tools/vulkan-raster-probe/src/bin/browser-check.rs": "1794a0007e88301125ee130dec82e5efb6864668914b005e996fccab7645bdeb"
+  },
+  "exact_block_comparisons": [
+    {
+      "block": "reserve/deadline/children/path/EWB1 snapshot",
+      "same_bytes_except_outer_whitespace_and_pub_super": true,
+      "normalized_sha256": "d1f0a307f01b46f6ef065a38a9aa6bbfa036ff593e069b5ea6d8b379fa4987ce"
+    },
+    {
+      "block": "print_snapshot",
+      "same_bytes_except_outer_whitespace_and_pub_super": true,
+      "normalized_sha256": "e975a9cc35c0ef67cc9e666a94472e8f4d81f2ef2d236d4d2c16f891f499859e"
+    },
+    {
+      "block": "exact GPU token",
+      "same_bytes_except_outer_whitespace_and_pub_super": true,
+      "normalized_sha256": "6836abad19c5b33d8053b547f17749e43c5a94725c45b6b31476ccc59005d6a5"
+    },
+    {
+      "block": "all four helper tests",
+      "same_bytes_except_outer_whitespace_and_pub_super": true,
+      "normalized_sha256": "41b89d2478a147b06cd615db5018f493579c57ad36f9c7b4244c55bdbe8f114d"
+    }
+  ],
+  "bounds_unchanged": {
+    "MAX_SNAPSHOT_DUMP": 65536,
+    "MAX_OWN_TASKS": 64
+  },
+  "remaining_browser_diff": "Only import/module wiring, helper/constant removals and moved tests; capture, admission, marker, grant call and GPU execution ordering remain in place.",
+  "limits": [
+    "No compilation, fake-child, renderer, worker or GPU execution.",
+    "Final owner freeze should recheck reviewed bindings; any later semantic changes need a delta review."
+  ]
+}

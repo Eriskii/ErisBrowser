@@ -1,0 +1,32 @@
+{
+  "kind": "compiler-driven static storage representation correction",
+  "before": {
+    "path": "/tmp/eris-vulkan-worker-text-fixtures-initial/fixture_inventory.rs",
+    "bytes": 15805,
+    "sha256": "7a053989fa8df5b3e2edd52796ecc9ab95004bbbbd62ec38501318840f6c927f"
+  },
+  "after": {
+    "path": "tools/vulkan-raster-probe/worker-text-fixtures/fixture_inventory.rs",
+    "bytes": 16939,
+    "sha256": "dabfe62b4095bcee1c607d0999f0ba12736dabc512b37d0c004cbda93ceace51"
+  },
+  "unchanged_inventory": {
+    "path": "tools/vulkan-raster-probe/worker-text-fixtures/inventory.json",
+    "bytes": 18243,
+    "sha256": "2b433848063481c59814310c610be80a7b013735dfae81102b31478b7486a63b"
+  },
+  "change": "Seven borrowed ExpectedText arrays are now explicit inline const contexts. Removing only these wrappers reproduces every original non-whitespace Rust token, including each exact string literal.",
+  "verification": "Read-only token comparison after Rust1.88 formatting; no Rust compiler, tests, worker, Canvas or GPU execution.",
+  "initial_failures": [
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.88.0-clippy-feature.log",
+      "bytes": 7166,
+      "sha256": "1a0bd732beda30540786fa857079a01996d6a0875afc9964f739b144bd501672"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.98.0-clippy-feature.log",
+      "bytes": 7166,
+      "sha256": "db1c50bf0a64cf578d02923789e95aefb203820ea53c99933cbdee8e2f5591b0"
+    }
+  ]
+}

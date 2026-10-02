@@ -1,0 +1,485 @@
+{
+  "schema": 1,
+  "result": "clear: no concrete completed-run binding, observation or count discrepancy found",
+  "method": "Independent read-only hashing, ELF allocated-section comparison, EWB1 byte decoding, frozen fixture observation and raw transcript arithmetic. No production validator, compiler, worker, Canvas, planner or GPU was executed by this audit.",
+  "source": {
+    "parent": "f0987e266d11232354b1720073a407c1ca9db3fe",
+    "candidate2_inputs": 130,
+    "all_current_inputs_exact": true,
+    "source_manifest": {
+      "path": "/tmp/eris-vulkan-worker-text-2/rust-source.json",
+      "bytes": 21900,
+      "sha256": "05fee9ac4b6e3c9b79ddb151232afe46c33eaa2166019cf48b39d048a5758fcd"
+    },
+    "initial_source_manifest": {
+      "path": "/tmp/eris-vulkan-worker-text-1/rust-source.json",
+      "bytes": 21900,
+      "sha256": "d31d172191e006343f93d7bf368357ec68d624979b0adf07f0352675f90fce68"
+    },
+    "candidate1_to_2_file_deltas": [
+      "tools/vulkan-raster-probe/worker-text-fixtures/fixture_inventory.rs",
+      "tools/vulkan-raster-probe/worker-text-fixtures/freeze.json",
+      "tools/vulkan-raster-probe/worker-text-fixtures/transcription-review.json"
+    ],
+    "delta": "One Rust file plus refreshed freeze/transcription receipts. Seven const contexts; normalized complete Rust source equal after removing wrappers; frozen JSON/HTML/PNG expectations unchanged."
+  },
+  "checks": {
+    "1.88.0": {
+      "steps": 4,
+      "tests_passed": 79,
+      "failed": 0,
+      "ignored": 0,
+      "initial_clippy_compile_exit": 101,
+      "initial_error": "E0716"
+    },
+    "1.98.0": {
+      "steps": 4,
+      "tests_passed": 79,
+      "failed": 0,
+      "ignored": 0,
+      "initial_clippy_compile_exit": 101,
+      "initial_error": "E0716"
+    }
+  },
+  "fixture_binding": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/worker-text-fixtures/freeze.json",
+    "bytes": 2998,
+    "sha256": "bae728bb77043263235ab8ee6eda966c27f1edb0740abbd7f6312c8822542504"
+  },
+  "supervision": {
+    "successful_processes": 10,
+    "stderr_and_supervisor_stderr_empty": true,
+    "cleanup_complete_all": true,
+    "surviving_descendants_all": 0,
+    "adapter_capture_grants": 6,
+    "cpu_or_enumeration_grants": 0,
+    "raw_receipts_match_host_embedded_fields": true,
+    "observed_bytes_equal_captured_all": true
+  },
+  "worker_text": {
+    "actual_snapshots": 35,
+    "runs": 5,
+    "cases_per_run": 7,
+    "cpu_paints_per_run": 14,
+    "cpu_compared_bytes_per_run": 716800,
+    "reference_bytes_per_run": 358400,
+    "cpu_only_toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "cpu_only_gpu_comparisons": 0,
+    "gpu_adapters": 3,
+    "gpu_frames_per_adapter": 6,
+    "gpu_bytes_per_adapter": 307200,
+    "gpu_bytes_all_adapters": 921600,
+    "fallback_frames_per_adapter": 1,
+    "fallback_reference_bytes_per_adapter": 51200,
+    "fallback_reference_bytes_all_adapters": 153600,
+    "combined_reference_bytes_all_adapters": 1075200,
+    "all_seven_reference_hashes_identical_across_both_cpu_builds_and_three_adapters": true,
+    "reference_sha256": {
+      "worker-text-flow-unicode": "6bcf41806ee243752bf6d1053ba8bbaf7a1c2120286488266b4c53ea41308efc",
+      "worker-text-font-flags": "51c2611bec132f7c39bc899cb55c187b2fd8f0714aedb472ef69a0461fbef2b5",
+      "worker-text-overflow-restoration": "285cb2ac6b93e48a8d07ff5b509ccec74773a4cfd35a1f14b536c5b0c0ab8b81",
+      "worker-text-scroll-fixed": "6db31fc362179277c9ddc03018dc0a041dbdea13432542159e7b65a8fdacbf8f",
+      "worker-text-image-order": "c55df6c1b5284a423c46d39294a9eef41cf53e359f56c0d145b222c9aa50864f",
+      "worker-text-alpha-underline": "056a9181b518aaae45df901a2c0c2e3abf61fdfbf10346b540ae5eb52171f4a4",
+      "worker-text-rounded-fallback": "9ef4810e0b76603068e4782880d67c95c003ea7f7c690c4ef3859f581242aeb5"
+    },
+    "bounded_plan_stats_identical_across_five_runs": true,
+    "snapshot_hashes_and_load_times_vary": true,
+    "full_diagnostics_retained": true,
+    "independent_snapshot_decode_confirms_frozen_text_style_scope_paint_order_and_image_bytes": true
+  },
+  "original_browser": {
+    "cases_per_adapter": 16,
+    "adapters": 3,
+    "worker_snapshots_per_adapter": 5,
+    "gpu_frames_per_adapter": 9,
+    "fallback_frames_per_adapter": 7,
+    "gpu_bytes_per_adapter": 604,
+    "fallback_bytes_per_adapter": 184,
+    "combined_bytes_per_adapter": 788,
+    "gpu_bytes_all_adapters": 1812,
+    "fallback_bytes_all_adapters": 552,
+    "combined_bytes_all_adapters": 2364,
+    "all_raw_literal_pixels_match_unchanged_29_file_oracle": true,
+    "oracle_binding": {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser-fixtures/oracle/freeze.json",
+      "bytes": 6430,
+      "sha256": "ec652b547096f37db93433d5347c78873cef2eae63a03ced622013aa746b88e1"
+    }
+  },
+  "binary_admission": {
+    "original_browser_bytes": 202215256,
+    "stripped_browser_bytes": 44580224,
+    "stripping_record": {
+      "path": "/tmp/eris-vulkan-worker-text-2/stripped-browser.json",
+      "bytes": 493,
+      "sha256": "c879f25578e14306d6ef691d7879912dcf4104f4c446e0f31f96939544ae15dd"
+    },
+    "allocated_elf_sections_compared": 31,
+    "all_allocated_section_metadata_and_bytes_equal": true,
+    "preflight_refusal_attribution": "The retained stripping record describes rejection of the oversized debug browser before child/output creation. It is not reported as a worker or GPU execution failure; audit verifies source/stripped binaries and all allocated ELF sections, not a missing subprocess log."
+  },
+  "scope_limits": [
+    "New worker-text pixels are same-snapshot original-Canvas differential references, not independent layout/font goldens.",
+    "Cold/warm equality is evidenced by the checker comparison and cold_warm=true records; raw output contains one agreed full frame per case, not two separately serialized CPU frames.",
+    "Three device types include the software Vulkan adapter; actual adapter inventory is retained.",
+    "GPU metadata is bounded observed data, not independently frozen exact performance targets.",
+    "Loader bindings identify selected Vulkan loader files only, not all transitive system libraries.",
+    "No timing or interactive-browser rendering/performance claim."
+  ],
+  "retained_artifact_bindings": [
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.88.0-checks.json",
+      "bytes": 872,
+      "sha256": "742b8cc824539c7c9804625f52d8245114b08498ec7afc031ade5055464d5d75"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.88.0-clippy-feature.log",
+      "bytes": 7166,
+      "sha256": "1a0bd732beda30540786fa857079a01996d6a0875afc9964f739b144bd501672"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.88.0-fmt-probe.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.98.0-checks.json",
+      "bytes": 872,
+      "sha256": "5da5954c6f65d5415146d1ebd3fe23baaee45d16d589b9092ba58fd7d6b0fd79"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.98.0-clippy-feature.log",
+      "bytes": 7166,
+      "sha256": "db1c50bf0a64cf578d02923789e95aefb203820ea53c99933cbdee8e2f5591b0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/1.98.0-fmt-probe.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-1/rust-source.json",
+      "bytes": 21900,
+      "sha256": "d31d172191e006343f93d7bf368357ec68d624979b0adf07f0352675f90fce68"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.88.0-build-feature.log",
+      "bytes": 60,
+      "sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.88.0-checks.json",
+      "bytes": 1729,
+      "sha256": "d7fd5f838a3039b5119d8719b3c5d73b5482e9532383fecac72631a7e3c35b54"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.88.0-clippy-feature.log",
+      "bytes": 298,
+      "sha256": "e0e7d7f638591b063eeabab1106d5a8a68ce2ef0072420d1bdfcc8f339f0b520"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.88.0-fmt-probe.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.88.0-test-feature.log",
+      "bytes": 9257,
+      "sha256": "b95bcb45a61bfa1fce67ffc5f06f2580cf13301d7b5590e048009e58f8fea6ae"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.98.0-build-feature.log",
+      "bytes": 60,
+      "sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.98.0-checks.json",
+      "bytes": 1727,
+      "sha256": "05baf75ee37ab4cd120ff148759e2e12308565f0601bfe339abfc8f346991981"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.98.0-clippy-feature.log",
+      "bytes": 298,
+      "sha256": "46d8e56a0c78cbdd2e27b7292fd4761d39dd8dfce188520895043bf6a07c3e8b"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.98.0-fmt-probe.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/1.98.0-test-feature.log",
+      "bytes": 9251,
+      "sha256": "a1cb1002b34bee4b39ba182a5902df954594dbe0e54d6ed61ba2f45dfe79d591"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/binaries.json",
+      "bytes": 952,
+      "sha256": "4c03c14b17501305baf4a7cd6c064e046be281398ba7571dfa07e8014f621be9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/check-rust.py",
+      "bytes": 1779,
+      "sha256": "4be27dda13a351439a4df3e3704d16882430cfc0c488b6999bd63dfe3807b446"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.88.0/cpu-check.json",
+      "bytes": 964,
+      "sha256": "8e5e93e4d98ac41bf23a566d70b932ab8190e27f500405d597d4c2cf0f56a45f"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.88.0/cpu-check.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.88.0/cpu-check.stdout.log",
+      "bytes": 728698,
+      "sha256": "179209f6a58f0b53b5337639621b00a61013bf422bfd71cf793b12421465e6cb"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.88.0/cpu-check.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.88.0/host-results.json",
+      "bytes": 14918,
+      "sha256": "39e4c4cea55a4d419313ed75f1f028e4a7974287cbc325c3c4291117d34fbe11"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.98.0/cpu-check.json",
+      "bytes": 964,
+      "sha256": "c33e21d5b7f93a89a5857b9962c0b2f55b59d1fd8bbdd9cb9b42d6a59eeba6e0"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.98.0/cpu-check.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.98.0/cpu-check.stdout.log",
+      "bytes": 728698,
+      "sha256": "5eab64f46b4f57fdfa17b83515f0e3c5c17aa57e04edab369b9ade3d8335b6f9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.98.0/cpu-check.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/cpu-1.98.0/host-results.json",
+      "bytes": 14918,
+      "sha256": "9f5fcd28cb37427894bd9fddfb425325515809960ef51eb360382d176a13921c"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-0.json",
+      "bytes": 968,
+      "sha256": "eaf32f3c9b35e65d611a66050e5450929bb66649b1f6f348b5daafb11010af19"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-0.stdout.log",
+      "bytes": 729716,
+      "sha256": "d485687e95e8be580bc2b50e8755342e1891e2d19937a49421b795bd32df7af1"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-0.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-1.json",
+      "bytes": 968,
+      "sha256": "54df27300fb41bff9dcad74ffd75f93ec7416862898e14dbf4a732b3ca931daa"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-1.stdout.log",
+      "bytes": 729716,
+      "sha256": "06b80e639ac376be63e98e48e97cf84227b6ca157179bea97a48ff1907924ad4"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-1.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-2.json",
+      "bytes": 969,
+      "sha256": "85d935180823137f380540c11bbbefbc80e53d185e7d79a8e78674a41518adcf"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-2.stdout.log",
+      "bytes": 729716,
+      "sha256": "5d88be89b510d6758fb3ed799544ab1f203246340457785b3a63af35de5c0ff7"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/adapter-2.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/enumeration.json",
+      "bytes": 747,
+      "sha256": "b0294739d6e21c8b605de9e75d0a3364fefbf30c7d8cf11bf28d569ae208fd32"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/enumeration.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/gpu-host-1/host-results.json",
+      "bytes": 42158,
+      "sha256": "99122e57d9adb2d2d314df5cdf0100676e1803d66b57656546dc06f43b3d9104"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/launch.py",
+      "bytes": 236,
+      "sha256": "607abd92921aa018479f61581415adb93b3776e8a84e043399e9ee6a4e0fd514"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-0.json",
+      "bytes": 966,
+      "sha256": "4e28ee20b965c008f28cad156f15c8540a8b41b7bb31dd93db7b4eceefd5cd02"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-0.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-0.stdout.log",
+      "bytes": 14901,
+      "sha256": "4e5418e9e18b734f92ae46391413699d954c98cdcc02fe911c0b11185f0c3715"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-0.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-1.json",
+      "bytes": 966,
+      "sha256": "540c94fd3a919e30f5ccb44c4d4cd0dfdd244eb569547357bd1aa543cff88d05"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-1.stdout.log",
+      "bytes": 14901,
+      "sha256": "5e99c0ef750961888352918018a37794d56a1c0bac446a54ccd944503b05a715"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-1.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-2.json",
+      "bytes": 966,
+      "sha256": "9f6fa7946754abc7c0ecc3143986416967d80a53037fcade40f80583efc4f2a5"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-2.stdout.log",
+      "bytes": 14901,
+      "sha256": "96288c3ee8c8bf6cdfae16215b0d5e60c696ea7389a1c3c1fe78acc0ba92e911"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/adapter-2.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/enumeration.json",
+      "bytes": 743,
+      "sha256": "538905092388b600318e5989e1dc3cb7f6106052a3dbb1aa031fee77fc12e2fe"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/enumeration.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/enumeration.stdout.log",
+      "bytes": 465,
+      "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/enumeration.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/original-browser-host-1/host-results.json",
+      "bytes": 117821,
+      "sha256": "a3698ea2e589dbb8b50a58c226f0291f16a36417ba1889b9205c9816cef7351e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/python-host.log",
+      "bytes": 107,
+      "sha256": "5e20053429885b321412fba59395b63778b765d57c8453726a880f0d8216f040"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/python-source.json",
+      "bytes": 2930,
+      "sha256": "5181eaf8c021369308c6751b6b9a183274a714f0ede8d1a284663964b2b5259e"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/rust-source.json",
+      "bytes": 21900,
+      "sha256": "05fee9ac4b6e3c9b79ddb151232afe46c33eaa2166019cf48b39d048a5758fcd"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-2/stripped-browser.json",
+      "bytes": 493,
+      "sha256": "c879f25578e14306d6ef691d7879912dcf4104f4c446e0f31f96939544ae15dd"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-fixtures-initial/freeze.json",
+      "bytes": 2232,
+      "sha256": "3051d5e67f91896a9a6f26c5ab832323d693a4a812757e77085689e33343b26f"
+    }
+  ],
+  "audit_source": {
+    "path": "/tmp/eris-vulkan-worker-text-completed-run-audit.py",
+    "bytes": 22388,
+    "sha256": "3c9cb477375118039a2db6cbb2d2711f0942c16066875bf18d2ddae52cbb49f2"
+  }
+}

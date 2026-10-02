@@ -45,12 +45,16 @@ def check_oracle(directory: Path) -> dict:
 
 
 def run_supervised(command: list[str], output: Path, name: str, env: dict,
-                   timeout: float, capture_gate: bool = False) -> tuple[dict, bytes]:
+                   timeout: float, capture_gate: bool = False,
+                   worker_text_gate: bool = False) -> tuple[dict, bytes]:
+    if capture_gate and worker_text_gate:
+        raise ValueError('capture gate modes are mutually exclusive')
     receipt = output / f'{name}.json'
     launcher_error = output / f'{name}.supervisor.stderr.log'
     supervisor = [sys.executable, str(ROOT / 'bridge_supervisor.py'), '--timeout',
                   str(timeout), '--output-limit', str(MAX_OUTPUT), '--result',
-                  str(receipt), *(['--capture-gate'] if capture_gate else []), '--', *command]
+                  str(receipt), *(['--capture-gate'] if capture_gate else []),
+                  *(['--worker-text-gate'] if worker_text_gate else []), '--', *command]
     failure = None
     with launcher_error.open('xb') as errors:
         proc = subprocess.Popen(supervisor, stdin=subprocess.DEVNULL,

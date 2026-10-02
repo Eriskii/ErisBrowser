@@ -82,6 +82,8 @@ and requires identical cold/warm GPU plans before initializing Vulkan. It launch
 no page workers. A separate subreaper supervises each checker process and verifies
 cleanup before the host advances to another adapter. This direct-font checkpoint
 does not add real-worker text capture or native-window glyph drawing.
+The subsequent [worker-text suite](WORKER_TEXT.md) exercises the same adapter
+with actual HTML worker snapshots; native-window glyph drawing remains open.
 
 Build and perform the CPU comparison without GPU initialization:
 

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "scope": "Read-only _snapshot_observations agreement with the seven frozen worker-text source cases; no protocol/test/worker/font/renderer/GPU execution.",
+  "result": "one concrete pre-execution diagnostic defect found and corrected by root; no additional snapshot observation finding",
+  "resolved_finding": {
+    "issue": "Empty diagnostics assertion rejected healthy confined-worker page/broker notices.",
+    "fix": "Root removed emptiness requirement and retains all diagnostics through bounded EWB1 and returned validation metadata. No invented notice allowlist."
+  },
+  "reviewed": [
+    "Exact viewport/generation/edit/idle/title/file URL against source request.",
+    "All exact Text content, order, style booleans, size and RGBA; positions remain observed layout facts.",
+    "Balanced 32-deep clip/fixed scope traversal, current paint offsets and fixed clip reset/restoration; current fixture clip and offset arithmetic uses exactly represented integer values.",
+    "Drawing-kind order filters only scope instructions and transparent/empty zero-radius rectangles for assumptions, while capture and painting preserve original data.",
+    "Full expected image-key/unique-source inventory, decoded RGBA and two references in the image case.",
+    "Diagnostics are retained without requiring empty security notices."
+  ],
+  "function_sha256": "f990727bd41264e4159e97d878fd84a903520dbe1c2538446e7f131bcd8acfb9",
+  "protocol_file_at_review": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/worker_text_protocol.py",
+    "sha256": "2d475be2d451d92ac133a7c52344747b56afa1e26d04fc32f404056925b19882"
+  },
+  "fixture_freeze": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/worker-text-fixtures/freeze.json",
+    "sha256": "bae728bb77043263235ab8ee6eda966c27f1edb0740abbd7f6312c8822542504"
+  },
+  "fixture_json_sha256": "2b433848063481c59814310c610be80a7b013735dfae81102b31478b7486a63b",
+  "host_tests": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/test_worker_text_host.py",
+    "sha256": "b55eafe3e5f31c0cdd968aa1c3d3db06bac0cb8b01c0b83ce953282b617ac1d5",
+    "groups": 9,
+    "execution": "none; mocked supervisor and output validators, actual identity and receipt status checks remain enabled"
+  },
+  "scope_limits": "Root/script independently own numeric ready-phase metadata review. This receipt does not claim actual worker assumptions or pixel equivalence have executed."
+}

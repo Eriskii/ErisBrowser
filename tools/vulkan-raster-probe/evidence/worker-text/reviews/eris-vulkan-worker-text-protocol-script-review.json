@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "status": "review complete; no remaining concrete finding in reviewed scope",
+  "scope": "Source review of new worker-text protocol/host and bounded synthetic protocol tests; final shared-helper extraction delta. No worker, Canvas, font rasterizer, engine, compiler or GPU invocation by reviewer.",
+  "bindings": [
+    {
+      "path": "tools/vulkan-raster-probe/worker_text_protocol.py",
+      "bytes": 16392,
+      "sha256": "2d475be2d451d92ac133a7c52344747b56afa1e26d04fc32f404056925b19882"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_worker_text_host.py",
+      "bytes": 6495,
+      "sha256": "19b55e852333f20007fe4c57ec53752a9304dedcbdc2535c021ea33766778c67"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_worker_text_protocol.py",
+      "bytes": 24981,
+      "sha256": "3116da5b90bf310ef90440de3fee40d1fc070e2e1e0c62511798f9431b61a78c"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_worker_text_host.py",
+      "bytes": 10978,
+      "sha256": "b55eafe3e5f31c0cdd968aa1c3d3db06bac0cb8b01c0b83ce953282b617ac1d5"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/browser_protocol.py",
+      "bytes": 19063,
+      "sha256": "228b7d00dc3bd4554e0ae193ab2be67e0ed81e215ffbeaa8a0ccd78a41dd75ac"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 14300,
+      "sha256": "bfecc971df88c6543f50272313f12b71873713f931070dfa2a7ff4d5f566f9f5"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/worker-text-fixtures/freeze.json",
+      "bytes": 2998,
+      "sha256": "bae728bb77043263235ab8ee6eda966c27f1edb0740abbd7f6312c8822542504"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/worker-text-fixtures/inventory.json",
+      "bytes": 18243,
+      "sha256": "2b433848063481c59814310c610be80a7b013735dfae81102b31478b7486a63b"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+      "bytes": 13330,
+      "sha256": "3716cf3c921ef02fb5fd955bbd07599f7143dfcf40e95a2d30dc59c0b45b7cdf"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/browser-check.rs",
+      "bytes": 22413,
+      "sha256": "c61193f5fc625ba78a13d74a14bacb0f55e0b0a2c33d8e30c5f83dee04150451"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-protocol-tests-1.log",
+      "bytes": 3429,
+      "sha256": "64e87712bda73210dd53cf6193d099575f9f816c7803cbc69df17b7b31050632"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-support-script-review.json",
+      "bytes": 1942,
+      "sha256": "aa113e8e4df2e2a06974e6b78278c16e7c174f05d7822ac3a4db5c189430d827"
+    },
+    {
+      "path": "/tmp/eris-vulkan-worker-text-supervisor-script-review.json",
+      "bytes": 1783,
+      "sha256": "fb4a3ecfa346f781f19620e6f19f8cff3b6f8bbe574692910529517eba2d20bf"
+    }
+  ],
+  "findings_resolved": [
+    {
+      "finding": "Referenced-source and missing-image metadata formerly allowed arbitrary bounded values.",
+      "resolution": "Derived exact source IDs, byte sums and missing-key counts from decoded snapshots. Synthetic repeated-image mutations reject."
+    },
+    {
+      "finding": "GPU upper bound formerly checked only inequalities.",
+      "resolution": "Exact unchanged adapter ledger expression is independently computed from snapshot and metadata counters; arbitrary bounded upper value rejects."
+    },
+    {
+      "finding": "Mask/cold counters formerly allowed zero masks with storage and cold work beyond occurrence allowance.",
+      "resolution": "Zero-mask storage consistency and cold work <= reported occurrence work are now checked."
+    }
+  ],
+  "protocol_review": {
+    "fixture_semantics": "Exact generation/title/file URI, frame, text content/size/color/flags and fixed/clipped state, primitive order and image inventory/dimensions/RGBA/reference counts. Finite text origins and informational diagnostics remain observations.",
+    "phase_order": "Seven ordered SNAPSHOT/READY pairs followed by exact capture marker, then either CPU footer or exact Vulkan adapter inventory, six ordered GPU passes and final selected-adapter footer.",
+    "fallback": "Seventh frame retains CPU reference and no partial GPU metadata; original index must identify a rounded rectangle.",
+    "reference_limit": "Arbitrary correctly packed RGB reference bytes are intentionally accepted; output is same-snapshot differential evidence, not independent font/layout/pixel truth.",
+    "host": "Read-only review found no concrete issue in pre/post input hashing, ungated CPU/listing, mandatory per-adapter worker gate, empty stderr requirements, retained failed receipts and stop-first-failure behavior.",
+    "counter_limit": "Synthetic mask sizes/positions/pixels satisfy protocol relationships and caps only; they are explicitly not observations or exact bundled-font counters."
+  },
+  "test_execution": {
+    "command": "python3 -m unittest -v test_worker_text_protocol",
+    "cwd": "tools/vulkan-raster-probe",
+    "attempts": 1,
+    "exit_code": 0,
+    "groups": 18,
+    "seconds_reported": 0.335,
+    "log": "/tmp/eris-vulkan-worker-text-protocol-tests-1.log",
+    "failed_groups": 0
+  },
+  "additional_static_reviews": {
+    "host_mock_tests": "Nine groups reviewed without execution; process and protocol are mocked while real identities/status checks remain enabled. No concrete setup defect found.",
+    "shared_helpers": "Final checker_support hash equals initially reviewed helper exactly. Final browser-check diff consists of moved helpers/tests/constants and import/module wiring; existing capture/admission/output/GPU order is retained. Final browser-check import formatting is mechanical."
+  },
+  "preservation": "No production Rust, frozen fixture, protocol/host owner file or old expectation edited; only new synthetic test module written by reviewer. Initial receipts retained unchanged."
+}

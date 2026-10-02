@@ -90,7 +90,13 @@
   "production_security_claimed": false,
   "chromium_performance_target_demonstrated": false,
   "remote_ci": {
-    "status": "pending publication"
+    "status": "completed",
+    "conclusion": "success",
+    "commit": "f0987e266d11232354b1720073a407c1ca9db3fe",
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/36966972245",
+    "jobs_passed": 7,
+    "record": "host-glyphs-ci.json",
+    "sha256": "8ba05e2e15a7a447b7cc7f808ae13eee19fce1738ae17966e9f6cb53a95ee51e"
   },
   "artifact_index": "glyphs/index.json",
   "artifact_index_sha256": "218bc21706d6270175a94c57dcc5309732414c5f17849aeab456ef35bdd3f43d",

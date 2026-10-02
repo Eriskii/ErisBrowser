@@ -1,0 +1,8 @@
+{
+  "before": {
+    "path": "/tmp/eris-vulkan-worker-text-browser-check-before.rs",
+    "sha256": "ea5f41fb64cad07338bb0b11d85222a9b76f31cb306ae40e95e7bf572112a9cc"
+  },
+  "extracted_original_blocks_sha256": "81ba299bfde3c32eb513f67ef18f9fbdd495df9a62a06cf79b2ad9c6724c2945",
+  "details": "Function bodies, EWB1 bytes, bounds, grant token and four tests moved intact; only helper visibility/imports/location changed. No executions."
+}

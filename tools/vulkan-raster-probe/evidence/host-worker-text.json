@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "subject": "real-worker text snapshots through the bounded offscreen Vulkan renderer",
+  "parent_commit": "f0987e266d11232354b1720073a407c1ca9db3fe",
+  "reference_kind": "same-snapshot original Canvas differential; not independent font/layout goldens",
+  "fixture_freeze_sha256": "bae728bb77043263235ab8ee6eda966c27f1edb0740abbd7f6312c8822542504",
+  "rust_source_sha256": "05fee9ac4b6e3c9b79ddb151232afe46c33eaa2166019cf48b39d048a5758fcd",
+  "python_source_sha256": "5181eaf8c021369308c6751b6b9a183274a714f0ede8d1a284663964b2b5259e",
+  "browser": {
+    "path": "/tmp/eris-vulkan-worker-text-2/eris-browser-stripped",
+    "bytes": 44580224,
+    "sha256": "4ce8139a186080e7cd68d6478b46e81a6234494ffd556e359d0d8a6eca63fb0e",
+    "source": "binaries.json: eris-browser",
+    "command": "strip --strip-debug -o eris-browser-stripped eris-browser",
+    "reason": "Debug-only sections made the original 202215256-byte build exceed the unchanged 128 MiB host binary admission cap; initial host call refused before any subprocess or output directory creation."
+  },
+  "browser_toolchain": "1.98.0",
+  "gpu": {
+    "adapters": [
+      "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+      "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+      "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+    ],
+    "cases_per_adapter": 7,
+    "actual_worker_captures_per_adapter": 7,
+    "gpu_frames_per_adapter": 6,
+    "cpu_fallback_frames_per_adapter": 1,
+    "compared_gpu_bytes_per_adapter": 307200,
+    "compared_gpu_bytes_total": 921600,
+    "fallback_cpu_reference_bytes_per_adapter": 51200,
+    "fallback_cpu_reference_bytes_total": 153600,
+    "exact": true,
+    "all_exit_zero": true,
+    "all_stderr_empty": true,
+    "all_cleanup_complete": true,
+    "all_capture_grants_confirmed": true
+  },
+  "cpu_checks": {
+    "checker_toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "cases_per_run": 7,
+    "actual_workers_per_run": 7,
+    "paints_per_run": 14,
+    "compared_bytes_per_run": 716800,
+    "gpu_comparisons": 0,
+    "cold_warm_full_plan_equality": true
+  },
+  "validation": {
+    "feature_rust_tests_per_toolchain": 79,
+    "rust_toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "formatting": true,
+    "strict_feature_all_target_clippy": true,
+    "supervisor_process_tree_groups": 14,
+    "synthetic_protocol_groups": 18,
+    "mocked_host_groups": 9,
+    "original_browser_cases_per_adapter": 16,
+    "original_browser_adapters": 3,
+    "original_browser_gpu_bytes_per_adapter": 604,
+    "original_browser_cpu_fallback_bytes_per_adapter": 184,
+    "old_wgsl_and_admission_limits_unchanged": true,
+    "original30_and_glyph26_gpu_suites_repeated": false
+  },
+  "pre_execution_corrections": [
+    "Fixture E0716 static-reference error fixed by const contexts; values unchanged, original source and compiler logs retained.",
+    "Normal worker isolation diagnostics preserved rather than requiring empty diagnostics.",
+    "Protocol derives image references and conservative GPU ledger from captured inputs; cold-mask accounting tightened.",
+    "Debug browser exceeded 128 MiB binary admission cap and was rejected before launching a process; debug stripping retained code and fit unchanged cap."
+  ],
+  "native_window_shader_rasterization": false,
+  "real_worker_text_capture": true,
+  "full_web_compatibility": false,
+  "production_security_claimed": false,
+  "chromium_performance_target_demonstrated": false,
+  "remote_ci": {
+    "status": "pending publication"
+  },
+  "artifact_index": "worker-text/index.json",
+  "artifact_index_sha256": "ab5163ed74c44ead815a4864edd93248d589ced3b1751389fbe5ed0abde33f17",
+  "publication_ledger": "worker-text/publication.json",
+  "publication_ledger_sha256": "5a4b9bd0df6a93aeda714e50ae577d133ca0772c7a7a1ac8e0db2fab9bfc50c0"
+}
