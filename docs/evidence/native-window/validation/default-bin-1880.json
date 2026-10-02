@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--bin",
+    "eris-browser",
+    "--",
+    "--include-ignored"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 8.573,
+  "log": "default-bin-1880.log",
+  "sha256": "81f933a279a89755eb96a3b152e1d57ab036db4d37544d678a3f209957cdd00d"
+}

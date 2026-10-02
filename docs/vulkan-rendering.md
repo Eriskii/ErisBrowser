@@ -1,31 +1,29 @@
 # Vulkan rendering milestones
 
-The [native drawing prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
-now pass offscreen checks at browser-window sizes: a separately bounded native
-profile, CPU rounded coverage with GPU compositing, and integer padded BGRA/RGBA
-conversion. Actual browser scene construction and surface presentation are still
-pending. This does not change the optional CPU-frame upload presenter.
+An optional Linux **native shader route** is now available with `vulkan-raster`,
+`--presenter=vulkan --raster=gpu`. It composes admitted loaded pages, overlays and
+browser controls through custom WGSL into the actual acquired window texture.
+CPU-prepared font and rounded masks supply coverage; GPU kernels perform color
+compositing and surface conversion. Normal native frames contain no CPU target
+or readback. Unsupported or over-budget scenes use the complete CPU painter.
 
-Status: an **optional Linux Vulkan upload presenter** is implemented. The browser's
-default and headless paths remain software; both native presenters use Eris's
-custom CPU rasterizer. An optional offscreen bridge now borrows real confined-worker
-snapshots for custom GPU rectangle/image rasterization, with whole-frame CPU
-fallback. The separate [glyph path](../tools/vulkan-raster-probe/GLYPHS.md) also
-prepares bounded bundled-font masks and blends them with custom WGSL. All 26
-literal-mask/font-reference cases match on three adapters. Seven
-[real-worker text cases](../tools/vulkan-raster-probe/WORKER_TEXT.md) also pass,
-with six GPU frames and one complete CPU fallback per adapter. The
-[native integration proposal](vulkan-native-plan.md) covers reusable renderer
-code, browser chrome, frame budgets and presentation ownership. Native-window
-GPU rasterization and group compositing remain future work.
-No GPU speedup or Chromium performance result is established. Earlier isolated
-experiments and their failed compositor comparisons remain recorded below.
+The [native-window record](vulkan-native-window.md) covers one exact 1180×880
+acquired-texture comparison (4,153,600 bytes), separate reference-free rendering,
+opacity and overdraw fallback, and retained initial refusals. This is one NVIDIA
+surface/format, before the compositor. No speedup or Chromium comparison follows.
+The default and headless paths remain software. `--presenter=vulkan` alone retains
+the existing CPU upload route.
 
-The reusable [raster core](../crates/raster-core/README.md) now separates
-primitive planning and GPU encoding from probe-only device selection, readback
-and comparison. Callers receive owned frame resources on their existing device.
-The browser adapter lives in the main crate behind `raster-bridge`; native call
-sites are unchanged.
+The [raster core](../crates/raster-core/README.md) and browser adapter now provide
+whole-scene planning on the existing graphics owner. Earlier
+[native prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md),
+[glyph](../tools/vulkan-raster-probe/GLYPHS.md) and
+[worker-text](../tools/vulkan-raster-probe/WORKER_TEXT.md) results remain separate
+offscreen checks on three adapters. Broader viewport/scene admission, group
+opacity, zoom, shaping and native GPU screenshot capture remain unfinished.
+The [integration design](vulkan-native-plan.md) records the original seams and
+ownership requirements. Earlier experiments and failed compositor comparisons
+remain recorded below.
 
 Build and select the experimental presenter explicitly:
 
@@ -47,7 +45,7 @@ The current [browser validation record](VALIDATION.md#optional-vulkan-upload-pre
 and [source-bound evidence](evidence/vulkan-presenter.json) distinguish successful
 readback, retained failed launch attempts, CPU references and untested scenarios.
 
-## Existing boundary
+## CPU upload boundary
 
 The page process produces the custom renderer's `DrawCommand` list, hit regions
 and decoded images. The parent validates that snapshot in

@@ -1,0 +1,14 @@
+{
+  "build_log": "native-diagnostic-build-1980.log",
+  "source": {
+    "bytes": 289827672,
+    "sha256": "8f79623c99fd9502040c264da3cb57e87f68595bffd4ae0dbb32914807368136"
+  },
+  "stripped": {
+    "bytes": 67489264,
+    "sha256": "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106"
+  },
+  "allocated_sections_unchanged": true,
+  "allocated_section_count": 31,
+  "action": "strip --strip-debug only; not a release/performance build"
+}

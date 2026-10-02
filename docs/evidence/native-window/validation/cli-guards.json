@@ -1,0 +1,31 @@
+[
+  {
+    "arguments": [
+      "--raster=gpu"
+    ],
+    "exit": 1,
+    "stderr": "eris-browser: --raster=gpu requires --presenter=vulkan and a build with --features vulkan-raster\n",
+    "stdout": ""
+  },
+  {
+    "arguments": [
+      "--presenter=vulkan",
+      "--raster=gpu",
+      "--window-screenshot",
+      "/tmp/eris-native-forbidden-capture.png"
+    ],
+    "exit": 1,
+    "stderr": "eris-browser: --raster=gpu does not yet support --window-screenshot; use --vulkan-verify-frames to verify acquired pixels\n",
+    "stdout": ""
+  },
+  {
+    "arguments": [
+      "--presenter=vulkan",
+      "--raster=gpu",
+      "--render"
+    ],
+    "exit": 1,
+    "stderr": "eris-browser: Vulkan presentation requires a desktop window\n",
+    "stdout": ""
+  }
+]

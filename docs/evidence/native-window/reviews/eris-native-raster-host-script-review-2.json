@@ -1,0 +1,300 @@
+{
+  "schema": 1,
+  "status": "clear",
+  "scope": "small read-only four-case host/fixture delta and retained result binding; no execution",
+  "source_ready": {
+    "path": "/tmp/eris-native-window-host-source-ready-2.json",
+    "bytes": 945,
+    "sha256": "46709b7d10dce31f569db18fd65fe2ef38b7b9ab1726532c555504d575ae1e51"
+  },
+  "source_bindings": [
+    {
+      "path": "tools/native_raster_host.py",
+      "bytes": 27201,
+      "sha256": "efe6ce8a9ca78e6df3ff1740e3fe56974909849467f525fa4e68751cb6b0db1a"
+    },
+    {
+      "path": "tools/test_native_raster_host.py",
+      "bytes": 23261,
+      "sha256": "9770d5a6f050cd28e42f80269603e6b5ef4c98326e97b9ebf04507f7afb31f69"
+    },
+    {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "bytes": 1987,
+      "sha256": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a"
+    }
+  ],
+  "prior_review": {
+    "path": "/tmp/eris-native-raster-host-script-review.json",
+    "bytes": 7968,
+    "sha256": "a6dc3b0fd36855c81a2ad6a2f963f5b5205d6cef77f2155939cdf32cab915ffa"
+  },
+  "fixture_delta": {
+    "old_admitted_exactly_preserved_as_overdraw": true,
+    "admitted_opacity_only_css_delta": "shared margin/font retained; white background declared on body only",
+    "original_freeze": {
+      "path": "/tmp/eris-native-window-1/host-attempt-1-source/fixtures/freeze.json",
+      "bytes": 1381,
+      "sha256": "3bb7764b3db0cbcb3b806ab814a29f8564b8c6607815406dce54b2ff39c550ac"
+    },
+    "current_freeze": {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "bytes": 1987,
+      "sha256": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a"
+    }
+  },
+  "review": [
+    "Distinct overdraw fallback requires exact planner-budget; size=1180x880 and zero native proof rows. Opacity retains its independent exact reason.",
+    "No controller/ownership/budget change in this delta; original failed controlled run and first wrong-size attempt remain separate.",
+    "One added synthetic group distinguishes overdraw, rejects wrong reasons/sizes/native route and pins original bytes. Total 22 groups.",
+    "Observed four-case result retains all startup fallback sizes; only acquired verified frame counts toward the 4153600-byte exact comparison."
+  ],
+  "retained_results": {
+    "four_case_result": {
+      "path": "/tmp/eris-native-window-1/controlled-host-2/host-results.json",
+      "bytes": 47933,
+      "sha256": "258649668705e6ec66ade0e672852522220a77056b1724e3f395aca9f3ed6032"
+    },
+    "first_controlled_failure": {
+      "path": "/tmp/eris-native-window-1/controlled-host-1/host-results.json",
+      "bytes": 14049,
+      "sha256": "1012cc520bc36362e2bc3ba8fe83d236b4c8ad624f465a61e22fb31493b2cbbe"
+    },
+    "first_window_failure": {
+      "path": "/tmp/eris-native-window-1/first-window/admitted-initial.json",
+      "bytes": 930,
+      "sha256": "2e0fe1ab3abe97aa1d2ed62a93535b961042be1f072446f99cad96adb0b1c60d"
+    },
+    "rows": [
+      {
+        "name": "admitted-verified",
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "validation": {
+          "case": "admitted-verified",
+          "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+          "prepared_scenes": [
+            {
+              "serial": 7,
+              "snapshot_generation": 1,
+              "page_commands": 6,
+              "images": 1,
+              "phases": 3,
+              "lowered_commands": 186,
+              "rounded_masks": 2,
+              "raster_invocations": 2166144,
+              "total_invocations": 3208064,
+              "loading": false,
+              "reference": true
+            },
+            {
+              "serial": 8,
+              "snapshot_generation": 1,
+              "page_commands": 6,
+              "images": 1,
+              "phases": 3,
+              "lowered_commands": 186,
+              "rounded_masks": 2,
+              "raster_invocations": 2166144,
+              "total_invocations": 3208064,
+              "loading": false,
+              "reference": true
+            }
+          ],
+          "native_presentations": [
+            {
+              "serial": 7,
+              "reference": true
+            }
+          ],
+          "acquired_verifications": [
+            {
+              "serial": 7,
+              "generation": 1,
+              "viewport_revision": 5,
+              "compared_bytes": 4153600
+            }
+          ],
+          "verification_summaries": [
+            {
+              "frames": 1,
+              "compared_bytes": 4153600,
+              "last_serial": 7
+            }
+          ],
+          "fallback_reasons": [
+            "native scene awaits a current loaded page; size=1275x764",
+            "mask-preparation at phase 2 original command 7; size=1275x764",
+            "mask-preparation at phase 2 original command 7; size=1268x758",
+            "viewport-budget; size=1285x774"
+          ],
+          "other_diagnostic_lines": [
+            "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer"
+          ],
+          "acquired_texture_compared_bytes": 4153600,
+          "reference": "original Canvas differential",
+          "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+        }
+      },
+      {
+        "name": "admitted-normal",
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "validation": {
+          "case": "admitted-normal",
+          "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+          "prepared_scenes": [
+            {
+              "serial": 8,
+              "snapshot_generation": 1,
+              "page_commands": 6,
+              "images": 1,
+              "phases": 3,
+              "lowered_commands": 186,
+              "rounded_masks": 2,
+              "raster_invocations": 2166144,
+              "total_invocations": 3208064,
+              "loading": false,
+              "reference": false
+            },
+            {
+              "serial": 9,
+              "snapshot_generation": 1,
+              "page_commands": 6,
+              "images": 1,
+              "phases": 3,
+              "lowered_commands": 186,
+              "rounded_masks": 2,
+              "raster_invocations": 2166144,
+              "total_invocations": 3208064,
+              "loading": false,
+              "reference": false
+            }
+          ],
+          "native_presentations": [
+            {
+              "serial": 8,
+              "reference": false
+            }
+          ],
+          "acquired_verifications": [],
+          "verification_summaries": [],
+          "fallback_reasons": [
+            "native scene awaits a current loaded page; size=1275x764",
+            "mask-preparation at phase 2 original command 7; size=1275x764",
+            "mask-preparation at phase 2 original command 7; size=1268x758",
+            "viewport-budget; size=1285x774"
+          ],
+          "other_diagnostic_lines": [
+            "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer"
+          ],
+          "acquired_texture_compared_bytes": 0,
+          "reference": "none",
+          "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+        }
+      },
+      {
+        "name": "opacity-fallback",
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "validation": {
+          "case": "opacity-fallback",
+          "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+          "prepared_scenes": [],
+          "native_presentations": [],
+          "acquired_verifications": [],
+          "verification_summaries": [],
+          "fallback_reasons": [
+            "native scene awaits a current loaded page; size=1275x764",
+            "unsupported-opacity at phase 0 original command 1; size=1275x764",
+            "unsupported-opacity at phase 0 original command 1; size=1268x758",
+            "viewport-budget; size=1285x774",
+            "unsupported-opacity at phase 0 original command 1; size=1180x880"
+          ],
+          "other_diagnostic_lines": [
+            "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer"
+          ],
+          "acquired_texture_compared_bytes": 0,
+          "reference": "none",
+          "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+        }
+      },
+      {
+        "name": "overdraw-fallback",
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "validation": {
+          "case": "overdraw-fallback",
+          "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+          "prepared_scenes": [],
+          "native_presentations": [],
+          "acquired_verifications": [],
+          "verification_summaries": [],
+          "fallback_reasons": [
+            "native scene awaits a current loaded page; size=1275x764",
+            "mask-preparation at phase 2 original command 7; size=1275x764",
+            "mask-preparation at phase 2 original command 7; size=1268x758",
+            "viewport-budget; size=1285x774",
+            "planner-budget; size=1180x880"
+          ],
+          "other_diagnostic_lines": [
+            "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer",
+            "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+            "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer"
+          ],
+          "acquired_texture_compared_bytes": 0,
+          "reference": "none",
+          "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+        }
+      }
+    ]
+  },
+  "no_execution": true,
+  "findings": []
+}

@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "kind": "Native phased core planner source ready; no compilation/execution",
+  "files": [
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "bytes": 34224,
+      "sha256": "942ece33951829f3e6640b8305a0e5ea5979077ed0e54bd8ec97327b78b4363e"
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "bytes": 3624,
+      "sha256": "c826d780ae3c62f1233239292b5f7e5e0e4aa4de2217be68ce3378530014f340"
+    },
+    {
+      "path": "crates/raster-core/src/phase_tests.rs",
+      "bytes": 15233,
+      "sha256": "f327f13950b53f1bf756a7e5f30c98c2395fa366d2291ee5d922b56fe67d0d05"
+    }
+  ],
+  "public_api": [
+    "Phase<a> { frame: Frame, commands: &a [Command] }",
+    "MAX_NATIVE_PHASES: usize = 4",
+    "plan_native_phases(target, phases, images, masks, rows) -> Result<Plan>",
+    "Plan::retained_cpu_bytes(&self) -> Result<usize>",
+    "native_planner_metadata_peak_bytes() -> Result<usize>"
+  ],
+  "semantics": [
+    "Canonical full-clip/zero-offset target; phase dimensions and clear equal target; zero through four phases.",
+    "All phase descriptors/global command total checked before source preparation; each phase has fresh CoordinateState and mandatory finish.",
+    "One private draft, full-target clear, source arena, conversion reservation and cumulative LUT/work/buffer counters.",
+    "Existing API validation prefix is exact, except its coordinate binding no longer needs mut in the wrapper. Command loop and final packing are token-identical modulo indentation.",
+    "Scope enum changes only to pub(crate) for exact internal metadata sizing; all scope algorithms unchanged.",
+    "Retained CPU accounting uses actual owned capacities plus Self with checked arithmetic. Metadata peak helper conservatively includes private pending/final draws and four states/scope arrays, excluding input/parameter arenas, caller descriptors and allocator overhead."
+  ],
+  "private_test_groups": 12,
+  "tests_cover": [
+    "Single-phase payload identity with offsets/images/masks",
+    "One clear/conversion and ordered phase draws",
+    "Independent fixed escape/restoration",
+    "Scope mismatch/unclosed failure cannot cross phases",
+    "Canonical target, compatible phase descriptors and phase cap",
+    "Zero-phase clear and unused-source validation",
+    "Global original command/work budgets",
+    "Global image/mask/row packing and LUT/storage counters",
+    "Explicit private seeded LUT/storage refusal (not a claim of public reachability)",
+    "Original validation/error precedence",
+    "Actual retained capacities and overflow; metadata structural overlap"
+  ],
+  "format": "Direct installed Rust 1.88 rustfmt, skip_children=true, on these three owned files only; git diff --check clean.",
+  "preservation_check": "Data-only comparison against /tmp/eris-native-phases-lib-before.rs and HEAD scope.rs; prior helpers and wrapper validation prefix exact, extracted loop/final packing unchanged ignoring indentation.",
+  "runtime_execution": "None: no builds, tests, planner execution, renderer, workers or GPU. Root owns frozen candidate validation."
+}

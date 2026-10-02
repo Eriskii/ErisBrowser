@@ -1,25 +1,17 @@
-# Proposed native GPU raster integration
+# Native GPU raster integration design
 
-This proposes native scene construction and presentation. The offscreen
-checkpoints do not change native window rendering. Native
-Eris still paints a complete CPU `Canvas`; its optional Vulkan presenter
-uploads those pixels. The custom probe renders bounded offscreen plans and
-compares readback. Neither result establishes native GPU raster performance
-or general web typography support.
+The first bounded [native-window implementation](vulkan-native-window.md) now
+connects the reusable core, scene adapter and acquired-surface presentation.
+It retains complete CPU fallback and the existing graphics owner. Normal native
+frames carry no CPU target; explicit verification reads the acquired texture.
+This establishes neither general web compatibility nor GPU performance parity.
 
-The [raster-core extraction](../crates/raster-core/README.md) is now implemented:
-primitive planning and optional GPU encoding have a browser-independent owner.
-The browser adapter now lives in `graphics::raster_bridge`, enabled by a
-planner-only feature with no GPU dependency. Native scene/presentation portions
-below remain work to implement. Existing probe imports continue through reexports.
+The design below records the original integration seams and requirements.
+Group opacity, broader scene/viewport admission, zoom, typography and native GPU
+screenshots remain unfinished. The original Probe policy and its offscreen
+comparison tools remain separate from production rendering.
 
-The [native prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
-also implement the fixed native profile, geometry-only rounded coverage and
-integer padded surface conversion. They pass offscreen checks; the complete
-scene/owner-loop integration and acquired-surface acceptance below are still
-proposed work.
-
-## Current seams
+## Original integration seams
 
 [`Browser::draw`](../src/browser.rs) paints the page, focus outline, scrollbar,
 process errors, toolbar, address selection and status into one canvas. Page

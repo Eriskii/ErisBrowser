@@ -2,7 +2,7 @@
 use crate::{Command, Frame, MAX_COORDINATE, MAX_SCOPES, Profile, Rect, Result, reserved};
 
 #[derive(Clone, Copy)]
-enum Scope {
+pub(crate) enum Scope {
     Clip(Rect),
     Fixed { clip: Rect, offset: (f32, f32) },
 }

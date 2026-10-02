@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "rust_checks": 42,
+  "source_manifest": "source-host.json",
+  "unchanged_paths": 113,
+  "documentation_only_drift": [
+    "crates/raster-core/README.md"
+  ],
+  "compiled_sources_unchanged": true,
+  "current_documentation_sha256": {
+    "crates/raster-core/README.md": "e0ac05dd9859b22a1ce97211d8589422077bf13a5a459273bf6006996f0454ce"
+  }
+}

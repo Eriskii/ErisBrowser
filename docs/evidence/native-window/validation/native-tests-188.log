@@ -1,0 +1,59 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling wgpu v30.0.1
+   Compiling eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+   Compiling eris-browser v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.42s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/eris-9d04e0b37e5e4068)
+
+running 47 tests
+test graphics::raster_bridge::native::tests::native_late_structural_failure_has_original_location_and_no_font_effect ... ok
+test graphics::raster_bridge::native::tests::native_phase_frames_and_canonical_target_validate_before_hidden_commands ... ok
+test graphics::raster_bridge::native::tests::native_remaining_text_work_is_not_reset_after_earlier_phase ... ok
+test graphics::raster_bridge::native::tests::native_old_probe_refusals_are_preserved ... ok
+test graphics::raster_bridge::native::tests::native_image_identity_order_is_shared_and_insertion_independent ... ok
+test graphics::raster_bridge::native::tests::native_preparation_bound_includes_reference_and_fits_existing_ui_reserve ... ok
+test graphics::raster_bridge::tests::browser_bridge_borrowed_sort_and_binary_lookup_match_spelled_keys ... ok
+test graphics::raster_bridge::native::tests::native_rounded_literals_and_typed_zero_path_preserve_pixels ... ok
+test graphics::raster_bridge::tests::browser_bridge_borrows_sources_during_planning_and_owns_only_finished_payload ... ok
+test graphics::raster_bridge::native::tests::native_original_commands_and_cpu_allowance_are_global ... ok
+test graphics::raster_bridge::native::tests::native_invalid_hidden_geometry_is_not_omitted ... ok
+test graphics::raster_bridge::native::tests::native_unused_images_and_sparse_map_capacity_are_admitted_before_fonts ... ok
+test graphics::raster_bridge::tests::browser_bridge_combined_typed_scopes_check_boundaries_and_mismatches ... ok
+test graphics::raster_bridge::tests::browser_bridge_frame_caps_and_unconditional_clear_remain_exact ... ok
+test graphics::raster_bridge::tests::browser_bridge_fixed_escape_restores_offsets_and_scopes_without_flattening ... ok
+test graphics::raster_bridge::tests::browser_bridge_full_source_packing_can_refuse_unchanged_gpu_byte_cap ... ok
+test graphics::raster_bridge::tests::browser_bridge_hidden_images_keep_reference_stats_without_arena_allocation ... ok
+test graphics::raster_bridge::tests::browser_bridge_lines_keep_canvas_f32_order_and_original_endpoint_checks ... ok
+test graphics::raster_bridge::tests::browser_bridge_individual_key_limit_counts_utf8_bytes ... ok
+test graphics::raster_bridge::tests::browser_bridge_private_comparison_prechecks_cover_maximum_and_overflow ... ok
+test graphics::raster_bridge::tests::browser_bridge_rejects_unsupported_hidden_content_at_original_indices ... ok
+test graphics::raster_bridge::tests::browser_bridge_original_command_and_cpu_work_caps_precede_lowering ... ok
+test graphics::raster_bridge::tests::browser_bridge_source_ids_use_first_reference_then_lexical_unused_order ... ok
+test graphics::raster_bridge::tests::browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation ... ok
+test graphics::raster_bridge::tests::browser_bridge_translucent_clip_and_source_alpha_reach_existing_planner ... ok
+test graphics::raster_bridge::native::tests::native_font_rounded_interleaving_reuses_font_id_across_phases ... ok
+test graphics::raster_bridge::tests::browser_bridge_unused_and_hidden_bad_sources_are_refused ... ok
+test graphics::raster_bridge::tests::browser_bridge_validates_original_scalars_before_alpha_or_missing_elision ... ok
+test graphics::raster_bridge::native::tests::native_page_fixed_clip_and_chrome_order_match_original_canvas ... ok
+test graphics::raster_bridge::text::tests::complete_structural_preflight_precedes_all_glyph_preparation ... ok
+test graphics::raster_bridge::tests::browser_bridge_aggregate_key_limits_precede_sorting_and_lookup ... ok
+test graphics::raster_bridge::text::tests::all_text_inputs_are_counted_even_when_coarsely_culled ... ok
+test graphics::raster_bridge::tests::browser_bridge_unique_rgba_cap_counts_aliases_once_and_distinct_sources_twice ... ok
+test graphics::raster_bridge::text::tests::old_entry_keeps_text_fallback_while_new_entry_admits_masks ... ok
+test graphics::raster_bridge::native::tests::native_warm_cpu_font_cache_does_not_change_scene_bytes_or_charges ... ok
+test graphics::raster_bridge::text::tests::existing_cpu_font_cache_does_not_change_admission_or_packed_plan ... ok
+test graphics::raster_bridge::text::tests::text_charges_remaining_cpu_allowance_before_mask_allocation ... ok
+test graphics::raster_bridge::tests::browser_bridge_map_capacity_is_bounded_before_a_sparse_iteration ... ok
+test graphics::raster_bridge::tests::browser_bridge_randomized_map_insertion_does_not_change_plan_or_counts ... ok
+test graphics::raster_bridge::native::tests::native_normal_desktop_page_and_rounded_chrome_fit_the_closed_profile ... ok
+test graphics::raster_bridge::native::tests::native_images_fonts_and_rounded_masks_share_source_capacity ... ok
+test graphics::raster_bridge::text::tests::image_and_mask_sources_share_the_existing_entry_budget ... ok
+test graphics::raster_bridge::native::tests::native_text_input_and_expansion_caps_do_not_reset_at_phase_boundaries ... ok
+test graphics::raster_bridge::text::tests::no_outline_repetitions_consume_operations_and_cpu_work ... ok
+test graphics::raster_bridge::native::tests::native_row_budget_is_global_even_for_narrow_coverage ... ok
+test graphics::raster_bridge::native::tests::native_empty_scene_is_one_clear_and_one_conversion ... ok
+test graphics::raster_bridge::native::tests::native_rounded_coverage_global_limit_refuses_later_phase ... ok
+
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 1077 filtered out; finished in 0.02s
+

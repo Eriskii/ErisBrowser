@@ -1,0 +1,1192 @@
+{
+  "schema": 1,
+  "success": true,
+  "binary": "/tmp/eris-native-window-1/eris-browser-native-2",
+  "binary_sha256": "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+  "fixtures": {
+    "directory": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures",
+    "freeze_sha256": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a",
+    "files": [
+      {
+        "path": "README.md",
+        "bytes": 1604,
+        "sha256": "13d471136b1dd73ce359b708ea7e6f263bdc7caf17d5ee471c266b62a008b788"
+      },
+      {
+        "path": "admitted.html",
+        "bytes": 320,
+        "sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759"
+      },
+      {
+        "path": "opacity.html",
+        "bytes": 332,
+        "sha256": "9483b0ad2805615941fe57d1673379e26c52e0bcc2c57bdf35b5384a6f0c43b7"
+      },
+      {
+        "path": "overdraw.html",
+        "bytes": 315,
+        "sha256": "1f58f963606777dba90496ecb62f26939fa1a4e16289b8b28205036d3505f661"
+      },
+      {
+        "path": "two-pixels.png",
+        "bytes": 71,
+        "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+      }
+    ]
+  },
+  "host_source_bindings": {
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_host.py": "efe6ce8a9ca78e6df3ff1740e3fe56974909849467f525fa4e68751cb6b0db1a",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/run.py": "141dab68e638654ce26700f16fc05818b6a5650755cce07227b4cd0de9411f7f",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_browser_host.py": "1e07e300d75e8d71a652f7795e89b62c88a98e7ef5b44bc88bcbd5ad29421abc",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_glyph_host.py": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_host.py": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/bridge_supervisor.py": "bfecc971df88c6543f50272313f12b71873713f931070dfa2a7ff4d5f566f9f5",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/browser_protocol.py": "228b7d00dc3bd4554e0ae193ab2be67e0ed81e215ffbeaa8a0ccd78a41dd75ac",
+    "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/glyph_protocol.py": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4"
+  },
+  "loader": {
+    "directory": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib",
+    "files": [
+      {
+        "name": "libvulkan.so",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      },
+      {
+        "name": "libvulkan.so.1",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      },
+      {
+        "name": "libvulkan.so.1.4.357",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      }
+    ],
+    "environment": {
+      "LD_LIBRARY_PATH": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib:/nix/store/bn8fa50wbg41yf72aalbjcaaq4r4j6kn-wayland-1.26.0/lib:/nix/store/n2wqk78za8grzs9088ya5qy6vw280p8x-libxkbcommon-1.13.2/lib:/nix/store/7gwd2kvkx1s369cwiv5z4x2xjxbppav6-libx11-1.8.13/lib:/nix/store/i88qpfah2j0yq7nihbm626abbhzkc21g-libX11-1.8.10/lib:/nix/store/09aq563zkqcw9ikxn02p4bm13i2hz51r-libxcb-1.17.0/lib:/nix/store/ljxnc3sy590a8rzf59rvclkxg8h71qdf-libxcursor-1.2.3/lib:/nix/store/rywxisd25h7ymiydgcg0188c0ap0shgx-libXcursor-1.2.1/lib:/nix/store/0kx9jb9qcvh9kg9qi8kxwxymbvbpykdj-libxrandr-1.5.5/lib:/nix/store/40r89hwph88md7jk5vhqx57k36c8f5jh-libXrandr-1.5.4/lib:/nix/store/fxwwv4xllvcxcpf7s2xm572sc95r851c-libxi-1.8.3/lib:/nix/store/68wclazg6vj6jqq03sqhdn4x7ji082cr-libXi-1.8.1/lib",
+      "VK_DRIVER_FILES": null,
+      "VK_ICD_FILENAMES": null,
+      "VK_LAYER_PATH": null
+    },
+    "scope": "explicit loader directory and selected environment; not a complete transitive system-library inventory"
+  },
+  "display_environment": {
+    "DISPLAY": ":0",
+    "WAYLAND_DISPLAY": "wayland-1",
+    "XDG_RUNTIME_DIR": "/run/user/1000",
+    "XDG_SESSION_TYPE": "wayland"
+  },
+  "hyprland_size": "1180x880",
+  "controller": {
+    "path": "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+    "sha256": "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9"
+  },
+  "window_seconds": 6,
+  "timeout_seconds": 30,
+  "runs": [
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/run/current-system/sw/bin/python3",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_host.py",
+        "--owned-launch",
+        "--receipt",
+        "/tmp/eris-native-window-1/controlled-host-2/admitted-verified.window-control.json",
+        "--controller",
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "--controller-sha256",
+        "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "--binary-sha256",
+        "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "--window-seconds",
+        "6",
+        "--allow-experimental-gpu",
+        "--",
+        "/tmp/eris-native-window-1/eris-browser-native-2",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/admitted.html",
+        "--presenter=vulkan",
+        "--raster=gpu",
+        "--no-scripts",
+        "--exit-after",
+        "6",
+        "--vulkan-verify-frames",
+        "1"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 6.261434369022027,
+      "captured_bytes": 2256,
+      "observed_bytes": 2256,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "90f093490530fd84e2b347bd657e06e45d9004e98f2f79fbc06f00f37f53ae5b",
+      "error": null,
+      "name": "admitted-verified",
+      "window_control_receipt_sha256": "9de303feafb18b75668f215769384f8d3247073ad567193c9857bfeebe04f140",
+      "window_control": {
+        "schema": 1,
+        "success": true,
+        "control_complete": true,
+        "commands": [
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "400ae3a32899cf5181df81fda84bfef6d862225b674ea9cac12296963d694376",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8701,
+            "stdout_sha256": "c547a2473021d97623423f5fc5ebc74b77098f127c0dc275c177949a26a1a771",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1697657,
+              "size": [
+                1268,
+                758
+              ],
+              "floating": false,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "setfloating",
+              "pid:1697657"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8697,
+            "stdout_sha256": "50e81b4331f65fe0b7aee6f4a5e364528b2aba6a33ca31fb51a72a240f18b740",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1697657,
+              "size": [
+                1285,
+                774
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "resizewindowpixel",
+              "exact 1180 880,pid:1697657"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8699,
+            "stdout_sha256": "288d340a4a564ebae61e898b23634e815037ef41f8c21b71f7e08346b0f2f27f",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1697657,
+              "size": [
+                1180,
+                880
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          }
+        ],
+        "browser_command": [
+          "/tmp/eris-native-window-1/eris-browser-native-2",
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/admitted.html",
+          "--presenter=vulkan",
+          "--raster=gpu",
+          "--no-scripts",
+          "--exit-after",
+          "6",
+          "--vulkan-verify-frames",
+          "1"
+        ],
+        "binary_sha256": "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "controller": "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "controller_sha256": "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "identity": {
+          "pid": 1697657,
+          "parent_pid": 1697651,
+          "process_group": 1697651,
+          "start_ticks": 104400840
+        },
+        "browser_returncode": 0,
+        "browser_reaped": true,
+        "scope": "only owned unreaped child PID; descendants remain outer subreaper responsibility",
+        "controlled_size": [
+          1180,
+          880
+        ]
+      },
+      "validation": {
+        "case": "admitted-verified",
+        "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+        "prepared_scenes": [
+          {
+            "serial": 7,
+            "snapshot_generation": 1,
+            "page_commands": 6,
+            "images": 1,
+            "phases": 3,
+            "lowered_commands": 186,
+            "rounded_masks": 2,
+            "raster_invocations": 2166144,
+            "total_invocations": 3208064,
+            "loading": false,
+            "reference": true
+          },
+          {
+            "serial": 8,
+            "snapshot_generation": 1,
+            "page_commands": 6,
+            "images": 1,
+            "phases": 3,
+            "lowered_commands": 186,
+            "rounded_masks": 2,
+            "raster_invocations": 2166144,
+            "total_invocations": 3208064,
+            "loading": false,
+            "reference": true
+          }
+        ],
+        "native_presentations": [
+          {
+            "serial": 7,
+            "reference": true
+          }
+        ],
+        "acquired_verifications": [
+          {
+            "serial": 7,
+            "generation": 1,
+            "viewport_revision": 5,
+            "compared_bytes": 4153600
+          }
+        ],
+        "verification_summaries": [
+          {
+            "frames": 1,
+            "compared_bytes": 4153600,
+            "last_serial": 7
+          }
+        ],
+        "fallback_reasons": [
+          "native scene awaits a current loaded page; size=1275x764",
+          "mask-preparation at phase 2 original command 7; size=1275x764",
+          "mask-preparation at phase 2 original command 7; size=1268x758",
+          "viewport-budget; size=1285x774"
+        ],
+        "other_diagnostic_lines": [
+          "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer"
+        ],
+        "acquired_texture_compared_bytes": 4153600,
+        "reference": "original Canvas differential",
+        "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/run/current-system/sw/bin/python3",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_host.py",
+        "--owned-launch",
+        "--receipt",
+        "/tmp/eris-native-window-1/controlled-host-2/admitted-normal.window-control.json",
+        "--controller",
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "--controller-sha256",
+        "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "--binary-sha256",
+        "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "--window-seconds",
+        "6",
+        "--allow-experimental-gpu",
+        "--",
+        "/tmp/eris-native-window-1/eris-browser-native-2",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/admitted.html",
+        "--presenter=vulkan",
+        "--raster=gpu",
+        "--no-scripts",
+        "--exit-after",
+        "6"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 6.283158646081574,
+      "captured_bytes": 1955,
+      "observed_bytes": 1955,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "afbf09ceb8ae7cd03ee9f5f45e3c08ef7acaf2e7ab42bca68443eeddae4824f4",
+      "error": null,
+      "name": "admitted-normal",
+      "window_control_receipt_sha256": "b20fff29779698cb4a7f95a78f5b91032cbb85d06fce94f0fbf0252f4a34d653",
+      "window_control": {
+        "schema": 1,
+        "success": true,
+        "control_complete": true,
+        "commands": [
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8701,
+            "stdout_sha256": "ef07e9244545d0530b7dc8a3fbda4650b16c2d6d24997bd6760495ce8fc10b06",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1697883,
+              "size": [
+                1268,
+                758
+              ],
+              "floating": false,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "setfloating",
+              "pid:1697883"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8697,
+            "stdout_sha256": "d54d5865e8ac6f09dd4eff863bfd58376c5c0278096b26eb3ae14bc5edc9c22f",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1697883,
+              "size": [
+                1285,
+                774
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "resizewindowpixel",
+              "exact 1180 880,pid:1697883"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8699,
+            "stdout_sha256": "f9a3767446307f14684fd62d03ac4fd7aa76f0e19656e04ed37d8e237981de40",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1697883,
+              "size": [
+                1180,
+                880
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          }
+        ],
+        "browser_command": [
+          "/tmp/eris-native-window-1/eris-browser-native-2",
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/admitted.html",
+          "--presenter=vulkan",
+          "--raster=gpu",
+          "--no-scripts",
+          "--exit-after",
+          "6"
+        ],
+        "binary_sha256": "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "controller": "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "controller_sha256": "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "identity": {
+          "pid": 1697883,
+          "parent_pid": 1697881,
+          "process_group": 1697881,
+          "start_ticks": 104401478
+        },
+        "browser_returncode": 0,
+        "browser_reaped": true,
+        "scope": "only owned unreaped child PID; descendants remain outer subreaper responsibility",
+        "controlled_size": [
+          1180,
+          880
+        ]
+      },
+      "validation": {
+        "case": "admitted-normal",
+        "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+        "prepared_scenes": [
+          {
+            "serial": 8,
+            "snapshot_generation": 1,
+            "page_commands": 6,
+            "images": 1,
+            "phases": 3,
+            "lowered_commands": 186,
+            "rounded_masks": 2,
+            "raster_invocations": 2166144,
+            "total_invocations": 3208064,
+            "loading": false,
+            "reference": false
+          },
+          {
+            "serial": 9,
+            "snapshot_generation": 1,
+            "page_commands": 6,
+            "images": 1,
+            "phases": 3,
+            "lowered_commands": 186,
+            "rounded_masks": 2,
+            "raster_invocations": 2166144,
+            "total_invocations": 3208064,
+            "loading": false,
+            "reference": false
+          }
+        ],
+        "native_presentations": [
+          {
+            "serial": 8,
+            "reference": false
+          }
+        ],
+        "acquired_verifications": [],
+        "verification_summaries": [],
+        "fallback_reasons": [
+          "native scene awaits a current loaded page; size=1275x764",
+          "mask-preparation at phase 2 original command 7; size=1275x764",
+          "mask-preparation at phase 2 original command 7; size=1268x758",
+          "viewport-budget; size=1285x774"
+        ],
+        "other_diagnostic_lines": [
+          "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1697887: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1697888: committed URL and fetch policy enforced outside renderer"
+        ],
+        "acquired_texture_compared_bytes": 0,
+        "reference": "none",
+        "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/run/current-system/sw/bin/python3",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_host.py",
+        "--owned-launch",
+        "--receipt",
+        "/tmp/eris-native-window-1/controlled-host-2/opacity-fallback.window-control.json",
+        "--controller",
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "--controller-sha256",
+        "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "--binary-sha256",
+        "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "--window-seconds",
+        "6",
+        "--allow-experimental-gpu",
+        "--",
+        "/tmp/eris-native-window-1/eris-browser-native-2",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/opacity.html",
+        "--presenter=vulkan",
+        "--raster=gpu",
+        "--no-scripts",
+        "--exit-after",
+        "6"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 6.235790580976754,
+      "captured_bytes": 1585,
+      "observed_bytes": 1585,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "05043e8bc51662ef166d6a79eee9538ab6c8ed133ca8141fe65a68f9f8e98b32",
+      "error": null,
+      "name": "opacity-fallback",
+      "window_control_receipt_sha256": "96ab79b72abe0586885d9eac4cca78cf513095b89094446735559d537b2cad69",
+      "window_control": {
+        "schema": 1,
+        "success": true,
+        "control_complete": true,
+        "commands": [
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "a0e0bb949330611d495f73bfd4dc35a2c8ac7b33c717006eb0cf02f068ceedff",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8701,
+            "stdout_sha256": "1ab880944a5dac79a6b01a9ff3dbe8f389a092e0ddb64fb246fcc98161bb6155",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1698127,
+              "size": [
+                1268,
+                758
+              ],
+              "floating": false,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "setfloating",
+              "pid:1698127"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8697,
+            "stdout_sha256": "599757742891dcaa5187e0b1f646cf54e75d88b5b7804c3113141ef9a2a75bf4",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1698127,
+              "size": [
+                1285,
+                774
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "resizewindowpixel",
+              "exact 1180 880,pid:1698127"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8699,
+            "stdout_sha256": "5a7d7418105b5a43ad05af91e625094ea2256dd2f1f10230a8ab1a27553fd65a",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1698127,
+              "size": [
+                1180,
+                880
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          }
+        ],
+        "browser_command": [
+          "/tmp/eris-native-window-1/eris-browser-native-2",
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/opacity.html",
+          "--presenter=vulkan",
+          "--raster=gpu",
+          "--no-scripts",
+          "--exit-after",
+          "6"
+        ],
+        "binary_sha256": "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "controller": "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "controller_sha256": "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "identity": {
+          "pid": 1698127,
+          "parent_pid": 1698126,
+          "process_group": 1698126,
+          "start_ticks": 104402122
+        },
+        "browser_returncode": 0,
+        "browser_reaped": true,
+        "scope": "only owned unreaped child PID; descendants remain outer subreaper responsibility",
+        "controlled_size": [
+          1180,
+          880
+        ]
+      },
+      "validation": {
+        "case": "opacity-fallback",
+        "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+        "prepared_scenes": [],
+        "native_presentations": [],
+        "acquired_verifications": [],
+        "verification_summaries": [],
+        "fallback_reasons": [
+          "native scene awaits a current loaded page; size=1275x764",
+          "unsupported-opacity at phase 0 original command 1; size=1275x764",
+          "unsupported-opacity at phase 0 original command 1; size=1268x758",
+          "viewport-budget; size=1285x774",
+          "unsupported-opacity at phase 0 original command 1; size=1180x880"
+        ],
+        "other_diagnostic_lines": [
+          "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer"
+        ],
+        "acquired_texture_compared_bytes": 0,
+        "reference": "none",
+        "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/run/current-system/sw/bin/python3",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_host.py",
+        "--owned-launch",
+        "--receipt",
+        "/tmp/eris-native-window-1/controlled-host-2/overdraw-fallback.window-control.json",
+        "--controller",
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "--controller-sha256",
+        "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "--binary-sha256",
+        "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "--window-seconds",
+        "6",
+        "--allow-experimental-gpu",
+        "--",
+        "/tmp/eris-native-window-1/eris-browser-native-2",
+        "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/overdraw.html",
+        "--presenter=vulkan",
+        "--raster=gpu",
+        "--no-scripts",
+        "--exit-after",
+        "6"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 6.245650427998044,
+      "captured_bytes": 1544,
+      "observed_bytes": 1544,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "6d648a3ac9133748094f2ad11821ef69b8859d3fbf8406863e243d11c60d9ee2",
+      "error": null,
+      "name": "overdraw-fallback",
+      "window_control_receipt_sha256": "155ef39d7998135a4a699c5eb432f9409d28188493281c1938d3a1b156900876",
+      "window_control": {
+        "schema": 1,
+        "success": true,
+        "control_complete": true,
+        "commands": [
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "400ae3a32899cf5181df81fda84bfef6d862225b674ea9cac12296963d694376",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "400ae3a32899cf5181df81fda84bfef6d862225b674ea9cac12296963d694376",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 7872,
+            "stdout_sha256": "400ae3a32899cf5181df81fda84bfef6d862225b674ea9cac12296963d694376",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": null
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8701,
+            "stdout_sha256": "3cd49fba07e641c6fface8ac0f6ae328433989176e8559b78ec61b2d6dba25fb",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1698375,
+              "size": [
+                1268,
+                758
+              ],
+              "floating": false,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "setfloating",
+              "pid:1698375"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8697,
+            "stdout_sha256": "1f3fc8b738e9d4883da3e13331cacbd646ff39ad1aaa641c1cda71d4888fa793",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1698375,
+              "size": [
+                1285,
+                774
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "dispatch",
+              "resizewindowpixel",
+              "exact 1180 880,pid:1698375"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 3,
+            "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout": "ok\n",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+              "-j",
+              "clients"
+            ],
+            "status": "exited",
+            "returncode": 0,
+            "stdout_bytes": 8699,
+            "stdout_sha256": "197f559406841390f968130073d586248623386a9084da4da31a8c1c4e87faad",
+            "stderr_bytes": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr": "",
+            "owned_client": {
+              "pid": 1698375,
+              "size": [
+                1180,
+                880
+              ],
+              "floating": true,
+              "mapped": true
+            }
+          }
+        ],
+        "browser_command": [
+          "/tmp/eris-native-window-1/eris-browser-native-2",
+          "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native-raster-fixtures/overdraw.html",
+          "--presenter=vulkan",
+          "--raster=gpu",
+          "--no-scripts",
+          "--exit-after",
+          "6"
+        ],
+        "binary_sha256": "66197f37bbc87ec952db27fb5cbf7faeea133aa25c86a90465b0b24dce2f7106",
+        "controller": "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "controller_sha256": "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+        "identity": {
+          "pid": 1698375,
+          "parent_pid": 1698372,
+          "process_group": 1698372,
+          "start_ticks": 104402762
+        },
+        "browser_returncode": 0,
+        "browser_reaped": true,
+        "scope": "only owned unreaped child PID; descendants remain outer subreaper responsibility",
+        "controlled_size": [
+          1180,
+          880
+        ]
+      },
+      "validation": {
+        "case": "overdraw-fallback",
+        "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+        "prepared_scenes": [],
+        "native_presentations": [],
+        "acquired_verifications": [],
+        "verification_summaries": [],
+        "fallback_reasons": [
+          "native scene awaits a current loaded page; size=1275x764",
+          "mask-preparation at phase 2 original command 7; size=1275x764",
+          "mask-preparation at phase 2 original command 7; size=1268x758",
+          "viewport-budget; size=1285x774",
+          "planner-budget; size=1180x880"
+        ],
+        "other_diagnostic_lines": [
+          "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer",
+          "[page] Page process 1698379: Landlock ABI 6 and seccomp: no direct resource or socket access",
+          "[page] Resource broker 1698380: committed URL and fetch policy enforced outside renderer"
+        ],
+        "acquired_texture_compared_bytes": 0,
+        "reference": "none",
+        "scope": "native acquired texture before compositor; fallback is admission evidence without pixel verification; no performance claim"
+      }
+    }
+  ],
+  "scope": "four separate native-window cases, no retries; acquired verification is Canvas-differential and before compositor"
+}

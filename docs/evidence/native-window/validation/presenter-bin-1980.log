@@ -1,0 +1,59 @@
+   Compiling eris-browser v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.11s
+     Running unittests src/main.rs (/tmp/eris-vulkan-raster-prototype/target-198/debug/deps/eris_browser-c82c2f97600ef0b3)
+
+running 51 tests
+test browser::tests::adjacent_resize_and_edit_requests_coalesce_without_crossing_clicks ... ok
+test browser::tests::boundary_deletions_and_unchanged_replacements_do_not_queue_input_events ... ok
+test browser::tests::current_page_edits_are_bounded_and_keep_their_generation ... ok
+test browser::tests::latest_navigation_supersedes_pending_work_but_keeps_viewport ... ok
+test browser::tests::fragment_navigation_updates_history_and_ignores_pre_fragment_snapshots ... ok
+test browser::tests::fixed_hit_regions_keep_viewport_coordinates_after_scroll_and_zoom ... ok
+test browser::tests::details_closing_revokes_native_focus_before_an_outstanding_edit_ack ... ok
+test browser::tests::fragment_back_and_forward_preserve_path_and_query ... ok
+test browser::tests::event_flood_stays_bounded_and_retains_navigation ... ok
+test browser::tests::obsolete_snapshot_policy_cannot_revoke_current_control_focus ... ok
+test browser::tests::accepted_hidden_geometry_revokes_pending_native_edits_before_acknowledgement ... ok
+test browser::tests::input_type_checks_are_case_insensitive_without_opening_clipboard ... ok
+test browser::tests::ipc_cancellation_ignores_pending_edits_but_honors_navigation_and_shutdown ... ok
+test browser::tests::ready_tasks_yield_to_input_navigation_and_stop_without_queueing_timer_requests ... ok
+test browser::tests::page_process_failure_discards_old_content_and_cannot_be_undone_by_a_queued_snapshot ... ok
+test browser::tests::reload_with_fragment_loads_again_and_resets_edit_sequence ... ok
+test browser::tests::only_newest_edit_acknowledgement_reconciles_the_focused_value ... ok
+test edit::tests::no_op_replacements_and_boundary_deletions_report_no_change ... ok
+test edit::tests::reversed_selection_replacement_and_limits ... ok
+test edit::tests::scalar_movement_and_deletion_preserve_utf8 ... ok
+test edit::tests::shifted_movement_extends_then_collapses_selection ... ok
+test browser::tests::new_document_snapshot_clears_field_state_but_preserves_address_editing ... ok
+test browser::tests::stale_snapshots_cannot_focus_or_queue_edits_for_a_new_page ... ok
+test presenter::tests::malformed_canvas_dimensions_and_lengths_are_rejected ... ok
+test presenter::tests::mismatched_presentation_buffers_are_rejected_without_partial_copy ... ok
+test presenter::tests::native_configuration_requires_vulkan_feature_and_a_window ... ok
+test browser::tests::obsolete_hidden_snapshot_cannot_replace_accepted_focus_geometry ... ok
+test presenter::tests::odd_width_completed_frame_is_borrowed_and_copied_without_conversion ... ok
+test presenter::tests::oversized_frame_metadata_is_rejected_without_allocating_pixels ... ok
+test browser::tests::details_native_focus_and_activation_distinguish_real_and_default_summaries ... ok
+test presenter::vulkan::control::tests::bounded_errors_and_resource_ledger_are_checked ... ok
+test browser::tests::readonly_range_and_color_controls_cannot_queue_native_text_edits ... ok
+test presenter::vulkan::control::tests::coalesced_wake_is_drained_with_state_and_allows_reentrancy ... ok
+test presenter::vulkan::control::tests::expiry_and_stop_never_acknowledge_release_or_reset_on_traffic ... ok
+test presenter::vulkan::control::tests::stale_active_frames_and_occlusion_do_not_resume_on_new_packets ... ok
+test presenter::vulkan::tests::blocked_drop_does_not_allow_fallback_and_late_real_release_does ... ok
+test presenter::vulkan::tests::verification_fails_for_insufficient_samples_and_any_late_failure ... ok
+test presenter::vulkan::transfer::tests::conversion_always_sets_opaque_alpha_and_handles_channel_order ... ok
+test presenter::vulkan::transfer::tests::odd_width_readback_checks_every_pixel_and_ignores_only_padding ... ok
+test browser::tests::native_focus_ignores_foreign_template_inert_and_disabled_controls ... ok
+test browser::tests::accepted_snapshot_revokes_editing_before_ack_when_control_policy_changes ... ok
+test browser::tests::pointer_and_tab_admit_the_same_partly_clipped_input_geometry ... ok
+test browser::tests::snapshots_keep_only_latest_value_and_one_wakeup ... ok
+test presenter::vulkan::control::tests::capacity_not_just_dimensions_is_bounded_and_pixels_are_moved ... ok
+test browser::tests::stop_wakes_worker_and_rejects_later_requests ... ok
+test browser::tests::stale_generation_cannot_shortcut_navigation_or_replace_newer_state ... ok
+test presenter::vulkan::tests::panicked_thread_without_release_is_not_fallback_authority ... ok
+test browser::tests::tab_focus_uses_clipped_geometry_keeps_inline_links_and_offscreen_controls ... ok
+test browser::tests::script_input_changes_feed_the_next_local_edit_after_acknowledgement ... ok
+test browser::tests::idle_task_deadline_wait_is_interrupted_by_input_and_shutdown ... ok
+test presenter::vulkan::control::tests::ten_thousand_updates_retain_one_latest_packet_without_resetting_deadline ... ok
+
+test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

@@ -1,0 +1,92 @@
+   Compiling eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+    Finished `test` profile [unoptimized] target(s) in 0.62s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/eris_raster_core-fdc44288572e3fcb)
+
+running 78 tests
+test alpha_fixtures::tests::alpha_fixture_frozen_counter_arithmetic ... ok
+test glyph_tests::glyph_addition_retains_literal_image_only_parameter_and_input_layout ... ok
+test glyph_tests::glyph_and_image_draw_order_and_index_namespaces_remain_distinct ... ok
+test alpha_fixtures::tests::alpha_fixture_inputs_and_literal_outputs_are_bounded ... ok
+test glyph_tests::glyph_absolute_origins_ignore_offsets_but_obey_fixed_clip_restore ... ok
+test glyph_tests::glyph_fractional_clip_uses_integer_origins_and_both_upper_edges ... ok
+test glyph_tests::glyph_empty_canonical_sources_count_but_create_no_gpu_input ... ok
+test glyph_tests::glyph_mask_axis_area_and_aggregate_coverage_caps_are_distinct ... ok
+test glyph_tests::glyph_packing_keeps_original_sources_and_signed_rows_in_separate_ranges ... ok
+test glyph_tests::glyph_reached_ids_and_height_validate_before_alpha_or_clip_culling ... ok
+test glyph_tests::glyph_returned_plan_owns_coverage_and_rows_without_source_lifetimes ... ok
+test glyph_tests::glyph_row_table_entry_total_is_bounded_including_unused_tables ... ok
+test glyph_tests::glyph_shared_scope_state_preserves_typed_nesting_and_float_order ... ok
+test glyph_tests::glyph_signed_extremes_and_negative_y_clip_without_overflow ... ok
+test glyph_tests::glyph_unused_sources_and_row_tables_are_validated_without_a_draw ... ok
+test glyph_tests::glyph_zero_coverage_is_not_scanned_to_suppress_dispatch ... ok
+test phase_tests::canonical_target_compatible_phase_frames_and_four_phase_ceiling_are_required ... ok
+test phase_tests::each_phase_fixed_scope_escapes_only_its_own_caller_clip_then_restores ... ok
+test phase_tests::every_phase_shares_the_four_million_work_ceiling ... ok
+test phase_tests::one_phase_preserves_native_payload_with_images_masks_and_offsets ... ok
+test phase_tests::global_source_packing_lookup_tables_and_storage_are_not_reset_per_phase ... ok
+test phase_tests::original_single_stream_validation_precedence_is_preserved ... ok
+test phase_tests::original_commands_are_globally_bounded_even_when_no_phase_emits_a_draw ... ok
+test phase_tests::phases_clear_once_preserve_draw_order_and_reserve_conversion_once ... ok
+test phase_tests::retained_cpu_bytes_use_actual_capacities_and_check_overflow ... ok
+test phase_tests::scopes_cannot_be_repaired_by_a_later_phase ... ok
+test phase_tests::shared_draft_applies_native_lut_and_byte_refusal_to_prior_phase_work ... ok
+test phase_tests::zero_phases_are_clear_only_but_still_validate_unused_sources ... ok
+test profile_tests::conversion_is_padded_and_included_at_the_existing_work_boundary ... ok
+test profile_tests::conversion_storage_alignment_and_absolute_byte_caps_are_explicit ... ok
+test profile_tests::native_coordinates_keep_fixed_escape_and_restore_the_document_clip ... ok
+test profile_tests::native_keeps_command_source_mask_row_and_scope_limits ... ok
+test profile_tests::native_normal_window_includes_conversion_while_old_api_refuses_it ... ok
+test profile_tests::selected_viewport_axes_are_closed_and_zero_or_one_over_refuse ... ok
+test profile_tests::small_probe_payload_is_unchanged_when_only_profile_reservations_differ ... ok
+test rounded_tests::rounded_each_fallible_reserve_failure_returns_no_partial_mask ... ok
+test rounded_tests::rounded_clip_edges_on_both_sides_of_an_integer_remain_distinct ... ok
+test rounded_tests::rounded_empty_and_offscreen_geometry_do_not_become_zero_radius ... ok
+test rounded_tests::rounded_existing_mask_axis_area_and_storage_bounds_are_shared ... ok
+test rounded_tests::rounded_fractional_clip_keeps_original_geometry_and_absolute_placement ... ok
+test rounded_tests::rounded_fractional_clip_tests_integer_origins_on_both_axes ... ok
+test rounded_tests::rounded_independent_two_by_two_corner_literal_and_radius_clamp ... ok
+test rounded_tests::rounded_invalid_scalars_are_rejected_even_when_geometry_is_hidden ... ok
+test rounded_tests::rounded_large_original_geometry_is_cropped_before_mask_storage_admission ... ok
+test rounded_tests::rounded_loop_work_precedes_blend_upper_clip_rejection ... ok
+test rounded_tests::rounded_negative_origin_and_nonzero_y_do_not_translate_twice ... ok
+test rounded_tests::rounded_one_short_caller_work_and_storage_refuse_before_reserve ... ok
+test rounded_tests::rounded_preflight_failure_precedes_both_allocations_and_pixel_work ... ok
+test rounded_tests::rounded_profile_viewport_checks_run_before_culling ... ok
+test rounded_tests::rounded_sub_half_radius_preserves_partial_interior_coverage ... ok
+test rounded_tests::rounded_translation_sum_bound_accepts_valid_hidden_extremes ... ok
+test rounded_tests::rounded_zero_coverage_corners_still_count_and_remain_in_mask ... ok
+test rounded_tests::rounded_zero_negative_and_clamped_zero_take_typed_rectangle_path ... ok
+test tests::alpha_only_old_rejections_are_supported_without_discarding_source_alpha ... ok
+test tests::exact_edges_touching_clips_and_fixed_escape_empty_ancestors ... ok
+test tests::fractional_rectangle_and_clip_left_edges_are_deliberately_different ... ok
+test tests::image_geometry_scopes_and_unsupported_commands_refuse_whole_plan ... ok
+test tests::image_scalar_sampling_matches_nine_frozen_float_edge_oracles ... ok
+test tests::alpha_frozen_literals_and_counter_contracts_match_serialized_plans ... ok
+test tests::image_plan_owns_sources_reuses_ids_and_validates_even_unused_entries ... ok
+test tests::image_source_command_and_scope_caps_accept_exact_boundaries ... ok
+test tests::metadata_records_are_immutable_aligned_and_never_pixels ... ok
+test tests::invalid_nonfinite_coordinates_offsets_and_dimensions_are_rejected ... ok
+test tests::transparent_rectangles_validate_geometry_and_radius_before_elision ... ok
+test tests::transparent_commands_cannot_bypass_typed_scopes_counts_or_clear_validation ... ok
+test tests::unsupported_content_is_rejected_even_after_hidden_or_empty_content ... ok
+test tests::commands_overdraw_invocations_and_explicit_buffers_stay_bounded ... ok
+test tests::typed_scope_balance_and_combined_depth_are_checked_atomically ... ok
+test glyph_tests::glyph_repeated_dispatches_share_masks_but_pay_full_invocation_work ... ok
+test tests::image_strict_sources_reject_malformed_and_hidden_input ... ok
+test tests::transparent_source_structure_is_checked_even_if_unused_empty_or_clipped ... ok
+test tests::image_all_642_frozen_lookup_entries_and_origins_are_preserved ... ok
+test profile_tests::native_lut_bound_expands_only_with_axes_and_stays_byte_charged ... ok
+test glyph_tests::glyph_exact_combined_gpu_byte_ceiling_counts_all_mask_and_row_words ... ok
+test tests::fully_transparent_images_keep_dispatch_arena_and_exact_resource_caps ... ok
+test tests::image_frozen_pixels_and_independently_counted_protocol_are_exact ... ok
+test tests::independent_pixel_fixtures_agree_with_integer_plan ... ok
+test tests::image_exact_gpu_byte_and_invocation_caps_accept_and_next_unit_rejects ... ok
+
+test result: ok. 78 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.16s
+
+   Doc-tests eris_raster_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

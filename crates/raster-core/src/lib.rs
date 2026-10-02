@@ -233,6 +233,23 @@ impl Plan {
     pub fn input_bytes(&self) -> &[u8] {
         &self.input
     }
+    /// Owned CPU residency: this Plan's fixed metadata plus actual capacities
+    /// of its three vectors. Excludes allocator overhead and all GPU storage.
+    pub fn retained_cpu_bytes(&self) -> Result<usize> {
+        Self::retained_capacity_bytes(
+            self.draws.capacity(),
+            self.parameters.capacity(),
+            self.input.capacity(),
+        )
+    }
+    fn retained_capacity_bytes(draws: usize, parameters: usize, input: usize) -> Result<usize> {
+        draws
+            .checked_mul(std::mem::size_of::<Draw>())
+            .and_then(|bytes| bytes.checked_add(std::mem::size_of::<Self>()))
+            .and_then(|bytes| bytes.checked_add(parameters))
+            .and_then(|bytes| bytes.checked_add(input))
+            .ok_or_else(|| "retained plan CPU byte overflow".into())
+    }
     pub fn has_images(&self) -> bool {
         self.draws.iter().any(|draw| draw.kind() == DrawKind::Image)
     }
@@ -490,252 +507,445 @@ pub fn plan_with_masks_for_profile(
     if commands.len() > MAX_COMMANDS {
         return Err("command budget".into());
     }
-    let mut coordinates = scope::CoordinateState::new_for_profile(profile, frame)?;
-    // Preserve the image-only API's original source validation and diagnostics.
-    let source_words = source_pixels(sources)?;
-    if sources
-        .len()
-        .checked_add(masks.len())
-        .is_none_or(|n| n > MAX_SOURCE_ENTRIES)
-    {
-        return Err("combined source entry budget".into());
+    let coordinates = scope::CoordinateState::new_for_profile(profile, frame)?;
+    let mut draft = PlannerDraft::new(profile, frame, commands.len(), sources, masks, row_tables)?;
+    draft.append(commands, coordinates)?;
+    draft.finish()
+}
+
+/// One trusted composition phase; commands cannot reset another phase's scope.
+#[derive(Clone, Copy, Debug)]
+pub struct Phase<'a> {
+    pub frame: Frame,
+    pub commands: &'a [Command],
+}
+pub const MAX_NATIVE_PHASES: usize = 4;
+
+/// Plan one Native target with one clear, one conversion reservation and global
+/// budgets. Each phase starts fresh coordinates and must close its own scopes.
+/// Target clip/offsets must be canonical; phase dimensions/clear must match it.
+/// Zero phases still validate all supplied sources and produce the clear plan.
+pub fn plan_native_phases(
+    target: Frame,
+    phases: &[Phase<'_>],
+    sources: &[SourceImage<'_>],
+    masks: &[SourceMask<'_>],
+    row_tables: &[&[i32]],
+) -> Result<Plan> {
+    let profile = Profile::Native;
+    profile.validate_viewport(target.width, target.height)?;
+    if target.clear > 0x00ff_ffff {
+        return Err("clear color must be packed RGB".into());
     }
-    let (mask_words, row_words) = mask_storage(masks, row_tables)?;
-    let clear = Draw {
-        x: 0,
-        y: 0,
-        width: frame.width,
-        height: frame.height,
-        // Clear uses the rectangle shader but must always replace the target.
-        color: 0xff00_0000 | frame.clear,
-        image: None,
-    };
-    let conversion_invocations = profile.conversion_invocations(frame.width, frame.height)?;
-    let conversion_buffer_bytes = profile.conversion_buffer_bytes(frame.width, frame.height)?;
-    let mut invocations = profile::add_work(clear.invocations(), conversion_invocations)?;
-    let mut pending = reserved(commands.len() + 1)?;
-    pending.push(PendingDraw {
-        draw: clear,
-        image: None,
-        glyph: None,
-    });
-    let mut lut_words = 0usize;
-    let mut has_input = false;
-    for command in commands {
-        if coordinates.apply(command)? {
-            continue;
-        }
-        let clip = coordinates.clip();
-        let offset = coordinates.offset();
-        if let Command::Glyph {
-            source,
-            rows,
-            y,
-            rgba,
-        } = *command
+    if phases.len() > MAX_NATIVE_PHASES {
+        return Err("native phase budget".into());
+    }
+    let canonical = Frame::new(target.width, target.height, target.clear);
+    if target.caller_clip != canonical.caller_clip
+        || target.document_offset != (0.0, 0.0)
+        || target.viewport_offset != (0.0, 0.0)
+    {
+        return Err("native target must have full clip and zero offsets".into());
+    }
+    let mut command_count = 0usize;
+    for phase in phases {
+        if phase.frame.width != target.width
+            || phase.frame.height != target.height
+            || phase.frame.clear != target.clear
         {
-            let source = source as usize;
-            let rows = rows as usize;
-            let mask = masks.get(source).ok_or("mask ID outside validated table")?;
-            let origins = row_tables
-                .get(rows)
-                .ok_or("row ID outside validated table")?;
-            if origins.len() != mask.height as usize {
-                return Err("glyph row count differs from mask height".into());
-            }
-            // Validate IDs and row geometry even when transparent or clipped.
-            if rgba[3] == 0 {
+            return Err("native phase target mismatch".into());
+        }
+        command_count = command_count
+            .checked_add(phase.commands.len())
+            .filter(|&count| count <= MAX_COMMANDS)
+            .ok_or("command budget")?;
+    }
+    // At most four bounded states; validate all descriptor geometry before any
+    // source preparation. They are consumed in order, never shared or reset.
+    let mut states = reserved(phases.len())?;
+    for phase in phases {
+        states.push(scope::CoordinateState::new_for_profile(
+            profile,
+            phase.frame,
+        )?);
+    }
+    let mut draft = PlannerDraft::new(profile, target, command_count, sources, masks, row_tables)?;
+    for (phase, coordinates) in phases.iter().zip(states) {
+        draft.append(phase.commands, coordinates)?;
+    }
+    draft.finish()
+}
+
+struct PlannerDraft<'a> {
+    frame: Frame,
+    profile: Profile,
+    sources: &'a [SourceImage<'a>],
+    masks: &'a [SourceMask<'a>],
+    row_tables: &'a [&'a [i32]],
+    source_words: usize,
+    mask_words: usize,
+    row_words: usize,
+    conversion_invocations: u64,
+    conversion_buffer_bytes: u64,
+    invocations: u64,
+    pending: Vec<PendingDraw>,
+    lut_words: usize,
+    has_input: bool,
+}
+
+/// Conservative structural CPU peak for Native planning at the closed limits.
+/// Counts the draft, final Plan, pending/final draw storage, four independent
+/// coordinate states and scope arrays, and fixed packing-offset tables even
+/// where their lifetimes do not overlap. Input/parameter arenas and caller-
+/// borrowed source/mask/row descriptors are excluded and must be added by the
+/// caller. Reservation sizes exclude allocator overhead; this is not a total
+/// process or font-preparation memory bound.
+pub fn native_planner_metadata_peak_bytes() -> Result<usize> {
+    let slots = MAX_COMMANDS
+        .checked_add(1)
+        .ok_or("planner metadata overflow")?;
+    let counts = [
+        (1, std::mem::size_of::<Plan>()),
+        (1, std::mem::size_of::<PlannerDraft<'_>>()),
+        (slots, std::mem::size_of::<PendingDraw>()),
+        (slots, std::mem::size_of::<Draw>()),
+        (1, std::mem::size_of::<Vec<scope::CoordinateState>>()),
+        (
+            MAX_NATIVE_PHASES,
+            std::mem::size_of::<scope::CoordinateState>(),
+        ),
+        (
+            MAX_NATIVE_PHASES
+                .checked_mul(MAX_SCOPES)
+                .ok_or("planner metadata overflow")?,
+            std::mem::size_of::<scope::Scope>(),
+        ),
+        (
+            MAX_SOURCE_ENTRIES
+                .checked_mul(2)
+                .and_then(|n| n.checked_add(MAX_COMMANDS))
+                .ok_or("planner metadata overflow")?,
+            std::mem::size_of::<u32>(),
+        ),
+    ];
+    counts.into_iter().try_fold(0usize, |total, (count, size)| {
+        count
+            .checked_mul(size)
+            .and_then(|bytes| total.checked_add(bytes))
+            .ok_or_else(|| "planner metadata overflow".into())
+    })
+}
+impl<'a> PlannerDraft<'a> {
+    fn new(
+        profile: Profile,
+        frame: Frame,
+        command_count: usize,
+        sources: &'a [SourceImage<'a>],
+        masks: &'a [SourceMask<'a>],
+        row_tables: &'a [&'a [i32]],
+    ) -> Result<Self> {
+        // Preserve the image-only API's original source validation and diagnostics.
+        let source_words = source_pixels(sources)?;
+        if sources
+            .len()
+            .checked_add(masks.len())
+            .is_none_or(|n| n > MAX_SOURCE_ENTRIES)
+        {
+            return Err("combined source entry budget".into());
+        }
+        let (mask_words, row_words) = mask_storage(masks, row_tables)?;
+        let clear = Draw {
+            x: 0,
+            y: 0,
+            width: frame.width,
+            height: frame.height,
+            // Clear uses the rectangle shader but must always replace the target.
+            color: 0xff00_0000 | frame.clear,
+            image: None,
+        };
+        let conversion_invocations = profile.conversion_invocations(frame.width, frame.height)?;
+        let conversion_buffer_bytes = profile.conversion_buffer_bytes(frame.width, frame.height)?;
+        let invocations = profile::add_work(clear.invocations(), conversion_invocations)?;
+        let mut pending = reserved(command_count + 1)?;
+        pending.push(PendingDraw {
+            draw: clear,
+            image: None,
+            glyph: None,
+        });
+        let lut_words = 0usize;
+        let has_input = false;
+        Ok(Self {
+            frame,
+            profile,
+            sources,
+            masks,
+            row_tables,
+            source_words,
+            mask_words,
+            row_words,
+            conversion_invocations,
+            conversion_buffer_bytes,
+            invocations,
+            pending,
+            lut_words,
+            has_input,
+        })
+    }
+
+    fn append(
+        &mut self,
+        commands: &[Command],
+        mut coordinates: scope::CoordinateState,
+    ) -> Result<()> {
+        let frame = self.frame;
+        let profile = self.profile;
+        let sources = self.sources;
+        let masks = self.masks;
+        let row_tables = self.row_tables;
+        let mut invocations = self.invocations;
+        let mut lut_words = self.lut_words;
+        let mut has_input = self.has_input;
+        let pending = &mut self.pending;
+        for command in commands {
+            if coordinates.apply(command)? {
                 continue;
             }
-            let Some((x, dy, width, height)) = glyph_coverage(mask, origins, y, clip, frame) else {
+            let clip = coordinates.clip();
+            let offset = coordinates.offset();
+            if let Command::Glyph {
+                source,
+                rows,
+                y,
+                rgba,
+            } = *command
+            {
+                let source = source as usize;
+                let rows = rows as usize;
+                let mask = masks.get(source).ok_or("mask ID outside validated table")?;
+                let origins = row_tables
+                    .get(rows)
+                    .ok_or("row ID outside validated table")?;
+                if origins.len() != mask.height as usize {
+                    return Err("glyph row count differs from mask height".into());
+                }
+                // Validate IDs and row geometry even when transparent or clipped.
+                if rgba[3] == 0 {
+                    continue;
+                }
+                let Some((x, dy, width, height)) = glyph_coverage(mask, origins, y, clip, frame)
+                else {
+                    continue;
+                };
+                let draw = Draw {
+                    x,
+                    y: dy,
+                    width,
+                    height,
+                    color: packed_rgba(rgba),
+                    image: None,
+                };
+                invocations = add_invocations(invocations, draw)?;
+                has_input = true;
+                pending.push(PendingDraw {
+                    draw,
+                    image: None,
+                    glyph: Some(GlyphDraft { source, rows, y }),
+                });
+                continue;
+            }
+            let (rect, color, image) = match *command {
+                Command::Unsupported(kind) => return Err(format!("unsupported {kind}")),
+                Command::Rect { rect, rgba, radius } => {
+                    rect.validate()?;
+                    if radius != 0.0 {
+                        return Err("only unrounded rectangles are supported".into());
+                    }
+                    if rgba[3] == 0 {
+                        continue;
+                    }
+                    (rect.translated(offset), packed_rgba(rgba), None)
+                }
+                Command::Image { rect, source } => {
+                    rect.validate()?;
+                    let source = source as usize;
+                    if sources.get(source).is_none() {
+                        return Err("source ID outside validated table".into());
+                    }
+                    let rect = rect.translated(offset);
+                    (rect, 0, Some(ImageDraft { rect, source }))
+                }
+                Command::PushClip(_)
+                | Command::PopClip
+                | Command::PushFixed
+                | Command::PopFixed
+                | Command::Glyph { .. } => unreachable!("handled state or glyph command"),
+            };
+            let blend = image.is_some() || color >> 24 != 255;
+            let Some((x, y, width, height)) = coverage(rect, clip, frame, blend) else {
                 continue;
             };
             let draw = Draw {
                 x,
-                y: dy,
+                y,
                 width,
                 height,
-                color: packed_rgba(rgba),
+                color,
                 image: None,
             };
             invocations = add_invocations(invocations, draw)?;
-            has_input = true;
+            if image.is_some() {
+                has_input = true;
+                lut_words = lut_words
+                    .checked_add(width as usize + height as usize)
+                    .ok_or("LUT count overflow")?;
+                if lut_words > profile.max_lut_entries() {
+                    return Err("LUT entry budget".into());
+                }
+            }
             pending.push(PendingDraw {
                 draw,
-                image: None,
-                glyph: Some(GlyphDraft { source, rows, y }),
-            });
-            continue;
-        }
-        let (rect, color, image) = match *command {
-            Command::Unsupported(kind) => return Err(format!("unsupported {kind}")),
-            Command::Rect { rect, rgba, radius } => {
-                rect.validate()?;
-                if radius != 0.0 {
-                    return Err("only unrounded rectangles are supported".into());
-                }
-                if rgba[3] == 0 {
-                    continue;
-                }
-                (rect.translated(offset), packed_rgba(rgba), None)
-            }
-            Command::Image { rect, source } => {
-                rect.validate()?;
-                let source = source as usize;
-                if sources.get(source).is_none() {
-                    return Err("source ID outside validated table".into());
-                }
-                let rect = rect.translated(offset);
-                (rect, 0, Some(ImageDraft { rect, source }))
-            }
-            Command::PushClip(_)
-            | Command::PopClip
-            | Command::PushFixed
-            | Command::PopFixed
-            | Command::Glyph { .. } => unreachable!("handled state or glyph command"),
-        };
-        let blend = image.is_some() || color >> 24 != 255;
-        let Some((x, y, width, height)) = coverage(rect, clip, frame, blend) else {
-            continue;
-        };
-        let draw = Draw {
-            x,
-            y,
-            width,
-            height,
-            color,
-            image: None,
-        };
-        invocations = add_invocations(invocations, draw)?;
-        if image.is_some() {
-            has_input = true;
-            lut_words = lut_words
-                .checked_add(width as usize + height as usize)
-                .ok_or("LUT count overflow")?;
-            if lut_words > profile.max_lut_entries() {
-                return Err("LUT entry budget".into());
-            }
-        }
-        pending.push(PendingDraw {
-            draw,
-            image,
-            glyph: None,
-        });
-    }
-    coordinates.finish()?;
-    let arena_bytes = if has_input {
-        source_words
-            .checked_add(mask_words)
-            .and_then(|n| n.checked_add(row_words))
-            .and_then(|n| n.checked_add(lut_words))
-            .and_then(|n| n.checked_mul(4))
-            .ok_or("input arena overflow")?
-    } else {
-        0
-    };
-    let parameter_size = pending
-        .len()
-        .checked_mul(PARAM_STRIDE)
-        .ok_or("parameter overflow")?;
-    let packed_target_bytes = u64::from(frame.width) * u64::from(frame.height) * 4;
-    let second_buffer_bytes = match profile {
-        Profile::Probe => packed_target_bytes,
-        Profile::Native => conversion_buffer_bytes,
-    };
-    let gpu_buffer_bytes = packed_target_bytes
-        .checked_add(second_buffer_bytes)
-        .and_then(|n| n.checked_add(parameter_size as u64))
-        .and_then(|n| n.checked_add(arena_bytes as u64))
-        .ok_or("GPU buffer overflow")?;
-    profile.validate_buffer_bytes(gpu_buffer_bytes)?;
-    // Allocation/scanning below has already been bounded by the complete plan.
-    // Input alpha/coverage never triggers a CPU scan or draw suppression. If
-    // an input-backed draw is visible, all supplied sources and row tables
-    // get exactly one packing pass.
-    let mut input = reserved(arena_bytes)?;
-    let mut bases = [0u32; MAX_SOURCE_ENTRIES];
-    let mut mask_bases = [0u32; MAX_SOURCE_ENTRIES];
-    let mut row_bases = [0u32; MAX_COMMANDS];
-    if has_input {
-        for (index, source) in sources.iter().enumerate() {
-            bases[index] = (input.len() / 4) as u32;
-            for rgba in source.rgba.as_chunks::<4>().0 {
-                word(&mut input, packed_rgba(*rgba));
-            }
-        }
-        for (index, mask) in masks.iter().enumerate() {
-            mask_bases[index] = (input.len() / 4) as u32;
-            for alpha in mask.coverage {
-                word(&mut input, u32::from(*alpha));
-            }
-        }
-        for (index, rows) in row_tables.iter().enumerate() {
-            row_bases[index] = (input.len() / 4) as u32;
-            for origin in *rows {
-                word(&mut input, *origin as u32);
-            }
-        }
-    }
-    let mut draws = reserved(pending.len())?;
-    for item in pending {
-        let mut draw = item.draw;
-        if let Some(image) = item.image {
-            let source = &sources[image.source];
-            let x_base = append_table(
-                &mut input,
-                draw.x,
-                draw.width,
-                image.rect.x,
-                image.rect.width,
-                source.width,
-            )?;
-            let y_base = append_table(
-                &mut input,
-                draw.y,
-                draw.height,
-                image.rect.y,
-                image.rect.height,
-                source.height,
-            )?;
-            draw.image = Some(ImageParameters {
-                source_base: bases[image.source],
-                source_width: source.width,
-                source_height: source.height,
-                source_pixels: (source.rgba.len() / 4) as u32,
-                x_base,
-                y_base,
-                glyph_y: None,
+                image,
+                glyph: None,
             });
         }
-        if let Some(glyph) = item.glyph {
-            let mask = &masks[glyph.source];
-            draw.image = Some(ImageParameters {
-                source_base: mask_bases[glyph.source],
-                source_width: mask.width,
-                source_height: mask.height,
-                source_pixels: mask.coverage.len() as u32,
-                x_base: row_bases[glyph.rows],
-                y_base: 0,
-                glyph_y: Some(glyph.y),
-            });
+        coordinates.finish()?;
+        self.invocations = invocations;
+        self.lut_words = lut_words;
+        self.has_input = has_input;
+        Ok(())
+    }
+
+    fn finish(self) -> Result<Plan> {
+        let Self {
+            frame,
+            profile,
+            sources,
+            masks,
+            row_tables,
+            source_words,
+            mask_words,
+            row_words,
+            conversion_invocations,
+            conversion_buffer_bytes,
+            invocations,
+            pending,
+            lut_words,
+            has_input,
+        } = self;
+        let arena_bytes = if has_input {
+            source_words
+                .checked_add(mask_words)
+                .and_then(|n| n.checked_add(row_words))
+                .and_then(|n| n.checked_add(lut_words))
+                .and_then(|n| n.checked_mul(4))
+                .ok_or("input arena overflow")?
+        } else {
+            0
+        };
+        let parameter_size = pending
+            .len()
+            .checked_mul(PARAM_STRIDE)
+            .ok_or("parameter overflow")?;
+        let packed_target_bytes = u64::from(frame.width) * u64::from(frame.height) * 4;
+        let second_buffer_bytes = match profile {
+            Profile::Probe => packed_target_bytes,
+            Profile::Native => conversion_buffer_bytes,
+        };
+        let gpu_buffer_bytes = packed_target_bytes
+            .checked_add(second_buffer_bytes)
+            .and_then(|n| n.checked_add(parameter_size as u64))
+            .and_then(|n| n.checked_add(arena_bytes as u64))
+            .ok_or("GPU buffer overflow")?;
+        profile.validate_buffer_bytes(gpu_buffer_bytes)?;
+        // Allocation/scanning below has already been bounded by the complete plan.
+        // Input alpha/coverage never triggers a CPU scan or draw suppression. If
+        // an input-backed draw is visible, all supplied sources and row tables
+        // get exactly one packing pass.
+        let mut input = reserved(arena_bytes)?;
+        let mut bases = [0u32; MAX_SOURCE_ENTRIES];
+        let mut mask_bases = [0u32; MAX_SOURCE_ENTRIES];
+        let mut row_bases = [0u32; MAX_COMMANDS];
+        if has_input {
+            for (index, source) in sources.iter().enumerate() {
+                bases[index] = (input.len() / 4) as u32;
+                for rgba in source.rgba.as_chunks::<4>().0 {
+                    word(&mut input, packed_rgba(*rgba));
+                }
+            }
+            for (index, mask) in masks.iter().enumerate() {
+                mask_bases[index] = (input.len() / 4) as u32;
+                for alpha in mask.coverage {
+                    word(&mut input, u32::from(*alpha));
+                }
+            }
+            for (index, rows) in row_tables.iter().enumerate() {
+                row_bases[index] = (input.len() / 4) as u32;
+                for origin in *rows {
+                    word(&mut input, *origin as u32);
+                }
+            }
         }
-        draws.push(draw);
+        let mut draws = reserved(pending.len())?;
+        for item in pending {
+            let mut draw = item.draw;
+            if let Some(image) = item.image {
+                let source = &sources[image.source];
+                let x_base = append_table(
+                    &mut input,
+                    draw.x,
+                    draw.width,
+                    image.rect.x,
+                    image.rect.width,
+                    source.width,
+                )?;
+                let y_base = append_table(
+                    &mut input,
+                    draw.y,
+                    draw.height,
+                    image.rect.y,
+                    image.rect.height,
+                    source.height,
+                )?;
+                draw.image = Some(ImageParameters {
+                    source_base: bases[image.source],
+                    source_width: source.width,
+                    source_height: source.height,
+                    source_pixels: (source.rgba.len() / 4) as u32,
+                    x_base,
+                    y_base,
+                    glyph_y: None,
+                });
+            }
+            if let Some(glyph) = item.glyph {
+                let mask = &masks[glyph.source];
+                draw.image = Some(ImageParameters {
+                    source_base: mask_bases[glyph.source],
+                    source_width: mask.width,
+                    source_height: mask.height,
+                    source_pixels: mask.coverage.len() as u32,
+                    x_base: row_bases[glyph.rows],
+                    y_base: 0,
+                    glyph_y: Some(glyph.y),
+                });
+            }
+            draws.push(draw);
+        }
+        if input.len() != arena_bytes {
+            return Err("planned arena size mismatch".into());
+        }
+        let parameters = parameter_bytes(frame, &draws)?;
+        Ok(Plan {
+            frame,
+            profile,
+            conversion_invocations,
+            conversion_buffer_bytes,
+            draws,
+            invocations,
+            gpu_buffer_bytes,
+            parameters,
+            input,
+        })
     }
-    if input.len() != arena_bytes {
-        return Err("planned arena size mismatch".into());
-    }
-    let parameters = parameter_bytes(frame, &draws)?;
-    Ok(Plan {
-        frame,
-        profile,
-        conversion_invocations,
-        conversion_buffer_bytes,
-        draws,
-        invocations,
-        gpu_buffer_bytes,
-        parameters,
-        input,
-    })
 }
 
 /// Validate every supplied image and return its aggregate pixel count.
@@ -749,6 +959,8 @@ pub fn validate_source_images(sources: &[SourceImage<'_>]) -> Result<usize> {
 
 #[cfg(feature = "gpu")]
 pub mod gpu;
+#[cfg(test)]
+mod phase_tests;
 #[cfg(test)]
 mod profile_tests;
 pub mod rounded;

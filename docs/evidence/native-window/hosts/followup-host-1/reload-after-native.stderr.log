@@ -1,0 +1,21 @@
+presenter: native raster admission fallback; complete CPU upload; reason=native scene awaits a current loaded page; size=1275x764
+[page] Page process 1725939: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1725941: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=mask-preparation at phase 2 original command 7; size=1275x764
+presenter: Vulkan adapter="NVIDIA GeForce RTX 4070 SUPER" type=DiscreteGpu driver="NVIDIA" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback
+presenter: native raster admission fallback; complete CPU upload; reason=mask-preparation at phase 2 original command 7; size=1268x758
+[page] Page process 1725939: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1725941: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=viewport-budget; size=1285x774
+[page] Page process 1725939: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1725941: committed URL and fetch policy enforced outside renderer
+native scene prepared: serial=8 snapshot_generation=1 page_commands=6 images=1 loading=false phases=3 lowered_commands=186 rounded_masks=2 raster_invocations=2166144 total_invocations=3208064 reference=false
+[page] Page process 1725939: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1725941: committed URL and fetch policy enforced outside renderer
+native scene prepared: serial=9 snapshot_generation=1 page_commands=6 images=1 loading=false phases=3 lowered_commands=186 rounded_masks=2 raster_invocations=2166144 total_invocations=3208064 reference=false
+presenter: native shader frame presented; size=1180x880 serial=8 CPU_upload=false reference=false
+native follow-up: reload requested for owned pid=1725935 after serial=8
+presenter: native raster admission fallback; complete CPU upload; reason=native scene awaits a current loaded page; size=1180x880
+[page] Page process 1725972: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1725973: committed URL and fetch policy enforced outside renderer
+native scene prepared: serial=11 snapshot_generation=2 page_commands=6 images=1 loading=false phases=3 lowered_commands=186 rounded_masks=2 raster_invocations=2166144 total_invocations=3208064 reference=false

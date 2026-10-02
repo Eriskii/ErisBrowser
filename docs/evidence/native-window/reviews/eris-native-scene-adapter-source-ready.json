@@ -1,0 +1,69 @@
+{
+  "kind": "native-scene-adapter-source-ready",
+  "files": {
+    "src/graphics/raster_bridge/native.rs": {
+      "sha256": "e8290d6b2b578c29965e2439c3cf6a4d60e64294ebb6513b749daffe31601e29",
+      "bytes": 34159
+    },
+    "src/graphics/raster_bridge/native/tests.rs": {
+      "sha256": "367ebae292140b78b8d069bb584512a83ae7c797b5731f948f84b285500c691f",
+      "bytes": 29845
+    },
+    "src/graphics/raster_bridge.rs": {
+      "sha256": "b977df05cba5a144e8f63c224b87b98ad7a3e01e15b701647cc07d149d60f99e",
+      "bytes": 18015
+    }
+  },
+  "new_private_test_groups": 19,
+  "test_names": [
+    "native_empty_scene_is_one_clear_and_one_conversion",
+    "native_phase_frames_and_canonical_target_validate_before_hidden_commands",
+    "native_original_commands_and_cpu_allowance_are_global",
+    "native_text_input_and_expansion_caps_do_not_reset_at_phase_boundaries",
+    "native_late_structural_failure_has_original_location_and_no_font_effect",
+    "native_invalid_hidden_geometry_is_not_omitted",
+    "native_rounded_literals_and_typed_zero_path_preserve_pixels",
+    "native_font_rounded_interleaving_reuses_font_id_across_phases",
+    "native_page_fixed_clip_and_chrome_order_match_original_canvas",
+    "native_image_identity_order_is_shared_and_insertion_independent",
+    "native_unused_images_and_sparse_map_capacity_are_admitted_before_fonts",
+    "native_images_fonts_and_rounded_masks_share_source_capacity",
+    "native_rounded_coverage_global_limit_refuses_later_phase",
+    "native_row_budget_is_global_even_for_narrow_coverage",
+    "native_remaining_text_work_is_not_reset_after_earlier_phase",
+    "native_preparation_bound_includes_reference_and_fits_existing_ui_reserve",
+    "native_old_probe_refusals_are_preserved",
+    "native_warm_cpu_font_cache_does_not_change_scene_bytes_or_charges",
+    "native_normal_desktop_page_and_rounded_chrome_fit_the_closed_profile"
+  ],
+  "old_private_groups": 28,
+  "total_adapter_groups": 47,
+  "parent_delta": "Only pub mod native; no shared helper or old public algorithm changes.",
+  "format": "Rust1.88 rustfmt edition2024 skip_children=true on owned files; success",
+  "execution_by_author": {
+    "compiler": false,
+    "tests": false,
+    "planner": false,
+    "Canvas": false,
+    "font_raster": false,
+    "GPU": false
+  },
+  "api": [
+    "NativePhase { frame, commands }",
+    "plan_native_scene(target, phases, images, fonts)",
+    "NativeScenePlan::{plan,into_plan,stats,retained_cpu_bytes}",
+    "preparation_peak_bytes(target, include_reference) -> Result<usize,NativeFallback>"
+  ],
+  "accounting": [
+    "one global original/lowered command ledger, typed per-phase scope with mandatory closure",
+    "one bounded borrowed sorted image map and first-reference Arc-identity table; all unused sources validated",
+    "one font Session with global Unicode, occurrence/cold, image/font/rounded source, coverage and row limits",
+    "deterministic mixed mask-ID/row-ID table; no font/image/coverage clones to retain leases",
+    "Native packed-target plus padded conversion/uniform counted once, shared conservative input/parameter upper bound",
+    "global area*nontext+font occurrence CPU debit; rounded full loop covered by nontext allowance",
+    "checked structural CPU peak includes core metadata overlap, final arenas, raw masks/rows, maximum raster scratch, own typed metadata,64 UI commands+16KiB UI strings and optional reference",
+    "peak explicitly excludes allocator/driver overhead, borrowed existing assets/CPU font cache and trusted font-library outline allocation; not RSS"
+  ],
+  "validation_note": "19 tests are source only at handoff; root frozen source and owns first execution. Canvas comparisons consume test-only packed-plan decoder, not shader execution.",
+  "hold": true
+}

@@ -18,6 +18,8 @@ pub(super) enum Phase {
     Idle,
     Preparing,
     Acquired,
+    #[cfg(feature = "vulkan-raster")]
+    Encoding,
     UploadQueued,
     Submitted,
     Retiring,
@@ -28,7 +30,22 @@ pub(super) enum Phase {
 pub(super) struct Packet {
     pub stamp: FrameStamp,
     pub size: (u32, u32),
-    pub pixels: Vec<u32>,
+    pub payload: Payload,
+    retained_bytes: usize,
+}
+pub(super) enum Payload {
+    Cpu(Vec<u32>),
+    #[cfg(feature = "vulkan-raster")]
+    Native {
+        plan: eris_raster_core::Plan,
+        reference: Option<Vec<u32>>,
+    },
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum VerifiedRoute {
+    CpuUpload,
+    #[cfg(feature = "vulkan-raster")]
+    NativeRaster,
 }
 impl Packet {
     pub fn from_canvas(mut canvas: Canvas, stamp: FrameStamp) -> Result<Self, String> {
@@ -44,11 +61,68 @@ impl Packet {
         Ok(Self {
             stamp,
             size: (canvas.width, canvas.height),
-            pixels: std::mem::take(&mut canvas.pixels),
+            payload: Payload::Cpu(std::mem::take(&mut canvas.pixels)),
+            retained_bytes: bytes,
+        })
+    }
+    #[cfg(feature = "vulkan-raster")]
+    pub fn from_native(
+        plan: eris_raster_core::Plan,
+        reference: Option<Canvas>,
+        stamp: FrameStamp,
+    ) -> Result<Self, String> {
+        use eris_raster_core::surface::SurfaceLayout;
+        // The two admitted native formats have identical storage/work. Repeat
+        // against the actual selected format on the graphics owner.
+        let layout = SurfaceLayout::for_plan(&plan, wgpu::TextureFormat::Bgra8Unorm)?;
+        let size = (layout.width(), layout.height());
+        let reference = match reference {
+            Some(mut canvas) => {
+                super::super::CpuFrame::from_canvas(&canvas)?;
+                if (canvas.width, canvas.height) != size {
+                    return Err("native reference dimensions differ from plan".into());
+                }
+                Some(std::mem::take(&mut canvas.pixels))
+            }
+            None => None,
+        };
+        let reference_bytes = reference
+            .as_ref()
+            .map_or(Some(0), |pixels| pixels.capacity().checked_mul(4))
+            .ok_or("native reference capacity overflow")?;
+        let retained_bytes = plan
+            .retained_cpu_bytes()?
+            .checked_add(reference_bytes)
+            .ok_or("native packet capacity overflow")?;
+        if retained_bytes > PIXEL_BYTES {
+            return Err("native packet exceeds the reserved next-frame capacity".into());
+        }
+        Ok(Self {
+            stamp,
+            size,
+            payload: Payload::Native { plan, reference },
+            retained_bytes,
         })
     }
     fn bytes(&self) -> usize {
-        self.pixels.capacity() * 4
+        self.retained_bytes
+    }
+    pub fn cpu_pixels(&self) -> Option<&[u32]> {
+        match &self.payload {
+            Payload::Cpu(pixels) => Some(pixels),
+            #[cfg(feature = "vulkan-raster")]
+            Payload::Native { .. } => None,
+        }
+    }
+    pub fn is_native(&self) -> bool {
+        #[cfg(feature = "vulkan-raster")]
+        {
+            matches!(&self.payload, Payload::Native { .. })
+        }
+        #[cfg(not(feature = "vulkan-raster"))]
+        {
+            false
+        }
     }
 }
 
@@ -65,17 +139,21 @@ pub(super) struct State {
     pub verified: u8,
     pub verified_bytes: u64,
     pub last_verified_serial: u64,
+    native_raster: bool,
+    #[cfg(feature = "vulkan-raster")]
+    native_presented: bool,
     pending: Option<Packet>,
     active_bytes: usize,
     scratch_bytes: usize,
     readback_bytes: usize,
+    active_gpu_bytes: usize,
     last_serial: u64,
     /// Acquisition may report occlusion without a prior winit event. Only a
     /// subsequent explicit visibility/size update resumes it, not new frames.
     acquisition_occluded: bool,
 }
 impl State {
-    fn new(target: Target, now: Instant) -> Self {
+    fn new(target: Target, now: Instant, native_raster: bool) -> Self {
         Self {
             target,
             phase: Phase::Initializing,
@@ -89,10 +167,14 @@ impl State {
             verified: 0,
             verified_bytes: 0,
             last_verified_serial: 0,
+            native_raster,
+            #[cfg(feature = "vulkan-raster")]
+            native_presented: false,
             pending: None,
             active_bytes: 0,
             scratch_bytes: 0,
             readback_bytes: 0,
+            active_gpu_bytes: 0,
             last_serial: 0,
             acquisition_occluded: false,
         }
@@ -103,6 +185,7 @@ impl State {
             .checked_add(self.active_bytes)?
             .checked_add(self.pending.as_ref().map_or(0, Packet::bytes))?
             .checked_add(self.scratch_bytes)?
+            .checked_add(self.active_gpu_bytes)?
             .checked_add(self.readback_bytes)
     }
     fn fail(&mut self, message: String, now: Instant) {
@@ -142,8 +225,16 @@ pub(super) struct Shared {
 }
 impl Shared {
     pub fn new(target: Target, wake: Arc<dyn Fn() + Send + Sync>, now: Instant) -> Self {
+        Self::with_raster(target, wake, now, false)
+    }
+    pub fn with_raster(
+        target: Target,
+        wake: Arc<dyn Fn() + Send + Sync>,
+        now: Instant,
+        native_raster: bool,
+    ) -> Self {
         Self {
-            state: Mutex::new(State::new(target, now)),
+            state: Mutex::new(State::new(target, now, native_raster)),
             ready: Condvar::new(),
             wake,
         }
@@ -321,6 +412,25 @@ impl Shared {
         }
         Ok(())
     }
+    #[cfg(feature = "vulkan-raster")]
+    pub fn reserve_native(&self, planned: usize, readback: usize) -> Result<(), String> {
+        if planned
+            .checked_add(readback)
+            .is_none_or(|n| n > 24 * 1024 * 1024)
+        {
+            return Err("native active GPU buffers exceed 24 MiB".into());
+        }
+        let mut state = self.lock();
+        state.active_gpu_bytes = planned;
+        state.readback_bytes = readback;
+        if state
+            .live_bytes()
+            .is_none_or(|bytes| bytes > APPLICATION_BUDGET)
+        {
+            return Err("Vulkan application buffer budget exhausted".into());
+        }
+        Ok(())
+    }
     pub fn occluded(&self) {
         let mut state = self.lock();
         state.acquisition_occluded = true;
@@ -333,21 +443,44 @@ impl Shared {
         state.expire(Instant::now());
         state.active_bytes = 0;
         state.readback_bytes = 0;
+        state.active_gpu_bytes = 0;
         if !state.stop {
             state.phase = Phase::Idle;
             state.deadline = None;
         }
     }
-    pub fn verified(&self, packet: &Packet) -> Result<(), String> {
+    pub fn verified(
+        &self,
+        packet: &Packet,
+        route: VerifiedRoute,
+        bytes: u64,
+    ) -> Result<(), String> {
         let mut state = self.lock();
+        #[cfg(feature = "vulkan-raster")]
+        let native = route == VerifiedRoute::NativeRaster;
+        #[cfg(not(feature = "vulkan-raster"))]
+        let native = {
+            let _ = route;
+            false
+        };
+        if native != state.native_raster || native != packet.is_native() {
+            return Err("Vulkan verification route mismatch".into());
+        }
+        if bytes != u64::from(packet.size.0) * u64::from(packet.size.1) * 4 {
+            return Err("Vulkan verification byte count mismatch".into());
+        }
         if packet.stamp.serial <= state.last_verified_serial {
             return Err("duplicate Vulkan verification serial".into());
         }
         state.last_verified_serial = packet.stamp.serial;
         state.verified += 1;
-        state.verified_bytes += (packet.pixels.len() * 4) as u64;
+        state.verified_bytes += bytes;
         // No redraw is requested for completion, including verification.
         Ok(())
+    }
+    #[cfg(feature = "vulkan-raster")]
+    pub fn first_native_presented(&self) -> bool {
+        !std::mem::replace(&mut self.lock().native_presented, true)
     }
     pub fn begin_release(&self) {
         let mut state = self.lock();
@@ -369,6 +502,7 @@ impl Shared {
         state.active_bytes = 0;
         state.scratch_bytes = 0;
         state.readback_bytes = 0;
+        state.active_gpu_bytes = 0;
         drop(state);
         self.notify();
     }
@@ -419,6 +553,179 @@ mod tests {
     fn shared() -> Shared {
         Shared::new(target(), Arc::new(|| {}), Instant::now())
     }
+    #[cfg(feature = "vulkan-raster")]
+    fn native_packet(serial: u64, reference: bool) -> Packet {
+        let plan = eris_raster_core::plan_with_masks_for_profile(
+            eris_raster_core::Profile::Native,
+            eris_raster_core::Frame::new(3, 2, 0),
+            &[],
+            &[],
+            &[],
+            &[],
+        )
+        .unwrap();
+        Packet::from_native(
+            plan,
+            reference.then(|| Canvas::new(3, 2).unwrap()),
+            FrameStamp {
+                generation: 1,
+                viewport_revision: 1,
+                serial,
+            },
+        )
+        .unwrap()
+    }
+    #[cfg(feature = "vulkan-raster")]
+    #[test]
+    fn native_packet_moves_plan_and_reference_and_normal_packet_has_no_target() {
+        let normal = native_packet(1, false);
+        assert!(normal.cpu_pixels().is_none());
+        let Payload::Native { plan, reference } = &normal.payload else {
+            panic!("native payload")
+        };
+        assert!(reference.is_none());
+        assert_eq!(normal.bytes(), plan.retained_cpu_bytes().unwrap());
+        let pixels = plan.parameters().as_ptr();
+        let owned = normal;
+        let Payload::Native { plan, .. } = &owned.payload else {
+            panic!("native payload")
+        };
+        assert_eq!(plan.parameters().as_ptr(), pixels);
+        let with_reference = native_packet(2, true);
+        let Payload::Native { plan, reference } = &with_reference.payload else {
+            panic!("native payload")
+        };
+        assert_eq!(
+            with_reference.bytes(),
+            plan.retained_cpu_bytes().unwrap() + reference.as_ref().unwrap().capacity() * 4
+        );
+    }
+    #[cfg(feature = "vulkan-raster")]
+    #[test]
+    fn native_packet_refuses_probe_malformed_reference_and_excess_capacity() {
+        let probe = eris_raster_core::plan(eris_raster_core::Frame::new(3, 2, 0), &[]).unwrap();
+        assert!(Packet::from_native(probe, None, FrameStamp::default()).is_err());
+        for mode in 0..3 {
+            let Payload::Native { plan, .. } = native_packet(1, false).payload else {
+                panic!("native payload")
+            };
+            let mut canvas = Canvas::new(if mode == 0 { 2 } else { 3 }, 2).unwrap();
+            if mode == 1 {
+                canvas.pixels.pop();
+            }
+            if mode == 2 {
+                canvas.pixels.reserve(PIXEL_BYTES / 4);
+            }
+            assert!(Packet::from_native(plan, Some(canvas), FrameStamp::default()).is_err());
+        }
+    }
+    #[cfg(feature = "vulkan-raster")]
+    #[test]
+    fn heterogeneous_latest_packet_keeps_active_epoch_deadline_and_all_charges() {
+        let shared = Shared::with_raster(target(), Arc::new(|| {}), Instant::now(), true);
+        shared.initialized("test".into());
+        let first = native_packet(1, true);
+        let first_bytes = first.bytes();
+        assert_eq!(shared.submit(first), Submission::Queued);
+        let active = shared.take().unwrap();
+        let deadline = shared.lock().deadline;
+        shared.reserve_scratch(64, 0).unwrap(); // retained earlier CPU upload Vec
+        shared.reserve_native(808, 512).unwrap();
+        for serial in 2..=101 {
+            let next = if serial % 2 == 0 {
+                packet(serial, target())
+            } else {
+                native_packet(serial, serial % 3 == 0)
+            };
+            let pending_bytes = next.bytes();
+            let expected = if serial == 2 {
+                Submission::Queued
+            } else {
+                Submission::Replaced
+            };
+            assert_eq!(shared.submit(next), expected);
+            let state = shared.lock();
+            assert_eq!(state.deadline, deadline);
+            assert_eq!(
+                state.live_bytes().unwrap(),
+                PIXEL_BYTES + first_bytes + pending_bytes + 64 + 808 + 512
+            );
+            drop(state);
+            assert!(shared.current(&active)); // a newer same-epoch serial does not cancel it
+        }
+        shared.phase(Phase::Encoding);
+        shared.phase(Phase::Retiring);
+        assert_eq!(shared.lock().deadline, deadline);
+        drop(active);
+        shared.idle();
+        let state = shared.lock();
+        assert_eq!(
+            (
+                state.active_bytes,
+                state.active_gpu_bytes,
+                state.readback_bytes
+            ),
+            (0, 0, 0)
+        );
+        assert_eq!(state.scratch_bytes, 64);
+    }
+    #[cfg(feature = "vulkan-raster")]
+    #[test]
+    fn native_readback_and_global_ledger_have_independent_exact_boundaries() {
+        let shared = shared();
+        // Synthetic allocation ledger boundaries, not large real GPU buffers.
+        shared
+            .reserve_native(16 * 1024 * 1024, 8 * 1024 * 1024)
+            .unwrap();
+        assert!(
+            shared
+                .reserve_native(16 * 1024 * 1024, 8 * 1024 * 1024 + 1)
+                .is_err()
+        );
+        assert!(shared.reserve_native(usize::MAX, 1).is_err());
+        let active = 24 * 1024 * 1024;
+        let exact_scratch = APPLICATION_BUDGET - PIXEL_BYTES - active;
+        shared
+            .reserve_scratch(exact_scratch, 8 * 1024 * 1024)
+            .unwrap();
+        assert_eq!(shared.lock().live_bytes(), Some(APPLICATION_BUDGET));
+        assert!(
+            shared
+                .reserve_scratch(exact_scratch + 1, 8 * 1024 * 1024)
+                .is_err()
+        );
+    }
+    #[cfg(feature = "vulkan-raster")]
+    #[test]
+    fn fallback_upload_cannot_satisfy_native_verification_or_double_count() {
+        let shared = Shared::with_raster(target(), Arc::new(|| {}), Instant::now(), true);
+        assert!(
+            shared
+                .verified(&packet(1, target()), VerifiedRoute::CpuUpload, 24)
+                .is_err()
+        );
+        let native = native_packet(2, true);
+        assert!(
+            shared
+                .verified(&native, VerifiedRoute::NativeRaster, 23)
+                .is_err()
+        );
+        assert!(
+            shared
+                .verified(&native, VerifiedRoute::CpuUpload, 24)
+                .is_err()
+        );
+        assert_eq!(shared.lock().verified, 0);
+        shared
+            .verified(&native, VerifiedRoute::NativeRaster, 24)
+            .unwrap();
+        assert_eq!(shared.lock().verified_bytes, 24);
+        assert!(
+            shared
+                .verified(&native, VerifiedRoute::NativeRaster, 24)
+                .is_err()
+        );
+    }
     #[test]
     fn capacity_not_just_dimensions_is_bounded_and_pixels_are_moved() {
         let mut canvas = Canvas::new(3, 2).unwrap();
@@ -426,7 +733,8 @@ mod tests {
         assert_eq!(
             Packet::from_canvas(canvas, FrameStamp::default())
                 .unwrap()
-                .pixels
+                .cpu_pixels()
+                .unwrap()
                 .as_ptr(),
             original
         );
@@ -547,7 +855,9 @@ mod tests {
         let active = shared.take().unwrap();
         assert_eq!(count.load(Ordering::Relaxed), 2);
         shared.observe(Instant::now(), |s| assert!(!s.redraw));
-        shared.verified(&active).unwrap();
+        shared
+            .verified(&active, VerifiedRoute::CpuUpload, 24)
+            .unwrap();
         drop(active);
         shared.idle();
         assert_eq!(count.load(Ordering::Relaxed), 2);
@@ -567,7 +877,13 @@ mod tests {
             .unwrap();
         assert!(shared.reserve_scratch(usize::MAX, 1).is_err());
         shared.reserve_scratch(0, 0).unwrap();
-        shared.verified(&active).unwrap();
-        assert!(shared.verified(&active).is_err());
+        shared
+            .verified(&active, VerifiedRoute::CpuUpload, 24)
+            .unwrap();
+        assert!(
+            shared
+                .verified(&active, VerifiedRoute::CpuUpload, 24)
+                .is_err()
+        );
     }
 }

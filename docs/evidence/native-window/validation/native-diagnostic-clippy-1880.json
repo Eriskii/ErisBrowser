@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "clippy",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "vulkan-raster",
+    "--all-targets",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.684,
+  "log": "native-diagnostic-clippy-1880.log",
+  "sha256": "4f68a07b1e57705e9ec2d83c43761f3e6b03147242e08d525b498c30d9178180"
+}

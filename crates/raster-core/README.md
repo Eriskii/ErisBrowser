@@ -36,6 +36,18 @@ is derived from viewport axes and command count; its storage remains charged.
 A Native viewport is an upper bound, not a promise that any scene at that size
 fits the other limits.
 
+`plan_native_phases` accepts a canonical full-target frame and up to four
+`Phase` values. Each phase has its own caller clip and document/fixed offsets;
+scopes must balance within that phase. Commands, sources, input storage and
+dispatch work share one frame-wide ledger. The result clears once, draws the
+phases in order and reserves one final surface conversion. Phase boundaries
+cannot renew a limit or create an independently presentable prefix.
+
+`Plan::retained_cpu_bytes` charges its actual vector capacities and metadata.
+`native_planner_metadata_peak_bytes` exposes a conservative structural allowance
+for callers accounting for preparation overlapping the finished plan. These
+are explicit payload bounds, not process-RSS or driver-allocation bounds.
+
 `rounded::RoundedShape::prepare` validates already translated rectangle/clip
 geometry and computes placement, cropped coverage size and the full CPU loop
 debit without allocating a mask. Its disposition distinguishes empty geometry,
@@ -100,13 +112,14 @@ cargo test --locked --manifest-path tools/vulkan-raster-probe/Cargo.toml --featu
 CPU-only tests do not initialize a graphics device. Actual Vulkan execution
 uses the separate supervised probe commands and their retained evidence.
 
-These APIs do not connect custom GPU rasterization to the browser window.
-The [native prerequisite checker](../../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
+The browser now uses these APIs through its optional
+[native-window route](../../docs/vulkan-native-window.md). Core tests remain
+CPU-only: **78 default / 89 GPU-feature groups** pass on Rust 1.88 and 1.98.
+The browser owns actual acquisition, submission, verification and presentation.
+
+The earlier [native prerequisite checker](../../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
 exercises larger offscreen targets, rounded coverage and byte conversion.
 Its eleven cases pass in both formats on three Vulkan adapters, with
-81,393,120 bytes compared. Both Rust 1.88 and 1.98 pass 66 default and 77
-GPU-enabled core test groups; the initial GPU compilation correction and
-exact result logs remain in the linked evidence.
-Browser composition, acquired-surface presentation, opacity groups, broader
-compatibility and performance remain separate work; see the
-[native integration proposal](../../docs/vulkan-native-plan.md).
+81,393,120 bytes compared. Those results are distinct from the later acquired
+browser-window checks. Group opacity, broader compatibility and performance
+remain unfinished.

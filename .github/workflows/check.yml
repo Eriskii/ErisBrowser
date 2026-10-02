@@ -115,6 +115,10 @@ jobs:
             cargo-args: '--features vulkan-presenter'
           - toolchain: stable
             cargo-args: '--features vulkan-presenter'
+          - toolchain: 1.88.0
+            cargo-args: '--features vulkan-raster'
+          - toolchain: stable
+            cargo-args: '--features vulkan-raster'
     env:
       RUSTUP_TOOLCHAIN: ${{ matrix.toolchain }}
       CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER: python3 tools/ci_test_runner.py
@@ -142,6 +146,7 @@ jobs:
           modules = (
               ('src/graphics/raster_bridge/tests.rs', 'graphics::raster_bridge::tests::', 21),
               ('src/graphics/raster_bridge/text/tests.rs', 'graphics::raster_bridge::text::tests::', 7),
+              ('src/graphics/raster_bridge/native/tests.rs', 'graphics::raster_bridge::native::tests::', 19),
           )
           expected = set()
           for source, prefix, count in modules:
@@ -151,10 +156,10 @@ jobs:
               expected.update(prefix + name for name in names)
           found = [line.removesuffix(': test') for line in Path(sys.argv[1]).read_text().splitlines()
                    if line.endswith(': test')]
-          if len(found) != 28 or set(found) != expected:
+          if len(found) != 47 or set(found) != expected:
               raise SystemExit(f'bridge test discovery mismatch: found={len(found)}, '
                                f'missing={sorted(expected - set(found))}, extra={sorted(set(found) - expected)}')
-          print('Verified all 28 relocated raster bridge tests are discoverable.')
+          print('Verified all 28 relocated and 19 native raster bridge tests are discoverable.')
           PY
             cargo test --locked --lib --features "$bridge_features" graphics::raster_bridge:: -- --include-ignored
           done

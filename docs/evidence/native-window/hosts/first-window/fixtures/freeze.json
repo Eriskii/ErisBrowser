@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "kind": "fixed native-window fixture inputs; differential CPU reference, not pixel goldens",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1187,
+      "sha256": "375fa7dafca96a40e06a36fbf0ebf74f15e2558d5c2c8768613cfe0f5b7de4fe"
+    },
+    {
+      "path": "admitted.html",
+      "bytes": 315,
+      "sha256": "1f58f963606777dba90496ecb62f26939fa1a4e16289b8b28205036d3505f661"
+    },
+    {
+      "path": "opacity.html",
+      "bytes": 327,
+      "sha256": "c6fe7215abc773b0417ff51f8737e03cc903d9cc1d9c7602e1cf3a04054a11e5"
+    },
+    {
+      "path": "two-pixels.png",
+      "bytes": 71,
+      "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+    }
+  ],
+  "cases": [
+    {
+      "name": "admitted-verified",
+      "html": "admitted.html",
+      "route": "native",
+      "verify_frames": 1
+    },
+    {
+      "name": "admitted-normal",
+      "html": "admitted.html",
+      "route": "native",
+      "verify_frames": 0
+    },
+    {
+      "name": "opacity-fallback",
+      "html": "opacity.html",
+      "route": "complete-cpu-fallback",
+      "verify_frames": 0
+    }
+  ],
+  "image_origin": {
+    "path": "tools/vulkan-raster-probe/worker-text-fixtures/html/two-pixels.png",
+    "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+  },
+  "expected_size": [
+    1180,
+    880
+  ],
+  "scripts": false
+}

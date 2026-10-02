@@ -1,5 +1,52 @@
 # Validation record
 
+## Native GPU window integration
+
+The optional `vulkan-raster` feature now connects the custom rasterizer to the
+browser's actual Vulkan surface. A single plan preserves page, overlay and
+chrome order, independent fixed-coordinate caller clips and global resource
+limits. Startup/loading and unsupported scenes use the complete original CPU
+painter. Normal admitted frames carry no CPU framebuffer or readback; explicit
+verification carries one complete Canvas reference.
+
+Rust 1.88 and 1.98 each pass **1,349 native-feature tests**, strict all-target
+Clippy across the affected feature variants, **47 adapter groups**, and
+**78 default / 89 GPU-feature core groups**. This adds 19 native-adapter and
+12 phased-core groups while preserving the old adapter/planner tests. The
+browser/presenter suite has 63 groups. CI adds native-feature rows on both
+Rust versions and explicitly discovers all 47 adapter groups.
+
+Four controlled native-window cases pass on NVIDIA RTX 4070 SUPER/BGRA8:
+**4,153,600 acquired bytes** match the full CPU reference; a separate loaded
+scene renders with no reference; opacity and redundant-background scenes use
+complete CPU fallback. Fallback runs prove admission/route behavior, not pixel
+comparison of their uploaded textures. All four supervised runs exit zero and
+leave no owned descendants. The first two failed attempts are retained: an
+address-bar mask exceeded its axis cap at compositor-selected size, then the
+original two-background scene exceeded the unchanged work cap at 1180×880.
+That original input is now the explicit overdraw-fallback fixture.
+
+Two additional supervised checks pass. A reload dispatched after actual native
+presentation starts a new confined page worker and broker, then prepares a
+generation-two native scene; this does not establish a second presentation or
+pixel comparison. Requesting one native verification frame for the opacity
+fixture exits with the expected `0/1` incomplete quota, proving CPU fallback
+cannot satisfy native verification. Both leave no owned descendants.
+
+The [native-window documentation](vulkan-native-window.md) and
+[source-bound evidence](evidence/vulkan-native-window.json) separate acquired
+pixels, normal rendering, fallback and failures. The host has **22 synthetic
+test groups** covering protocol ordering/identity and PID-owned window control;
+the follow-up harness adds **13 groups**, for **35 passing Python tests**.
+This remains hybrid CPU coverage/GPU compositing. Group opacity, wider admission,
+zoom, shaping, native GPU screenshots, independent security auditing and the
+requested Chromium performance threshold remain unfinished. No compositor or
+performance result is inferred from exact acquired-texture bytes.
+
+All seven [CI jobs for the preceding `d07c827` checkpoint](https://github.com/Eriskii/ErisBrowser/actions/runs/36974379124)
+passed; its [terminal receipt](../tools/vulkan-raster-probe/evidence/host-native-prerequisites-ci.json)
+is retained separately.
+
 ## Native frame prerequisites
 
 The reusable core adds a closed `Profile::Native` alongside the unchanged Probe

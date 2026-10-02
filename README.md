@@ -1,6 +1,6 @@
 # Eris Browser
 
-An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, a JavaScript subset interpreter, SVG handling, and software painting. There is no Chromium, Firefox, WebKit, Servo, Ladybird, embedded webview, or external JavaScript engine in the rendering path.
+An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, a JavaScript subset interpreter, SVG handling, software painting and experimental GPU compositing. There is no Chromium, Firefox, WebKit, Servo, Ladybird, embedded webview, or external JavaScript engine in the rendering path.
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
@@ -14,14 +14,19 @@ fallback. Its 16 cases pass on three Vulkan adapters. A separate
 masks on the GPU; all 26 literal-mask and font-reference cases pass on those
 adapters. The [worker-text checker](tools/vulkan-raster-probe/WORKER_TEXT.md)
 also passes seven actual HTML snapshots on all three adapters, including
-whole-frame fallback. Native browser painting
-currently remains on the CPU; the [rendering docket](docs/vulkan-rendering.md)
-tracks the remaining integration work.
-Drawing plans and GPU encoding now live in the reusable
-[raster core](crates/raster-core/README.md), separate from the comparison tools.
-Its [native-size drawing and surface conversion checks](tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
-pass in BGRA and RGBA on all three adapters. Connecting those components to the
-browser's complete window scene is underway.
+whole-frame fallback. The optional Linux [native GPU route](docs/vulkan-native-window.md)
+now draws admitted loaded pages, overlays and browser controls into the actual
+window using the custom shaders. One 1180×880 acquired texture matches all
+4,153,600 CPU-reference bytes on the NVIDIA host; a separate normal run uses no
+CPU reference or readback. Opacity and over-budget scenes take complete CPU
+fallback. Bundled-font and rounded coverage still come from CPU preparation.
+The [rendering docket](docs/vulkan-rendering.md) tracks broader admission,
+compositing and performance work. There is no measured Chromium parity.
+
+Drawing plans and GPU encoding live in the reusable
+[raster core](crates/raster-core/README.md), separate from comparison tools.
+Its earlier [native-size conversion checks](tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
+remain independent offscreen evidence in both BGRA and RGBA on three adapters.
 
 ## Open the browser
 

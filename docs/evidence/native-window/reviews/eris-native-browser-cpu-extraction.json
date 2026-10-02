@@ -1,0 +1,12 @@
+{
+  "parent": "d07c827ae5bc66d290a721e093072c687e9be8e9",
+  "original_cpu_paint_body_unchanged": true,
+  "bytes": 8954,
+  "sha256": "de58962c9b7edbb9a290d6ab8ea9a89500c5920e4e9aa77fb601b7ee195ddf95",
+  "changes": [
+    "draw retains target/window checks, routes opt-in native before fallback",
+    "old CPU painting and capture body moved intact to paint_canvas",
+    "serial generation moved to next_frame_stamp",
+    "editing_browser helper gains test-only pub(super) for comparison tests"
+  ]
+}

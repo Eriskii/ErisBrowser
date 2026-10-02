@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "tools/native_raster_host.py",
+      "sha256": "0d99ba93859310171a85669016fa1c9050169e392dec0d157e2255f366752329",
+      "bytes": 26984
+    },
+    {
+      "path": "tools/test_native_raster_host.py",
+      "sha256": "ccc7a14ffab74adef371c55ec5f3f3e852884fd8b8e51a27954d580d622e1181",
+      "bytes": 22143
+    },
+    {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "sha256": "3bb7764b3db0cbcb3b806ab814a29f8564b8c6607815406dce54b2ff39c550ac",
+      "bytes": 1381
+    }
+  ],
+  "synthetic_test_groups": 21,
+  "execution": "none: source/AST inspection only; root owns tests and real windows",
+  "changes": [
+    "causal loaded scene/presentation/verification/summary validation",
+    "exact opacity fallback dimensions",
+    "optional owned unreaped PID Hyprland 1180x880 control inside existing subreaper",
+    "bounded controller output and deadline; unrelated client metadata excluded from retained receipts"
+  ],
+  "fixtures_unchanged": true,
+  "known_scope": "Three primary cases only; initial compositor-size failure retained separately; actual GPU acceptance not yet observed by this agent."
+}

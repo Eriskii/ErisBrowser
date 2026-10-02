@@ -1,0 +1,25 @@
+{
+  "kind": "native-presenter-bounded-static-review",
+  "files": {
+    "src/presenter/vulkan/native.rs": "2082f1af30c18b5bd1cf946ad1547344f405add5cb62c4f1a73e723855ab3b19",
+    "src/presenter/vulkan/control.rs": "1c42edcd785eb205ca670c52342980ece91167417a1001a73d6944de885dbc09",
+    "src/presenter/vulkan.rs": "0a83e62ab869e3dfd5969cd77f429f52ee876ef14652c6c11215859e68808f47",
+    "src/presenter.rs": "a763c3035ebe69b846d83d90342b3b8527c9e77be6000f9ee5177308a98cf98d"
+  },
+  "findings": [],
+  "reviewed": [
+    "No-write cancellation avoids submission; may-have-writes abort discards draw prefix and flushes once",
+    "Tracked submission completion precedes explicit resource destruction; unresolved errors release complete owner through ordinary drops",
+    "Original deadline survives encoding/submission/retirement; scopes collected on saved failure paths",
+    "Mapped views end before unmap; comparison and scope failures prevent present",
+    "Native Plan/reference capacity, pending/active packets, retained CPU scratch and explicit GPU/readback remain under unchanged application ledger",
+    "Latest pending packet replacement preserves active same-epoch serial/deadline behavior",
+    "Route-separated acquired verification cannot be satisfied by CPU admission fallback"
+  ],
+  "limits": [
+    "Source review only; no execution, GPU calls or failure injection by reviewer",
+    "Current QueueProgress tests cover bookkeeping transitions; real driver behavior still requires root validation",
+    "Application buffer ledger explicitly excludes surface/driver/allocator internals and existing font assets/cache"
+  ],
+  "execution": false
+}

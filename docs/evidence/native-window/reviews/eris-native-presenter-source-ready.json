@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "status": "source formatted and held for coordinated freeze/first compilation",
+  "files": [
+    {
+      "path": "src/presenter.rs",
+      "bytes": 15519,
+      "sha256": "a763c3035ebe69b846d83d90342b3b8527c9e77be6000f9ee5177308a98cf98d"
+    },
+    {
+      "path": "src/presenter/vulkan.rs",
+      "bytes": 26935,
+      "sha256": "0a83e62ab869e3dfd5969cd77f429f52ee876ef14652c6c11215859e68808f47"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "bytes": 30996,
+      "sha256": "1c42edcd785eb205ca670c52342980ece91167417a1001a73d6944de885dbc09"
+    },
+    {
+      "path": "src/presenter/vulkan/transfer.rs",
+      "bytes": 7858,
+      "sha256": "b461e82327664d32c52d0205566b20fc6a9076ca96e0edbd01465d7040b74c61"
+    },
+    {
+      "path": "src/presenter/vulkan/native.rs",
+      "bytes": 14791,
+      "sha256": "2082f1af30c18b5bd1cf946ad1547344f405add5cb62c4f1a73e723855ab3b19"
+    }
+  ],
+  "api": {
+    "config": "PresenterConfig {choice,verify_frames,native_raster:bool}; default false; requires Vulkan plus vulkan-raster feature.",
+    "native_methods": "cfg Linux+vulkan-raster: wants_native(), needs_native_reference(), note_native_fallback(&str), submit_native(Plan,Option<Canvas>,FrameStamp)->Result<Submission,String>",
+    "packet": "CPU Vec or Native owned Plan and optional moved reference Vec; exact capacities charged; packet <=existing16MiB next-frame reservation",
+    "normal_native": "No Canvas/reference/readback or CPU write_texture; existing graphics owner creates ConvertedFrame and copies padded output to acquired texture",
+    "verification": "Only acquired NativeRaster comparisons satisfy native mode; CPU whole-frame fallback uploads do not increment required samples; compare_words avoids another converted CPU target",
+    "retirement": "MayHaveWrites marked before core encoding, encode-abort discards partial encoder and flushes once, completion uses original deadline, all scopes popped before presentation; unresolved failures release owner without idle reuse",
+    "gpu_ledger": "Native Plan includes conversion; Plan+optional padded readback<=24MiB, included with CPU Plan/reference capacities, retained CPU conversion capacity and nextUI16MiB under128MiB",
+    "screenshots": "Root owns CLI and browser::run native screenshot refusal; no screenshot result channel added"
+  },
+  "test_inventory": {
+    "src/presenter.rs": [
+      "native_configuration_requires_vulkan_feature_and_a_window",
+      "malformed_canvas_dimensions_and_lengths_are_rejected",
+      "oversized_frame_metadata_is_rejected_without_allocating_pixels",
+      "odd_width_completed_frame_is_borrowed_and_copied_without_conversion",
+      "mismatched_presentation_buffers_are_rejected_without_partial_copy"
+    ],
+    "src/presenter/vulkan.rs": [
+      "blocked_drop_does_not_allow_fallback_and_late_real_release_does",
+      "panicked_thread_without_release_is_not_fallback_authority",
+      "verification_fails_for_insufficient_samples_and_any_late_failure"
+    ],
+    "src/presenter/vulkan/control.rs": [
+      "native_packet_moves_plan_and_reference_and_normal_packet_has_no_target",
+      "native_packet_refuses_probe_malformed_reference_and_excess_capacity",
+      "heterogeneous_latest_packet_keeps_active_epoch_deadline_and_all_charges",
+      "native_readback_and_global_ledger_have_independent_exact_boundaries",
+      "fallback_upload_cannot_satisfy_native_verification_or_double_count",
+      "capacity_not_just_dimensions_is_bounded_and_pixels_are_moved",
+      "ten_thousand_updates_retain_one_latest_packet_without_resetting_deadline",
+      "stale_active_frames_and_occlusion_do_not_resume_on_new_packets",
+      "expiry_and_stop_never_acknowledge_release_or_reset_on_traffic",
+      "coalesced_wake_is_drained_with_state_and_allows_reentrancy",
+      "bounded_errors_and_resource_ledger_are_checked"
+    ],
+    "src/presenter/vulkan/transfer.rs": [
+      "native_word_comparison_checks_all_channels_and_only_skips_padding",
+      "conversion_always_sets_opaque_alpha_and_handles_channel_order",
+      "odd_width_readback_checks_every_pixel_and_ignores_only_padding"
+    ],
+    "src/presenter/vulkan/native.rs": [
+      "encoding_abort_flushes_once_but_never_submits_the_draw_prefix",
+      "cleanup_keeps_first_failure_and_still_records_a_late_scope_failure"
+    ]
+  },
+  "new_groups": [
+    "native_configuration_requires_vulkan_feature_and_a_window",
+    "native_packet_moves_plan_and_reference_and_normal_packet_has_no_target",
+    "native_packet_refuses_probe_malformed_reference_and_excess_capacity",
+    "heterogeneous_latest_packet_keeps_active_epoch_deadline_and_all_charges",
+    "native_readback_and_global_ledger_have_independent_exact_boundaries",
+    "fallback_upload_cannot_satisfy_native_verification_or_double_count",
+    "native_word_comparison_checks_all_channels_and_only_skips_padding",
+    "encoding_abort_flushes_once_but_never_submits_the_draw_prefix",
+    "cleanup_keeps_first_failure_and_still_records_a_late_scope_failure"
+  ],
+  "checks": {
+    "rustfmt": "installed1.88 skip_children applied only owned files",
+    "diff_whitespace": "passed for owned tracked files",
+    "build_test_renderer_worker_gpu_execution": false,
+    "peer_review": "layout requested, pending separate receipt"
+  },
+  "remaining_dependencies": [
+    "Root browser reference preparation must remain within script conservative16MiB preparation peak and freeze UI state before both routes.",
+    "Coordinated compiler/test/actual native-window execution remains root-owned."
+  ]
+}

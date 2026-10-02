@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.0",
+    "clippy",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "raster-bridge",
+    "--all-targets",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 4.427,
+  "log": "bridge-clippy-1980.log",
+  "sha256": "13716ef6486f31138603b196d491f48f9ba0723f7a75d95716c2e15b3f87ed62"
+}

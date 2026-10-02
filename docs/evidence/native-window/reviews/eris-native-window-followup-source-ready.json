@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "tools/native_raster_followup.py",
+      "sha256": "edd7b1f6ead0fde62f6aea8dc7e18952620f5d17529366fdf52e493529a7dcce",
+      "bytes": 20680
+    },
+    {
+      "path": "tools/test_native_raster_followup.py",
+      "sha256": "9e475bd02fc6e70f2c84c5be893c4ce3f55a4cad54746163f28b4fe8d5efb749",
+      "bytes": 14028
+    },
+    {
+      "path": "tools/native_raster_host.py",
+      "sha256": "efe6ce8a9ca78e6df3ff1740e3fe56974909849467f525fa4e68751cb6b0db1a",
+      "bytes": 27201
+    },
+    {
+      "path": "tools/test_native_raster_host.py",
+      "sha256": "9770d5a6f050cd28e42f80269603e6b5ef4c98326e97b9ebf04507f7afb31f69",
+      "bytes": 23261
+    },
+    {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "sha256": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a",
+      "bytes": 1987
+    }
+  ],
+  "synthetic_test_groups": 13,
+  "engine_or_controller_execution": "none; only hyprctl --help and a failed read-only version IPC inspection",
+  "cases": [
+    "reload-after-native",
+    "opacity-verification-refused"
+  ],
+  "hyprctl_inspection": {
+    "path": "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+    "package_version": "0.56.2",
+    "server_version": "not observed: sandboxed version IPC reported Could not set socket timeout (2)",
+    "dispatcher_reference": "https://wiki.hypr.land/0.54.0/Configuring/Dispatchers/",
+    "syntax": "sendshortcut CTRL,r,pid:<owned unreaped child>"
+  },
+  "bounded_scope": [
+    "same timeout/window deadlines as base; existing outer subreaper",
+    "browser stderr relay capped at2MiB, exact raw bytes plus labeled wrapper event",
+    "failure teardown drains pending/readable stderr under two-second bound with no event interpretation",
+    "reload validates fresh page/broker IDs and generation2 preparation after actual native presentation, not second presentation",
+    "opacity expected exit1 must be exact0/1 incomplete with zero native verification"
+  ],
+  "base_unchanged": true
+}

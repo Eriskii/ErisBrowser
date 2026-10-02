@@ -28,6 +28,9 @@ use winit::{
     window::{CursorIcon, Window, WindowId},
 };
 
+#[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+mod native_scene;
+
 const TOOLBAR: f32 = 76.0;
 const STATUS: f32 = 25.0;
 
@@ -472,6 +475,9 @@ pub fn run(
     capture: Option<PathBuf>,
     presenter_config: PresenterConfig,
 ) -> Result<(), String> {
+    if presenter_config.native_raster && capture.is_some() {
+        return Err("--raster=gpu does not yet support --window-screenshot; use --vulkan-verify-frames to verify acquired pixels".into());
+    }
     let event_loop = EventLoop::<Event>::with_user_event()
         .build()
         .map_err(|e| e.to_string())?;
@@ -491,6 +497,8 @@ pub fn run(
         .spawn(move || worker(proxy, rx, worker_snapshot, generation, scripts))
         .map_err(|e| e.to_string())?;
     let mut browser = Browser {
+        #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+        native_scene_reports: 0,
         window: None,
         presenter: None,
         presenter_config,
@@ -543,6 +551,8 @@ pub fn run(
     }
 }
 struct Browser {
+    #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+    native_scene_reports: u8,
     window: Option<Arc<Window>>,
     presenter: Option<Presenter>,
     presenter_config: PresenterConfig,
@@ -1389,6 +1399,78 @@ impl Browser {
         if size.width == 0 || size.height == 0 {
             return Ok(());
         }
+        #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+        if self.presenter.as_ref().is_some_and(Presenter::wants_native) {
+            let reference_requested = self
+                .presenter
+                .as_ref()
+                .is_some_and(Presenter::needs_native_reference);
+            match native_scene::prepare(self, size, reference_requested) {
+                Ok(prepared) => {
+                    let reference = if reference_requested {
+                        Some(self.paint_canvas(size)?)
+                    } else {
+                        None
+                    };
+                    self.selection = prepared.selection;
+                    let stamp = self.next_frame_stamp()?;
+                    if reference_requested || self.native_scene_reports < 8 {
+                        self.native_scene_reports = self.native_scene_reports.saturating_add(1);
+                        let stats = prepared.plan.stats();
+                        eprintln!(
+                            "native scene prepared: serial={} snapshot_generation={} page_commands={} images={} loading={} phases={} lowered_commands={} rounded_masks={} raster_invocations={} total_invocations={} reference={reference_requested}",
+                            stamp.serial,
+                            self.snapshot.as_ref().map_or(0, |s| s.generation),
+                            self.snapshot
+                                .as_ref()
+                                .map_or(0, |s| s.layout.commands.len()),
+                            self.snapshot.as_ref().map_or(0, |s| s.images.len()),
+                            self.loading,
+                            stats.phases,
+                            stats.bridge.lowered_commands,
+                            stats.rounded_masks,
+                            prepared.plan.plan().raster_invocations(),
+                            prepared.plan.plan().invocations(),
+                        );
+                    }
+                    if let Some(presenter) = &mut self.presenter {
+                        presenter.submit_native(prepared.plan.into_plan(), reference, stamp)?;
+                    }
+                    return Ok(());
+                }
+                Err(reason) => {
+                    if let Some(presenter) = &mut self.presenter {
+                        presenter.note_native_fallback(&format!(
+                            "{reason}; size={}x{}",
+                            size.width, size.height
+                        ));
+                    }
+                }
+            }
+        }
+        let canvas = self.paint_canvas(size)?;
+        if self.presenter.is_some() {
+            let stamp = self.next_frame_stamp()?;
+            if let Some(presenter) = &mut self.presenter {
+                presenter.submit(canvas, stamp)?;
+            }
+        }
+        Ok(())
+    }
+
+    fn next_frame_stamp(&mut self) -> Result<FrameStamp, String> {
+        self.frame_serial = self
+            .frame_serial
+            .checked_add(1)
+            .ok_or("presentation frame serial exhausted")?;
+        Ok(FrameStamp {
+            generation: self.target.generation,
+            viewport_revision: self.target.viewport_revision,
+            serial: self.frame_serial,
+        })
+    }
+
+    fn paint_canvas(&mut self, size: winit::dpi::PhysicalSize<u32>) -> Result<Canvas, String> {
         let mut canvas = Canvas::new(size.width, size.height)?;
         canvas.clear(Color::WHITE);
         let viewport = Rect {
@@ -1675,21 +1757,7 @@ impl Browser {
             }
             canvas.save(&path)?;
         }
-        if let Some(presenter) = &mut self.presenter {
-            self.frame_serial = self
-                .frame_serial
-                .checked_add(1)
-                .ok_or("presentation frame serial exhausted")?;
-            presenter.submit(
-                canvas,
-                FrameStamp {
-                    generation: self.target.generation,
-                    viewport_revision: self.target.viewport_revision,
-                    serial: self.frame_serial,
-                },
-            )?;
-        }
-        Ok(())
+        Ok(canvas)
     }
 }
 impl ApplicationHandler<Event> for Browser {
@@ -2063,7 +2131,7 @@ mod tests {
         eris::layout::layout(document, &styles, 1180.0, 739.0, fonts)
     }
 
-    fn editing_browser(html: &str) -> Browser {
+    pub(super) fn editing_browser(html: &str) -> Browser {
         let fonts = Fonts::new();
         let document = Document::parse(html);
         let snapshot = Snapshot {
@@ -2080,6 +2148,8 @@ mod tests {
         };
         let visible_nodes = visible_layout_nodes(&snapshot);
         Browser {
+            #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+            native_scene_reports: 0,
             window: None,
             presenter: None,
             presenter_config: PresenterConfig::default(),

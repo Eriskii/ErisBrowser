@@ -78,9 +78,97 @@ pub(super) fn compare(
     Ok(())
 }
 
+/// Compare actual acquired pixels with the packet-owned CPU reference without
+/// allocating a second converted CPU target. Only native verification calls it.
+#[cfg(feature = "vulkan-raster")]
+pub(super) fn compare_words(
+    mapped: &[u8],
+    expected: &[u32],
+    size: (u32, u32),
+    padded: u32,
+    format: wgpu::TextureFormat,
+) -> Result<(), String> {
+    let (_, required_padded, bytes) = row_layout(size)?;
+    if !matches!(
+        format,
+        wgpu::TextureFormat::Bgra8Unorm | wgpu::TextureFormat::Rgba8Unorm
+    ) || padded != required_padded
+        || mapped.len() != bytes
+        || expected.len() as u64 != u64::from(size.0) * u64::from(size.1)
+    {
+        return Err("native verification format/length/stride mismatch".into());
+    }
+    for (index, word) in expected.iter().enumerate() {
+        let [b, g, r, _] = word.to_le_bytes();
+        let pixel = if format == wgpu::TextureFormat::Bgra8Unorm {
+            [b, g, r, 255]
+        } else {
+            [r, g, b, 255]
+        };
+        let y = index / size.0 as usize;
+        let x = index % size.0 as usize;
+        let offset = y * padded as usize + x * 4;
+        for channel in 0..4 {
+            if mapped[offset + channel] != pixel[channel] {
+                return Err(format!(
+                    "native acquired-texture mismatch at ({x},{y}) channel {channel}: actual={}, expected={}",
+                    mapped[offset + channel],
+                    pixel[channel]
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "vulkan-raster")]
+    #[test]
+    fn native_word_comparison_checks_all_channels_and_only_skips_padding() {
+        let expected = [0xa5123456, 0, 0xffffff, 0xff0000, 0x00ff00, 0x0000ff];
+        let rows = [
+            (
+                wgpu::TextureFormat::Bgra8Unorm,
+                [
+                    0x56, 0x34, 0x12, 255, 0, 0, 0, 255, 255, 255, 255, 255, 0, 0, 255, 255, 0,
+                    255, 0, 255, 255, 0, 0, 255,
+                ],
+            ),
+            (
+                wgpu::TextureFormat::Rgba8Unorm,
+                [
+                    0x12, 0x34, 0x56, 255, 0, 0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 255, 0,
+                    255, 0, 255, 0, 0, 255, 255,
+                ],
+            ),
+        ];
+        for (format, literal) in rows {
+            let mut mapped = [0x93; 512];
+            mapped[..12].copy_from_slice(&literal[..12]);
+            mapped[256..268].copy_from_slice(&literal[12..]);
+            compare_words(&mapped, &expected, (3, 2), 256, format).unwrap();
+            for index in (0..12).chain(256..268) {
+                mapped[index] ^= 1;
+                assert!(compare_words(&mapped, &expected, (3, 2), 256, format).is_err());
+                mapped[index] ^= 1;
+            }
+            assert!(compare_words(&mapped[..511], &expected, (3, 2), 256, format).is_err());
+            assert!(compare_words(&mapped, &expected[..5], (3, 2), 256, format).is_err());
+            assert!(compare_words(&mapped, &expected, (3, 2), 12, format).is_err());
+            assert!(
+                compare_words(
+                    &mapped,
+                    &expected,
+                    (3, 2),
+                    256,
+                    wgpu::TextureFormat::Rgba8UnormSrgb
+                )
+                .is_err()
+            );
+        }
+    }
     #[test]
     fn conversion_always_sets_opaque_alpha_and_handles_channel_order() {
         let mut bytes = Vec::new();

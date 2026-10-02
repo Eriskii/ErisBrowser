@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "vulkan-raster",
+    "--bin",
+    "eris-browser",
+    "--",
+    "--include-ignored"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 10.402,
+  "log": "native-bin-1880.log",
+  "sha256": "82b33a92859c1a76b6358fdbfe3e6d13be3e40938af147ead07cdb00e9148e6e"
+}

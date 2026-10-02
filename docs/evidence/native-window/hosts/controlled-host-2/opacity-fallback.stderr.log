@@ -1,0 +1,14 @@
+presenter: native raster admission fallback; complete CPU upload; reason=native scene awaits a current loaded page; size=1275x764
+[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=unsupported-opacity at phase 0 original command 1; size=1275x764
+presenter: Vulkan adapter="NVIDIA GeForce RTX 4070 SUPER" type=DiscreteGpu driver="NVIDIA" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback
+presenter: native raster admission fallback; complete CPU upload; reason=unsupported-opacity at phase 0 original command 1; size=1268x758
+[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=viewport-budget; size=1285x774
+[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=unsupported-opacity at phase 0 original command 1; size=1180x880
+[page] Page process 1698131: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1698132: committed URL and fetch policy enforced outside renderer

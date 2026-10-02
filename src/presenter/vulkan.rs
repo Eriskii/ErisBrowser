@@ -1,9 +1,11 @@
-//! Optional native Vulkan upload presentation. Canvas still rasterizes on CPU.
+//! Optional native Vulkan presentation with whole-frame CPU/native routes.
 //! All graphics objects live on one owner thread; the UI only shares CPU state.
 mod control;
+#[cfg(feature = "vulkan-raster")]
+mod native;
 mod transfer;
 use super::{FrameStamp, Notice, Submission, Target};
-use control::{Packet, Phase, Shared, bounded};
+use control::{Packet, Phase, Shared, VerifiedRoute, bounded};
 use eris::graphics::Canvas;
 use std::{
     future::Future,
@@ -21,6 +23,9 @@ pub(super) struct Worker {
     shared: Arc<Shared>,
     thread: Option<JoinHandle<()>>,
     verify_frames: u8,
+    native_raster: bool,
+    #[cfg(feature = "vulkan-raster")]
+    last_fallback: Option<String>,
     failure_reported: bool,
     release_reported: bool,
 }
@@ -29,9 +34,14 @@ impl Worker {
         window: Arc<Window>,
         target: Target,
         verify_frames: u8,
+        native_raster: bool,
         wake: Arc<dyn Fn() + Send + Sync>,
     ) -> Result<Self> {
-        let shared = Arc::new(Shared::new(target, wake, Instant::now()));
+        let shared = Arc::new(if native_raster {
+            Shared::with_raster(target, wake, Instant::now(), true)
+        } else {
+            Shared::new(target, wake, Instant::now())
+        });
         let owner = shared.clone();
         let thread = thread::Builder::new()
             .name("eris-vulkan-presenter".into())
@@ -39,7 +49,7 @@ impl Worker {
                 // Returning from this function means ALL API objects/locals have
                 // dropped. Panic, timeout, destroy request or a finished join handle
                 // alone never reaches the release acknowledgment below.
-                let result = run_owner(window, &owner, verify_frames);
+                let result = run_owner(window, &owner, verify_frames, native_raster);
                 if let Err(error) = result {
                     owner.fail(error);
                 }
@@ -50,6 +60,9 @@ impl Worker {
             shared,
             thread: Some(thread),
             verify_frames,
+            native_raster,
+            #[cfg(feature = "vulkan-raster")]
+            last_fallback: None,
             failure_reported: false,
             release_reported: false,
         })
@@ -61,6 +74,37 @@ impl Worker {
                 self.shared.fail(error);
                 Submission::Stopped
             }
+        }
+    }
+    #[cfg(feature = "vulkan-raster")]
+    pub fn wants_native(&self) -> bool {
+        self.native_raster && !self.shared.stopped()
+    }
+    #[cfg(feature = "vulkan-raster")]
+    pub fn needs_native_reference(&self) -> bool {
+        self.wants_native() && self.shared.lock().verified < self.verify_frames
+    }
+    #[cfg(feature = "vulkan-raster")]
+    pub fn submit_native(
+        &self,
+        plan: eris_raster_core::Plan,
+        reference: Option<Canvas>,
+        stamp: FrameStamp,
+    ) -> Result<Submission> {
+        let packet = Packet::from_native(plan, reference, stamp)?;
+        Ok(self.shared.submit(packet))
+    }
+    #[cfg(feature = "vulkan-raster")]
+    pub fn note_native_fallback(&mut self, reason: &str) {
+        if !self.native_raster {
+            return;
+        }
+        let reason = bounded(reason);
+        if self.last_fallback.as_ref() != Some(&reason) {
+            eprintln!(
+                "presenter: native raster admission fallback; complete CPU upload; reason={reason}"
+            );
+            self.last_fallback = Some(reason);
         }
     }
     pub fn invalidate(&self, target: Target) {
@@ -133,8 +177,15 @@ impl Worker {
             ));
         }
         eprintln!(
-            "presenter: Vulkan acquired-texture verification passed; frames={} compared_bytes={} last_serial={} (before compositor)",
-            state.verified, state.verified_bytes, state.last_verified_serial
+            "presenter: Vulkan acquired-texture verification passed; route={} frames={} compared_bytes={} last_serial={} (before compositor)",
+            if self.native_raster {
+                "native-raster"
+            } else {
+                "cpu-upload"
+            },
+            state.verified,
+            state.verified_bytes,
+            state.last_verified_serial
         );
         Ok(())
     }
@@ -196,9 +247,16 @@ struct Gpu {
     config: wgpu::SurfaceConfiguration,
     configured: bool,
     converted: Vec<u8>,
+    #[cfg(feature = "vulkan-raster")]
+    native: Option<native::Kernels>,
 }
 impl Gpu {
-    fn new(window: Arc<Window>, shared: &Arc<Shared>, verify: bool) -> Result<(Self, String)> {
+    fn new(
+        window: Arc<Window>,
+        shared: &Arc<Shared>,
+        verify: bool,
+        native_raster: bool,
+    ) -> Result<(Self, String)> {
         let deadline = shared.deadline()?;
         remaining(deadline)?;
         let mut descriptor = wgpu::InstanceDescriptor::new_without_display_handle();
@@ -290,9 +348,22 @@ impl Gpu {
                 lost.fail(format_args!("Vulkan device lost ({reason:?}): {message}"));
             }
         });
+        #[cfg(feature = "vulkan-raster")]
+        let native = if native_raster {
+            Some(native::Kernels::new(&device, deadline)?)
+        } else {
+            None
+        };
         let diagnostic = bounded(format_args!(
-            "presenter: Vulkan adapter={:?} type={:?} driver={:?} format={format:?} color_space=Srgb alpha=Opaque mode=Fifo; CPU rasterization",
-            info.name, info.device_type, info.driver
+            "presenter: Vulkan adapter={:?} type={:?} driver={:?} format={format:?} color_space=Srgb alpha=Opaque mode=Fifo; raster={}",
+            info.name,
+            info.device_type,
+            info.driver,
+            if native_raster {
+                "native-shaders with complete CPU admission fallback"
+            } else {
+                "CPU upload"
+            }
         ));
         remaining(deadline)?;
         let gpu = Self {
@@ -314,6 +385,8 @@ impl Gpu {
             },
             configured: false,
             converted: Vec::new(),
+            #[cfg(feature = "vulkan-raster")]
+            native,
         };
         Ok((gpu, diagnostic))
     }
@@ -332,23 +405,27 @@ impl Gpu {
         remaining(shared.deadline()?)?;
         Ok(())
     }
-    fn frame(&mut self, packet: &Packet, shared: &Shared, verify: bool) -> Result<()> {
-        let deadline = shared.deadline()?;
+    fn acquire(
+        &mut self,
+        packet: &Packet,
+        shared: &Shared,
+        deadline: Instant,
+    ) -> Result<Option<(wgpu::SurfaceTexture, bool)>> {
         remaining(deadline)?;
         if !shared.current(packet) {
-            return Ok(());
+            return Ok(None);
         }
         if !self.configured || (self.config.width, self.config.height) != packet.size {
             self.configure(packet, shared)?;
         }
         if !shared.current(packet) {
-            return Ok(());
+            return Ok(None);
         }
         let acquired = match self.surface.get_current_texture() {
             wgpu::CurrentSurfaceTexture::Outdated => {
                 // No texture was acquired. Exactly one configure retry.
                 if !shared.current(packet) {
-                    return Ok(());
+                    return Ok(None);
                 }
                 self.configure(packet, shared)?;
                 self.surface.get_current_texture()
@@ -361,27 +438,42 @@ impl Gpu {
             wgpu::CurrentSurfaceTexture::Suboptimal(frame) => (frame, true),
             wgpu::CurrentSurfaceTexture::Occluded => {
                 shared.occluded();
-                return Ok(());
+                return Ok(None);
             }
-            wgpu::CurrentSurfaceTexture::Timeout => return Ok(()),
+            wgpu::CurrentSurfaceTexture::Timeout => return Ok(None),
             other => return Err(bounded(format_args!("Vulkan acquisition: {other:?}"))),
         };
         shared.phase(Phase::Acquired);
         remaining(deadline)?;
         if !shared.current(packet) {
-            return Ok(());
+            return Ok(None);
         }
+        Ok(Some((frame, suboptimal)))
+    }
+    fn frame(&mut self, packet: &Packet, shared: &Shared, verify: bool) -> Result<()> {
+        #[cfg(feature = "vulkan-raster")]
+        if packet.is_native() {
+            return self.frame_native(packet, shared, verify);
+        }
+        self.frame_cpu(packet, shared, verify)
+    }
+    fn frame_cpu(&mut self, packet: &Packet, shared: &Shared, verify: bool) -> Result<()> {
+        let pixels = packet.cpu_pixels().ok_or("CPU upload requires pixels")?;
+        let deadline = shared.deadline()?;
+        let Some((frame, suboptimal)) = self.acquire(packet, shared, deadline)? else {
+            return Ok(());
+        };
         let (packed, padded, readback_bytes) = transfer::row_layout(packet.size)?;
         // During growth, the allocator may retain both old and new conversion
         // storage briefly. Reserve that peak before allocating the new bytes.
         shared.reserve_scratch(
             self.converted
                 .capacity()
-                .checked_add(packet.pixels.len() * 4)
+                .checked_add(pixels.len() * 4)
                 .ok_or("Vulkan conversion capacity overflow")?,
             if verify { readback_bytes } else { 0 },
         )?;
-        transfer::convert(&packet.pixels, self.config.format, &mut self.converted)?;
+        transfer::convert(pixels, self.config.format, &mut self.converted)?;
         shared.reserve_scratch(
             self.converted.capacity(),
             if verify { readback_bytes } else { 0 },
@@ -465,9 +557,10 @@ impl Gpu {
                 .map_err(bounded)?
                 .map_err(bounded)?;
             let mapped = buffer.get_mapped_range(..).map_err(bounded)?;
-            transfer::compare(&mapped, &self.converted, packet.size, padded)?;
+            let compared = transfer::compare(&mapped, &self.converted, packet.size, padded);
             drop(mapped);
             buffer.unmap();
+            compared?;
         }
         // Callbacks may have failed without the graphics call returning Err.
         if shared.current(packet) {
@@ -478,7 +571,7 @@ impl Gpu {
                 return Err("Vulkan failed during present".into());
             }
             if verify {
-                shared.verified(packet)?;
+                shared.verified(packet, VerifiedRoute::CpuUpload, (pixels.len() * 4) as u64)?;
                 eprintln!(
                     "presenter: Vulkan verified serial={} generation={} viewport_revision={} size={}x{} compared_bytes={} exact=true (before compositor)",
                     packet.stamp.serial,
@@ -486,7 +579,7 @@ impl Gpu {
                     packet.stamp.viewport_revision,
                     packet.size.0,
                     packet.size.1,
-                    packet.pixels.len() * 4
+                    pixels.len() * 4
                 );
             }
         } else {
@@ -501,8 +594,13 @@ impl Gpu {
     }
 }
 
-fn run_owner(window: Arc<Window>, shared: &Arc<Shared>, verify_frames: u8) -> Result<()> {
-    let result = Gpu::new(window, shared, verify_frames > 0);
+fn run_owner(
+    window: Arc<Window>,
+    shared: &Arc<Shared>,
+    verify_frames: u8,
+    native_raster: bool,
+) -> Result<()> {
+    let result = Gpu::new(window, shared, verify_frames > 0, native_raster);
     let (mut gpu, diagnostic) = match result {
         Ok(value) => value,
         Err(error) => {
@@ -513,7 +611,8 @@ fn run_owner(window: Arc<Window>, shared: &Arc<Shared>, verify_frames: u8) -> Re
     shared.initialized(diagnostic);
     let result = (|| {
         while let Some(packet) = shared.take() {
-            let verify = shared.lock().verified < verify_frames;
+            let verify =
+                shared.lock().verified < verify_frames && (!native_raster || packet.is_native());
             gpu.frame(&packet, shared, verify)?;
             drop(packet);
             shared.idle();
@@ -545,6 +644,9 @@ mod tests {
             )),
             thread: None,
             verify_frames,
+            native_raster: false,
+            #[cfg(feature = "vulkan-raster")]
+            last_fallback: None,
             failure_reported: false,
             release_reported: false,
         }
@@ -617,7 +719,10 @@ mod tests {
             },
         )
         .unwrap();
-        worker.shared.verified(&packet).unwrap();
+        worker
+            .shared
+            .verified(&packet, VerifiedRoute::CpuUpload, 24)
+            .unwrap();
         worker.shared.fail("injected late device loss");
         assert!(worker.finish().unwrap_err().contains("late device loss"));
         let (notice, released) = worker.service(Instant::now());

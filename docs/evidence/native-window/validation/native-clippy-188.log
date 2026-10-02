@@ -1,0 +1,5 @@
+    Blocking waiting for file lock on package cache
+   Compiling wgpu v30.0.1
+    Checking eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+    Checking eris-browser v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.18s

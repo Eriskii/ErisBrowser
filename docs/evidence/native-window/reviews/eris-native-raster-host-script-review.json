@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "kind": "bounded independent read-only source, fixture and synthetic-test review",
+  "status": "clear after three pre-execution parser corrections; no remaining concrete finding",
+  "bindings": [
+    {
+      "path": "tools/native_raster_host.py",
+      "bytes": 26984,
+      "sha256": "0d99ba93859310171a85669016fa1c9050169e392dec0d157e2255f366752329"
+    },
+    {
+      "path": "tools/test_native_raster_host.py",
+      "bytes": 22143,
+      "sha256": "ccc7a14ffab74adef371c55ec5f3f3e852884fd8b8e51a27954d580d622e1181"
+    },
+    {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "bytes": 1381,
+      "sha256": "3bb7764b3db0cbcb3b806ab814a29f8564b8c6607815406dce54b2ff39c550ac"
+    },
+    {
+      "path": "src/browser.rs",
+      "bytes": 112747,
+      "sha256": "08627be0739843437fc29cbff9202090c9b0877cea5c676debe9019333e96b68"
+    },
+    {
+      "path": "src/browser/native_scene.rs",
+      "bytes": 16656,
+      "sha256": "581a420a1e43ef4cdcc76ec27aba57b6605b5b137a099d32acae365ac65838a1"
+    },
+    {
+      "path": "src/presenter/vulkan/native.rs",
+      "bytes": 14791,
+      "sha256": "2082f1af30c18b5bd1cf946ad1547344f405add5cb62c4f1a73e723855ab3b19"
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "bytes": 30996,
+      "sha256": "1c42edcd785eb205ca670c52342980ece91167417a1001a73d6944de885dbc09"
+    },
+    {
+      "path": "src/presenter/vulkan.rs",
+      "bytes": 26935,
+      "sha256": "0a83e62ab869e3dfd5969cd77f429f52ee876ef14652c6c11215859e68808f47"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 14300,
+      "sha256": "bfecc971df88c6543f50272313f12b71873713f931070dfa2a7ff4d5f566f9f5"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 8689,
+      "sha256": "1e07e300d75e8d71a652f7795e89b62c88a98e7ef5b44bc88bcbd5ad29421abc"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_host.py",
+      "bytes": 15273,
+      "sha256": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6"
+    }
+  ],
+  "fixture_bindings": [
+    {
+      "path": "tools/native-raster-fixtures/README.md",
+      "bytes": 1187,
+      "sha256": "375fa7dafca96a40e06a36fbf0ebf74f15e2558d5c2c8768613cfe0f5b7de4fe"
+    },
+    {
+      "path": "tools/native-raster-fixtures/admitted.html",
+      "bytes": 315,
+      "sha256": "1f58f963606777dba90496ecb62f26939fa1a4e16289b8b28205036d3505f661"
+    },
+    {
+      "path": "tools/native-raster-fixtures/opacity.html",
+      "bytes": 327,
+      "sha256": "c6fe7215abc773b0417ff51f8737e03cc903d9cc1d9c7602e1cf3a04054a11e5"
+    },
+    {
+      "path": "tools/native-raster-fixtures/two-pixels.png",
+      "bytes": 71,
+      "sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54"
+    }
+  ],
+  "synthetic_test_groups": 21,
+  "synthetic_test_names": [
+    "test_separate_verified_normal_and_opacity_populations",
+    "test_chrome_only_missing_image_or_unjoined_serial_cannot_prove_page",
+    "test_native_bounds_dimensions_reference_and_summary_are_exact",
+    "test_duplicate_truncated_unknown_or_failure_records_are_rejected",
+    "test_normal_cannot_claim_reference_and_fallback_cannot_claim_shader_success",
+    "test_record_order_is_causal_not_just_a_serial_join",
+    "test_opacity_requires_controlled_size_but_retains_startup_other_sizes",
+    "test_all_cases_use_supervision_exact_flags_and_sanitized_environment",
+    "test_process_or_descendant_cleanup_failure_stops_remaining_cases",
+    "test_binary_fixture_loader_or_raw_output_mutation_fails_closed",
+    "test_supervisor_errors_grants_and_interruption_are_not_success",
+    "test_owned_sizing_wraps_each_case_and_requires_successful_control_receipt",
+    "test_invalid_inputs_and_overwrite_stop_before_launch",
+    "test_only_owned_pid_dispatches_and_filtered_client_metadata_retained",
+    "test_mismatched_pid_never_dispatches_and_hits_bounded_deadline",
+    "test_early_browser_exit_and_changed_identity_block_compositor_mutation",
+    "test_controller_timeout_nonzero_and_stderr_fail_before_dispatch",
+    "test_duplicate_or_malformed_owned_windows_are_rejected",
+    "test_resize_that_never_reaches_exact_size_fails_closed",
+    "test_wnowait_exit_or_identity_change_refuses_without_reaping",
+    "test_launcher_failure_signals_owned_child_before_reap_and_preserves_receipt"
+  ],
+  "resolved_findings": [
+    {
+      "issue": "opacity fullmatch omitted current runtime size suffix",
+      "resolution": "requires unsupported-opacity in page phase and exact size=1180x880; other startup fallback dimensions remain retained separately"
+    },
+    {
+      "issue": "completed records were joined without causal order",
+      "resolution": "matching scene must precede presentation; presentation must precede verification; verification precedes single summary"
+    },
+    {
+      "issue": "fresh scene after final summary remained accepted",
+      "resolution": "subsequent scene/proof records refused and synthetic appended-scene case added"
+    }
+  ],
+  "reviewed_properties": [
+    "Loaded scene must have positive generation, commands, one image, loading=false, three phases and bounded work; acquired result joins serial/generation/reference and exact1180x880/4153600 bytes.",
+    "Verified route requires exactly one acquired comparison and one one-frame summary. Normal route requires no reference/verification. Opacity route forbids native proof rows and claims whole-frame CPU admission only.",
+    "Malformed reserved-prefix records, duplicate/missing/reordered proof, byte/hash changes, failed process/cleanup, control receipt failure and unexpected grants stop further cases.",
+    "Window dispatches use only direct unreaped child pid selectors with WNOWAIT and stable parent/process-group/start-time checks; no active-window/global selector or post-reap compositor action.",
+    "Bounded controller responses filter unrelated client metadata; exactly one matching child window must become floating with exact requested dimensions. Outer existing subreaper owns descendant cleanup.",
+    "Fixture bytes and declared differential scope are unchanged; this is original Canvas comparison before compositor, not an independent typography oracle, desktop screenshot or performance claim."
+  ],
+  "limits": {
+    "cases": 3,
+    "control_commands": 48,
+    "control_response_bytes": 262144,
+    "control_phase_seconds": 3,
+    "control_call_seconds": 0.5,
+    "native_log_bytes": 2097152,
+    "controller_cleanup": "existing run_process has separately bounded kill/reap allowance; outer supervisor deadline remains authoritative"
+  },
+  "retained_prior_window_failure": [
+    {
+      "path": "/tmp/eris-native-window-1/first-window/admitted-initial.json",
+      "bytes": 930,
+      "sha256": "2e0fe1ab3abe97aa1d2ed62a93535b961042be1f072446f99cad96adb0b1c60d"
+    },
+    {
+      "path": "/tmp/eris-native-window-1/first-window/admitted-initial.stderr.log",
+      "bytes": 865,
+      "sha256": "ae2a6c424fad877752a26ecdbb96db9d1b52c4be80e0a4c4e7cfa17dc3a6942e"
+    },
+    {
+      "path": "/tmp/eris-native-window-1/first-window/admitted-initial.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/eris-native-window-1/first-window/admitted-initial.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "execution": {
+    "reviewer_tests": false,
+    "reviewer_browser": false,
+    "reviewer_planner_or_Canvas": false,
+    "reviewer_GPU": false,
+    "only": "file reads, hashes, JSON checks and AST test enumeration"
+  },
+  "limitations": [
+    "Synthetic tests were read, not executed by this reviewer. No empirical compositor/controller success follows from this review.",
+    "The first native window refusal remains retained and does not justify changing fixture pixels, admission limits or expected route."
+  ]
+}

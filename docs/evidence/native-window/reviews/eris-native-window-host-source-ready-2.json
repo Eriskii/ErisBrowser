@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "tools/native_raster_host.py",
+      "sha256": "efe6ce8a9ca78e6df3ff1740e3fe56974909849467f525fa4e68751cb6b0db1a",
+      "bytes": 27201
+    },
+    {
+      "path": "tools/test_native_raster_host.py",
+      "sha256": "9770d5a6f050cd28e42f80269603e6b5ef4c98326e97b9ebf04507f7afb31f69",
+      "bytes": 23261
+    },
+    {
+      "path": "tools/native-raster-fixtures/freeze.json",
+      "sha256": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a",
+      "bytes": 1987
+    }
+  ],
+  "synthetic_test_groups": 22,
+  "case_count": 4,
+  "execution": "none: AST-only inspection; root owns executions",
+  "parent_source_ready_sha256": "94e662dc727b26da523d83f15f4eec0eec107f7d28d920608f6a16af8fa1ccd7",
+  "revision": "Original admitted bytes preserved as overdraw.html, separate planner-budget fallback. Admitted/opacity use one propagated body background. No production or limit changes."
+}

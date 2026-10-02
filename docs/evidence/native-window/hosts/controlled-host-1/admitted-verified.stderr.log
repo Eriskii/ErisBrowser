@@ -1,0 +1,15 @@
+presenter: native raster admission fallback; complete CPU upload; reason=native scene awaits a current loaded page; size=1275x764
+[page] Page process 1689717: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1689718: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=mask-preparation at phase 2 original command 7; size=1275x764
+presenter: Vulkan adapter="NVIDIA GeForce RTX 4070 SUPER" type=DiscreteGpu driver="NVIDIA" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback
+presenter: native raster admission fallback; complete CPU upload; reason=mask-preparation at phase 2 original command 7; size=1268x758
+[page] Page process 1689717: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1689718: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=viewport-budget; size=1285x774
+[page] Page process 1689717: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1689718: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=planner-budget; size=1180x880
+[page] Page process 1689717: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1689718: committed URL and fetch policy enforced outside renderer
+eris-browser: Vulkan verification incomplete: 0/1 frames

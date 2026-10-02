@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "clippy",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "crates/raster-core/Cargo.toml",
+    "--all-targets",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.611,
+  "log": "core-clippy-default-1880.log",
+  "sha256": "dc7add7f35d1920315019eae430dfeb0132355e17e6c9ea1adfc276cc30bf52e"
+}

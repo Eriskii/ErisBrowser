@@ -7,31 +7,22 @@ exclusions. Typed arrays, DataView, shared memory, Proxy and foreign realms
 remain ahead. Two metadata-heavy local modes reach the unchanged work limit;
 broader interpreter performance and accounting remain open work.
 
-The [Vulkan milestones](vulkan-rendering.md) now include an optional offscreen
-bridge from real confined-worker snapshots to custom GPU drawing, with explicit
-whole-frame CPU fallback. A separate [bounded glyph path](../tools/vulkan-raster-probe/GLYPHS.md)
-now composites CPU-generated bundled-font masks with custom WGSL. Its 26 cases
-pass on all three adapters. Seven [real-worker text cases](../tools/vulkan-raster-probe/WORKER_TEXT.md)
-now pass too: six GPU frames and one complete CPU fallback per adapter.
-[Native-window integration](vulkan-native-plan.md), shaping, rounded edges and
-compositing remain ahead. The browser window still paints on the CPU; its optional
-Vulkan presenter uploads those frames. Performance within 30% of Chromium has
-not been demonstrated.
+The [native GPU route](vulkan-native-window.md) now connects the custom shaders
+to the actual browser window behind `vulkan-raster`. Admitted loaded pages,
+overlays and chrome share one bounded plan. Normal shader frames require no CPU
+framebuffer or readback; explicit verification matches 4,153,600 acquired bytes
+on the NVIDIA host. Separate normal, opacity-fallback and overdraw-fallback
+cases pass. Initial size/work refusals remain in the evidence. Rounded geometry
+and bundled-font coverage are prepared on the CPU, with GPU color compositing.
 
-The [raster core](../crates/raster-core/README.md) now owns primitive planning and
-optional GPU encoding. Its default build has no external dependencies; GPU
-callers own submission, completion and presentation. The four existing offscreen
-suites retain their results on all three adapters. The browser adapter now lives
-in the main crate behind the planner-only `raster-bridge` feature; probe imports
-remain reexports. Constructing native scenes, supporting rounded chrome and
-presenting GPU output are the next integration steps.
-
-The [native prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
-now include a separate 1280×1024 admission profile, exact CPU-prepared rounded
-coverage and integer GPU conversion into padded opaque BGRA/RGBA pixels. Eleven
-offscreen cases pass in both formats on all three adapters, including normal
-browser-sized frames. Complete native scene construction and acquired-surface
-presentation remain ahead; the browser window still uses CPU painting.
+The reusable [raster core](../crates/raster-core/README.md) retains its original
+Probe limits and now supports phase-local coordinates with frame-wide resource
+limits. The [offscreen prerequisite](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md),
+[glyph](../tools/vulkan-raster-probe/GLYPHS.md) and
+[worker-text](../tools/vulkan-raster-probe/WORKER_TEXT.md) checkpoints remain
+separate three-adapter evidence. Wider scene/viewport admission, group opacity,
+zoom, shaping, native GPU screenshots and driver isolation remain ahead.
+Performance within 30% of Chromium has not been demonstrated.
 
 [Array concat](../tests/conformance/array-concat.md) now streams live
 spreadability, same-realm species and aliased results. Its complete upstream
@@ -42,7 +33,7 @@ observations. Resource outcomes prevent a new gate; the 33 established gates
 remain unchanged. Proxy, typed arrays, foreign realms, remaining Array methods
 and broader accounting remain ahead. That checkpoint left the optional
 CPU-frame Vulkan presenter and standalone raster probe unchanged; native-window
-GPU rasterization and compositing remain open.
+GPU rasterization and compositing were still open at that checkpoint.
 
 [Array splice](../tests/conformance/array-splice.md) now streams live property
 operations with same-realm species, aliased results and ordered partial effects.
@@ -179,8 +170,9 @@ CPU-painted frames through a Vulkan-only wgpu binding. It uses one owner thread,
 one active upload and one replaceable pending frame, fixed operation deadlines,
 and confirmed resource release before software fallback. Verification reads
 back actual acquired surface textures; it does not certify compositor output.
-Software remains the default/headless path. Native-window integration of custom
-GPU rasterization and driver isolation/performance work remain open.
+Software remains the default/headless path. The optional bounded
+[native raster route](vulkan-native-window.md) now uses this owner; broader
+compositing, driver isolation and performance work remain open.
 
 Acceptance work:
 
@@ -229,9 +221,9 @@ passes 12 independent mask cases and 14 parent-CPU font comparisons on all three
 adapters, using a separate fonts-aware entry point and unchanged GPU caps.
 Seven [worker-text snapshots](../tools/vulkan-raster-probe/WORKER_TEXT.md) now
 also pass on those adapters: six GPU frames and one complete CPU fallback.
-Native-window integration, shaping, rounded coverage, group
-opacity, color conversion, full compatibility, production security and Chromium
-performance comparisons remain open.
+Those probe limits are unchanged. The later [native route](vulkan-native-window.md)
+adds separately bounded scene construction and surface conversion. Shaping, group
+opacity, full compatibility, production security and Chromium comparisons remain open.
 
 ## JavaScript execution depth
 

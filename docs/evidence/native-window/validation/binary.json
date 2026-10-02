@@ -1,0 +1,14 @@
+{
+  "build_log": "native-build-1980.log",
+  "source": {
+    "bytes": 289826592,
+    "sha256": "677110927a71d361c4cfa8cb1318d9664d4f5290eae5cb5eef992dbec1055e86"
+  },
+  "stripped": {
+    "bytes": 67488696,
+    "sha256": "b9c0a83fd28a1e2e7e92c3ff45f51efa38440eb0339b91874a446172f5bc6e17"
+  },
+  "allocated_sections_unchanged": true,
+  "allocated_section_count": 31,
+  "action": "strip --strip-debug only; not a release/performance build"
+}

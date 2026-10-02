@@ -19,6 +19,7 @@ path = "src/main.rs"
 default = []
 vulkan-presenter = ["dep:wgpu", "dep:close_fds"]
 raster-bridge = ["dep:eris-raster-core"]
+vulkan-raster = ["vulkan-presenter", "raster-bridge", "eris-raster-core/gpu"]
 
 [dependencies]
 eris-raster-core = { path = "crates/raster-core", optional = true, default-features = false }

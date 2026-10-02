@@ -1,4 +1,4 @@
-//! Native presentation of a completed CPU frame. Painting stays in `Canvas`.
+//! Native presentation with one surface owner and explicit whole-frame routes.
 use eris::graphics::Canvas;
 use std::{num::NonZeroU32, sync::Arc};
 use winit::window::Window;
@@ -27,10 +27,16 @@ impl PresenterChoice {
 pub(crate) struct PresenterConfig {
     pub choice: PresenterChoice,
     pub verify_frames: u8,
+    pub native_raster: bool,
 }
 
 impl PresenterConfig {
     pub(crate) fn validate(self, headless: bool) -> Result<(), String> {
+        if self.native_raster
+            && (self.choice != PresenterChoice::Vulkan || !cfg!(feature = "vulkan-raster"))
+        {
+            return Err("--raster=gpu requires --presenter=vulkan and a build with --features vulkan-raster".into());
+        }
         if self.verify_frames > 8 {
             return Err("--vulkan-verify-frames must be between 1 and 8".into());
         }
@@ -116,6 +122,7 @@ impl Presenter {
                 window.clone(),
                 target,
                 config.verify_frames,
+                config.native_raster,
                 wake,
             )?),
             #[cfg(not(all(target_os = "linux", feature = "vulkan-presenter")))]
@@ -139,6 +146,63 @@ impl Presenter {
         if let Backend::Vulkan(worker) = &self.backend {
             worker.invalidate(target);
         }
+    }
+
+    #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+    pub(crate) fn wants_native(&self) -> bool {
+        if let Backend::Vulkan(worker) = &self.backend {
+            return !self.stopped && worker.wants_native();
+        }
+        false
+    }
+
+    #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+    pub(crate) fn needs_native_reference(&self) -> bool {
+        if let Backend::Vulkan(worker) = &self.backend {
+            return !self.stopped && worker.needs_native_reference();
+        }
+        false
+    }
+
+    #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+    pub(crate) fn note_native_fallback(&mut self, reason: &str) {
+        if let Backend::Vulkan(worker) = &mut self.backend {
+            worker.note_native_fallback(reason);
+        }
+    }
+
+    /// Native preparation is already complete. No CPU target is needed unless
+    /// explicit acquired-surface verification is outstanding.
+    #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+    pub(crate) fn submit_native(
+        &mut self,
+        plan: eris_raster_core::Plan,
+        reference: Option<Canvas>,
+        stamp: FrameStamp,
+    ) -> Result<Submission, String> {
+        if self.stopped {
+            return Ok(Submission::Stopped);
+        }
+        let frame = plan.frame();
+        if stamp.serial <= self.last_serial
+            || stamp.generation != self.target.generation
+            || stamp.viewport_revision != self.target.viewport_revision
+            || self.target.occluded
+            || (frame.width, frame.height) != self.target.size
+        {
+            return Ok(Submission::IgnoredStale);
+        }
+        let Backend::Vulkan(worker) = &self.backend else {
+            return Err("native raster submission requires the Vulkan owner".into());
+        };
+        if !worker.wants_native() {
+            return Ok(Submission::Stopped);
+        }
+        // Admission precedes serial advancement, just as a discarded stale
+        // packet cannot consume the accepted serial.
+        let result = worker.submit_native(plan, reference, stamp)?;
+        self.last_serial = stamp.serial;
+        Ok(result)
     }
 
     pub(crate) fn submit(
@@ -293,6 +357,28 @@ impl SoftwarePresenter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn native_configuration_requires_vulkan_feature_and_a_window() {
+        assert!(!PresenterConfig::default().native_raster);
+        assert!(
+            PresenterConfig {
+                native_raster: true,
+                ..PresenterConfig::default()
+            }
+            .validate(false)
+            .is_err()
+        );
+        let native = PresenterConfig {
+            choice: PresenterChoice::Vulkan,
+            verify_frames: 1,
+            native_raster: true,
+        };
+        assert!(native.validate(true).is_err());
+        assert_eq!(
+            native.validate(false).is_ok(),
+            cfg!(all(target_os = "linux", feature = "vulkan-raster"))
+        );
+    }
 
     #[test]
     fn malformed_canvas_dimensions_and_lengths_are_rejected() {

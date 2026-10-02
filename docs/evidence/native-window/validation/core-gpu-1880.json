@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "crates/raster-core/Cargo.toml",
+    "--features",
+    "gpu"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 2.266,
+  "log": "core-gpu-1880.log",
+  "sha256": "4f6ab37b84cc9978cf1d5be06cf1557d69af1b2584ed0a7a7798756af839864a"
+}

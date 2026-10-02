@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "review": "Independent bounded static native adapter ledger/preflight review",
+  "result": "no concrete defect found",
+  "files": [
+    {
+      "path": "src/graphics/raster_bridge/native.rs",
+      "sha256": "e8290d6b2b578c29965e2439c3cf6a4d60e64294ebb6513b749daffe31601e29"
+    },
+    {
+      "path": "src/graphics/raster_bridge/native/tests.rs",
+      "sha256": "367ebae292140b78b8d069bb584512a83ae7c797b5731f948f84b285500c691f"
+    },
+    {
+      "path": "src/graphics/raster_bridge.rs",
+      "sha256": "b977df05cba5a144e8f63c224b87b98ad7a3e01e15b701647cc07d149d60f99e"
+    },
+    {
+      "path": "src/graphics/text_masks.rs",
+      "sha256": "d47609697dbdf8b6cdcf310aa28ec36a8873c0339d30fc20a0e92fa036a1b4e6"
+    },
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "sha256": "942ece33951829f3e6640b8305a0e5ea5979077ed0e54bd8ec97327b78b4363e"
+    },
+    {
+      "path": "crates/raster-core/src/rounded.rs",
+      "sha256": "b410aa8a65dae1b630c6bd951f3fac94c8bee074d9e89dccb6ba0ad1429eb6d4"
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "sha256": "c826d780ae3c62f1233239292b5f7e5e0e4aa4de2217be68ce3378530014f340"
+    },
+    {
+      "path": "src/browser/native_scene.rs",
+      "sha256": "581a420a1e43ef4cdcc76ec27aba57b6605b5b137a099d32acae365ac65838a1"
+    }
+  ],
+  "findings": [],
+  "checks": [
+    "Complete original command/text/scalar/scope/opacity validation covers all phases before image-table or mask materialization; original command attribution retained.",
+    "Image map count/capacity/key-byte/key-work limits precede sorting; identity uses shared Arc object identity with deterministic sorted key discovery and all-source validation. Missing images are legal omissions.",
+    "Nontext CPU bound is framebuffer area times all nontext inputs across phases; font Session gets only the remaining allowance. Rounded full-loop work is bounded by that debit, and shared font/rounded source,coverage,row and lowered-command ledgers run before backing allocation.",
+    "Fresh-font key order remains consistent with Session insertion order across phases and rounded interleaving; per-occurrence rows share the aggregate row ledger.",
+    "Checked GPU-byte upper bound includes source bytes, combined coverage/rows,image LUT allowance,lowered metadata,one packed target and one Native padded conversion reserve. Final core Plan bytes are checked against that bound.",
+    "Final global padded invocation admission remains in the core planner after bounded CPU preparation; this review does not claim every eventual work refusal occurs before all mask allocation. No partial core Plan is returned on any failure.",
+    "Phase scope state is independent; absolute glyph/rounded placement bypasses retranslation while original unrounded/image/line commands retain normal phase translation.",
+    "Preparation peak separately includes final packed arena,core structural overlap,raw coverage/rows,font raster scratch,descriptor/vector metadata,64 UI commands,16KiB UI strings and optional full reference. Browser currently uses text only in its chrome command vector; overlays are rectangles.",
+    "Returned NativeScenePlan owns only Plan and fixed stats. Actual capacity accessor and presenter packet admission supplement the pre-preparation structural reservation."
+  ],
+  "limits_and_attribution": [
+    "No planner/font/Canvas/worker/GPU execution performed by reviewer.",
+    "19 private groups inspected as source; their execution results remain root-owned.",
+    "Peak is an explicit per-preparation allocation bound excluding allocator/driver overhead,borrowed assets,CPU font cache and trusted outline-library allocations, not a process RSS or arbitrary-font security guarantee.",
+    "Existing strict probe admission APIs remain separate; supported Native scenes do not rewrite original probe refusal oracles."
+  ]
+}

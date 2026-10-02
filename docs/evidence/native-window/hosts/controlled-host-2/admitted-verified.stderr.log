@@ -1,0 +1,18 @@
+presenter: native raster admission fallback; complete CPU upload; reason=native scene awaits a current loaded page; size=1275x764
+[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=mask-preparation at phase 2 original command 7; size=1275x764
+presenter: Vulkan adapter="NVIDIA GeForce RTX 4070 SUPER" type=DiscreteGpu driver="NVIDIA" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback
+presenter: native raster admission fallback; complete CPU upload; reason=mask-preparation at phase 2 original command 7; size=1268x758
+[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer
+[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer
+presenter: native raster admission fallback; complete CPU upload; reason=viewport-budget; size=1285x774
+native scene prepared: serial=7 snapshot_generation=1 page_commands=6 images=1 loading=false phases=3 lowered_commands=186 rounded_masks=2 raster_invocations=2166144 total_invocations=3208064 reference=true
+[page] Page process 1697663: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1697664: committed URL and fetch policy enforced outside renderer
+native scene prepared: serial=8 snapshot_generation=1 page_commands=6 images=1 loading=false phases=3 lowered_commands=186 rounded_masks=2 raster_invocations=2166144 total_invocations=3208064 reference=true
+presenter: native shader frame presented; size=1180x880 serial=7 CPU_upload=false reference=true
+presenter: native shader acquired-texture verified; serial=7 generation=1 viewport_revision=5 size=1180x880 compared_bytes=4153600 exact=true (before compositor)
+presenter: Vulkan acquired-texture verification passed; route=native-raster frames=1 compared_bytes=4153600 last_serial=7 (before compositor)

@@ -53,6 +53,13 @@ fn main() {
         std::process::exit(1);
     }
 }
+fn parse_raster(value: &str) -> Result<bool, String> {
+    match value {
+        "cpu" => Ok(false),
+        "gpu" => Ok(true),
+        _ => Err("--raster must be cpu or gpu".into()),
+    }
+}
 fn run() -> Result<(), String> {
     let mut address = "eris:home".to_owned();
     let mut headless = false;
@@ -72,7 +79,7 @@ fn run() -> Result<(), String> {
         match arg.as_str() {
             "--help" | "-h" => {
                 println!(
-                    "Eris Browser — independent experimental Rust web engine\n\nUsage: eris-browser [ADDRESS] [OPTIONS]\n\n  --presenter MODE         software (default) or vulkan (optional Linux build)\n  --vulkan-verify-frames N  Check 1..8 acquired Vulkan textures before presentation\n  --render                 Render without a desktop window\n  --output PATH            PNG output (default: render.png)\n  --width N --height N     Viewport in CSS pixels (1180 × 880)\n  --no-scripts             Disable page scripting\n  --click SELECTOR         Activate a matched node before rendering; repeatable\n  --dump-dom               Print the resulting document tree\n  --benchmark N            Measure N style/layout/paint iterations\n  --benchmark-worker N     Measure confined load/render/paint phases; JSON stdout\n  --exit-after SECONDS     Close desktop window after a smoke-test interval\n  --window-screenshot PATH Capture the native browser framebuffer\n\nAddresses: https://example.com, ./examples/forms.html, eris:home, about:blank\nDesktop keys: Ctrl+L address, Ctrl+R reload, Alt+Left/Right history, Ctrl +/- zoom\n\nThis is an early implementation with partial HTML/CSS/JavaScript support.\nFull web compatibility, production security and Chromium performance are unverified."
+                    "Eris Browser — independent experimental Rust web engine\n\nUsage: eris-browser [ADDRESS] [OPTIONS]\n\n  --presenter MODE         software (default) or vulkan (optional Linux build)\n  --raster MODE            cpu (default) or gpu (optional vulkan-raster build)\n  --vulkan-verify-frames N  Check 1..8 acquired Vulkan textures before presentation\n  --render                 Render without a desktop window\n  --output PATH            PNG output (default: render.png)\n  --width N --height N     Viewport in CSS pixels (1180 × 880)\n  --no-scripts             Disable page scripting\n  --click SELECTOR         Activate a matched node before rendering; repeatable\n  --dump-dom               Print the resulting document tree\n  --benchmark N            Measure N style/layout/paint iterations\n  --benchmark-worker N     Measure confined load/render/paint phases; JSON stdout\n  --exit-after SECONDS     Close desktop window after a smoke-test interval\n  --window-screenshot PATH Capture the native browser framebuffer\n\nAddresses: https://example.com, ./examples/forms.html, eris:home, about:blank\nDesktop keys: Ctrl+L address, Ctrl+R reload, Alt+Left/Right history, Ctrl +/- zoom\n\nThis is an early implementation with partial HTML/CSS/JavaScript support.\nFull web compatibility, production security and Chromium performance are unverified."
                 );
                 return Ok(());
             }
@@ -83,6 +90,13 @@ fn run() -> Result<(), String> {
             }
             value if value.starts_with("--presenter=") => {
                 presenter.choice = presenter::PresenterChoice::parse(&value[12..])?;
+            }
+            "--raster" => {
+                presenter.native_raster =
+                    parse_raster(&args.next().ok_or("--raster needs a mode")?)?;
+            }
+            value if value.starts_with("--raster=") => {
+                presenter.native_raster = parse_raster(&value[9..])?;
             }
             "--vulkan-verify-frames" => {
                 presenter.verify_frames = args
@@ -165,6 +179,9 @@ fn run() -> Result<(), String> {
         }
     }
     presenter.validate(headless)?;
+    if presenter.native_raster && capture.is_some() {
+        return Err("--raster=gpu does not yet support --window-screenshot; use --vulkan-verify-frames to verify acquired pixels".into());
+    }
     if let Some(count) = worker_iterations {
         if iterations > 0 || dump || !clicks.is_empty() || exit_after.is_some() || capture.is_some()
         {
