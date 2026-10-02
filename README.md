@@ -6,7 +6,10 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 The [ArrayBuffer checkpoint](tests/conformance/array-buffer.md) adds fixed and
 resizable buffers, resizing, same-realm species-aware slicing, transfers and
-detachment. Typed arrays, DataView and shared memory remain unfinished. The
+detachment. [DataView](tests/conformance/data-view.md) now adds fixed and tracking
+views, nine Number codec pairs including Float16, and authentic `isView`.
+Its complete upstream profile records 694 passes, 12 failures and 416 exclusions.
+Typed arrays, BigInt codecs and shared memory remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate
@@ -140,6 +143,7 @@ python3 tools/test262_conformance.py --profile object-integrity --baseline tests
 python3 tools/test262_conformance.py --profile array-find --baseline tests/conformance/test262-array-find-current.json
 python3 tools/test262_conformance.py --profile array-splice --baseline tests/conformance/test262-array-splice-current.json
 python3 tools/test262_conformance.py --profile array-buffer --baseline tests/conformance/test262-array-buffer-current.json
+python3 tools/test262_conformance.py --profile data-view --baseline tests/conformance/test262-data-view-current.json
 python3 tools/test262_conformance.py --profile date --baseline tests/conformance/test262-date-current.json
 python3 -m unittest discover -s tools -p 'test_*.py'
 cargo run --locked --release --bin eris-stress -- 5000
@@ -424,8 +428,8 @@ freezing and integrity queries for supported ECMAScript objects, including
 arrays, functions, boxed strings and arguments objects. Own descriptor flags
 are processed without invoking getters; children and prototypes remain shallow.
 The [complete upstream profile](tests/conformance/test262-object-integrity.md)
-retains 239 sources and 474 modes. With Date and ArrayBuffer support it records
-396 passed, 40 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
+retains 239 sources and 474 modes. With Date, ArrayBuffer and DataView support it records
+398 passed, 38 missing-prerequisite failures and 38 unsupported modes, with all 224 controls
 verified. All 228 frozen local variants and their 12 controls also pass.
 Eight older descriptor modes gain passes, and all 14,296 other older
 observations are unchanged. That checkpoint has 34 profiles, 14,778
@@ -492,14 +496,16 @@ that checkpoint retained **33 known-state gates**, with no quota or policy chang
 [ArrayBuffer](tests/conformance/array-buffer.md) adds nonshared fixed and
 resizable backing stores, slicing, transfers and detachment. Its complete
 upstream profile records **262 passed, 50 failed and 130 excluded modes**, with
-all 160 controls verified. The local suite verifies **94 of 104 expectations**
+all 160 controls verified. The local suite verifies **96 of 104 expectations**
 after the [for-in length-bucket follow-up](tests/conformance/for-in-length-buckets.md)
-closes two ordinary metadata work stops. Ten prerequisite modes remain unmet.
-Typed arrays, DataView, shared memory and foreign realms remain
-unfinished. At the original ArrayBuffer checkpoint, four older Array.from/Object.seal
+closes two metadata work stops and [DataView](tests/conformance/data-view.md)
+closes two prerequisite modes. Eight prerequisite modes remain unmet.
+Typed arrays, BigInt codecs, shared memory and foreign realms remain unfinished. At the original ArrayBuffer checkpoint, four older Array.from/Object.seal
 modes gained passes, with every other historical observation unchanged.
-The catalog now contains **42 profiles /
-18,563 modes / 4,252 controls**, with **34 known-state regression gates**.
+DataView adds 694 passes, 12 failures and 416 exclusions, with all 232 controls
+verified. Its local suite verifies 128 of 138 expectations, including four
+expected resource outcomes. The catalog now contains **43 profiles /
+19,685 modes / 4,484 controls**, with **35 known-state regression gates**.
 Those gates preserve recorded gaps as well as passing cases.
 
 [Synchronous iteration](tests/conformance/for-of.md) supports identifier/member

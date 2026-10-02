@@ -1,83 +1,112 @@
-# DataView: independent tests before implementation
+# DataView over nonshared ArrayBuffer storage
 
-This checkpoint adds authenticated upstream tests and independent local byte and
-ordering oracles. It does **not** add DataView runtime support. The browser goal
-remains incomplete; these results make no security or Chromium performance claim.
+Eris now implements the DataView constructor, `buffer`, `byteOffset`,
+`byteLength`, authentic `ArrayBuffer.isView`, and the nine Number getter/setter
+pairs: Int8, Uint8, Int16, Uint16, Int32, Uint32, Float16, Float32 and Float64.
+Fixed and length-tracking views share the original buffer's private storage.
+Index and value conversions run in specification order; fresh bounds are
+checked after callbacks. Detached or out-of-bounds views retain their buffer
+identity. Ordinary indexed properties and `Object.freeze` do not freeze bytes.
 
-The intended implementation covers a nonshared DataView constructor, `buffer`,
-`byteOffset`, `byteLength`, authentic `ArrayBuffer.isView`, and nine Number getter
-and setter pairs: Int8, Uint8, Int16, Uint16, Int32, Uint32, Float16, Float32 and
-Float64. Tests cover fixed and tracking views, resize and transfer, conversion
-and prototype callback ordering, byte order and direct binary64-to-binary16
-rounding. BigInt codecs, shared buffers, typed arrays, Proxy and foreign realms
-remain prerequisites to complete compatibility.
+The implementation follows the [DataView algorithms](https://tc39.es/ecma262/multipage/structured-data.html#sec-dataview-objects).
+Float16 encoding rounds directly from binary64 with ties to even, avoiding an
+intermediate binary32 rounding. Public tests require valid NaN classification
+and stable encoding without imposing a particular payload. BigInt codecs,
+shared buffers, typed arrays, Proxy, foreign realms and immutable buffers remain
+gaps. These results do not establish complete web compatibility, production
+security or the requested Chromium performance threshold.
 
-The complete pinned Test262 DataView subtree is retained: **561 sources, 1,122
-modes, 27 directories and seven unchanged helpers**. Original Git proofs link it
-to revision `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`. The new profile admits 706
-modes and records 416 metadata or host-hook exclusions. No old profile policy,
-helper, expectation, resource limit or baseline was changed.
+## Independent inputs and complete observations
 
-`Float16Array` is the pinned corpus's umbrella feature tag for its DataView
-Float16 method tests. Admission here does not claim a Float16Array constructor or
-Math.f16round implementation. Six BigInt-method sources lack the BigInt tag and
-remain admitted: four resize tests and two nonconstructability tests. An absent
-method can incidentally satisfy the latter; their raw outcomes cannot establish
-BigInt support.
+The [preparation evidence](../../docs/evidence/data-view-preparation/index.json)
+preserves the pre-implementation checkpoint: the complete 561-source upstream
+subtree, 1,122 modes, seven original helpers, independent local byte literals,
+paired controls, review corrections and the original before observations.
+The pinned revision is `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`.
+The original upstream and local fixture sources, harnesses, exclusion rules and
+resource policies remain unchanged.
+The [runtime result record](data-view-runtime.json) binds the final observations,
+validation and baseline publication.
 
-The [formal before report](test262-data-view-before.json) uses preserved adapter
-`650c0860141ec576ddbad348af53fc125b6399d9087f8ae9c9b20992aa5975e7`, built from the
-runtime published in commit `0668e83832df232e46cc427aec18d6f28333e61c`. It records
-**706 failed and 416 unsupported modes**. All 32 common harness controls verify;
-none of the 200 DataView-specific controls verify. Those controls comprise 50
-positive/wrong pairs in both modes, with successful byte operations required
-before negative assertions. Their unhealthy baseline is retained as observed.
+| Population | Final observed result |
+| --- | --- |
+| Formal DataView, 1,122 modes | 694 passed, 12 failed, 416 unsupported |
+| Formal DataView controls | 232/232 verified |
+| Local DataView, 138 modes | 124 passed, eight failed, two unsupported, four expected resource outcomes |
+| Local DataView expectations / controls | 128/138; 92/92 verified |
+| Complete 43-profile replay | 19,685 cases and 4,484 controls; 696 gains, zero pass losses |
+| Complete nine-suite local replay | 1,620 cases and 484 controls; 126 gains, zero pass losses |
+| Explicit local resource expectations | All 40 matched; all 36 older records unchanged |
 
-The [independent local fixture](data-view-local.js) contains 69 sources in both
-modes: 124 scoped ordinary-completion cases, ten missing-prerequisite cases with
-ordinary-completion expectations, and four explicit engine resource-policy
-cases. The [paired controls](data-view-local-preflights.json) add 80 feature rows;
-the runner also retains its 12 common controls. The [codec literals](data-view-codec-vectors.tsv)
-contain 100 independent encode/decode rows and 19 decode-only rows. They include
-42 previously frozen Float16 inputs checked by an exact rational reference.
-Public NaN tests require valid classification and stable encoding; they do not
-require an arbitrary payload or sign.
+Six upstream BigInt-method sources lack the BigInt metadata tag and remain
+admitted. Their twelve modes still fail: eight parse failures and four failed
+nonconstructability assertions. No incidental pass is claimed as BigInt support.
+The `Float16Array` metadata umbrella admits the DataView Float16 methods; it does
+not imply a Float16Array constructor or `Math.f16round` implementation.
 
-The [local before report](data-view-local-before.json) records **136 failed and
-two unsupported case modes**, with zero fixture expectations verified. All 12
-common controls verify; none of the 80 feature controls verify. Both baseline
-process groups were cleaned up before their leaders were reaped, and all input
-bindings remained unchanged. The 136 local failures comprise 134 runtime guard
-failures and two BigInt parse failures; the two unsupported rows require host
-hooks. The 706 formal failures comprise 658 runtime ReferenceErrors, 40 runtime
-Test262Errors and eight BigInt parse failures. Neither run has a raw pass or
-resource observation.
+The only gains in older profiles are the two `Object.seal` DataView modes.
+The older ArrayBuffer local fixture also gains its two DataView prerequisite
+modes, reaching 92 passes, six failures, two exclusions and four expected resource
+outcomes: 96/104 expectations verified. Every other old complete case/control
+record is unchanged. All 34 old gates passed before baseline publication.
+The new DataView gate and the two strengthened Object.seal baseline entries come
+from exact projections of the completed reports, without another engine run.
+There are now 35 known-state gates; reported failures and exclusions stay visible.
 
-All 367 Python tooling tests pass. Static comparisons preserve all 42 earlier
-profiles' 18,563 mode contracts and 4,252 control contracts byte for byte. No new
-regression baseline was written. This preparation did not rerun Rust or GPU tests.
-The parent commit's [nine-job CI receipt](../../docs/evidence/for-in-length-buckets-ci.json)
-is retained separately.
+## Initialization regression and correction
 
-Review corrected two negative-test guards that could accept a missing method as
-the expected TypeError, and one authored Float16 byte literal. Initial Python
-preparation failures involved a mechanically renamed helper path and incomplete
-expectations for existing Float16 metadata exclusions. Original drafts and failed
-logs are retained. No runtime observation was used to change an oracle.
+The first implementation passed all 21 DataView private groups and the complete
+external replays, but failed two existing direct-native string tests. They use
+the instruction budget remaining after `Runtime::new`; DataView's generic
+intrinsic installer consumed too much of that budget. Both failures and the
+first candidate's original source and results remain retained.
 
-The [preparation evidence inventory](../../docs/evidence/data-view-preparation/index.json)
-binds inputs, reviews, drivers and complete before observations. Its compressed
-archive contains source and records, not executable builds. The prior adapter's
-source inventory and publication audit remain in the
-[for-in checkpoint](for-in-length-buckets.md).
+The corrected installer constructs final function descriptors once, reuses
+located vacant map entries and reserves the prototype's creation-order buffer
+once. It removes repeated searches and rewrites while retaining explicit work
+and storage charges. Search costs use actual runtime tree sizes. Existing tree
+insertions prepay a conservative node allowance, and vector reservations pay
+the full requested buffer plus relocation. No quota, budget boundary, old test
+body or external oracle was changed. The measured runtime leaves 71,936 of 100,000 work units after initialization, with 582,570 bytes charged to the cumulative ledger. The original two failing tests both pass.
 
-To reproduce the formal selection with an available Eris adapter:
+The accounting uses logical work units and requested cumulative storage, not
+CPU instructions or allocator telemetry. General arena accounting and infallible
+B-tree allocation remain broader limitations; see [security](../../docs/SECURITY.md).
+
+## Validation
+
+Rust 1.88 and 1.98 each pass **1,316 default and 1,433 native-feature tests**, including the Linux confinement checks. Strict all-target Clippy passes for default, `vulkan-presenter` and `vulkan-raster` on both toolchains; formatting passes. All 27 private DataView groups pass. The final adapter uses the successful Rust 1.98 default release.
+
+Private tests include every binary16 decode word, signed finite adjacent
+midpoints and their neighboring binary64 values, independent byte vectors,
+callback effects and exact/one-short work/storage admission. Direct and confined
+browser integration tests check literal pixels and text before and after a click,
+including view state retained between document execution and the event callback.
+
+The first browser integration fixture used `Object.is`, which is still absent,
+and failed with a non-callable value. Its negative-zero expectation was retained
+using the equivalent Number check `n === 0 && 1 / n === -Infinity`, alongside the
+unchanged literal sign byte. The initial fixture, failure and reviewed correction
+are retained separately. A reciprocal-only proposal was rejected before editing
+because tiny negative nonzero values can also reciprocate to negative infinity.
+The final candidate changes only that fixture from the second candidate; its
+production inventory and reused release binaries are identical. Both full
+validation matrices and external replays are bound to the final source archive.
+
+The [runtime evidence inventory](../../docs/evidence/data-view-runtime/index.json)
+binds all three candidates, failed and successful validation, all complete replay
+reports, reviews and publication records. It contains source overlays and data,
+not executable builds. The [preparation CI receipt](../../docs/evidence/data-view-preparation-ci.json)
+retains all nine successful jobs for the preceding public checkpoint.
 
 ```sh
-python3 tools/test262_conformance.py --profile data-view --binary /path/to/eris-js --output /tmp/data-view.json
-python3 -m unittest discover -s tools -p 'test_test262_data_view.py'
+cargo test --locked --lib script::data_view::tests
+cargo test --locked --test pipeline data_view
+cargo test --locked --test worker data_view -- --include-ignored
+cargo build --locked --release --bin eris-js
+python3 tools/test262_conformance.py --profile data-view \
+  --baseline tests/conformance/test262-data-view-current.json
 ```
 
-The runner retains every case, exclusion and failure. A nonzero exit is expected
-for this before binary. The standard-derived scope follows the
-[DataView algorithms](https://tc39.es/ecma262/multipage/structured-data.html#sec-dataview-objects).
+The worker test requires Linux Landlock ABI 6. A passing known-state gate preserves
+recorded passes; it does not mean every case or every web standard passes.

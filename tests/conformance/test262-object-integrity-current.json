@@ -2,7 +2,7 @@
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "602023dfe820d591c4a8fc8d83a9e4680012f4b15083f855f84da427539c988d",
   "runner_policy_sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391",
-  "binary_sha256": "57eae22986e13bd11fe031716a9bd3554b74b31dc8a86c717fea9176ef06c18b",
+  "binary_sha256": "b61e487bf1ea2c0ff70b471656b4abd15aa085b2570406d8c76ab8ab14fcdf18",
   "cases": {
     "test/built-ins/Object/freeze/15.2.3.9-0-1.js:sloppy": {
       "status": "passed",
@@ -1975,12 +1975,12 @@
       "source_sha256": "bc5e966a0a75e4b63051792fb72aeb55fe81b6d03fed1455e34aafaadd223f77"
     },
     "test/built-ins/Object/seal/seal-dataview.js:sloppy": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "13c4356deaaaa63f22db8ef9c45382008ad91a06aa585f84877166d6f857d5f2",
       "source_sha256": "e29a9fe13e41a5b660d6b5143fe4e78c1350bad42ca04051bc0a691ef428b6db"
     },
     "test/built-ins/Object/seal/seal-dataview.js:strict": {
-      "status": "failed",
+      "status": "passed",
       "case_sha256": "84f25a07b3b45f0cf31e9144650d39a98be09248aa77d11f0cab7cd529b76f48",
       "source_sha256": "e29a9fe13e41a5b660d6b5143fe4e78c1350bad42ca04051bc0a691ef428b6db"
     },

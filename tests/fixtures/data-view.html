@@ -1,0 +1,46 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>DataView through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#bytes{left:0}#float{left:50px}#resize{left:100px}#freeze{left:150px}#transfer{left:200px}#brand{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="bytes" class="sample"></div><div id="float" class="sample"></div>
+<div id="resize" class="sample"></div><div id="freeze" class="sample"></div>
+<div id="transfer" class="sample"></div><div id="brand" class="sample"></div>
+<button id="change" type="button">Run view callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+const savedBuffer=new ArrayBuffer(12),savedView=new DataView(savedBuffer);
+function apply(color){
+  check(savedView.getUint32(1)===(color==='green'?0:305419896),'view bytes survive a document event');
+  savedView.setUint32(1,305419896);
+  check(savedView.getUint8(1)===18&&savedView.getUint8(2)===52&&savedView.getUint8(3)===86&&savedView.getUint8(4)===120,'unaligned big-endian bytes');
+  check(savedView.getUint32(1,true)===2018915346&&new DataView(savedBuffer,1,4).getUint32(0)===305419896,'little-endian read and shared backing');mark('bytes',color);
+  savedView.setFloat16(7,1.5);
+  check(savedView.getUint8(7)===62&&savedView.getUint8(8)===0&&savedView.getFloat16(7)===1.5,'half-precision literal bytes');
+  const floating=new DataView(new ArrayBuffer(8));floating.setFloat64(0,-0,true);
+  const negativeZero=floating.getFloat64(0,true);
+  check(floating.getUint8(7)===128&&negativeZero===0&&1/negativeZero===-Infinity,'binary64 negative zero');mark('float',color);
+  const buffer=new ArrayBuffer(8,{maxByteLength:16}),tracking=new DataView(buffer,2),fixed=new DataView(buffer,2,4);
+  let trace='';tracking.setUint16({valueOf:function(){trace+='I';buffer.resize(4);return 1;}},{valueOf:function(){trace+='V';buffer.resize(8);return 4660;}});
+  check(trace==='IV'&&tracking.byteLength===6&&fixed.byteLength===4&&tracking.getUint16(1)===4660,'conversion order and fresh bounds');
+  buffer.resize(4);let boundsError=false;try{fixed.byteLength;}catch(error){boundsError=error instanceof TypeError;}
+  check(boundsError&&tracking.byteLength===2&&fixed.buffer===buffer,'whole fixed-view bounds after resize');mark('resize',color);
+  const ordinary=new DataView(new ArrayBuffer(2));ordinary[0]=99;Object.freeze(ordinary);ordinary.setUint8(0,7);
+  check(Object.isFrozen(ordinary)&&ordinary[0]===99&&ordinary.getUint8(0)===7,'ordinary properties and frozen view leave backing writable');mark('freeze',color);
+  const source=new ArrayBuffer(2),old=new DataView(source);old.setUint16(0,258);const moved=source.transfer();
+  let detachedError=false;try{old.getUint8(0);}catch(error){detachedError=error instanceof TypeError;}
+  check(detachedError&&old.buffer===source&&ArrayBuffer.isView(old)&&new DataView(moved).getUint16(0)===258,'detached identity and transferred bytes');mark('transfer',color);
+  const fake=Object.create(DataView.prototype);let brandError=false,callError=false;
+  try{DataView.prototype.getUint8.call(fake,0);}catch(error){brandError=error instanceof TypeError;}
+  try{DataView(savedBuffer);}catch(error){callError=error instanceof TypeError;}
+  check(brandError&&callError&&!ArrayBuffer.isView(fake)&&ArrayBuffer.isView(savedView),'authentic slots and required construction');mark('brand',color);
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  apply('blue');document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

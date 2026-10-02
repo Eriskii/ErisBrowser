@@ -1,0 +1,426 @@
+{
+  "schema": 1,
+  "scope": "Nonshared DataView constructor/getters, nine Number codec pairs, fixed and tracking views, authentic ArrayBuffer.isView",
+  "full_browser_goal_achieved": false,
+  "production_security_claim": false,
+  "chromium_performance_claim": false,
+  "source_parent": "b3f6e5cdcb4d43e5785d5a0309aa41d19b6d45ae",
+  "final_candidate": "candidate-3",
+  "production_input_sha256": "bb4162d2b6b63d800cbee0dd0c41a21ced379aaa988347351ecee6e2961cce60",
+  "binary_sha256": "b61e487bf1ea2c0ff70b471656b4abd15aa085b2570406d8c76ab8ab14fcdf18",
+  "remaining_prerequisites": [
+    "BigInt codecs",
+    "Shared and immutable buffers",
+    "Typed arrays",
+    "Proxy",
+    "Foreign realms"
+  ],
+  "formal": {
+    "source_files": 561,
+    "mode_cases": 1122,
+    "counts": {
+      "unsupported": 416,
+      "passed": 694,
+      "failed": 12
+    },
+    "controls": 232,
+    "all_controls_verified": true,
+    "report": {
+      "path": "/tmp/eris-data-view-1/formal-candidate-3/data-view.json",
+      "sha256": "f9b154311489e85d6496ff53a4eba27a21096c990afa64f73ca4aef2e8eafb77",
+      "bytes": 887311
+    }
+  },
+  "local": {
+    "cases": 138,
+    "counts": {
+      "passed": 124,
+      "failed": 8,
+      "unsupported": 2,
+      "resource": 4
+    },
+    "expectations_verified": 128,
+    "controls": 92,
+    "all_controls_verified": true,
+    "explicit_terminal_expectations": 4,
+    "report": {
+      "path": "/tmp/eris-data-view-1/local-candidate-3/data-view.json",
+      "sha256": "8c50b0bf1f1540231d6b488183259365c4b7fc6ac4ee7694b0c41e727e2bd307",
+      "bytes": 673294
+    }
+  },
+  "all_formal": {
+    "profiles": 43,
+    "cases": 19685,
+    "controls": 4484,
+    "improvements": 696,
+    "regressions": 0,
+    "other_changes": 4,
+    "control_changes": 200,
+    "baseline_gates_checked": 34,
+    "baseline_gates_passed": 34
+  },
+  "all_local": {
+    "suites": 9,
+    "cases": 1620,
+    "controls": 484,
+    "controls_verified": 484,
+    "gains": 126,
+    "lost_passes": 0,
+    "explicit_terminal_expectations_matched": 40
+  },
+  "candidate1_to3_complete_records": {
+    "formal_cases_and_controls": 24169,
+    "local_cases_and_controls": 2104,
+    "changed": 0,
+    "normalization": false
+  },
+  "validation": {
+    "schema": 1,
+    "complete": true,
+    "candidate": "/tmp/eris-data-view-1/candidate-3",
+    "production_input_sha256": "bb4162d2b6b63d800cbee0dd0c41a21ced379aaa988347351ecee6e2961cce60",
+    "archive_inputs": {
+      "path": "/tmp/eris-data-view-1/candidate-3/archive-inputs.json",
+      "sha256": "11950ec1b5e028ee3b184bb9082e876f19d05e7041399c674c830f6a9df9f883",
+      "bytes": 70465
+    },
+    "build_bindings": {
+      "path": "/tmp/eris-data-view-1/candidate-3/build-bindings.json",
+      "sha256": "f1ed4f3491fb7f2bd3d58a5d9ffc021f49f05c5113f64cc1cfcfd937a1a7ec3a",
+      "bytes": 776
+    },
+    "sources_and_binaries_unchanged_after_all_checks": true,
+    "checks": [
+      {
+        "label": "full-default-188",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/full-default-188-3.json",
+          "sha256": "67bd3728458837599e42b1eae8f180db3906b8791a9a3933d31187e6dd3ccb3e",
+          "bytes": 328
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/full-default-188-3.log",
+          "sha256": "d34a9b44f9d473b2cab88c37a63fa893f63998ebb8bcacc49c5c5d423a2e0f70",
+          "bytes": 124817
+        },
+        "test_binaries": 13,
+        "passed": 1316,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "label": "full-native-188",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/full-native-188-3.json",
+          "sha256": "0abba0dfff564e3241821673d1d357733a4ef93300ccf023e29bc426f355bc97",
+          "bytes": 366
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/full-native-188-3.log",
+          "sha256": "450e65ac05c622bd3d5efba423bb8fa332cd512f01fb546455124297b51dad39",
+          "bytes": 138012
+        },
+        "test_binaries": 13,
+        "passed": 1433,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "label": "clippy-default-188",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-default-188-3.json",
+          "sha256": "5470e5e47a46725b07fe6f12823190283fcefe9476f450d554e88be968dbcf32",
+          "bytes": 352
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-default-188-3.log",
+          "sha256": "f009ac99b5ef32221f2f0984246377d7747cf09ca78ef07f3dca6648b06cbc7c",
+          "bytes": 164
+        }
+      },
+      {
+        "label": "clippy-presenter-188",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-presenter-188-3.json",
+          "sha256": "325bbf6cb59874bfeb80d926e602452cd30861cc3fbbe639a4af7dc88b306cc9",
+          "bytes": 397
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-presenter-188-3.log",
+          "sha256": "66a405837f71095b9ec7b879c65d9835dedde92d681d5c8eb7e35980e615c137",
+          "bytes": 164
+        }
+      },
+      {
+        "label": "clippy-native-188",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-native-188-3.json",
+          "sha256": "27fa72b0e0f195af4ef2bdd2548f426a2cf80ff9686b8cb17aafc1d2cce8235b",
+          "bytes": 391
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-native-188-3.log",
+          "sha256": "22ca55a8fda3e4bf9c386fc37b439ee72f1e7c1e8e703a6acc86b7eca58c0b10",
+          "bytes": 164
+        }
+      },
+      {
+        "label": "full-default-198",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/full-default-198-3.json",
+          "sha256": "a88e97c0d4e8edc76fcf6e4267a81eba268886bd5a7aa0fb8133cf3512cf69de",
+          "bytes": 328
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/full-default-198-3.log",
+          "sha256": "afcc03ad932794084671b1a84c95a2fbba3a20c7027631a46abce0b69a8a2e19",
+          "bytes": 124806
+        },
+        "test_binaries": 13,
+        "passed": 1316,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "label": "full-native-198",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/full-native-198-3.json",
+          "sha256": "fb4fdd6d2a1edfcc7facafb78e10d2743c776d2aff4745b3c22bf43bf458e5e1",
+          "bytes": 366
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/full-native-198-3.log",
+          "sha256": "c20a73f41eec2ceb22c287d06ac38035a46af4969e76dac4400f79e89f3643ca",
+          "bytes": 138000
+        },
+        "test_binaries": 13,
+        "passed": 1433,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "label": "clippy-default-198",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-default-198-3.json",
+          "sha256": "92fff731786c3a91c7c349f481769118a5bd29e899144143091f515fa87dd2c9",
+          "bytes": 353
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-default-198-3.log",
+          "sha256": "0f09de8c5e3ae973d3a56e2a3c195d20e0915eb37887a9ea2be1559212929794",
+          "bytes": 164
+        }
+      },
+      {
+        "label": "clippy-presenter-198",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-presenter-198-3.json",
+          "sha256": "467f00a9af23fef639d705bd1fa147e2b648c43c19a47f985ca8e12c6e073fd1",
+          "bytes": 397
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-presenter-198-3.log",
+          "sha256": "cf213b7c872e5c4a86873ebe718b053eee3e99f43ded65da1fcb3caae34d4cbc",
+          "bytes": 164
+        }
+      },
+      {
+        "label": "clippy-native-198",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-native-198-3.json",
+          "sha256": "11ef1bf3c449cc36ac6b98e55acbf0ea885d3c0a3d59373bd49fd42133711201",
+          "bytes": 391
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/clippy-native-198-3.log",
+          "sha256": "88d50720501d97ad057eecf81bf259b7ce025ee99ddec00f9ab76db4630ec39e",
+          "bytes": 164
+        }
+      },
+      {
+        "label": "format-188-3",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/format-188-3.json",
+          "sha256": "9299594c5ed23c03a3e13b82ecfa1d752e177743243fe9544b7fad296c819e56",
+          "bytes": 221
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/format-188-3.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      },
+      {
+        "label": "focused-data-view-188-2",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/focused-data-view-188-2.json",
+          "sha256": "651f84c82c66b36a40397bc9c0e94cb069b4d6a97caa1c67bf71b79011f66060",
+          "bytes": 395
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/focused-data-view-188-2.log",
+          "sha256": "10ffec2f56c223c94fa61a54102d1dc74de08bdc144a5ea5f295beafb4e0494d",
+          "bytes": 3201
+        }
+      },
+      {
+        "label": "concat-regression-188-2",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/concat-regression-188-2.json",
+          "sha256": "c6a35aa3cdfe5896c41b33bf25033a631b648311079c805030c2e7a16b1a671e",
+          "bytes": 448
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/concat-regression-188-2.log",
+          "sha256": "e91e756492a3253954234fa80aa9d09f23426fadbecaa44b93c69b0238d80650",
+          "bytes": 473
+        }
+      },
+      {
+        "label": "json-regression-188-2",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/json-regression-188-2.json",
+          "sha256": "bbdb941bbd4acb845680ca5426570d42c65d5ca66572a9a6a975ea4b7dd0d211",
+          "bytes": 402
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/json-regression-188-2.log",
+          "sha256": "e87d6e0c0f38d3efc72c4abd787849c331e95755c446f4d32bca4742df2e53c5",
+          "bytes": 429
+        }
+      },
+      {
+        "label": "browser-integration-188-3",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/browser-integration-188-3.json",
+          "sha256": "9b361f1089e7dd79487811b5f47552e5ec5d682062ef488b1ef9a5643771941c",
+          "bytes": 409
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/browser-integration-188-3.log",
+          "sha256": "924f2ee614bf41ac99fbb25c1457d0652fe0042343e94ad61f6ab7695c03df55",
+          "bytes": 778
+        }
+      },
+      {
+        "label": "release-default-build-2",
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/release-default-build-2.json",
+          "sha256": "91a1054723a8099e8d512d95bc263792d3ab13bd03abf0b250b98491c65f9032",
+          "bytes": 316
+        },
+        "log": {
+          "path": "/tmp/eris-data-view-1/validation/release-default-build-2.log",
+          "sha256": "eccd5a4915009f15eb96530da84d8f866fdfaaf04f456da7a0b42c0a178f9d50",
+          "bytes": 155
+        }
+      }
+    ],
+    "bootstrap_measurement": {
+      "remaining_steps": 71936,
+      "allocated": 582570,
+      "native_properties": 314,
+      "prototypes": 25,
+      "order_capacity": 23,
+      "log": {
+        "path": "/tmp/eris-data-view-1/validation/focused-data-view-188-2.log",
+        "sha256": "10ffec2f56c223c94fa61a54102d1dc74de08bdc144a5ea5f295beafb4e0494d",
+        "bytes": 3201
+      },
+      "meaning": "Actual cumulative Runtime::new ledger, not elapsed performance or machine instruction count"
+    },
+    "retained_failures": [
+      {
+        "candidate": 1,
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/full-default-188-1.json",
+          "sha256": "255be43b1f6496944de56f85e1fa1bc8193493d8df3c7f2c67974df5c65d3c44",
+          "bytes": 330
+        },
+        "reason": "Two original direct-native string operations exhausted remaining bootstrap work"
+      },
+      {
+        "candidate": 2,
+        "record": {
+          "path": "/tmp/eris-data-view-1/validation/browser-integration-188-2.json",
+          "sha256": "b0aea342174db70e62567579f4e1cb4153a6f6af108d6e4991bfd9abd33e0a6f",
+          "bytes": 411
+        },
+        "reason": "Authored new browser fixture used missing Object.is; original DataView signed-zero requirement preserved by reviewed equivalent assertion"
+      }
+    ],
+    "no_old_test_or_quota_changes": true,
+    "external_replay_audit": "separate"
+  },
+  "baseline_publication": {
+    "new_profile": "data-view",
+    "gates": 35,
+    "old_unchanged": 33,
+    "old_strengthened": "object-integrity",
+    "newly_passing_old_modes": [
+      "test/built-ins/Object/seal/seal-dataview.js:sloppy",
+      "test/built-ins/Object/seal/seal-dataview.js:strict"
+    ],
+    "engine_reruns": 0,
+    "record": "test262-data-view-baseline-validation.json",
+    "record_sha256": "52ee0243a292ea62acb94e1cf42618606256ec124629ae58b54392aca74487e7"
+  },
+  "history": [
+    {
+      "candidate": 1,
+      "accepted": false,
+      "observation": "21 private groups and external gains; two original string tests exhausted startup remaining work"
+    },
+    {
+      "candidate": 2,
+      "accepted": false,
+      "observation": "27 private groups and both original regressions pass; new browser fixture used missing Object.is and failed; no external replay executed"
+    },
+    {
+      "candidate": 3,
+      "accepted": true,
+      "observation": "Same production and release binaries as candidate2; equivalent guarded negative-zero assertion removes fixture dependency. Direct/confined integration and full Rust matrices pass. Complete external replays retain the stated failures, exclusions and resource outcomes, with no lost pass."
+    }
+  ],
+  "reviews": [
+    {
+      "path": "/tmp/eris-data-view-1/root-runtime-acceptance.json",
+      "sha256": "cc9f426be8706cef544383f68754795a047505986ca0f6b0e78890d88baea9f0",
+      "bytes": 4942
+    },
+    {
+      "path": "/tmp/eris-data-view-1/candidate-3-replay-review.json",
+      "sha256": "fcdfc890a0b42ea5a2238c42c8c9950c7ce3fa69fc262816e58e4141196357af",
+      "bytes": 56446
+    },
+    {
+      "path": "/tmp/eris-data-view-1/installer-diagnosis/layout-implementation-review.json",
+      "sha256": "af075107b41f724bcea883e10fb21136f0213463258bb3e5325afea769687852",
+      "bytes": 4339
+    },
+    {
+      "path": "/tmp/eris-data-view-1/installer-diagnosis/observable-review.json",
+      "sha256": "a0b3d9e5152fcd48641b0fbc7e25188350f9a57424a9e6eea7b83988a9070e62",
+      "bytes": 7309
+    },
+    {
+      "path": "/tmp/eris-data-view-1/browser-fixture-before/layout-negative-zero-correction-review.json",
+      "sha256": "3a53d8dc6cc4579e9cae9cbc6591cd021da5997edadc8b16a93d9622deddbfc4",
+      "bytes": 2835
+    },
+    {
+      "path": "/tmp/eris-data-view-1/publication/layout-final-doc-review.json",
+      "sha256": "669ebe582129021b52c5e15709c9461238cc1443a064653116a1222b159b6ceb",
+      "bytes": 5997
+    }
+  ],
+  "evidence_inventory": "../../docs/evidence/data-view-runtime/index.json",
+  "preparation_evidence": "../../docs/evidence/data-view-preparation/index.json",
+  "notes": [
+    "Formal replay exit1 retains 200 control changes from absent to healthy; completed with all old gates passing and zero lost passes.",
+    "Twelve admitted upstream BigInt prerequisite modes still fail and 416 modes remain excluded under original policies.",
+    "Four local resource outcomes are explicit engine policy expectations, not ECMAScript conformance passes.",
+    "Accounting describes logical work and requested cumulative storage, not CPU instructions, elapsed speed or total allocator/process memory."
+  ]
+}

@@ -184,7 +184,15 @@ maximum feasibility is checked after initial backing allocation; storing a
 maximum does not allocate that capacity. Otherwise feasible requests still face
 the unchanged terminal work and cumulative heap limits. Twenty-four private
 groups cover byte contents, reentrant callbacks, allocation/copy boundaries and
-cleanup. Typed-array and DataView access, shared memory, foreign realms and host
+cleanup. DataView now uses narrow copied-metadata and at-most-eight-byte backing
+operations. Stable opaque buffer handles cross callbacks; backing borrows do not.
+View bounds are rechecked after conversions, and complete writes are prepaid
+before their first byte changes. Record growth pays full requested new storage
+and movement. Intrinsic installation builds final descriptors with cached vacant
+entries, retaining explicit search, structural, node and order-buffer charges.
+Twenty-seven private DataView groups cover codec literals, exhaustive binary16
+boundaries, callback effects and exact/one-short work/storage admission.
+Typed-array access, BigInt codecs, shared memory, foreign realms and host
 detachment remain absent. These scoped checks do not establish general arena
 accounting, allocator recovery, total process-memory bounds or production security.
 

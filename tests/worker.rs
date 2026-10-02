@@ -433,6 +433,16 @@ fn confined_array_buffer_resizing_transfer_and_species_survive_document_callback
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_data_view_bytes_resize_and_transfer_survive_document_callbacks() {
+    assert_six_scripted_samples_through_worker_with_result_text(
+        include_str!("fixtures/data-view.html"),
+        195,
+        Some(["ready", "6"]),
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn confined_own_key_order_and_live_enumeration_survive_document_callbacks() {
     assert_six_scripted_samples_through_worker(include_str!("fixtures/own-keys.html"), 187);
 }

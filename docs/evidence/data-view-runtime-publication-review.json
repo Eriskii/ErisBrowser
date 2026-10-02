@@ -1,0 +1,348 @@
+{
+  "schema": 1,
+  "status": "clear",
+  "reviewer": "layout",
+  "method": "Independent full archive streaming/hash/original-byte audit, Git-blob-plus-overlay reconstruction, direct JSON baseline projections and document/retained-log inspection. No packer, compiler, test, engine or replay execution.",
+  "package_index": {
+    "path": "/tmp/eris-data-view-1/runtime-publication-package-1/index.json",
+    "bytes": 553835,
+    "sha256": "6495cbfaec4461a07750348eb514ccf8840762ab1939519353782c87af11a8d1"
+  },
+  "archive": {
+    "path": "/tmp/eris-data-view-1/runtime-publication-package-1/records.tar.gz",
+    "bytes": 21887175,
+    "sha256": "fbd8345aca34429b03d937002a471eabda8ca3c296414f739a5973bc69ac7ee6"
+  },
+  "payload_count": 1247,
+  "payload_bytes": 212048288,
+  "stages": {
+    "candidate1": 293,
+    "candidate2": 40,
+    "candidate3": 284,
+    "packaging": 5,
+    "published-current": 44,
+    "before": 45,
+    "shared": 469,
+    "final-review-and-publication": 17,
+    "implementation-history": 2,
+    "packaging-preparation": 21,
+    "validation-history": 27
+  },
+  "payload_suffixes": {
+    ".rs": 22,
+    ".html": 4,
+    ".json": 744,
+    ".py": 90,
+    ".yml": 1,
+    ".md": 20,
+    ".js": 41,
+    ".log": 312,
+    ".diff": 4,
+    "": 8,
+    ".tsv": 1
+  },
+  "safe_regular_deterministic_members": true,
+  "all_payloads_match_index_and_originals": true,
+  "source_reconstruction": [
+    {
+      "candidate": "candidate1",
+      "archive_members": 412,
+      "overlays": 5
+    },
+    {
+      "candidate": "candidate2",
+      "archive_members": 413,
+      "overlays": 8
+    },
+    {
+      "candidate": "candidate3",
+      "archive_members": 413,
+      "overlays": 8
+    }
+  ],
+  "executable_payloads": 0,
+  "source_tar_payloads": 0,
+  "external_replays": {
+    "candidate1": "completed",
+    "candidate2": "not-executed",
+    "candidate3": "completed"
+  },
+  "candidate2_to3": "Production inventory and binaries identical; only tests/fixtures/data-view.html differs in archive content. Original reused build receipt retained.",
+  "attempts": {
+    "total": 33,
+    "compiler_or_rust_commands": 20,
+    "retained_failed_commands": [
+      {
+        "candidate": 2,
+        "label": "browser-integration-188-2",
+        "exit": 101
+      },
+      {
+        "candidate": 1,
+        "label": "full-default-188-1",
+        "exit": 101
+      }
+    ]
+  },
+  "baseline_publication": {
+    "engine_executions": 0,
+    "gates": 35,
+    "old_unchanged": 33,
+    "old_strengthened": "object-integrity",
+    "two_gains": [
+      "test/built-ins/Object/seal/seal-dataview.js:sloppy",
+      "test/built-ins/Object/seal/seal-dataview.js:strict"
+    ],
+    "all_35_case_projections_exact": true,
+    "workflow_only_exact_new_step": true
+  },
+  "critical_bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view-runtime.json",
+      "bytes": 15826,
+      "sha256": "2ab9a005c4c63ee90943bbfb509c15fb77df80790820b0a2a272f45200e24a00"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/runtime-baseline-publication.json",
+      "bytes": 1260,
+      "sha256": "b9703217da4739819cfc57a81e38a2744febb1784a05ec0e4d96cb7c892b5592"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-data-view-baseline-validation.json",
+      "bytes": 22411,
+      "sha256": "52ee0243a292ea62acb94e1cf42618606256ec124629ae58b54392aca74487e7"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/.github/workflows/check.yml",
+      "bytes": 16329,
+      "sha256": "3e98804a3e9231d0932896c2f9ba2c222854f3d4fb2fbfa3a67b355aa09acec1"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/validation/final-summary.json",
+      "bytes": 9869,
+      "sha256": "cadd4939270dd73aa56ff4cc4f3e1eba68eafd3e046eaac7681169b8ec33b0ec"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/README.md",
+      "bytes": 38539,
+      "sha256": "71871312483e238fac3bbdce111774043b6d72da484372f0e68771a1e6358e89"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/COMPATIBILITY.md",
+      "bytes": 51900,
+      "sha256": "792e2b13739c6b64ea9eeae3994363f291a5494792f3269c466e7d0982c80471"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/ROADMAP.md",
+      "bytes": 19348,
+      "sha256": "8bd2980769d33b6fd549c7e1e2c134c2db7d745b4fa04707738450afcf4ee7db"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/SECURITY.md",
+      "bytes": 54512,
+      "sha256": "e9be89ca94fa31fff2c9456a796205a7fadfa6edc3c47244480da09ac939e767"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view.md",
+      "bytes": 7203,
+      "sha256": "7f8a8edd5ba38db227bcd182d72e9e1c3b60ee28fd428eb240a28a6a28a0e398"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-object-integrity.md",
+      "bytes": 8292,
+      "sha256": "fb3bd945db31c71e7beb26b7fc037664bb5e4a45833d30a3ba742e1d088726e6"
+    }
+  ],
+  "gate_bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-addition-current.json",
+      "bytes": 27481,
+      "sha256": "69610fc6ff4ab4f2d72eae1aa5ccc6cc127af758f998448f6c9e15b76628fe4d"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-array-buffer-current.json",
+      "bytes": 132211,
+      "sha256": "9a9a052de66d0c302f157f0762afefdcd16aacd909c95d2c3409cd12fdc5f265"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-array-descriptors-current.json",
+      "bytes": 1017573,
+      "sha256": "16b9d7428696157b55284b8a7884b5f290e86756afcdf505ed99a3d49ae3501a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-array-find-current.json",
+      "bytes": 54413,
+      "sha256": "9acc545529e16134d5ec1082415a679babb643bc9f587d7143ed6b0604b9c3d9"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-array-from-current.json",
+      "bytes": 25555,
+      "sha256": "33167f5d478a3826232e62cba3843adab9cd886639997b12ebdeecf7a0403cba"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-array-reduce-current.json",
+      "bytes": 298970,
+      "sha256": "aaced8d7d1c9b079067e2abff639657adf89bc5c349ec19188c28314c82aebce"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-array-splice-current.json",
+      "bytes": 47569,
+      "sha256": "f101d6ecf1d515dfb4f1e37a8cab6b96818a46f09aff2039ddd4dae26e06eec1"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-compound-assignment-current.json",
+      "bytes": 237364,
+      "sha256": "1ed2ffaad47349010ad532ba43e0cbaf59750c23d0d76c4e5174bc0090ea2dfd"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-core-iterators-current.json",
+      "bytes": 42367,
+      "sha256": "02077518cb4bfa8c4ada143276c4224252eabd694a5a8e77a5520c5ac4a9cb1d"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-date-current.json",
+      "bytes": 340347,
+      "sha256": "8e282442518943971a743f512be6a5de368718f2f8029fb358355fb5d7f48bac"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-equality-current.json",
+      "bytes": 83109,
+      "sha256": "c1418e959a4936d94cb24960c379dccee01af48d932fe4ff7622964129b227df"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-for-of-current.json",
+      "bytes": 433018,
+      "sha256": "c023e088a45ba866ba9436832a2a0ba6584f9261038ad26df72825523820cf06"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-function-constructor-current.json",
+      "bytes": 80052,
+      "sha256": "f17ce66f9c4f5395ade2e9d607e806dce678c84558674d30e1a53e378e3136c0"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-functions-current.json",
+      "bytes": 344699,
+      "sha256": "53627cfffdb3b01c7453aed80e750909ba0198a888747b2f3cb22674c3966040"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-global-values-current.json",
+      "bytes": 24010,
+      "sha256": "05a82b4c2f40643fa91df9905e4be566332f4106592c3f99e9397819cec18803"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-is-prototype-of-current.json",
+      "bytes": 6423,
+      "sha256": "0c6a95e3eca5d1d8949f0770ff7dc2557dedfff8c96cd62ce5173ca5a1745efe"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-labels-current.json",
+      "bytes": 35492,
+      "sha256": "035145ff2b1d5df31077936c86d4ca54dc58185f7fb32ca812fd2ea96c1f07f3"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-logical-assignment-current.json",
+      "bytes": 43440,
+      "sha256": "08550c1b03893e8b5e75ef8caa234b1ac7bb1c4f5f5e2dfaa37e69a0b38ac705"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-new-target-current.json",
+      "bytes": 8393,
+      "sha256": "187696b419974db062b8eb5ddac457f7cc1fb849d3de6c495b91c7bb8026a2d7"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-number-statics-current.json",
+      "bytes": 94499,
+      "sha256": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-numeric-conversion-current.json",
+      "bytes": 17261,
+      "sha256": "2a14928428ef7fa112d0f4434eb7764a73b1685de2e494eaac9d3991a4cf187c"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-object-integrity-current.json",
+      "bytes": 134751,
+      "sha256": "655339253b692bfffd5342bbf3c3d05123ac1e605e1172265372ccb8fed7641e"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-reflect-construction-current.json",
+      "bytes": 11139,
+      "sha256": "160ece084c889dd5693207aa59dcf0a732f04548eb15dbdacbcae3203680a22a"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-regexp-current.json",
+      "bytes": 83283,
+      "sha256": "07b65132730d23644e5405ba5990c7243870b2f3cef846864ad1d8dc3d5a43a5"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-regexp-match-search-current.json",
+      "bytes": 100033,
+      "sha256": "364b8180ba234cee05fede0c681816d6b1675b1af19eb450058334bf7cf6345c"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-regexp-split-current.json",
+      "bytes": 28705,
+      "sha256": "8a8aa3820823be4e9208b4e738942b676884a93d78cd6f0ea12db51d65e665ab"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-relational-current.json",
+      "bytes": 105999,
+      "sha256": "da9b25f56a36b1ff2b4997642fa26933ff534d9866ff155d0826f2599cb65fe9"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-rest-parameters-current.json",
+      "bytes": 6541,
+      "sha256": "d2afff0d3de3fa2cf37c68ee4d8b5e7794688dd1b514e827e4b2c22e763310f3"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-string-concat-current.json",
+      "bytes": 12905,
+      "sha256": "00367d16ec166ff6d88482b36221dc444922578482d5212fd4732fe512668364"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-current.json",
+      "bytes": 186289,
+      "sha256": "988461016a336b25c74e36d19418b90d61193211ab9012dce0b0624e278a80ff"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-string-last-index-of-current.json",
+      "bytes": 14885,
+      "sha256": "4db22ae25a830831125415e7f6a29f136c77e72203b25810c1595b8ee4207cf5"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-string-search-current.json",
+      "bytes": 148389,
+      "sha256": "952b4d98851498b70d5ee7a60c25e3894002d875ca98dab57869e2a0cc9e883b"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-symbols-current.json",
+      "bytes": 68949,
+      "sha256": "7ad674a89581e055552742645de0912233df9fbb0af7d731d974e188b803baea"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-template-literal-current.json",
+      "bytes": 35023,
+      "sha256": "e990475ba6e02361403ab3e610758cd3a91dbf8e02c15cbf649f5b425fd622a8"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-data-view-current.json",
+      "bytes": 337675,
+      "sha256": "34314cd2e9f8f05eee2f25baebb74908df8898201f4f181247968ee3c9aa2b91"
+    }
+  ],
+  "local_document_links_checked": 276,
+  "pending_public_copy_links": [
+    {
+      "document": "tests/conformance/data-view.md",
+      "link": "../../docs/evidence/data-view-runtime/index.json",
+      "resolution": "Exact audited scratch package awaits unchanged public copy by root."
+    }
+  ],
+  "findings": [],
+  "limits": [
+    "Clearance covers this exact scratch package; root must copy its index and archive unchanged to the advertised public paths.",
+    "Known-state gates retain failures, exclusions and explicit terminal resources. This is not full conformance, production-security or Chromium-performance evidence.",
+    "No new hardware, stress, pixel or remote CI result is inferred. Initial compiler/integration failures, data-only/static corrections and candidate2 absence of replays remain distinct.",
+    "Source reconstruction proves file-member names/content, not regeneration of original tar container headers. Binaries and original source.tar bytes remain external hash bindings, not distributed payloads."
+  ]
+}

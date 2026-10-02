@@ -1,9 +1,9 @@
 # Pinned Test262 Object integrity inventory
 
-The [ArrayBuffer follow-up](array-buffer.md) closes both `seal-arraybuffer.js`
-modes: this unchanged profile now records **396 passed, 40 failed and 38
-unsupported**, with all 224 controls verified. The Date checkpoint previously
-recorded 394 passes. Earlier measurements and prerequisite descriptions below
+The [DataView follow-up](data-view.md) closes both `seal-dataview.js` modes:
+this unchanged profile now records **398 passed, 38 failed and 38 unsupported**,
+with all 224 controls verified. The ArrayBuffer and Date checkpoints previously
+recorded 396 and 394 passes respectively. Earlier measurements and prerequisite descriptions below
 are retained as historical evidence; the Date comparison is at the end.
 
 This profile retains the four complete direct directories below at Test262

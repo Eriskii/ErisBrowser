@@ -6,6 +6,17 @@ mod tests;
 
 const MAX_INDEX: u64 = 9_007_199_254_740_991;
 
+// Only this module can construct or inspect backing-table indices. A copied
+// handle survives callbacks, record-table growth, resize and detachment.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct BufferId(usize);
+
+#[derive(Clone, Copy)]
+pub(super) struct ViewBufferMetadata {
+    pub(super) byte_length: Option<usize>,
+    pub(super) resizable: bool,
+}
+
 struct Record {
     object_id: usize,
     // Some(empty) is attached. Detachment preserves max_byte_length.
@@ -187,7 +198,7 @@ impl Runtime {
             .ok_or_else(|| ScriptError::type_error("ArrayBuffer is detached"))
     }
 
-    fn buffer_index(&mut self, value: Value, doc: &mut Document) -> Result<u64> {
+    pub(super) fn buffer_index(&mut self, value: Value, doc: &mut Document) -> Result<u64> {
         let number = integer_or_infinity(self.splice_number(value, doc)?);
         if !(0.0..=MAX_INDEX as f64).contains(&number) {
             return Err(ScriptError::range_error("invalid ArrayBuffer length"));
@@ -509,10 +520,72 @@ impl Runtime {
         Ok(result)
     }
 
-    fn array_buffer_is_view(&self, _value: &Value) -> bool {
-        // Future DataView/typed-array producers must install authentic view
-        // brands. Prototype/tag/property imitation never qualifies.
-        false
+    pub(super) fn buffer_for_view(&mut self, value: &Value) -> Result<BufferId> {
+        self.buffer_record(value).map(BufferId)
+    }
+
+    pub(super) fn buffer_view_metadata(&mut self, id: BufferId) -> Result<ViewBufferMetadata> {
+        self.tick()?;
+        let record = &self.array_buffers.records[id.0];
+        Ok(ViewBufferMetadata {
+            byte_length: record.bytes.as_ref().map(Vec::len),
+            resizable: record.max_byte_length.is_some(),
+        })
+    }
+
+    pub(super) fn buffer_view_value(&mut self, id: BufferId) -> Result<Value> {
+        self.tick()?;
+        Ok(Value::Object(self.array_buffers.records[id.0].object_id))
+    }
+
+    pub(super) fn buffer_view_read(
+        &mut self,
+        id: BufferId,
+        offset: usize,
+        length: usize,
+    ) -> Result<[u8; 8]> {
+        self.tick()?;
+        if !(1..=8).contains(&length) {
+            return Err(ScriptError::range_error("invalid view element width"));
+        }
+        let attached = self.buffer_attached_length(id.0)?;
+        let end = offset
+            .checked_add(length)
+            .filter(|end| *end <= attached)
+            .ok_or_else(|| ScriptError::range_error("view byte range exceeds buffer"))?;
+        self.work(8 + length)?;
+        let mut result = [0; 8];
+        result[..length].copy_from_slice(
+            &self.array_buffers.records[id.0].bytes.as_ref().unwrap()[offset..end],
+        );
+        Ok(result)
+    }
+
+    pub(super) fn buffer_view_write(
+        &mut self,
+        id: BufferId,
+        offset: usize,
+        bytes: &[u8],
+    ) -> Result<()> {
+        self.tick()?;
+        if !(1..=8).contains(&bytes.len()) {
+            return Err(ScriptError::range_error("invalid view element width"));
+        }
+        let attached = self.buffer_attached_length(id.0)?;
+        let end = offset
+            .checked_add(bytes.len())
+            .filter(|end| *end <= attached)
+            .ok_or_else(|| ScriptError::range_error("view byte range exceeds buffer"))?;
+        // The entire mutation is prepaid. No callback or fallible operation
+        // follows the first byte write, including for unaligned elements.
+        self.work(bytes.len())?;
+        self.array_buffers.records[id.0].bytes.as_mut().unwrap()[offset..end]
+            .copy_from_slice(bytes);
+        Ok(())
+    }
+
+    fn array_buffer_is_view(&mut self, value: &Value) -> Result<bool> {
+        self.data_view_is_view(value)
     }
 
     pub(super) fn array_buffer_native(
@@ -526,7 +599,7 @@ impl Runtime {
         if method == "isView" {
             return Ok(Value::Bool(self.array_buffer_is_view(
                 arguments.first().unwrap_or(&Value::Undefined),
-            )));
+            )?));
         }
         if method == "species" {
             return Ok(receiver);

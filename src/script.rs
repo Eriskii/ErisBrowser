@@ -19,6 +19,7 @@ use std::rc::Rc;
 
 mod code;
 mod construction;
+mod data_view;
 mod date_builtins;
 mod dom_bindings;
 mod iterators;
@@ -1530,6 +1531,7 @@ pub struct Runtime {
     symbols: symbols::State,
     iterators: iterators::State,
     array_buffers: array_buffer::State,
+    data_views: data_view::State,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
@@ -1611,6 +1613,7 @@ impl Runtime {
             "Object",
             "Array",
             "ArrayBuffer",
+            "DataView",
             "Function",
             "RegExp",
             "Event",
@@ -1681,6 +1684,7 @@ impl Runtime {
             symbols: symbols::State::default(),
             iterators: iterators::State::default(),
             array_buffers: array_buffer::State::default(),
+            data_views: data_view::State::default(),
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
@@ -1695,6 +1699,7 @@ impl Runtime {
                 + std::mem::size_of::<DateHost>()
                 + std::mem::size_of::<iterators::State>()
                 + std::mem::size_of::<array_buffer::State>()
+                + std::mem::size_of::<data_view::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + TrackedGlobal::ALL
@@ -1744,6 +1749,7 @@ impl Runtime {
             "Function",
             "Array",
             "ArrayBuffer",
+            "DataView",
             "String",
             "Number",
             "Boolean",
@@ -1827,6 +1833,7 @@ impl Runtime {
             "Function",
             "Array",
             "ArrayBuffer",
+            "DataView",
             "String",
             "Number",
             "Boolean",
@@ -2377,6 +2384,7 @@ impl Runtime {
         }
         self.initialize_symbols()?;
         self.install_array_buffer_intrinsics()?;
+        self.install_data_view_intrinsics()?;
         self.install_iterator_intrinsics()?;
         self.initialize_dom_bindings()
     }
@@ -7678,6 +7686,12 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "DataView" {
+            return Err(ScriptError::type_error("DataView requires new"));
+        }
+        if let Some(method) = native.name.strip_prefix("DataView.") {
+            return self.data_view_native(method, native.receiver.clone(), &args, doc);
+        }
         if native.name == "ArrayBuffer" {
             return Err(ScriptError::type_error("ArrayBuffer requires new"));
         }

@@ -17,8 +17,11 @@ snapshots; no Chromium threshold or general speedup is claimed.
 [ArrayBuffer](../tests/conformance/array-buffer.md) adds nonshared fixed and
 resizable backing storage, resizing, same-realm species slicing, transfers and
 detachment. Its complete pinned profile records 262 passes, 50 failures and 130
-exclusions. Typed arrays, DataView, shared memory, Proxy and foreign realms
-remain ahead. The [length-bucketed for-in follow-up](../tests/conformance/for-in-length-buckets.md)
+exclusions. [DataView](../tests/conformance/data-view.md) adds fixed and tracking
+views and nine Number codec pairs. Its complete upstream profile records 694
+passes, 12 BigInt prerequisite failures and 416 exclusions; the local suite
+verifies 128/138 expectations, including four expected resource outcomes.
+Typed arrays, BigInt codecs, shared memory, Proxy and foreign realms remain ahead. The [length-bucketed for-in follow-up](../tests/conformance/for-in-length-buckets.md)
 closes two metadata-heavy local work stops without raising quotas;
 broader interpreter performance and accounting remain open work.
 
@@ -141,7 +144,7 @@ including sparse arrays, boxed strings and mapped arguments. The
 [complete four-directory inventory](../tests/conformance/test262-object-integrity.md)
 retains 239 sources and 474 modes, gains 378 passes and verifies all 224 controls.
 Eight older descriptor modes also pass, with no previous pass lost. The new
-Date follow-up leaves 42 missing-prerequisite failures and
+Date, ArrayBuffer and DataView follow-ups leave 38 missing-prerequisite failures and
 38 unsupported modes. Host integrity, Proxy/typed-array semantics and untagged
 prerequisites remain explicit gaps.
 [Array find methods](../tests/conformance/array-find.md) now add ascending and

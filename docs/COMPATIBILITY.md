@@ -4,15 +4,24 @@
 resizable buffers, byteLength/maxByteLength/resizable/detached getters, resize,
 same-realm species-aware slice, transfer and transferToFixedLength. Ordinary
 properties and object freezing do not alter private backing storage. `isView`
-returns false for all currently supported values: typed arrays and DataView
-remain unimplemented, along with shared buffers, Proxy and foreign realms.
+recognizes authentic DataView instances, including detached or out-of-bounds
+views. Typed arrays, shared buffers, Proxy and foreign realms remain incomplete.
 The complete 221-source profile records **262 passed, 50 failed and 130 excluded
 modes**, with all 160 controls verified. The failures retain 48 missing-Uint8Array
 observations and two untagged BigInt syntax failures. The independent local
-matrix verifies **94 of 104 expectations** after the
+matrix verifies **96 of 104 expectations** after the
 [for-in length-bucket follow-up](../tests/conformance/for-in-length-buckets.md)
-closes two ordinary metadata work stops. Ten prerequisite modes remain unmet. Buffer-only success does
-not establish complete binary-data support.
+closes two metadata work stops and DataView closes two prerequisite modes.
+Eight prerequisite modes remain unmet.
+
+[DataView](../tests/conformance/data-view.md) supports fixed and tracking views,
+three getters and nine Number getter/setter pairs, including Float16. Conversions
+run before fresh bounds checks; ordinary properties and freezing do not freeze
+backing bytes. The complete 561-source profile records **694 passed, 12 failed
+and 416 unsupported modes**, with all 232 controls verified. All twelve failures
+require missing BigInt support. The local suite verifies **128/138 expectations**,
+including four resource cases, with all 92 controls verified. BigInt codecs,
+shared and immutable buffers, typed arrays, Proxy and foreign realms remain gaps.
 
 [Array concat](../tests/conformance/array-concat.md) supports generic receivers,
 live spreadability and same-realm species results, including ordinary objects,
@@ -102,11 +111,11 @@ earlier effects if a later property or resource operation fails. Window/DOM
 hosts, Proxy and typed-array behavior remain unsupported.
 
 The [complete new profile](../tests/conformance/test262-object-integrity.md)
-retains 239 sources and 474 modes. After the ArrayBuffer follow-up it records
-**396 passed, 40 missing-prerequisite failures and 38 unsupported**, with all 224 controls
+retains 239 sources and 474 modes. After the DataView follow-up it records
+**398 passed, 38 missing-prerequisite failures and 38 unsupported**, with all 224 controls
 verified. All 228 local variants and 12 controls pass. Eight older descriptor
 modes gain passes, with no previous pass lost. The new profile has a healthy
-regression gate; its 40 failures and 38 unsupported observations remain part of
+regression gate; its 38 failures and 38 unsupported observations remain part of
 the baseline. This does not establish complete object or host conformance.
 
 [Array every and some](../tests/conformance/array-predicates.md) now support
