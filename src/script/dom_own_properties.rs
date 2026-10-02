@@ -575,7 +575,6 @@ const ATTRIBUTES: &[(&str, AttributeRule)] = {
     use AttributeRule::*;
     use AttributeWrite::{Readonly as R, Setter as S, Unsupported as U};
     &[
-        ("textContent", Node(S)),
         ("nodeName", Node(R)),
         ("nodeType", Node(R)),
         ("parentNode", Node(R)),

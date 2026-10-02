@@ -260,6 +260,25 @@ canonicality validation. Fresh replacement admission precedes allocation and is
 rechecked at publication. A terminal refusal leaves the outer write unpublished;
 earlier author effects and cumulative temporary-allocation charges remain.
 
+[Node data accessors](node-data.md) check authentic receivers before nullable
+conversion, including setters whose node kind ignores the converted value.
+Container replacement takes the runtime's actual remaining-work and cumulative
+heap counters; both counters return on success and failure, retaining every
+consumed charge. No nested allowance or temporary-allocation refund is granted.
+The replacement validates current children, stages affected base/details work
+and admits its final child vector and arena growth before detaching anything.
+No callback, fallible reservation or Resource decision follows the start of
+commit. A refused outer write preserves earlier conversion effects.
+
+Detached children and their descendants remain retained, so their bytes are not
+credited to a new Text. Empty assignment requires no new node slot, while its
+actual removal costs still apply. Map operations have conservative logical
+charges, but B-tree allocation remains infallible. Existing URL/encoding/IDNA
+internals also allocate infallibly; their inherited work allowance and
+retained-result charge do not meter every temporary allocation. Staging these
+operations before tree mutation does not establish process-OOM recovery or
+exact process-wide memory accounting.
+
 The [DOM string foundation](dom-strings.md) retains one canonical payload, with
 UTF-8 byte charges for scalar strings and two bytes per stored UTF-16 unit for
 nonscalar strings. Detached nodes count toward the unchanged 32 MiB DOM ledger;
@@ -392,9 +411,11 @@ exhaustion, with execution-state cleanup checked afterward. These checks do not
 establish full DOM operation atomicity or exact process-wide memory accounting.
 Some legacy conversion paths covered by that historical record still replace
 unpaired units. [Exact character-data production](dom-production.md) migrates the
-named constructors, factories, data setter and five methods; container,
-append-string, attribute and HTML-parser writes and scalar host boundaries remain
-separate work.
+named constructors, factories, data setter and five methods.
+[Node data assignment](node-data.md) also preserves exact units through
+`nodeValue`/`textContent`. Legacy `innerText`, title/textarea setters,
+append-string, attribute and HTML-parser writes and scalar host boundaries
+remain separate work.
 
 ## Window binding reflection
 

@@ -53,10 +53,13 @@ append, insert, delete and replace operations. [Exact runtime production](dom-pr
 now preserves units through the named Text/Comment/PI constructors, factories,
 data setter and complete splices. It uses the [DOM string foundation](dom-strings.md)
 for canonical storage, unchanged ERWA transport and exact reads/clones. All eight
-earlier unmet modes now pass, as do all 24 new independent modes. Legacy container,
-append-string and attribute writes, unit-aware native editing, nonscalar
-source/HTML serialization, PI pseudo-attributes, remaining Node/Text operations
-and mutation notifications remain open work.
+earlier unmet modes now pass, as do all 24 new independent modes.
+[Node data accessors](node-data.md) now add ordinary descriptors, exact
+`nodeValue`/`textContent` and admitted container replacement while retaining old
+detached data. Legacy `innerText`, title/textarea setters, append-string and
+attribute writes, unit-aware native editing, nonscalar source/HTML serialization,
+PI pseudo-attributes, remaining Node/Text operations and mutation notifications
+remain open work.
 
 [Fallible runtime initialization](runtime-initialization.md) now carries checked
 bootstrap failures through the browser, adapter and stress tool. Partial realms
@@ -154,7 +157,8 @@ private `new.target` bindings and alternate ECMAScript allocation targets.
 Next work includes alternate Web IDL targets, remaining native constructor
 semantics, Function source retention/toString and lossless UTF-16 source parsing,
 Window extensibility and interface coverage, exact DOMString production through
-remaining legacy container/attribute/parser paths, remaining Web IDL interfaces,
+remaining legacy innerText/title/textarea, append-string, attribute and parser
+paths, remaining Web IDL interfaces,
 remaining Symbol and iterator consumers, and broader
 ECMAScript dependencies. The
 [constructor-policy review](../tests/conformance/constructor-policy.md) now enables

@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8"><title>Exact Node data through callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#replace{left:0}#detach{left:50px}#identity{left:100px}#pair{left:150px}#nullable{left:200px}#saved{left:250px}
+#change{position:absolute;top:60px;left:0}#exact{position:absolute;top:100px;left:0;font-size:24px}
+#value{position:absolute;top:135px;left:0;font-size:24px}#result{position:absolute;top:175px;left:0}
+</style>
+<div id="replace" class="sample"></div><div id="detach" class="sample"></div>
+<div id="identity" class="sample"></div><div id="pair" class="sample"></div>
+<div id="nullable" class="sample"></div><div id="saved" class="sample"></div>
+<button id="change" type="button">Replace Node data</button><div id="exact"></div><div id="value"></div><div id="result"></div>
+<script>
+function check(v,m){if(!v)throw new Error(m);}
+function units(v,a){check(v.length===a.length,'length');for(let i=0;i<a.length;i++)check(v.charCodeAt(i)===a[i],'unit '+i);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+const exact=document.getElementById('exact'),value=document.getElementById('value'),result=document.getElementById('result'),change=document.getElementById('change');
+const branch=document.createElement('span'),old=new Text('old\uD800'),note=new Comment('\uDC00');
+branch.id='old-branch';branch.append(old,note);exact.append(branch);
+const live=new Text('initial'),statusText=new Text('ready');value.append(live);result.append(statusText);
+const nv=Object.getOwnPropertyDescriptor(Node.prototype,'nodeValue'),tc=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');
+check(nv&&tc&&typeof nv.set==='function'&&typeof tc.get==='function','saved accessors');
+let runs=0,prior;
+function apply(color){
+  check(runs===(color==='green'?0:1),'load then click');
+  const previous=exact.firstChild;
+  exact.textContent=runs===0?'A\uD800B\uDC00':'C\uDC00D\uD800';
+  const current=exact.firstChild;
+  check(current!==previous&&current.nodeType===3&&current.parentNode===exact&&exact.childNodes.length===1,'fresh replacement Text');
+  units(current.data,runs===0?[65,55296,66,56320]:[67,56320,68,55296]);
+  if(runs===1){check(previous===prior&&prior.parentNode===null,'old replacement detached');units(prior.data,[65,55296,66,56320]);}
+  prior=current;mark('replace',color);
+  check(branch.parentNode===null&&old.parentNode===branch&&note.parentNode===branch,'retained descendant links');
+  units(old.nodeValue,[111,108,100,55296]);units(note.textContent,[56320]);mark('detach',color);
+  nv.set.call(live,runs===0?'V\uD800':'W\uDC00');
+  check(value.firstChild===live&&live.parentNode===value,'nodeValue keeps Text identity');
+  units(live.data,runs===0?[86,55296]:[87,56320]);mark('identity',color);
+  const pair=new DocumentFragment();pair.append(new Text('\uD800'),new Comment('skip'),new Text('\uDC00'));
+  units(pair.textContent,[55296,56320]);check(pair.nodeValue===null,'fragment nodeValue');mark('pair',color);
+  tc.set.call(pair,undefined);check(pair.firstChild===null,'undefined clears');
+  tc.set.call(pair,{toString(){return undefined;}});check(pair.textContent==='undefined','converted undefined');mark('nullable',color);
+  Object.defineProperty(live,'nodeValue',{value:'shadow',configurable:true});
+  check(live.nodeValue==='shadow','own shadow');units(tc.get.call(live),runs===0?[86,55296]:[87,56320]);
+  delete live.nodeValue;units(live.nodeValue,runs===0?[86,55296]:[87,56320]);mark('saved',color);
+  statusText.nodeValue=runs===0?'ready':'6';check(result.firstChild===statusText,'same status Text');runs++;
+}
+change.onclick=function(){check(this===change,'receiver');apply('blue');document.body.className='clicked';};
+apply('green');document.body.className='ready';
+</script>

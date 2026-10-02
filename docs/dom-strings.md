@@ -9,7 +9,10 @@ element names and attributes keep their existing scalar storage.
 This page describes the storage and consumer foundation. The subsequent
 [JavaScript production increment](dom-production.md) uses it for Text, Comment
 and PI construction, the PI/text factories, the data setter and five
-CharacterData methods. Other legacy writes can still replace unmatched units.
+CharacterData methods. [Node data accessors](node-data.md) additionally preserve
+units through ordinary `nodeValue`/`textContent` and checked container replacement.
+Other legacy writers, including `innerText`, title/textarea setters, append-string
+and attributes, can still replace unmatched units.
 The foundation release retained eight unmet CharacterData standards-success
 modes; their original sources and refusal records remain historical evidence.
 The new producer release now passes all eight unchanged expectations. Neither increment

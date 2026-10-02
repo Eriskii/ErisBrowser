@@ -54,8 +54,11 @@ use interfaces::{ConstructorKind, INTERFACES};
 pub(super) const PREFIX: &str = "DOM.Interface.";
 // Five unscopables objects: ParentNode's three including interfaces, plus
 // CharacterData and DocumentType's ChildNode lists (Element combines both).
-pub(super) const BOOTSTRAP_OBJECTS: usize =
-    352 + 2 * (INTERFACES.len() - 1) + 5 + processing_instruction::METADATA_OBJECTS;
+pub(super) const BOOTSTRAP_OBJECTS: usize = 352
+    + 2 * (INTERFACES.len() - 1)
+    + 5
+    + processing_instruction::METADATA_OBJECTS
+    + node_data::METADATA_OBJECTS;
 
 #[derive(Default)]
 pub(super) struct State {
@@ -458,6 +461,7 @@ impl Runtime {
                     + match interface.name {
                         "Document" | "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
+                        "Node" => 2,
                         _ => 0,
                     },
             )?;
@@ -502,6 +506,9 @@ impl Runtime {
             }
             if methods != 0 {
                 self.install_dom_parent_prototype(interface.name, prototype)?;
+            }
+            if interface.name == "Node" {
+                self.install_node_data_members(prototype)?;
             }
             for &(key, value) in constants {
                 let key: PropertyKey = self.dom_proto_text(key)?.into();

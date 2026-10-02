@@ -32,6 +32,7 @@ mod dom_prototypes;
 mod iterators;
 mod machine;
 mod names;
+mod node_data;
 mod object_integrity;
 mod object_is;
 mod own_keys;
@@ -5722,7 +5723,7 @@ impl Runtime {
                     | "inputEncoding"
                     | "compatMode"
             )
-            || matches!(key, "textContent" | "innerText" | "innerHTML" | "outerHTML")
+            || matches!(key, "innerText" | "innerHTML" | "outerHTML")
         {
             self.work(1 + doc.nodes.len() / 8)?;
         }
@@ -5863,7 +5864,7 @@ impl Runtime {
                     "content" if doc.template_contents(id).is_some() => {
                         return Ok(Value::Node(doc.template_contents(id).unwrap()));
                     }
-                    "textContent" | "innerText" => {
+                    "innerText" => {
                         return Ok(Value::String(self.dom_text_units(id, doc)?.into()));
                     }
                     "innerHTML" => return self.dom_html(id, true, doc),
@@ -6072,9 +6073,7 @@ impl Runtime {
                     }
                     return Ok(());
                 }
-                let text = if key == "textContent"
-                    && matches!(value, Value::Null | Value::Undefined)
-                    || matches!(key, "innerText" | "innerHTML") && value == Value::Null
+                let text = if matches!(key, "innerText" | "innerHTML") && value == Value::Null
                     || key == "value" && doc.tag(id) == Some("textarea") && value == Value::Null
                 {
                     String::new()
@@ -6083,7 +6082,7 @@ impl Runtime {
                 };
                 self.charge(text.len())?;
                 match key {
-                    "textContent" | "innerText" => {
+                    "innerText" => {
                         self.ensure_dom_capacity(doc, 1)?;
                         self.charge_dom_clear(id, doc)?;
                         doc.set_text_content(id, &text);
@@ -8030,6 +8029,9 @@ impl Runtime {
             return Err(ScriptError::type_error(
                 "DOM interface constructor requires new",
             ));
+        }
+        if let Some(method) = native.name.strip_prefix(node_data::PREFIX) {
+            return self.node_data_native(method, native.receiver.clone(), &args, doc);
         }
         if let Some(method) = native.name.strip_prefix(processing_instruction::PREFIX) {
             return self.pi_native(method, native.receiver.clone(), &args, doc);
@@ -15037,7 +15039,7 @@ mod tests {
     }
 
     #[test]
-    fn utf16_dom_boundary_is_explicitly_lossy_without_changing_script_values() {
+    fn utf16_text_content_preserves_script_units_with_explicit_presentation_replacement() {
         let mut document = Document::parse("<p id=out></p>");
         let mut runtime = Runtime::new();
         let result=runtime.execute(r#"const original='\ud800🦀\udfff'; const out=document.getElementById('out'); out.textContent=original; original;"#,&mut document).unwrap();
@@ -15051,7 +15053,7 @@ mod tests {
         );
         assert_eq!(
             runtime.execute("out.textContent", &mut document).unwrap(),
-            Value::String(JsString::from("�🦀�"))
+            Value::String(JsString::from(vec![0xd800, 0xd83e, 0xdd80, 0xdfff]))
         );
     }
 

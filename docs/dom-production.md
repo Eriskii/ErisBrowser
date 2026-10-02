@@ -12,6 +12,11 @@ through this bounded set of DOM operations:
 | `CharacterData.prototype.data` setter | Raw null becomes empty; undefined or an omitted setter value becomes `"undefined"` |
 | `substringData`, `appendData`, `insertData`, `deleteData`, `replaceData` | Read and produce exact units using the complete current splice |
 
+The subsequent [Node accessor increment](node-data.md) adds ordinary
+`nodeValue`/`textContent` over represented kinds, including exact container
+replacement. Its validation and retained-subtree accounting are separate from
+the producer checkpoint recorded here.
+
 This uses the [storage foundation](dom-strings.md), with one canonical payload:
 UTF-8 when the complete result is well-formed, or UTF-16 when it contains an
 unpaired unit. There is no second cached representation. A repaired result can
@@ -77,9 +82,9 @@ an independent scalar replacement-text reference. Native textarea editing still
 refuses nonscalar aggregate data rather than feeding a lossy display value back
 into an edit.
 
-## Validation and remaining boundaries
+## Producer checkpoint validation and remaining boundaries
 
-The final source passes 1,577 default tests on Rust 1.88 and 1,700 Vulkan-raster
+The producer checkpoint passes 1,577 default tests on Rust 1.88 and 1,700 Vulkan-raster
 tests on Rust 1.98, with no failed or ignored tests. Strict all-target Clippy
 passes for Rust 1.88 with the presenter and Rust 1.98 with Vulkan rasterization.
 Focused checks contain 105 distinct tests and 107 successful executions,
@@ -88,7 +93,7 @@ groups compared with the storage foundation. The initial compile correction,
 the initially ignored-only worker invocation, and preparation corrections remain
 retained observations.
 
-The release adapter passes all 24 modes of the twelve new independent JS groups
+That release adapter passes all 24 modes of the twelve new independent JS groups
 and all eight adapter controls; the foundation baseline matched two modes and
 all eight controls. The original CharacterData replay advances from 26/34 to
 34/34 with its source bytes, success expectations and literal final-unit arrays
@@ -103,12 +108,14 @@ and [source-bound evidence](evidence/dom-production.json) retain the source,
 release fingerprint, full comparisons and initial corrections. The
 [foundation CI receipt](evidence/dom-strings-ci.json) records all nine jobs passing.
 
-Legacy `textContent`, `innerText`, title, textarea, append-string and attribute
-writes, HTML parser input, scalar form output, exact nonscalar HTML serialization
-and unit-aware native editing remain separate work. PI pseudo-attributes,
-MutationObserver/Range updates, broader children-changed reactions and complete
-Node accessors are still incomplete. This is not full DOMString compatibility,
-production security certification or a Chromium performance claim.
+The later [Node data accessors](node-data.md) replace the legacy `textContent`
+route and add `nodeValue`; they do not migrate `innerText`, title/textarea setters,
+append-string or attribute writes. Those paths, HTML parser input, scalar form
+output, exact nonscalar HTML serialization and unit-aware native editing remain
+separate work. PI pseudo-attributes, MutationObserver/Range updates, broader
+children-changed reactions and remaining Node members are still incomplete.
+This is not full DOMString compatibility, production security certification or
+a Chromium performance claim.
 
 Normative references: [DOMString conversion](https://webidl.spec.whatwg.org/#es-DOMString),
 [attribute setters](https://webidl.spec.whatwg.org/#es-attributes),

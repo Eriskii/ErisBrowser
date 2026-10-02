@@ -441,7 +441,7 @@ mod tests {
             assert.sameValue('a'.concat('b'),'ab');
             assert.throws(TypeError,function(){new saved();});
             var target=document.createElement('div');target.textContent='\ud800'.concat('x');
-            assert.sameValue(target.textContent,'\ufffdx');
+            assert.sameValue(target.textContent,'\ud800x');
         "#,
         );
     }

@@ -28,9 +28,11 @@ in canonical storage, tagged worker transport, reads and clones.
 [Exact JavaScript data production](docs/dom-production.md) now covers Text,
 Comment and PI constructors, the PI and text factories, the data setter and all
 five CharacterData methods, including unpaired units and complete-splice repairs.
-The release now passes all eight earlier unmet modes and all 24 new cases. Legacy
-container/attribute writes, complete interface members and Document reflection
-remain unfinished. The
+That producer checkpoint passes all eight earlier unmet modes and all 24 new
+cases. [Node data accessors](docs/node-data.md) now add ordinary `nodeValue` and
+`textContent`, exact descendant reads and checked container replacement with
+fresh Text identity. Other legacy writers, complete interface members and
+Document reflection remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate
@@ -291,9 +293,11 @@ DOM effects. Attribute/append/class-list conversion preserves callback order and
 thrown values; nullable strings and Boolean setters use their respective rules.
 The original probes gain 16 passes with no regression in the existing inventories.
 [Exact character-data production](docs/dom-production.md) now covers the named
-constructors, factories, data setter and CharacterData methods. Legacy container,
-append-string and attribute writes, HTML parser input and broader DOMString/Web
-IDL interfaces remain incomplete.
+constructors, factories, data setter and CharacterData methods.
+[Node data accessors](docs/node-data.md) add exact `nodeValue`/`textContent` with
+ordinary descriptor behavior and retained detached subtrees. Legacy `innerText`,
+title/textarea setters, append-string and attribute writes, HTML parser input
+and broader DOMString/Web IDL interfaces remain incomplete.
 
 Supported [Window binding reflection](tests/conformance/window-reflection.md) now
 preserves numeric/string/symbol key order, intrinsic flags and live for-in behavior.

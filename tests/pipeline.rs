@@ -1423,3 +1423,57 @@ fn exact_dom_production_preserves_connected_units_and_literal_replacement_pixels
         );
     }
 }
+
+#[path = "support/node_data.rs"]
+mod node_data_witness;
+
+#[test]
+fn node_data_accessors_replace_containers_and_preserve_exact_retained_nodes() {
+    let mut actual = page(node_data_witness::EXACT_HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(node_data_witness::check_exact(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}
+
+#[test]
+fn node_data_replacement_updates_connected_style_title_base_and_details() {
+    let mut actual = page(node_data_witness::EFFECTS_HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            // Prime the actual Document summary cache before replacing children.
+            let disclosure = actual.document.query_selector("#disclosure").unwrap();
+            let summary = actual.document.query_selector("#old-summary").unwrap();
+            assert_eq!(actual.document.first_summary(disclosure), Some(summary));
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(actual.title(), ["ready", "changed"][phase]);
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(node_data_witness::check_effects(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

@@ -1,0 +1,307 @@
+{
+  "kind": "Ordinary exact Node data accessors",
+  "base_commit": "011663290961fab8638a0fdc7f3bf2833753726c",
+  "scope": "Ordinary Node.nodeValue/textContent accessors with exact UTF-16 CharacterData and descendant reads; staged container replacement preserves detached identities/storage and charges both actual runtime counters on success/refusal.",
+  "source": {
+    "base": "011663290961fab8638a0fdc7f3bf2833753726c",
+    "source_ready_sha256": "d98e5c6520d72f16ab0804d34f5256412e6162a788e004af2351abc1255b86fd",
+    "files": [
+      {
+        "path": "src/dom.rs",
+        "bytes": 404314,
+        "sha256": "155b5d8c276a7ddebd76037de198df0e2bcd0ba94028e9d6fafabce0c904fd4b"
+      },
+      {
+        "path": "src/dom/text_replacement.rs",
+        "bytes": 32201,
+        "sha256": "728fc4792765f1d8892d0da2881beeacbe15e9c9551daa723b13b3bd27784907"
+      },
+      {
+        "path": "src/script.rs",
+        "bytes": 907149,
+        "sha256": "f222479e3308e65534daa9d17993bfcdfbce46b2d0a0b3a17d1a7a04a301eb32"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15507,
+        "sha256": "d76dc343df5a1536a3d6ae2d945e3682cf459242835d943a54784787e11b7534"
+      },
+      {
+        "path": "src/script/dom_bindings/identity_tests.rs",
+        "bytes": 35727,
+        "sha256": "b119690a84603fe859e367b12ea08c2ff67f442fc36decbd9d0c62684628cc68"
+      },
+      {
+        "path": "src/script/dom_own_properties.rs",
+        "bytes": 23702,
+        "sha256": "0ba0a012357f96d836285a4711e54ef8a63796b6379b073e56fb53f5360ad543"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 31143,
+        "sha256": "efe2752e1a2f3e20f2defc512af106e82c04e842b3db970f5f290e550e572d80"
+      },
+      {
+        "path": "src/script/machine/calls.rs",
+        "bytes": 32695,
+        "sha256": "1f11afc1075458f55d305edb855653abef743d8cc22220d1b08acfd06b509826"
+      },
+      {
+        "path": "src/script/node_data.rs",
+        "bytes": 7042,
+        "sha256": "7215d27c128e340ae4540cdf551ffedaf7f0b80949e12f9137f437e38fbb079f"
+      },
+      {
+        "path": "src/script/node_data/tests.rs",
+        "bytes": 18465,
+        "sha256": "0db2ef342afadbe2fae807e669b96acad732d50b01ea4f2532c4a9f0989a8e03"
+      },
+      {
+        "path": "tests/fixtures/node-data-effects.html",
+        "bytes": 4212,
+        "sha256": "b4e78397b7bd238766aef835d5e7bbdaeb13fa177eff1322f409530868cb0d4b"
+      },
+      {
+        "path": "tests/fixtures/node-data-exact.js",
+        "bytes": 11080,
+        "sha256": "c7e93bf860ff4f0a073de6cc1bdfb4eae7842dcd012623bed11807d9f915c8da"
+      },
+      {
+        "path": "tests/fixtures/node-data.html",
+        "bytes": 3815,
+        "sha256": "ff5acba84ce96954bdc37280728cc8ca93a611f0c992140d1a02b8efb4c7d468"
+      },
+      {
+        "path": "tests/fixtures/node-data.js",
+        "bytes": 9205,
+        "sha256": "0c4e8f1e7fa88114afa099052298fecdaa91a9698cc7a114883fc83407498851"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 57630,
+        "sha256": "cfc8015091f2514508f1f6cf08f305d2387022055a9139784ebab6cc3bc11bc4"
+      },
+      {
+        "path": "tests/support/node_data.rs",
+        "bytes": 8719,
+        "sha256": "d3458d50a6b6057c1b25c7be7d4fba20b1760ecfc079e91a00841ece9cba0ea3"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 93002,
+        "sha256": "e3ab90ccae4dde23dc50e47a9ad1b8aa44769d3d633e3f8fa3210cd7df66c5ec"
+      },
+      {
+        "path": "src/script/string_builtins.rs",
+        "bytes": 22914,
+        "sha256": "688656a0e7a3c24c444288765a62d8d27726d809f99f12d2da2e0423e9446aa9"
+      }
+    ],
+    "test_migration": "legacy-concat-textcontent/receipt.json"
+  },
+  "release": {
+    "path": "/tmp/eris-node-data-1/eris-js",
+    "bytes": 3666648,
+    "sha256": "30269af68b3c87349c122104a7da0be0cd1b5f3ad20816620c66cd2c5d8058f1",
+    "build": "validation/release-adapter-188-1.json",
+    "source": "main-source-final.json"
+  },
+  "final_validation": {
+    "full-default-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 20.558,
+      "log": "full-default-188-2.log",
+      "sha256": "354de94471b4c5160b068988ab61894b6eabdf5a86a4483e2e0039031fc11eed"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 23.079,
+      "log": "full-native-198-1.log",
+      "sha256": "0b343fc0eb39b36511fe0ff777a1fe4b8fde4aead645d8bdac9c6578bb2a4c68"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.273,
+      "log": "clippy-native-198-1.log",
+      "sha256": "72253432d95d71359ea62ca290ba7121e94ee9f23de68c03f4b0be5e1cdd8d69"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 9.208,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "d44afdeb4e080f4c933e449f9f30be069981c0589adcc76398002f970c90e83c"
+    },
+    "format-198-final": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9186413288116455,
+      "log": "format-198-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 36.431,
+      "log": "release-adapter-188-1.log",
+      "sha256": "13b71b01b736d00339ada7194fcbeda449b3666b765f6875bcb22005048e6d46"
+    }
+  },
+  "tests": {
+    "default": 1619,
+    "native": 1742,
+    "new_groups": 42,
+    "focused_unique": 83,
+    "focused_executions": 87,
+    "failed": 0,
+    "ignored": 0
+  },
+  "raw_bootstrap": {
+    "remaining_steps": 6640,
+    "allocated": 1798334,
+    "objects": 677,
+    "capacity": 677,
+    "native_properties": 321,
+    "legacy_prototypes": 25
+  },
+  "compatibility": {
+    "path": "node-comparison.json",
+    "sha256": "4060bcb7e541ea4566eeb537905464211ed9cb97dab503ffa8b60caeb747eb4a",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4088,
+          "after_total": 4088,
+          "before_healthy": 4002,
+          "after_healthy": 4002,
+          "unchanged": 4088,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 372,
+          "after_total": 372,
+          "before_healthy": 372,
+          "after_healthy": 372,
+          "unchanged": 372,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 36,
+          "after_total": 36,
+          "before_healthy": 0,
+          "after_healthy": 36,
+          "unchanged": 0,
+          "gains": 36,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 16,
+          "after_total": 16,
+          "before_healthy": 8,
+          "after_healthy": 16,
+          "unchanged": 8,
+          "gains": 8,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    }
+  },
+  "retained_corrections": [
+    "Measured descriptive bootstrap object/work assertions updated; no budgets or reset points changed.",
+    "Legacy UTF16-boundary textContent expectation explicitly migrated from display replacement to exact units; original bytes/assertions retained.",
+    "First full default run failed a second old lossy getter assertion in String.concat test; only that expected DOM string changed, and final full rerun passes. Production and frozen JS fixture bytes unchanged."
+  ],
+  "boundaries": [
+    "Legacy innerText/title/textarea setters, append-string, attribute and parser writes remain separate work.",
+    "Standard BTree and URL/encoding/IDNA allocations remain infallible; logical work/heap charges are not process-wide allocation accounting or OOM recovery.",
+    "Two original PI host-prototype mutation expectations remain unmet.",
+    "Exact nonscalar HTML serialization, unit-aware editing, Attr/CDATA, complete Node interfaces and mutation reactions remain incomplete.",
+    "No new GPU performance or Chromium comparison. Full web compatibility and production security are not achieved."
+  ],
+  "archive": {
+    "path": "node-data.tar.gz",
+    "bytes": 3429492,
+    "sha256": "093f84f859a92390d920674095cf76b2b75958e39d1a5ea1362f3d7b72b0fed2",
+    "files": 220,
+    "manifest_verified": true
+  }
+}

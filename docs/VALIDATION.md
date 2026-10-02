@@ -4466,3 +4466,45 @@ reviews. The [preceding storage checkpoint CI](evidence/dom-strings-ci.json)
 passed all nine jobs. Legacy container text writers, attributes, exact HTML
 serialization, unit-aware editing and broader Node/reaction semantics remain
 unfinished. No new GPU performance or Chromium comparison is claimed.
+
+### Ordinary Node data accessors
+
+[Node data accessors](node-data.md) provide ordinary mutable `nodeValue` and
+`textContent` descriptors over represented node kinds. Exact CharacterData and
+descendant reads preserve UTF-16 units. Container writes prepare payload,
+children and affected base/details state before detachment, then publish zero
+or one fresh Text. Detached old subtrees retain their identities and bytes.
+Both runtime work and cumulative allocation counters survive success/refusal;
+no quota or reset rule changes.
+
+The final source passes **1,619 default tests on Rust 1.88** and **1,742
+Vulkan-feature tests on Rust 1.98**, including confinement tests, with zero
+failures or ignored tests. Strict all-target Clippy passes for Rust 1.98 native
+and Rust 1.88 presenter builds; formatting passes. The 42 added groups cover
+runtime descriptors/brands/conversion, checked DOM replacement and four direct
+Page/worker witnesses. Focused runs passed 83 distinct tests across 87 executions.
+Raw bootstrap has 6,640 remaining work units, 1,798,334 charged bytes, 677
+objects/capacity, 321 native entries and 25 legacy prototype entries.
+
+Final release SHA-256:
+`30269af68b3c87349c122104a7da0be0cd1b5f3ad20816620c66cd2c5d8058f1`.
+Across 4,088 established case modes and 372 controls, complete observations and
+expectations are unchanged. CharacterData remains 34/34 and PI remains 38/40.
+The two new Node inventories advance from 0/16 and 0/20 to all 36 expectations
+passing. Their 16 controls advance from eight healthy generic controls to all
+16; the other eight deliberately depend on the formerly absent accessors.
+No source or ordinary success expectation was weakened to produce these gains.
+
+Both preexisting lossy DOM getter assertions are retained and explicitly
+migrated: the UTF-16 boundary test and a String.concat test. The first full
+default run exposed the latter; its log remains retained, and the fix changes
+only the exact-value assertion. Measured bootstrap counter assertions were
+updated without changing budgets. The [summary](evidence/node-data.json) and
+[archive](evidence/node-data.tar.gz) bind final source, original fixtures,
+release binary, commands/logs and independent reviews. The prior producer
+checkpoint [passed all nine CI jobs](evidence/dom-production-ci.json).
+
+Remaining work includes legacy string writers and full DOM reactions/interfaces.
+Standard B-tree and URL/encoding/IDNA allocation remains infallible; logical
+script accounting is not complete process allocation recovery. This checkpoint
+adds no GPU timing or Chromium-performance result.

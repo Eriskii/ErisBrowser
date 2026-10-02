@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8"><title id="heading">initial</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#text-sample{left:0}#style-sample{left:50px}#title-sample{left:100px}#field-sample{left:150px}#base-sample{left:200px}#details-sample{left:250px}
+#change{position:absolute;top:60px;left:0}#visible{position:absolute;top:100px;left:0;font-size:24px}
+#field{position:absolute;top:140px;left:0}#result{position:absolute;top:190px;left:0}
+#base-box,#second-box,#details-box,#peer{display:none}#disclosure{position:absolute;top:240px;left:0}
+</style><style id="theme">#visible{color:red}</style>
+<div id="text-sample" class="sample"></div><div id="style-sample" class="sample"></div>
+<div id="title-sample" class="sample"></div><div id="field-sample" class="sample"></div>
+<div id="base-sample" class="sample"></div><div id="details-sample" class="sample"></div>
+<button id="change" type="button">Replace connected children</button><div id="visible">initial</div>
+<textarea id="field">initial</textarea><div id="result">ready</div>
+<div id="base-box"></div><div id="second-box"></div>
+<div id="details-box"><details id="detached-details" name="node-data-effects" open><summary id="detached-summary">retained summary</summary></details></div>
+<details id="peer" name="node-data-effects"></details>
+<details id="disclosure"><summary id="old-summary">Old summary</summary><span>Hidden content</span></details>
+<script>
+function check(v,m){if(!v)throw new Error(m);}
+function get(id){return document.getElementById(id);}
+function mark(id,color){get(id).style.backgroundColor=color;}
+const heading=get('heading'),theme=get('theme'),visible=get('visible'),field=get('field'),change=get('change');
+const baseBox=get('base-box'),secondBox=get('second-box'),first=document.createElement('base'),second=document.createElement('base');
+first.setAttribute('href','https://first.example/a/');second.setAttribute('href','https://second.example/b/');
+baseBox.append(first);secondBox.append(second);
+check(document.baseURI==='https://first.example/a/','initial base');
+const detailsBox=get('details-box'),detached=get('detached-details'),summary=get('detached-summary'),peer=get('peer');
+const disclosure=get('disclosure'),oldSummary=get('old-summary'),summaryText=oldSummary.firstChild;
+const statusText=get('result').firstChild;let runs=0;
+function apply(color){
+  check(runs===(color==='green'?0:1),'load then click');const state=runs===0?'ready':'changed';
+  const oldVisible=visible.firstChild;visible.textContent=state;
+  check(visible.firstChild!==oldVisible&&oldVisible.parentNode===null&&visible.textContent===state,'visible fresh Text');mark('text-sample',color);
+  theme.textContent='#visible{color:'+color+'}#style-sample{background:'+color+'}';
+  check(theme.firstChild.data==='#visible{color:'+color+'}#style-sample{background:'+color+'}','style source');
+  heading.textContent=state;check(document.title===state,'current title');mark('title-sample',color);
+  const oldField=field.firstChild;field.textContent=state;
+  check(field.firstChild!==oldField&&oldField.parentNode===null&&field.value===state,'clean textarea follows children');mark('field-sample',color);
+  if(runs===0){baseBox.textContent='removed first';check(first.parentNode===null&&document.baseURI==='https://second.example/b/','second base');}
+  else{secondBox.textContent=null;check(second.parentNode===null&&document.baseURI===document.URL,'base fallback');}
+  mark('base-sample',color);
+  if(runs===0){detailsBox.textContent='detached';peer.setAttribute('open','');}
+  else{peer.removeAttribute('open');peer.setAttribute('open','');disclosure.textContent='Hidden replacement';check(oldSummary.parentNode===null&&summaryText.parentNode===oldSummary,'summary subtree retained');}
+  check(detached.parentNode===null&&summary.parentNode===detached&&detached.hasAttribute('open')&&peer.hasAttribute('open'),'independent details groups');mark('details-sample',color);
+  statusText.nodeValue=runs===0?'ready':'6';runs++;
+}
+change.onclick=function(){check(this===change,'receiver');apply('blue');document.body.className='clicked';};
+apply('green');document.body.className='ready';
+</script>

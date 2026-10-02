@@ -2313,3 +2313,91 @@ fn confined_exact_dom_production_roundtrips_units_and_literal_replacement_pixels
         );
     }
 }
+
+#[path = "support/node_data.rs"]
+mod node_data_witness;
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_node_data_accessors_preserve_replacement_identity_and_exact_snapshots() {
+    let fixture = Fixture::new(node_data_witness::EXACT_HTML);
+    let mut client = fixture.spawn(true, 205);
+    load(&mut client, &fixture.navigation);
+    let fonts = eris::graphics::Fonts::new();
+    let mut previous = None;
+    let mut button = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            exchange_empty(
+                &mut client,
+                WorkerCommand::Click {
+                    node: button.unwrap(),
+                },
+            );
+        }
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.generation, 205);
+        assert_eq!(snapshot.processed_edit_sequence, 0);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|message| message.starts_with("Page process ")
+                    || message.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        button = Some(snapshot.document.query_selector("#change").unwrap());
+        previous = Some(node_data_witness::check_exact(
+            &snapshot.document,
+            &snapshot.layout,
+            &snapshot.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_node_data_replacement_updates_connected_metadata_and_style() {
+    let fixture = Fixture::new(node_data_witness::EFFECTS_HTML);
+    let mut client = fixture.spawn(true, 206);
+    load(&mut client, &fixture.navigation);
+    let fonts = eris::graphics::Fonts::new();
+    let mut previous = None;
+    let mut button = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            exchange_empty(
+                &mut client,
+                WorkerCommand::Click {
+                    node: button.unwrap(),
+                },
+            );
+        }
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.generation, 206);
+        assert_eq!(snapshot.processed_edit_sequence, 0);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|message| message.starts_with("Page process ")
+                    || message.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        assert_eq!(snapshot.title, ["ready", "changed"][phase]);
+        button = Some(snapshot.document.query_selector("#change").unwrap());
+        previous = Some(node_data_witness::check_effects(
+            &snapshot.document,
+            &snapshot.layout,
+            &snapshot.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

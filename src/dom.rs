@@ -4,7 +4,9 @@ use std::collections::{BTreeMap, BTreeSet};
 mod string;
 #[cfg(test)]
 mod string_tests;
+mod text_replacement;
 pub use string::{DomScalars, DomString, DomUnits};
+pub(crate) use text_replacement::DomMutationBudget;
 
 pub type NodeId = usize;
 pub const MAX_NODES: usize = 100_000;
