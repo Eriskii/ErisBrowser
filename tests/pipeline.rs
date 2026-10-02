@@ -105,6 +105,14 @@ fn data_view_bytes_resize_and_transfer_survive_document_callbacks() {
 }
 
 #[test]
+fn object_is_same_value_and_saved_identity_survive_document_callbacks() {
+    assert_six_scripted_samples_with_result_text(
+        include_str!("fixtures/object-is.html"),
+        Some(["ready", "6"]),
+    );
+}
+
+#[test]
 fn own_key_order_and_live_enumeration_survive_document_callbacks() {
     assert_six_scripted_samples(include_str!("fixtures/own-keys.html"));
 }

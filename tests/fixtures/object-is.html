@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Object.is through document callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#numbers{left:0}#strings{left:50px}#symbols{left:100px}#objects{left:150px}#effects{left:200px}#contract{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="numbers" class="sample"></div><div id="strings" class="sample"></div>
+<div id="symbols" class="sample"></div><div id="objects" class="sample"></div>
+<div id="effects" class="sample"></div><div id="contract" class="sample"></div>
+<button id="change" type="button">Run identity callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+check(typeof Object.is==='function'&&typeof Symbol==='function','intrinsic prerequisites');
+const same=Object.is,token=Symbol('token'),saved={n:1};
+const author=function(){return 1;};let runs=0;
+function apply(color){
+  check(runs===(color==='green'?0:1),'callback progression');
+  check(same(NaN,0/0)&&same(-0,-0)&&same(0,0)&&!same(0,-0)&&!same(-0,0),'NaN and signed zero');
+  check(same(Infinity,Infinity)&&!same(Infinity,-Infinity),'infinity signs');mark('numbers',color);
+  check(same('\uD800','\uD800')&&!same('\uD800','\uDC00')&&same('a\u0000b','a\u0000b'),'UTF-16 code units');
+  check(!same('\u00E9','e\u0301')&&!same('1',1),'no normalization or coercion');mark('strings',color);
+  check(same(token,token)&&!same(token,Symbol('token'))&&!same(token,'token'),'symbol identity');mark('symbols',color);
+  check(saved.n===(color==='green'?1:2)&&same(saved,saved)&&!same(saved,{n:saved.n})&&!same([],[]),'object identity and retained state');
+  check(same(author,author)&&!same(author,function(){return 1;}),'author function identity');mark('objects',color);
+  const poison={get valueOf(){throw new Error('unused valueOf');},get toString(){throw new Error('unused toString');}};
+  check(same(poison,poison)&&!same(poison,1),'conversion hooks not read');
+  let trace='';function first(){trace+='A';return NaN;}function second(){trace+='B';return NaN;}function extra(){trace+='E';return poison;}
+  check(same(first(),second(),extra())&&trace==='ABE','argument evaluation before ignored extra value');mark('effects',color);
+  check(same()&&same(undefined,undefined)&&!same(null,undefined),'absent arguments');
+  check(same.name==='is'&&same.length===2&&Object.getOwnPropertyDescriptor(same,'prototype')===undefined,'function metadata');
+  const owner=Object.getOwnPropertyDescriptor(Object,'is'),name=Object.getOwnPropertyDescriptor(same,'name'),length=Object.getOwnPropertyDescriptor(same,'length');
+  check(owner.value===same&&owner.writable&&!owner.enumerable&&owner.configurable,'owner descriptor');
+  check(name.value==='is'&&!name.writable&&!name.enumerable&&name.configurable,'name descriptor');
+  check(length.value===2&&!length.writable&&!length.enumerable&&length.configurable,'length descriptor');mark('contract',color);
+  runs++;
+}
+apply('green');document.getElementById('result').textContent='ready';document.body.className='ready';
+document.getElementById('change').onclick=function(){
+  const descriptor=Object.getOwnPropertyDescriptor(Object,'is');
+  Object.is=function(){throw new Error('replacement');};
+  check(same(NaN,NaN)&&same(saved,saved),'saved intrinsic survives replacement');
+  Object.defineProperty(Object,'is',descriptor);check(same(Object.is,same),'restored intrinsic identity');
+  saved.n=2;apply('blue');check(runs===2,'callback count');
+  document.getElementById('result').textContent='6';document.body.className='clicked';
+};
+</script>

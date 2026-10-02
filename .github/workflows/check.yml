@@ -46,6 +46,8 @@ jobs:
         run: python3 tools/test262_conformance.py --profile core-iterators --baseline tests/conformance/test262-core-iterators-current.json --output artifacts/test262-core-iterators-gate.json
       - name: Preserve pinned Array.from behavior
         run: python3 tools/test262_conformance.py --profile array-from --baseline tests/conformance/test262-array-from-current.json --output artifacts/test262-array-from-gate.json
+      - name: Preserve pinned Object.is behavior
+        run: python3 tools/test262_conformance.py --profile object-is --baseline tests/conformance/test262-object-is-current.json --output artifacts/test262-object-is-gate.json
       - name: Preserve pinned non-shared DataView behavior
         run: python3 tools/test262_conformance.py --profile data-view --baseline tests/conformance/test262-data-view-current.json --output artifacts/test262-data-view-gate.json
       - name: Preserve pinned non-shared ArrayBuffer behavior

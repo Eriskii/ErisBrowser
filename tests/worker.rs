@@ -443,6 +443,16 @@ fn confined_data_view_bytes_resize_and_transfer_survive_document_callbacks() {
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_object_is_same_value_and_saved_identity_survive_document_callbacks() {
+    assert_six_scripted_samples_through_worker_with_result_text(
+        include_str!("fixtures/object-is.html"),
+        197,
+        Some(["ready", "6"]),
+    );
+}
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn confined_own_key_order_and_live_enumeration_survive_document_callbacks() {
     assert_six_scripted_samples_through_worker(include_str!("fixtures/own-keys.html"), 187);
 }

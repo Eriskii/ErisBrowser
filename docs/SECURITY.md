@@ -196,6 +196,17 @@ Typed-array access, BigInt codecs, shared memory, foreign realms and host
 detachment remain absent. These scoped checks do not establish general arena
 accounting, allocator recovery, total process-memory bounds or production security.
 
+[Object.is](../tests/conformance/object-is.md) compares borrowed operands without
+property access or conversion callbacks. Equal-length UTF-16 comparisons prepay
+their traversal; native identity keys are compared iteratively under the same
+work budget. Its early dispatch avoids scanning ignored receiver/extra-value
+payloads, while ordinary evaluation and forwarding keep their own charges.
+The scoped installer prepays node and order-buffer costs before publication,
+retaining the existing ordinary allocation charges. Twenty private groups check
+exact/one-short admission, full-heap comparisons and terminal cleanup. Existing
+limits and maximum-string regressions are unchanged. Generic infallible allocator
+boundaries and the separate DOM interface-identity gap remain explicit.
+
 ## Representative limits
 
 | Resource | Bound |

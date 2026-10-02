@@ -26,6 +26,7 @@ mod iterators;
 mod machine;
 mod names;
 mod object_integrity;
+mod object_is;
 mod own_keys;
 mod parser;
 mod property_keys;
@@ -2385,6 +2386,7 @@ impl Runtime {
         self.initialize_symbols()?;
         self.install_array_buffer_intrinsics()?;
         self.install_data_view_intrinsics()?;
+        self.install_object_is_intrinsic()?;
         self.install_iterator_intrinsics()?;
         self.initialize_dom_bindings()
     }
@@ -7686,6 +7688,9 @@ impl Runtime {
         args: Vec<Value>,
         doc: &mut Document,
     ) -> Result<Value> {
+        if native.name == "Object.is" {
+            return self.object_is(&args);
+        }
         if native.name == "DataView" {
             return Err(ScriptError::type_error("DataView requires new"));
         }

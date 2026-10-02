@@ -1,0 +1,212 @@
+{
+  "schema": 1,
+  "scope": "Object.is SameValue for existing runtime value kinds, bounded string/native comparisons and scoped intrinsic installation",
+  "full_browser_goal_achieved": false,
+  "production_security_claim": false,
+  "chromium_performance_claim": false,
+  "source_parent": "9eddd040fd141a8669e67fecc580527527708fa1",
+  "final_candidate": "candidate-2",
+  "production_input_sha256": "505dba3242fd9f28364c2ced18708773eb46acb4d7f56ae0ac39cabc75f96d28",
+  "binary_sha256": "804bc8dd688182641be37be577feade9fe043a0869000cd272977707c320b4df",
+  "remaining_prerequisites": [
+    "Defining-interface DOM operation identity and receiver branding",
+    "Proxy",
+    "BigInt",
+    "Foreign realms"
+  ],
+  "formal": {
+    "source_files": 21,
+    "mode_cases": 42,
+    "counts": {
+      "passed": 42
+    },
+    "controls": 80,
+    "all_controls_verified": true,
+    "report": {
+      "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/object-is.json",
+      "sha256": "83148d93f39028fad44d9fc1f468b02cd14eb325a4d07369f910662d2822a8bd",
+      "bytes": 94188
+    }
+  },
+  "local": {
+    "source_files": 39,
+    "cases": 78,
+    "counts": {
+      "passed": 64,
+      "resource": 4,
+      "failed": 8,
+      "unsupported": 2
+    },
+    "expectations_verified": 68,
+    "controls": 60,
+    "all_controls_verified": true,
+    "explicit_terminal_expectations": 4,
+    "report": {
+      "path": "/tmp/eris-object-is-runtime-1/local-candidate-2/object-is.json",
+      "sha256": "6165f5d79f1ea57a98dd4e25cee07cb4a89c8251d66c2c3779fb0d47a9df40a8",
+      "bytes": 305980
+    },
+    "unmet": [
+      {
+        "id": "proxy-identity-no-traps#sloppy",
+        "status": "failed",
+        "error_type": "ReferenceError",
+        "reason": null
+      },
+      {
+        "id": "proxy-identity-no-traps#strict",
+        "status": "failed",
+        "error_type": "ReferenceError",
+        "reason": null
+      },
+      {
+        "id": "bigint-identity-and-number-distinction#sloppy",
+        "status": "failed",
+        "error_type": "SyntaxError",
+        "reason": null
+      },
+      {
+        "id": "bigint-identity-and-number-distinction#strict",
+        "status": "failed",
+        "error_type": "SyntaxError",
+        "reason": null
+      },
+      {
+        "id": "foreign-realm-object-identity#sloppy",
+        "status": "unsupported",
+        "error_type": null,
+        "reason": "Test262 host hooks are not implemented (conservative source check)"
+      },
+      {
+        "id": "foreign-realm-object-identity#strict",
+        "status": "unsupported",
+        "error_type": null,
+        "reason": "Test262 host hooks are not implemented (conservative source check)"
+      },
+      {
+        "id": "dom-defining-interface-querySelector#sloppy",
+        "status": "failed",
+        "error_type": "Test262Error",
+        "reason": null
+      },
+      {
+        "id": "dom-defining-interface-querySelector#strict",
+        "status": "failed",
+        "error_type": "Test262Error",
+        "reason": null
+      },
+      {
+        "id": "dom-defining-interface-querySelectorAll#sloppy",
+        "status": "failed",
+        "error_type": "Test262Error",
+        "reason": null
+      },
+      {
+        "id": "dom-defining-interface-querySelectorAll#strict",
+        "status": "failed",
+        "error_type": "Test262Error",
+        "reason": null
+      }
+    ]
+  },
+  "all_formal": {
+    "profiles": 44,
+    "cases": 19727,
+    "controls": 4564,
+    "improvements": 42,
+    "regressions": 0,
+    "other_changes": 0,
+    "control_changes": 48,
+    "baseline_gates_checked": 35,
+    "baseline_gates_passed": 35
+  },
+  "all_local": {
+    "suites": 10,
+    "cases": 1698,
+    "controls": 544,
+    "controls_verified": 544,
+    "new_raw_passes": 64,
+    "lost_passes": 0,
+    "old_suites_complete_records_unchanged": 9,
+    "explicit_terminal_expectations_matched": 44
+  },
+  "validation": {
+    "test_totals": {
+      "rust188": {
+        "default": 1338,
+        "native": 1455
+      },
+      "rust198": {
+        "default": 1338,
+        "native": 1455
+      }
+    },
+    "private_groups": 20,
+    "strict_clippy_variants": 6,
+    "format_passed": true,
+    "ignored_tests_executed": true,
+    "browser_initial_and_click_pixels_verified": true,
+    "unchanged_maximum_string_tests_passed": true,
+    "summary": {
+      "path": "/tmp/eris-object-is-runtime-1/validation/final-summary.json",
+      "sha256": "926c72a03b16eada76b2b153928793511354ef522967b36dba4e87b6a61aba50",
+      "bytes": 8813
+    }
+  },
+  "accounting": {
+    "bootstrap": {
+      "remaining_steps": 71429,
+      "allocated": 594130,
+      "native_properties": 315,
+      "prototypes": 25,
+      "owner_order_capacity": 32
+    },
+    "installer": {
+      "spare_capacity": {
+        "work": 507,
+        "heap": 11560
+      },
+      "growing_owner_order": {
+        "work": 578,
+        "heap": 12584
+      }
+    },
+    "unchanged_limits": true,
+    "comparison_helper_allocates": false,
+    "whole_expression_allocations_not_excluded": true,
+    "logical_requested_storage_not_physical_allocator_measurement": true
+  },
+  "attempts": [
+    {
+      "candidate": 1,
+      "result": "Rust E0624 before engine execution; two parent-called child methods lacked pub(super)",
+      "source_archive": {
+        "path": "/tmp/eris-object-is-runtime-1/candidate-1/archive-inputs.json",
+        "sha256": "049f48ee39f351f544383f17fa2159a5f9fcd974d90c2a947277619573e0f311",
+        "bytes": 71291
+      },
+      "compiler_failure": {
+        "path": "/tmp/eris-object-is-runtime-1/validation/focused-object-is-188-1.log",
+        "sha256": "e858599880ee0f74a7f015e152731cb4a3316f22792ed747efb50f7b97d8bbdb",
+        "bytes": 1071
+      }
+    },
+    {
+      "candidate": 2,
+      "result": "Exactly two visibility changes; all runtime validation and frozen replays complete",
+      "source_archive": {
+        "path": "/tmp/eris-object-is-runtime-1/candidate-2/archive-inputs.json",
+        "sha256": "5c28bc9c91d729801a77851cf4c6da411d246e6e4eef67c8dd74d4a49a1ff02b",
+        "bytes": 71291
+      },
+      "build": {
+        "path": "/tmp/eris-object-is-runtime-1/candidate-2/build-bindings.json",
+        "sha256": "b62c5a989b990a067292f1ea324a659a100cde4f3f4eef0c536036261c348f54",
+        "bytes": 853
+      }
+    }
+  ],
+  "evidence": "../../docs/evidence/object-is-runtime/index.json",
+  "preparation_evidence": "../../docs/evidence/object-is-preparation/index.json",
+  "publication_policy": "Add one Object.is baseline/CI gate after review; all35 older baseline bytes unchanged; raw failures and exclusions retained"
+}

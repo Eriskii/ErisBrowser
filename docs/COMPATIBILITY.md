@@ -1,5 +1,13 @@
 # Compatibility status
 
+[Object.is](../tests/conformance/object-is.md) implements SameValue for existing
+runtime values, including NaN, signed zero, exact UTF-16 strings and ordinary
+object/symbol identity. All **42 upstream modes pass**, with 80 healthy controls.
+The local suite verifies **68/78 expectations** with 60 healthy controls.
+Four ordinary failures expose collapsed Document/Element query-method identity;
+the other unmet cases require Proxy, BigInt or foreign realms. The complete
+44-profile replay preserves all older case/control observations.
+
 [ArrayBuffer](../tests/conformance/array-buffer.md) supports nonshared fixed and
 resizable buffers, byteLength/maxByteLength/resizable/detached getters, resize,
 same-realm species-aware slice, transfer and transferToFixedLength. Ordinary

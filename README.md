@@ -9,9 +9,9 @@ resizable buffers, resizing, same-realm species-aware slicing, transfers and
 detachment. [DataView](tests/conformance/data-view.md) now adds fixed and tracking
 views, nine Number codec pairs including Float16, and authentic `isView`.
 Its complete upstream profile records 694 passes, 12 failures and 416 exclusions.
-Typed arrays, BigInt codecs and shared memory remain unfinished. The
-[next Object.is test checkpoint](tests/conformance/object-is.md) retains its
-complete upstream selection and original failures before implementation. The
+Typed arrays, BigInt codecs and shared memory remain unfinished.
+[Object.is](tests/conformance/object-is.md) now passes its complete 42-case
+upstream profile; separate host method-identity gaps remain visible. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate

@@ -1,0 +1,615 @@
+{
+  "format": 1,
+  "operation": "Exact projection of reviewed reports and offline baseline checks",
+  "publisher": {
+    "path": "/tmp/eris-object-is-runtime-1/publish-runtime-baselines.py",
+    "sha256": "883c4c4883e4bdfa5889963afa707822b845683142dc80ab4f6d928455ae6c7f",
+    "bytes": 9710
+  },
+  "runner": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test262_conformance.py",
+    "sha256": "b2f64e555557bc045bcd7a97f501619b01e5584fdc732ac865157afd2e0bca60",
+    "bytes": 226856
+  },
+  "review": {
+    "path": "/tmp/eris-object-is-runtime-1/root-runtime-acceptance.json",
+    "sha256": "efba7886e4963dee3a1b656f79f8385e39338cf3678c5a30b772c1f37111588d",
+    "bytes": 4745
+  },
+  "formal_comparison": {
+    "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/profiles-comparison.json",
+    "sha256": "27a86959ae64860167c8287ab3989fb0d81934f38bd97c7234c5f241385c1093",
+    "bytes": 242716
+  },
+  "engine_executions": 0,
+  "known_state_gate_not_full_conformance": true,
+  "prior_gates_passed": 35,
+  "unchanged_old_baselines": 35,
+  "total_gates": 36,
+  "strengthened_baselines": [],
+  "checks": [
+    {
+      "profile": "addition",
+      "baseline_path": "tests/conformance/test262-addition-current.json",
+      "baseline_sha256": "69610fc6ff4ab4f2d72eae1aa5ccc6cc127af758f998448f6c9e15b76628fe4d",
+      "counts": {
+        "unsupported": 28,
+        "passed": 67
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/addition.json",
+        "sha256": "c6cfaea10339e8a257ad632106ea87e33f9f698d7c88e50c603f51ebd0e5941a",
+        "bytes": 103630
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "array-buffer",
+      "baseline_path": "tests/conformance/test262-array-buffer-current.json",
+      "baseline_sha256": "9a9a052de66d0c302f157f0762afefdcd16aacd909c95d2c3409cd12fdc5f265",
+      "counts": {
+        "passed": 262,
+        "unsupported": 130,
+        "failed": 50
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/array-buffer.json",
+        "sha256": "ccf5d2c72debe08559ab833fe6be07b2cb5313fbb4c74176e4c098ea79f525dd",
+        "bytes": 419952
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "array-descriptors",
+      "baseline_path": "tests/conformance/test262-array-descriptors-current.json",
+      "baseline_sha256": "16b9d7428696157b55284b8a7884b5f290e86756afcdf505ed99a3d49ae3501a",
+      "counts": {
+        "passed": 3554,
+        "unsupported": 20
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/array-descriptors.json",
+        "sha256": "22550244afe57e126ea018511b2982ae0d93abdd4ed9626f36b2ff2c0fbaa64b",
+        "bytes": 2271938
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "array-find",
+      "baseline_path": "tests/conformance/test262-array-find-current.json",
+      "baseline_sha256": "9acc545529e16134d5ec1082415a679babb643bc9f587d7143ed6b0604b9c3d9",
+      "counts": {
+        "passed": 148,
+        "unsupported": 32
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/array-find.json",
+        "sha256": "0a03a938a51b7465657af305e49facd2385f7eca37e6606ba9d4b7f497edf8cf",
+        "bytes": 333307
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "array-from",
+      "baseline_path": "tests/conformance/test262-array-from-current.json",
+      "baseline_sha256": "33167f5d478a3826232e62cba3843adab9cd886639997b12ebdeecf7a0403cba",
+      "counts": {
+        "passed": 86,
+        "unsupported": 4
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/array-from.json",
+        "sha256": "ed52f693dc7c5930bb68d7093a4cf6a032d1dd9be52c361f9e5f61a6aae73098",
+        "bytes": 137772
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "array-reduce",
+      "baseline_path": "tests/conformance/test262-array-reduce-current.json",
+      "baseline_sha256": "aaced8d7d1c9b079067e2abff639657adf89bc5c349ec19188c28314c82aebce",
+      "counts": {
+        "passed": 1018,
+        "unsupported": 16
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/array-reduce.json",
+        "sha256": "9ab3ba0b9dbb707fa6d8c68247a8ed19192a5c43c5ffc62f9dae67a4ee9b7670",
+        "bytes": 743052
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "array-splice",
+      "baseline_path": "tests/conformance/test262-array-splice-current.json",
+      "baseline_sha256": "f101d6ecf1d515dfb4f1e37a8cab6b96818a46f09aff2039ddd4dae26e06eec1",
+      "counts": {
+        "passed": 138,
+        "unsupported": 24
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/array-splice.json",
+        "sha256": "e24ee6a26e39b1426df66a085b8372b4afbe376842eb6af972b259cb169e9e0a",
+        "bytes": 183813
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "compound-assignment",
+      "baseline_path": "tests/conformance/test262-compound-assignment-current.json",
+      "baseline_sha256": "1ed2ffaad47349010ad532ba43e0cbaf59750c23d0d76c4e5174bc0090ea2dfd",
+      "counts": {
+        "unsupported": 169,
+        "passed": 617
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/compound-assignment.json",
+        "sha256": "bfd22586f11ffbe8002b2bfb9611f6a24c24ec182c5ba195de78b0421a17fc96",
+        "bytes": 607112
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "core-iterators",
+      "baseline_path": "tests/conformance/test262-core-iterators-current.json",
+      "baseline_sha256": "02077518cb4bfa8c4ada143276c4224252eabd694a5a8e77a5520c5ac4a9cb1d",
+      "counts": {
+        "passed": 106,
+        "unsupported": 38
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/core-iterators.json",
+        "sha256": "ed1c96e33d0c65f427bab949a065bc610d4d3268230139b8a293d834b66975d8",
+        "bytes": 204341
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "data-view",
+      "baseline_path": "tests/conformance/test262-data-view-current.json",
+      "baseline_sha256": "34314cd2e9f8f05eee2f25baebb74908df8898201f4f181247968ee3c9aa2b91",
+      "counts": {
+        "unsupported": 416,
+        "passed": 694,
+        "failed": 12
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/data-view.json",
+        "sha256": "2d0fdcfc4a92ba2c441f402736fba0ed578b0336c3f5ee07250e1c5cc46490e1",
+        "bytes": 887319
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "date",
+      "baseline_path": "tests/conformance/test262-date-current.json",
+      "baseline_sha256": "8e282442518943971a743f512be6a5de368718f2f8029fb358355fb5d7f48bac",
+      "counts": {
+        "passed": 1166,
+        "unsupported": 22
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/date.json",
+        "sha256": "0205a9dfba23573901733d82c160f39186528997c01947df4c435c7b13a7995d",
+        "bytes": 1039361
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "equality",
+      "baseline_path": "tests/conformance/test262-equality-current.json",
+      "baseline_sha256": "c1418e959a4936d94cb24960c379dccee01af48d932fe4ff7622964129b227df",
+      "counts": {
+        "unsupported": 96,
+        "passed": 190
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/equality.json",
+        "sha256": "1e223d5cf94175ffea5b1c4c9a96f29754aad969f3c1628971fc26c5863f724b",
+        "bytes": 264384
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "for-of",
+      "baseline_path": "tests/conformance/test262-for-of-current.json",
+      "baseline_sha256": "c023e088a45ba866ba9436832a2a0ba6584f9261038ad26df72825523820cf06",
+      "counts": {
+        "passed": 137,
+        "unsupported": 1303,
+        "failed": 2
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/for-of.json",
+        "sha256": "68cd41e299da9e84650f4d878ba3c8b0b6d0c62f47ac10cfcdcbcb1fa5f81657",
+        "bytes": 868134
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "function-constructor",
+      "baseline_path": "tests/conformance/test262-function-constructor-current.json",
+      "baseline_sha256": "f17ce66f9c4f5395ade2e9d607e806dce678c84558674d30e1a53e378e3136c0",
+      "counts": {
+        "passed": 241,
+        "unsupported": 50
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/function-constructor.json",
+        "sha256": "7cd2e81fbce3b8148b4584105ba121036155b60eb74a843cb62031dc4b6d0a08",
+        "bytes": 215496
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "functions",
+      "baseline_path": "tests/conformance/test262-functions-current.json",
+      "baseline_sha256": "53627cfffdb3b01c7453aed80e750909ba0198a888747b2f3cb22674c3966040",
+      "counts": {
+        "passed": 546,
+        "unsupported": 585
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/functions.json",
+        "sha256": "6fd96da04a4ce02287b4955035175dfd9595bd6749938da94b91a5876d04368a",
+        "bytes": 747560
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "global-values",
+      "baseline_path": "tests/conformance/test262-global-values-current.json",
+      "baseline_sha256": "05a82b4c2f40643fa91df9905e4be566332f4106592c3f99e9397819cec18803",
+      "counts": {
+        "passed": 70,
+        "unsupported": 18
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/global-values.json",
+        "sha256": "a886469044d4abb7fc1f70b679d74f9a119e0342fa45d662d914e122ca37d7fc",
+        "bytes": 100775
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "is-prototype-of",
+      "baseline_path": "tests/conformance/test262-is-prototype-of-current.json",
+      "baseline_sha256": "0c6a95e3eca5d1d8949f0770ff7dc2557dedfff8c96cd62ce5173ca5a1745efe",
+      "counts": {
+        "unsupported": 6,
+        "passed": 14
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/is-prototype-of.json",
+        "sha256": "99177587b5ffbecfb1d965091f10a5a6065e24d8acb33735aadf7ee916162037",
+        "bytes": 60156
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "labels",
+      "baseline_path": "tests/conformance/test262-labels-current.json",
+      "baseline_sha256": "035145ff2b1d5df31077936c86d4ca54dc58185f7fb32ca812fd2ea96c1f07f3",
+      "counts": {
+        "passed": 100,
+        "unsupported": 25
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/labels.json",
+        "sha256": "6ffad522703852728e485dee3e718e3489f3f3654c675c2d9b88ffa10e265df1",
+        "bytes": 140120
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "logical-assignment",
+      "baseline_path": "tests/conformance/test262-logical-assignment-current.json",
+      "baseline_sha256": "08550c1b03893e8b5e75ef8caa234b1ac7bb1c4f5f5e2dfaa37e69a0b38ac705",
+      "counts": {
+        "unsupported": 48,
+        "passed": 78,
+        "failed": 6
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/logical-assignment.json",
+        "sha256": "aa8cd70520b556a1ecc167583b61b313994dd17696674496c57e82f2a20796ea",
+        "bytes": 167741
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "new-target",
+      "baseline_path": "tests/conformance/test262-new-target-current.json",
+      "baseline_sha256": "187696b419974db062b8eb5ddac457f7cc1fb849d3de6c495b91c7bb8026a2d7",
+      "counts": {
+        "passed": 20,
+        "unsupported": 8
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/new-target.json",
+        "sha256": "9c5a5c41bd8d2b79758545dd456b79fe1cc8e5917b38aa41a1d0b5cedeaeefaf",
+        "bytes": 88263
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "number-statics",
+      "baseline_path": "tests/conformance/test262-number-statics-current.json",
+      "baseline_sha256": "2fbead399f2cf89c49a3d14a0a9b1202ef3021203f4bc393c93f05e66fcb7070",
+      "counts": {
+        "passed": 260,
+        "unsupported": 80
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/number-statics.json",
+        "sha256": "60edbd1b6c5a01a18dbb1ba08fdc8573208e9cc4ad73ce85dce42d0e24134ad4",
+        "bytes": 274312
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "numeric-conversion",
+      "baseline_path": "tests/conformance/test262-numeric-conversion-current.json",
+      "baseline_sha256": "2a14928428ef7fa112d0f4434eb7764a73b1685de2e494eaac9d3991a4cf187c",
+      "counts": {
+        "passed": 32,
+        "unsupported": 28
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/numeric-conversion.json",
+        "sha256": "6e7c33e6acac2d66130683ccab2fa46e7a24746c9bc90a3f88cc1af0e741451f",
+        "bytes": 94328
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "object-integrity",
+      "baseline_path": "tests/conformance/test262-object-integrity-current.json",
+      "baseline_sha256": "655339253b692bfffd5342bbf3c3d05123ac1e605e1172265372ccb8fed7641e",
+      "counts": {
+        "passed": 398,
+        "unsupported": 38,
+        "failed": 38
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/object-integrity.json",
+        "sha256": "1e58c1f6bf1f2a496692406eb030cce54dff3d10ecc6e03528dcf3d8bdea7af0",
+        "bytes": 464063
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "reflect-construction",
+      "baseline_path": "tests/conformance/test262-reflect-construction-current.json",
+      "baseline_sha256": "160ece084c889dd5693207aa59dcf0a732f04548eb15dbdacbcae3203680a22a",
+      "counts": {
+        "passed": 38
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/reflect-construction.json",
+        "sha256": "1a25a240e49b75bec56442a9d8f0fb77edf4844f1de34e8a5e1155c315b1e908",
+        "bytes": 94507
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "regexp",
+      "baseline_path": "tests/conformance/test262-regexp-current.json",
+      "baseline_sha256": "07b65132730d23644e5405ba5990c7243870b2f3cef846864ad1d8dc3d5a43a5",
+      "counts": {
+        "passed": 262,
+        "unsupported": 28
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/regexp.json",
+        "sha256": "ad2973446efbb2dde3a495f2dc938a4f1e44b9e51ce9cd9517542e727480e589",
+        "bytes": 212799
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "regexp-match-search",
+      "baseline_path": "tests/conformance/test262-regexp-match-search-current.json",
+      "baseline_sha256": "364b8180ba234cee05fede0c681816d6b1675b1af19eb450058334bf7cf6345c",
+      "counts": {
+        "passed": 316,
+        "unsupported": 20,
+        "failed": 4
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/regexp-match-search.json",
+        "sha256": "055c4203005587af0f1f5aacb2c3b518d843c5e72baa36d0069736a4f83cc627",
+        "bytes": 277143
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "regexp-split",
+      "baseline_path": "tests/conformance/test262-regexp-split-current.json",
+      "baseline_sha256": "8a8aa3820823be4e9208b4e738942b676884a93d78cd6f0ea12db51d65e665ab",
+      "counts": {
+        "passed": 90,
+        "unsupported": 6
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/regexp-split.json",
+        "sha256": "850ec0260c11643fe5b5be4d4038ffff526dbc34f29e3fbb388242c271e47652",
+        "bytes": 115679
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "relational",
+      "baseline_path": "tests/conformance/test262-relational-current.json",
+      "baseline_sha256": "da9b25f56a36b1ff2b4997642fa26933ff534d9866ff155d0826f2599cb65fe9",
+      "counts": {
+        "unsupported": 64,
+        "passed": 300
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/relational.json",
+        "sha256": "268ba54df62b3ca9487ea6f9d26012257decdd59f75cb5152f0c223d26288c3b",
+        "bytes": 316324
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "rest-parameters",
+      "baseline_path": "tests/conformance/test262-rest-parameters-current.json",
+      "baseline_sha256": "d2afff0d3de3fa2cf37c68ee4d8b5e7794688dd1b514e827e4b2c22e763310f3",
+      "counts": {
+        "unsupported": 6,
+        "passed": 16
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/rest-parameters.json",
+        "sha256": "c6494542d624f353721e30960037067adab6516b5744280bb74ea5c687ff8930",
+        "bytes": 61510
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "string-concat",
+      "baseline_path": "tests/conformance/test262-string-concat-current.json",
+      "baseline_sha256": "00367d16ec166ff6d88482b36221dc444922578482d5212fd4732fe512668364",
+      "counts": {
+        "passed": 44
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/string-concat.json",
+        "sha256": "9853b51a23028a679464ed5f11adc1529b15e988567ae125346023dbdd27cff2",
+        "bytes": 68800
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "string-json",
+      "baseline_path": "tests/conformance/test262-current.json",
+      "baseline_sha256": "988461016a336b25c74e36d19418b90d61193211ab9012dce0b0624e278a80ff",
+      "counts": {
+        "passed": 568,
+        "unsupported": 84
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/string-json.json",
+        "sha256": "25f366c41a7afc1895e2e879f7ce61bdddac7ff08318c9fc2a660351e24f402a",
+        "bytes": 417715
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "string-last-index-of",
+      "baseline_path": "tests/conformance/test262-string-last-index-of-current.json",
+      "baseline_sha256": "4db22ae25a830831125415e7f6a29f136c77e72203b25810c1595b8ee4207cf5",
+      "counts": {
+        "passed": 50
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/string-last-index-of.json",
+        "sha256": "91b3949ebdfa7cb1773db4143def5fdaffa5b6dd135e06ebc1a5344b3d515ba1",
+        "bytes": 92356
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "string-search",
+      "baseline_path": "tests/conformance/test262-string-search-current.json",
+      "baseline_sha256": "952b4d98851498b70d5ee7a60c25e3894002d875ca98dab57869e2a0cc9e883b",
+      "counts": {
+        "passed": 470,
+        "unsupported": 12,
+        "failed": 2
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/string-search.json",
+        "sha256": "c589f1e5745894652a051021c8e49190e8862149cde7105eda204ce39ffae149",
+        "bytes": 374020
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "symbols",
+      "baseline_path": "tests/conformance/test262-symbols-current.json",
+      "baseline_sha256": "7ad674a89581e055552742645de0912233df9fbb0af7d731d974e188b803baea",
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/symbols.json",
+        "sha256": "65d98be9379fce2110be0e91cd4d9c47bac5c41dee06f829c89f8bfeec0f1e5a",
+        "bytes": 202306
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "template-literal",
+      "baseline_path": "tests/conformance/test262-template-literal-current.json",
+      "baseline_sha256": "e990475ba6e02361403ab3e610758cd3a91dbf8e02c15cbf649f5b425fd622a8",
+      "counts": {
+        "unsupported": 32,
+        "passed": 82
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/template-literal.json",
+        "sha256": "3607002039c6828673dc8eb0078b88b7dccefa356242828c345f83e94e1d6828",
+        "bytes": 113157
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    },
+    {
+      "profile": "object-is",
+      "baseline_path": "tests/conformance/test262-object-is-current.json",
+      "baseline_sha256": "9d0fef956a58c5acd17a0846a3304a812153323bd34195ed04195a07fca6b723",
+      "counts": {
+        "passed": 42
+      },
+      "report": {
+        "path": "/tmp/eris-object-is-runtime-1/formal-candidate-2/object-is.json",
+        "sha256": "83148d93f39028fad44d9fc1f468b02cd14eb325a4d07369f910662d2822a8bd",
+        "bytes": 94188
+      },
+      "lost_passes": [],
+      "unrecorded_improvements": []
+    }
+  ],
+  "workflow_before_sha256": "3e98804a3e9231d0932896c2f9ba2c222854f3d4fb2fbfa3a67b355aa09acec1",
+  "workflow_after_sha256": "52d8f69d248e563a100b34e1149b5c9516a6d464e66fd2c617c62a93455e246b",
+  "workflow_addition": "      - name: Preserve pinned Object.is behavior\n        run: python3 tools/test262_conformance.py --profile object-is --baseline tests/conformance/test262-object-is-current.json --output artifacts/test262-object-is-gate.json\n"
+}
