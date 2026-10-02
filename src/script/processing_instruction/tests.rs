@@ -16,6 +16,71 @@ fn clean(runtime: &Runtime) {
         (0, 0, 0)
     );
 }
+
+#[test]
+fn character_data_accessors_preserve_host_supplied_exact_units() {
+    for kind in ["Text", "Comment", "PI"] {
+        let (mut runtime, mut doc) = fresh();
+        let units = vec![0xd800, 0, 0x41, 0xdc00, 0xd834, 0xdd1e];
+        let data = crate::dom::DomString::from_units_owned(units.clone()).unwrap();
+        let id = match kind {
+            "Text" => doc.create_text_node_owned(data),
+            "Comment" => doc.create_comment_owned(data),
+            _ => doc.create_processing_instruction_owned("probe".into(), data),
+        }
+        .unwrap();
+        assert_eq!(
+            runtime
+                .pi_native("data", Value::Node(id), &[], &mut doc)
+                .unwrap(),
+            Value::String(units.into())
+        );
+        assert_eq!(
+            runtime
+                .pi_native("length", Value::Node(id), &[], &mut doc)
+                .unwrap(),
+            Value::Number(6.0)
+        );
+        runtime
+            .pi_native(
+                "setData",
+                Value::Node(id),
+                &[Value::String("repaired".into())],
+                &mut doc,
+            )
+            .unwrap();
+        assert_eq!(
+            runtime
+                .pi_native("data", Value::Node(id), &[], &mut doc)
+                .unwrap(),
+            Value::String("repaired".into())
+        );
+        clean(&runtime);
+    }
+}
+
+#[test]
+fn exact_data_method_callbacks_run_before_fresh_scalar_boundary_check() {
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        let node = runtime.execute("var n=new Text('a');n", &mut doc).unwrap();
+        let Value::Node(id) = node else { panic!() };
+        doc.replace_character_data(
+            id,
+            crate::dom::DomString::from_units_owned(vec![0xd800]).unwrap(),
+        )
+        .unwrap();
+        let source = "n.appendData({toString(){n.data='x';return 'y';}});n.data";
+        let result = if strict {
+            runtime.execute_strict(source, &mut doc)
+        } else {
+            runtime.execute(source, &mut doc)
+        };
+        assert_eq!(result.unwrap(), Value::String("xy".into()));
+        clean(&runtime);
+    }
+}
+
 fn independent_case(name: &str) {
     for strict in [false, true] {
         let (mut runtime, mut doc) = fresh();
@@ -205,7 +270,7 @@ fn pi_newtarget_side_effect_consumes_last_node_before_fresh_admission() {
         doc.nodes.push(crate::dom::Node {
             parent: None,
             children: vec![],
-            kind: NodeKind::Comment(String::new()),
+            kind: NodeKind::Comment(String::new().into()),
         });
     }
     let target = runtime.environments[0].bindings["piTarget"].value.clone();

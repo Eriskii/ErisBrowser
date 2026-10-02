@@ -21,8 +21,12 @@ and Text, Comment and DocumentFragment construction.
 the Document factory, target and CharacterData data/length accessors for scalar
 strings. Five [CharacterData methods](character-data.md) now add exact UTF-16
 substring results and checked splicing, including repaired surrogate boundaries.
-PI pseudo-attributes, lone-surrogate DOM data and mutation notifications
-remain unfinished. Complete interface members,
+The [DOM string foundation](dom-strings.md) preserves host-supplied unpaired
+units in Text, Comment and PI data, exact reads/clones and ERWA snapshots.
+JavaScript constructors, setters and mutation paths have not yet migrated to
+producing that data: the eight earlier standards-success modes remain unmet
+pending replay. PI pseudo-attributes and mutation notifications remain unfinished.
+Complete interface members,
 Document reflection and host prototype mutation remain incomplete. The unchanged
 DOM suite now verifies **56/58 expectations**, with all 44 controls healthy; the
 two complete-Document-enumeration expectations remain unmet. The earlier eight-method
@@ -221,8 +225,10 @@ constructor conformance remain incomplete.
 cover the supported creation, query, attribute, tree and class-list operations.
 String hooks run in argument order before those operations; borrowed methods use
 their actual receiver. Nullable text and Boolean properties retain distinct
-conversion rules. Complete DOMString storage, remaining interface members, XML name
-validation, live collections and DOM hierarchy semantics remain incomplete.
+conversion rules. Exact character-data storage is described in
+[DOM strings](dom-strings.md); legacy author write paths, remaining interface
+members, general XML name handling, live collections and complete DOM hierarchy
+semantics remain incomplete.
 
 [Symbol primitives and property keys](../tests/conformance/symbols.md) now include
 identity, registry/description behavior, descriptors, computed keys, JSON omission,
@@ -433,9 +439,21 @@ JavaScript strings retain UTF-16 code units, including unpaired surrogates. Leng
 
 RegExp matching uses a custom parser and an explicit backtracking stack over UTF-16 code units. Captures, empty-match progress, greedy/lazy repetition, named groups, numeric/named backreferences and positive/negative lookahead retain their implemented ECMAScript behavior. Case-insensitive non-Unicode matching follows one-code-unit uppercase canonicalization using Rust’s Unicode tables. Pattern literals use the parser’s expression context to distinguish division. Patterns are limited to 8,192 code units, 4,096 syntax nodes and 128 captures; parser/assertion nesting and repetition counts are also bounded. Compilation, backtracking, native output and callbacks consume bounded work/allocation budgets; a costly pattern can terminate with an uncatchable resource error. Unicode flags `u`/`v`, lookbehind and other listed missing syntax are explicitly unsupported. The separate [RegExp corpus](../tests/conformance/test262-regexp.md) is a narrow measurement, not full RegExp conformance.
 
-DOM text, attributes, console output and display still use UTF-8. Valid surrogate pairs cross that boundary losslessly; unpaired surrogates become U+FFFD, without changing the original JavaScript string. Ordinary object keys retain every code unit, but non-scalar property names on host objects are unsupported. This boundary is not complete DOMString compatibility.
+Text, Comment and PI data now use [canonical DOM string storage](dom-strings.md):
+UTF-8 for scalar strings, exact UTF-16 only when unpaired units occur. Existing
+data/length accessors, selected text readers and cloning preserve host-supplied
+units. Presentation explicitly replaces unmatched units without changing storage.
+Attributes, console output and other scalar host boundaries remain separate;
+legacy writes can still replace unpaired units, and CharacterData production
+still refuses them. Inline JavaScript source and JavaScript HTML serialization
+explicitly refuse a nonscalar aggregate. This is not complete DOMString support.
 
-`textarea.value` uses the text storage shared by the current editor and form serializer, including script assignment and input-handler changes. This is not the complete HTML current/default/dirty-value model: assigning a value still changes child/default text, and reset semantics remain incomplete.
+`textarea.value` reads exact stored units with CRLF/CR normalization. Its legacy
+script setter, editor and form serializer still use scalar boundaries. Native
+editing refuses a nonscalar aggregate, including while an acknowledgement is
+pending, so a whole-string edit cannot replace preserved units elsewhere. This
+is not the complete HTML current/default/dirty-value model: assigning a value
+still changes child/default text, and reset semantics remain incomplete.
 
 HTML foreign-content support includes adjusted SVG names, the defined XLink/XML/XMLNS attribute mappings, MathML text and annotation integration points, foreign CDATA, breakout tokens, and namespace-aware selectors/serialization. The namespace enum is deliberately limited to HTML, SVG and MathML; this is not an XML parser, full SVG DOM, or MathML layout engine. SVG script execution and foreignObject painting remain unsupported.
 

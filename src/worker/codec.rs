@@ -3,8 +3,8 @@
 use super::{Command, Init, Reply, Snapshot};
 use crate::{
     dom::{
-        AttributeNamespace, Doctype, Document, DocumentMode, Element, MAX_DOM_BYTES, MAX_NODES,
-        Namespace, Node, NodeKind,
+        AttributeNamespace, Doctype, Document, DocumentMode, DomString, Element, MAX_DOM_BYTES,
+        MAX_NODES, Namespace, Node, NodeKind,
     },
     graphics::{Color, DrawCommand, ImageStore, RasterImage, Rect},
     layout::{HitAction, HitRegion, LayoutResult},
@@ -21,7 +21,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
-const MAGIC: &[u8] = b"ERW9";
+const MAGIC: &[u8] = b"ERWA";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -98,6 +98,31 @@ impl Encoder {
     fn string(&mut self, s: &str) {
         self.u32(s.len());
         self.raw(s.as_bytes());
+    }
+    fn dom_string(&mut self, s: &DomString) {
+        if let Some(scalar) = s.scalar() {
+            self.byte(0);
+            self.string(scalar);
+        } else if let Some(units) = s.raw_units() {
+            self.byte(1);
+            self.u32(units.len());
+            let Some(length) = units.len().checked_mul(2) else {
+                self.failed = true;
+                return;
+            };
+            if self.failed
+                || length > MAX_FRAME.saturating_sub(self.bytes.len())
+                || self.bytes.try_reserve_exact(length).is_err()
+            {
+                self.failed = true;
+                return;
+            }
+            for unit in units {
+                self.bytes.extend_from_slice(&unit.to_le_bytes());
+            }
+        } else {
+            self.failed = true;
+        }
     }
     fn optional_string(&mut self, s: Option<&str>) {
         self.boolean(s.is_some());
@@ -198,6 +223,45 @@ impl<'a> Decoder<'a> {
             .to_owned();
         *budget -= s.len();
         Ok(s)
+    }
+    fn dom_string(&mut self, budget: &mut usize) -> Result<DomString> {
+        match self.byte()? {
+            0 => self.budget_string(budget).map(DomString::from),
+            1 => {
+                let count = self.count((*budget).min(MAX_DOM_BYTES) / 2)?;
+                let length = count.checked_mul(2).ok_or("IPC UTF-16 length overflow")?;
+                let bytes = self.raw(length)?;
+                // Canonical Units must contain an isolated surrogate. Inspect
+                // the borrowed payload before reserving a decoded buffer.
+                if !char::decode_utf16(
+                    bytes
+                        .as_chunks::<2>()
+                        .0
+                        .iter()
+                        .map(|pair| u16::from_le_bytes([pair[0], pair[1]])),
+                )
+                .any(|scalar| scalar.is_err())
+                {
+                    return Err("noncanonical IPC UTF-16".into());
+                }
+                let mut units = Vec::new();
+                units
+                    .try_reserve_exact(count)
+                    .map_err(|_| "IPC allocation failed")?;
+                units.extend(
+                    bytes
+                        .as_chunks::<2>()
+                        .0
+                        .iter()
+                        .map(|pair| u16::from_le_bytes([pair[0], pair[1]])),
+                );
+                let string = DomString::from_nonscalar_units(units)
+                    .map_err(|_| "noncanonical IPC UTF-16")?;
+                *budget -= length;
+                Ok(string)
+            }
+            _ => Err("unknown IPC DOM string tag".into()),
+        }
     }
     fn optional_string(&mut self, maximum: usize) -> Result<Option<String>> {
         if self.boolean()? {
@@ -477,11 +541,11 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
             }
             NodeKind::Text(s) => {
                 e.byte(2);
-                e.string(s);
+                e.dom_string(s);
             }
             NodeKind::Comment(s) => {
                 e.byte(3);
-                e.string(s);
+                e.dom_string(s);
             }
             NodeKind::Doctype(d) => {
                 e.byte(4);
@@ -493,7 +557,7 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
             NodeKind::ProcessingInstruction { target, data } => {
                 e.byte(5);
                 e.string(target);
-                e.string(data);
+                e.dom_string(data);
             }
         }
     }
@@ -706,8 +770,8 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                     },
                 })
             }
-            2 => NodeKind::Text(d.budget_string(&mut dom_bytes)?),
-            3 => NodeKind::Comment(d.budget_string(&mut dom_bytes)?),
+            2 => NodeKind::Text(d.dom_string(&mut dom_bytes)?),
+            3 => NodeKind::Comment(d.dom_string(&mut dom_bytes)?),
             4 => {
                 let name = d.budget_string(&mut dom_bytes)?;
                 let public_id = if d.boolean()? {
@@ -729,7 +793,7 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
             }
             5 => NodeKind::ProcessingInstruction {
                 target: d.budget_string(&mut dom_bytes)?,
-                data: d.budget_string(&mut dom_bytes)?,
+                data: d.dom_string(&mut dom_bytes)?,
             },
             6 => NodeKind::DocumentFragment {
                 host: if d.boolean()? {
@@ -1727,7 +1791,7 @@ mod tests {
         let decoded = decode_reply(&encoded).unwrap().snapshot.unwrap();
         assert_eq!(decoded.document.retained_bytes(), expected_bytes);
         assert!(decoded.document.nodes.iter().any(
-            |node| matches!(&node.kind, NodeKind::Text(text) if text.len() == 18 * 1024 * 1024)
+            |node| matches!(&node.kind, NodeKind::Text(text) if text.scalar().is_some_and(|text| text.len() == 18 * 1024 * 1024))
         ));
     }
     #[test]
@@ -1775,6 +1839,269 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn dom_string_wire_literals_preserve_scalar_and_exact_units() {
+        let scalar = DomString::from("A\0😀".to_owned());
+        let units =
+            DomString::from_nonscalar_units(vec![0xd800, 0, 0x41, 0xdc00, 0xd83d, 0xde00]).unwrap();
+        for (value, expected) in [
+            (scalar, b"ERWAc\x00\x06\0\0\0A\0\xf0\x9f\x98\x80".as_slice()),
+            (
+                units,
+                b"ERWAc\x01\x06\0\0\0\x00\xd8\0\0A\0\x00\xdc\x3d\xd8\x00\xde".as_slice(),
+            ),
+        ] {
+            let mut encoded = Encoder::new(99);
+            encoded.dom_string(&value);
+            let bytes = encoded.finish().unwrap();
+            assert_eq!(bytes, expected);
+            let mut decoder = Decoder::new(&bytes, 99).unwrap();
+            let mut budget = value.stored_bytes();
+            let decoded = decoder.dom_string(&mut budget).unwrap();
+            decoder.end().unwrap();
+            assert_eq!(budget, 0);
+            assert_eq!(decoded.scalar(), value.scalar());
+            assert_eq!(decoded.raw_units(), value.raw_units());
+            assert_eq!(
+                decoded.units().collect::<Vec<_>>(),
+                value.units().collect::<Vec<_>>()
+            );
+        }
+    }
+
+    fn raw_dom_units(units: &[u16]) -> Vec<u8> {
+        let mut encoded = Encoder::new(99);
+        encoded.byte(1);
+        encoded.u32(units.len());
+        for unit in units {
+            encoded.raw(&unit.to_le_bytes());
+        }
+        encoded.finish().unwrap()
+    }
+
+    #[test]
+    fn dom_string_units_require_nonscalar_canonical_form() {
+        for units in [
+            &[][..],
+            &[0, 0x41][..],
+            &[0xd7ff, 0xe000, 0xffff][..],
+            &[0xd800, 0xdc00][..],
+            &[0x41, 0xdbff, 0xdfff, 0][..],
+        ] {
+            let bytes = raw_dom_units(units);
+            let mut decoder = Decoder::new(&bytes, 99).unwrap();
+            let mut budget = 32;
+            assert!(
+                matches!(decoder.dom_string(&mut budget), Err(error) if error == "noncanonical IPC UTF-16")
+            );
+            assert_eq!(budget, 32);
+        }
+        for units in [
+            &[0xd800][..],
+            &[0xdc00][..],
+            &[0xd800, 0xd800, 0xdc00][..],
+            &[0xdc00, 0xd800, 0xdc00][..],
+            &[0xd800, 0xdc00, 0xdbff][..],
+        ] {
+            let bytes = raw_dom_units(units);
+            let mut decoder = Decoder::new(&bytes, 99).unwrap();
+            let mut budget = 32;
+            let decoded = decoder.dom_string(&mut budget).unwrap();
+            assert_eq!(decoded.raw_units(), Some(units));
+            assert_eq!(budget, 32 - units.len() * 2);
+            decoder.end().unwrap();
+        }
+    }
+
+    #[test]
+    fn dom_string_tags_lengths_and_payloads_reject_before_reservation() {
+        for (tag, claimed, payload, budget, expected) in [
+            (255, 0, &[][..], 8, "unknown IPC DOM string tag"),
+            (
+                1,
+                u32::MAX as usize,
+                &[][..],
+                MAX_DOM_BYTES,
+                "IPC collection limit exceeded",
+            ),
+            (
+                1,
+                MAX_DOM_BYTES / 2 + 1,
+                &[][..],
+                usize::MAX,
+                "IPC collection limit exceeded",
+            ),
+            (1, 2, &[][..], 3, "IPC collection limit exceeded"),
+            (1, 1, &[0][..], 2, "truncated IPC message"),
+            (1, 2, &[0, 0xd8, 0][..], 4, "truncated IPC message"),
+            (
+                0,
+                MAX_DOM_BYTES + 1,
+                &[][..],
+                usize::MAX,
+                "IPC collection limit exceeded",
+            ),
+            (0, 1, &[0xff][..], 1, "invalid IPC UTF-8"),
+            (0, 3, &[0xed, 0xa0, 0x80][..], 3, "invalid IPC UTF-8"),
+        ] {
+            let mut encoded = Encoder::new(99);
+            encoded.byte(tag);
+            encoded.u32(claimed);
+            encoded.raw(payload);
+            let bytes = encoded.finish().unwrap();
+            let mut decoder = Decoder::new(&bytes, 99).unwrap();
+            let mut remaining = budget;
+            assert!(matches!(decoder.dom_string(&mut remaining), Err(error) if error == expected));
+            assert_eq!(remaining, budget);
+        }
+    }
+
+    #[test]
+    fn dom_string_scalar_and_units_share_the_dom_payload_budget() {
+        let mut encoded = Encoder::new(99);
+        encoded.string("id"); // An ordinary retained DOM metadata string.
+        encoded.dom_string(&DomString::from("a".to_owned()));
+        encoded.dom_string(&DomString::from_nonscalar_units(vec![0xd800, 0x41]).unwrap());
+        encoded.dom_string(&DomString::from_nonscalar_units(vec![0xdc00]).unwrap());
+        let bytes = encoded.finish().unwrap();
+        for initial in [9, 8] {
+            let mut decoder = Decoder::new(&bytes, 99).unwrap();
+            let mut budget = initial;
+            assert_eq!(decoder.budget_string(&mut budget).unwrap(), "id");
+            assert_eq!(decoder.dom_string(&mut budget).unwrap().scalar(), Some("a"));
+            assert_eq!(
+                decoder.dom_string(&mut budget).unwrap().raw_units(),
+                Some(&[0xd800, 0x41][..])
+            );
+            assert_eq!(budget, initial - 7);
+            if initial == 9 {
+                assert_eq!(
+                    decoder.dom_string(&mut budget).unwrap().raw_units(),
+                    Some(&[0xdc00][..])
+                );
+                assert_eq!(budget, 0);
+                decoder.end().unwrap();
+            } else {
+                assert!(
+                    matches!(decoder.dom_string(&mut budget), Err(error) if error == "IPC collection limit exceeded")
+                );
+                assert_eq!(budget, 1);
+            }
+        }
+    }
+
+    #[test]
+    fn exact_dom_string_snapshot_preserves_detached_template_and_pi_data() {
+        let mut reply = reply_with_html("<div id=host><template id=t></template></div>");
+        let document = &mut reply.snapshot.as_mut().unwrap().document;
+        let before = document.retained_bytes();
+        let host = document.query_selector("#host").unwrap();
+        let template = document.query_selector("#t").unwrap();
+        let contents = document.template_contents(template).unwrap();
+        let mut nodes = document.nodes.clone();
+        let first = nodes.len();
+        for (parent, kind) in [
+            (
+                Some(host),
+                NodeKind::Text(DomString::from_nonscalar_units(vec![0x41, 0xd800, 0x42]).unwrap()),
+            ),
+            (
+                None,
+                NodeKind::Comment(DomString::from_nonscalar_units(vec![0xdc00, 0, 0x43]).unwrap()),
+            ),
+            (
+                Some(host),
+                NodeKind::ProcessingInstruction {
+                    target: "xml-stylesheet".into(),
+                    // Mutation may introduce ?>; decoding must not apply factory restrictions.
+                    data: DomString::from_nonscalar_units(vec![0x3f, 0x3e, 0xd800, 0xd83d, 0xde00])
+                        .unwrap(),
+                },
+            ),
+            (
+                Some(contents),
+                NodeKind::Text(DomString::from_nonscalar_units(vec![0xd800]).unwrap()),
+            ),
+            (
+                Some(contents),
+                NodeKind::Text(DomString::from_nonscalar_units(vec![0xdc00]).unwrap()),
+            ),
+            (
+                Some(host),
+                NodeKind::Text(DomString::from("\0😀".to_owned())),
+            ),
+        ] {
+            let id = nodes.len();
+            nodes.push(Node {
+                parent,
+                children: Vec::new(),
+                kind,
+            });
+            if let Some(parent) = parent {
+                nodes[parent].children.push(id);
+            }
+        }
+        *document = Document::from_snapshot(
+            nodes,
+            document.root,
+            document.scripting_enabled(),
+            document.mode(),
+        )
+        .unwrap();
+        assert_eq!(document.retained_bytes(), before + 45);
+        let bytes = encode_reply(&reply).unwrap();
+        let decoded = decode_reply(&bytes).unwrap();
+        assert_eq!(encode_reply(&decoded).unwrap(), bytes);
+        let doc = &decoded.snapshot.as_ref().unwrap().document;
+        assert_eq!(doc.retained_bytes(), before + 45);
+        for (offset, expected) in [
+            (0, &[0x41, 0xd800, 0x42][..]),
+            (1, &[0xdc00, 0, 0x43][..]),
+            (2, &[0x3f, 0x3e, 0xd800, 0xd83d, 0xde00][..]),
+            (3, &[0xd800][..]),
+            (4, &[0xdc00][..]),
+            (5, &[0, 0xd83d, 0xde00][..]),
+        ] {
+            let data = match &doc.nodes[first + offset].kind {
+                NodeKind::Text(data) | NodeKind::Comment(data) => data,
+                NodeKind::ProcessingInstruction { target, data } => {
+                    assert_eq!(target, "xml-stylesheet");
+                    data
+                }
+                _ => panic!("character-data kind changed"),
+            };
+            assert_eq!(data.units().collect::<Vec<_>>(), expected);
+        }
+        assert_eq!(doc.nodes[first + 1].parent, None);
+        assert_eq!(doc.nodes[contents].children, [first + 3, first + 4]);
+        assert_eq!(doc.nodes[first + 2].parent, Some(host));
+        for end in 0..bytes.len() {
+            assert!(decode_reply(&bytes[..end]).is_err());
+        }
+        let mut trailing = bytes;
+        trailing.push(0);
+        assert!(matches!(decode_reply(&trailing), Err(error) if error == "trailing IPC bytes"));
+    }
+
+    #[test]
+    fn four_byte_wire_version_rejects_old_versions_for_all_message_kinds() {
+        for kind in 0..=8 {
+            let current = Encoder::new(kind).finish().unwrap();
+            assert_eq!(&current[..4], b"ERWA");
+            assert_eq!(current.len(), 5);
+            Decoder::new(&current, kind).unwrap();
+            assert_eq!(is_fetch_request(&current), kind == 3);
+            for old in [b"ERW9", b"ERW8"] {
+                let mut stale = current.clone();
+                stale[..4].copy_from_slice(old);
+                assert!(
+                    matches!(Decoder::new(&stale, kind), Err(error) if error == "invalid IPC version/message kind")
+                );
+                assert!(!is_fetch_request(&stale));
+            }
+        }
+    }
+
     #[test]
     fn error_frames_require_exact_consumption() {
         let mut encoded = encode_error("worker failed").unwrap();

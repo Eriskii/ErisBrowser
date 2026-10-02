@@ -23,27 +23,33 @@ Replacing, deleting or shadowing a property uses ordinary property behavior.
 The data setter checks its receiver before conversion. Its Web IDL
 `LegacyNullToEmptyString` conversion maps null to `""`; undefined, including a
 saved setter called with no arguments, becomes `"undefined"`. Setting PI data
-does not repeat the constructor's `?>` restriction. Clone, tree insertion,
-serialization and worker snapshots retain the stored target and data.
+does not repeat the constructor's `?>` restriction. Clone, tree insertion and
+worker snapshots retain the stored target and data. Exact reads and explicit
+serialization/presentation boundaries are described in [DOM strings](dom-strings.md).
 
-Checked storage takes ownership of converted UTF-8 strings. Admission failure
+The JavaScript creation/setter paths still convert to scalar strings. Checked
+storage now also takes ownership of canonical exact UTF-16 from the host or
+transport, with two retained bytes per stored unit. Admission failure
 refuses the operation instead of truncating data. Replacement accounts for the
 old buffer's released bytes and preserves node identity, tree links and PI
 target. Node publication and alternate-prototype publication follow all checked
 admission. Existing work, heap, document byte and node limits remain unchanged.
 
-This is partial CharacterData/ProcessingInstruction support. Lone UTF-16
-surrogates in data remain explicitly unsupported because document strings use
-UTF-8; lone surrogates in a target are invalid XML names. PI pseudo-attribute
-methods and their update hooks, mutation observers, range maintenance,
+This is partial CharacterData/ProcessingInstruction support. JavaScript data
+production still explicitly refuses lone UTF-16 surrogates, although the
+[storage foundation](dom-strings.md) now preserves host-supplied units in reads,
+clones and tagged snapshots. Lone surrogates in a target remain invalid XML
+names. PI pseudo-attribute methods and their update hooks, mutation observers,
+range maintenance,
 complete Node attribute descriptors and host prototype
 mutation are unfinished. Independent Document construction remains unsupported.
 The [CharacterData follow-up](character-data.md) adds the five substring and
 mutation methods with exact UTF-16 substring results and checked scalar storage.
 
-The independent local fixture checks 20 cases in both script modes: 38 of 40
-expectations pass. Both modes of the original host-prototype-mutation case remain
-unmet; the separately authored constructor-override brand case passes. These are
+The original PI checkpoint checked 20 local cases in both script modes: 38 of
+40 expectations passed. Both modes of the original host-prototype-mutation case
+remained unmet; the separately authored constructor-override brand case passed.
+These historical observations are not a new foundation replay claim. They are
 local behavior tests, not a complete upstream DOM conformance suite. See the
 [validation record](VALIDATION.md#processing-instruction-and-characterdata-accessors)
 and [retained evidence](evidence/processing-instruction.json).

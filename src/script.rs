@@ -3,8 +3,10 @@
 //! This is a custom language implementation, not an ECMAScript conformance claim.
 //! Every entry point enforces execution, nesting, source, and allocation limits.
 //! Scripts have DOM access but no filesystem, network, process, or host-eval access.
-//! Strings and ordinary property keys preserve UTF-16 code units. Conversion to
-//! UTF-8 is lossy only at the display/DOM boundary; JSON retains lone surrogates.
+//! Strings and ordinary property keys preserve UTF-16 code units. Represented
+//! DOM reads/clones retain exact character data; presentation projection is
+//! separate. Legacy DOM writes remain scalar/lossy until their own migration.
+//! JavaScript HTML serialization explicitly refuses a nonscalar final string.
 
 use crate::date_host::DateHost;
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
@@ -5824,7 +5826,10 @@ impl Runtime {
                         .unwrap_or(Value::Null));
                 }
                 "title" => {
-                    return self.string(doc.title());
+                    return match doc.first_html_element("title") {
+                        Some(id) => Ok(Value::String(self.dom_text_units(id, doc)?.into())),
+                        None => self.string(""),
+                    };
                 }
                 "readyState" => return self.string("complete"),
                 "getElementById"
@@ -5857,14 +5862,32 @@ impl Runtime {
                     "content" if doc.template_contents(id).is_some() => {
                         return Ok(Value::Node(doc.template_contents(id).unwrap()));
                     }
-                    "textContent" | "innerText" => return self.string(doc.text_content(id)),
-                    "innerHTML" => return self.string(serialize_children(doc, id)),
-                    "outerHTML" => return self.string(serialize_node(doc, id, 0)),
+                    "textContent" | "innerText" => {
+                        return Ok(Value::String(self.dom_text_units(id, doc)?.into()));
+                    }
+                    "innerHTML" => return self.dom_html(id, true, doc),
+                    "outerHTML" => return self.dom_html(id, false, doc),
                     "value" if doc.tag(id) == Some("textarea") => {
                         self.work(1 + doc.nodes.len() / 8)?;
-                        let text = doc.text_content(id);
-                        self.charge(text.len().saturating_mul(2))?;
-                        return self.string(text.replace("\r\n", "\n").replace('\r', "\n"));
+                        let mut text = self.dom_text_units(id, doc)?;
+                        self.work(1 + 2 * text.len())?;
+                        let mut read = 0;
+                        let mut write = 0;
+                        while read < text.len() {
+                            let unit = text[read];
+                            read += 1;
+                            text[write] = if unit == 13 {
+                                if text.get(read) == Some(&10) {
+                                    read += 1;
+                                }
+                                10
+                            } else {
+                                unit
+                            };
+                            write += 1;
+                        }
+                        text.truncate(write);
+                        return Ok(Value::String(text.into()));
                     }
                     "id" | "title" | "value" | "href" | "src" | "type" => {
                         return self.string(doc.attr(id, key).unwrap_or(""));
@@ -6105,6 +6128,169 @@ impl Runtime {
         self.charge(count.saturating_mul(128))
     }
 
+    // Exact output avoids an intermediate display String. The planning walk
+    // counts only selected text; unrelated retained payloads are never scanned.
+    fn dom_text_units(&mut self, id: NodeId, doc: &Document) -> Result<Vec<u16>> {
+        let count = doc.nodes.len();
+        // The shared allocation-free classifier checks at most two nodes.
+        // Empty and single-Text containers, like CharacterData leaves, need
+        // no arena-sized traversal scratch for unrelated retained nodes.
+        self.work(16)?;
+        match doc
+            .text_content_shape(id)
+            .map_err(processing_instruction::dom_data_error)?
+        {
+            crate::dom::TextContentShape::Empty => {
+                self.charge(64)?;
+                return Ok(Vec::new());
+            }
+            crate::dom::TextContentShape::Single(text) => {
+                self.work(1 + text.stored_bytes())?;
+                let length = text.units().count();
+                if length > MAX_STRING {
+                    return Err(ScriptError::resource("script string limit exceeded"));
+                }
+                self.work(1 + text.stored_bytes() + 2 * length)?;
+                self.charge(64 + 4 * length)?;
+                let mut output = Vec::new();
+                output
+                    .try_reserve_exact(length)
+                    .map_err(|_| ScriptError::resource("DOM read allocation failed"))?;
+                output.extend(text.units());
+                return Ok(output);
+            }
+            crate::dom::TextContentShape::Tree => {}
+        }
+        if count > MAX_NODES {
+            return Err(ScriptError::resource("DOM read traversal limit exceeded"));
+        }
+        let stack_bytes = count
+            .checked_mul(std::mem::size_of::<NodeId>())
+            .ok_or_else(|| ScriptError::resource("DOM read scratch overflow"))?;
+        self.charge(24 + stack_bytes)?;
+        let mut pending = Vec::new();
+        pending
+            .try_reserve_exact(count)
+            .map_err(|_| ScriptError::resource("DOM read scratch allocation failed"))?;
+        pending.push(id);
+        let mut visits = 0usize;
+        let mut units = 0usize;
+        let mut source_bytes = 0usize;
+        while let Some(next) = pending.pop() {
+            self.tick()?;
+            visits += 1;
+            if visits > count {
+                return Err(ScriptError::resource("DOM read traversal limit exceeded"));
+            }
+            let node = doc
+                .nodes
+                .get(next)
+                .ok_or_else(|| ScriptError::type_error("invalid DOM read node"))?;
+            let text = match &node.kind {
+                NodeKind::ProcessingInstruction { data, .. } if next == id => Some(data),
+                NodeKind::Text(text) | NodeKind::Comment(text)
+                    if next == id || matches!(node.kind, NodeKind::Text(_)) =>
+                {
+                    Some(text)
+                }
+                NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_) => {
+                    self.work(node.children.len())?;
+                    if node.children.len() > count.saturating_sub(pending.len()) {
+                        return Err(ScriptError::resource("DOM read traversal limit exceeded"));
+                    }
+                    pending.extend(node.children.iter().rev().copied());
+                    None
+                }
+                _ => None,
+            };
+            if let Some(text) = text {
+                self.work(1 + text.stored_bytes())?;
+                source_bytes = source_bytes
+                    .checked_add(text.stored_bytes())
+                    .ok_or_else(|| ScriptError::resource("DOM read size overflow"))?;
+                units = units
+                    .checked_add(text.units().count())
+                    .filter(|length| *length <= MAX_STRING)
+                    .ok_or_else(|| ScriptError::resource("script string limit exceeded"))?;
+            }
+        }
+        drop(pending);
+        // Core allocates a NodeId stack, a reference list and initialized seen
+        // bytes. Output Vec and its eventual Rc copy are both admitted here.
+        let scratch = count
+            .checked_mul(
+                std::mem::size_of::<NodeId>()
+                    + std::mem::size_of::<&crate::dom::DomString>()
+                    + std::mem::size_of::<bool>(),
+            )
+            .and_then(|bytes| bytes.checked_add(128 + 4 * units))
+            .ok_or_else(|| ScriptError::resource("DOM read scratch overflow"))?;
+        self.charge(scratch)?;
+        self.work(
+            count
+                .saturating_add(2 * source_bytes)
+                .saturating_add(2 * units),
+        )?;
+        doc.text_content_units_bounded(id, MAX_STRING, &mut self.steps)
+            .map_err(processing_instruction::dom_data_error)
+    }
+
+    fn dom_reserve_node_growth(&mut self, doc: &mut Document, count: usize) -> Result<()> {
+        let required = doc
+            .nodes
+            .len()
+            .checked_add(count)
+            .filter(|required| *required <= MAX_NODES)
+            .ok_or_else(|| ScriptError::resource("DOM node limit exceeded"))?;
+        if count > doc.nodes.capacity().saturating_sub(doc.nodes.len()) {
+            self.work(1 + 2 * doc.nodes.len())?;
+            self.charge(
+                required
+                    .checked_mul(std::mem::size_of::<crate::dom::Node>())
+                    .ok_or_else(|| ScriptError::resource("DOM node storage overflow"))?,
+            )?;
+            doc.nodes
+                .try_reserve_exact(count)
+                .map_err(|_| ScriptError::resource("DOM node allocation failed"))?;
+        }
+        Ok(())
+    }
+
+    fn dom_html(&mut self, id: NodeId, children: bool, doc: &Document) -> Result<Value> {
+        let mut plan = ScriptHtml::new(None);
+        if children {
+            serialize_children_at(self, doc, id, 0, &mut plan)?;
+        } else {
+            serialize_node(self, doc, id, 0, &mut plan)?;
+        }
+        plan.finish()?;
+        let (bytes, units) = (plan.bytes, plan.units);
+        self.charge(bytes + 4 * units + 64)?;
+        self.work(2 * bytes + 2 * units)?;
+        let mut output = String::new();
+        output
+            .try_reserve_exact(bytes)
+            .map_err(|_| ScriptError::resource("HTML serialization allocation failed"))?;
+        let mut sink = ScriptHtml::new(Some(&mut output));
+        if children {
+            serialize_children_at(self, doc, id, 0, &mut sink)?;
+        } else {
+            serialize_node(self, doc, id, 0, &mut sink)?;
+        }
+        sink.finish()?;
+        if sink.bytes != bytes || sink.units != units {
+            return Err(ScriptError::resource(
+                "HTML serialization changed during copy",
+            ));
+        }
+        let mut encoded = Vec::new();
+        encoded
+            .try_reserve_exact(units)
+            .map_err(|_| ScriptError::resource("HTML result allocation failed"))?;
+        encoded.extend(output.encode_utf16());
+        Ok(Value::String(encoded.into()))
+    }
+
     // append_child validates the entire host-inclusive subtree, walks the
     // destination's host-inclusive ancestors, and removes the old sibling
     // entry. Account for all that work before it changes either child list.
@@ -6270,10 +6456,11 @@ impl Runtime {
                 .saturating_add(details_name_bytes.saturating_mul(4)),
         )?;
         self.ensure_dom_capacity(doc, fragment.nodes.len().saturating_add(1))?;
+        self.dom_reserve_node_growth(doc, fragment.nodes.len().saturating_add(1))?;
         let id = doc.template_contents(id).unwrap_or(id);
         let staging = doc.create_document_fragment();
         for child in fragment.nodes[fragment.root].children.clone() {
-            import_node(doc, staging, &fragment, child, 0);
+            import_node(self, doc, staging, &fragment, child, 0)?;
         }
         self.charge_dom_clear(id, doc)?;
         self.charge_dom_append(id, staging, doc)?;
@@ -6357,8 +6544,8 @@ impl Runtime {
                         .map(|(k, v)| k.len() + v.len() + 96)
                         .sum::<usize>()
             }
-            NodeKind::Text(text) | NodeKind::Comment(text) => text.len(),
-            NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
+            NodeKind::Text(text) | NodeKind::Comment(text) => text.stored_bytes(),
+            NodeKind::ProcessingInstruction { target, data } => target.len() + data.stored_bytes(),
             NodeKind::Doctype(value) => {
                 value.name.len()
                     + value.public_id.as_ref().map_or(0, String::len)
@@ -6382,15 +6569,20 @@ impl Runtime {
         self.work(1 + bytes / 16)?;
         self.charge(bytes.saturating_mul(2))?;
         self.ensure_dom_capacity(doc, count)?;
+        self.dom_reserve_node_growth(doc, count)?;
         let kind = doc.nodes[source].kind.clone();
         let id = match kind {
             NodeKind::Document => unreachable!(),
             NodeKind::DocumentFragment { .. } => doc.create_document_fragment(),
-            NodeKind::Text(text) => doc.create_text_node(&text),
-            NodeKind::Comment(text) => doc.create_comment(&text),
-            NodeKind::ProcessingInstruction { target, data } => {
-                doc.create_processing_instruction(&target, &data)
-            }
+            NodeKind::Text(text) => doc
+                .create_text_node_owned(text)
+                .map_err(processing_instruction::dom_data_error)?,
+            NodeKind::Comment(text) => doc
+                .create_comment_owned(text)
+                .map_err(processing_instruction::dom_data_error)?,
+            NodeKind::ProcessingInstruction { target, data } => doc
+                .create_processing_instruction_owned(target, data)
+                .map_err(processing_instruction::dom_data_error)?,
             NodeKind::Doctype(value) => doc.create_doctype(value),
             NodeKind::Element(element) => {
                 let id = doc.create_element_ns(element.namespace, &element.tag);
@@ -9529,23 +9721,56 @@ fn html_document_child(doc: &Document, tag: &str) -> Option<NodeId> {
             && (doc.tag(*id) == Some(tag) || tag == "body" && doc.tag(*id) == Some("frameset"))
     })
 }
-fn import_node(doc: &mut Document, parent: NodeId, source: &Document, node: NodeId, depth: usize) {
-    if depth >= 96 || doc.nodes.len() >= MAX_NODES {
-        return;
+fn import_node(
+    runtime: &mut Runtime,
+    doc: &mut Document,
+    parent: NodeId,
+    source: &Document,
+    node: NodeId,
+    depth: usize,
+) -> Result<()> {
+    runtime.tick()?;
+    if depth >= 96 {
+        return Ok(());
     }
-    let id = match &source.nodes[node].kind {
-        NodeKind::Document => return,
+    let original = source
+        .nodes
+        .get(node)
+        .ok_or_else(|| ScriptError::type_error("invalid DOM import source"))?;
+    let payload = match &original.kind {
+        NodeKind::Text(text) | NodeKind::Comment(text) => text.stored_bytes(),
+        NodeKind::ProcessingInstruction { target, data } => target.len() + data.stored_bytes(),
+        _ => 0,
+    };
+    runtime.work(payload)?;
+    runtime.charge(payload)?;
+    match &original.kind {
+        NodeKind::Document => return Ok(()),
         NodeKind::DocumentFragment { .. } => {
-            for child in &source.nodes[node].children {
-                import_node(doc, parent, source, *child, depth + 1);
+            for child in &original.children {
+                import_node(runtime, doc, parent, source, *child, depth + 1)?;
             }
-            return;
+            return Ok(());
         }
-        NodeKind::Text(text) => doc.create_text_node(text),
-        NodeKind::Comment(text) => doc.create_comment(text),
-        NodeKind::ProcessingInstruction { target, data } => {
-            doc.create_processing_instruction(target, data)
-        }
+        _ => {}
+    }
+    // The caller reserves the complete fragment before creating its staging
+    // root. Keep the actual typed growth check for any other reached caller.
+    runtime.dom_reserve_node_growth(
+        doc,
+        1 + usize::from(source.template_contents(node).is_some()),
+    )?;
+    let id = match &original.kind {
+        NodeKind::Document | NodeKind::DocumentFragment { .. } => unreachable!(),
+        NodeKind::Text(text) => doc
+            .create_text_node_owned(text.clone())
+            .map_err(processing_instruction::dom_data_error)?,
+        NodeKind::Comment(text) => doc
+            .create_comment_owned(text.clone())
+            .map_err(processing_instruction::dom_data_error)?,
+        NodeKind::ProcessingInstruction { target, data } => doc
+            .create_processing_instruction_owned(target.clone(), data.clone())
+            .map_err(processing_instruction::dom_data_error)?,
         NodeKind::Doctype(doctype) => doc.create_doctype(doctype.clone()),
         NodeKind::Element(element) => {
             let id = doc.create_element_ns(element.namespace, &element.tag);
@@ -9560,48 +9785,167 @@ fn import_node(doc: &mut Document, parent: NodeId, source: &Document, node: Node
         }
     };
     if id == doc.root {
-        return;
+        return Err(ScriptError::resource("DOM import storage limit exceeded"));
     }
     doc.append_child(parent, id);
-    for child in &source.nodes[node].children {
-        import_node(doc, id, source, *child, depth + 1);
+    for child in &original.children {
+        import_node(runtime, doc, id, source, *child, depth + 1)?;
     }
     if let Some(source_contents) = source.template_contents(node)
         && let Some(contents) = doc.template_contents(id)
     {
         for child in &source.nodes[source_contents].children {
-            import_node(doc, contents, source, *child, depth + 1);
+            import_node(runtime, doc, contents, source, *child, depth + 1)?;
         }
     }
+    Ok(())
 }
-fn escape_html(text: &str, attribute: bool) -> String {
-    let mut result = text
-        .replace('&', "&amp;")
-        .replace('<', "&lt;")
-        .replace('>', "&gt;");
-    if attribute {
-        result = result.replace('"', "&quot;");
+
+// A strict streaming scalar sink for this existing String-valued serializer.
+// Pending high units cross adjacent Text segments; actual markup separates them.
+// Planning and emitting use the identical traversal without author callbacks.
+struct ScriptHtml<'a> {
+    output: Option<&'a mut String>,
+    high: Option<u16>,
+    bytes: usize,
+    units: usize,
+}
+impl<'a> ScriptHtml<'a> {
+    fn new(output: Option<&'a mut String>) -> Self {
+        Self {
+            output,
+            high: None,
+            bytes: 0,
+            units: 0,
+        }
     }
-    result
+    fn unit(&mut self, unit: u16) -> Result<()> {
+        self.units = self
+            .units
+            .checked_add(1)
+            .filter(|length| *length <= MAX_STRING)
+            .ok_or_else(|| ScriptError::resource("HTML serialization string limit exceeded"))?;
+        let scalar = if let Some(high) = self.high.take() {
+            if !(0xdc00..=0xdfff).contains(&unit) {
+                return Err(ScriptError::unsupported(
+                    "non-scalar JavaScript HTML serialization is not implemented",
+                ));
+            }
+            char::from_u32(0x10000 + ((u32::from(high) - 0xd800) << 10) + u32::from(unit) - 0xdc00)
+                .expect("validated surrogate pair")
+        } else if (0xd800..=0xdbff).contains(&unit) {
+            self.high = Some(unit);
+            return Ok(());
+        } else {
+            char::from_u32(u32::from(unit)).ok_or_else(|| {
+                ScriptError::unsupported(
+                    "non-scalar JavaScript HTML serialization is not implemented",
+                )
+            })?
+        };
+        self.bytes = self
+            .bytes
+            .checked_add(scalar.len_utf8())
+            .filter(|length| *length <= MAX_STRING)
+            .ok_or_else(|| ScriptError::resource("HTML serialization byte limit exceeded"))?;
+        if let Some(output) = &mut self.output {
+            output.push(scalar);
+        }
+        Ok(())
+    }
+    fn text(&mut self, runtime: &mut Runtime, text: &str) -> Result<()> {
+        runtime.work(1 + 2 * text.len())?;
+        for unit in text.encode_utf16() {
+            self.unit(unit)?;
+        }
+        Ok(())
+    }
+    fn escaped<I: Iterator<Item = u16>>(
+        &mut self,
+        runtime: &mut Runtime,
+        units: I,
+        attribute: bool,
+    ) -> Result<()> {
+        for unit in units {
+            runtime.tick()?;
+            match unit {
+                38 => self.text(runtime, "&amp;")?,
+                60 => self.text(runtime, "&lt;")?,
+                62 => self.text(runtime, "&gt;")?,
+                34 if attribute => self.text(runtime, "&quot;")?,
+                _ => self.unit(unit)?,
+            }
+        }
+        Ok(())
+    }
+    fn finish(&self) -> Result<()> {
+        if self.high.is_some() {
+            return Err(ScriptError::unsupported(
+                "non-scalar JavaScript HTML serialization is not implemented",
+            ));
+        }
+        Ok(())
+    }
 }
-fn serialize_node(doc: &Document, id: NodeId, depth: usize) -> String {
+
+fn serialize_node(
+    runtime: &mut Runtime,
+    doc: &Document,
+    id: NodeId,
+    depth: usize,
+    out: &mut ScriptHtml<'_>,
+) -> Result<()> {
+    runtime.tick()?;
     if depth >= 96 {
-        return String::new();
+        return Ok(());
     }
-    match &doc.nodes[id].kind {
-        NodeKind::Text(text) => escape_html(text, false),
-        NodeKind::Comment(text) => format!("<!--{text}-->"),
-        NodeKind::ProcessingInstruction { .. } => doc.outer_html(id),
-        NodeKind::Doctype(_) => doc.outer_html(id),
+    let node = doc
+        .nodes
+        .get(id)
+        .ok_or_else(|| ScriptError::type_error("invalid HTML serialization node"))?;
+    match &node.kind {
+        NodeKind::Text(text) => {
+            runtime.work(text.stored_bytes())?;
+            out.escaped(runtime, text.units(), false)?;
+        }
+        NodeKind::Comment(text) => {
+            out.text(runtime, "<!--")?;
+            runtime.work(1 + 2 * text.stored_bytes())?;
+            for unit in text.units() {
+                out.unit(unit)?;
+            }
+            out.text(runtime, "-->")?;
+        }
+        NodeKind::ProcessingInstruction { target, data } => {
+            out.text(runtime, "<?")?;
+            out.text(runtime, target)?;
+            out.text(runtime, " ")?;
+            runtime.work(1 + 2 * data.stored_bytes())?;
+            for unit in data.units() {
+                out.unit(unit)?;
+            }
+            out.text(runtime, "?>")?;
+        }
+        NodeKind::Doctype(doctype) => {
+            out.text(runtime, "<!DOCTYPE ")?;
+            out.text(runtime, &doctype.name)?;
+            out.text(runtime, ">")?;
+        }
         NodeKind::Document | NodeKind::DocumentFragment { .. } => {
-            serialize_children_at(doc, id, depth)
+            serialize_children_at(runtime, doc, id, depth, out)?;
         }
         NodeKind::Element(element) => {
-            let mut result = format!("<{}", element.tag);
+            out.text(runtime, "<")?;
+            out.text(runtime, &element.tag)?;
             for (key, value) in &element.attrs {
-                result.push_str(&format!(" {key}=\"{}\"", escape_html(value, true)));
+                out.text(runtime, " ")?;
+                out.text(runtime, key)?;
+                out.text(runtime, "=\"")?;
+                runtime.work(value.len())?;
+                out.escaped(runtime, value.encode_utf16(), true)?;
+                out.text(runtime, "\"")?;
             }
-            result.push('>');
+            out.text(runtime, ">")?;
             if element.namespace != Namespace::Html
                 || ![
                     "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
@@ -9609,27 +9953,31 @@ fn serialize_node(doc: &Document, id: NodeId, depth: usize) -> String {
                 ]
                 .contains(&element.tag.as_str())
             {
-                result.push_str(&serialize_children_at(doc, id, depth));
-                result.push_str(&format!("</{}>", element.tag));
+                serialize_children_at(runtime, doc, id, depth, out)?;
+                out.text(runtime, "</")?;
+                out.text(runtime, &element.tag)?;
+                out.text(runtime, ">")?;
             }
-            result
         }
     }
+    Ok(())
 }
-fn serialize_children_at(doc: &Document, id: NodeId, depth: usize) -> String {
+fn serialize_children_at(
+    runtime: &mut Runtime,
+    doc: &Document,
+    id: NodeId,
+    depth: usize,
+    out: &mut ScriptHtml<'_>,
+) -> Result<()> {
     let id = doc.template_contents(id).unwrap_or(id);
-    let mut result = String::new();
-    for child in &doc.nodes[id].children {
-        let piece = serialize_node(doc, *child, depth + 1);
-        if result.len().saturating_add(piece.len()) > MAX_STRING {
-            break;
-        }
-        result.push_str(&piece);
+    let node = doc
+        .nodes
+        .get(id)
+        .ok_or_else(|| ScriptError::type_error("invalid HTML serialization node"))?;
+    for child in &node.children {
+        serialize_node(runtime, doc, *child, depth + 1, out)?;
     }
-    result
-}
-fn serialize_children(doc: &Document, id: NodeId) -> String {
-    serialize_children_at(doc, id, 0)
+    Ok(())
 }
 
 #[cfg(test)]
@@ -9637,6 +9985,224 @@ mod tests {
     use super::*;
     fn run(source: &str) -> Result<Value> {
         Runtime::new().execute(source, &mut Document::parse("<body></body>"))
+    }
+
+    fn exact_dom_data(units: &[u16]) -> crate::dom::DomString {
+        crate::dom::DomString::from_units_owned(units.to_vec()).unwrap()
+    }
+
+    #[test]
+    fn exact_dom_getters_preserve_units_across_nodes_and_normalize_only_line_endings() {
+        let mut doc = Document::parse("<title></title><div id=x></div><textarea></textarea>");
+        let title = doc.query_selector("title").unwrap();
+        let parent = doc.query_selector("#x").unwrap();
+        let textarea = doc.query_selector("textarea").unwrap();
+        for (owner, slices) in [
+            (title, vec![vec![0xd83e], vec![0xdd80, 0xd800]]),
+            (parent, vec![vec![0x41, 0xd83e], vec![0xdd80, 0xdc00]]),
+            (textarea, vec![vec![0xd800, 13], vec![10, 0x42, 13, 0xdc00]]),
+        ] {
+            for units in slices {
+                let text = doc.create_text_node_owned(exact_dom_data(&units)).unwrap();
+                doc.append_child(owner, text);
+            }
+        }
+        let mut runtime = Runtime::new();
+        for (receiver, key, expected) in [
+            (Value::Document, "title", vec![0xd83e, 0xdd80, 0xd800]),
+            (
+                Value::Node(parent),
+                "textContent",
+                vec![0x41, 0xd83e, 0xdd80, 0xdc00],
+            ),
+            (
+                Value::Node(parent),
+                "innerText",
+                vec![0x41, 0xd83e, 0xdd80, 0xdc00],
+            ),
+            (
+                Value::Node(textarea),
+                "value",
+                vec![0xd800, 10, 0x42, 10, 0xdc00],
+            ),
+        ] {
+            assert_eq!(
+                runtime.get(receiver, key, &mut doc).unwrap(),
+                Value::String(expected.into())
+            );
+        }
+        let original = doc
+            .text_content_units_bounded(textarea, 32, &mut 128)
+            .unwrap();
+        assert_eq!(original, [0xd800, 13, 10, 0x42, 13, 0xdc00]);
+    }
+
+    #[test]
+    fn exact_dom_simple_reads_ignore_unrelated_arena_payloads() {
+        let mut doc = Document::parse("<p></p><aside></aside>");
+        let parent = doc.query_selector("p").unwrap();
+        let empty = doc.query_selector("aside").unwrap();
+        let text = doc
+            .create_text_node_owned(exact_dom_data(&[0xd800, 0]))
+            .unwrap();
+        doc.append_child(parent, text);
+        for _ in 0..1000 {
+            doc.create_comment("unrelated");
+        }
+        let mut runtime = Runtime::new();
+        for id in [text, parent] {
+            let before = runtime.allocated;
+            assert_eq!(runtime.dom_text_units(id, &doc).unwrap(), [0xd800, 0]);
+            assert_eq!(runtime.allocated - before, 64 + 4 * 2);
+        }
+        let before = runtime.allocated;
+        assert!(runtime.dom_text_units(empty, &doc).unwrap().is_empty());
+        assert_eq!(runtime.allocated - before, 64);
+    }
+
+    #[test]
+    fn exact_dom_clone_and_import_preserve_nonscalar_payloads_and_pi_target() {
+        let mut doc = Document::parse("<div></div>");
+        let parent = doc.query_selector("div").unwrap();
+        let text = doc
+            .create_text_node_owned(exact_dom_data(&[0xd800, 0x41]))
+            .unwrap();
+        let comment = doc.create_comment_owned(exact_dom_data(&[0xdc00])).unwrap();
+        let pi = doc
+            .create_processing_instruction_owned(
+                "probe".into(),
+                exact_dom_data(&[0x3f, 0x3e, 0xdfff]),
+            )
+            .unwrap();
+        for id in [text, comment, pi] {
+            doc.append_child(parent, id);
+        }
+        let mut runtime = Runtime::new();
+        let copy = runtime.clone_dom_node(parent, true, &mut doc).unwrap();
+        assert_ne!(copy, parent);
+        let copied = doc.nodes[copy].children.clone();
+        assert_eq!(copied.len(), 3);
+        let mut destination = Document::parse("<main></main>");
+        let target = destination.query_selector("main").unwrap();
+        for source in [text, comment, pi] {
+            import_node(&mut runtime, &mut destination, target, &doc, source, 0).unwrap();
+        }
+        for (tree, ids) in [
+            (&doc, copied.as_slice()),
+            (&destination, destination.nodes[target].children.as_slice()),
+        ] {
+            for (id, expected) in ids.iter().zip([
+                &[0xd800, 0x41][..],
+                &[0xdc00][..],
+                &[0x3f, 0x3e, 0xdfff][..],
+            ]) {
+                let data = match &tree.nodes[*id].kind {
+                    NodeKind::Text(data) | NodeKind::Comment(data) => data,
+                    NodeKind::ProcessingInstruction { target, data } => {
+                        assert_eq!(target, "probe");
+                        data
+                    }
+                    _ => panic!("clone/import changed node kind"),
+                };
+                assert_eq!(data.units().collect::<Vec<_>>(), expected);
+            }
+        }
+        doc.replace_character_data(text, "changed".into()).unwrap();
+        assert!(
+            matches!(&doc.nodes[copied[0]].kind, NodeKind::Text(data) if data.units().collect::<Vec<_>>() == [0xd800, 0x41])
+        );
+    }
+
+    #[test]
+    fn exact_dom_clone_prepays_reached_node_vector_growth_before_publication() {
+        let mut before = Document::parse("");
+        let text = before
+            .create_text_node_owned(exact_dom_data(&[0xd800]))
+            .unwrap();
+        before.nodes.shrink_to_fit();
+        let mut admitted = before.clone();
+        admitted.nodes.shrink_to_fit();
+        let mut runtime = Runtime::new();
+        let initial = runtime.allocated;
+        runtime.clone_dom_shallow(text, &mut admitted).unwrap();
+        let debit = runtime.allocated - initial;
+        assert!(debit >= (before.nodes.len() + 1) * std::mem::size_of::<crate::dom::Node>());
+        let mut refused = before.clone();
+        refused.nodes.shrink_to_fit();
+        let mut cut = Runtime::new();
+        cut.allocated = MAX_HEAP - debit + 1;
+        assert!(
+            cut.clone_dom_shallow(text, &mut refused)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(refused.nodes.len(), before.nodes.len());
+        assert_eq!(refused.retained_bytes(), before.retained_bytes());
+        assert!(
+            matches!(&refused.nodes[text].kind, NodeKind::Text(data) if data.raw_units() == Some(&[0xd800][..]))
+        );
+    }
+
+    #[test]
+    fn strict_script_html_preserves_scalar_output_and_pairs_adjacent_text() {
+        let mut doc = Document::parse("<div id=x></div><template><b>X</b></template>");
+        let parent = doc.query_selector("#x").unwrap();
+        let template = doc.query_selector("template").unwrap();
+        let first = doc
+            .create_text_node_owned(exact_dom_data(&[0xd83e]))
+            .unwrap();
+        let second = doc
+            .create_text_node_owned(exact_dom_data(&[0xdd80, 0x3c, 0x26, 0x3e]))
+            .unwrap();
+        let comment = doc.create_comment("ok");
+        let pi = doc.create_processing_instruction("probe", "?");
+        for id in [first, second, comment, pi] {
+            doc.append_child(parent, id);
+        }
+        let mut runtime = Runtime::new();
+        assert_eq!(
+            runtime.dom_html(parent, false, &doc).unwrap(),
+            Value::String("<div id=\"x\">🦀&lt;&amp;&gt;<!--ok--><?probe ??></div>".into())
+        );
+        assert_eq!(
+            runtime.dom_html(template, true, &doc).unwrap(),
+            Value::String("<b>X</b>".into())
+        );
+        assert!(
+            matches!(&doc.nodes[first].kind, NodeKind::Text(data) if data.raw_units() == Some(&[0xd83e][..]))
+        );
+    }
+
+    #[test]
+    fn strict_script_html_refuses_unpaired_or_oversized_output_without_partial_success() {
+        let mut doc = Document::parse("<div id=x></div>");
+        let parent = doc.query_selector("#x").unwrap();
+        let text = doc
+            .create_text_node_owned(exact_dom_data(&[0xd800]))
+            .unwrap();
+        doc.append_child(parent, text);
+        let mut runtime = Runtime::new();
+        let error = runtime.execute("var caught=false;try{document.getElementById('x').innerHTML;}catch(e){caught=true;}", &mut doc).unwrap_err();
+        assert!(error.is_unsupported());
+        assert_eq!(runtime.lookup(1, "caught").unwrap().1, Value::Bool(false));
+        assert_eq!(runtime.calls, 0);
+        assert_eq!(runtime.stack_units, 0);
+        assert!(
+            matches!(&doc.nodes[text].kind, NodeKind::Text(data) if data.raw_units() == Some(&[0xd800][..]))
+        );
+        // The previous child-piece serializer returned just "kept" here. A
+        // checked serializer reports resource exhaustion, never partial HTML.
+        doc.replace_character_data(text, "kept".into()).unwrap();
+        let large = doc.create_text_node(&"x".repeat(MAX_STRING + 1));
+        doc.append_child(parent, large);
+        let mut runtime = Runtime::new();
+        assert!(
+            runtime
+                .dom_html(parent, true, &doc)
+                .unwrap_err()
+                .is_resource_limit()
+        );
+        assert_eq!(doc.nodes[parent].children, [text, large]);
     }
 
     fn identifier_syntax(source: &str, strict: bool) {

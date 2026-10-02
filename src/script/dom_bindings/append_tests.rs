@@ -554,7 +554,7 @@ fn all_text_nodes_materialize_before_any_argument_moves() {
     doc.nodes.resize_with(crate::dom::MAX_NODES - 1, || Node {
         parent: None,
         children: Vec::new(),
-        kind: NodeKind::Comment(String::new()),
+        kind: NodeKind::Comment(String::new().into()),
     });
     let mut runtime = Runtime::new();
     let error = runtime

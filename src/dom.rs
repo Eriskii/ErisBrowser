@@ -1,6 +1,11 @@
 //! A bounded, independent HTML tree builder and CSS selector matcher.
 use std::collections::{BTreeMap, BTreeSet};
 
+mod string;
+#[cfg(test)]
+mod string_tests;
+pub use string::{DomScalars, DomString, DomUnits};
+
 pub type NodeId = usize;
 pub const MAX_NODES: usize = 100_000;
 pub const MAX_DEPTH: usize = 256;
@@ -90,17 +95,73 @@ pub enum NodeKind {
     Document,
     DocumentFragment { host: Option<NodeId> },
     Element(Element),
-    Text(String),
-    Comment(String),
+    Text(DomString),
+    Comment(DomString),
     Doctype(Doctype),
-    ProcessingInstruction { target: String, data: String },
+    ProcessingInstruction { target: String, data: DomString },
 }
 /// Checked script-facing character-data storage refuses instead of truncating.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum DomDataError {
+pub enum DomDataError {
     InvalidNode,
+    InvalidData,
     LimitExceeded,
     AllocationFailed,
+}
+
+/// Allocation-free common text-content shapes shared with script admission.
+pub(crate) enum TextContentShape<'a> {
+    Empty,
+    Single(&'a DomString),
+    Tree,
+}
+
+enum TextSegments<'a> {
+    Empty,
+    One(&'a DomString),
+    Many(Vec<&'a DomString>),
+}
+impl TextSegments<'_> {
+    fn as_slice(&self) -> &[&DomString] {
+        match self {
+            Self::Empty => &[],
+            Self::One(text) => std::slice::from_ref(text),
+            Self::Many(texts) => texts,
+        }
+    }
+    fn scalar_output(
+        &self,
+        maximum: usize,
+        replace: bool,
+        truncate: bool,
+    ) -> Result<String, DomDataError> {
+        if let Self::Empty = self {
+            return Ok(String::new());
+        }
+        if let Self::One(text) = self
+            && let Some(text) = text.scalar()
+        {
+            let length = if text.len() <= maximum {
+                text.len()
+            } else if truncate {
+                floor_boundary(text, maximum)
+            } else {
+                return Err(DomDataError::LimitExceeded);
+            };
+            let mut output = String::new();
+            output
+                .try_reserve_exact(length)
+                .map_err(|_| DomDataError::AllocationFailed)?;
+            output.push_str(&text[..length]);
+            return Ok(output);
+        }
+        string::scalar_from_units(
+            self.as_slice().iter().flat_map(|text| text.units()),
+            maximum,
+            replace,
+            truncate,
+        )
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -209,13 +270,15 @@ impl Document {
                     }
                     el.retained_bytes()
                 }
-                NodeKind::Text(s) | NodeKind::Comment(s) => s.len(),
+                NodeKind::Text(s) | NodeKind::Comment(s) => s.stored_bytes(),
                 NodeKind::Doctype(d) => {
                     d.name.len()
                         + d.public_id.as_ref().map_or(0, String::len)
                         + d.system_id.as_ref().map_or(0, String::len)
                 }
-                NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
+                NodeKind::ProcessingInstruction { target, data } => {
+                    target.len() + data.stored_bytes()
+                }
             };
             bytes = bytes.checked_add(own).ok_or("snapshot byte overflow")?;
             if bytes > MAX_DOM_BYTES {
@@ -644,40 +707,195 @@ impl Document {
             _ => None,
         }
     }
-    pub fn text_content(&self, id: NodeId) -> String {
-        let mut result = String::new();
-        let mut pending = vec![id];
-        let mut visited = BTreeSet::new();
-        while let Some(n) = pending.pop() {
-            if !visited.insert(n) || visited.len() > MAX_NODES {
-                continue;
-            }
-            let Some(node) = self.nodes.get(n) else {
-                continue;
-            };
-            match &node.kind {
-                NodeKind::ProcessingInstruction { data, .. } if n == id => {
-                    let left = MAX_TEXT.saturating_sub(result.len());
-                    result.push_str(&data[..floor_boundary(data, left.min(data.len()))]);
+    pub(crate) fn text_content_shape(
+        &self,
+        id: NodeId,
+    ) -> Result<TextContentShape<'_>, DomDataError> {
+        let node = self.nodes.get(id).ok_or(DomDataError::InvalidNode)?;
+        if self.nodes.len() > MAX_NODES {
+            return Err(DomDataError::LimitExceeded);
+        }
+        match &node.kind {
+            NodeKind::Text(text)
+            | NodeKind::Comment(text)
+            | NodeKind::ProcessingInstruction { data: text, .. } => {
+                if !node.children.is_empty() {
+                    return Err(DomDataError::InvalidData);
                 }
-                NodeKind::Text(s) | NodeKind::Comment(s)
-                    if n == id || matches!(node.kind, NodeKind::Text(_)) =>
+                Ok(TextContentShape::Single(text))
+            }
+            NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_) => {
+                if node.children.is_empty() {
+                    return Ok(TextContentShape::Empty);
+                }
+                if let [child] = node.children.as_slice() {
+                    if *child == id {
+                        return Err(DomDataError::InvalidData);
+                    }
+                    let child = self.nodes.get(*child).ok_or(DomDataError::InvalidNode)?;
+                    if let NodeKind::Text(text) = &child.kind {
+                        if !child.children.is_empty() {
+                            return Err(DomDataError::InvalidData);
+                        }
+                        return Ok(TextContentShape::Single(text));
+                    }
+                }
+                Ok(TextContentShape::Tree)
+            }
+            NodeKind::Doctype(_) => {
+                if !node.children.is_empty() {
+                    return Err(DomDataError::InvalidData);
+                }
+                Ok(TextContentShape::Empty)
+            }
+        }
+    }
+
+    /// Bounded replacement projection for presentation. Script DOMString reads
+    /// must use the exact-unit or strict-scalar helper below instead.
+    pub fn text_content(&self, id: NodeId) -> String {
+        let mut visits = MAX_NODES * 2;
+        self.text_segments(id, &mut visits)
+            .and_then(|segments| segments.scalar_output(MAX_TEXT, true, true))
+            .unwrap_or_default()
+    }
+
+    // Empty/single shapes need no arena scratch. The tree fallback reserves two
+    // NodeId/reference buffers and a visited byte per arena node. Script callers
+    // must admit that typed scratch before entry. No callbacks occur inside.
+    fn text_segments(
+        &self,
+        id: NodeId,
+        visits_left: &mut usize,
+    ) -> Result<TextSegments<'_>, DomDataError> {
+        if id >= self.nodes.len() {
+            return Err(DomDataError::InvalidNode);
+        }
+        if self.nodes.len() > MAX_NODES || *visits_left == 0 {
+            return Err(DomDataError::LimitExceeded);
+        }
+        let shape = self.text_content_shape(id)?;
+        let needed = match &shape {
+            TextContentShape::Single(_)
+                if matches!(
+                    self.nodes[id].kind,
+                    NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_)
+                ) =>
+            {
+                3
+            }
+            _ => 1,
+        };
+        match shape {
+            TextContentShape::Empty | TextContentShape::Single(_) => {
+                if needed > *visits_left {
+                    *visits_left = 0;
+                    return Err(DomDataError::LimitExceeded);
+                }
+                *visits_left -= needed;
+                return Ok(match shape {
+                    TextContentShape::Empty => TextSegments::Empty,
+                    TextContentShape::Single(text) => TextSegments::One(text),
+                    TextContentShape::Tree => unreachable!(),
+                });
+            }
+            TextContentShape::Tree => {}
+        }
+        let mut pending = Vec::new();
+        let mut seen = Vec::new();
+        let mut segments = Vec::new();
+        pending
+            .try_reserve_exact(self.nodes.len())
+            .map_err(|_| DomDataError::AllocationFailed)?;
+        seen.try_reserve_exact(self.nodes.len())
+            .map_err(|_| DomDataError::AllocationFailed)?;
+        segments
+            .try_reserve_exact(self.nodes.len())
+            .map_err(|_| DomDataError::AllocationFailed)?;
+        seen.resize(self.nodes.len(), false);
+        pending.push(id);
+        while let Some(next) = pending.pop() {
+            if *visits_left == 0 {
+                return Err(DomDataError::LimitExceeded);
+            }
+            *visits_left -= 1;
+            let Some(node) = self.nodes.get(next) else {
+                return Err(DomDataError::InvalidNode);
+            };
+            if seen[next] {
+                return Err(DomDataError::InvalidData);
+            }
+            seen[next] = true;
+            match &node.kind {
+                NodeKind::ProcessingInstruction { data, .. } if next == id => segments.push(data),
+                NodeKind::Text(text) | NodeKind::Comment(text)
+                    if next == id || matches!(node.kind, NodeKind::Text(_)) =>
                 {
-                    let left = MAX_TEXT.saturating_sub(result.len());
-                    result.push_str(&s[..floor_boundary(s, left.min(s.len()))]);
+                    segments.push(text)
                 }
                 NodeKind::Document | NodeKind::DocumentFragment { .. } | NodeKind::Element(_) => {
-                    pending.extend(node.children.iter().rev().copied())
+                    if node.children.len() > *visits_left
+                        || node.children.len() > self.nodes.len().saturating_sub(pending.len())
+                    {
+                        return Err(DomDataError::LimitExceeded);
+                    }
+                    *visits_left -= node.children.len();
+                    pending.extend(node.children.iter().rev().copied());
                 }
                 _ => {}
             }
         }
-        result
+        Ok(TextSegments::Many(segments))
     }
-    /// Concatenate direct Text children, as defined by DOM child text content.
-    /// Reserve both traversal passes and all output bytes before allocating.
-    /// None indicates an invalid node or exhausted caller/per-string limits;
-    /// callers must not treat it as an empty stylesheet and continue copying.
+
+    /// Exact concatenation before scalar validation; pairs may cross Text nodes.
+    pub fn text_content_scalar_bounded(
+        &self,
+        id: NodeId,
+        maximum: usize,
+        visits_left: &mut usize,
+    ) -> Result<String, DomDataError> {
+        let segments = self.text_segments(id, visits_left)?;
+        segments.scalar_output(maximum, false, false)
+    }
+
+    /// Bounded presentation projection; refuse oversized output rather than
+    /// silently treating a partial rendering source as the complete source.
+    pub(crate) fn text_content_projection_bounded(
+        &self,
+        id: NodeId,
+        maximum: usize,
+        visits_left: &mut usize,
+    ) -> Result<String, DomDataError> {
+        let segments = self.text_segments(id, visits_left)?;
+        segments.scalar_output(maximum, true, false)
+    }
+
+    pub fn text_content_units_bounded(
+        &self,
+        id: NodeId,
+        maximum: usize,
+        visits_left: &mut usize,
+    ) -> Result<Vec<u16>, DomDataError> {
+        let segments = self.text_segments(id, visits_left)?;
+        let units = segments.as_slice().iter().flat_map(|text| text.units());
+        let mut length = 0usize;
+        for _ in units.clone() {
+            length = length
+                .checked_add(1)
+                .filter(|length| *length <= maximum)
+                .ok_or(DomDataError::LimitExceeded)?;
+        }
+        let mut output = Vec::new();
+        output
+            .try_reserve_exact(length)
+            .map_err(|_| DomDataError::AllocationFailed)?;
+        output.extend(units);
+        Ok(output)
+    }
+
+    /// Direct child text for CSS input: combine units before replacing isolated
+    /// surrogates. Both visits and projected UTF-8 bytes retain explicit bounds.
     pub fn child_text_content_bounded(
         &self,
         id: NodeId,
@@ -691,31 +909,17 @@ impl Document {
             return None;
         }
         *child_visits_left -= visits;
-        let mut size = 0usize;
-        for child in &node.children {
-            if let Some(Node {
-                kind: NodeKind::Text(text),
-                ..
-            }) = self.nodes.get(*child)
-            {
-                size = size.checked_add(text.len())?;
-                if size > (*bytes_left).min(MAX_TEXT) {
-                    return None;
-                }
-            }
-        }
-        *bytes_left -= size;
-        let mut output = String::new();
-        output.try_reserve_exact(size).ok()?;
-        for child in &node.children {
-            if let Some(Node {
-                kind: NodeKind::Text(text),
-                ..
-            }) = self.nodes.get(*child)
-            {
-                output.push_str(text);
-            }
-        }
+        let units = node
+            .children
+            .iter()
+            .filter_map(|child| match &self.nodes.get(*child)?.kind {
+                NodeKind::Text(text) => Some(text.units()),
+                _ => None,
+            })
+            .flatten();
+        let output =
+            string::scalar_from_units(units, (*bytes_left).min(MAX_TEXT), true, false).ok()?;
+        *bytes_left -= output.len();
         Some(output)
     }
     /// HTML style's exact type check also applies to SVG style (SVG 2 §6.2).
@@ -734,7 +938,7 @@ impl Document {
         let old_bytes = match &self.nodes[id].kind {
             NodeKind::Text(t)
             | NodeKind::Comment(t)
-            | NodeKind::ProcessingInstruction { data: t, .. } => t.len(),
+            | NodeKind::ProcessingInstruction { data: t, .. } => t.stored_bytes(),
             _ => 0,
         };
         let available = MAX_DOM_BYTES.saturating_sub(self.retained_bytes.saturating_sub(old_bytes));
@@ -743,8 +947,8 @@ impl Document {
         | NodeKind::Comment(t)
         | NodeKind::ProcessingInstruction { data: t, .. } = &mut self.nodes[id].kind
         {
-            self.retained_bytes = self.retained_bytes.saturating_sub(t.len()) + text.len();
-            *t = text.to_owned();
+            self.retained_bytes = self.retained_bytes.saturating_sub(t.stored_bytes()) + text.len();
+            *t = text.into();
             return;
         }
         self.clear_children(id);
@@ -856,6 +1060,41 @@ impl Document {
         });
         id
     }
+    /// Checked exact storage, moving the already admitted data buffer.
+    pub(crate) fn create_text_node_owned(
+        &mut self,
+        data: DomString,
+    ) -> Result<NodeId, DomDataError> {
+        self.create_character_data_owned(data, false)
+    }
+    pub(crate) fn create_comment_owned(&mut self, data: DomString) -> Result<NodeId, DomDataError> {
+        self.create_character_data_owned(data, true)
+    }
+    fn create_character_data_owned(
+        &mut self,
+        data: DomString,
+        comment: bool,
+    ) -> Result<NodeId, DomDataError> {
+        let bytes = data.stored_bytes();
+        if !self.admits_text_node(bytes) {
+            return Err(DomDataError::LimitExceeded);
+        }
+        self.nodes
+            .try_reserve_exact(1)
+            .map_err(|_| DomDataError::AllocationFailed)?;
+        let id = self.nodes.len();
+        self.nodes.push(Node {
+            parent: None,
+            children: Vec::new(),
+            kind: if comment {
+                NodeKind::Comment(data)
+            } else {
+                NodeKind::Text(data)
+            },
+        });
+        self.retained_bytes += bytes;
+        Ok(id)
+    }
     pub fn create_doctype(&mut self, mut doctype: Doctype) -> NodeId {
         if self.nodes.len() >= MAX_NODES {
             return self.root;
@@ -885,11 +1124,11 @@ impl Document {
     pub(crate) fn create_processing_instruction_owned(
         &mut self,
         target: String,
-        data: String,
+        data: DomString,
     ) -> Result<NodeId, DomDataError> {
         let bytes = target
             .len()
-            .checked_add(data.len())
+            .checked_add(data.stored_bytes())
             .ok_or(DomDataError::LimitExceeded)?;
         if !self.admits_text_node(bytes) {
             return Err(DomDataError::LimitExceeded);
@@ -912,20 +1151,20 @@ impl Document {
     pub(crate) fn replace_character_data(
         &mut self,
         id: NodeId,
-        data: String,
+        data: DomString,
     ) -> Result<(), DomDataError> {
         let old = match self.nodes.get(id).map(|node| &node.kind) {
             Some(NodeKind::Text(text) | NodeKind::Comment(text))
-            | Some(NodeKind::ProcessingInstruction { data: text, .. }) => text.len(),
+            | Some(NodeKind::ProcessingInstruction { data: text, .. }) => text.stored_bytes(),
             _ => return Err(DomDataError::InvalidNode),
         };
         let retained = self
             .retained_bytes
             .checked_sub(old)
-            .and_then(|bytes| bytes.checked_add(data.len()))
+            .and_then(|bytes| bytes.checked_add(data.stored_bytes()))
             .filter(|bytes| *bytes <= MAX_DOM_BYTES)
             .ok_or(DomDataError::LimitExceeded)?;
-        if data.len() > MAX_TEXT {
+        if data.stored_bytes() > MAX_TEXT {
             return Err(DomDataError::LimitExceeded);
         }
         let (NodeKind::Text(text)
@@ -1686,10 +1925,13 @@ impl Document {
     }
     /// Serialize the attached subtree without recursion, retaining at most 8 MiB.
     pub fn outer_html(&self, id: NodeId) -> String {
-        let mut out = String::new();
+        let mut out = SerializedText::default();
         let mut pending = vec![(id, false)];
         let mut visited = BTreeSet::new();
         while let Some((id, closing)) = pending.pop() {
+            if out.failed {
+                break;
+            }
             if out.len() >= MAX_TEXT {
                 break;
             }
@@ -1713,7 +1955,7 @@ impl Document {
                 }
                 NodeKind::Comment(text) => {
                     push_serialized(&mut out, "<!--");
-                    push_serialized(&mut out, text);
+                    out.push_units(text.units());
                     push_serialized(&mut out, "-->");
                 }
                 NodeKind::Doctype(doctype) => {
@@ -1725,7 +1967,7 @@ impl Document {
                     push_serialized(&mut out, "<?");
                     push_serialized(&mut out, target);
                     push_serialized(&mut out, " ");
-                    push_serialized(&mut out, data);
+                    out.push_units(data.units());
                     push_serialized(&mut out, "?>");
                 }
                 NodeKind::Text(text) => {
@@ -1748,9 +1990,9 @@ impl Document {
                                     )
                             })
                     {
-                        push_serialized(&mut out, text);
+                        out.push_units(text.units());
                     } else {
-                        escape_serialized(&mut out, text, false);
+                        escape_serialized_units(&mut out, text.units(), false);
                     }
                 }
                 NodeKind::Element(element) => {
@@ -1784,7 +2026,7 @@ impl Document {
                 }
             }
         }
-        out
+        out.finish()
     }
     fn push_text(&mut self, parent: NodeId, text: String) {
         let mut text = text;
@@ -1795,6 +2037,7 @@ impl Document {
         }
         if let Some(last) = self.nodes[parent].children.last().copied()
             && let NodeKind::Text(s) = &mut self.nodes[last].kind
+            && let Some(s) = s.scalar_mut()
         {
             self.retained_bytes += text.len();
             s.push_str(&text);
@@ -1806,30 +2049,95 @@ impl Document {
             self.nodes.push(Node {
                 parent: Some(parent),
                 children: vec![],
-                kind: NodeKind::Text(text),
+                kind: NodeKind::Text(text.into()),
             });
             self.nodes[parent].children.push(id);
         }
     }
 }
-fn push_serialized(out: &mut String, text: &str) {
-    let available = MAX_TEXT.saturating_sub(out.len());
-    out.push_str(&text[..floor_boundary(text, text.len().min(available))]);
+/// Bounded presentation output with one pending high unit. Keeping that state
+/// across pieces preserves a pair split across adjacent Text nodes; markup
+/// naturally ends a pending pair. No exact source payload is changed.
+#[derive(Default)]
+struct SerializedText {
+    output: String,
+    high: Option<u16>,
+    failed: bool,
 }
-fn escape_serialized(out: &mut String, text: &str, attribute: bool) {
-    for c in text.chars() {
+impl SerializedText {
+    fn len(&self) -> usize {
+        self.output.len()
+    }
+    fn emit(&mut self, value: char) -> bool {
+        if self.failed || value.len_utf8() > MAX_TEXT.saturating_sub(self.output.len()) {
+            self.failed = true;
+            return false;
+        }
+        if self.output.try_reserve(value.len_utf8()).is_err() {
+            self.failed = true;
+            return false;
+        }
+        self.output.push(value);
+        true
+    }
+    fn unit(&mut self, unit: u16) -> bool {
+        if let Some(high) = self.high.take() {
+            if (0xdc00..=0xdfff).contains(&unit) {
+                let value = 0x10000 + (((high as u32) - 0xd800) << 10) + (unit as u32 - 0xdc00);
+                return self.emit(char::from_u32(value).unwrap());
+            }
+            if !self.emit(char::REPLACEMENT_CHARACTER) {
+                return false;
+            }
+        }
+        match unit {
+            0xd800..=0xdbff => {
+                self.high = Some(unit);
+                true
+            }
+            0xdc00..=0xdfff => self.emit(char::REPLACEMENT_CHARACTER),
+            _ => self.emit(char::from_u32(unit as u32).unwrap()),
+        }
+    }
+    fn push_units(&mut self, units: impl Iterator<Item = u16>) {
+        for unit in units {
+            if !self.unit(unit) {
+                break;
+            }
+        }
+    }
+    fn finish(mut self) -> String {
+        if self.high.take().is_some() {
+            self.emit(char::REPLACEMENT_CHARACTER);
+        }
+        self.output
+    }
+}
+fn push_serialized(out: &mut SerializedText, text: &str) {
+    out.push_units(text.encode_utf16());
+}
+fn escape_serialized(out: &mut SerializedText, text: &str, attribute: bool) {
+    escape_serialized_units(out, text.encode_utf16(), attribute);
+}
+fn escape_serialized_units(
+    out: &mut SerializedText,
+    units: impl Iterator<Item = u16>,
+    attribute: bool,
+) {
+    for unit in units {
         if out.len() >= MAX_TEXT {
             break;
         }
-        match c {
-            '&' => push_serialized(out, "&amp;"),
-            '\u{a0}' => push_serialized(out, "&nbsp;"),
-            '<' => push_serialized(out, "&lt;"),
-            '>' => push_serialized(out, "&gt;"),
-            '"' if attribute => push_serialized(out, "&quot;"),
+        match unit {
+            38 => push_serialized(out, "&amp;"),
+            0xa0 => push_serialized(out, "&nbsp;"),
+            60 => push_serialized(out, "&lt;"),
+            62 => push_serialized(out, "&gt;"),
+            34 if attribute => push_serialized(out, "&quot;"),
             _ => {
-                let mut bytes = [0; 4];
-                push_serialized(out, c.encode_utf8(&mut bytes));
+                if !out.unit(unit) {
+                    break;
+                }
             }
         }
     }
@@ -2738,8 +3046,10 @@ impl TreeBuilder {
             let node = &self.doc.nodes[source];
             let own_bytes = match &node.kind {
                 NodeKind::Element(element) => element.retained_bytes(),
-                NodeKind::Text(value) | NodeKind::Comment(value) => value.len(),
-                NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
+                NodeKind::Text(value) | NodeKind::Comment(value) => value.stored_bytes(),
+                NodeKind::ProcessingInstruction { target, data } => {
+                    target.len() + data.stored_bytes()
+                }
                 NodeKind::DocumentFragment { .. } => 0,
                 _ => return,
             };
@@ -3632,6 +3942,7 @@ impl TreeBuilder {
                 .copied();
             if let Some(previous) = previous
                 && let NodeKind::Text(value) = &mut self.doc.nodes[previous].kind
+                && let Some(value) = value.scalar_mut()
             {
                 let available = MAX_DOM_BYTES.saturating_sub(self.doc.retained_bytes);
                 let text = &text[..floor_boundary(text, text.len().min(available))];
@@ -9772,7 +10083,7 @@ mod tests {
                 .nodes
                 .iter()
                 .find_map(|node| match &node.kind {
-                    NodeKind::Comment(data) => Some(data.as_str()),
+                    NodeKind::Comment(data) => data.scalar(),
                     _ => None,
                 })
                 .unwrap();
@@ -10039,14 +10350,16 @@ mod tests {
             .nodes
             .iter()
             .map(|n| match &n.kind {
-                NodeKind::Text(s) | NodeKind::Comment(s) => s.len(),
+                NodeKind::Text(s) | NodeKind::Comment(s) => s.stored_bytes(),
                 NodeKind::Element(e) => e.retained_bytes(),
                 NodeKind::Doctype(d) => {
                     d.name.len()
                         + d.public_id.as_ref().map_or(0, String::len)
                         + d.system_id.as_ref().map_or(0, String::len)
                 }
-                NodeKind::ProcessingInstruction { target, data } => target.len() + data.len(),
+                NodeKind::ProcessingInstruction { target, data } => {
+                    target.len() + data.stored_bytes()
+                }
                 NodeKind::Document | NodeKind::DocumentFragment { .. } => 0,
             })
             .sum();
@@ -10186,14 +10499,14 @@ mod tests {
         let target_ptr = target.as_ptr();
         let data_ptr = data.as_ptr();
         let pi = doc
-            .create_processing_instruction_owned(target, data)
+            .create_processing_instruction_owned(target, data.into())
             .unwrap();
         assert!(doc.nodes[pi].parent.is_none());
         let NodeKind::ProcessingInstruction { target, data } = &doc.nodes[pi].kind else {
             panic!("expected PI");
         };
         assert_eq!(target.as_ptr(), target_ptr);
-        assert_eq!(data.as_ptr(), data_ptr);
+        assert_eq!(data.scalar().unwrap().as_ptr(), data_ptr);
         assert_eq!(data, "a\0🦀?");
         let text = doc.create_text_node("old text");
         let comment = doc.create_comment("old comment");
@@ -10207,14 +10520,14 @@ mod tests {
             let replacement = "new\0🦀?>".to_owned();
             let ptr = replacement.as_ptr();
             let len = replacement.len();
-            doc.replace_character_data(id, replacement).unwrap();
+            doc.replace_character_data(id, replacement.into()).unwrap();
             let stored = match &doc.nodes[id].kind {
                 NodeKind::Text(data)
                 | NodeKind::Comment(data)
                 | NodeKind::ProcessingInstruction { data, .. } => data,
                 _ => panic!("expected CharacterData"),
             };
-            assert_eq!(stored.as_ptr(), ptr);
+            assert_eq!(stored.scalar().unwrap().as_ptr(), ptr);
             assert_eq!(stored, "new\0🦀?>");
             assert_eq!(doc.nodes[id].parent, Some(parent));
             assert!(doc.nodes[id].children.is_empty());
@@ -10244,7 +10557,7 @@ mod tests {
         let bytes = doc.retained_bytes;
         let capacity = doc.nodes.capacity();
         assert_eq!(
-            doc.create_processing_instruction_owned("x".into(), "a".repeat(MAX_TEXT)),
+            doc.create_processing_instruction_owned("x".into(), "a".repeat(MAX_TEXT).into()),
             Err(DomDataError::LimitExceeded)
         );
         assert_eq!(
@@ -10252,14 +10565,14 @@ mod tests {
             (count, bytes, capacity)
         );
         let pi = doc
-            .create_processing_instruction_owned("x".into(), "a".repeat(MAX_TEXT - 1))
+            .create_processing_instruction_owned("x".into(), "a".repeat(MAX_TEXT - 1).into())
             .unwrap();
         assert_ne!(pi, doc.root);
         assert_eq!(doc.retained_bytes, bytes + MAX_TEXT);
         assert_eq!(doc.text_content(pi).len(), MAX_TEXT - 1);
         let before = doc.retained_bytes;
         assert_eq!(
-            doc.replace_character_data(pi, "b".repeat(MAX_TEXT + 1)),
+            doc.replace_character_data(pi, "b".repeat(MAX_TEXT + 1).into()),
             Err(DomDataError::LimitExceeded)
         );
         assert_eq!(doc.retained_bytes, before);
@@ -10267,10 +10580,10 @@ mod tests {
         doc.nodes.resize_with(MAX_NODES, || Node {
             parent: None,
             children: Vec::new(),
-            kind: NodeKind::Text(String::new()),
+            kind: NodeKind::Text(DomString::default()),
         });
         assert_eq!(
-            doc.create_processing_instruction_owned("x".into(), String::new()),
+            doc.create_processing_instruction_owned("x".into(), DomString::default()),
             Err(DomDataError::LimitExceeded)
         );
         assert_eq!(doc.nodes.len(), MAX_NODES);
@@ -10302,11 +10615,12 @@ mod tests {
         assert_eq!(doc.text_content(pi), "new");
         let count = doc.nodes.len();
         assert_eq!(
-            doc.create_processing_instruction_owned("x".into(), String::new()),
+            doc.create_processing_instruction_owned("x".into(), DomString::default()),
             Err(DomDataError::LimitExceeded)
         );
         assert_eq!(doc.nodes.len(), count);
-        doc.replace_character_data(pi, String::new()).unwrap();
+        doc.replace_character_data(pi, DomString::default())
+            .unwrap();
         assert_eq!(doc.retained_bytes, MAX_DOM_BYTES - 3);
         let next = doc
             .create_processing_instruction_owned("x".into(), "é".into())

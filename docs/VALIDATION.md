@@ -4358,3 +4358,64 @@ retained. Independent source reviews cover production scan bounds, metadata,
 browser outcomes and policy extraction. Full DOM compatibility, exact arbitrary
 UTF-16 document storage, reaction hooks, production security and Chromium
 performance remain unachieved.
+
+
+### Exact DOM string storage
+
+The [storage foundation](dom-strings.md) adds canonical single-payload Scalar
+UTF-8 / exact UTF-16 Units storage for Text, Comment and PI data. ERWA tags those
+payloads and rejects unknown tags, noncanonical Units, truncated/oversized data
+and older versions. Detached payload accounting and snapshot graph checks remain;
+the existing parser-expanded 18 MiB scalar case still passes. EWB1 is unchanged.
+All nine jobs for the preceding `7416797` checkpoint
+[passed](evidence/character-data-ci.json).
+
+The final source passes **1,552 default tests on Rust 1.88** and **1,675
+Vulkan-feature tests on Rust 1.98**, with no failed or ignored tests. There are
+32 new groups. The initial all-target build and 55 unique focused tests passed
+on their first attempts; one header group ran twice, for 56 focused executions.
+Strict all-target Rust 1.98 native and Rust 1.88 presenter Clippy checks and final
+formatting pass. The [evidence](evidence/dom-strings.json) binds source manifests,
+release binary, raw logs, reviews, comparisons and a verified artifact archive.
+
+Tests cover canonical transitions and retained bytes, exact clones and snapshots,
+paired units across selected nodes, bounded CSS/SVG projections, hostile wire
+claims, exact script reads and textarea line-ending normalization. Independent
+canvas comparisons match literal replacement glyphs while retained units stay
+unchanged. The inline SVG pair test compares complete raster bytes with a literal
+scalar source. The inline script loader refuses unpaired source before execution;
+the native UTF-8 editor refuses nonscalar textarea data even before a pending
+edit acknowledgement. Exact JavaScript HTML serialization and unit-aware native
+editing remain unfinished.
+
+On the measured 64-bit Rust 1.88 target, String/DomString headers are 24/32 bytes,
+while NodeKind and Node remain 96/136 bytes. Empty/single-text reads avoid
+unrelated arena scratch; scalar glyph iteration keeps the direct UTF-8 path.
+Raw bootstrap remains **8,246 work units**, **1,777,574 charged bytes**, 673
+objects/capacity and native/legacy prototype counts 321/25. Numerical quotas,
+metadata installation and reset sites are unchanged.
+
+The release retains all **4,064 case modes and 364 controls** across five
+selected compatibility profiles and the existing PI/CharacterData suites.
+Source fingerprints, expectations and complete observations are unchanged.
+CharacterData remains 26/34 standards expectations: eight final-unpaired-data
+modes still reach their original Unsupported boundary. PI remains 38/40 because
+two host-prototype mutation modes are unimplemented. Those are remaining
+compatibility gaps; this checkpoint prepares exact runtime string production.
+
+The first full default run failed an existing CLI assertion because derived
+Debug exposed the new storage wrapper. Explicit Debug preserves the established
+scalar dump and shows nonscalar data as UTF16 numeric arrays; the original
+assertion passes unchanged. Rust 1.98 Clippy then requested the equivalent
+fixed-size slice API in two codec loops and one pixel witness; no wire bytes,
+expectations or quotas changed. Both corrections and the earlier successful
+full runs remain retained.
+
+A repeated default run failed the existing timezone helper's live-marker
+prerequisite. Its capture result was not logged, so the exact cause is unproven;
+review found the prerequisite shares the one-second startup/IO/exit deadline.
+Date sources, assertions and deadlines were unchanged. The isolated test and
+a complete final default rerun passed, as did the final native suite. All attempts
+and the bounded review are retained. No new GPU speed or Chromium comparison is
+assigned to this DOM change; full web compatibility and production security
+remain unachieved.

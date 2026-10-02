@@ -49,9 +49,13 @@ verifies 56/58 expectations with all 44 controls healthy.
 [Processing instructions](processing-instruction.md) add checked construction,
 the Document factory, a target accessor and CharacterData data/UTF-16 length.
 Five [CharacterData methods](character-data.md) add UTF-16 substring and checked
-append, insert, delete and replace operations. PI pseudo-attribute parsing and
-methods, remaining Node/Text operations, exact surrogate-preserving document
-strings and mutation notifications remain open work.
+append, insert, delete and replace operations. The [DOM string foundation](dom-strings.md)
+now supplies canonical Scalar/Units storage, tagged ERWA transport and exact
+host-supplied reads/clones. The next runtime migration must preserve units through
+constructors, setters and complete splices; the eight earlier standards-success
+modes remain unmet pending replay. Legacy container/attribute writes, unit-aware
+native editing, nonscalar source/HTML serialization, PI pseudo-attributes,
+remaining Node/Text operations and mutation notifications remain open work.
 
 [Fallible runtime initialization](runtime-initialization.md) now carries checked
 bootstrap failures through the browser, adapter and stress tool. Partial realms
@@ -148,8 +152,8 @@ ordered conversion and exact UTF-16 assembly. The
 private `new.target` bindings and alternate ECMAScript allocation targets.
 Next work includes alternate Web IDL targets, remaining native constructor
 semantics, Function source retention/toString and lossless UTF-16 source parsing,
-Window extensibility and interface coverage, complete DOMString storage and Web
-IDL interfaces, remaining Symbol and iterator consumers, and broader
+Window extensibility and interface coverage, exact DOMString runtime production
+and remaining Web IDL interfaces, remaining Symbol and iterator consumers, and broader
 ECMAScript dependencies. The
 [constructor-policy review](../tests/conformance/constructor-policy.md) now enables
 88 older modes and corrects Symbol constructor classification. These sit alongside

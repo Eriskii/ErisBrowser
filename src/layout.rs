@@ -405,8 +405,8 @@ fn grid_track_list(
 }
 /// Whitespace-only anonymous items do not generate grid/flex boxes. Eligibility
 /// scanning is source work too, and cannot be refunded when paint is discarded.
-fn has_inline_content(text: &str, source_work: &mut usize) -> bool {
-    for character in text.chars().take(*source_work) {
+fn has_inline_content(text: impl Iterator<Item = char>, source_work: &mut usize) -> bool {
+    for character in text.take(*source_work) {
         *source_work -= 1;
         if !character.is_whitespace() {
             return true;
@@ -2523,7 +2523,10 @@ impl Engine<'_> {
         }
         match &self.doc.nodes[id].kind {
             NodeKind::Text(text) => {
-                let text = text.chars().take(self.glyphs_left).collect::<String>();
+                let text = text
+                    .scalar_values()
+                    .take(self.glyphs_left)
+                    .collect::<String>();
                 self.tokenize(id, owner, &text, output);
             }
             NodeKind::Element(_) => {
@@ -2695,7 +2698,7 @@ impl Engine<'_> {
         }
         if let NodeKind::Text(text) = &self.doc.nodes[id].kind {
             let value: String = text
-                .chars()
+                .scalar_values()
                 .take(4096.min(self.intrinsic_work_left.get()))
                 .collect();
             self.intrinsic_work_left.set(
@@ -4099,7 +4102,9 @@ impl Engine<'_> {
                 continue;
             }
             let visible = match self.doc.nodes.get(id).map(|node| &node.kind) {
-                Some(NodeKind::Text(text)) => has_inline_content(text, &mut self.glyphs_left),
+                Some(NodeKind::Text(text)) => {
+                    has_inline_content(text.scalar_values(), &mut self.glyphs_left)
+                }
                 Some(NodeKind::Element(_)) => true,
                 _ => false,
             };
@@ -4145,7 +4150,7 @@ impl Engine<'_> {
             }
             if let NodeKind::Text(text) = &node_value.kind {
                 let bounded: String = text
-                    .chars()
+                    .scalar_values()
                     .take(4096.min(self.intrinsic_work_left.get()))
                     .collect();
                 self.intrinsic_work_left.set(
@@ -6543,11 +6548,11 @@ mod tests {
     fn anonymous_item_whitespace_scan_consumes_shared_nonrefundable_source_work() {
         let text = format!("{}x", " ".repeat(20_000));
         let mut source_work = 30_000;
-        assert!(has_inline_content(&text, &mut source_work));
+        assert!(has_inline_content(text.chars(), &mut source_work));
         assert_eq!(source_work, 9_999);
-        assert!(!has_inline_content(&text, &mut source_work));
+        assert!(!has_inline_content(text.chars(), &mut source_work));
         assert_eq!(source_work, 0);
-        assert!(!has_inline_content("x", &mut source_work));
+        assert!(!has_inline_content("x".chars(), &mut source_work));
     }
 
     #[test]

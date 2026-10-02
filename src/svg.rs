@@ -654,10 +654,10 @@ impl Painter {
         let Some(inverse) = matrix.inverse() else {
             return Ok(());
         };
-        let text = doc.text_content(id);
-        if text.len() > 4096 {
-            return Err("SVG text length limit exceeded".into());
-        }
+        let mut visits = crate::dom::MAX_NODES * 2;
+        let text = doc
+            .text_content_projection_bounded(id, 4096, &mut visits)
+            .map_err(|_| "SVG text length limit exceeded")?;
         let font = if style.bold {
             &mut self.bold_font
         } else {

@@ -12,9 +12,12 @@ mod xml_name;
 pub(super) const PREFIX: &str = "DOM.PI.";
 pub(super) const METADATA_OBJECTS: usize = 10;
 
-fn dom_data_error(error: DomDataError) -> ScriptError {
+pub(super) fn dom_data_error(error: DomDataError) -> ScriptError {
     match error {
         DomDataError::InvalidNode => ScriptError::type_error("invalid CharacterData receiver"),
+        DomDataError::InvalidData => {
+            ScriptError::unsupported("nonscalar DOM data is not supported by this script operation")
+        }
         DomDataError::LimitExceeded => ScriptError::resource("DOM character data limit exceeded"),
         DomDataError::AllocationFailed => {
             ScriptError::resource("DOM character data allocation failed")
@@ -193,7 +196,7 @@ impl Runtime {
             )?;
         }
         let id = doc
-            .create_processing_instruction_owned(target, data)
+            .create_processing_instruction_owned(target, data.into())
             .map_err(dom_data_error)?;
         self.dom_publish_override(id, prototype);
         Ok(Value::Node(id))
@@ -243,6 +246,23 @@ impl Runtime {
             .try_reserve_exact(length)
             .map_err(|_| ScriptError::resource("DOM getter string allocation failed"))?;
         units.extend(text.encode_utf16());
+        Ok(Value::String(units.into()))
+    }
+
+    fn pi_dom_data(&mut self, text: &crate::dom::DomString) -> Result<Value> {
+        // Preserve exact document units; scalar payloads retain the prior
+        // UTF8 scan/encoding/copy admission, without a projection temporary.
+        self.work(1 + 3 * text.stored_bytes())?;
+        let length = text.units().count();
+        if length > MAX_STRING {
+            return Err(ScriptError::resource("script string limit exceeded"));
+        }
+        self.charge(64 + 4 * length)?;
+        let mut units = Vec::new();
+        units
+            .try_reserve_exact(length)
+            .map_err(|_| ScriptError::resource("DOM getter string allocation failed"))?;
+        units.extend(text.units());
         Ok(Value::String(units.into()))
     }
 
@@ -299,10 +319,10 @@ impl Runtime {
             }
         };
         match method {
-            "data" => self.pi_dom_string(data),
+            "data" => self.pi_dom_data(data),
             "length" => {
-                self.work(1 + data.len())?;
-                Ok(Value::Number(data.encode_utf16().count() as f64))
+                self.work(1 + data.stored_bytes())?;
+                Ok(Value::Number(data.units().count() as f64))
             }
             "setData" => {
                 let value = args.first().cloned().unwrap_or(Value::Undefined);
@@ -313,7 +333,7 @@ impl Runtime {
                 };
                 let text = self.pi_scalar_string(&text)?;
                 self.work(8)?;
-                doc.replace_character_data(id, text)
+                doc.replace_character_data(id, text.into())
                     .map_err(dom_data_error)?;
                 Ok(Value::Undefined)
             }

@@ -1,0 +1,443 @@
+{
+  "kind": "Exact DOM string storage and consumer foundation",
+  "base_commit": "7416797e9cee1ce9b4caa41efd3076307e6b9b72",
+  "scope": "Canonical Scalar/Units character data, ERWA transport, exact host-supplied reads/clones, explicit display/source/editor boundaries. JavaScript producer migration remains open.",
+  "source": {
+    "files": [
+      {
+        "path": "src/bin/eris-dom.rs",
+        "bytes": 10564,
+        "sha256": "9d15762d9124478e70a196e70fd58d282f9e9be0a65c8bac05b0bc8169916cc9"
+      },
+      {
+        "path": "src/browser.rs",
+        "bytes": 121730,
+        "sha256": "62b72a10329c4a5485b1df248acf8bdd5dc971053bfe4aa3e3d894f5d6a29664"
+      },
+      {
+        "path": "src/dom.rs",
+        "bytes": 399685,
+        "sha256": "2338f0c1001355ad507b01e0eb5a0ca1547b9a849ca081f477ae208b079f2eb0"
+      },
+      {
+        "path": "src/dom/string.rs",
+        "bytes": 10161,
+        "sha256": "8cd80d66f65ea3dd3a1e0680cdb6339761f701d8e210caddb9f8a3359b4f451a"
+      },
+      {
+        "path": "src/dom/string_tests.rs",
+        "bytes": 14890,
+        "sha256": "4c248104fc84a20771dcfd814559417c5c7fc111f6475bd710cf82a2876831e1"
+      },
+      {
+        "path": "src/layout.rs",
+        "bytes": 285855,
+        "sha256": "00a62090beb4a6cfc67530c3436a12513f5f709c4cdbf68efe15a319778fd6e2"
+      },
+      {
+        "path": "src/page.rs",
+        "bytes": 89169,
+        "sha256": "b98ecef291dc0e334878ef297e68e0d03161263dc1c99b9c4bbb6f813f16bc70"
+      },
+      {
+        "path": "src/script.rs",
+        "bytes": 907075,
+        "sha256": "801f0a0d81ec6e98963cc16a0bf7d2331b3456e33d1f5f2d9d074233b524cf1a"
+      },
+      {
+        "path": "src/script/dom_bindings/append_tests.rs",
+        "bytes": 29382,
+        "sha256": "35270ef3fd9a1eff8d8de8fb6d93d8e217ea908b963819cca398710e261cc33d"
+      },
+      {
+        "path": "src/script/processing_instruction.rs",
+        "bytes": 13225,
+        "sha256": "cabdcce4af0c68a9b478bf2e089a1aa84f021c3ebae8e72b1a40ebff1b79610e"
+      },
+      {
+        "path": "src/script/processing_instruction/character_data.rs",
+        "bytes": 8171,
+        "sha256": "8e7128c560d39849da86c2e737f9328902ce2c84521df33f6dcc84bea0cfd08d"
+      },
+      {
+        "path": "src/script/processing_instruction/character_data/tests.rs",
+        "bytes": 11408,
+        "sha256": "046701098101c6d37a4e2d55031237717087e5b1badfb71ac783bb084d1a2867"
+      },
+      {
+        "path": "src/script/processing_instruction/tests.rs",
+        "bytes": 17390,
+        "sha256": "76f0321f048f70b205926b4836b4fa84075e8640eb790b2d439b544e1e5f4bd0"
+      },
+      {
+        "path": "src/svg.rs",
+        "bytes": 49290,
+        "sha256": "c7365dfb207e81f97413b194f1c4c9cae465535ca89a40b69b9cd67d2d05efef"
+      },
+      {
+        "path": "src/worker/codec.rs",
+        "bytes": 87164,
+        "sha256": "5783fa1d20c4969f32ab5e3206e028482c55762ec8f64e5f4a57db325283ddb8"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 84658,
+        "sha256": "14ef6a3dbd16fbd1340ed03ce9e0028d63ec0ffab5e48daacc8afa20c0cbfcc6"
+      }
+    ],
+    "integration_fixes": [
+      "debug-format",
+      "fixed-chunks"
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-dom-string-1/eris-js",
+    "bytes": 3629784,
+    "sha256": "3d0c1bed7bf9bd18036b821be01d477d2c7d6845c41b3a5559136edca6870857",
+    "source_manifest": "main-source-final.json",
+    "validation": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "full-default-188-final-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 11.202,
+      "log": "full-default-188-final-2.log",
+      "sha256": "5ae027e5c50f6cf74a5c553162c8940bfb628542e314dd3341a9a593e43aa002"
+    },
+    "full-native-198-final": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 16.936,
+      "log": "full-native-198-final.log",
+      "sha256": "01d300cf3f638a3b0586acd84b7324ecdaa89ce2275723a41d4688e9dd95a02d"
+    },
+    "clippy-native-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.927,
+      "log": "clippy-native-198-2.log",
+      "sha256": "fae86ee8a2f10306f85d005b772fd0255f4041ebed1b56c5757a1050f3c4eaa5"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 9.496,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "2a7fcf86c1fc35f0311b2c3e9a52dcc7788f3cea55e76d624edb2d093c20d0c5"
+    },
+    "format-198-final": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.8779150198679417,
+      "log": "format-198-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 36.011,
+      "log": "release-adapter-188-1.log",
+      "sha256": "81bc647bf78573ddd38d17e24fed5f625a356c90f2854cf4944fba2ef376f925"
+    }
+  },
+  "tests": {
+    "default": 1552,
+    "native": 1675,
+    "new_groups": 32,
+    "focused_unique": 55,
+    "focused_executions": 56,
+    "failed": 0,
+    "ignored": 0
+  },
+  "headers_rust_188_64bit": {
+    "old_string": 24,
+    "dom_string": 32,
+    "old_node_kind": 96,
+    "node_kind": 96,
+    "old_node": 136,
+    "node": 136
+  },
+  "raw_bootstrap": {
+    "remaining_work": 8246,
+    "charged_bytes": 1777574,
+    "objects": 673,
+    "capacity": 673,
+    "native": 321,
+    "legacy_prototypes": 25
+  },
+  "compatibility": [
+    {
+      "profile": "dom-method-identity",
+      "before_sha256": "c3688be9bf7cae1f8557fb647daba4f51872eef6686a2c5c3c323ab982b789c1",
+      "after_sha256": "413009bf4332bf8260c993cd9d4c66ee29be98a616e4967f955b8e47d323b8c7",
+      "counts": {
+        "passed": 52,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "total": 58,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 44,
+      "controls_verified": 44,
+      "before_verified": 56,
+      "after_verified": 56
+    },
+    {
+      "profile": "object-is",
+      "before_sha256": "984c7ae56568dc9f27bb41ea77935ba35fdfc8c72ccfe456d0b7e4a5b9714bdf",
+      "after_sha256": "9e1e60cee309408ca173ca36a5e00e1ffd657ef4cd4ea2d1fd98b007ffc4a334",
+      "counts": {
+        "passed": 68,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "total": 78,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 60,
+      "controls_verified": 60,
+      "before_verified": 72,
+      "after_verified": 72
+    },
+    {
+      "profile": "symbols",
+      "before_sha256": "e6ff5c35e05479de6248a633b9d5fa07bc74cd2ce7ef0e143c13467adc6dd2f7",
+      "after_sha256": "edd722a9327f18857e3b5184cc882b72faaf6567a38a909a375a720ba5b9c2b4",
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "total": 242,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 80,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "array-descriptors",
+      "before_sha256": "e7efd307e892e4d6f7090bbf1f70cb4ed1571bb475ae0903f47cb0a78aa1554c",
+      "after_sha256": "d11d78151b6493cefa4f0a443bc32450736875e24f5d3fd352768489731be933",
+      "counts": {
+        "passed": 3556,
+        "unsupported": 18
+      },
+      "total": 3574,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 84,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "reflect-construction",
+      "before_sha256": "c00a647479c65a939f5722a3c14c4f2aedba05962a493c27e9c9508bb6a519dc",
+      "after_sha256": "7a0bb11679ee19a57283b4f649756016f6fa095b7e074b52748e55cc6e24be33",
+      "counts": {
+        "passed": 38
+      },
+      "total": 38,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 96,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "prior-CharacterData-regression",
+      "before_sha256": "382e90d0b621a5dfa75009410ecd45a90b41e29eefd9edd6a2888e4e313af2a2",
+      "after_sha256": "1f41096391e9022a314d99cec96c79855fceb20611f40750d29377059344fa31",
+      "cases_changes": [],
+      "total": 34,
+      "before_verified": 26,
+      "after_verified": 26,
+      "unmet": [
+        "delete-leaves-low-unit#sloppy",
+        "delete-leaves-low-unit#strict",
+        "insert-between-pair-leaves-unpaired-units#sloppy",
+        "insert-between-pair-leaves-unpaired-units#strict",
+        "append-lone-high-unit#sloppy",
+        "append-lone-high-unit#strict",
+        "replace-leaves-lone-high-unit#sloppy",
+        "replace-leaves-lone-high-unit#strict"
+      ]
+    },
+    {
+      "profile": "prior-PI-regression",
+      "before_sha256": "0e624b0f8294512e601af8c11db6d856b4b4a679c897085142824d8105e14c89",
+      "after_sha256": "f8be1cf9124ecb2ea38de4f750053999a376fe5c160b21aef7bbaf87f0521105",
+      "cases_changes": [],
+      "total": 40,
+      "before_verified": 38,
+      "after_verified": 38
+    }
+  ],
+  "case_modes_compared": 4064,
+  "controls_compared": 364,
+  "retained_attempts": {
+    "cli_dump": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 27.229,
+      "log": "full-default-188-1.log",
+      "sha256": "08573a020ea444abfcc9803218ce34d4de734696b72e0d0fa17dd16a9ffff174"
+    },
+    "fixed_slice_lint": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 5.906,
+      "log": "clippy-native-198-1.log",
+      "sha256": "a0154c736cbbf8cf3c5c9baa5ba1766e7633cdbfded47b495b60d1f5844318e5"
+    },
+    "date_fixture_prerequisite": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 20.136,
+      "log": "full-default-188-final.log",
+      "sha256": "a51e30713a7a1f8c6d78ff48b89efe77c9884b404c3936fda5776ebc1872c44e"
+    },
+    "date_isolated_unchanged": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--lib",
+        "date_host::tests::host_eof_before_exit_waits_for_exit_status_or_cancellation_and_deadline",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.204,
+      "log": "date-eof-isolated-188-1.log",
+      "sha256": "60a8bc81681a083a6ef0bc1754836fcfa970e5228b136c806844ae119829b429"
+    },
+    "note": "Original CLI expectation preserved by scalar Debug formatting. Fixed-size slice cleanup preserves bytes. Date prerequisite failure did not log capture Result; exact cause unproven. Date source, deadline and assertions unchanged; isolated and complete final runs passed."
+  },
+  "boundaries": [
+    "All eight original CharacterData standards-success expectations for final unmatched data remain unmet; their terminal Unsupported observations are unchanged.",
+    "Two PI host-prototype mutation expectations remain unmet.",
+    "No Chromium comparison or new GPU performance measurement.",
+    "Complete web compatibility, production security, unit-aware native editing, full DOMString production and mutation reactions remain incomplete."
+  ],
+  "archive": {
+    "path": "dom-strings.tar.gz",
+    "bytes": 2649911,
+    "sha256": "b1926443b1413c41b8fa175a7656e119799649809f7fe8d8542d9aa182c730a0",
+    "files": 165,
+    "manifest_verified": true
+  }
+}

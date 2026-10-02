@@ -131,12 +131,21 @@ fn serialize(document: &Document) -> Result<String, String> {
                 }
             }
             NodeKind::Text(text) => {
+                let text = text
+                    .scalar()
+                    .ok_or("nonscalar text in scalar tree adapter")?;
                 writeln!(out, "{prefix}\"{text}\"").map_err(|e| e.to_string())?;
             }
             NodeKind::Comment(data) => {
+                let data = data
+                    .scalar()
+                    .ok_or("nonscalar comment in scalar tree adapter")?;
                 writeln!(out, "{prefix}<!-- {data} -->").map_err(|e| e.to_string())?;
             }
             NodeKind::ProcessingInstruction { target, data } => {
+                let data = data
+                    .scalar()
+                    .ok_or("nonscalar PI data in scalar tree adapter")?;
                 writeln!(out, "{prefix}<?{target} {data}?>").map_err(|e| e.to_string())?;
             }
             NodeKind::Doctype(doctype) => {

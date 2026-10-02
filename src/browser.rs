@@ -40,6 +40,19 @@ mod native_scene;
 const TOOLBAR: f32 = 76.0;
 const STATUS: f32 = 25.0;
 
+// The native editor still owns a UTF-8 buffer. Refuse data it cannot preserve;
+// presentation's replacement projection must never become an edit payload.
+fn control_value_for_editing(document: &eris::dom::Document, node: NodeId) -> Option<String> {
+    if document.tag(node) == Some("textarea") {
+        let mut visits = eris::dom::MAX_NODES * 2;
+        document
+            .text_content_scalar_bounded(node, 8 * 1024 * 1024, &mut visits)
+            .ok()
+    } else {
+        Some(document.attr(node, "value").unwrap_or("").to_owned())
+    }
+}
+
 /// Hit regions have already been clipped by layout. Propagating their visible
 /// area to ancestors also covers inline links whose text owns the actual hits.
 /// Do not clip to the viewport: a control below the fold remains focusable.
@@ -876,13 +889,13 @@ impl Browser {
         {
             return;
         }
+        let Some(value) = control_value_for_editing(&s.document, node) else {
+            self.clear_native_input();
+            return;
+        };
         self.focused = Some(node);
         self.address_focused = false;
-        self.input_value = if s.document.tag(node) == Some("textarea") {
-            s.document.text_content(node)
-        } else {
-            s.document.attr(node, "value").unwrap_or("").into()
-        };
+        self.input_value = value;
         self.selection.end(&self.input_value);
         if let Some(w) = &self.window {
             w.set_ime_allowed(s.document.can_edit_control(node));
@@ -1082,6 +1095,14 @@ impl Browser {
             }
         }
     }
+    fn clear_native_input(&mut self) {
+        self.focused = None;
+        self.input_value.clear();
+        self.selection = Selection::default();
+        if let Some(window) = &self.window {
+            window.set_ime_allowed(false);
+        }
+    }
     fn reconcile_input(&mut self, snapshot: &Snapshot) {
         if self.address_focused || snapshot.generation != self.generation() {
             return;
@@ -1101,18 +1122,19 @@ impl Browser {
             }
             return;
         }
+        let value = match snapshot.document.tag(node) {
+            Some("textarea" | "input") => {
+                let Some(value) = control_value_for_editing(&snapshot.document, node) else {
+                    self.clear_native_input();
+                    return;
+                };
+                value
+            }
+            _ => return,
+        };
         if snapshot.processed_edit_sequence < self.edit_sequence {
             return;
         }
-        let value = match snapshot.document.tag(node) {
-            Some("textarea") => snapshot.document.text_content(node),
-            Some("input") => snapshot
-                .document
-                .attr(node, "value")
-                .unwrap_or("")
-                .to_owned(),
-            _ => return,
-        };
         if value != self.input_value {
             let at_end =
                 self.selection.collapsed() && self.selection.caret == self.input_value.len();
@@ -2159,6 +2181,65 @@ mod tests {
     use eris::{
         dom::Document, graphics::ImageStore, layout::LayoutResult, page::Page, worker::apply_edit,
     };
+
+    #[test]
+    fn nonscalar_textarea_cannot_enter_or_retain_the_utf8_editor() {
+        let mut browser = editing_browser("<textarea id=field>é</textarea>");
+        let document = &mut browser.snapshot.as_mut().unwrap().document;
+        let field = document.query_selector("#field").unwrap();
+        let text = document.nodes[field].children[0];
+        // Both payloads occupy two retained bytes; model an exact wire snapshot.
+        document.nodes[text].kind = eris::dom::NodeKind::Text(
+            eris::dom::DomString::from_units_owned(vec![0xd800]).unwrap(),
+        );
+        browser.focus_input(field);
+        assert_eq!(browser.focused, None);
+        assert!(browser.input_value.is_empty());
+        browser.insert_text("x");
+        assert!(browser.tx.state.lock().unwrap().pending.is_empty());
+
+        browser.focused = Some(field);
+        browser.input_value = "pending".into();
+        browser.edit_sequence = 5;
+        let snapshot = acknowledgement(
+            &browser,
+            0,
+            browser.snapshot.as_ref().unwrap().document.clone(),
+        );
+        browser.reconcile_input(&snapshot);
+        assert_eq!(browser.focused, None);
+        assert!(browser.input_value.is_empty());
+        let eris::dom::NodeKind::Text(stored) = &snapshot.document.nodes[text].kind else {
+            panic!()
+        };
+        assert_eq!(stored.raw_units(), Some([0xd800].as_slice()));
+    }
+
+    #[test]
+    fn textarea_editor_decodes_pairs_after_joining_adjacent_text_nodes() {
+        let mut browser = editing_browser("<textarea id=field>é</textarea>");
+        let document = &mut browser.snapshot.as_mut().unwrap().document;
+        let field = document.query_selector("#field").unwrap();
+        let first = document.nodes[field].children[0];
+        let second = document.create_text_node("é");
+        document.append_child(field, second);
+        for (id, unit) in [(first, 0xd834), (second, 0xdd1e)] {
+            document.nodes[id].kind = eris::dom::NodeKind::Text(
+                eris::dom::DomString::from_units_owned(vec![unit]).unwrap(),
+            );
+        }
+        browser.focus_input(field);
+        assert_eq!(browser.focused, Some(field));
+        assert_eq!(browser.input_value, "𝄞");
+        assert!(browser.tx.state.lock().unwrap().pending.is_empty());
+        let document = &browser.snapshot.as_ref().unwrap().document;
+        for (id, unit) in [(first, 0xd834), (second, 0xdd1e)] {
+            let eris::dom::NodeKind::Text(stored) = &document.nodes[id].kind else {
+                panic!()
+            };
+            assert_eq!(stored.raw_units(), Some([unit].as_slice()));
+        }
+    }
 
     #[test]
     fn fixed_hit_regions_keep_viewport_coordinates_after_scroll_and_zoom() {

@@ -55,7 +55,7 @@ A shared seccomp denylist blocks process/thread creation, new executables, io_ur
 
 The broker accepts exactly one parent-authorized document URL and form body. Subresources use the committed response URL as their initiator; the renderer cannot supply or broaden it. Scripts and styles are restricted to that origin, with the same check at every redirect. Cross-origin images pass through a fresh confined decoder; the renderer receives validated pixels, the originally requested URL and an origin-taint flag. Raw response bodies, headers, status and final redirect URLs are withheld. All native image-load failures use a fixed generic error, including failures after redirects. A decoder is never reused between images, so a compromised decoder cannot retain state to inspect a later response from another origin. The trusted broker records taint across every redirect hop; returning to the document origin does not remove it. Data images remain supported. This boundary does not implement full Fetch/CORS or Canvas security APIs; no script API currently exposes image pixels. HTTP(S) document redirects can cross origins, while HTTPS downgrades remain blocked. The UI checks snapshot URLs against the broker's exact committed document URL, allowing fragment changes.
 
-The versioned, length-prefixed IPC protocol checks counts, frame sizes, UTF-8, aggregate text/raster storage, DOM namespaces and attribute bindings, parent links, detached subtrees, cycles, depth, hit targets, finite geometry and raster dimensions before a snapshot reaches the UI. ERW9 validates reciprocal template/fragment ownership and includes those edges in cycle/depth checks. Document modes, canonical encoding names, selected base nodes and frozen base URLs are also validated. Clip, fixed-coordinate and opacity commands share a typed scope stack: cross-kind closures, unclosed scopes and combined depth above 128 are rejected. Opacity values must be finite and between zero and one. Hit regions carry validated document/fixed-coordinate flags and typed ordinary/generated-summary actions. Generated-summary hints require an active, visible HTML details element without a direct authored summary; forged activation commands fail the worker channel closed. Namespace metadata must name existing attributes before its entries are allocated. Image aliases share one transmitted raster. Resource response headers, status and byte lengths have separate bounds. Decoder response frames are limited to the remaining aggregate image budget before allocation; geometry and exact RGBA length are checked again. Raster and SVG dimensions are checked against the remaining pixel budget before allocating their output. The request queue holds at most 64 items and the UI mailbox one snapshot. Task state is a validated three-value enum; the parent rejects pending or suspended task metadata when it authorized scripts to be disabled. Idle task continuation waits at least 16 ms after its previous rendered snapshot and gives queued native input priority; cancellation and transaction deadlines apply to task commands too. Nonblocking pipe I/O has deadlines; navigation/shutdown cancellation also reaches a stalled broker exchange. Cleanup kills and reaps renderer, broker and any active image decoder. Image decoders are also reaped after each successful response.
+The versioned, length-prefixed IPC protocol checks counts, frame sizes, UTF-8, aggregate text/raster storage, DOM namespaces and attribute bindings, parent links, detached subtrees, cycles, depth, hit targets, finite geometry and raster dimensions before a snapshot reaches the UI. ERWA preserves reciprocal template/fragment ownership and includes those edges in cycle/depth checks. Text, Comment and PI data now carry a tag for scalar UTF-8 or exact UTF-16; the decoder checks counts, checked byte sizes, remaining frame, shared DOM allowance and canonicality before payload allocation. Fully scalar content in a UTF-16 payload and older protocol versions are rejected. PI targets remain UTF-8. The independent EWB1 raster format is unchanged. Document modes, canonical encoding names, selected base nodes and frozen base URLs are also validated. Clip, fixed-coordinate and opacity commands share a typed scope stack: cross-kind closures, unclosed scopes and combined depth above 128 are rejected. Opacity values must be finite and between zero and one. Hit regions carry validated document/fixed-coordinate flags and typed ordinary/generated-summary actions. Generated-summary hints require an active, visible HTML details element without a direct authored summary; forged activation commands fail the worker channel closed. Namespace metadata must name existing attributes before its entries are allocated. Image aliases share one transmitted raster. Resource response headers, status and byte lengths have separate bounds. Decoder response frames are limited to the remaining aggregate image budget before allocation; geometry and exact RGBA length are checked again. Raster and SVG dimensions are checked against the remaining pixel budget before allocating their output. The request queue holds at most 64 items and the UI mailbox one snapshot. Task state is a validated three-value enum; the parent rejects pending or suspended task metadata when it authorized scripts to be disabled. Idle task continuation waits at least 16 ms after its previous rendered snapshot and gives queued native input priority; cancellation and transaction deadlines apply to task commands too. Nonblocking pipe I/O has deadlines; navigation/shutdown cancellation also reaches a stalled broker exchange. Cleanup kills and reaps renderer, broker and any active image decoder. Image decoders are also reaped after each successful response.
 
 Linux address-space, descriptor and core-dump limits apply separately to every child. The UI has no global hard memory cap. Its painter still handles untrusted validated drawing commands and pixels, with its own work limits. The broker uses synchronous DNS because thread creation is denied; the parent deadline can terminate a stalled lookup. Headless/library fetches retain the HTTP library's timed resolver. There is no complete private-network protection or independent sandbox audit.
 
@@ -235,25 +235,40 @@ and kind, independently of mutable prototype membership. Text, Comment and
 DocumentFragment constructors finish argument conversion and new-target
 prototype access before checking live document capacity and reserving retained
 storage. An alternate prototype is published only with its successful node;
-ordinary own-property bags remain separate. Lone UTF-16 surrogates are rejected
-explicitly on these UTF-8 storage paths. Work limits and cumulative heap limits
+ordinary own-property bags remain separate. These JavaScript constructor paths
+still reject lone UTF-16 surrogates; the new [storage foundation](dom-strings.md)
+does not yet migrate their production. Work limits and cumulative heap limits
 are unchanged; the larger bootstrap object reservation is charged in full.
 
 [ProcessingInstruction and CharacterData](processing-instruction.md) accessors
 check genuine receivers before conversion. Creation validates converted targets
 and data after new-target callbacks, then checks live document limits before
-publishing nodes or alternate prototypes. Owned UTF-8 buffers move into storage;
-replacement admission subtracts the previous payload and refuses excess input
-without truncation or partial mutation. These paths retain the explicit
-unsupported boundary for lone-surrogate data and the existing infallible Rc and
-B-tree allocations.
+publishing nodes or alternate prototypes. The current JavaScript writers still
+produce scalar buffers and refuse lone-surrogate data. Checked owned storage
+now also accepts canonical exact UTF-16 supplied by the host or transport.
+Replacement admission subtracts the previous payload and refuses excess input
+without truncation or partial mutation. Existing infallible Rc and B-tree
+allocations remain.
 
 The five [CharacterData methods](character-data.md) finish argument conversion
 before reading live node data. Substring traverses only the reached code units
 and admits the selected UTF-16 result before allocation. Mutations prepay scans,
 validate the complete UTF-16 splice, reserve exact scalar output and move it
 through checked replacement. A terminal refusal preserves existing outer data
-and earlier author effects; final lone-surrogate DOM strings remain unsupported.
+and earlier author effects; these JavaScript mutation paths still refuse final
+lone-surrogate strings pending runtime migration.
+
+The [DOM string foundation](dom-strings.md) retains one canonical payload, with
+UTF-8 byte charges for scalar strings and two bytes per stored UTF-16 unit for
+nonscalar strings. Detached nodes count toward the unchanged 32 MiB DOM ledger;
+snapshot admission recomputes it. Exact reads prepay traversal and output copies;
+empty and single-Text containers avoid arena-sized scratch. Display replacement
+is explicit and does not mutate storage. Nonscalar inline script and JavaScript
+HTML serialization fail explicitly; oversized HTML output now reports resource
+failure instead of silently omitting later pieces. A textarea with nonscalar
+aggregate data cannot enter or retain the scalar native editor, including during
+a pending acknowledgement. These are bounded interfaces, not universal
+allocation recovery or complete exact-string browser support.
 
 ## Representative limits
 
@@ -373,7 +388,9 @@ The [focused validation](../tests/conformance/dom-string-conversion.json) includ
 allocation refusals and looping/recursive callbacks that cannot catch resource
 exhaustion, with execution-state cleanup checked afterward. These checks do not
 establish full DOM operation atomicity or exact process-wide memory accounting.
-Lone UTF-16 surrogates are still replaced at the DOM storage boundary.
+The legacy conversion paths covered by that historical record still replace
+unpaired units. [Exact character-data storage](dom-strings.md) does not yet
+migrate every JavaScript writer or scalar host boundary.
 
 ## Window binding reflection
 

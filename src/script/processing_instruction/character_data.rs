@@ -40,7 +40,7 @@ impl Operation {
     }
 }
 
-fn current_data(doc: &Document, id: NodeId) -> Result<&str> {
+fn current_data(doc: &Document, id: NodeId) -> Result<&crate::dom::DomString> {
     match doc.nodes.get(id).map(|node| &node.kind) {
         Some(NodeKind::Text(text) | NodeKind::Comment(text))
         | Some(NodeKind::ProcessingInstruction { data: text, .. }) => Ok(text),
@@ -94,7 +94,9 @@ impl Runtime {
             Operation::Replace => self.string_hint(args[2].clone(), doc)?,
             _ => JsString::default(),
         };
-        let old = current_data(doc, id)?;
+        let old = current_data(doc, id)?.scalar().ok_or_else(|| {
+            ScriptError::unsupported("nonscalar DOM data methods are not implemented")
+        })?;
         if matches!(operation, Operation::Substring) {
             return self.character_data_substring(old, offset, count);
         }
@@ -113,7 +115,7 @@ impl Runtime {
         // The owned output is already paid. This fresh checked publication
         // reuses replacement-aware DOM admission and moves without copying.
         self.work(8)?;
-        doc.replace_character_data(id, result)
+        doc.replace_character_data(id, result.into())
             .map_err(dom_data_error)?;
         Ok(Value::Undefined)
     }

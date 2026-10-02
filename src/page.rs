@@ -640,7 +640,24 @@ impl Page {
             let source = if self.document.attr(id, "src").is_some() {
                 external.get(&id).cloned()
             } else {
-                Some(Arc::from(self.document.text_content(id)))
+                let mut visits = crate::dom::MAX_NODES * 2;
+                match self.document.text_content_scalar_bounded(
+                    id,
+                    (1024 * 1024usize).saturating_sub(source_bytes),
+                    &mut visits,
+                ) {
+                    Ok(source) => Some(Arc::from(source)),
+                    Err(crate::dom::DomDataError::InvalidData) => {
+                        self.diagnostics
+                            .push("script: nonscalar inline source is not supported".into());
+                        None
+                    }
+                    Err(_) => {
+                        self.diagnostics
+                            .push("page script source budget exceeded".into());
+                        break;
+                    }
+                }
             };
             if let Some(source) = source {
                 source_bytes += source.len();
@@ -1306,6 +1323,93 @@ fn bounded_image_decoder(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::dom::NodeKind;
+
+    #[test]
+    fn inline_svg_serialization_preserves_pair_split_across_text_nodes() {
+        let html = "<svg width=96 height=40><text x=2 y=30 font-size=24>𝄞</text></svg>";
+        let expected = Page::from_html(Url::parse("https://example.test/").unwrap(), html, false);
+        let mut actual = Page::from_html(Url::parse("https://example.test/").unwrap(), html, false);
+        let text = actual.document.query_selector("text").unwrap();
+        let first = actual.document.nodes[text].children[0];
+        actual
+            .document
+            .replace_character_data(
+                first,
+                crate::dom::DomString::from_units_owned(vec![0xd834]).unwrap(),
+            )
+            .unwrap();
+        let second = actual
+            .document
+            .create_text_node_owned(crate::dom::DomString::from_units_owned(vec![0xdd1e]).unwrap())
+            .unwrap();
+        actual.document.append_child(text, second);
+        actual.refresh_inline_svg();
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(expected.images.len(), 1);
+        assert_eq!(actual.images.len(), 1);
+        let expected = expected.images.values().next().unwrap();
+        let actual_image = actual.images.values().next().unwrap();
+        assert_eq!((actual_image.width, actual_image.height), (96, 40));
+        assert_eq!(actual_image.rgba, expected.rgba);
+        assert!(
+            expected
+                .rgba
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .any(|pixel| pixel[3] != 0)
+        );
+        for (id, unit) in [(first, 0xd834), (second, 0xdd1e)] {
+            let NodeKind::Text(stored) = &actual.document.nodes[id].kind else {
+                panic!()
+            };
+            assert_eq!(stored.raw_units(), Some([unit].as_slice()));
+        }
+    }
+
+    #[test]
+    fn inline_source_joins_exact_units_and_refuses_unpaired_source_before_execution() {
+        for paired in [true, false] {
+            let mut page = Page::from_html(
+                Url::parse("https://example.test/").unwrap(),
+                "<title>unchanged</title><script></script>",
+                false,
+            );
+            let script = page.document.query_selector("script").unwrap();
+            let prefix = "document.title='".encode_utf16().chain([0xd834]).collect();
+            let first = page
+                .document
+                .create_text_node_owned(crate::dom::DomString::from_units_owned(prefix).unwrap())
+                .unwrap();
+            page.document.append_child(script, first);
+            let suffix: Vec<_> = if paired { vec![0xdd1e] } else { Vec::new() }
+                .into_iter()
+                .chain("';".encode_utf16())
+                .collect();
+            let second = page
+                .document
+                .create_text_node_owned(crate::dom::DomString::from_units_owned(suffix).unwrap())
+                .unwrap();
+            page.document.append_child(script, second);
+            page.scripts_enabled = true;
+            page.run_scripts(&HashMap::new());
+            if paired {
+                assert_eq!(page.document.title(), "𝄞");
+                assert!(page.diagnostics.is_empty(), "{:?}", page.diagnostics);
+            } else {
+                assert_eq!(page.document.title(), "unchanged");
+                assert_eq!(
+                    page.diagnostics,
+                    ["script: nonscalar inline source is not supported"]
+                );
+            }
+            let NodeKind::Text(stored) = &page.document.nodes[first].kind else {
+                panic!()
+            };
+            assert_eq!(stored.units().last(), Some(0xd834));
+        }
+    }
     #[test]
     fn idle_task_batches_finish_without_input_and_layout_never_dispatches() {
         let mut page = Page::from_html(
