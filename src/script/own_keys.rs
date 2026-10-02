@@ -5,6 +5,24 @@ use super::*;
 #[cfg(test)]
 mod tests;
 
+type NameBucket = BTreeMap<JsString, ()>;
+
+// Equality requires equal UTF-16 lengths. The outer tree compares only fixed-
+// width lengths; full text comparisons occur within the reached length bucket.
+// This set's ordering never controls enumeration order.
+#[derive(Default)]
+#[cfg_attr(test, derive(Clone, Debug, PartialEq, Eq))]
+pub(super) struct VisitedNames {
+    buckets: BTreeMap<usize, NameBucket>,
+}
+
+const VISITED_NAME_BYTES: usize =
+    16 * std::mem::size_of::<JsString>() + 32 * std::mem::size_of::<usize>() + 64;
+const VISITED_BUCKET_BYTES: usize = 16
+    * (std::mem::size_of::<usize>() + std::mem::size_of::<NameBucket>())
+    + 32 * std::mem::size_of::<usize>()
+    + 64;
+
 // Stored nonnumeric names are unique: ScriptObject::insert_property appends
 // only absent names, and remove updates both the map and creation-order list.
 // Only virtual numeric keys/length can overlap stored keys. Integer ordinals
@@ -241,37 +259,62 @@ impl Runtime {
 
     pub(super) fn for_in_visit(
         &mut self,
-        visited: &mut BTreeMap<JsString, ()>,
+        visited: &mut VisitedNames,
         object: &Value,
         key: &JsString,
     ) -> Result<Option<Property>> {
-        let (comparisons, nodes) = tree_bound(visited.len());
-        self.work(
-            1usize
-                .saturating_add(nodes)
-                .saturating_add(comparisons.saturating_mul(key.len().saturating_add(1))),
-        )?;
-        // One actual tree search. Rust 1.88/1.98 entry() does not allocate,
-        // including an empty map; vacant insertion below owns node allocation.
-        // The cached location is held across a nontrapping own-descriptor read,
-        // never across author code. Occupied names skip that read entirely.
-        let std::collections::btree_map::Entry::Vacant(entry) = visited.entry(key.clone()) else {
-            return Ok(None);
-        };
-        let Some(property) = self.own_property(object, key) else {
-            return Ok(None);
-        };
-        // A cached vacant insertion splits/moves handles and edges without
-        // repeating the text search. Missing properties never enter visited;
-        // present nonenumerable properties must still shadow inherited names.
-        self.work(1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)))?;
-        // One conservative node allowance per inserted key covers cumulative
-        // splits: this map starts empty and never removes keys, and every
-        // allocated node retains at least one key. Unit values occupy no bytes;
-        // both supported node layouts fit 11 handles, 13 pointers and metadata.
-        // BTreeMap has no fallible reserve; this is a prepaid storage bound.
-        self.charge(16 * std::mem::size_of::<JsString>() + 32 * std::mem::size_of::<usize>() + 64)?;
-        entry.insert(());
-        Ok(Some(property))
+        use std::collections::btree_map::Entry;
+
+        // Reading slice length does not scan or copy the UTF-16 payload.
+        self.tick()?;
+        let length = key.len();
+        let (comparisons, nodes) = tree_bound(visited.buckets.len());
+        self.work(1usize.saturating_add(nodes).saturating_add(comparisons))?;
+        // entry() does not allocate on pinned Rust 1.88/1.98, even for an empty
+        // tree. Cached locations cross only a nontrapping own-descriptor read,
+        // never author code. Missing descriptors must leave no empty bucket.
+        // Insertion's 24 units per level bound fixed-size key/value-entry moves
+        // and edge/backlink updates, not individual machine-word copies. A map
+        // header moves without traversing its contents. One node allowance per
+        // inserted name/bucket covers cumulative append-only splits; the outer
+        // allowance includes those headers. BTreeMap's infallible allocator
+        // remains a prepaid boundary. Hidden properties are inserted too.
+        match visited.buckets.entry(length) {
+            Entry::Occupied(mut bucket) => {
+                let names = bucket.get_mut();
+                let (comparisons, nodes) = tree_bound(names.len());
+                self.work(
+                    1usize
+                        .saturating_add(nodes)
+                        .saturating_add(comparisons.saturating_mul(length.saturating_add(1))),
+                )?;
+                let Entry::Vacant(entry) = names.entry(key.clone()) else {
+                    return Ok(None);
+                };
+                let Some(property) = self.own_property(object, key) else {
+                    return Ok(None);
+                };
+                self.work(1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)))?;
+                self.charge(VISITED_NAME_BYTES)?;
+                entry.insert(());
+                Ok(Some(property))
+            }
+            Entry::Vacant(entry) => {
+                let Some(property) = self.own_property(object, key) else {
+                    return Ok(None);
+                };
+                // Pay both insertions before either tree changes: one new inner
+                // root and the cached outer insertion. These move fixed-size
+                // handles/headers and do not repeat a full text search.
+                self.work(25usize.saturating_add(
+                    1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)),
+                ))?;
+                self.charge(VISITED_NAME_BYTES + VISITED_BUCKET_BYTES)?;
+                let mut names = NameBucket::new();
+                names.insert(key.clone(), ());
+                entry.insert(names);
+                Ok(Some(property))
+            }
+        }
     }
 }

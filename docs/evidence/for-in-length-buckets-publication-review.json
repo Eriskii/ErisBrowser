@@ -1,0 +1,303 @@
+{
+  "schema": 1,
+  "status": "clear",
+  "scope": "Independent publication audit; retained files read only, git blobs read for reconstruction, no compiler/engine/conformance/GPU execution or rerun",
+  "bindings": {
+    "index": {
+      "path": "docs/evidence/for-in-length-buckets/index.json",
+      "bytes": 207070,
+      "sha256": "3b05dbdcaae6098f73783747008a7056bc32ee30f22f5267120b2086c1dc2dc0"
+    },
+    "archive": {
+      "path": "docs/evidence/for-in-length-buckets/records.tar.gz",
+      "bytes": 9459068,
+      "sha256": "699273e7f28f2bd29cf19fcc125f3555184eb2f8283bfaddffcff6c2bcee2a6d"
+    },
+    "primary": {
+      "path": "tests/conformance/for-in-length-buckets.json",
+      "bytes": 4000,
+      "sha256": "ecf9e0a0591cd97d52fc82c4b0de82ce653a57faf310be8fc550fbd38dbbaeef"
+    },
+    "documentation": [
+      {
+        "path": "README.md",
+        "bytes": 37922,
+        "sha256": "a699d94450f154f5d53503ced8a42145f1f41c20c0958c5e414f1ce78c56a913"
+      },
+      {
+        "path": "docs/COMPATIBILITY.md",
+        "bytes": 51284,
+        "sha256": "57a5429e26464729a864d01e63b89fd88509d12a054f4a2ab6b6e51eecf7a365"
+      },
+      {
+        "path": "docs/ROADMAP.md",
+        "bytes": 19020,
+        "sha256": "f06f2e98a0a27620d6a67e506080f9932a924430437ee209cf18c517055b052d"
+      },
+      {
+        "path": "docs/SECURITY.md",
+        "bytes": 53888,
+        "sha256": "d675f8005980e2738755ab70e5768ad968353b66ba366c6f638db6996a1768de"
+      },
+      {
+        "path": "docs/VALIDATION.md",
+        "bytes": 281575,
+        "sha256": "8bc7470e170d0e1178566a6e556971243e176b113e75e0b1f3fd4a61272df948"
+      },
+      {
+        "path": "tests/conformance/array-buffer.md",
+        "bytes": 8867,
+        "sha256": "422d54fffb907c98fb644e9c29e20236695a244848eacc985c26a994948fe951"
+      },
+      {
+        "path": "tests/conformance/own-keys.md",
+        "bytes": 4854,
+        "sha256": "bd1e699423a706d279cc62b82a6e8d012a7883c973e03081e91a40ce0c2ac8f1"
+      },
+      {
+        "path": "tests/conformance/test262-array-buffer.md",
+        "bytes": 6011,
+        "sha256": "dd1cb6635615098bc7f03e146f5e1f230239d835c79f435d87fda52ffa1666a3"
+      },
+      {
+        "path": "tests/conformance/for-in-length-buckets.md",
+        "bytes": 6203,
+        "sha256": "01a40044d50a6d9a96bc4ed023d70fe56ab56bea9db0e4e0dffdb4becffe6fd1"
+      }
+    ]
+  },
+  "archive": {
+    "payloads": 746,
+    "uncompressed_payload_bytes": 95688381,
+    "all_index_original_and_stored_bytes_equal": true,
+    "safe_unique_regular_paths": true,
+    "fixed_zero_timestamps_and_nonexecutable_modes": true,
+    "executables_and_common_private_key_token_patterns_found": [],
+    "diagnostic_complete_request_source_stdout_stderr_sets": 16
+  },
+  "source": {
+    "parent": "45dd387375a95d2bfd89412f35cdb55739e07503",
+    "reconstructed_files": 407,
+    "overlay": [
+      "src/script/machine/statements.rs",
+      "src/script/own_keys.rs",
+      "src/script/own_keys/tests.rs"
+    ],
+    "all_reconstructed_hashes_match": true,
+    "production_input_sha256": "d02f2e6cd1aca614a5e90db3b79059c99d7b8626e287eae86991171aed0e8a10",
+    "binary_sha256": "650c0860141ec576ddbad348af53fc125b6399d9087f8ae9c9b20992aa5975e7",
+    "binary_omitted_from_package": true
+  },
+  "observations": {
+    "local_cases": 1482,
+    "local_controls": 392,
+    "unchanged_complete_local_rows": 1872,
+    "changed_local_rows": [
+      {
+        "suite": "array-buffer",
+        "id": "getter-method-flags-and-nonconstructability#sloppy",
+        "before": "resource",
+        "after": "passed"
+      },
+      {
+        "suite": "array-buffer",
+        "id": "getter-method-flags-and-nonconstructability#strict",
+        "before": "resource",
+        "after": "passed"
+      }
+    ],
+    "explicit_local_terminal_resource_rows_unchanged": 36,
+    "formal_profiles": 42,
+    "formal_cases": {
+      "unsupported": 3516,
+      "passed": 14795,
+      "failed": 112,
+      "resource": 140
+    },
+    "formal_raw_controls": {
+      "passed": 1968,
+      "failed": 2280,
+      "unsupported": 4
+    },
+    "verified_formal_controls": 4252,
+    "formal_complete_rows_unchanged": true,
+    "formal_leader_exit_counts": {
+      "1": 39,
+      "0": 3
+    },
+    "formal_leaders_reaped": 42,
+    "formal_stderr_all_empty": true,
+    "offline_baseline_gates": 34,
+    "baselines_written": false
+  },
+  "validation": {
+    "retained_commands": [
+      {
+        "record": "188-focused-1-result.json",
+        "exit": 0,
+        "passed": 26,
+        "failed": 0
+      },
+      {
+        "record": "clippy-default-188-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "record": "clippy-default-198-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "record": "clippy-native-188-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "record": "clippy-native-198-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "record": "clippy-presenter-188-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "record": "clippy-presenter-198-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "record": "date-helper-focused-188-1.json",
+        "exit": 0,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "record": "format-188-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "record": "full-default-188-1.json",
+        "exit": 0,
+        "passed": 1287,
+        "failed": 0
+      },
+      {
+        "record": "full-default-198-1.json",
+        "exit": 0,
+        "passed": 1287,
+        "failed": 0
+      },
+      {
+        "record": "full-native-188-1.json",
+        "exit": 101,
+        "passed": 1136,
+        "failed": 1
+      },
+      {
+        "record": "full-native-188-2.json",
+        "exit": 0,
+        "passed": 1404,
+        "failed": 0
+      },
+      {
+        "record": "full-native-198-1.json",
+        "exit": 0,
+        "passed": 1404,
+        "failed": 0
+      },
+      {
+        "record": "release-default-build-1.json",
+        "exit": 0,
+        "passed": 0,
+        "failed": 0
+      }
+    ],
+    "initial_date_helper_failure_and_unchanged_followups_retained": true,
+    "preparation_and_initial_publication_errors_retained": true,
+    "diagnostic_raw_output_omission_corrected_in_final_archive": true
+  },
+  "documentation": {
+    "files_reviewed": 9,
+    "added_local_links_checked": [
+      {
+        "from": "README.md",
+        "to": "tests/conformance/for-in-length-buckets.md"
+      },
+      {
+        "from": "docs/COMPATIBILITY.md",
+        "to": "../tests/conformance/for-in-length-buckets.md"
+      },
+      {
+        "from": "docs/ROADMAP.md",
+        "to": "../tests/conformance/for-in-length-buckets.md"
+      },
+      {
+        "from": "docs/SECURITY.md",
+        "to": "../tests/conformance/for-in-length-buckets.md"
+      },
+      {
+        "from": "docs/VALIDATION.md",
+        "to": "../tests/conformance/for-in-length-buckets.md"
+      },
+      {
+        "from": "tests/conformance/array-buffer.md",
+        "to": "array-buffer-final.json"
+      },
+      {
+        "from": "tests/conformance/array-buffer.md",
+        "to": "for-in-length-buckets.md"
+      },
+      {
+        "from": "tests/conformance/own-keys.md",
+        "to": "for-in-length-buckets.md"
+      },
+      {
+        "from": "tests/conformance/own-keys.md",
+        "to": "../../docs/vulkan-native-window.md"
+      },
+      {
+        "from": "tests/conformance/test262-array-buffer.md",
+        "to": "for-in-length-buckets.md"
+      },
+      {
+        "from": "tests/conformance/for-in-length-buckets.md",
+        "to": "../../docs/SECURITY.md"
+      },
+      {
+        "from": "tests/conformance/for-in-length-buckets.md",
+        "to": "for-in-length-buckets.json"
+      },
+      {
+        "from": "tests/conformance/for-in-length-buckets.md",
+        "to": "array-buffer-date-host-followup.json"
+      },
+      {
+        "from": "tests/conformance/for-in-length-buckets.md",
+        "to": "../../docs/evidence/for-in-length-buckets/index.json"
+      }
+    ],
+    "historical_vs_current_counts_distinguished": true,
+    "remaining_failures_resources_prerequisites_and_no_security_performance_claims_explicit": true
+  },
+  "limitations": [
+    "This audit rechecks retained evidence and source reconstruction, not a new runtime measurement.",
+    "The 34 gates preserve known failures/exclusions; formal raw outcomes include 112 failures and 140 terminal resources.",
+    "Local ArrayBuffer still has ten missing-prerequisite modes and four expected terminal resources.",
+    "The Date helper subprocess failure remains unexplained despite unchanged followup passes.",
+    "Process-leader reap and frozen bounded group-cleanup records are verified; no new kernel-wide descendant census is claimed.",
+    "Pattern-based package screening is not a comprehensive secret/security audit; retained local paths and test diagnostics are intentional.",
+    "Replay scripts retain original host paths and require restoring or rebinding that layout."
+  ],
+  "findings": []
+}

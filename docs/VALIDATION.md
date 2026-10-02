@@ -427,12 +427,17 @@ includes the full job and step results.
 
 The [ArrayBuffer evidence](../tests/conformance/array-buffer.json) compares the
 frozen candidate against published commit `77866e93f4d8486807aa843667619ea4ccccccfa`.
-The independently authored local sources retain **88 passed, eight failed, two
+At the original ArrayBuffer checkpoint, the independently authored local sources retain **88 passed, eight failed, two
 unsupported and six resource outcomes**: **92 of 104 expectations and all 76
 controls verify**. Four resource outcomes are expected engine-policy checks;
 both modes of an ordinary metadata test also exhaust the unchanged instruction
 budget. Ten view/shared-buffer/Proxy/foreign-realm prerequisite modes remain
 unmet. No local expectation or source was changed after observing results.
+
+The later [for-in length-bucket follow-up](../tests/conformance/for-in-length-buckets.md)
+closes both ordinary metadata stops: **90 passed, eight failed, two unsupported
+and four expected terminal-resource outcomes**, with **94 of 104 expectations
+and all 76 controls verified**. The original ArrayBuffer reports remain unchanged.
 
 The [complete pinned profile](../tests/conformance/test262-array-buffer.md)
 retains all **221 sources / 442 modes**: **262 passed, 50 failed and 130 excluded**,
@@ -444,7 +449,7 @@ Two strengthened older baselines retain four new Array.from/Object.seal passes.
 All **34 final gates** are checked against completed reports without rerunning
 the engine. The combined inventory has **42 profiles / 18,563 modes / 4,252 controls**.
 
-The **41 older profiles / 18,121 modes / 4,092 controls** have exactly those four
+At the original ArrayBuffer checkpoint, the **41 older profiles / 18,121 modes / 4,092 controls** have exactly those four
 gains, with no other case or control changes and all 33 preceding gates passing.
 Seven older local suites retain **1,378 cases and 316 controls** byte-for-byte
 at the observation level. A stale two-tool hash binding prevented the first
@@ -452,7 +457,7 @@ historical-local attempt from starting any engine; the reviewed replacement
 manifest changes only bindings for new-profile additions. All old source,
 helper, runner, expectation and before-report bytes remain intact.
 
-Rust **1.88 and 1.98** pass strict all-target Clippy and **1,269 default / 1,280
+That original checkpoint's Rust **1.88 and 1.98** runs pass strict all-target Clippy and **1,269 default / 1,280
 Vulkan-feature tests**. The evidence includes **24 private buffer test groups**,
 **274 Python tests**, direct page integration and the actual confined worker.
 Both release variants pass all **57 CPU pixel references**. Byte-identical HTML

@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "parent": "45dd387375a95d2bfd89412f35cdb55739e07503",
+  "scope": "For-in visited-name length buckets; unchanged limits, fixtures, helpers, policies and baselines",
+  "source_overlay": [
+    "src/script/machine/statements.rs",
+    "src/script/own_keys.rs",
+    "src/script/own_keys/tests.rs"
+  ],
+  "source_input_sha256": "d02f2e6cd1aca614a5e90db3b79059c99d7b8626e287eae86991171aed0e8a10",
+  "binary_sha256": "650c0860141ec576ddbad348af53fc125b6399d9087f8ae9c9b20992aa5975e7",
+  "implementation": {
+    "outer": "BTreeMap<UTF16 length, NameBucket>",
+    "inner": "BTreeMap<JsString, ()>",
+    "semantics": "Full UTF16 equality, live descriptor checks, hidden shadowing, lazy prototypes and snapshot order preserved",
+    "work": "Constant metadata + integer outer search; conservative full-text inner search only for reached equal-length bucket; cached prepaid insertion",
+    "storage": "Prepaid cumulative inner nodes plus larger outer nodes including inner-map headers; additional heap cost for distinct lengths",
+    "quotas_increased": false
+  },
+  "local": {
+    "suites": 8,
+    "modes": 1482,
+    "controls": 392,
+    "verified_controls": 392,
+    "changed_records": 2,
+    "unchanged_records": 1872,
+    "explicit_terminal_resource_modes_unchanged": 36,
+    "changed_ids": [
+      "getter-method-flags-and-nonconstructability#sloppy",
+      "getter-method-flags-and-nonconstructability#strict"
+    ],
+    "array_buffer": {
+      "counts": {
+        "passed": 90,
+        "failed": 8,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "expectations_verified": 94,
+      "total_expectations": 104,
+      "controls_verified": 76,
+      "expected_terminal_resource_modes": 4
+    },
+    "raw_report": "locals-1/array-buffer.json",
+    "comparison": "locals-1/comparison.json",
+    "independent_review": "replay-preparation/result-review.json"
+  },
+  "formal": {
+    "profiles": 42,
+    "cases": 18563,
+    "controls": 4252,
+    "improvements": 0,
+    "regressions": 0,
+    "other_changes": 0,
+    "control_changes": 0,
+    "baseline_gates_checked": 34,
+    "baseline_gates_passed": 34,
+    "raw_counts": {
+      "unsupported": 3516,
+      "passed": 14795,
+      "failed": 112,
+      "resource": 140
+    },
+    "verified_controls": 4252,
+    "observations_unchanged": true,
+    "baselines_written": false,
+    "comparison": "formal-replay-1/profiles-comparison.json",
+    "independent_review": "formal-preparation/result-review.json"
+  },
+  "validation": {
+    "toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "default_tests_each": 1287,
+    "native_tests_each": 1404,
+    "focused_own_key_groups": 26,
+    "focused_metadata_remaining_work_each": 12200,
+    "strict_clippy_configurations": 6,
+    "format_passed": true,
+    "failed_first_native_188": "Existing Date helper subprocess returned Unavailable; isolated unchanged test and one unchanged full rerun passed. Cause remains undetermined; all logs retained.",
+    "source_and_log_records": "validation/validation-summary.json",
+    "preparation_errors": "Local-wrapper expectation field, summary-only log-hash schema, and publication before-report path classification errors retained; no engine inputs altered"
+  },
+  "evidence": {
+    "index": "../../docs/evidence/for-in-length-buckets/index.json",
+    "index_sha256": "3b05dbdcaae6098f73783747008a7056bc32ee30f22f5267120b2086c1dc2dc0",
+    "archive": "../../docs/evidence/for-in-length-buckets/records.tar.gz",
+    "archive_sha256": "699273e7f28f2bd29cf19fcc125f3555184eb2f8283bfaddffcff6c2bcee2a6d",
+    "payloads": 746,
+    "uncompressed_bytes": 95688381
+  },
+  "limitations": [
+    "No elapsed-time or Chromium comparison",
+    "No complete web compatibility or production security claim",
+    "General property accounting and fallible allocation remain outside this change",
+    "Existing view/shared/Proxy/foreign-realm gaps remain",
+    "No fresh GPU, pixel, HTML or mutation-smoke execution is attributed to this JavaScript increment"
+  ]
+}

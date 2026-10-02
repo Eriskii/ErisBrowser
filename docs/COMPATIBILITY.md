@@ -9,8 +9,9 @@ remain unimplemented, along with shared buffers, Proxy and foreign realms.
 The complete 221-source profile records **262 passed, 50 failed and 130 excluded
 modes**, with all 160 controls verified. The failures retain 48 missing-Uint8Array
 observations and two untagged BigInt syntax failures. The independent local
-matrix verifies **92 of 104 expectations**; two ordinary metadata modes hit the
-work limit, and ten prerequisite modes remain unmet. Buffer-only success does
+matrix verifies **94 of 104 expectations** after the
+[for-in length-bucket follow-up](../tests/conformance/for-in-length-buckets.md)
+closes two ordinary metadata work stops. Ten prerequisite modes remain unmet. Buffer-only success does
 not establish complete binary-data support.
 
 [Array concat](../tests/conformance/array-concat.md) supports generic receivers,

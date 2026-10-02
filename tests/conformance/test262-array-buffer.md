@@ -56,9 +56,12 @@ The [current baseline](test262-array-buffer-current.json) retains **262 passes,
 50 failures and 130 exclusions**, with one CI regression gate. It was projected
 from this completed report after historical replay review, with no engine rerun.
 A healthy known-state gate is not an all-pass conformance result.
-The independent local suite separately retains two ordinary metadata instruction
-limit stops and four expected terminal-resource cases. This formal health result
-does not classify those local observations as passes.
+At this checkpoint, the independent local suite separately retains two ordinary
+metadata instruction-limit stops and four expected terminal-resource cases.
+The later [for-in length-bucket follow-up](for-in-length-buckets.md) closes the
+two ordinary stops under unchanged quotas and retains all four terminal outcomes.
+That improvement is independently measured in the local suite; this original
+formal report remains unchanged.
 
 The [preparation and bindings record](test262-array-buffer-preparation.json)
 binds the frozen inventory, policy, controls, reports, execution limits and

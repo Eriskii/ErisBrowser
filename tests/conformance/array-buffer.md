@@ -42,11 +42,11 @@ all source/mode/expectation fingerprints are unchanged.
 
 The [before report](array-buffer-initial.json) retains **102 failed and two
 unsupported modes**, no raw fixture passes, and twelve verified common controls.
-The [candidate report](array-buffer-final.json) records **88 passed, eight failed,
+At the original ArrayBuffer checkpoint, the [candidate report](array-buffer-final.json) records **88 passed, eight failed,
 two unsupported and six resource stops**: **92 of 104 expectations and all 76
 controls verify**. Both modes of `getter-method-flags-and-nonconstructability`
 unexpectedly reach the instruction limit; their ordinary-success expectations
-remain unmet. Four other resource outcomes match the frozen recursive-conversion
+were unmet at that checkpoint. Four other resource outcomes match the frozen recursive-conversion
 and repeated-allocation policy cases. They are terminal engine limits, not
 ECMAScript exceptions. The eight failures require Uint8Array, DataView,
 SharedArrayBuffer or Proxy. The unchanged conservative `$262` source check
@@ -54,6 +54,13 @@ rejects the two foreign-realm modes before adapter execution. All ten
 prerequisite expectations remain ordinary success. The
 [complete comparison](array-buffer-comparison.json) retains **88 raw pass gains,
 zero losses** and every changed observation, with no retries or oracle changes.
+
+The later [for-in length-bucket follow-up](for-in-length-buckets.md) replays these
+same sources, helpers and expectations. Both ordinary metadata modes now pass:
+**90 passed, eight failed, two unsupported and four resource outcomes**, with
+**94 of 104 expectations and all 76 controls verified**. The four expected
+terminal-resource outcomes and ten prerequisite gaps are unchanged. The original
+reports above remain intact.
 
 Supported buffer-only JavaScript and [Page/worker fixtures](array-buffer-integration-fixture.json)
 check metadata, conversion order, callback effects, detachment and ordinary

@@ -492,11 +492,13 @@ that checkpoint retained **33 known-state gates**, with no quota or policy chang
 [ArrayBuffer](tests/conformance/array-buffer.md) adds nonshared fixed and
 resizable backing stores, slicing, transfers and detachment. Its complete
 upstream profile records **262 passed, 50 failed and 130 excluded modes**, with
-all 160 controls verified. The local suite verifies **92 of 104 expectations**;
-two ordinary metadata modes reach the work limit and ten prerequisite modes
-remain unmet. Typed arrays, DataView, shared memory and foreign realms remain
-unfinished. Four older Array.from/Object.seal modes gain passes, with every other
-historical observation unchanged. The catalog now contains **42 profiles /
+all 160 controls verified. The local suite verifies **94 of 104 expectations**
+after the [for-in length-bucket follow-up](tests/conformance/for-in-length-buckets.md)
+closes two ordinary metadata work stops. Ten prerequisite modes remain unmet.
+Typed arrays, DataView, shared memory and foreign realms remain
+unfinished. At the original ArrayBuffer checkpoint, four older Array.from/Object.seal
+modes gained passes, with every other historical observation unchanged.
+The catalog now contains **42 profiles /
 18,563 modes / 4,252 controls**, with **34 known-state regression gates**.
 Those gates preserve recorded gaps as well as passing cases.
 

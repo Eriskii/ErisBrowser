@@ -18,7 +18,8 @@ snapshots; no Chromium threshold or general speedup is claimed.
 resizable backing storage, resizing, same-realm species slicing, transfers and
 detachment. Its complete pinned profile records 262 passes, 50 failures and 130
 exclusions. Typed arrays, DataView, shared memory, Proxy and foreign realms
-remain ahead. Two metadata-heavy local modes reach the unchanged work limit;
+remain ahead. The [length-bucketed for-in follow-up](../tests/conformance/for-in-length-buckets.md)
+closes two metadata-heavy local work stops without raising quotas;
 broader interpreter performance and accounting remain open work.
 
 The [native GPU route](vulkan-native-window.md) now connects the custom shaders

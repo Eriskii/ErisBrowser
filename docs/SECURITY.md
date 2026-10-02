@@ -119,10 +119,14 @@ production browser security, and it changes no browser renderer authority.
 The [shared enumeration follow-up](../tests/conformance/own-keys.md) replaces
 full-name snapshot deduplication with integer ranks and the object's existing
 unique-name creation order. Virtual keys, dense-hole searches, sorting and caller
-buffers now consume shared work/storage allowances. For-in visited-name searches
-charge retained UTF-16 comparison work using the reached tree size; cached entries
-avoid a second search while preserving live descriptor checks and hidden-property
-shadowing. Node movement and cumulative storage are prepaid. No quota is raised.
+buffers now consume shared work/storage allowances. For-in visited names now use
+[UTF-16 length buckets](../tests/conformance/for-in-length-buckets.md): a charged
+integer lookup selects the inner tree, whose full-text work remains bounded by
+its reached size. Cached entries preserve live descriptor checks and hidden-property
+shadowing. Node movement and cumulative storage are prepaid, including the extra
+outer nodes and inner-map headers. Shapes with many distinct lengths can consume
+more heap allowance. Both insertions are charged before publishing a new bucket;
+refusal leaves membership unchanged. No quota is raised.
 The [original finding](../tests/conformance/array-from-enumeration-followup.json)
 and four first-candidate control regressions remain recorded.
 

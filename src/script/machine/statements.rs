@@ -3,8 +3,8 @@ use super::{Document, ExprFrame, Frame as Job, Output, Phase as ExprPhase, Resul
 use super::{enter_frame, push, reference, value};
 use crate::script::{
     BINDING_BYTES, DeclarationKind, Flow, JsString, MAX_DEPTH, ScriptError, Value, js_object,
+    own_keys::VisitedNames,
 };
-use std::collections::BTreeMap;
 use std::rc::Rc;
 
 #[derive(Clone, Copy)]
@@ -106,7 +106,7 @@ enum Phase {
 struct ForInState {
     object: Value,
     keys: std::vec::IntoIter<JsString>,
-    visited: BTreeMap<JsString, ()>,
+    visited: VisitedNames,
     depth: usize,
     last: Value,
 }
@@ -838,7 +838,7 @@ fn for_in_start(runtime: &mut Runtime, frame: Frame, value: Value) -> Result<Opt
     let state = ForInState {
         object,
         keys,
-        visited: BTreeMap::new(),
+        visited: VisitedNames::default(),
         depth: 1,
         last: Value::Undefined,
     };

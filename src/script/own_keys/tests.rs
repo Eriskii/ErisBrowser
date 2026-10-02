@@ -30,6 +30,27 @@ fn run(runtime: &mut Runtime, unit: &Rc<code::Unit>, doc: &mut Document) -> Resu
     }
 }
 
+// Test setup bypasses runtime charging only to seed a visited-set shape.
+fn visited_names(keys: impl IntoIterator<Item = JsString>) -> VisitedNames {
+    let mut visited = VisitedNames::default();
+    for key in keys {
+        visited
+            .buckets
+            .entry(key.len())
+            .or_default()
+            .insert(key, ());
+    }
+    visited
+}
+
+fn visited_keys(visited: &VisitedNames) -> Vec<JsString> {
+    visited
+        .buckets
+        .values()
+        .flat_map(|bucket| bucket.keys().cloned())
+        .collect()
+}
+
 #[test]
 fn own_keys_frozen_independent_fixture_preserves_all_86_modes() {
     let mut modes = 0;
@@ -242,9 +263,7 @@ fn own_keys_visited_search_accounts_for_text_and_tree_height() {
     let mut costs = Vec::new();
     for (count, width) in [(1, 16), (12, 16), (72, 16), (72, 512)] {
         let prefix = "p".repeat(width);
-        let mut visited: BTreeMap<JsString, ()> = (0..count)
-            .map(|i| (format!("{prefix}{i:04}").into(), ()))
-            .collect();
+        let mut visited = visited_names((0..count).map(|i| format!("{prefix}{i:04}").into()));
         let key: JsString = format!("{prefix}zzzz").into();
         let (mut runtime, _) = fresh();
         let missing = ordinary(&mut runtime, &[]);
@@ -265,23 +284,27 @@ fn own_keys_visited_search_accounts_for_text_and_tree_height() {
                 .is_resource_limit()
         );
         runtime.steps = cost;
-        let present = visited.first_key_value().unwrap().0.clone();
+        let present = visited_keys(&visited)[0].clone();
         assert!(
             runtime
                 .for_in_visit(&mut visited, &missing, &present)
                 .unwrap()
                 .is_none()
         );
-        assert_eq!(visited.len(), count);
+        assert_eq!(visited_keys(&visited).len(), count);
     }
     assert!(costs.windows(2).all(|pair| pair[1] > pair[0]));
     let (mut runtime, _) = fresh();
     let missing = ordinary(&mut runtime, &[]);
     runtime.allocated = MAX_HEAP;
-    runtime.steps = 1;
+    runtime.steps = 2; // UTF-16 length metadata plus an empty outer search.
     assert!(
         runtime
-            .for_in_visit(&mut BTreeMap::new(), &missing, &"long".repeat(4096).into())
+            .for_in_visit(
+                &mut VisitedNames::default(),
+                &missing,
+                &"long".repeat(4096).into()
+            )
             .unwrap()
             .is_none()
     );
@@ -292,7 +315,7 @@ fn own_keys_visited_search_accounts_for_text_and_tree_height() {
 #[test]
 fn own_keys_visited_insertion_is_prepaid_and_keeps_text_identity() {
     let key: JsString = "x".repeat(1024).into();
-    let seed: BTreeMap<JsString, ()> = [("a".into(), ()), ("b".into(), ())].into();
+    let seed = visited_names(names(&["a", "b"]));
     let prepare = || {
         let (mut runtime, doc) = fresh();
         let target = runtime
@@ -311,7 +334,12 @@ fn own_keys_visited_insertion_is_prepaid_and_keeps_text_identity() {
     );
     let cost = (before.0 - runtime.steps, runtime.allocated - before.1);
     assert_eq!(
-        visited.get_key_value(&key).unwrap().0.units().as_ptr(),
+        visited.buckets[&key.len()]
+            .get_key_value(&key)
+            .unwrap()
+            .0
+            .units()
+            .as_ptr(),
         key.units().as_ptr()
     );
     for heap_failure in [false, true] {
@@ -337,10 +365,10 @@ fn own_keys_visited_occupied_and_missing_do_not_allocate_or_insert() {
     for (populated, occupied) in [(false, false), (true, false), (true, true)] {
         let (mut runtime, _) = fresh();
         let target = ordinary(&mut runtime, if occupied { &["key"] } else { &[] });
-        let mut visited: BTreeMap<JsString, ()> = if populated {
-            [(JsString::from(if occupied { "key" } else { "other" }), ())].into()
+        let mut visited = if populated {
+            visited_names([JsString::from(if occupied { "key" } else { "other" })])
         } else {
-            BTreeMap::new()
+            VisitedNames::default()
         };
         let original = visited.clone();
         runtime.allocated = MAX_HEAP;
@@ -364,7 +392,7 @@ fn own_keys_visited_vacant_hidden_descriptor_pays_before_cached_insertion() {
         let id = runtime.property_object(&target).unwrap();
         runtime.objects[id].attributes("hidden", true, false, true);
         let missing = ordinary(&mut runtime, &[]);
-        let visited: BTreeMap<JsString, ()> = [(JsString::from("already"), ())].into();
+        let visited = visited_names([JsString::from("already")]);
         (runtime, doc, target, missing, visited)
     };
     let key = JsString::from("hidden");
@@ -401,7 +429,7 @@ fn own_keys_visited_vacant_hidden_descriptor_pays_before_cached_insertion() {
         .unwrap()
         .unwrap();
     assert!(!property.enumerable);
-    assert!(visited.contains_key(&key));
+    assert!(visited.buckets[&key.len()].contains_key(&key));
     runtime.allocated = MAX_HEAP;
     assert!(
         runtime
@@ -680,14 +708,18 @@ fn own_keys_repeated_snapshots_and_visited_sets_share_cumulative_heap() {
     assert!(runtime.steps < MAX_STEPS);
     let (mut runtime, _) = fresh();
     let target = ordinary(&mut runtime, &["a", "b", "c"]);
-    let mut visited = BTreeMap::new();
+    let mut visited = VisitedNames::default();
     let before = runtime.allocated;
     runtime
         .for_in_visit(&mut visited, &target, &"a".into())
         .unwrap()
         .unwrap();
-    let heap = runtime.allocated - before;
-    runtime.allocated = MAX_HEAP - heap;
+    assert_eq!(
+        runtime.allocated - before,
+        VISITED_NAME_BYTES + VISITED_BUCKET_BYTES
+    );
+    // The next name reuses length bucket 1; only its inner insertion is new.
+    runtime.allocated = MAX_HEAP - VISITED_NAME_BYTES;
     runtime
         .for_in_visit(&mut visited, &target, &"b".into())
         .unwrap()
@@ -698,7 +730,7 @@ fn own_keys_repeated_snapshots_and_visited_sets_share_cumulative_heap() {
             .unwrap_err()
             .is_resource_limit()
     );
-    assert_eq!(visited.into_keys().collect::<Vec<_>>(), names(&["a", "b"]));
+    assert_eq!(visited_keys(&visited), names(&["a", "b"]));
     clean(&runtime);
 }
 
@@ -740,4 +772,248 @@ fn own_keys_number_constant_controls_keep_original_success_and_failure() {
         }
     }
     assert!(failures.is_empty(), "{failures:?}");
+}
+
+#[test]
+fn own_keys_length_bucket_tree_bounds_cover_split_thresholds() {
+    for (count, expected) in [
+        (0, (0, 0)),
+        (1, (1, 1)),
+        (10, (10, 1)),
+        (11, (11, 2)),
+        (12, (12, 2)),
+        (70, (22, 2)),
+        (71, (33, 3)),
+        (72, (33, 3)),
+    ] {
+        assert_eq!(tree_bound(count), expected);
+    }
+    let (comparisons, nodes) = tree_bound(usize::MAX);
+    assert!(nodes <= usize::BITS as usize);
+    assert!(comparisons <= nodes * 11);
+}
+
+#[test]
+fn own_keys_different_length_search_pays_only_outer_integer_work() {
+    let mut costs = Vec::new();
+    for (count, expected) in [(1, 4), (12, 16), (72, 38)] {
+        let seed = visited_names((1..=count).map(|length| "p".repeat(length).into()));
+        for width in [4096, 8192] {
+            let (mut runtime, _) = fresh();
+            let target = ordinary(&mut runtime, &[]);
+            let key = "p".repeat(width).into();
+            let mut visited = seed.clone();
+            runtime.allocated = MAX_HEAP;
+            runtime.steps = expected - 1;
+            assert!(
+                runtime
+                    .for_in_visit(&mut visited, &target, &key)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(visited, seed);
+            runtime.steps = expected;
+            assert!(
+                runtime
+                    .for_in_visit(&mut visited, &target, &key)
+                    .unwrap()
+                    .is_none()
+            );
+            assert_eq!(runtime.steps, 0);
+            assert_eq!(runtime.allocated, MAX_HEAP);
+            assert_eq!(visited, seed);
+        }
+        costs.push(expected);
+    }
+    assert!(costs.windows(2).all(|pair| pair[1] > pair[0]));
+}
+
+#[test]
+fn own_keys_missing_names_never_publish_empty_length_buckets() {
+    for key in ["", "zz", "long"] {
+        let (mut runtime, _) = fresh();
+        let target = ordinary(&mut runtime, &[]);
+        let mut visited = visited_names(names(&["a", "bb", "ccc"]));
+        let before = visited.clone();
+        runtime.allocated = MAX_HEAP;
+        assert!(
+            runtime
+                .for_in_visit(&mut visited, &target, &key.into())
+                .unwrap()
+                .is_none()
+        );
+        assert_eq!(visited, before);
+        assert_eq!(runtime.allocated, MAX_HEAP);
+        assert!(visited.buckets.values().all(|bucket| !bucket.is_empty()));
+    }
+}
+
+#[test]
+fn own_keys_length_buckets_preserve_arbitrary_utf16_and_payload_identity() {
+    let keys: Vec<JsString> = [
+        vec![],
+        vec![0],
+        vec![0xd800],
+        vec![0xdc00],
+        vec![0xd800, 0xdc00],
+        vec![0xdc00, 0xd800],
+    ]
+    .into_iter()
+    .map(JsString::from)
+    .collect();
+    let (mut runtime, _) = fresh();
+    let target = runtime
+        .object_ordered(keys.iter().cloned().map(|key| (key, Value::Bool(true))))
+        .unwrap();
+    let mut visited = VisitedNames::default();
+    for key in &keys {
+        assert!(
+            runtime
+                .for_in_visit(&mut visited, &target, key)
+                .unwrap()
+                .is_some()
+        );
+        let retained = visited.buckets[&key.len()].get_key_value(key).unwrap().0;
+        assert_eq!(retained.units().as_ptr(), key.units().as_ptr());
+    }
+    assert_eq!(
+        visited.buckets.keys().copied().collect::<Vec<_>>(),
+        vec![0, 1, 2]
+    );
+    assert_eq!(visited_keys(&visited).len(), keys.len());
+    let before = visited.clone();
+    runtime.allocated = MAX_HEAP;
+    for key in keys {
+        // Fresh payload with equal UTF-16 content must still suppress a duplicate.
+        let duplicate = JsString::from(key.units().to_vec());
+        assert!(
+            runtime
+                .for_in_visit(&mut visited, &target, &duplicate)
+                .unwrap()
+                .is_none()
+        );
+    }
+    assert_eq!(visited, before);
+    assert_eq!(runtime.allocated, MAX_HEAP);
+}
+
+#[test]
+fn own_keys_new_and_existing_bucket_insertions_precharge_all_mutation() {
+    for new_bucket in [false, true] {
+        let key = JsString::from("zz");
+        let seed = visited_names(names(if new_bucket { &["a"] } else { &["bb"] }));
+        let prepare = || {
+            let (mut runtime, _) = fresh();
+            let target = ordinary(&mut runtime, &["zz"]);
+            let id = runtime.property_object(&target).unwrap();
+            runtime.objects[id].attributes("zz", true, false, true);
+            (runtime, target, seed.clone())
+        };
+        let (mut runtime, target, mut visited) = prepare();
+        let before = (runtime.steps, runtime.allocated);
+        let property = runtime
+            .for_in_visit(&mut visited, &target, &key)
+            .unwrap()
+            .unwrap();
+        assert!(!property.enumerable);
+        let work = before.0 - runtime.steps;
+        let heap = runtime.allocated - before.1;
+        assert_eq!(
+            heap,
+            VISITED_NAME_BYTES + if new_bucket { VISITED_BUCKET_BYTES } else { 0 }
+        );
+        let mut cuts = vec![(work - 1, heap), (work, heap - 1)];
+        if new_bucket {
+            // Enough for either isolated allowance must not publish half a set.
+            cuts.extend([(work, VISITED_NAME_BYTES), (work, VISITED_BUCKET_BYTES)]);
+        }
+        for (steps, bytes) in cuts {
+            let (mut runtime, target, mut visited) = prepare();
+            runtime.steps = steps;
+            runtime.allocated = MAX_HEAP - bytes;
+            assert!(
+                runtime
+                    .for_in_visit(&mut visited, &target, &key)
+                    .unwrap_err()
+                    .is_resource_limit()
+            );
+            assert_eq!(visited, seed);
+            assert!(visited.buckets.values().all(|bucket| !bucket.is_empty()));
+            clean(&runtime);
+        }
+        let (mut runtime, target, mut visited) = prepare();
+        runtime.steps = work;
+        runtime.allocated = MAX_HEAP - heap;
+        assert!(
+            runtime
+                .for_in_visit(&mut visited, &target, &key)
+                .unwrap()
+                .is_some()
+        );
+        assert_eq!(runtime.steps, 0);
+        assert_eq!(runtime.allocated, MAX_HEAP);
+        assert_eq!(
+            visited.buckets[&2]
+                .get_key_value(&key)
+                .unwrap()
+                .0
+                .units()
+                .as_ptr(),
+            key.units().as_ptr()
+        );
+    }
+}
+
+#[test]
+fn own_keys_bucket_order_never_reorders_iteration_or_invokes_getters() {
+    let (mut runtime, mut doc) = fresh();
+    runtime
+        .execute(
+            r#"
+        var calls=0,p={hidden:1,inheritedLong:2,b:3},o=Object.create(p);
+        o.longName=4;o.a=5;o.mid=6;
+        Object.defineProperty(o,'hidden',{get:function(){calls++;return 7;},enumerable:false});
+        var result='';for(var key in o)result+=key+',';
+        if(result!=='longName,a,mid,inheritedLong,b,'||calls!==0)throw new Error('order or getter');
+        var p2={later:8},o2=Object.create(p2);o2.x=1;o2.later=2;
+        var seen='';for(var key in o2){seen+=key+',';if(key==='x')delete o2.later;}
+        if(seen!=='x,later,')throw new Error('missing own key must not shadow inherited');
+    "#,
+            &mut doc,
+        )
+        .unwrap();
+    clean(&runtime);
+}
+
+#[test]
+fn own_keys_array_buffer_metadata_keeps_both_frozen_success_expectations() {
+    let fixture = include_str!("../../../tests/conformance/array-buffer.js");
+    let source = fixture
+        .split("// CASE: ")
+        .find_map(|block| {
+            let (name, source) = block.split_once('\n')?;
+            (name == "getter-method-flags-and-nonconstructability").then_some(source)
+        })
+        .expect("frozen metadata case");
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        for helper in [
+            include_str!("../../../tests/upstream/test262-array-buffer/harness/assert.js"),
+            include_str!("../../../tests/upstream/test262-array-buffer/harness/sta.js"),
+            include_str!("../../../tests/upstream/test262-array-buffer/harness/propertyHelper.js"),
+        ] {
+            runtime.execute(helper, &mut doc).unwrap();
+        }
+        let result = if strict {
+            runtime.execute_strict(source, &mut doc)
+        } else {
+            runtime.execute(source, &mut doc)
+        };
+        eprintln!(
+            "frozen-buffer-metadata strict={strict} remaining={} result={result:?}",
+            runtime.steps
+        );
+        assert!(result.is_ok(), "{result:?}");
+        clean(&runtime);
+    }
 }

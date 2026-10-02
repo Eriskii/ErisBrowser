@@ -12,12 +12,15 @@ searches, both snapshot buffers and caller result buffers. Numeric ranks avoid
 sorting retained UTF-16 names. Array length shrink uses this shared path and no
 longer prepays the removed full-name deduplication step.
 
-For-in keeps visited names in a tree with one search per reached key. A cached
-vacant entry survives the live own-descriptor check, with no author callback
-between search and insertion. Missing properties leave the tree unchanged;
-present nonenumerable properties still shadow inherited names. Search comparisons,
-insertion movement and cumulative node storage consume the existing script
-budgets. No quota is raised.
+For-in now groups visited names by UTF-16 length. An integer tree selects the
+reached bucket; its inner tree compares full names only against names of that
+length. Cached entries survive the live own-descriptor check without author
+callbacks. Missing properties leave both trees unchanged; present nonenumerable
+properties still shadow inherited names. Snapshot order controls enumeration,
+independently of bucket order. Searches, insertion movement and cumulative node
+storage consume the existing script budgets, including the extra outer-tree
+headers. No quota is raised. The [length-bucket follow-up](for-in-length-buckets.md)
+records the new validation; the results below describe the original checkpoint.
 
 The [local fixture](own-keys.js) contains 43 sources, 86 sloppy/strict modes and
 24 controls. Its expectations were frozen before implementation or engine
@@ -33,7 +36,7 @@ sources, complete observations, source archive and binaries remain retained.
 Each control repeated eight property checks whose for-in traversals searched
 the same visited-name tree twice for each present key. Reusing the first search
 removes that duplicate operation while retaining the live descriptor check.
-The corrected path uses 72,751 of 100,000 work units for either positive control;
+The original corrected path uses 72,751 of 100,000 work units for either positive control;
 the deliberate wrong assertions use 73,221 units and throw Test262Error. These
 are instruction-accounting observations, not elapsed-time benchmarks. The initial
 private regression and a subsequent import/test-assertion compilation failure
@@ -63,4 +66,5 @@ allocator fallibility remain separate work. Tree node precharges are a cumulativ
 storage bound, not a fallible allocator API. Window, symbol-key and integrity
 snapshots use separate unchanged paths. It establishes neither complete web
 compatibility, production security nor a Chromium performance comparison.
-Browser painting remains on the CPU; Vulkan rasterization is a separate docket.
+Browser painting at that checkpoint remained on the CPU. The later optional
+[native Vulkan route](../../docs/vulkan-native-window.md) has separate evidence.
