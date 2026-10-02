@@ -62,12 +62,20 @@ ARRAY_FROM_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'for-of', 'let'
 ARRAY_SPLICE_FEATURES = ARRAY_FROM_FEATURES.copy()
 ARRAY_CONCAT_FEATURES = ARRAY_SPLICE_FEATURES.copy()
 ARRAY_BUFFER_FEATURES = ARRAY_CONCAT_FEATURES | {'ArrayBuffer', 'resizable-arraybuffer', 'arraybuffer-transfer', 'align-detached-buffer-semantics-with-web-reality'}
+# Float16Array is Test262's umbrella tag for these DataView Float16 methods.
+# Admission is local to this subtree; the Float16Array constructor is not supplied.
+DATA_VIEW_FEATURES = ARRAY_BUFFER_FEATURES | {
+    'DataView', 'DataView.prototype.getFloat32', 'DataView.prototype.getFloat64',
+    'DataView.prototype.getInt16', 'DataView.prototype.getInt32',
+    'DataView.prototype.getInt8', 'DataView.prototype.getUint16',
+    'DataView.prototype.getUint32', 'DataView.prototype.setUint8', 'Float16Array',
+}
 ARRAY_FIND_FEATURES = ARRAY_PREDICATE_FEATURES | {'array-find-from-last'}
 ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -194,13 +202,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -511,6 +519,134 @@ def core_iterator_preflight_variants():
     return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def data_view_preflight_variants():
+    # Each wrong assertion retains the successful same-mode positive partner.
+    # Byte expectations are literals; no candidate result generates an oracle.
+    guard = ("assert.sameValue(typeof DataView,'function');"
+             "var b=new ArrayBuffer(32),v=new DataView(b);"
+             "v.setUint8(0,91);assert.sameValue(v.getUint8(0),91);"
+             "v.setUint16(28,258);assert.sameValue(v.getUint16(28),258);"
+             "assert.sameValue(ArrayBuffer.isView(v),true);\n")
+    pairs = [
+        ('construction', "var w=new DataView(b,3,7);assert.sameValue(w.buffer,b);"
+         "assert.sameValue(w.byteOffset,3);assert.sameValue(w.byteLength,7);",
+         'Object.getPrototypeOf(w)===DataView.prototype', 'true', 'false'),
+        ('call-requires-new', "var calls=0;assert.throws(TypeError,function(){"
+         "DataView(b,{valueOf:function(){calls++;return 0;}});});",
+         'calls', '0', '1'),
+        ('brand-before-offset', "var calls=0;assert.throws(TypeError,function(){"
+         "new DataView({}, {valueOf:function(){calls++;return 0;}});});",
+         'calls', '0', '1'),
+        ('ordinary-properties', "v[0]=17;Object.freeze(v);v.setUint8(0,23);"
+         "assert.sameValue(v[0],17);assert.sameValue(Object.isFrozen(v),true);",
+         'v.getUint8(0)', '23', '17'),
+        ('view-brand', "var fake=Object.create(DataView.prototype);"
+         "assert.sameValue(ArrayBuffer.isView(fake),false);"
+         "assert.sameValue(ArrayBuffer.isView(DataView.prototype),false);"
+         "assert.sameValue(ArrayBuffer.isView(b),false);",
+         'ArrayBuffer.isView(v)', 'true', 'false'),
+        ('range-and-alias', "var w=new DataView(b,5,2);w.setUint16(0,258);"
+         "assert.sameValue(v.getUint8(5),1);assert.sameValue(v.getUint8(6),2);"
+         "assert.throws(RangeError,function(){w.getUint16(1);});"
+         "assert.throws(RangeError,function(){w.setUint16(1,65535);});",
+         'w.getUint16(0)', '258', '65535'),
+        ('boolean-endian', "var calls=0,flag={valueOf:function(){calls++;throw new Error('unused');}};"
+         "v.setUint16(4,258,flag);assert.sameValue(v.getUint8(4),2);"
+         "assert.sameValue(v.getUint8(5),1);assert.sameValue(v.getUint16(4,flag),258);",
+         'calls', '0', '1'),
+        ('modulo-integers', "v.setInt8(1,-257.75);v.setUint16(2,65537.9);"
+         "v.setInt32(4,-4294967297);v.setUint32(8,4294967297);"
+         "assert.sameValue(v.getInt8(1),-1);assert.sameValue(v.getUint16(2),1);"
+         "assert.sameValue(v.getInt32(4),-1);",
+         'v.getUint32(8)', '1', '4294967297'),
+        ('float-special-values', "v.setFloat32(4,-0);v.setFloat64(8,Infinity);"
+         "v.setFloat16(2,NaN);assert.sameValue(v.getFloat32(4),-0);"
+         "assert.sameValue(v.getFloat64(8),Infinity);",
+         'Number.isNaN(v.getFloat16(2))', 'true', 'false'),
+        ('float16-direct-rounding', "v.setFloat16(2,1.0004882812500002);"
+         "assert.sameValue(v.getUint8(2),60);assert.sameValue(v.getUint8(3),1);",
+         'v.getFloat16(2)', '1.0009765625', '1'),
+        ('zero-length-at-end', "var w=new DataView(b,32);"
+         "assert.sameValue(w.byteOffset,32);assert.throws(RangeError,function(){w.getUint8(0);});",
+         'w.byteLength', '0', '1'),
+        ('fixed-tracking-regrow', "var r=new ArrayBuffer(8,{maxByteLength:16}),"
+         "fixed=new DataView(r,2,4),tracking=new DataView(r,2);"
+         "r.resize(4);assert.throws(TypeError,function(){return fixed.byteLength;});"
+         "assert.throws(TypeError,function(){fixed.getUint8(0);});"
+         "assert.sameValue(tracking.byteLength,2);r.resize(10);"
+         "assert.sameValue(fixed.byteLength,4);",
+         'tracking.byteLength', '8', '6'),
+        ('transfer-view-identity', "v.setUint8(1,37);var moved=b.transferToFixedLength();"
+         "var w=new DataView(moved);assert.sameValue(w.getUint8(1),37);"
+         "assert.sameValue(v.buffer,b);assert.throws(TypeError,function(){v.getUint8(0);});"
+         "assert.throws(TypeError,function(){return v.byteOffset;});",
+         'ArrayBuffer.isView(v)', 'true', 'false'),
+        ('getter-brand-order', "var calls=0;assert.throws(TypeError,function(){"
+         "DataView.prototype.getUint16.call({}, {valueOf:function(){calls++;return 0;}});});",
+         'calls', '0', '1'),
+        ('setter-brand-order', "var calls=0;assert.throws(TypeError,function(){"
+         "DataView.prototype.setUint16.call({}, {valueOf:function(){calls++;return 0;}},"
+         "{valueOf:function(){calls++;return 7;}});});",
+         'calls', '0', '1'),
+        ('setter-fresh-bounds', "var r=new ArrayBuffer(8,{maxByteLength:16}),w=new DataView(r),order='';"
+         "w.setUint16({valueOf:function(){order+='I';r.resize(0);return 2;}},"
+         "{valueOf:function(){order+='V';r.resize(8);return 258;}});"
+         "assert.sameValue(w.getUint16(2),258);",
+         'order', "'IV'", "'I'"),
+        ('constructor-callback-order', "var order='',T=(function(){}).bind(null);"
+         "Object.defineProperty(T,'prototype',{get:function(){order+='P';return DataView.prototype;}});"
+         "var w=Reflect.construct(DataView,[b,{valueOf:function(){order+='O';return 2;}},"
+         "{valueOf:function(){order+='L';return 4;}}],T);assert.sameValue(w.byteLength,4);",
+         'order', "'OLP'", "'OPL'"),
+        ('length-detach-prototype-abrupt', "var marker={},caught,reads=0,T=(function(){}).bind(null);"
+         "Object.defineProperty(T,'prototype',{get:function(){reads++;throw marker;}});"
+         "try{Reflect.construct(DataView,[b,0,{valueOf:function(){b.transfer();return 0;}}],T);}"
+         "catch(e){caught=e;}assert.sameValue(caught,marker);",
+         'reads', '1', '0'),
+        ('property-constructor', "verifyProperty(DataView,'length',{value:1,writable:false,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(DataView,'name',{value:'DataView',writable:false,enumerable:false,configurable:true},{restore:true});"
+         "verifyProperty(DataView,'prototype',{value:DataView.prototype,writable:false,enumerable:false,configurable:false});",
+         'DataView.length', '1', '2'),
+        ('property-tag', "var tag=Object.getOwnPropertyDescriptor(DataView.prototype,Symbol.toStringTag);"
+         "assert.sameValue(tag.value,'DataView');assert.sameValue(tag.writable,false);"
+         "assert.sameValue(tag.enumerable,false);assert.sameValue(tag.configurable,true);",
+         'Object.prototype.toString.call(v)', "'[object DataView]'", "'[object Object]'"),
+    ]
+    codecs = [
+        ('Int8', '-3', '-3', [253]), ('Uint8', '257', '1', [1]),
+        ('Int16', '-513', '-513', [253,255]), ('Uint16', '258', '258', [1,2]),
+        ('Int32', '16909060', '16909060', [1,2,3,4]),
+        ('Uint32', '4294967295', '4294967295', [255,255,255,255]),
+        ('Float16', '1.5', '1.5', [62,0]), ('Float32', '1.5', '1.5', [63,192,0,0]),
+        ('Float64', '-0', '-0', [128,0,0,0,0,0,0,0]),
+    ]
+    for kind, value, expected, data in codecs:
+        setup = f'v.set{kind}(4,{value});'
+        setup += ''.join(f'assert.sameValue(v.getUint8({4+i}),{byte});' for i,byte in enumerate(data))
+        setup += f'assert.sameValue(v.get{kind}(4),{expected});v.set{kind}(4,{value},true);'
+        setup += ''.join(f'assert.sameValue(v.getUint8({4+i}),{byte});' for i,byte in enumerate(reversed(data)))
+        pairs.append(('codec-'+kind,setup,f'v.get{kind}(4,true)',expected,'99'))
+        for prefix,length in [('get',1),('set',2)]:
+            name=prefix+kind
+            setup=(f"var fn=DataView.prototype.{name};verifyProperty(DataView.prototype,'{name}',"
+                   "{value:fn,writable:true,enumerable:false,configurable:true},{restore:true});"
+                   f"verifyProperty(fn,'name',{{value:'{name}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                   f"verifyProperty(fn,'length',{{value:{length},writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+                   "assert.sameValue(Object.getOwnPropertyDescriptor(fn,'prototype'),undefined);"
+                   "assert.throws(TypeError,function(){new fn(0,1);});")
+            pairs.append(('property-'+name,setup,'fn.length',str(length),str(length+1)))
+    for name in ('buffer','byteLength','byteOffset'):
+        setup=(f"var d=Object.getOwnPropertyDescriptor(DataView.prototype,'{name}'),fn=d.get;"
+               "assert.sameValue(d.set,undefined);assert.sameValue(d.enumerable,false);assert.sameValue(d.configurable,true);"
+               f"verifyProperty(fn,'name',{{value:'get {name}',writable:false,enumerable:false,configurable:true}},{{restore:true}});"
+               "verifyProperty(fn,'length',{value:0,writable:false,enumerable:false,configurable:true},{restore:true});"
+               "assert.throws(TypeError,function(){fn.call({});});assert.throws(TypeError,function(){new fn();});")
+        pairs.append(('property-getter-'+name,setup,'fn.length','0','1'))
+    return [('data-view-'+name+suffix,guard+setup+'\n'+f'assert.sameValue({actual},{value});\n',expected,mode)
+            for mode in ('sloppy','strict') for name,setup,actual,good,bad in pairs
+            for suffix,value,expected in (('',good,'passed'),('-mismatch',bad,'failed'))]
 
 
 def array_buffer_preflight_variants():
@@ -2143,6 +2279,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         variants += array_from_preflight_variants()
     if profile == 'array-buffer':
         variants += array_buffer_preflight_variants()
+    if profile == 'data-view':
+        variants += data_view_preflight_variants()
     if profile == 'array-concat':
         variants += array_concat_preflight_variants()
     if profile == 'array-splice':
@@ -2165,7 +2303,7 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                 name=name, mode=mode, case_sha256=case['case_sha256'],
                 source_sha256=digest(case['source']), expected=expected,
                 verified=correct, result=result)
-    if profile in {'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         # An unavailable prerequisite can throw the harness's Test262Error in both partners.
         # Preserve that raw observation, but do not verify the mismatch unless
         # its separately executed positive partner completes successfully.

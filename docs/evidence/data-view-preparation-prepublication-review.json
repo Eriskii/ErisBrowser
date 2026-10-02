@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "reviewer": "layout",
+  "reviewed_utc": "2026-10-02T11:34:32.602120+00:00",
+  "scope": "Preparation-only public document, byte-exact public source/report copies, proposed evidence publisher selection before its first execution",
+  "result": "clear",
+  "findings": [],
+  "bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view.md",
+      "bytes": 5140,
+      "sha256": "d843cedc72ccfda59062c8429404774edbb784e9ee740b8fb8b63d3e83045c0b"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/publication/publish.py",
+      "bytes": 4662,
+      "sha256": "dd6affa77758f8a2a4446d0b99c18b7cf2369f0fb7661ba4c61db082b11ba2fa"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/formal-preparation/freeze.json",
+      "bytes": 374821,
+      "sha256": "016d70c77384e280d5b0f888f9db3bcb6dce6ba7f4f198d32e497237fb2965b8"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/local-preparation/replay-inputs.json",
+      "bytes": 7116,
+      "sha256": "ae7d29600835127779de1b6d1f4deae554859531a310af524867fc59b57d91e7"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/formal-before/execution.json",
+      "bytes": 4636,
+      "sha256": "718370b37dd70354a4d10150819234c937a58bfa82d8ebd644fce92b774bb521"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/local-before/execution.json",
+      "bytes": 4132,
+      "sha256": "8c431b0fcd41f484eb2083c5371a7e0a9145d894daa73657cf7741ae56574632"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/local-before/local.execution.json",
+      "bytes": 642,
+      "sha256": "38d5cd169c55ce077b83bb03b9b1b6e4934e3dbb059a33bc69d43e32bc1e8b65"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/formal-preparation/python-all-3.log",
+      "bytes": 468,
+      "sha256": "ce110cfd67da687d2bef77098ff36d6a0504ee863c649f6cf84661acc946ccac"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/for-in-length-buckets-ci.json",
+      "bytes": 25644,
+      "sha256": "6dcb8ca07f6e767fcc5120cafa803ab28fde83f6a756883c0bfd3d9671ec15c6"
+    }
+  ],
+  "copies": [
+    {
+      "public": {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view-local.js",
+        "bytes": 134116,
+        "sha256": "41e779fb99cd84a87e6a3c827539900f87a3354387e96b1a5d742c07ec680d38"
+      },
+      "source": {
+        "path": "/tmp/eris-data-view-1/local-preparation/data-view.js",
+        "bytes": 134116,
+        "sha256": "41e779fb99cd84a87e6a3c827539900f87a3354387e96b1a5d742c07ec680d38"
+      },
+      "byte_identical": true
+    },
+    {
+      "public": {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view-local-preflights.json",
+        "bytes": 32954,
+        "sha256": "e3f830d70c8967801dbb906edc8c1fceb09a104a7f25611af885dd38f7fa3eb2"
+      },
+      "source": {
+        "path": "/tmp/eris-data-view-1/local-preparation/preflights.json",
+        "bytes": 32954,
+        "sha256": "e3f830d70c8967801dbb906edc8c1fceb09a104a7f25611af885dd38f7fa3eb2"
+      },
+      "byte_identical": true
+    },
+    {
+      "public": {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view-codec-vectors.tsv",
+        "bytes": 8993,
+        "sha256": "b0569334716bf88531ac592cfcc0930726dac67df19fd795126263dc2a09128a"
+      },
+      "source": {
+        "path": "/tmp/eris-data-view-1/local-preparation/data-view-codec-vectors.tsv",
+        "bytes": 8993,
+        "sha256": "b0569334716bf88531ac592cfcc0930726dac67df19fd795126263dc2a09128a"
+      },
+      "byte_identical": true
+    },
+    {
+      "public": {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/test262-data-view-before.json",
+        "bytes": 929664,
+        "sha256": "acbfc4b58ac6e314f11e9a2a3eed8f65b4b53ecebf73132c90deb9531c1d67ab"
+      },
+      "source": {
+        "path": "/tmp/eris-data-view-1/formal-before/data-view.json",
+        "bytes": 929664,
+        "sha256": "acbfc4b58ac6e314f11e9a2a3eed8f65b4b53ecebf73132c90deb9531c1d67ab"
+      },
+      "byte_identical": true
+    },
+    {
+      "public": {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view-local-before.json",
+        "bytes": 688309,
+        "sha256": "7af083ca4f84464d2008a035f3b81bbdde168163ee78536a0ac2aab50c9f4220"
+      },
+      "source": {
+        "path": "/tmp/eris-data-view-1/local-before/report.json",
+        "bytes": 688309,
+        "sha256": "7af083ca4f84464d2008a035f3b81bbdde168163ee78536a0ac2aab50c9f4220"
+      },
+      "byte_identical": true
+    }
+  ],
+  "verified_claims": {
+    "formal_modes": 1122,
+    "formal_failed": 706,
+    "formal_unsupported": 416,
+    "formal_verified_common_controls": 32,
+    "formal_verified_feature_controls": 0,
+    "formal_runtime_reference_errors": 658,
+    "formal_runtime_test262_errors": 40,
+    "formal_bigint_parse_failures": 8,
+    "local_modes": 138,
+    "local_failed": 136,
+    "local_unsupported": 2,
+    "local_verified_common_controls": 12,
+    "local_verified_feature_controls": 0,
+    "local_runtime_guard_failures": 134,
+    "local_bigint_parse_failures": 2,
+    "raw_case_pass_or_resource_observations": 0,
+    "python_tests_final_pass": 367,
+    "parent_ci_jobs_success": 9
+  },
+  "publisher_review": [
+    "The current proposed selection contains only preparation/corpus/tooling/oracle/BEFORE evidence and source records: no runtime Rust inputs, executable builds, cache directories or repeated source.tar.",
+    "The complete original corpus/proofs, held guards/oracles, original drafts, initial Python failures and before raw stdout/stderr/reports are selected.",
+    "Formal and local frozen entries are hash-checked; symlinks, unclassified paths, duplicate archive members, oversized payloads and ELF bytes are refused before destination creation.",
+    "Archive names remain inside repository/ or scratch/; deterministic gzip/tar metadata and raw SHA256/size records preserve exact payload identities.",
+    "The absent completed-results review is a required publisher input, so the current publisher will refuse publication until that audit arrives.",
+    "This prepublication receipt is outside selected directories and is not in the publisher explicit set, avoiding an index cycle."
+  ],
+  "scope_qualifications": [
+    "The document states preparation only, no DataView implementation/security/Chromium performance or new Rust/GPU validation claim.",
+    "Raw failed and excluded outcomes and unhealthy feature controls remain explicit; no baseline or quota changes are claimed.",
+    "Only the planned evidence index link is currently unresolved; a final audit must verify the produced archive/index and any selection changes before publication.",
+    "Top-level work-directory file selection is evaluated when publisher runs, so the final payload audit must confirm no later runtime receipt accidentally enters the preparation package."
+  ],
+  "execution_by_reviewer": {
+    "engine": false,
+    "runner": false,
+    "publisher": false,
+    "tests": false
+  }
+}

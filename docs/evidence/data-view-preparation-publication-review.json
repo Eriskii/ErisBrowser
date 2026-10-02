@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "reviewer": "layout",
+  "reviewed_utc": "2026-10-02T11:36:47.216860+00:00",
+  "result": "clear",
+  "findings": [],
+  "scope": "Every published archive payload/index, complete imported corpus, preparation-only document and retained source/report binding",
+  "bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/data-view-preparation/index.json",
+      "bytes": 743255,
+      "sha256": "20c3dcc4472fd21f6bff27b43be86369f2816cf912bd991eb59bc2025dde8394"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/data-view-preparation/records.tar.gz",
+      "bytes": 4446781,
+      "sha256": "75dc2ebf7642afacdf9e87364148a42ebc8cedc9d15ccfd0a591ab36a1ce8b3d"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tests/conformance/data-view.md",
+      "bytes": 5140,
+      "sha256": "d843cedc72ccfda59062c8429404774edbb784e9ee740b8fb8b63d3e83045c0b"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/publication/publish.py",
+      "bytes": 4707,
+      "sha256": "178d1cf029027c088e58b30c81d04c3d87c38812b66c414b0de18d324034bd4b"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/before-results-review.json",
+      "bytes": 6924,
+      "sha256": "2d1f0fff1cd9ce59d1e79915eef1d6e343a2c87d38ee2343d4d5924ab5782db0"
+    },
+    {
+      "path": "/tmp/eris-data-view-1/publication/prepublication-review.json",
+      "bytes": 7117,
+      "sha256": "bccd835b5cc341c8baa8aa6021ef2da928c0ca8d6d6feb1ebd6ac0b2772c3314"
+    }
+  ],
+  "archive_checks": {
+    "payloads": 1874,
+    "payload_bytes": 35989548,
+    "archive_bytes": 4446781,
+    "all_members_hash_size_and_original_bytes_exact": true,
+    "all_members_regular_unique_safe_paths": true,
+    "deterministic_gzip_timestamp_and_tar_metadata": true,
+    "imported_corpus_files": 577,
+    "all_imported_files_present": true,
+    "formal_frozen_records": 628,
+    "local_frozen_records": 35,
+    "all_frozen_inputs_present_and_exact": true,
+    "no_runtime_rust_or_executable_builds_or_cache_or_source_archive": true
+  },
+  "claims": {
+    "formal_modes": 1122,
+    "formal_failed": 706,
+    "formal_unsupported": 416,
+    "formal_common_controls_verified": 32,
+    "formal_feature_controls_verified": 0,
+    "local_modes": 138,
+    "local_failed": 136,
+    "local_unsupported": 2,
+    "local_common_controls_verified": 12,
+    "local_feature_controls_verified": 0,
+    "old_profiles_static_unchanged": 42,
+    "old_modes_static_unchanged": 18563,
+    "old_controls_static_unchanged": 4252,
+    "python_final_tests": 367
+  },
+  "retention": [
+    "Both complete BEFORE runs and initial unhealthy controls remain exact; formal exit 1 and local exit 0 are preserved.",
+    "Initial Python preparation failures and original guard/Float16 correction drafts remain included.",
+    "Completed result-review Python, Markdown and JSON are all present in the archive.",
+    "Current public source/oracle/report copies and the complete imported corpus match held originals.",
+    "The repeated executable/source archive is omitted explicitly; complete predecessor inventories and archive bindings are included and the prior reconstruction publication is linked.",
+    "All local document links now resolve; the document remains preparation-only and makes no runtime support, security or performance claim."
+  ],
+  "limitations": [
+    "Static/data-only publication review; no publisher, test runner, compiler or engine was executed by reviewer.",
+    "The archive does not contain an executable build and is not a claim of standalone binary reproduction.",
+    "Cleanup claims remain limited to the recorded owned group/leader protocol, not an independent escaped-descendant census."
+  ],
+  "publisher_delta": "The required-review existence assertion was removed after the prepublication read; the actual published member set nevertheless includes all three completed-result-review files, and every current publisher payload matches its stored bytes."
+}
