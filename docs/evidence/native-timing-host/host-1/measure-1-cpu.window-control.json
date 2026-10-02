@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "success": true,
+  "control_complete": true,
+  "commands": [
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 7872,
+      "stdout_sha256": "dc6299a7c3269f47b654a1fab814f5e01d5e08d3d3823d2a38f0b9cfa002fc99",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": null
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 7872,
+      "stdout_sha256": "619ddc627252e6c73c443f72ab68b426f0ee790a4daeb27b787538b224627c2f",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": null
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 8705,
+      "stdout_sha256": "8c075c271bd8ba728ad617a9568d3130072a4a169672a59b7b91605b4624a7ef",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": {
+        "pid": 1941775,
+        "size": [
+          1268,
+          758
+        ],
+        "floating": false,
+        "mapped": true
+      }
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "dispatch",
+        "setfloating",
+        "pid:1941775"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 3,
+      "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "ok\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 8701,
+      "stdout_sha256": "a3769b26c2898d7f8484bda7e2bd4876fa3a397d7f47c4ccbaba5001b465981b",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": {
+        "pid": 1941775,
+        "size": [
+          1285,
+          774
+        ],
+        "floating": true,
+        "mapped": true
+      }
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "dispatch",
+        "resizewindowpixel",
+        "exact 1280 880,pid:1941775"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 3,
+      "stdout_sha256": "dc51b8c96c2d745df3bd5590d990230a482fd247123599548e0632fdbf97fc22",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "ok\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/nix/store/3swgkdab65v5m97k2x49b9hfgda2v2ib-hyprland-0.56.2/bin/hyprctl",
+        "-j",
+        "clients"
+      ],
+      "status": "exited",
+      "returncode": 0,
+      "stdout_bytes": 8702,
+      "stdout_sha256": "40501b6cd8b4a3119494295efadd240ff6f8eedcba928e7d215f4c3eca1bd8e3",
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": "",
+      "owned_client": {
+        "pid": 1941775,
+        "size": [
+          1280,
+          880
+        ],
+        "floating": true,
+        "mapped": true
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/admitted.html",
+      "method": "GET",
+      "header_bytes": 153,
+      "header_sha256": "4b987e0bbe8db38a8067b5265850090fb0108eb26723c87d8f58da7dfe0e2361",
+      "body_bytes": 320,
+      "body_sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759",
+      "response_complete": true,
+      "response_bytes": 419,
+      "response_sha256": "81e8af5ab36a96dba64d5c5b5f816a6d9a705d962f01d2b6d805d0f366b2a0c5"
+    },
+    {
+      "path": "/two-pixels.png",
+      "method": "GET",
+      "header_bytes": 154,
+      "header_sha256": "2a3e36a09eb642dae45161ad3dbcb5bd891bd2dca3aac5ba1be25eecdd7e17aa",
+      "body_bytes": 71,
+      "body_sha256": "5a43ec1305804c9be3f99944cc19630ecb0839f0743c32deffd29357409efe54",
+      "response_complete": true,
+      "response_bytes": 154,
+      "response_sha256": "261411794eed0e863071e82776c1ff1962b5652a8a76537cb7bd6bcbfc32ba4e"
+    }
+  ],
+  "accepted_connections": 2,
+  "identity": {
+    "pid": 1941775,
+    "parent_pid": 1941771,
+    "process_group": 1941771,
+    "start_ticks": 105026036
+  },
+  "browser_reaped": true,
+  "browser_returncode": 0,
+  "binary_sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+  "controller_sha256": "66d66d2680208f4e11741985f952f25e3e8f583c73953ce46220a4e82e1053d9",
+  "fixture_freeze": "957fd5ad91da6b2d193fd60e8596bc22c0f4b6c219385d5a2e2f098eac657f5a",
+  "port": 56625,
+  "route": "cpu",
+  "mode": "measure",
+  "browser_command": [
+    "/tmp/eris-native-timing-1/eris-browser-native-timing-2",
+    "http://127.0.0.1:56625/admitted.html",
+    "--presenter=vulkan",
+    "--raster=cpu",
+    "--no-scripts",
+    "--exit-after",
+    "20.0",
+    "--benchmark-native",
+    "16"
+  ],
+  "controlled_size": [
+    1280,
+    880
+  ],
+  "release": {
+    "prefix_bytes": 380,
+    "prefix_sha256": "2a6c388786fb87c2bc84481831d33eca7c6e320f9377948de1c7bb0966e30ff1",
+    "html_sha256": "1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759",
+    "physical_size": [
+      1280,
+      880
+    ]
+  }
+}

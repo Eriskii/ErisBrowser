@@ -1,5 +1,25 @@
 # Validation record
 
+## First controlled native timing comparison
+
+All **eight owned window processes** pass using the frozen release from
+`51ca9ed`, a single loopback URL and exactly equal canonical paint inputs.
+Two separate CPU/native acquired-texture checks each match **4,505,600 bytes**.
+Six processes complete **96 measured frames** with no reference/readback; every
+owned child exits and is reaped without cleanup failure. The host and helper
+changes pass **96 focused Python groups**, including **25 new groups**.
+The complete tool suites pass **347 root / 90 raster-probe groups**. All nine
+[public API checkpoint CI jobs](evidence/vulkan-native-timing-api-ci.json) pass.
+
+For the tiny admitted fixture on NVIDIA RTX 4070 SUPER/BGRA8/FIFO, subsequent
+prepare-to-present medians are **2.429 ms CPU / 2.085 ms native**. The corresponding
+p95 values are **2.625 ms / 4.830 ms**, and first-frame medians are
+**3.039 ms / 5.744 ms**. Every early slow sample remains in the declared population.
+These are host work intervals, with unlocked clocks and no compositor/scanout
+measurement; there is no Chromium comparison or general browser-speed claim.
+See [full interpretation and reproduction](native-render-benchmark.md) and
+[all source-bound raw records](evidence/vulkan-native-timing-host.json).
+
 ## Native timing API and exact-scene checks
 
 The opt-in `--benchmark-native` and `--benchmark-native-check` modes add bounded
@@ -17,8 +37,9 @@ presenter binary suites pass **41** and **62** groups. The frozen release passes
 an outer-sandbox socket-preflight failure remain retained; corrected checks
 and unchanged confinement tests pass.
 
-This is source/unit/CLI evidence. Actual paired desktop measurements are still
-pending, and no GPU timing, compositor latency or Chromium result is claimed.
+This API checkpoint contains source/unit/CLI evidence. The controlled host
+comparison above followed using the same release binary; neither establishes
+isolated GPU timing, compositor latency or a Chromium result.
 See the [measurement contract](native-render-benchmark.md) and
 [hash-bound evidence](evidence/vulkan-native-timing-api.json).
 

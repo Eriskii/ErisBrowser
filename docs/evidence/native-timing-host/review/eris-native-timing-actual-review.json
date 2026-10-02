@@ -1,0 +1,1055 @@
+{
+  "schema": 1,
+  "scope": "Independent read-only audit of retained actual native timing attempt 1; standard-library data processing only, no host/engine/compiler/desktop/GPU execution",
+  "outcome": "clear",
+  "findings": [],
+  "inputs": [
+    {
+      "path": "/tmp/eris-native-timing-1/host-1/timing-host-results.json",
+      "bytes": 209392,
+      "sha256": "107ea53d4118ff1bd35e5ee8d57d969b7bc1980fe5b54e11d4113d9444154638"
+    },
+    {
+      "path": "/tmp/eris-native-timing-1/release-2.json",
+      "bytes": 19597,
+      "sha256": "7cb51712e2ad403b46144427e72bcc933df38f5617401baf1a3c0ad2678f1892"
+    },
+    {
+      "path": "/tmp/eris-native-timing-1/rust-source-2.json",
+      "bytes": 19344,
+      "sha256": "a5b0f569317e6f2fb4a7cdfdb1cd87be9697861fec0b8022640a271fac366015"
+    },
+    {
+      "path": "/tmp/eris-native-timing-host-source-ready.json",
+      "bytes": 4190,
+      "sha256": "f33dee560c562dfc05c1c8c2d3feb167bb4736c0fc3e0b536d1f381f99972ce9"
+    },
+    {
+      "path": "/tmp/eris-native-timing-1/environment-before-1.json",
+      "bytes": 1213,
+      "sha256": "8189e6437a998aaee467ee4464fc5a75d94f68bb8ea77cde51efb8c9adfbd6f3"
+    },
+    {
+      "path": "/tmp/eris-native-timing-1/environment-after-1.json",
+      "bytes": 1213,
+      "sha256": "a5ff5679c86bcfc15160fd31f1f705fcc1183e243c624fbc41746cb3b7e73b0c"
+    },
+    {
+      "path": "/tmp/eris-native-timing-1/host-1/scene.ebni",
+      "bytes": 269,
+      "sha256": "d7bbf8cf46daa1424717c982a5081528683fd6f0226f7b8ebc6d289eca5e87bb"
+    }
+  ],
+  "binary": {
+    "path": "/tmp/eris-native-timing-1/eris-browser-native-timing-2",
+    "bytes": 16138144,
+    "sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de"
+  },
+  "source_files_verified": 182,
+  "release_source_files_verified": 120,
+  "earlier_rust_source_to_final_release_delta": [
+    {
+      "path": "src/browser/native_benchmark_report.rs",
+      "earlier": {
+        "path": "src/browser/native_benchmark_report.rs",
+        "bytes": 20037,
+        "sha256": "fdc6d0df9bfe54e17f929fe14e46c231a01584ea8a33427790e97710585343af"
+      },
+      "release": {
+        "path": "src/browser/native_benchmark_report.rs",
+        "bytes": 20047,
+        "sha256": "7b9e3dd83faa255e7bfe21d558e78703bbf37c3b2370dc872548d49c00d90ede"
+      }
+    },
+    {
+      "path": "src/browser.rs",
+      "earlier": {
+        "path": "src/browser.rs",
+        "bytes": 115061,
+        "sha256": "bfacbc839c089b274c9bb6978c7cb689afd912ae9507f0597360d8bab8f0c55f"
+      },
+      "release": {
+        "path": "src/browser.rs",
+        "bytes": 115182,
+        "sha256": "3a2d5930156ebed7b73682d65bcf3668f8ee967e4efa9242355fe158b74a5603"
+      }
+    }
+  ],
+  "held_host_files_verified": 5,
+  "loader_names_verified": 3,
+  "fixture_files_verified": 5,
+  "runs": [
+    {
+      "name": "check-cpu",
+      "route": "cpu-upload",
+      "mode": "check",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-cpu.stdout.log",
+        "bytes": 917,
+        "sha256": "76bcb85406f226389361ceb2aa7cf74e443d2a576b4c1a58ecb5725c803389ab"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-cpu.stderr.log",
+        "bytes": 1085,
+        "sha256": "cfc94ed705c56c02da33942872ec04720c46079c11f5935becc0f836151956e5"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-cpu.json",
+        "bytes": 1551,
+        "sha256": "7345650a1e88f4a442223e5fb8d40313a774a3cabcd1c21b95e8e7805c8eef20"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-cpu.window-control.json",
+        "bytes": 6480,
+        "sha256": "b14fb9cb81597def6ca1d87cc47760922dd73cc1e499c6b363562f09295d5ab6"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-cpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 0,
+      "serials": [],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "check-gpu",
+      "route": "native-raster",
+      "mode": "check",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-gpu.stdout.log",
+        "bytes": 920,
+        "sha256": "269dd6d30d78dbb70a6e56a14849dbd48be686416bd6333eaa134eecb85634b7"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-gpu.stderr.log",
+        "bytes": 1251,
+        "sha256": "31b715d1159bf7ea28f61e3aded64cde8dc4f6a1282990740f8cb9ee0bef0ff5"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-gpu.json",
+        "bytes": 1551,
+        "sha256": "15d5d605657375120dfdca707400066b26ef444c5177ac52fc0f4a14c158acfb"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-gpu.window-control.json",
+        "bytes": 6480,
+        "sha256": "4e0efb7d29a3f6b535a4faa80657bafc877704ece396e6f848925c32665bf4b5"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/check-gpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 0,
+      "serials": [],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-1-cpu",
+      "route": "cpu-upload",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-cpu.stdout.log",
+        "bytes": 7282,
+        "sha256": "abe3ad8993808d94857d12e1b18b2d6454a481cb78548e16eee9853b9c699c12"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-cpu.stderr.log",
+        "bytes": 809,
+        "sha256": "fbd3c9f20edc94b869e8970fac80c07418fd8845e94561fe9b8736c3b1d5b509"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-cpu.json",
+        "bytes": 1557,
+        "sha256": "d41cc7c95ca7082e57d0a3f8835905b0c5075693e135d8486418510aead14acb"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-cpu.window-control.json",
+        "bytes": 6002,
+        "sha256": "dace4640f12a13df18588df75162add09d45be5d1c4b87211c44af8c1d01417d"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-cpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-1-gpu",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-gpu.stdout.log",
+        "bytes": 7377,
+        "sha256": "08f618ded06bebb602b226e83bfb5faf81371eb0e4e7cd0cfe4ee75fb1ca6e65"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-gpu.stderr.log",
+        "bytes": 850,
+        "sha256": "7147792d73639f80b6a030932bf8ddde3c0092b6a46b737a2893f66c6bdbe370"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-gpu.json",
+        "bytes": 1557,
+        "sha256": "5e0f952a355ef2ff8f1b1c1e7003cbe8d5c223ed8364c238c7bbfbf908f5df14"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-gpu.window-control.json",
+        "bytes": 6486,
+        "sha256": "761f71840ab45339656eb1c2a86057bf36e52b586513405656f2ec5df9831ede"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-1-gpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-2-gpu",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-gpu.stdout.log",
+        "bytes": 7367,
+        "sha256": "fd6cfbe01d5031b40b25334be340e745dcacad562981cb025c69170d0508fcb4"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-gpu.stderr.log",
+        "bytes": 850,
+        "sha256": "f8649cc6d8a2180b6dbbb9d17541c7cae4720b9b404e1ba9c3992827f3c5bc1b"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-gpu.json",
+        "bytes": 1557,
+        "sha256": "c75cef53f049849080bb70f65a3d2503f7bb3316f51d6288a73c5a39b7198b9f"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-gpu.window-control.json",
+        "bytes": 6002,
+        "sha256": "6458108d02cbee6b6a353db0aeb2ce66cf6127a55b112e9f0eb0490b289eb61d"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-gpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-2-cpu",
+      "route": "cpu-upload",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-cpu.stdout.log",
+        "bytes": 7290,
+        "sha256": "500b4c724d7cc24006fb2a15b0da5d52988ef7129e4d2e743d40c27360fdb7d7"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-cpu.stderr.log",
+        "bytes": 809,
+        "sha256": "7457c2173520078ae5e7eee71e6593104ec46ea55d0e9e09d60fa4be1b5ecd5f"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-cpu.json",
+        "bytes": 1557,
+        "sha256": "e08fbeb099db88a3e172d385f49c6927acd79c6b19d2dd0d69faf96d6d04219a"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-cpu.window-control.json",
+        "bytes": 6002,
+        "sha256": "de05ef77ff81d9f04496cc1c353b209c3991a4bfb6d9cc0c3cbd73502c8558df"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-2-cpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-3-cpu",
+      "route": "cpu-upload",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-cpu.stdout.log",
+        "bytes": 7282,
+        "sha256": "449c5999594681dc9eb77e0773549025188bca6430ffc42478e040686d014540"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-cpu.stderr.log",
+        "bytes": 809,
+        "sha256": "bf2689b1ea5172fc06cf172251a5a549570c914e202e205278df66297b83bef2"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-cpu.json",
+        "bytes": 1557,
+        "sha256": "b0fbed6cf07a75b235c8ce16cf1ddb229ca74213c260ccfff6f742ce1553f98c"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-cpu.window-control.json",
+        "bytes": 6002,
+        "sha256": "b99ebe7e24369f3e8682343e95acccf92af964728455d0f9136fe8ddcdb0c4e9"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-cpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-3-gpu",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-gpu.stdout.log",
+        "bytes": 7372,
+        "sha256": "1207bb5c9c87b375c892d4f65995c0086e898cbc3e8c57bf372a6892134673fc"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-gpu.stderr.log",
+        "bytes": 850,
+        "sha256": "f44c96af3f4de2e11dbe69a3abbf27bfe29c5d88feb4f481d82fab598817a26d"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-gpu.json",
+        "bytes": 1557,
+        "sha256": "d8da60a7df496b938ba19e9284ba2223d878286ffcd38a34399f1c3bd8bdea1d"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-gpu.window-control.json",
+        "bytes": 6002,
+        "sha256": "be17819785a6e7e07e5b4f6c319308ec0aba95a74244c69749afdd6762615297"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-timing-1/host-1/measure-3-gpu.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    }
+  ],
+  "counts": {
+    "runs": 8,
+    "successful_checks": 2,
+    "cpu_upload_checked_frames": 1,
+    "native_raster_checked_frames": 1,
+    "compared_bytes_per_check": 4505600,
+    "total_separate_correctness_bytes": 9011200,
+    "measurement_processes": 6,
+    "timed_frames": 96,
+    "timed_frames_per_route": 48,
+    "first_frames_per_route": 3,
+    "steady_frames_per_route": 45,
+    "measured_verification_records": 0,
+    "measured_readback_requested": false,
+    "outer_reaped_total": 8,
+    "outer_adopted_descendants_total": 0
+  },
+  "scene": {
+    "bytes": 269,
+    "sha256": "d7bbf8cf46daa1424717c982a5081528683fd6f0226f7b8ebc6d289eca5e87bb",
+    "identical_across_all_runs": true,
+    "decoded_identity": {
+      "width": 1280,
+      "height": 880,
+      "scroll": 0.0,
+      "zoom": 1.0,
+      "title": "N",
+      "address": "http://127.0.0.1:56625/admitted.html",
+      "address_focused": false,
+      "input_value": "",
+      "caret": 0,
+      "anchor": 0,
+      "focused_node": false,
+      "content_height": 1000.0,
+      "status": "Native timing scene"
+    },
+    "decoded_commands": [
+      {
+        "tag": 6,
+        "rect": [
+          0.0,
+          0.0,
+          1280.0,
+          1000.0
+        ],
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "radius": 0.0
+      },
+      {
+        "tag": 7,
+        "x": 0.0,
+        "y": 0.0,
+        "text": "A",
+        "size": 12.0,
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "bold": false,
+        "italic": false,
+        "monospace": true
+      },
+      {
+        "tag": 8,
+        "rect": [
+          7.224609375,
+          7.399999618530273,
+          8.0,
+          4.0
+        ],
+        "key": "two-pixels.png"
+      },
+      {
+        "tag": 2
+      },
+      {
+        "tag": 7,
+        "x": 6.0,
+        "y": 2.0,
+        "text": "F",
+        "size": 12.0,
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "bold": false,
+        "italic": false,
+        "monospace": true
+      },
+      {
+        "tag": 3
+      }
+    ],
+    "decoded_images": [
+      {
+        "key": "two-pixels.png",
+        "alias": 0,
+        "width": 2,
+        "height": 1,
+        "rgba_hex": "ff0000ff0000ff80"
+      }
+    ],
+    "generation": 1,
+    "viewport_revision": 5,
+    "scale_factor": 1,
+    "status_overrides_source_load_time": true
+  },
+  "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo",
+  "run_order": [
+    "check-cpu",
+    "check-gpu",
+    "measure-1-cpu",
+    "measure-1-gpu",
+    "measure-2-gpu",
+    "measure-2-cpu",
+    "measure-3-cpu",
+    "measure-3-gpu"
+  ],
+  "statistics_method": "Independent direct raw JSON samples; medians of observations, nearest-rank p95 index ceil(0.95*n)-1; first ordinal sample per process separate from following fifteen; absent phases remain null, no percentile sums",
+  "recomputed_statistics_ns": {
+    "cpu-upload": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 3039023,
+          "p95_nearest_rank_ns": 3140456
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 2428595,
+          "p95_nearest_rank_ns": 2625449
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 2218257,
+          "p95_nearest_rank_ns": 2455046
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1925361,
+          "p95_nearest_rank_ns": 2091426
+        }
+      }
+    },
+    "native-raster": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5743833,
+          "p95_nearest_rank_ns": 6467876
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 2085194,
+          "p95_nearest_rank_ns": 4829699
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5482037,
+          "p95_nearest_rank_ns": 6158850
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1788201,
+          "p95_nearest_rank_ns": 4553365
+        }
+      }
+    }
+  },
+  "phase_diagnostics_ns": {
+    "cpu-upload": {
+      "ui_prepare_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 675642,
+          "p95_nearest_rank_ns": 813843
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 503004,
+          "p95_nearest_rank_ns": 539413
+        }
+      },
+      "queue_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 7274,
+          "p95_nearest_rank_ns": 19577
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 8066,
+          "p95_nearest_rank_ns": 9698
+        }
+      },
+      "acquire_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 5961,
+          "p95_nearest_rank_ns": 6743
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 16171,
+          "p95_nearest_rank_ns": 22513
+        }
+      },
+      "encode_upload_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 1627647,
+          "p95_nearest_rank_ns": 1836582
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 1476390,
+          "p95_nearest_rank_ns": 1661932
+        }
+      },
+      "submit_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 17092,
+          "p95_nearest_rank_ns": 19467
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 23214,
+          "p95_nearest_rank_ns": 31791
+        }
+      },
+      "completion_wait_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 345034,
+          "p95_nearest_rank_ns": 348712
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 343902,
+          "p95_nearest_rank_ns": 414185
+        }
+      },
+      "cleanup_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 3,
+          "count": 0,
+          "median_ns": null,
+          "p95_nearest_rank_ns": null
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 45,
+          "count": 0,
+          "median_ns": null,
+          "p95_nearest_rank_ns": null
+        }
+      },
+      "present_call_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 226339,
+          "p95_nearest_rank_ns": 249464
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 42892,
+          "p95_nearest_rank_ns": 53080
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 2218257,
+          "p95_nearest_rank_ns": 2455046
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 1925361,
+          "p95_nearest_rank_ns": 2091426
+        }
+      },
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 3039023,
+          "p95_nearest_rank_ns": 3140456
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 2428595,
+          "p95_nearest_rank_ns": 2625449
+        }
+      },
+      "owner_init_ns": {
+        "count": 3,
+        "median_ns": 151952796,
+        "p95_nearest_rank_ns": 166016927
+      }
+    },
+    "native-raster": {
+      "ui_prepare_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 271975,
+          "p95_nearest_rank_ns": 302514
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 275572,
+          "p95_nearest_rank_ns": 330456
+        }
+      },
+      "queue_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 7614,
+          "p95_nearest_rank_ns": 7885
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 8897,
+          "p95_nearest_rank_ns": 19126
+        }
+      },
+      "acquire_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 6362,
+          "p95_nearest_rank_ns": 9748
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 16661,
+          "p95_nearest_rank_ns": 22182
+        }
+      },
+      "encode_upload_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 559671,
+          "p95_nearest_rank_ns": 575852
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 383387,
+          "p95_nearest_rank_ns": 424556
+        }
+      },
+      "submit_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 3461995,
+          "p95_nearest_rank_ns": 4076171
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 272857,
+          "p95_nearest_rank_ns": 2866206
+        }
+      },
+      "completion_wait_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 869679,
+          "p95_nearest_rank_ns": 913392
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 704275,
+          "p95_nearest_rank_ns": 880740
+        }
+      },
+      "cleanup_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 360724,
+          "p95_nearest_rank_ns": 364491
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 361115,
+          "p95_nearest_rank_ns": 380621
+        }
+      },
+      "present_call_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 201312,
+          "p95_nearest_rank_ns": 243071
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 48752,
+          "p95_nearest_rank_ns": 58231
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 5482037,
+          "p95_nearest_rank_ns": 6158850
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 1788201,
+          "p95_nearest_rank_ns": 4553365
+        }
+      },
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "population": 3,
+          "null_count": 0,
+          "count": 3,
+          "median_ns": 5743833,
+          "p95_nearest_rank_ns": 6467876
+        },
+        "steady_frames": {
+          "population": 45,
+          "null_count": 0,
+          "count": 45,
+          "median_ns": 2085194,
+          "p95_nearest_rank_ns": 4829699
+        }
+      },
+      "owner_init_ns": {
+        "count": 3,
+        "median_ns": 163671008,
+        "p95_nearest_rank_ns": 173868137
+      }
+    }
+  },
+  "environment": {
+    "records_bound_above": true,
+    "scaling_governor_before_after": [
+      "performance",
+      "performance"
+    ],
+    "energy_preference_before_after": [
+      "performance",
+      "performance"
+    ],
+    "gpu_query_before_after": [
+      "name, driver_version, pstate, power.draw [W], power.limit [W], temperature.gpu, clocks.current.graphics [MHz], clocks.current.memory [MHz]\nNVIDIA GeForce RTX 4070 SUPER, 595.99.02, P5, 14.74 W, 220.00 W, 40, 375 MHz, 810 MHz\n",
+      "name, driver_version, pstate, power.draw [W], power.limit [W], temperature.gpu, clocks.current.graphics [MHz], clocks.current.memory [MHz]\nNVIDIA GeForce RTX 4070 SUPER, 595.99.02, P5, 14.99 W, 220.00 W, 40, 390 MHz, 810 MHz\n"
+    ],
+    "clocks_or_power_locked": false
+  },
+  "limitations": [
+    "Single fixture, one 1280x880 viewport, one NVIDIA adapter and BGRA8Unorm acquired texture; no Chromium comparison or general performance claim.",
+    "Three fresh measurement processes per route, sixteen frames each; first-frame p95 uses only three observations and is the maximum. Steady samples within each process are not independent trials.",
+    "Timing values are host-side durations before compositor; they are not GPU timestamps, scanout/display latency or throughput measurements.",
+    "Fresh process first loaded frames may follow startup font work. Native mask preparation is rebuilt each frame; no universal cold-font/cache characterization is claimed.",
+    "No measured readback is requested by the preserved commands; reports are unchecked and logs have no verification/readback records. This is config/source/report evidence, not independent GPU command instrumentation.",
+    "Both route correctness checks are separate processes. They do not individually read back the 96 measured frames.",
+    "Before/after environment observations are retained, not a guarantee of constant clocks, power, scheduling or background load.",
+    "Loader bindings are explicit selected files/environment, not a complete transitive driver/system-library inventory.",
+    "Cleanup evidence verifies eight wrapper reaps and zero adopted descendants in the supervisor records; no new live process inspection or run was performed."
+  ],
+  "audit_program": {
+    "path": "/tmp/eris-native-timing-actual-audit.py",
+    "bytes": 16982,
+    "sha256": "909b1a01fe44b614e81172a8378711012200f892963f74451cef90cd454faab2"
+  }
+}

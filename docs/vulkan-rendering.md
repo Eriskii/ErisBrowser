@@ -558,5 +558,7 @@ requested Chromium performance threshold.
 
 The opt-in [native frame benchmark](native-render-benchmark.md) now provides
 completion-paced host intervals with a bounded exact-scene identity and a
-separate correctness mode. Its source/unit/CLI checks pass; controlled paired
-desktop release measurements remain pending.
+separate correctness mode. Its source/unit/CLI checks pass. A first controlled
+release pair sequence completes 96 measured frames and two exact acquired-pixel
+checks; the native median improves on that small fixture while first-frame and
+p95 times remain higher. The full records preserve this tradeoff.

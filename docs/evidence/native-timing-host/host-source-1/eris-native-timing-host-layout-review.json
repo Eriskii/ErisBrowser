@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "conclusion": "clear after three source-review corrections",
+  "scope": "Read-only final timing host/parser delta and Rust format agreement; no source edits or executions",
+  "source_ready": {
+    "path": "/tmp/eris-native-timing-host-source-ready.json",
+    "bytes": 4190,
+    "sha256": "f33dee560c562dfc05c1c8c2d3feb167bb4736c0fc3e0b536d1f381f99972ce9"
+  },
+  "files": [
+    {
+      "path": "tools/native_raster_timing_host.py",
+      "bytes": 35136,
+      "sha256": "19d96f020d709fd2efde01cc1f801ee28fea39bbb0a6fca52154496f50adb23a"
+    },
+    {
+      "path": "tools/test_native_raster_timing_host.py",
+      "bytes": 31971,
+      "sha256": "a86d9d71ee4e7eaec8319f0ed98c1f5bf0d6f6d6362d0d51385adcd25def8fef"
+    },
+    {
+      "path": "tools/native_raster_wide_host.py",
+      "bytes": 29183,
+      "sha256": "b52aad9b1fa50d313210afe2096f61f59f1f3e7f3112a82034c2973d750c5fea"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 9069,
+      "sha256": "99eeaf2e1f2aba9b653712fb837c27aaa0b17f8a00576e14d5ef808f4cc6356b"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 15712,
+      "sha256": "931509790971677103a555461695f1962924010a5839e8845b943dc8df6dad23"
+    },
+    {
+      "path": "src/browser/native_benchmark_identity.rs",
+      "bytes": 25316,
+      "sha256": "d1b830f842b9b51c11bcc466fe45498cc6d7cf5a71797586730dc0f962d76e4b"
+    },
+    {
+      "path": "src/browser/native_benchmark_report.rs",
+      "bytes": 20047,
+      "sha256": "7b9e3dd83faa255e7bfe21d558e78703bbf37c3b2370dc872548d49c00d90ede"
+    },
+    {
+      "path": "src/presenter/timing.rs",
+      "bytes": 10787,
+      "sha256": "bdd7c21be84f8fd6e2d27c30c58ae87900db17c045b4a7b0514aad29c4134969"
+    }
+  ],
+  "findings": [
+    {
+      "id": "cpu-cleanup-nullability",
+      "status": "resolved",
+      "location": "tools/native_raster_timing_host.py:253",
+      "review": "CPU-upload cleanup_ns must be null; native-raster cleanup_ns and all other presented-success phase values must be bounded integers. Sample route is checked before the branch.",
+      "test_source": "Both-route accepted report group plus CPU numeric-cleanup mutation rejection reviewed; no tests run by this reviewer."
+    },
+    {
+      "id": "utf8-boundary-work",
+      "status": "resolved",
+      "location": "tools/native_raster_timing_host.py:124",
+      "review": "Already validated UTF-8 is encoded once; only caret and anchor are tested for <=byte length and non-continuation-byte boundaries. O(input bytes) work with no all-prefix copying."
+    },
+    {
+      "id": "terminal-adapter-order",
+      "status": "resolved",
+      "location": "tools/native_raster_timing_host.py:310",
+      "review": "ADAPTER after a terminal SUMMARY is rejected. The mutation test moves the adapter and recomputes gate-prefix bytes/hash, isolating terminal ordering."
+    }
+  ],
+  "continued_clearance": [
+    "EBNI v1 field order, raw scalar decoding, scope tags, sorted keys, alias references and full RGBA records agree with Rust. Exact identity bytes are compared across processes; hash is only an artifact binding.",
+    "One inherited owned TCP loopback listener retains the exact URL/port; physical size, scale and full adapter description are paired.",
+    "Separate check mode requires one exact acquired-texture verification and terminal summary; measurement rejects any verification diagnostic and requires checked=false.",
+    "Both failure fields must be null for accepted reports; raw attempt files and attempt record precede parsing, no retry or selective accepted-run continuation.",
+    "All prescribed runs must complete before population statistics are generated; first frames and all steady frames remain separate.",
+    "Shared helper retains delayed release only after physical waiting proof and owned resize; buffered/partial early-proof refusal is preserved.",
+    "Inherited descriptors are restricted to one nonstandard AF_INET/SOCK_STREAM/IPPROTO_TCP loopback listening socket; browser child uses close_fds."
+  ],
+  "test_claims": "Source-ready receipt cites author-run synthetic tests; reviewer did not execute or independently claim those runs. No actual host/desktop/GPU outcomes reviewed here."
+}

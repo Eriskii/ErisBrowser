@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "scope": "read-only source/diff review; no Python module imports, tests, child processes or renderer/GPU executions",
+  "files": [
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "sha256": "dfb0135f67affa1f2d90519192694ade7e969fe0c42f4db4bc02218c221ab255",
+      "bytes": 15559
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "sha256": "99eeaf2e1f2aba9b653712fb837c27aaa0b17f8a00576e14d5ef808f4cc6356b",
+      "bytes": 9069
+    },
+    {
+      "path": "tools/native_raster_wide_host.py",
+      "sha256": "b52aad9b1fa50d313210afe2096f61f59f1f3e7f3112a82034c2973d750c5fea",
+      "bytes": 29183
+    },
+    {
+      "path": "tools/native_raster_timing_host.py",
+      "sha256": "c9d2f95c2f306b774e9e93ff5303850acedb998b1731975d7d97748d05b9a091",
+      "bytes": 34515
+    }
+  ],
+  "result": "No concrete ownership/deadline/cleanup regression found in the three helper deltas. Two precision findings and one incidental host-parser mismatch sent to author.",
+  "checks": [
+    "Default empty pass_fds keeps descriptors closed; default wide waiting grammar/release marker/forbidden set is unchanged.",
+    "Both launcher layers validate at most one integer fd>=3 and preserve it with explicit pass_fds.",
+    "AF_INET, SOCK_STREAM, SO_ACCEPTCONN, loopback address and nonzero port are checked; valid socket wrapper detaches rather than closing caller fd.",
+    "Timing launcher browser Popen uses close_fds=True without pass_fds; listener is not inherited by the browser.",
+    "Existing sole-waiter WAITID WNOWAIT ownership, signals before reap, subreaper adoption, cancellation, original timeout, bounded output/draining and cleanup status remain unchanged.",
+    "Wide delayed response still requires owned resize plus latest waiting-size evidence, and fully drains pre-release diagnostic bytes before opening the gate."
+  ],
+  "findings": [
+    {
+      "kind": "validation precision",
+      "text": "validate_listener_fds calls accepted sockets TCP but does not check socket protocol; an AF_INET listening non-TCP SOCK_STREAM socket could meet current predicate. Actual caller creates TCP."
+    },
+    {
+      "kind": "documentation precision",
+      "text": "bridge_supervisor module header still says never import into running host, while run_supervised intentionally imports its inert descriptor validation helper."
+    },
+    {
+      "kind": "incidental active host parser",
+      "text": "At read time native_raster_timing_host.validate_report required integer for CPU cleanup_ns, but presenter deliberately reports None for that unreached CPU phase; notified script before execution."
+    }
+  ]
+}

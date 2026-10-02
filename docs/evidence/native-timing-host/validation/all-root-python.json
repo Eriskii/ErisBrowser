@@ -1,0 +1,17 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 51.93225693702698,
+  "log": "all-root-python.log",
+  "sha256": "a8f32faa4e0edc66d2d3f633e8e541d5fd8996b0e2dcbac6c191045cc2aa8ec5"
+}

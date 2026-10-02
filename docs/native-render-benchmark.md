@@ -3,8 +3,8 @@
 `--benchmark-native N` measures 2–128 completed frames through the existing
 Vulkan window owner. It compares Eris's CPU framebuffer upload and native
 shader route in the same `vulkan-raster` build. This is an opt-in experiment;
-source, unit and CLI checks pass, while actual paired desktop measurements
-are pending. It establishes
+source, unit and CLI checks pass, and one controlled desktop comparison is
+retained below. It establishes
 no Chromium comparison or general performance claim.
 
 ## Usage and equal inputs
@@ -113,8 +113,55 @@ cases. The 32 new private groups cover identity/serialization, completion,
 verification gating, optional clocks and bounds. Initial lint and outer-sandbox
 preflight failures remain retained with their successful follow-ups.
 
-No actual paired timing result is claimed here. A publishable result must retain the release build and
-complete source/asset/host identities, all raw records and failed attempts,
-separate exact-scene correctness checks, equal scene/adapter/surface metadata,
-positive cleanup and direct first/steady-state summaries. Environment and
-refresh/power settings must accompany any interpretation.
+## First controlled release comparison
+
+The [retained host evidence](evidence/vulkan-native-timing-host.json) contains
+one complete eight-process sequence using the same release executable, loopback
+URL and exact 269-byte canonical paint identity. Both 1280×880 correctness
+processes match all **4,505,600 active bytes**, separately for CPU upload and
+native raster. Six measurement processes each complete 16 frames without
+verification or readback. Every process exits successfully and its owned children
+are reaped. All 96 focused Python groups pass, including 25 new host groups.
+The complete tool suites also pass: 347 root-tool and 90 raster-probe groups.
+The preceding [API checkpoint CI](evidence/vulkan-native-timing-api-ci.json)
+passes all nine jobs.
+
+The selected surface is NVIDIA GeForce RTX 4070 SUPER, driver 595.99.02,
+BGRA8, opaque sRGB, FIFO; the window reports scale 1. CPU/GPU order alternates
+across three pairs. The direct preparation-through-present durations are:
+
+| Population | CPU median | Native median | CPU p95 | Native p95 |
+| --- | ---: | ---: | ---: | ---: |
+| First loaded frame, three per route | 3.039 ms | 5.744 ms | 3.140 ms | 6.468 ms |
+| Subsequent frames, 45 per route | 2.429 ms | 2.085 ms | 2.625 ms | 4.830 ms |
+
+The native subsequent-frame median is 14.1% lower, but its p95 is 84.0% higher
+and its first-frame median is 89.0% higher. Every native process has an elevated
+second submission interval; those samples remain in the subsequent-frame
+population. The submit bracket includes encoder finish and queue submission,
+so it does not identify a driver mechanism. Raw phase records and owner totals
+remain in the evidence; no phase quantiles were added to manufacture totals.
+
+This is one tiny admitted document on one adapter. CPU governor/preference were
+`performance`; display settings remained 59.951 Hz/scale 1 and 143.999 Hz/scale 1.5
+on two outputs, with VRR disabled. GPU clocks and power were not locked.
+Before/after snapshots describe the surrounding environment, not frequencies
+during individual frames. First-frame results do not imply cold system/driver
+caches. UI redraw scheduling between samples, compositor work and scanout are
+excluded; these durations cannot be inverted into a browser FPS result.
+
+To repeat with a newly built release executable, record its SHA256 and use a
+fresh output directory and the installed Vulkan loader directory:
+
+```sh
+python3 tools/native_raster_timing_host.py \
+  --binary target/release/eris-browser --binary-sha256 YOUR_RELEASE_SHA256 \
+  --output /tmp/eris-native-timing-new --loader-directory /path/to/vulkan/lib \
+  --frames 16 --repeats 3 --allow-experimental-gpu
+```
+
+The host requires Hyprland's `hyprctl` and controls only its own unreaped browser
+children. One inherited loopback TCP listener keeps the exact URL constant;
+that descriptor is closed across the browser launch. The bounded existing
+supervisor remains responsible for cleanup. This comparison provides no
+Chromium performance, complete web compatibility or production security claim.

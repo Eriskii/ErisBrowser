@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "conclusion": "clear; no concrete publication inconsistency found",
+  "scope": "Read-only data/source/log audit; no builds, tests, browser, renderer or GPU executions",
+  "bindings": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/vulkan-native-timing-api.json",
+      "bytes": 17079,
+      "sha256": "44a7e62afa5b3b43cdf9d3001408edfc2b2b51e8f095049b91792aa9ea9dce56"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/native-timing-api/index.json",
+      "bytes": 14078,
+      "sha256": "5d3cfea1178f655b49bfa97d2bc59da012be4240e923910db5d56944ea69d03d"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/native-timing-api/validation/release-2.json",
+      "bytes": 19597,
+      "sha256": "7cb51712e2ad403b46144427e72bcc933df38f5617401baf1a3c0ad2678f1892"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/native-timing-api/validation/rust-source-2.json",
+      "bytes": 19344,
+      "sha256": "a5b0f569317e6f2fb4a7cdfdb1cd87be9697861fec0b8022640a271fac366015"
+    },
+    {
+      "path": "/tmp/eris-native-timing-api-data-audit.py",
+      "bytes": 5134,
+      "sha256": "cdcbd17d6aee727199c1d53f714239a69dc42d7337414a6dec8f5092ca16ee3e"
+    },
+    {
+      "path": "/tmp/eris-native-timing-api-publication-data-check.json",
+      "bytes": 30565,
+      "sha256": "ef5ed324ded5be5c72e83ae13a85b251dda7b0305f98215ee158b8a25bf5ebf6"
+    }
+  ],
+  "verified": {
+    "payload_files": 81,
+    "payload_bytes": 1482538,
+    "unexpected_payloads": 0,
+    "release_compiled_source_and_asset_bindings": 120,
+    "current_tree_matches_release_2": true,
+    "published_final_source_copies_match": true,
+    "release_binary_sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+    "native_tests": {
+      "1.88.0": 1387,
+      "1.98.0": 1387,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native_binary_groups": 95,
+    "new_binary_groups_against_parent": 32,
+    "previous_test_names_preserved": true,
+    "default_binary_groups": 41,
+    "vulkan_presenter_binary_groups": 62,
+    "cli_guard_cases": 15,
+    "strict_clippy_variants": [
+      "default1.88",
+      "vulkan-presenter1.88",
+      "vulkan-raster1.88",
+      "vulkan-raster1.98"
+    ]
+  },
+  "retained_failures": [
+    {
+      "path": "validation/native-clippy-1880-initial.log",
+      "observed": "nonminimal_bool, exit101; factored equivalent condition retained in final source"
+    },
+    {
+      "path": "validation/native-clippy-1980.log",
+      "observed": "test-only chunks_exact_to_as_chunks, exit101; exact correction visible in previous/final source copies"
+    },
+    {
+      "path": "validation/native-tests-1880-final.log",
+      "observed": "1128 passed/2 failed in existing confinement tests, both fail at socket preflight before application confinement; unchanged tests pass in retained subsequent host/candidate full logs"
+    }
+  ],
+  "historical_source_ledger": "rust-source-2.json is preserved earlier state; release-2 differs only in the two explicitly disclosed startup/test-spelling files. Current120 bindings are checked against release-2.",
+  "claim_boundary": "Public entry explicitly limits this checkpoint to source/unit/CLI validation. No actual paired timing, GPU timestamp, compositor latency, or Chromium performance conclusion is asserted. Active host tools are outside this publication payload.",
+  "data_verifier_notes": [
+    "Initial comparison was narrowed from historical-ledger equality to the disclosed two-file delta.",
+    "Parallel Rust test names are compared as complete sets; raw output order may differ."
+  ],
+  "source_changes": false
+}

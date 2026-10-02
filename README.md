@@ -26,8 +26,10 @@ compositing and performance work. There is no measured Chromium parity.
 
 The experimental [native frame benchmark](docs/native-render-benchmark.md)
 records completion-paced CPU-upload or shader frames with exact scene identity
-and separate correctness checks. Source, unit and CLI validation pass; paired
-desktop timings remain pending.
+and separate correctness checks. One controlled release comparison completes
+all 96 timed frames and both exact pixel checks. For its tiny fixture, the native shader route has
+a lower subsequent-frame median and higher first-frame and p95 times; full
+records and limits are retained.
 
 Drawing plans and GPU encoding live in the reusable
 [raster core](crates/raster-core/README.md), separate from comparison tools.

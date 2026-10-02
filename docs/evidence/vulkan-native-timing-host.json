@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "browser_commit": "51ca9edcc35e3705404607e60cb88afefcd85efd",
+  "scope": "One tiny admitted static scene in owned1280x880 desktop windows; completion-paced host durations before compositor, separate exact acquired-texture checks",
+  "release": {
+    "bytes": 16138144,
+    "sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+    "profile": "release",
+    "toolchain": "1.98.0",
+    "features": [
+      "vulkan-raster"
+    ]
+  },
+  "source_bindings": {
+    "host_files": 182,
+    "compiled_source_assets": 120,
+    "record": "native-timing-host/host-1/timing-host-results.json",
+    "compile_record": "native-timing-host/validation/release-2.json"
+  },
+  "synthetic_tests": {
+    "total": 96,
+    "new": 25,
+    "existing_native": 48,
+    "supervisor": 14,
+    "worker_text_host": 9,
+    "all_root_tools": 347,
+    "all_raster_probe_tools": 90,
+    "all_tools_combined": 437
+  },
+  "actual": {
+    "attempts": 1,
+    "processes": 8,
+    "passed": 8,
+    "check_processes": 2,
+    "checked_bytes_each": 4505600,
+    "total_checked_bytes": 9011200,
+    "timed_processes": 6,
+    "frames_each": 16,
+    "total_timed_frames": 96,
+    "first_frames_each_route": 3,
+    "subsequent_frames_each_route": 45,
+    "reference_or_readback_in_measured_frames": false,
+    "same_scene_bytes": 269,
+    "scene_sha256": "d7bbf8cf46daa1424717c982a5081528683fd6f0226f7b8ebc6d289eca5e87bb",
+    "same_url": "http://127.0.0.1:56625/admitted.html",
+    "size": [
+      1280,
+      880
+    ],
+    "scale_factor": 1,
+    "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo",
+    "driver_version": "595.99.02",
+    "cleanup": "All8 wrappers and browser children exited0 and reaped; each supervisor reaped1 direct checker,0 descendants, no cleanup failure"
+  },
+  "statistics": {
+    "cpu-upload": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 3039023,
+          "p95_nearest_rank_ns": 3140456
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 2428595,
+          "p95_nearest_rank_ns": 2625449
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 2218257,
+          "p95_nearest_rank_ns": 2455046
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1925361,
+          "p95_nearest_rank_ns": 2091426
+        }
+      }
+    },
+    "native-raster": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5743833,
+          "p95_nearest_rank_ns": 6467876
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 2085194,
+          "p95_nearest_rank_ns": 4829699
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5482037,
+          "p95_nearest_rank_ns": 6158850
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1788201,
+          "p95_nearest_rank_ns": 4553365
+        }
+      }
+    }
+  },
+  "observations": [
+    "Native subsequent-frame prepare-to-present median was14.14% lower than CPU upload in this fixture",
+    "Native subsequent-frame p95 was83.96% higher; first-frame median was89.00% higher",
+    "All three native sample2 submit intervals were elevated; they remain in the subsequent45-sample population",
+    "Submit brackets include encoder finish and queue submission; these records do not isolate a driver mechanism"
+  ],
+  "limits": [
+    "One tiny scene, one adapter/format, three processes per route, FIFO host timings",
+    "No isolated GPU timestamps, display latency, throughput or Chromium-relative result",
+    "CPU startup can warm font caches; native masks rebuilt every sample; no forced cache reset",
+    "Observed clocks/power not locked; before/after display/GPU snapshots are not during-frame frequency observations",
+    "The first/subsequent split excludes only sample1; no outlier or failed attempt removed"
+  ],
+  "package": {
+    "index": "native-timing-host/index.json",
+    "sha256": "d46ee6053a18bea4b6ab1a79d15362e6fb0959bcbabf901106482ecf1bf93c59",
+    "files": 74,
+    "payload_bytes": 691275
+  }
+}

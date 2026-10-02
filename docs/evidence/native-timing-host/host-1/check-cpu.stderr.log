@@ -1,0 +1,10 @@
+native benchmark waiting: size=1275x764 loaded=false
+presenter: Vulkan adapter="NVIDIA GeForce RTX 4070 SUPER" type=DiscreteGpu driver="NVIDIA" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=CPU upload
+native benchmark waiting: size=1268x758 loaded=false
+native benchmark waiting: size=1285x774 loaded=false
+native benchmark waiting: size=1280x880 loaded=false
+native timing gate: document released for owned pid=1941671 size=1280x880 prefix_bytes=380 prefix_sha256=2a6c388786fb87c2bc84481831d33eca7c6e320f9377948de1c7bb0966e30ff1 html_sha256=1674d4de78a90cc621f9e786e45214e2a190d615e8d68431f0e1468e42449759
+[page] Page process 1941676: Landlock ABI 6 and seccomp: no direct resource or socket access
+[page] Resource broker 1941677: committed URL and fetch policy enforced outside renderer
+presenter: Vulkan verified serial=6 generation=1 viewport_revision=5 size=1280x880 compared_bytes=4505600 exact=true (before compositor)
+presenter: Vulkan acquired-texture verification passed; route=cpu-upload frames=1 compared_bytes=4505600 last_serial=6 (before compositor)

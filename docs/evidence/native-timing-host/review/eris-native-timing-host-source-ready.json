@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "scope": "native timing host source and synthetic validation only",
+  "files": [
+    {
+      "path": "tools/native_raster_timing_host.py",
+      "bytes": 35136,
+      "sha256": "19d96f020d709fd2efde01cc1f801ee28fea39bbb0a6fca52154496f50adb23a"
+    },
+    {
+      "path": "tools/test_native_raster_timing_host.py",
+      "bytes": 31971,
+      "sha256": "a86d9d71ee4e7eaec8319f0ed98c1f5bf0d6f6d6362d0d51385adcd25def8fef"
+    },
+    {
+      "path": "tools/native_raster_wide_host.py",
+      "bytes": 29183,
+      "sha256": "b52aad9b1fa50d313210afe2096f61f59f1f3e7f3112a82034c2973d750c5fea"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 9069,
+      "sha256": "99eeaf2e1f2aba9b653712fb837c27aaa0b17f8a00576e14d5ef808f4cc6356b"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 15712,
+      "sha256": "931509790971677103a555461695f1962924010a5839e8845b943dc8df6dad23"
+    }
+  ],
+  "tests": {
+    "new_groups": 25,
+    "final_total_groups": 96,
+    "final_log": "/tmp/eris-native-timing-host-regression-2.log",
+    "runs": [
+      {
+        "path": "/tmp/eris-native-timing-host-regression-1.log",
+        "bytes": 16757,
+        "sha256": "08d1af2884ff665f9d53f1dac2afea24e9d752aca139175cf24e8aef2460276c",
+        "tail": [
+          "----------------------------------------------------------------------",
+          "Ran 94 tests in 1.954s",
+          "",
+          "OK"
+        ]
+      },
+      {
+        "path": "/tmp/eris-native-timing-host-regression-2.log",
+        "bytes": 17157,
+        "sha256": "17ca69188ebacd57a9040a2e7e81be7a2ecf992c875b330f9c079eac56ee66fb",
+        "tail": [
+          "----------------------------------------------------------------------",
+          "Ran 96 tests in 2.002s",
+          "",
+          "OK"
+        ]
+      },
+      {
+        "path": "/tmp/eris-native-timing-host-tests-1.log",
+        "bytes": 3611,
+        "sha256": "e0bf9cdcb37220b7116164d20d72e0f3600acb13cfff940127e25b32cdc783e0",
+        "tail": [
+          "----------------------------------------------------------------------",
+          "Ran 20 tests in 0.118s",
+          "",
+          "OK"
+        ]
+      },
+      {
+        "path": "/tmp/eris-native-timing-host-tests-2.log",
+        "bytes": 3611,
+        "sha256": "a27704e839b56865b79011e4e50b4c152cc5369cb97a757cad2c5210021d3fb5",
+        "tail": [
+          "----------------------------------------------------------------------",
+          "Ran 20 tests in 0.112s",
+          "",
+          "OK"
+        ]
+      },
+      {
+        "path": "/tmp/eris-native-timing-host-tests-3.log",
+        "bytes": 4239,
+        "sha256": "a7eeac53f2b1a36fe92d51793665d46e938873a37f6896d16c9d19d385eb602b",
+        "tail": [
+          "----------------------------------------------------------------------",
+          "Ran 23 tests in 0.136s",
+          "",
+          "OK"
+        ]
+      }
+    ]
+  },
+  "behavior": [
+    "one loopback TCP listener/URL across separate correctness and counterbalanced measurement processes",
+    "bounded inherited listener validation with fd>=3/AF_INET/SOCK_STREAM/IPPROTO_TCP/listening/127.0.0.1/exact expected port",
+    "existing unreaped-child control and subreaper cleanup preserved",
+    "full EBNI parsing and exact bytes across every process; source/asset/font/WGSL/Cargo/executable/fixture bindings",
+    "separate acquired-texture checks; timing requires zero verification diagnostics",
+    "CPU cleanup_ns null; native cleanup_ns integer; all other success phases numeric",
+    "direct first-frame and steady host durations; nearest-rank p95, no summed quantiles"
+  ],
+  "source_review_corrections": [
+    "CPU cleanup null contract clarification before real execution",
+    "linear UTF-8 boundary checking",
+    "reject adapter initialization after terminal verification summary",
+    "explicit inherited socket IPPROTO_TCP check"
+  ],
+  "not_executed": [
+    "browser",
+    "compositor",
+    "TCP listener",
+    "GPU",
+    "Rust compiler"
+  ],
+  "failures": "No synthetic test failure; every initial/expanded run log retained. Review corrections were made before actual execution."
+}
