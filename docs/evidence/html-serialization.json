@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "parent": "8915ffab1e56f77dea1ae034920315041f573bd4",
+  "change": "HTML serialization writes doctype names without public/system IDs and escapes U+00A0 as &nbsp; in ordinary text and attributes, preserving raw script text.",
+  "spec": "https://html.spec.whatwg.org/multipage/parsing.html#serialising-html-fragments",
+  "source_sha256": "c27ee37fa8340cfda3c9d248978e7a68182512e7e1619c226c9e3fb50bea3c72",
+  "diff_sha256": "8e690502e92dca9c2ac7e17d0b0a083e9d3cfa2bdd115e03cc0000d51896789e",
+  "rust_1_88_default_library": {
+    "passed": 1210,
+    "failed": 0,
+    "ignored": 0
+  },
+  "tests": "Existing doctype tree-position test retains explicit public/system DOM field checks. Existing escaping test now covers NBSP in SVG text and an HTML attribute, plus literal NBSP in raw script text. No external fixture or baseline changed.",
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--lib",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 12.882,
+      "log": "default-library-188-1.log",
+      "sha256": "b18823c1bd53aa7c577d713caff21f8e4b0cf89400a3948f6eb3af7e4ac427e2"
+    }
+  ],
+  "raw_archive": {
+    "path": "html-serialization-logs.tar.gz",
+    "sha256": "36f13667388b597fce13a55f7b2e1baa1830d3fdb3382272164219c974800923",
+    "bytes": 29266
+  }
+}

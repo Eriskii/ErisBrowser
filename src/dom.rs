@@ -1651,23 +1651,6 @@ impl Document {
                 NodeKind::Doctype(doctype) => {
                     push_serialized(&mut out, "<!DOCTYPE ");
                     push_serialized(&mut out, &doctype.name);
-                    if let Some(public) = &doctype.public_id {
-                        push_serialized(&mut out, " PUBLIC \"");
-                        push_serialized(&mut out, public);
-                        push_serialized(&mut out, "\"");
-                    }
-                    if let Some(system) = &doctype.system_id {
-                        push_serialized(
-                            &mut out,
-                            if doctype.public_id.is_some() {
-                                " \""
-                            } else {
-                                " SYSTEM \""
-                            },
-                        );
-                        push_serialized(&mut out, system);
-                        push_serialized(&mut out, "\"");
-                    }
                     push_serialized(&mut out, ">");
                 }
                 NodeKind::ProcessingInstruction { target, data } => {
@@ -1772,6 +1755,7 @@ fn escape_serialized(out: &mut String, text: &str, attribute: bool) {
         }
         match c {
             '&' => push_serialized(out, "&amp;"),
+            '\u{a0}' => push_serialized(out, "&nbsp;"),
             '<' => push_serialized(out, "&lt;"),
             '>' => push_serialized(out, "&gt;"),
             '"' if attribute => push_serialized(out, "&quot;"),
@@ -9696,7 +9680,7 @@ mod tests {
         );
         assert_eq!(
             d.outer_html(d.root),
-            "<!--before--><!DOCTYPE html PUBLIC \"public\" \"system\"><?build version?><html><!--html--><head><!--head--></head><!--between--><body>x<!--body--><?step done?></body><!--afterbody--></html><!--afterhtml-->"
+            "<!--before--><!DOCTYPE html><?build version?><html><!--html--><head><!--head--></head><!--between--><body>x<!--body--><?step done?></body><!--afterbody--></html><!--afterhtml-->"
         );
         assert_eq!(d.text_content(d.root), "x");
         assert!(
@@ -9927,21 +9911,21 @@ mod tests {
     #[test]
     fn serialization_escapes_markup_and_preserves_foreign_siblings() {
         let d = parse(
-            "<svg viewBox='0 0 20 20'><g/><rect width='10'/><text>&amp;&lt;</text></svg><input value='&quot;&amp;'><script>a < b && c</script>",
+            "<svg viewBox='0 0 20 20'><g/><rect width='10'/><text>&amp;&lt;&nbsp;</text></svg><input value='&quot;&amp;&nbsp;'><script>a < b && c\u{a0}</script>",
         );
         let svg = d.query_selector("svg").unwrap();
         assert_eq!(d.nodes[svg].children.len(), 3);
         assert_eq!(
             d.outer_html(svg),
-            "<svg viewBox=\"0 0 20 20\"><g></g><rect width=\"10\"></rect><text>&amp;&lt;</text></svg>"
+            "<svg viewBox=\"0 0 20 20\"><g></g><rect width=\"10\"></rect><text>&amp;&lt;&nbsp;</text></svg>"
         );
         assert_eq!(
             d.outer_html(d.query_selector("input").unwrap()),
-            "<input value=\"&quot;&amp;\">"
+            "<input value=\"&quot;&amp;&nbsp;\">"
         );
         assert_eq!(
             d.outer_html(d.query_selector("script").unwrap()),
-            "<script>a < b && c</script>"
+            "<script>a < b && c\u{a0}</script>"
         );
     }
     #[test]

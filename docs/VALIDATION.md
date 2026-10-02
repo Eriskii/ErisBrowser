@@ -1,5 +1,15 @@
 # Validation record
 
+## Doctypes and nonbreaking spaces in HTML serialization
+
+The serializer now follows the same HTML algorithm for doctype names and
+nonbreaking spaces: public/system identifiers remain in the DOM, while HTML
+output writes `<!DOCTYPE name>`; ordinary text and attributes escape U+00A0 as
+`&nbsp;`. Raw script text retains the literal character. Existing serialization
+tests cover these distinctions, and all 1,210 default library tests pass on
+Rust 1.88, including ignored confinement tests. See the
+[evidence](evidence/html-serialization.json).
+
 ## Processing-instruction serialization
 
 HTML serialization now writes the separate `?>` terminator required by the

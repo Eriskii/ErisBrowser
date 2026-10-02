@@ -1,0 +1,72 @@
+{
+  "conclusion": "success",
+  "databaseId": 37055343723,
+  "headSha": "8915ffab1e56f77dea1ae034920315041f573bd4",
+  "jobs": [
+    {
+      "conclusion": "success",
+      "databaseId": 110998550865,
+      "name": "test",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998550865"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551091,
+      "name": "vulkan-probe",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551091"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551217,
+      "name": "minimum-rust",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551217"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551245,
+      "name": "presenter-variants (1.88.0, --features vulkan-presenter)",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551245"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551261,
+      "name": "presenter-variants (stable, --features vulkan-raster)",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551261"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551288,
+      "name": "presenter-variants (1.88.0, --features vulkan-raster)",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551288"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551322,
+      "name": "presenter-variants (stable, --features vulkan-presenter)",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551322"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551455,
+      "name": "vulkan-raster-probe",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551455"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 110998551497,
+      "name": "presenter-variants (1.88.0)",
+      "status": "completed",
+      "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723/job/110998551497"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37055343723"
+}
