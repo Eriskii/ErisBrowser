@@ -16,7 +16,11 @@ The frozen replacement case progresses to the missing complete Document
 enumeration operation in both modes; its ordinary-success expectation remains
 unmet. [DOM interface prototypes](dom-prototypes.md) now provide represented
 HTML, SVG and MathML chains, interface metadata, mutable ParentNode operations
-and Text, Comment and DocumentFragment construction. Complete interface members,
+and Text, Comment and DocumentFragment construction.
+[Processing instructions](processing-instruction.md) add genuine construction,
+the Document factory, target and CharacterData data/length accessors for scalar
+strings. PI pseudo-attributes, lone-surrogate data and mutation notifications
+remain unfinished. Complete interface members,
 Document reflection and host prototype mutation remain incomplete. The unchanged
 DOM suite now verifies **56/58 expectations**, with all 44 controls healthy; the
 two complete-Document-enumeration expectations remain unmet. The earlier eight-method

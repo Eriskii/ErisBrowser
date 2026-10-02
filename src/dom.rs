@@ -95,6 +95,14 @@ pub enum NodeKind {
     Doctype(Doctype),
     ProcessingInstruction { target: String, data: String },
 }
+/// Checked script-facing character-data storage refuses instead of truncating.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum DomDataError {
+    InvalidNode,
+    LimitExceeded,
+    AllocationFailed,
+}
+
 #[derive(Debug, Clone)]
 pub struct Node {
     pub parent: Option<NodeId>,
@@ -871,6 +879,66 @@ impl Document {
         });
         id
     }
+    /// Publish already converted and validated PI strings without copying or
+    /// clamping. The caller must prepay any node-vector growth before entry.
+    /// No author callback may run between that admission and this operation.
+    pub(crate) fn create_processing_instruction_owned(
+        &mut self,
+        target: String,
+        data: String,
+    ) -> Result<NodeId, DomDataError> {
+        let bytes = target
+            .len()
+            .checked_add(data.len())
+            .ok_or(DomDataError::LimitExceeded)?;
+        if !self.admits_text_node(bytes) {
+            return Err(DomDataError::LimitExceeded);
+        }
+        self.nodes
+            .try_reserve_exact(1)
+            .map_err(|_| DomDataError::AllocationFailed)?;
+        let id = self.nodes.len();
+        self.nodes.push(Node {
+            parent: None,
+            children: Vec::new(),
+            kind: NodeKind::ProcessingInstruction { target, data },
+        });
+        self.retained_bytes += bytes;
+        Ok(id)
+    }
+
+    /// Replace authentic CharacterData after conversion and fresh admission.
+    /// Takes the owned buffer; node identity, PI target and tree links survive.
+    pub(crate) fn replace_character_data(
+        &mut self,
+        id: NodeId,
+        data: String,
+    ) -> Result<(), DomDataError> {
+        let old = match self.nodes.get(id).map(|node| &node.kind) {
+            Some(NodeKind::Text(text) | NodeKind::Comment(text))
+            | Some(NodeKind::ProcessingInstruction { data: text, .. }) => text.len(),
+            _ => return Err(DomDataError::InvalidNode),
+        };
+        let retained = self
+            .retained_bytes
+            .checked_sub(old)
+            .and_then(|bytes| bytes.checked_add(data.len()))
+            .filter(|bytes| *bytes <= MAX_DOM_BYTES)
+            .ok_or(DomDataError::LimitExceeded)?;
+        if data.len() > MAX_TEXT {
+            return Err(DomDataError::LimitExceeded);
+        }
+        let (NodeKind::Text(text)
+        | NodeKind::Comment(text)
+        | NodeKind::ProcessingInstruction { data: text, .. }) = &mut self.nodes[id].kind
+        else {
+            unreachable!("character-data kind was checked without callbacks")
+        };
+        *text = data;
+        self.retained_bytes = retained;
+        Ok(())
+    }
+
     pub fn create_processing_instruction(&mut self, target: &str, data: &str) -> NodeId {
         if self.nodes.len() >= MAX_NODES {
             return self.root;
@@ -10108,6 +10176,146 @@ mod tests {
         );
     }
     // Private accounting setup avoids allocating MAX_TEXT/MAX_DOM_BYTES payloads.
+
+    #[test]
+    fn checked_character_data_preserves_owned_buffers_identity_and_snapshot_accounting() {
+        let mut doc = Document::parse("<div></div>");
+        let parent = doc.query_selector("div").unwrap();
+        let target = "Build:🦀".to_owned();
+        let data = "a\0🦀?".to_owned();
+        let target_ptr = target.as_ptr();
+        let data_ptr = data.as_ptr();
+        let pi = doc
+            .create_processing_instruction_owned(target, data)
+            .unwrap();
+        assert!(doc.nodes[pi].parent.is_none());
+        let NodeKind::ProcessingInstruction { target, data } = &doc.nodes[pi].kind else {
+            panic!("expected PI");
+        };
+        assert_eq!(target.as_ptr(), target_ptr);
+        assert_eq!(data.as_ptr(), data_ptr);
+        assert_eq!(data, "a\0🦀?");
+        let text = doc.create_text_node("old text");
+        let comment = doc.create_comment("old comment");
+        for id in [text, comment, pi] {
+            doc.append_child(parent, id);
+        }
+        let children = doc.nodes[parent].children.clone();
+        for id in [text, comment, pi] {
+            let before = doc.retained_bytes;
+            let old = doc.text_content(id).len();
+            let replacement = "new\0🦀?>".to_owned();
+            let ptr = replacement.as_ptr();
+            let len = replacement.len();
+            doc.replace_character_data(id, replacement).unwrap();
+            let stored = match &doc.nodes[id].kind {
+                NodeKind::Text(data)
+                | NodeKind::Comment(data)
+                | NodeKind::ProcessingInstruction { data, .. } => data,
+                _ => panic!("expected CharacterData"),
+            };
+            assert_eq!(stored.as_ptr(), ptr);
+            assert_eq!(stored, "new\0🦀?>");
+            assert_eq!(doc.nodes[id].parent, Some(parent));
+            assert!(doc.nodes[id].children.is_empty());
+            assert_eq!(doc.retained_bytes, before - old + len);
+        }
+        assert_eq!(doc.nodes[parent].children, children);
+        assert!(matches!(&doc.nodes[pi].kind,
+            NodeKind::ProcessingInstruction { target, .. } if target == "Build:🦀"));
+        let before = doc.retained_bytes;
+        for id in [doc.root, parent, usize::MAX] {
+            assert_eq!(
+                doc.replace_character_data(id, "refused".into()),
+                Err(DomDataError::InvalidNode)
+            );
+        }
+        assert_eq!(doc.retained_bytes, before);
+        let rebuilt =
+            Document::from_snapshot(doc.nodes.clone(), doc.root, false, doc.mode).unwrap();
+        assert_eq!(rebuilt.retained_bytes, doc.retained_bytes);
+        assert_eq!(rebuilt.outer_html(parent), doc.outer_html(parent));
+    }
+
+    #[test]
+    fn checked_processing_instruction_refuses_limits_without_truncation_or_root_alias() {
+        let mut doc = Document::parse("");
+        let count = doc.nodes.len();
+        let bytes = doc.retained_bytes;
+        let capacity = doc.nodes.capacity();
+        assert_eq!(
+            doc.create_processing_instruction_owned("x".into(), "a".repeat(MAX_TEXT)),
+            Err(DomDataError::LimitExceeded)
+        );
+        assert_eq!(
+            (doc.nodes.len(), doc.retained_bytes, doc.nodes.capacity()),
+            (count, bytes, capacity)
+        );
+        let pi = doc
+            .create_processing_instruction_owned("x".into(), "a".repeat(MAX_TEXT - 1))
+            .unwrap();
+        assert_ne!(pi, doc.root);
+        assert_eq!(doc.retained_bytes, bytes + MAX_TEXT);
+        assert_eq!(doc.text_content(pi).len(), MAX_TEXT - 1);
+        let before = doc.retained_bytes;
+        assert_eq!(
+            doc.replace_character_data(pi, "b".repeat(MAX_TEXT + 1)),
+            Err(DomDataError::LimitExceeded)
+        );
+        assert_eq!(doc.retained_bytes, before);
+        assert_eq!(doc.text_content(pi).len(), MAX_TEXT - 1);
+        doc.nodes.resize_with(MAX_NODES, || Node {
+            parent: None,
+            children: Vec::new(),
+            kind: NodeKind::Text(String::new()),
+        });
+        assert_eq!(
+            doc.create_processing_instruction_owned("x".into(), String::new()),
+            Err(DomDataError::LimitExceeded)
+        );
+        assert_eq!(doc.nodes.len(), MAX_NODES);
+        assert_eq!(doc.retained_bytes, before);
+        // Replacing an existing node needs no new node slot.
+        doc.replace_character_data(pi, "short".into()).unwrap();
+        assert_eq!(doc.text_content(pi), "short");
+    }
+
+    #[test]
+    fn checked_character_data_replacement_reuses_and_releases_actual_retained_bytes() {
+        let mut doc = Document::parse("");
+        let pi = doc
+            .create_processing_instruction_owned("x".into(), "old".into())
+            .unwrap();
+        while doc.retained_bytes < MAX_DOM_BYTES {
+            let remaining = MAX_DOM_BYTES - doc.retained_bytes;
+            let size = remaining.min(MAX_TEXT);
+            let id = doc.create_comment(&"a".repeat(size));
+            assert_ne!(id, doc.root);
+        }
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES);
+        doc.replace_character_data(pi, "new".into()).unwrap();
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES);
+        assert_eq!(
+            doc.replace_character_data(pi, "more".into()),
+            Err(DomDataError::LimitExceeded)
+        );
+        assert_eq!(doc.text_content(pi), "new");
+        let count = doc.nodes.len();
+        assert_eq!(
+            doc.create_processing_instruction_owned("x".into(), String::new()),
+            Err(DomDataError::LimitExceeded)
+        );
+        assert_eq!(doc.nodes.len(), count);
+        doc.replace_character_data(pi, String::new()).unwrap();
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES - 3);
+        let next = doc
+            .create_processing_instruction_owned("x".into(), "é".into())
+            .unwrap();
+        assert_ne!(next, doc.root);
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES);
+        let rebuilt = Document::from_snapshot(doc.nodes, doc.root, false, doc.mode).unwrap();
+        assert_eq!(rebuilt.retained_bytes, MAX_DOM_BYTES);
+    }
 
     #[test]
     fn script_text_admission_checks_per_node_and_remaining_byte_boundaries() {

@@ -30,7 +30,9 @@ properties. Omitted or undefined data defaults to the empty string; null convert
 to `"null"`. Lone UTF-16 surrogates remain an explicit unsupported operation
 because the document storage cannot preserve them.
 
-Document and ProcessingInstruction construction remain explicitly unsupported.
+The [ProcessingInstruction follow-up](processing-instruction.md) adds its
+constructor, Document factory and CharacterData data/length accessors.
+Independent Document construction remains explicitly unsupported.
 Independent document ownership, custom-element registration and successful
 HTML constructor behavior are unfinished. Attr, CDATASection, XMLDocument and
 ShadowRoot are not represented by the current node model. Most native members
@@ -43,8 +45,10 @@ interface records by static index, including the existing EventTarget. Construct
 handles retain their private property-bag IDs; this cache does not change native
 function identity. Static node mapping returns the same index directly. New
 global bindings use one admitted sorted merge; creation order remains independent
-of map order. The raw bootstrap leaves 11,133 of 100,000 work units and charges
-1,746,193 cumulative bytes, with 663 objects. Successful initialization grants
+of map order. At the prototype checkpoint, raw bootstrap left 11,133 of 100,000
+work units and charged 1,746,193 cumulative bytes, with 663 objects. The
+processing-instruction members bring these measurements to 9,511 remaining
+units, 1,761,677 bytes and 668 objects. Successful initialization grants
 the existing author allowance; it never resets the cumulative heap ledger.
 
 The comprehensive original JavaScript fixture still exceeds the fixed author

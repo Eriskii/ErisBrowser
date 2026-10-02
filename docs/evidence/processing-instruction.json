@@ -1,0 +1,1447 @@
+{
+  "schema": 1,
+  "parent": "cd5f2e219ba5066873e6b5c7d760cd890de45c70",
+  "change": "Checked ProcessingInstruction construction and factory; ordinary prototype target, CharacterData data and UTF-16 length accessors.",
+  "source_files": [
+    {
+      "path": "src/dom.rs",
+      "sha256": "1bd58440e461e6d6622f83b4e9e906be1a8b4e5550e3abfceb17ae37e2741341",
+      "bytes": 388887
+    },
+    {
+      "path": "src/script.rs",
+      "sha256": "81edcbd68bfadfb5ac6278d92ddf47816c2fa7a863397fca53ea20b567aec6c7",
+      "bytes": 884219
+    },
+    {
+      "path": "src/script/bootstrap_tests.rs",
+      "sha256": "d3ea2a9b86e7e6e449a51b4df99225956aa63c36efd95e9dff086459bac3ae7f",
+      "bytes": 15507
+    },
+    {
+      "path": "src/script/dom_bindings/identity_tests.rs",
+      "sha256": "04fcf9605d277e987d8a71f35d13cd4f407d051291c7d0d4561f5e0523b55627",
+      "bytes": 35727
+    },
+    {
+      "path": "src/script/dom_prototypes.rs",
+      "sha256": "a90ee7bba9074329315d1b595e0f916d120725b23fec33766b4d4b73bf640107",
+      "bytes": 31480
+    },
+    {
+      "path": "src/script/dom_prototypes/tests.rs",
+      "sha256": "a6f71eb59a05f16f500af56bf5b11277b9ae3af86813cf92def5be55940d13da",
+      "bytes": 24176
+    },
+    {
+      "path": "src/script/machine/calls.rs",
+      "sha256": "b2e5330b15f1fc6b4c6041cc499088b93bb1c40021e365f8c1d716bbb4cfd540",
+      "bytes": 32205
+    },
+    {
+      "path": "src/script/processing_instruction.rs",
+      "sha256": "b307c75fb36f24b329a6008accbcd1b486836e1daf1353452bbe5b2e1d0f5b98",
+      "bytes": 11721
+    },
+    {
+      "path": "src/script/processing_instruction/tests.rs",
+      "sha256": "c6802479cb8e6c3faa663250e0143a96d133abe99b027095dc60785e64a35d0c",
+      "bytes": 15217
+    },
+    {
+      "path": "src/script/processing_instruction/xml_name.rs",
+      "sha256": "849f94dcd168638a1f421a1a82c2abc5f11c9f79193dfcd6085b5ee9e0840223",
+      "bytes": 8021
+    },
+    {
+      "path": "tests/fixtures/processing-instruction-accessors.js",
+      "sha256": "7348d015b56903ed9e75f4191a2c6ff03def35b542c031fc68ed42e09accb502",
+      "bytes": 11364
+    },
+    {
+      "path": "tests/fixtures/processing-instruction-authentic-constructor-override.js",
+      "sha256": "a0dcbd8d5de85cc7a28b25f9f511f1f00582be20dbc139fc489937d891d7ba33",
+      "bytes": 2914
+    },
+    {
+      "path": "tests/fixtures/processing-instruction.html",
+      "sha256": "afb0120d3662ca59766639d555700ee3b5b8236d260d6afcd4344b9b07e95234",
+      "bytes": 5918
+    },
+    {
+      "path": "tests/fixtures/processing-instruction.js",
+      "sha256": "46f6909fa212fa4dc2fc3fe63ea0ccf64af6871d30fd1ed41b98ae15d067dc73",
+      "bytes": 14056
+    },
+    {
+      "path": "tests/pipeline.rs",
+      "sha256": "1beb4b26844452dc89dc8b6447ff63f7878fbb9e2e871fdcb53a4572609aaf38",
+      "bytes": 50178
+    },
+    {
+      "path": "tests/worker.rs",
+      "sha256": "e6403b46d8eac69623554ac5b06df0cf7c3e247c7c7d6f3d19a68142206b25aa",
+      "bytes": 83357
+    }
+  ],
+  "binary": {
+    "path": "eris-js",
+    "sha256": "0ed0b69f5c5a9337379ce03df97eb8ceee7608c5bb043ff3fbd7e83740872e3b"
+  },
+  "validation": {
+    "default_rust": "1.88.0",
+    "default_passed": 1497,
+    "native_rust": "1.98.0",
+    "native_feature": "vulkan-raster",
+    "native_passed": 1620,
+    "failed": 0,
+    "ignored": 0,
+    "strict_clippy": "passed",
+    "formatting": "passed",
+    "focused_PI_groups": 36,
+    "focused_checked_DOM_groups": 13,
+    "browser": "Six green load samples, six blue click samples and ready\u21926 through direct pipeline and confined worker"
+  },
+  "raw_bootstrap": {
+    "steps": 9511,
+    "allocated": 1761677,
+    "objects": 668,
+    "capacity": 668,
+    "native_registry": 321,
+    "legacy_prototypes": 25
+  },
+  "compatibility": [
+    {
+      "profile": "dom-method-identity",
+      "before_sha256": "0efaf5cc260974b95634ce046310077dfce033daff5b43a1fe7d4bd29bcd92c5",
+      "after_sha256": "21641614acbb29e838e103d2c61634e3a6d64453fc1ba49d38d1db822fefcc1c",
+      "counts": {
+        "passed": 52,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "total": 58,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 44,
+      "controls_verified": 44,
+      "before_verified": 56,
+      "after_verified": 56
+    },
+    {
+      "profile": "object-is",
+      "before_sha256": "616d13aa7604b3d83e3b7e286285a7c4c6febc2a642b07f570f899fbb9cec345",
+      "after_sha256": "f7cebbdb9fb9c713d32c46d6b6001ee841be24994e8f41253b5d565333a5c35b",
+      "counts": {
+        "passed": 68,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "total": 78,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 60,
+      "controls_verified": 60,
+      "before_verified": 72,
+      "after_verified": 72
+    },
+    {
+      "profile": "symbols",
+      "before_sha256": "3c194fce40561e5ca389dc2e6c22800f44c6c7567d64c6df399e01b6c07d9264",
+      "after_sha256": "1a5c7ab91ff00e47214db2aba1b614795acafbf44a32516fbf0d258c692d4236",
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "total": 242,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 80,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "array-descriptors",
+      "before_sha256": "e2416ee6086e826fcc88c5edcbc78e54826e7e520fdcfe1bf71299a1742c3885",
+      "after_sha256": "d08d7b4078dbb73e69fe15afbc2fc06e9b2417fa76f1e0825e5fb8ef5c669da3",
+      "counts": {
+        "passed": 3556,
+        "unsupported": 18
+      },
+      "total": 3574,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 84,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "reflect-construction",
+      "before_sha256": "272a99be752807b95e888e6e82ed9e5acc9bd61283cc75a0eeba0116323cf324",
+      "after_sha256": "6caf22b95090cbf5cdfd19678daa0ea283fd380b39728c359972aa79fef2797d",
+      "counts": {
+        "passed": 38
+      },
+      "total": 38,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 96,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "new-independent-PI-cases",
+      "before_sha256": "f94d5ed124adb028e32029346a16efc5bf583414db906fe181b93292c8d22506",
+      "after_sha256": "7cba766991aaa0bb7c1f58b4838322bd8319286e08a7270aa1baef8b225931fc",
+      "cases_changes": [
+        {
+          "id": "constructor_arity_defaults_and_call#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "constructor_arity_defaults_and_call#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "factory_brand_arity_and_required_data#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "factory_brand_arity_and_required_data#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "xml_name_valid_targets#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "xml_name_valid_targets#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "xml_name_invalid_targets#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "xml_name_invalid_targets#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "xml_name_unicode_boundaries#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "xml_name_unicode_boundaries#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "data_terminator_and_literal_storage#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "data_terminator_and_literal_storage#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "genuine_node_identity_and_data#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "genuine_node_identity_and_data#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "conversions_then_alternate_prototype#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "conversions_then_alternate_prototype#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "validation_follows_conversions_and_prototype#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "validation_follows_conversions_and_prototype#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "conversion_abrupt_identity#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "conversion_abrupt_identity#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "prototype_abrupt_precedes_validation#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "prototype_abrupt_precedes_validation#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "factory_conversion_order_and_abrupt_identity#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "factory_conversion_order_and_abrupt_identity#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "value is not callable",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "descriptors_and_placement#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "descriptors_and_placement#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "scalar_data_and_setter_defaults#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "scalar_data_and_setter_defaults#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "authentic_brands_before_conversion#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "host object prototype mutation is unsupported",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "authentic_brands_before_conversion#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "host object prototype mutation is unsupported",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "setter_callback_order_and_abrupt_identity#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "setter_callback_order_and_abrupt_identity#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "own_shadows_and_readonly_assignments#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "own_shadows_and_readonly_assignments#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "Error",
+              "error_identity": "Error",
+              "message": "uncaught exception: [object Object]",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "prototype_replacement_deletion_and_saved_getters#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "prototype_replacement_deletion_and_saved_getters#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "pi_setter_clone_and_html_serialization#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "pi_setter_clone_and_html_serialization#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "independent Document and ProcessingInstruction constructors are not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "authentic_constructor_override#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "cannot access property of null or undefined",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "authentic_constructor_override#strict",
+          "mode": "strict",
+          "before": {
+            "status": "failed",
+            "observation": {
+              "status": "exception",
+              "phase": "runtime",
+              "error_type": "TypeError",
+              "error_identity": "TypeError",
+              "message": "cannot access property of null or undefined",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        }
+      ],
+      "total": 40,
+      "before_verified": 0,
+      "after_verified": 38,
+      "unmet": [
+        "authentic_brands_before_conversion#sloppy",
+        "authentic_brands_before_conversion#strict"
+      ]
+    }
+  ],
+  "first_attempt": {
+    "attempt": 1,
+    "passed": 34,
+    "failed": 1,
+    "case": "piAccessorCases.authentic_brands_before_conversion",
+    "observation": "Unsupported host prototype mutation in first sloppy run; strict mode not reached by that unit",
+    "expectation": "ordinary success retained unchanged; external unmet, not counted as pass"
+  },
+  "review": {
+    "path": "source-review.json",
+    "sha256": "e5e74eb976c826426646eb5c057f4048a61d8f72fb843f50ac8c11636ba42eae",
+    "scope": "Independent source-only metadata, ordering, admission and fixture review; no executions"
+  },
+  "archive": {
+    "path": "processing-instruction.tar.gz",
+    "sha256": "3374026562d161c637cb44840744d37b20de6bc30940aad66ea1ef374b785c65",
+    "bytes": 1662689,
+    "files": 103,
+    "manifest_sha256": "acab8150fe05d48ce2a60d1d6a6b4b15f8c4476c8acfd10a2331065c92db0ab2"
+  },
+  "unchanged_limits": [
+    "100000 raw bootstrap work",
+    "100000 author work",
+    "8MiB cumulative runtime heap",
+    "DOM node and retained-byte limits"
+  ],
+  "unmet": [
+    "Both modes of original authentic_brands_before_conversion require host prototype mutation; unchanged ordinary-success expectation",
+    "PI pseudo-attribute API and update hooks",
+    "Surrogate-preserving DOM data",
+    "MutationObserver and live Range updates",
+    "Remaining CharacterData and Node members",
+    "Independent Document construction",
+    "Full web compatibility, production security and Chromium performance requirement"
+  ]
+}

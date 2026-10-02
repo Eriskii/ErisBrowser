@@ -19,8 +19,9 @@ hierarchy errors and ordered partial effects. [DOM own properties](docs/dom-own-
 now support per-object data, accessors and method replacement.
 [DOM interface prototypes](docs/dom-prototypes.md) add represented HTML, SVG and
 MathML inheritance, mutable ParentNode operations and genuine Text, Comment and
-DocumentFragment construction. Complete interface members and Document reflection
-remain unfinished. The
+DocumentFragment construction. [Processing instructions](docs/processing-instruction.md)
+now add construction, the Document factory, target and CharacterData data/length
+accessors. Complete interface members and Document reflection remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate

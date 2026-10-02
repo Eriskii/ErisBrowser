@@ -239,6 +239,15 @@ ordinary own-property bags remain separate. Lone UTF-16 surrogates are rejected
 explicitly on these UTF-8 storage paths. Work limits and cumulative heap limits
 are unchanged; the larger bootstrap object reservation is charged in full.
 
+[ProcessingInstruction and CharacterData](processing-instruction.md) accessors
+check genuine receivers before conversion. Creation validates converted targets
+and data after new-target callbacks, then checks live document limits before
+publishing nodes or alternate prototypes. Owned UTF-8 buffers move into storage;
+replacement admission subtracts the previous payload and refuses excess input
+without truncation or partial mutation. These paths retain the explicit
+unsupported boundary for lone-surrogate data and the existing infallible Rc and
+B-tree allocations.
+
 ## Representative limits
 
 [Runtime construction](runtime-budget-boundary.md) has a separate fixed work
@@ -339,7 +348,7 @@ searches and temporary native call-name copies are prepaid. A refused name copy
 still releases the call's stack ownership; prior author effects remain on later
 conversion failure. Distinct mutable metadata bags share only immutable strings.
 The earlier method checkpoint prepaid a 512-slot object-arena reservation.
-The interface installer now prepays 663 slots before initialization, avoiding
+The interface installer now prepays 668 slots before initialization, avoiding
 later bootstrap growth. This is reserved capacity, not a new object
 limit. Logical requested-byte accounting excludes allocator rounding and retains
 the existing infallible B-tree/Rc allocation boundaries.

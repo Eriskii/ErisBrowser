@@ -4235,3 +4235,61 @@ against a fresh replay of the prior release. Every compared case fingerprint,
 expectation, corpus/policy hash and control observation remains unchanged except
 the two stated DOM gains. The array-descriptor gate's two gains over its older
 baseline were already present before this change; they are not new gains here.
+
+
+### ProcessingInstruction and CharacterData accessors
+
+[Evidence](evidence/processing-instruction.json) records checked PI construction,
+Document.createProcessingInstruction, the target getter and CharacterData
+data/UTF-16 length accessors. XML Name validation uses the literal XML 1.0 Fifth
+Edition ranges. Scalar DOM strings retain exact data; lone-surrogate data remains
+explicitly unsupported. The previous prototype commit passed all nine
+[GitHub CI jobs](evidence/dom-prototypes-ci.json).
+
+Rust 1.88 passes **1,497 default tests** and Rust 1.98 passes **1,620 native-feature
+tests**, with no failures or ignored tests. Strict all-target native Clippy and
+formatting checks pass. The focused PI filter passes 36 groups; the DOM checked
+filter passes 13, including three new owned-storage boundary groups. A six-sample
+HTML fixture verifies green load states, blue click states and ready→6 text in
+both the direct pipeline and the confined worker.
+
+The independent release replay executes twelve unchanged construction categories,
+seven unchanged accessor categories and one separately authored constructor-
+override brand case, each in sloppy and strict mode. It progresses from **0/40 to
+38/40 ordinary-success expectations**. The original authentic-brands case reaches
+the unsupported host Object.setPrototypeOf operation in both modes. Its source
+and ordinary-success expectation are unchanged and remain unmet. The separate
+constructor-override case tests genuine accessors with an alternate initial
+prototype. These local cases do not establish upstream DOM conformance.
+
+All case identities, source fingerprints, expectations and observations remain
+unchanged in the five compared established profiles: DOM method identity
+**56/58 verified**, Object.is **72/78 verified**, Symbol **184 passed / 54
+unsupported / 4 failed**, array descriptors **3,556 passed / 18 unsupported**,
+and Reflect construction **38 passed**. Their respective 44, 60, 80, 84 and 96
+controls remain healthy. The array gate's two gains over its older baseline were
+already present before this change; they are not new PI gains.
+
+Constructor and setter witnesses measure exact and one-short work/heap admission,
+assert no partial node/prototype publication or data replacement, and verify
+callback side effects survive later capacity refusal. Actual full document-byte
+and node-count boundaries are checked without changing production limits.
+Getter/setter brands precede conversion; argument conversion and new-target
+prototype access precede creation validation. Saved function calls restore outer
+stack ownership after refusal. Owned UTF-8 buffers move into DOM storage.
+
+Raw bootstrap leaves **9,511 of 100,000 work units**, charges **1,761,677 cumulative
+bytes** and holds **668 objects/capacity**. Legacy native/prototype registries
+remain at 321/25 entries. Only descriptive bootstrap snapshots changed; exact
+resource contracts and all quotas remain unchanged. Independent source review
+covered metadata, call ordering, admission and fixtures; runtime validation was
+performed separately.
+
+The first focused attempt retained 34 passing groups and one failure at the
+pre-existing host-prototype gap; no production correction followed that run.
+The original unmet source remains alongside the separate passing brand case.
+Independent documents, complete CharacterData/Node members, PI pseudo-attribute
+APIs, exact surrogate-preserving document storage, mutation observers and live
+ranges remain unfinished. No new GPU pixel or Chromium performance measurement
+is assigned to this DOM change; full compatibility and production security remain
+unachieved.

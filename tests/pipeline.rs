@@ -1287,3 +1287,11 @@ fn dom_prototypes_and_native_constructors_survive_page_callbacks() {
         Some(["ready", "6"]),
     );
 }
+
+#[test]
+fn processing_instruction_and_character_data_survive_page_callbacks() {
+    assert_six_scripted_samples_with_result_text(
+        include_str!("fixtures/processing-instruction.html"),
+        Some(["ready", "6"]),
+    );
+}

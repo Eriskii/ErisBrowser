@@ -54,7 +54,8 @@ use interfaces::{ConstructorKind, INTERFACES};
 pub(super) const PREFIX: &str = "DOM.Interface.";
 // Five unscopables objects: ParentNode's three including interfaces, plus
 // CharacterData and DocumentType's ChildNode lists (Element combines both).
-pub(super) const BOOTSTRAP_OBJECTS: usize = 352 + 2 * (INTERFACES.len() - 1) + 5;
+pub(super) const BOOTSTRAP_OBJECTS: usize =
+    352 + 2 * (INTERFACES.len() - 1) + 5 + processing_instruction::METADATA_OBJECTS;
 
 #[derive(Default)]
 pub(super) struct State {
@@ -260,7 +261,7 @@ fn merged_map<K: Ord, V>(
 }
 
 impl Runtime {
-    fn dom_proto_text(&mut self, text: &str) -> Result<JsString> {
+    pub(super) fn dom_proto_text(&mut self, text: &str) -> Result<JsString> {
         // Installer strings are static ASCII. Two copies: exact Vec then Rc.
         self.work(8 + 2 * text.len())?;
         self.charge(64 + 4 * text.len())?;
@@ -288,7 +289,11 @@ impl Runtime {
             receiver: Value::Window,
         })))
     }
-    fn dom_proto_object(&mut self, prototype: Option<Value>, capacity: usize) -> Result<usize> {
+    pub(super) fn dom_proto_object(
+        &mut self,
+        prototype: Option<Value>,
+        capacity: usize,
+    ) -> Result<usize> {
         self.work(8)?;
         self.charge(
             72 + std::mem::size_of::<Option<AbortSlot>>() + std::mem::size_of::<Option<f64>>(),
@@ -447,7 +452,14 @@ impl Runtime {
             )) * 3;
             let prototype = self.dom_proto_object(
                 Some(Value::Object(parent_prototype)),
-                2 + constants.len() + methods + usize::from(!unscopables.is_empty()),
+                2 + constants.len()
+                    + methods
+                    + usize::from(!unscopables.is_empty())
+                    + match interface.name {
+                        "Document" | "ProcessingInstruction" => 1,
+                        "CharacterData" => 2,
+                        _ => 0,
+                    },
             )?;
             let properties =
                 self.dom_proto_object(Some(parent_constructor), 3 + constants.len())?;
@@ -501,6 +513,7 @@ impl Runtime {
                     )?;
                 }
             }
+            self.install_pi_members(interface.name, prototype)?;
             // Web IDL places operations/constants before this string property.
             self.dom_proto_property(
                 prototype,
@@ -647,6 +660,30 @@ impl Runtime {
             .prototype;
         Ok(Some(Value::Object(prototype)))
     }
+    pub(super) fn dom_constructor_override(
+        &mut self,
+        interface: &str,
+        new_target: Value,
+        doc: &mut Document,
+    ) -> Result<Option<Value>> {
+        let default = Value::Object(self.dom_proto_id(interface)?);
+        let selected = self.get(new_target, "prototype", doc)?;
+        self.tick()?;
+        Ok((js_object(&selected) && selected != default).then_some(selected))
+    }
+    pub(super) fn dom_admit_override(&mut self, prototype: &Option<Value>) -> Result<()> {
+        if prototype.is_some() {
+            let count = self.dom_prototypes.overrides.len();
+            self.work(search(count, 0) + moves(count))?;
+            self.charge(insert_bytes::<NodeId, Value>(count))?;
+        }
+        Ok(())
+    }
+    pub(super) fn dom_publish_override(&mut self, id: NodeId, prototype: Option<Value>) {
+        if let Some(prototype) = prototype {
+            self.dom_prototypes.overrides.insert(id, prototype);
+        }
+    }
     pub(super) fn dom_interface_construct(
         &mut self,
         name: &str,
@@ -663,10 +700,13 @@ impl Runtime {
                     "illegal DOM interface construction",
                 ));
             }
-            ConstructorKind::Document | ConstructorKind::ProcessingInstruction => {
+            ConstructorKind::Document => {
                 return Err(ScriptError::unsupported(
-                    "independent Document and ProcessingInstruction constructors are not implemented",
+                    "independent Document construction is not implemented",
                 ));
+            }
+            ConstructorKind::ProcessingInstruction => {
+                return self.pi_construct(args, new_target, doc);
             }
             ConstructorKind::EventTarget => {
                 return Err(ScriptError::type_error(

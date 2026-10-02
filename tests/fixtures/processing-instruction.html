@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ProcessingInstruction and CharacterData callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#create{left:0}#mutate{left:50px}#brands{left:100px}#shadow{left:150px}#order{left:200px}#tree{left:250px}
+#change{position:absolute;top:60px;left:0}#result{position:absolute;top:100px;left:0}
+</style>
+<div id="create" class="sample"></div><div id="mutate" class="sample"></div>
+<div id="brands" class="sample"></div><div id="shadow" class="sample"></div>
+<div id="order" class="sample"></div><div id="tree" class="sample"></div>
+<button id="change" type="button">Run data callbacks</button><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+function typeError(action){let error;try{action();}catch(e){error=e;}check(error instanceof TypeError,'TypeError');}
+const change=document.getElementById('change'),result=document.getElementById('result');
+const data=Object.getOwnPropertyDescriptor(CharacterData.prototype,'data');
+const length=Object.getOwnPropertyDescriptor(CharacterData.prototype,'length');
+const target=Object.getOwnPropertyDescriptor(ProcessingInstruction.prototype,'target');
+const factory=document.createProcessingInstruction,ctor=ProcessingInstruction;
+const text=new Text('initial'),comment=new Comment('initial');
+let runs=0,pi,retainedClone,retainedHolder;
+function apply(color){
+  check(runs===(color==='green'?0:1),'load then one click');
+  if(runs===1)check(pi.data==='A\uD834\uDD1EB'&&retainedClone.data==='end?'&&retainedClone.parentNode===retainedHolder,'retained nodes');
+  check(ctor===ProcessingInstruction&&factory===document.createProcessingInstruction,'saved functions');
+  pi=new ctor('\u00e9','A\uD834\uDD1EB');
+  const made=factory.call(document,'probe','made');
+  check(pi.target==='\u00e9'&&pi.nodeName==='\u00e9'&&pi.nodeType===7&&pi.length===4,'PI scalar state');
+  check(pi instanceof ProcessingInstruction&&pi instanceof CharacterData&&made.data==='made'&&made!==pi,'genuine nodes');
+  check(new ctor('empty').data==='','default data');mark('create',color);
+
+  text.data='T\uD83D\uDE00';comment.data=null;
+  check(text.data==='T\uD83D\uDE00'&&text.length===3&&text.textContent===text.data,'text mutation and UTF16');
+  check(comment.data===''&&comment.length===0,'null becomes empty');
+  check(data.set.call(comment,'C'+runs)===undefined&&data.get.call(comment)==='C'+runs,'saved setter and getter');
+  check(comment.nodeType===8&&comment.textContent==='C'+runs,'comment native data');mark('mutate',color);
+
+  check(typeof data.get==='function'&&typeof data.set==='function'&&data.enumerable&&data.configurable,'data descriptor');
+  check(length.set===undefined&&length.enumerable&&length.configurable&&target.set===undefined&&target.enumerable&&target.configurable,'readonly descriptors');
+  let conversions=0;const value={toString(){conversions++;return 'changed';}};
+  typeError(function(){data.set.call(Object.create(CharacterData.prototype),value);});
+  typeError(function(){data.get.call(document);});
+  typeError(function(){target.get.call(text);});
+  check(conversions===0&&target.get.call(pi)==='\u00e9','brand before conversion');mark('brands',color);
+
+  Object.defineProperty(text,'data',{value:'shadow',writable:true,configurable:true});
+  check(text.data==='shadow'&&data.get.call(text)==='T\uD83D\uDE00','own shadow leaves native data');
+  check(delete text.data,'delete own shadow');
+  try{
+    Object.defineProperty(CharacterData.prototype,'data',{get(){check(this===text,'accessor receiver');return 'replacement';},configurable:true});
+    check(text.data==='replacement','prototype replacement');
+    check(delete CharacterData.prototype.data,'delete prototype accessor');
+    check(text.data===undefined&&data.get.call(text)==='T\uD83D\uDE00','no fallback resurrection');
+  }finally{Object.defineProperty(CharacterData.prototype,'data',data);}
+  Object.defineProperty(pi,'target',{value:'shadow',configurable:true});
+  check(pi.target==='shadow'&&target.get.call(pi)==='\u00e9','readonly own shadow');
+  check(delete pi.target,'delete target shadow');check(pi.target==='\u00e9','target restored');mark('shadow',color);
+
+  let trace='';const custom=Object.create(ProcessingInstruction.prototype),NewTarget=(function(){}).bind(null);
+  Object.defineProperty(NewTarget,'prototype',{get(){trace+='P';return custom;},configurable:true});
+  const ordered=Reflect.construct(ctor,[{toString(){trace+='T';return 'ordered';}},{toString(){trace+='D';return 'kept';}}],NewTarget);
+  check(trace==='TDP'&&Object.getPrototypeOf(ordered)===custom&&ordered.data==='kept','conversion then prototype');
+  const marker={};let caught;trace='';
+  try{factory.call(document,{toString(){trace+='T';return 'bad name';}},{toString(){trace+='D';throw marker;}});}catch(error){caught=error;}
+  check(caught===marker&&trace==='TD','conversion abrupt precedes target validation');mark('order',color);
+
+  const clone=pi.cloneNode(true),holder=document.createElement('section');
+  check(clone!==pi&&clone.target==='\u00e9'&&clone.data==='A\uD834\uDD1EB'&&clone.nodeType===7,'clone state');
+  document.append(clone);check(clone.parentNode===document,'Document accepts PI');
+  holder.appendChild(clone);check(clone.parentNode===holder&&holder.innerHTML==='<?\u00e9 A\uD834\uDD1EB?>','move and serialize');
+  clone.data='end?';check(holder.innerHTML==='<?\u00e9 end??>'&&pi.data==='A\uD834\uDD1EB','clone isolation and closing delimiter');
+  retainedClone=clone;retainedHolder=holder;mark('tree',color);runs++;
+}
+change.onclick=function(){check(this===change,'click receiver');apply('blue');check(runs===2,'two runs');result.textContent='6';document.body.className='clicked';};
+apply('green');result.textContent='ready';document.body.className='ready';
+</script>

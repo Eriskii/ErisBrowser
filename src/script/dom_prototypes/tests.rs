@@ -535,19 +535,18 @@ fn dom_constructor_conversion_precedes_prototype_get_and_plain_call_refuses() {
 
 #[test]
 fn dom_unimplemented_real_constructors_remain_explicit_and_do_not_publish() {
-    for name in ["Document", "ProcessingInstruction"] {
-        let mut runtime = Runtime::try_new().unwrap();
-        let mut doc = Document::parse("<p>kept</p>");
-        let target = runtime.environments[0].bindings[name].value.clone();
-        let before = format!("{doc:?}");
-        let error = runtime
-            .dom_interface_construct(&format!("{PREFIX}{name}"), &[], target, &mut doc)
-            .unwrap_err();
-        assert!(error.is_unsupported());
-        assert_eq!(format!("{doc:?}"), before);
-        assert!(runtime.dom_prototypes.overrides.is_empty());
-        constructor_witness_clean(&runtime);
-    }
+    let name = "Document";
+    let mut runtime = Runtime::try_new().unwrap();
+    let mut doc = Document::parse("<p>kept</p>");
+    let target = runtime.environments[0].bindings[name].value.clone();
+    let before = format!("{doc:?}");
+    let error = runtime
+        .dom_interface_construct(&format!("{PREFIX}{name}"), &[], target, &mut doc)
+        .unwrap_err();
+    assert!(error.is_unsupported());
+    assert_eq!(format!("{doc:?}"), before);
+    assert!(runtime.dom_prototypes.overrides.is_empty());
+    constructor_witness_clean(&runtime);
 }
 
 fn run_independent_category(name: &str, source: &str) {

@@ -2133,3 +2133,13 @@ fn confined_dom_prototypes_and_native_constructors_survive_page_callbacks() {
         Some(["ready", "6"]),
     );
 }
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_processing_instruction_and_character_data_survive_page_callbacks() {
+    assert_six_scripted_samples_through_worker_with_result_text(
+        include_str!("fixtures/processing-instruction.html"),
+        202,
+        Some(["ready", "6"]),
+    );
+}

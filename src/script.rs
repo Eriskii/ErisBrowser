@@ -33,6 +33,7 @@ mod object_integrity;
 mod object_is;
 mod own_keys;
 mod parser;
+mod processing_instruction;
 mod property_keys;
 mod regexp_builtins;
 mod string_builtins;
@@ -7835,6 +7836,9 @@ impl Runtime {
             return Err(ScriptError::type_error(
                 "DOM interface constructor requires new",
             ));
+        }
+        if let Some(method) = native.name.strip_prefix(processing_instruction::PREFIX) {
+            return self.pi_native(method, native.receiver.clone(), &args, doc);
         }
         if native.name == "Object.is" {
             return self.object_is(&args);
