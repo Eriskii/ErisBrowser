@@ -47,7 +47,15 @@ composited on the GPU. This is a hybrid renderer, not GPU font-outline or rounde
 geometry rasterization. It does not add shaping, bidirectional layout, author
 fonts or general web typography support.
 
-Unsupported group opacity, non-unit zoom, process-error overlays, excessive
+Browser zoom from 50% through 300% now scales page commands before document
+scroll offsets and fixed-position clipping, using the CPU painter's arithmetic.
+Near-unit zoom retains the existing borrowed-command path. Other zoom levels use
+a fallible bounded copy, including text and image keys; the extra capacity fits
+inside the unchanged 16 MiB preparation reserve. The copy is released before the
+optional CPU reference is painted. Zoom changes invalidate queued frames at the
+old scale and request immediate redraw while relayout proceeds.
+
+Unsupported group opacity, process-error overlays, excessive
 viewport dimensions, command/source limits, preparation limits or raster work
 refuse the entire native scene. The complete existing CPU painter then draws
 the page and chrome, and its pixels use the existing upload path. No accepted
@@ -103,6 +111,9 @@ temporary CPU-fallback paint storage are outside this explicit ledger. Trusted
 font-library outline allocations and noncancellable work remain the documented
 bundled-font limitation.
 
+Zoom does not relax these limits. A page admitted at one scale can require CPU
+fallback at another because larger coverage or additional work exceeds them.
+
 The owner keeps one active frame and one replaceable latest pending packet.
 Generation, viewport and visibility checks prevent stale presentation; a newer
 same-epoch serial does not continually invalidate active work. The active
@@ -116,6 +127,44 @@ submitted. Resources and surface ownership remain held through required
 completion or the owner's destruction path. A timeout or finished thread alone
 does not prove release.
 
+
+## Zoom validation
+
+Three controlled 1280×880 windows pass on NVIDIA RTX 4070 SUPER/BGRA8 with the
+release build. One acquired texture at 90% and one at 110% each match all
+4,505,600 CPU-reference bytes, totaling **9,011,200 compared bytes**. A separate
+normal 110% run presents with no reference or readback. All three processes exit
+zero and the supervisor reports no owned descendants left behind.
+
+The existing HTML/PNG fixture and resource limits are unchanged. A bounded
+controller sends one shortcut to its own browser window. The document response
+stays withheld until the browser reports that exact zoom while loading; the
+prepared-scene zoom and serial then join the actual presentation and optional
+acquired verification. This establishes the captured textures before the
+compositor on one adapter, without a performance claim.
+
+Rust 1.88 passes 1,403 default tests and Rust 1.98 passes 1,526 native-feature
+tests, including ignored tests. Native strict Clippy passes on both versions;
+formatting and 91 native-host Python tests pass. Six new native scene groups
+and two keyboard groups cover scaling, stale-frame invalidation, resource
+admission and cleanup behavior. The complex scene's CPU pixels match at 75%
+and 125%; its extra outlines and controls correctly exceed the unchanged CPU
+work estimate, while a smaller page passes native admission at both scales.
+
+The first complex-scene test incorrectly expected native admission; its failure
+is retained. The correction preserved its pixel comparison and asserted the
+budget refusal, then added the separate admitted page. An oversized debug binary
+was also refused by the host before any window launch. The successful runs use
+the release binary under the unchanged 128 MiB input limit. The
+[summary and raw records](evidence/vulkan-native-zoom.json) bind these attempts,
+source, binaries and successful observations.
+
+```sh
+python3 tools/native_raster_zoom_host.py \
+  --binary /path/to/eris-browser --binary-sha256 <sha256> \
+  --loader-directory /path/to/vulkan-loader/lib \
+  --output /tmp/eris-native-zoom-check-new --allow-experimental-gpu
+```
 
 ## Wide-mask validation
 

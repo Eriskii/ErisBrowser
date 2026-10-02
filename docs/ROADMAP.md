@@ -58,8 +58,9 @@ Probe limits and now supports phase-local coordinates with frame-wide resource
 limits. The [offscreen prerequisite](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md),
 [glyph](../tools/vulkan-raster-probe/GLYPHS.md) and
 [worker-text](../tools/vulkan-raster-probe/WORKER_TEXT.md) checkpoints remain
-separate three-adapter evidence. Wider scene/viewport admission, group opacity,
-zoom, shaping, native GPU screenshots and driver isolation remain ahead.
+separate three-adapter evidence. Native page zoom now uses bounded command
+scaling within the existing preparation limits. Wider scene/viewport admission,
+group opacity, shaping, native GPU screenshots and driver isolation remain ahead.
 Performance within 30% of Chromium has not been demonstrated.
 
 [Array concat](../tests/conformance/array-concat.md) now streams live

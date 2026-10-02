@@ -1,0 +1,563 @@
+{
+  "schema": 1,
+  "parent": "3320eff1005808a2a23e3c112a2f4f04f0f8885a",
+  "change": "Keep admitted page zoom on the native Vulkan route with bounded command copies; invalidate stale-scale frames and redraw immediately on zoom changes.",
+  "source_files": {
+    "src/browser.rs": "4c9f6fe3079560e0e25f4f56ee855b7ea3c68e6a66a87b300785c4bc8c06ec14",
+    "src/browser/native_scene.rs": "9dfedbf2b8666cbfc5bfc4e8eb0203f57c9ca0484c90bdeb50f6906eaefc94c6",
+    "tools/native_raster_zoom_host.py": "5617cacc00839a5827336a573e64fbf0a570fb26511e6bbe20bcdf058ab31a49",
+    "tools/test_native_raster_zoom_host.py": "74a04c88e092874a783f1fd9f93defec2a299eebf768be500ac9936e24e80e58"
+  },
+  "source_diff_sha256": "b3e43fa9d7b1f687037f9f945c499555f88f4fc8baa72c0bb828682a0d97545d",
+  "binary": {
+    "path": "/tmp/eris-native-zoom-1/eris-browser-release",
+    "sha256": "c619b53d37a64d465257c15cb6b19948095fe2dd93157ce81cb0db87a1565be1",
+    "bytes": 16216064,
+    "rust": "1.98.0",
+    "profile": "release",
+    "features": [
+      "vulkan-raster"
+    ],
+    "source": {
+      "src/browser.rs": "4c9f6fe3079560e0e25f4f56ee855b7ea3c68e6a66a87b300785c4bc8c06ec14",
+      "src/browser/native_scene.rs": "9dfedbf2b8666cbfc5bfc4e8eb0203f57c9ca0484c90bdeb50f6906eaefc94c6"
+    }
+  },
+  "tests": {
+    "rust_1_88_default": 1403,
+    "rust_1_98_vulkan_raster": 1526,
+    "new_rust_groups": 8,
+    "native_host_python": 91,
+    "final_failed": 0,
+    "final_ignored": 0
+  },
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.118,
+      "log": "browser-debug-198-1.log",
+      "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--release",
+        "--bin",
+        "eris-browser"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 42.027,
+      "log": "browser-release-198-1.log",
+      "sha256": "c3a3890a18bdcaa06f8f3dddf4a00e62dbd2f99d5c5ac3aa9010e0fd8c9f1e1f"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.406,
+      "log": "clippy-native-188-1.log",
+      "sha256": "58a34cf9810e569ee1f9f6f71d8cdc74052384d75b408b135a011184858b92b3"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.598,
+      "log": "clippy-native-198-1.log",
+      "sha256": "55a430b2021c30bf73869b9f2b618a475af290f968419814ffadde3d4b48d3f0"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.464,
+      "log": "clippy-native-198-2.log",
+      "sha256": "e0a86260e0b9a3662e190083059ff473dfc3ac258fce6f8bac1b447f0f24d77e"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "format.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 13.644,
+      "log": "full-default-188-1.log",
+      "sha256": "658677974c321a304f42003f0ecf8909fe1ce6affbc2dd386d30e00137042c42"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 9.046,
+      "log": "full-native-198-1.log",
+      "sha256": "b9f0c3f284f4cd432071d17129405f59ee72523c99c58d0ef33bd20d53ba6264"
+    },
+    {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 10.583,
+      "log": "full-native-198-2.log",
+      "sha256": "2eaadd20bb1f7f02296d8a733a513fbc9a3769316a28efb7af6cd97d2cc0a1b7"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "test_native_raster_*.py"
+      ],
+      "exit": 0,
+      "log": "native-host-tests.log",
+      "sha256": "e30c19dc50bba054a3a97a2d9501816238812b315281e772a44aee4b684f6c60"
+    }
+  ],
+  "native_windows": {
+    "runs": [
+      {
+        "case": "zoom-in-verified",
+        "status": "exited",
+        "returncode": 0,
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "zoom_bits": 1066192077,
+        "native_presentations": [
+          {
+            "serial": 7,
+            "reference": true
+          }
+        ],
+        "acquired_verifications": [
+          {
+            "serial": 7,
+            "generation": 1,
+            "viewport_revision": 6,
+            "compared_bytes": 4505600
+          }
+        ]
+      },
+      {
+        "case": "zoom-out-verified",
+        "status": "exited",
+        "returncode": 0,
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "zoom_bits": 1063675494,
+        "native_presentations": [
+          {
+            "serial": 7,
+            "reference": true
+          }
+        ],
+        "acquired_verifications": [
+          {
+            "serial": 7,
+            "generation": 1,
+            "viewport_revision": 6,
+            "compared_bytes": 4505600
+          }
+        ]
+      },
+      {
+        "case": "zoom-in-normal",
+        "status": "exited",
+        "returncode": 0,
+        "cleanup": {
+          "complete": true,
+          "reaped": 1,
+          "descendants": 0,
+          "checker_returncode": 0,
+          "error": null
+        },
+        "zoom_bits": 1066192077,
+        "native_presentations": [
+          {
+            "serial": 7,
+            "reference": false
+          }
+        ],
+        "acquired_verifications": []
+      }
+    ],
+    "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+    "acquired_texture_compared_bytes": 9011200,
+    "physical_size": [
+      1280,
+      880
+    ],
+    "scope": "Canvas differential of acquired textures before compositor; one adapter/format; no performance measurement"
+  },
+  "retained_attempts": [
+    {
+      "attempt": "full-native-198-1",
+      "outcome": "One new complex-scene test failed its admission unwrap after CPU pixel equality passed; existing cpu-paint-budget correctly refused the scene.",
+      "correction": "Preserved pixel comparison and asserted the unchanged budget refusal; added a separate minimal admitted-page test. Production and quotas were unchanged."
+    },
+    {
+      "attempt": 1,
+      "binary": "eris-browser",
+      "binary_bytes": 292107768,
+      "binary_sha256": "a2aa69718373235fb074cf440b18f30bf487f66a527b1ac1722989ed1f92d4d5",
+      "status": "preflight refusal before output directory/window creation",
+      "error": "file missing, nonregular or over bound: eris-browser",
+      "cause": "debug executable exceeds inherited 128 MiB binary input bound",
+      "response": "build release executable; keep host limits unchanged",
+      "host_output_created": false
+    }
+  ],
+  "limits_unchanged": {
+    "zoom_minimum": 0.5,
+    "zoom_maximum": 3.0,
+    "preparation_bytes": 16777216,
+    "binary_host_input_bytes": 134217728,
+    "gpu_invocations": 4000000
+  },
+  "archive": {
+    "path": "vulkan-native-zoom.tar.gz",
+    "bytes": 125391,
+    "sha256": "5b14e4e827adb9dff53d26d23aded7a0d113d4293dcb017bc4c2852096bb9a31",
+    "members": [
+      {
+        "path": "binary-release.json",
+        "bytes": 458,
+        "sha256": "bac3fcfd58407fa34fc76c7d68f31a8fb3183288bbd0a3349251773c6c227b97"
+      },
+      {
+        "path": "binary.json",
+        "bytes": 427,
+        "sha256": "c703fa1b01be8874a594ba7cec05b8aeba819f5a890fa22e7d617dcb7e96f307"
+      },
+      {
+        "path": "final-observation-review.json",
+        "bytes": 5620,
+        "sha256": "ce4c9227ce282f89fba26740475e67fdcff7c0d181dd1001add56978845173d0"
+      },
+      {
+        "path": "host-1/zoom-host-results.json",
+        "bytes": 48296,
+        "sha256": "c82c9a5a06eb386012d4dfc26c0999eba44e5092cf9590a8617111b0ab91f051"
+      },
+      {
+        "path": "host-1/zoom-in-normal.json",
+        "bytes": 1373,
+        "sha256": "2c66faf4a8f295aa3c424f1a2fd894c3db624bd20766fdb56343103a7a4a0027"
+      },
+      {
+        "path": "host-1/zoom-in-normal.stderr.log",
+        "bytes": 1666,
+        "sha256": "63a336a61cd45de84b29be14ae545ef842555a5d5a7ef5f29c876004e9314dc1"
+      },
+      {
+        "path": "host-1/zoom-in-normal.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "host-1/zoom-in-normal.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "host-1/zoom-in-normal.window-control.json",
+        "bytes": 7675,
+        "sha256": "496a4592c10c59f2a8060ef4d7c8cd0d7f758a1bb0a6153275a07c9c63ad33fa"
+      },
+      {
+        "path": "host-1/zoom-in-verified.json",
+        "bytes": 1377,
+        "sha256": "c676217f9a9a67036e5060c3d3e6e5e280eade7b976e61ef40f4de27d7b0ada9"
+      },
+      {
+        "path": "host-1/zoom-in-verified.stderr.log",
+        "bytes": 1968,
+        "sha256": "ad18764e697396d855301b7526b808074f0942c5c6e6252e8aafb7e63e28a78f"
+      },
+      {
+        "path": "host-1/zoom-in-verified.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "host-1/zoom-in-verified.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "host-1/zoom-in-verified.window-control.json",
+        "bytes": 8684,
+        "sha256": "b5129cde79e0fc7ad3e6b8f9a42dd0c17ca1c9b707bcb5fdc71764c253897b11"
+      },
+      {
+        "path": "host-1/zoom-out-verified.json",
+        "bytes": 1379,
+        "sha256": "813cc5c2e871d6b5ec0889c1c4f0d1ce62cad42addd37db7bf5401e57776430c"
+      },
+      {
+        "path": "host-1/zoom-out-verified.stderr.log",
+        "bytes": 1968,
+        "sha256": "3826f81834e25a8179442a5b6b05cf9c215b674e05205fcb14346e9b6360f38e"
+      },
+      {
+        "path": "host-1/zoom-out-verified.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "host-1/zoom-out-verified.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "host-1/zoom-out-verified.window-control.json",
+        "bytes": 7233,
+        "sha256": "54b2f765507096594a24d6cd5ac9f49caf01fd44ac76a16d5395868fabb708a3"
+      },
+      {
+        "path": "host-preflight-refusal.json",
+        "bytes": 481,
+        "sha256": "891f8238b530070d42d57ce93f0017266f275f39f878ba9dec8e63f9977046a9"
+      },
+      {
+        "path": "native_scene-before-test-admission-correction.rs",
+        "bytes": 33346,
+        "sha256": "ac96024443dfed231a9dba56e29a3284d1659f0887b13c15d0d88a84af59d05c"
+      },
+      {
+        "path": "source-review-summary.json",
+        "bytes": 1547,
+        "sha256": "0e565d72fff068efdb703119e1d76a603fce52dfe17a8d6c0108df14b52c8961"
+      },
+      {
+        "path": "source.diff",
+        "bytes": 47025,
+        "sha256": "b3e43fa9d7b1f687037f9f945c499555f88f4fc8baa72c0bb828682a0d97545d"
+      },
+      {
+        "path": "validation/browser-debug-198-1.json",
+        "bytes": 366,
+        "sha256": "18c963376497e4a3e004bc59629c0c59ac6f0e85ae3bb52eee01f06883a29f86"
+      },
+      {
+        "path": "validation/browser-debug-198-1.log",
+        "bytes": 72,
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      {
+        "path": "validation/browser-release-198-1.json",
+        "bytes": 386,
+        "sha256": "6e574eb8c02455cabcaecdaefd3791b91ec901b8dfbfeb7f280127278093ae52"
+      },
+      {
+        "path": "validation/browser-release-198-1.log",
+        "bytes": 155,
+        "sha256": "c3a3890a18bdcaa06f8f3dddf4a00e62dbd2f99d5c5ac3aa9010e0fd8c9f1e1f"
+      },
+      {
+        "path": "validation/check.py",
+        "bytes": 1255,
+        "sha256": "85dfa516c8bb6468f1dbdc20909921dcc6f8fa1f78395c44f13bb1276c7ec482"
+      },
+      {
+        "path": "validation/clippy-native-188-1.json",
+        "bytes": 391,
+        "sha256": "2e8027998862ae121d8309582837b07f898b6c5d4a89db9dfaeb0248a785a050"
+      },
+      {
+        "path": "validation/clippy-native-188-1.log",
+        "bytes": 164,
+        "sha256": "58a34cf9810e569ee1f9f6f71d8cdc74052384d75b408b135a011184858b92b3"
+      },
+      {
+        "path": "validation/clippy-native-198-1.json",
+        "bytes": 391,
+        "sha256": "be20161f3f200d0e36e2927656ae13588711c2d720da1c3c8a5a8a9b8a7ef5fc"
+      },
+      {
+        "path": "validation/clippy-native-198-1.log",
+        "bytes": 164,
+        "sha256": "55a430b2021c30bf73869b9f2b618a475af290f968419814ffadde3d4b48d3f0"
+      },
+      {
+        "path": "validation/clippy-native-198-2.json",
+        "bytes": 391,
+        "sha256": "8b35db938a865ca26b95463140c78cd3360c3a9e0da1f7d864a4c2f7b18ccad8"
+      },
+      {
+        "path": "validation/clippy-native-198-2.log",
+        "bytes": 164,
+        "sha256": "e0a86260e0b9a3662e190083059ff473dfc3ac258fce6f8bac1b447f0f24d77e"
+      },
+      {
+        "path": "validation/format.json",
+        "bytes": 215,
+        "sha256": "4c3597aa3324bf6b2f526886f2a66e3f9777b855ba4bcfae4ea0b555a091d85e"
+      },
+      {
+        "path": "validation/format.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "validation/full-default-188-1.json",
+        "bytes": 328,
+        "sha256": "54b629f6a3c3c601b2867a12e87fb7d43d77bc9682d3f318e0f6e285c14a9a4f"
+      },
+      {
+        "path": "validation/full-default-188-1.log",
+        "bytes": 133948,
+        "sha256": "658677974c321a304f42003f0ecf8909fe1ce6affbc2dd386d30e00137042c42"
+      },
+      {
+        "path": "validation/full-native-198-1.json",
+        "bytes": 367,
+        "sha256": "16838bd3bf879267503a1911330f6d71338b845583491808a4f72800abc89ffd"
+      },
+      {
+        "path": "validation/full-native-198-1.log",
+        "bytes": 132211,
+        "sha256": "b9f0c3f284f4cd432071d17129405f59ee72523c99c58d0ef33bd20d53ba6264"
+      },
+      {
+        "path": "validation/full-native-198-2.json",
+        "bytes": 366,
+        "sha256": "179d284487a429fad949661a29b81025f1ad05aff91fcbc1e670e29d1bc0f013"
+      },
+      {
+        "path": "validation/full-native-198-2.log",
+        "bytes": 147752,
+        "sha256": "2eaadd20bb1f7f02296d8a733a513fbc9a3769316a28efb7af6cd97d2cc0a1b7"
+      },
+      {
+        "path": "validation/native-host-tests.json",
+        "bytes": 270,
+        "sha256": "b8cd6ee78f7fa26c8056b6fd67ccef8cb82684f6301ac03e960eb5685710c895"
+      },
+      {
+        "path": "validation/native-host-tests.log",
+        "bytes": 190,
+        "sha256": "e30c19dc50bba054a3a97a2d9501816238812b315281e772a44aee4b684f6c60"
+      }
+    ]
+  },
+  "limitations": [
+    "Scene admission depends on existing work, geometry and storage limits at the selected zoom.",
+    "Group opacity, GPU process isolation, shaping and native GPU screenshots remain incomplete.",
+    "No full standards, production security, general speedup or Chromium performance claim."
+  ]
+}

@@ -683,6 +683,23 @@ impl Browser {
         let (width, height) = self.viewport();
         let _ = self.tx.send(Request::Resize { width, height });
     }
+    fn set_zoom(&mut self, zoom: f32) {
+        let zoom = zoom.clamp(0.5, 3.0);
+        if zoom == self.zoom {
+            return;
+        }
+        // A queued frame at the old scale is stale even when the window's
+        // physical dimensions have not changed. Redraw without waiting for a
+        // worker reply, including while navigation is still loading.
+        if let Err(error) = self.update_presentation_target(true) {
+            self.startup_error = Some(error);
+            self.begin_close();
+            return;
+        }
+        self.zoom = zoom;
+        self.resize();
+        self.redraw();
+    }
     fn navigate(&mut self, address: String, record: bool) {
         self.navigate_impl(Navigation::get(address), record, false);
     }
@@ -1254,18 +1271,15 @@ impl Browser {
                     return;
                 }
                 "+" | "=" => {
-                    self.zoom = (self.zoom + 0.1).min(3.0);
-                    self.resize();
+                    self.set_zoom(self.zoom + 0.1);
                     return;
                 }
                 "-" => {
-                    self.zoom = (self.zoom - 0.1).max(0.5);
-                    self.resize();
+                    self.set_zoom(self.zoom - 0.1);
                     return;
                 }
                 "0" => {
-                    self.zoom = 1.0;
-                    self.resize();
+                    self.set_zoom(1.0);
                     return;
                 }
                 _ => {}
@@ -1466,6 +1480,13 @@ impl Browser {
                             prepared.plan.plan().raster_invocations(),
                             prepared.plan.plan().invocations(),
                         );
+                        if self.zoom != 1.0 {
+                            eprintln!(
+                                "native zoom prepared: serial={} zoom_bits={}",
+                                stamp.serial,
+                                self.zoom.to_bits(),
+                            );
+                        }
                     }
                     if let Some(presenter) = &mut self.presenter {
                         presenter.submit_native(prepared.plan.into_plan(), reference, stamp)?;
@@ -2242,6 +2263,56 @@ mod tests {
             clipboard: None,
             applied_fragment_generation: 0,
         }
+    }
+
+    #[test]
+    fn zoom_keys_invalidate_old_frames_and_request_layout_while_loading() {
+        for loading in [false, true] {
+            let mut browser = editing_browser("<p>Zoom</p>");
+            browser.loading = loading;
+            browser.modifiers = ModifiersState::CONTROL;
+            browser.target.size = (1180, 880);
+            for (index, (key, zoom)) in [("=", 1.1_f32), ("0", 1.0), ("-", 0.9)]
+                .into_iter()
+                .enumerate()
+            {
+                browser.key(Key::Character(key.into()), None);
+                assert_eq!(browser.zoom, zoom);
+                assert_eq!(browser.target.viewport_revision, index as u64 + 1);
+                assert_eq!(browser.target.size, (1180, 880));
+                assert_eq!(browser.target.generation, browser.generation());
+                assert_eq!(browser.loading, loading);
+                let requests = browser.tx.state.lock().unwrap();
+                assert_eq!(requests.pending.len(), 1);
+                assert!(matches!(requests.pending[0], Request::Resize { .. }));
+            }
+            assert!(!browser.closing);
+        }
+    }
+
+    #[test]
+    fn zoom_bounds_skip_redundant_layout_and_revision_exhaustion_closes() {
+        for (zoom, key) in [(3.0, "+"), (0.5, "-"), (1.0, "0")] {
+            let mut browser = editing_browser("Page");
+            browser.zoom = zoom;
+            browser.modifiers = ModifiersState::CONTROL;
+            browser.key(Key::Character(key.into()), None);
+            assert_eq!(browser.zoom, zoom);
+            assert_eq!(browser.target.viewport_revision, 0);
+            assert!(browser.tx.state.lock().unwrap().pending.is_empty());
+        }
+        let mut browser = editing_browser("Page");
+        browser.target.viewport_revision = u64::MAX;
+        browser.modifiers = ModifiersState::CONTROL;
+        browser.key(Key::Character("=".into()), None);
+        assert!(browser.closing);
+        assert_eq!(browser.zoom, 1.0);
+        assert_eq!(browser.target.viewport_revision, u64::MAX);
+        assert_eq!(
+            browser.startup_error.as_deref(),
+            Some("presentation viewport revision exhausted")
+        );
+        assert!(browser.tx.state.lock().unwrap().pending.is_empty());
     }
 
     #[test]

@@ -32,8 +32,9 @@ whole-scene planning on the existing graphics owner. Earlier
 [native prerequisites](../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md),
 [glyph](../tools/vulkan-raster-probe/GLYPHS.md) and
 [worker-text](../tools/vulkan-raster-probe/WORKER_TEXT.md) results remain separate
-offscreen checks on three adapters. Broader viewport/scene admission, group
-opacity, zoom, shaping and native GPU screenshot capture remain unfinished.
+offscreen checks on three adapters. Native page zoom now scales admitted scenes
+within the same resource limits. Broader viewport/scene admission, group opacity,
+shaping and native GPU screenshot capture remain unfinished.
 The [integration design](vulkan-native-plan.md) records the original seams and
 ownership requirements. Earlier experiments and failed compositor comparisons
 remain recorded below.

@@ -4083,3 +4083,22 @@ are unchanged. The [summary and raw records](evidence/document-append.json)
 bind source, checks and complete local reports. These checks do not establish
 complete DOM compatibility or production security. The previous DataView
 optimization passed all nine [GitHub CI jobs](evidence/data-view-bootstrap-lookup-ci.json).
+
+### Native Vulkan page zoom
+
+The [native zoom checkpoint](vulkan-native-window.md#zoom-validation) adds bounded
+page-command scaling and invalidates queued old-scale frames on zoom changes.
+Rust 1.88 passes **1,403 default tests**, Rust 1.98 passes **1,526 native-feature
+tests**, native strict Clippy passes on both versions, and all **91 native-host
+Python tests** pass. Formatting passes. The six new scene groups include complex
+full-frame CPU comparisons and separate admitted-page checks at 75% and 125%.
+Two keyboard groups cover loading, unchanged zoom limits and revision exhaustion.
+
+Three actual 1280×880 release-browser windows pass on NVIDIA/BGRA8: acquired
+textures at 90% and 110% match **9,011,200 bytes** in total, and a separate 110%
+normal run has no reference/readback. Every process exits zero with no owned
+descendants remaining. The original failing admission assertion and oversized
+debug-binary preflight refusal remain in the [raw record](evidence/vulkan-native-zoom.json).
+Numeric limits and the original CPU painter are unchanged. These are correctness
+and admission checks, not Chromium or general performance measurements.
+The preceding DOM checkpoint passed all nine [CI jobs](evidence/document-append-ci.json).

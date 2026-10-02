@@ -31,6 +31,10 @@ adjacent masks. One 1280×880 acquired texture matches all 4,505,600 CPU-referen
 bytes on the NVIDIA host; a separate normal run uses no CPU reference or readback.
 Earlier 1180×880 evidence remains retained. Opacity and over-budget scenes take
 complete CPU fallback. Font and rounded coverage still come from CPU preparation.
+Native page zoom now uses bounded command scaling. Separate 90% and 110%
+window checks match 9,011,200 acquired bytes against the CPU reference, and
+a normal 110% run uses no reference or readback; see the
+[zoom record](docs/vulkan-native-window.md#zoom-validation).
 The [rendering docket](docs/vulkan-rendering.md) tracks broader admission,
 compositing and performance work. There is no measured Chromium parity.
 

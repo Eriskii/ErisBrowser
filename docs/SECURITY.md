@@ -4,8 +4,9 @@
 
 The optional Linux Vulkan presenter runs a graphics driver on a dedicated thread
 inside the privileged native browser process. This is not GPU process isolation.
-Only completed CPU pixel frames cross its mailbox; it receives no page shader
-source. It limits active/pending frames and counts application pixel-buffer
+The upload route accepts completed CPU pixel frames; the optional native raster
+route accepts bounded plans prepared from validated display lists. It receives
+no page shader source. It limits active/pending frames and counts application pixel-buffer
 capacities, while driver staging, swapchains and internal allocation remain
 outside that ledger. A five-second application deadline cannot interrupt a
 native call or destructor. Timeout or thread panic never authorizes a competing

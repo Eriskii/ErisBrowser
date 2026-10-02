@@ -1,9 +1,12 @@
-//! Bounded native composition. Original page commands remain borrowed and each
-//! phase has its own fixed-position caller clip. Preparation owns no GPU objects.
+//! Bounded native composition. Unit-zoom page commands remain borrowed; zoomed
+//! pages own a bounded scaled copy. Each phase has its own fixed-position caller
+//! clip. Preparation owns no GPU objects.
 use super::*;
 use eris::graphics::{
     ImageStore,
     raster_bridge::native::{self, NativePhase, NativeScenePlan},
+    raster_bridge::{MAX_COMMAND_KEY_BYTES, MAX_KEY_BYTES},
+    text_masks::{MAX_FRAME_SCALARS, MAX_FRAME_TEXT_BYTES, MAX_RUN_TEXT_BYTES},
 };
 use eris_raster_core::{Frame, Profile, Rect as CoreRect};
 use std::borrow::Cow;
@@ -13,6 +16,149 @@ const UI_COMMANDS: usize = 32;
 const UI_TEXT_BYTES: usize = 16 * 1024;
 const UI_RUN_BYTES: usize = 4096;
 const PREPARATION_BYTES: usize = 16 * 1024 * 1024;
+// Includes the owned page's vector header, all command slots and both bounded
+// string arenas. Borrowed snapshot/image/font storage and allocator overhead
+// remain excluded, as in the adapter's preparation accounting.
+const ZOOM_COPY_BYTES: usize = size_of::<Vec<DrawCommand>>()
+    + eris_raster_core::MAX_COMMANDS * size_of::<DrawCommand>()
+    + MAX_FRAME_TEXT_BYTES
+    + MAX_COMMAND_KEY_BYTES;
+
+fn needs_scaled_page(zoom: f32) -> Result<bool, String> {
+    if !zoom.is_finite() || !(0.5..=3.0).contains(&zoom) {
+        return Err("native scene zoom outside supported range".into());
+    }
+    // Keep the CPU painter's near-unit branch, including its f32 subtraction.
+    Ok((zoom - 1.0).abs() >= 0.001)
+}
+
+fn admit_preparation(peak: usize, scaled: bool) -> Result<(), String> {
+    peak.checked_add(if scaled { ZOOM_COPY_BYTES } else { 0 })
+        .filter(|&bytes| bytes <= PREPARATION_BYTES)
+        .ok_or_else(|| "native scene preparation capacity budget".to_string())?;
+    Ok(())
+}
+
+fn copy_payload(text: &str, capacity: &mut usize, limit: usize) -> Result<String, String> {
+    let mut owned = String::new();
+    owned
+        .try_reserve_exact(text.len())
+        .map_err(|_| "native zoom payload allocation")?;
+    *capacity = capacity
+        .checked_add(owned.capacity())
+        .filter(|&bytes| bytes <= limit)
+        .ok_or("native zoom payload capacity budget")?;
+    owned.push_str(text);
+    Ok(owned)
+}
+
+fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawCommand]>, String> {
+    let scaled = needs_scaled_page(zoom)?;
+    if commands.len() > eris_raster_core::MAX_COMMANDS {
+        return Err("native page command budget".into());
+    }
+    if !scaled {
+        return Ok(Cow::Borrowed(commands));
+    }
+    // Check all borrowed payloads before allocating their copies. These are the
+    // existing adapter limits; scaling cannot hide an unsupported source.
+    let (mut text_bytes, mut scalars, mut key_bytes) = (0usize, 0usize, 0usize);
+    for command in commands {
+        match command {
+            DrawCommand::Text { text, .. } => {
+                text_bytes = text_bytes
+                    .checked_add(text.len())
+                    .filter(|&n| n <= MAX_FRAME_TEXT_BYTES && text.len() <= MAX_RUN_TEXT_BYTES)
+                    .ok_or("native zoom text budget")?;
+                scalars = scalars
+                    .checked_add(text.chars().count())
+                    .filter(|&n| n <= MAX_FRAME_SCALARS)
+                    .ok_or("native zoom scalar budget")?;
+            }
+            DrawCommand::Image { key, .. } => {
+                key_bytes = key_bytes
+                    .checked_add(key.len())
+                    .filter(|&n| n <= MAX_COMMAND_KEY_BYTES && key.len() <= MAX_KEY_BYTES)
+                    .ok_or("native zoom image key budget")?;
+            }
+            _ => {}
+        }
+    }
+    let mut result = Vec::new();
+    result
+        .try_reserve_exact(commands.len())
+        .map_err(|_| "native zoom command allocation")?;
+    if result.capacity() > eris_raster_core::MAX_COMMANDS {
+        return Err("native zoom command capacity budget".into());
+    }
+    let (mut text_capacity, mut key_capacity) = (0usize, 0usize);
+    let rect = |r: &Rect| Rect {
+        x: r.x * zoom,
+        y: r.y * zoom,
+        width: r.width * zoom,
+        height: r.height * zoom,
+    };
+    for command in commands {
+        // Match scaled_command's arithmetic; only payload cloning differs.
+        let scaled = match command {
+            DrawCommand::PushClip { rect: r } => DrawCommand::PushClip { rect: rect(r) },
+            DrawCommand::PopClip => DrawCommand::PopClip,
+            DrawCommand::PushFixed => DrawCommand::PushFixed,
+            DrawCommand::PopFixed => DrawCommand::PopFixed,
+            DrawCommand::PushOpacity { opacity } => DrawCommand::PushOpacity { opacity: *opacity },
+            DrawCommand::PopOpacity => DrawCommand::PopOpacity,
+            DrawCommand::Rect {
+                rect: r,
+                color,
+                radius,
+            } => DrawCommand::Rect {
+                rect: rect(r),
+                color: *color,
+                radius: radius * zoom,
+            },
+            DrawCommand::Text {
+                x,
+                y,
+                text,
+                size,
+                color,
+                bold,
+                italic,
+                monospace,
+            } => DrawCommand::Text {
+                x: x * zoom,
+                y: y * zoom,
+                text: copy_payload(text, &mut text_capacity, MAX_FRAME_TEXT_BYTES)?,
+                size: size * zoom,
+                color: *color,
+                bold: *bold,
+                italic: *italic,
+                monospace: *monospace,
+            },
+            DrawCommand::Image { rect: r, key } => DrawCommand::Image {
+                rect: rect(r),
+                key: copy_payload(key, &mut key_capacity, MAX_COMMAND_KEY_BYTES)?,
+            },
+            DrawCommand::Line {
+                x1,
+                y1,
+                x2,
+                y2,
+                color,
+                width,
+            } => DrawCommand::Line {
+                x1: x1 * zoom,
+                y1: y1 * zoom,
+                x2: x2 * zoom,
+                y2: y2 * zoom,
+                color: *color,
+                width: width * zoom,
+            },
+        };
+        result.push(scaled);
+    }
+    Ok(Cow::Owned(result))
+}
 
 pub(super) struct Prepared {
     pub plan: NativeScenePlan,
@@ -90,7 +236,7 @@ struct Scene<'a> {
     target: Frame,
     page_frame: Frame,
     overlay_frame: Frame,
-    page: &'a [DrawCommand],
+    page: Cow<'a, [DrawCommand]>,
     overlays: Commands,
     chrome: Commands,
     selection: Selection,
@@ -100,7 +246,7 @@ impl Scene<'_> {
         [
             NativePhase {
                 frame: self.page_frame,
-                commands: self.page,
+                commands: &self.page,
             },
             NativePhase {
                 frame: self.overlay_frame,
@@ -116,9 +262,7 @@ impl Scene<'_> {
 
 fn build(browser: &Browser, size: PhysicalSize<u32>) -> Result<Scene<'_>, String> {
     Profile::Native.validate_viewport(size.width, size.height)?;
-    if !browser.zoom.is_finite() || (browser.zoom - 1.0).abs() >= 0.001 {
-        return Err("native scene currently requires unit zoom".into());
-    }
+    needs_scaled_page(browser.zoom)?;
     if browser.worker_error.is_some() {
         return Err("native process-error overlay uses CPU painting".into());
     }
@@ -145,6 +289,7 @@ fn build(browser: &Browser, size: PhysicalSize<u32>) -> Result<Scene<'_>, String
     {
         return Err("native UI input text budget".into());
     }
+    let page = scaled_page(page, browser.zoom)?;
     let target = Frame::new(size.width, size.height, 0xffffff);
     let viewport = Rect {
         x: 0.0,
@@ -389,14 +534,23 @@ pub(super) fn prepare(
             .as_ref()
             .is_none_or(|snapshot| snapshot.generation != browser.generation())
     {
-        return Err("native scene awaits a current loaded page".into());
+        return Err(if browser.zoom == 1.0 {
+            "native scene awaits a current loaded page".into()
+        } else {
+            format!(
+                "native scene awaits a current loaded page; zoom_bits={}",
+                browser.zoom.to_bits()
+            )
+        });
     }
     let target = Frame::new(size.width, size.height, 0xffffff);
     let peak =
         native::preparation_peak_bytes(target, include_reference).map_err(|e| e.to_string())?;
-    if peak > PREPARATION_BYTES {
-        return Err("native scene preparation capacity budget".into());
-    }
+    // The scaled scene coexists with adapter preparation. It is dropped before
+    // paint_canvas constructs the optional CPU reference's own scaled commands,
+    // so one copy allowance covers both stages (the reference canvas is already
+    // charged by preparation_peak_bytes). The submitted packet retains neither.
+    admit_preparation(peak, needs_scaled_page(browser.zoom)?)?;
     let scene = build(browser, size)?;
     let empty = ImageStore::new();
     let images = browser
@@ -477,6 +631,7 @@ mod tests {
         };
         let size = PhysicalSize::new(1180, 880);
         let scene = build(&browser, size).unwrap();
+        assert!(matches!(scene.page, Cow::Borrowed(_)));
         assert_eq!(
             browser.selection.caret,
             usize::MAX,
@@ -486,6 +641,325 @@ mod tests {
         let actual = paint_scene(&browser, &scene);
         let expected = browser.paint_canvas(size).unwrap();
         assert_eq!(actual.pixels, expected.pixels);
+    }
+
+    #[test]
+    fn zoomed_complete_scenes_match_cpu_scale_before_scroll_and_fixed_clips() {
+        for (zoom, fixed_focus) in [(0.75, false), (1.25, true)] {
+            let mut browser = super::super::tests::editing_browser("<input id=focus>");
+            browser.zoom = zoom;
+            browser.scroll = 37.25;
+            browser.address = "eris:zoom".into();
+            browser.status = "Zoom".into();
+            browser.address_focused = true;
+            browser.selection = Selection {
+                anchor: 2,
+                caret: 6,
+            };
+            let snapshot = browser.snapshot.as_mut().unwrap();
+            snapshot.title = "Z".into();
+            let node = snapshot.document.query_selector("#focus").unwrap();
+            snapshot.layout.hit_regions = vec![eris::layout::HitRegion {
+                node,
+                action: HitAction::Node,
+                rect: Rect {
+                    x: 27.5,
+                    y: 83.25,
+                    width: 66.5,
+                    height: 23.75,
+                },
+                fixed: fixed_focus,
+            }];
+            browser.focused = Some(node);
+            snapshot.layout.content_height = 1600.0;
+            snapshot.images.insert(
+                "tile".into(),
+                Arc::new(eris::graphics::RasterImage {
+                    width: 2,
+                    height: 2,
+                    rgba: vec![
+                        255, 0, 0, 255, 0, 255, 0, 128, 0, 0, 255, 0, 33, 66, 99, 255,
+                    ],
+                }),
+            );
+            snapshot.layout.commands = vec![
+                DrawCommand::Rect {
+                    rect: Rect {
+                        x: 0.0,
+                        y: 0.0,
+                        width: 250.0,
+                        height: 220.0,
+                    },
+                    color: Color::rgb(240, 225, 210),
+                    radius: 0.0,
+                },
+                DrawCommand::PushClip {
+                    rect: Rect {
+                        x: 13.25,
+                        y: 45.5,
+                        width: 170.5,
+                        height: 95.75,
+                    },
+                },
+                DrawCommand::Rect {
+                    rect: Rect {
+                        x: 10.25,
+                        y: 43.5,
+                        width: 180.5,
+                        height: 75.5,
+                    },
+                    color: Color::rgba(31, 71, 111, 128),
+                    radius: 7.25,
+                },
+                DrawCommand::Text {
+                    x: 20.25,
+                    y: 55.75,
+                    text: "Zoom".into(),
+                    size: 14.5,
+                    color: Color::rgb(13, 23, 43),
+                    bold: true,
+                    italic: true,
+                    monospace: false,
+                },
+                DrawCommand::Image {
+                    rect: Rect {
+                        x: 25.5,
+                        y: 80.25,
+                        width: 16.5,
+                        height: 11.75,
+                    },
+                    key: "tile".into(),
+                },
+                DrawCommand::Line {
+                    x1: 120.25,
+                    y1: 92.5,
+                    x2: 157.75,
+                    y2: 104.0,
+                    color: Color::rgb(91, 19, 141),
+                    width: 1.75,
+                },
+                DrawCommand::PushFixed,
+                // Fixed content escapes the document clip and scroll offset.
+                DrawCommand::Rect {
+                    rect: Rect {
+                        x: 225.5,
+                        y: 5.75,
+                        width: 21.5,
+                        height: 17.25,
+                    },
+                    color: Color::rgb(12, 160, 80),
+                    radius: 2.75,
+                },
+                DrawCommand::PopFixed,
+                DrawCommand::Rect {
+                    rect: Rect {
+                        x: 45.25,
+                        y: 115.5,
+                        width: 190.5,
+                        height: 18.25,
+                    },
+                    color: Color::rgb(140, 70, 10),
+                    radius: 0.0,
+                },
+                DrawCommand::PopClip,
+            ];
+            let size = PhysicalSize::new(1180, 880);
+            let scene = build(&browser, size).unwrap();
+            assert!(matches!(scene.page, Cow::Owned(_)));
+            assert_eq!(scene.page_frame.document_offset, (0.0, TOOLBAR - 37.25));
+            assert_eq!(scene.page_frame.viewport_offset, (0.0, TOOLBAR));
+            let actual = paint_scene(&browser, &scene);
+            let expected = browser.paint_canvas(size).unwrap();
+            assert_eq!(actual.pixels, expected.pixels, "zoom={zoom}");
+            // The complete comparison deliberately exercises many overlapping
+            // operations. Its conservative CPU-work admission must still refuse
+            // the whole scene under the unchanged adapter budget.
+            assert_eq!(
+                prepare(&browser, size, true).err().unwrap(),
+                "cpu-paint-budget"
+            );
+        }
+    }
+
+    #[test]
+    fn minimal_loaded_page_admits_native_zoom_with_cpu_reference() {
+        for zoom in [0.75, 1.25] {
+            let mut browser =
+                super::super::tests::editing_browser("<title>Zoom</title><p>Page</p>");
+            browser.zoom = zoom;
+            browser.address = "eris:zoom".into();
+            browser.status = "Zoom".into();
+            let size = PhysicalSize::new(1180, 880);
+            let scene = build(&browser, size).unwrap();
+            assert!(matches!(scene.page, Cow::Owned(_)));
+            let actual = paint_scene(&browser, &scene);
+            let expected = browser.paint_canvas(size).unwrap();
+            assert_eq!(actual.pixels, expected.pixels, "zoom={zoom}");
+            let prepared = prepare(&browser, size, true).unwrap();
+            assert_eq!(prepared.plan.stats().phases, 3);
+            assert!(prepared.plan.plan().has_glyphs());
+        }
+    }
+
+    #[test]
+    fn zoom_range_and_near_unit_copy_boundary_preserve_source() {
+        let commands = [DrawCommand::Text {
+            x: 7.25,
+            y: 13.5,
+            text: "source".into(),
+            size: 12.0,
+            color: Color::BLACK,
+            bold: false,
+            italic: false,
+            monospace: false,
+        }];
+        for zoom in [0.9995, 1.0, 1.0005] {
+            let page = scaled_page(&commands, zoom).unwrap();
+            assert!(matches!(page, Cow::Borrowed(_)));
+            assert!(std::ptr::eq(page.as_ref(), commands.as_slice()));
+        }
+        for zoom in [0.5, 0.9985, 1.0015, 3.0] {
+            let page = scaled_page(&commands, zoom).unwrap();
+            assert!(matches!(page, Cow::Owned(_)));
+            let DrawCommand::Text { text, .. } = &page[0] else {
+                panic!()
+            };
+            assert_eq!(text, "source");
+        }
+        let DrawCommand::Text {
+            x, y, text, size, ..
+        } = &commands[0]
+        else {
+            panic!()
+        };
+        assert_eq!((*x, *y, text.as_str(), *size), (7.25, 13.5, "source", 12.0));
+        for zoom in [
+            f32::NAN,
+            f32::INFINITY,
+            f32::NEG_INFINITY,
+            -1.0,
+            0.0,
+            0.4999,
+            3.0001,
+        ] {
+            assert!(
+                scaled_page(&commands, zoom)
+                    .unwrap_err()
+                    .contains("zoom outside")
+            );
+        }
+    }
+
+    #[test]
+    fn zoom_copy_obeys_existing_command_text_and_image_key_caps() {
+        let image = |key| DrawCommand::Image {
+            rect: Rect {
+                x: 0.0,
+                y: 0.0,
+                width: 1.0,
+                height: 1.0,
+            },
+            key,
+        };
+        let mut keys =
+            vec![image("k".repeat(MAX_KEY_BYTES)); MAX_COMMAND_KEY_BYTES / MAX_KEY_BYTES];
+        assert!(scaled_page(&keys, 1.25).is_ok());
+        keys.push(image("k".into()));
+        assert!(
+            scaled_page(&keys, 1.25)
+                .unwrap_err()
+                .contains("image key budget")
+        );
+        assert!(scaled_page(&[image("k".repeat(MAX_KEY_BYTES + 1))], 1.25).is_err());
+        let text = |value| DrawCommand::Text {
+            x: 0.0,
+            y: 0.0,
+            text: value,
+            size: 12.0,
+            color: Color::BLACK,
+            bold: false,
+            italic: false,
+            monospace: false,
+        };
+        assert!(scaled_page(&[text("é".repeat(MAX_FRAME_SCALARS))], 1.25).is_ok());
+        assert!(
+            scaled_page(&[text("é".repeat(MAX_FRAME_SCALARS + 1))], 1.25)
+                .unwrap_err()
+                .contains("scalar budget")
+        );
+        assert!(
+            scaled_page(&[text("a".repeat(MAX_RUN_TEXT_BYTES + 1))], 1.25)
+                .unwrap_err()
+                .contains("text budget")
+        );
+        assert!(
+            scaled_page(
+                &vec![DrawCommand::PopClip; eris_raster_core::MAX_COMMANDS],
+                1.25
+            )
+            .is_ok()
+        );
+        assert!(
+            scaled_page(
+                &vec![DrawCommand::PopClip; eris_raster_core::MAX_COMMANDS + 1],
+                1.25
+            )
+            .unwrap_err()
+            .contains("command budget")
+        );
+    }
+
+    #[test]
+    fn zoom_copy_allowance_is_checked_with_the_complete_preparation_peak() {
+        assert!(admit_preparation(PREPARATION_BYTES, false).is_ok());
+        assert!(admit_preparation(PREPARATION_BYTES + 1, false).is_err());
+        assert!(admit_preparation(PREPARATION_BYTES - ZOOM_COPY_BYTES, true).is_ok());
+        assert!(admit_preparation(PREPARATION_BYTES - ZOOM_COPY_BYTES + 1, true).is_err());
+        assert!(admit_preparation(usize::MAX, true).is_err());
+        for reference in [false, true] {
+            let peak = native::preparation_peak_bytes(Frame::new(1280, 1024, 0xffffff), reference)
+                .unwrap();
+            assert!(admit_preparation(peak, true).is_ok());
+        }
+    }
+
+    #[test]
+    fn zoom_keeps_scope_and_geometry_refusals_and_reports_waiting_scale() {
+        let mut browser = super::super::tests::editing_browser("Page");
+        browser.zoom = 1.25;
+        let size = PhysicalSize::new(1180, 880);
+        browser.snapshot.as_mut().unwrap().layout.commands = vec![
+            DrawCommand::PushOpacity { opacity: 0.5 },
+            DrawCommand::PopOpacity,
+        ];
+        assert!(
+            prepare(&browser, size, false)
+                .err()
+                .unwrap()
+                .contains("unsupported-opacity")
+        );
+        browser.snapshot.as_mut().unwrap().layout.commands = vec![DrawCommand::Rect {
+            rect: Rect {
+                x: f32::MAX,
+                y: 0.0,
+                width: 1.0,
+                height: 1.0,
+            },
+            color: Color::BLACK,
+            radius: 0.0,
+        }];
+        assert!(prepare(&browser, size, false).is_err());
+        browser.loading = true;
+        browser.zoom = 1.1;
+        assert_eq!(
+            prepare(&browser, size, false).err().unwrap(),
+            "native scene awaits a current loaded page; zoom_bits=1066192077"
+        );
+        browser.zoom = 1.0;
+        assert_eq!(
+            prepare(&browser, size, false).err().unwrap(),
+            "native scene awaits a current loaded page"
+        );
     }
 
     #[test]
@@ -511,8 +985,13 @@ mod tests {
         let mut browser = super::super::tests::editing_browser("Page");
         let size = PhysicalSize::new(1180, 880);
         browser.selection.caret = usize::MAX;
-        browser.zoom = 1.25;
-        assert!(build(&browser, size).err().unwrap().contains("unit zoom"));
+        browser.zoom = f32::NAN;
+        assert!(
+            build(&browser, size)
+                .err()
+                .unwrap()
+                .contains("zoom outside")
+        );
         browser.zoom = 1.0;
         browser.worker_error = Some("stopped".into());
         assert!(
