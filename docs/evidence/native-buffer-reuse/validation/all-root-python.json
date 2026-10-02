@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/run/current-system/sw/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools",
+    "-p",
+    "test_*.py"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 51.543720960617065,
+  "log": "all-root-python.log",
+  "sha256": "7d7b663a937a7c59a7a907c916280c2dd2ec47228faf8e3f02a1ba774f17703c"
+}

@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "status": "source-ready; focused synthetic tests passed; no actual host/browser/GPU execution",
+  "base_commit": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+  "files": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_timing_host.py",
+      "bytes": 44822,
+      "sha256": "a30d4e941ea50c88ff5b9ef0de22b1d9f504f54982bbe1c9e93c6295316d83bf"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_timing_host.py",
+      "bytes": 45820,
+      "sha256": "668ac233c193fa86666d8a15eb620664122457acbe10bc3707975a172b74f3df"
+    }
+  ],
+  "ownership": "Only the existing timing host and its synthetic tests changed. All launch/helper/renderer sources unchanged by this task.",
+  "interface": {
+    "comparison": "native-ab (default remains cpu-native)",
+    "candidate": [
+      "--binary",
+      "--binary-sha256",
+      "--candidate-manifest",
+      "--candidate-manifest-sha256"
+    ],
+    "baseline": [
+      "--baseline-binary",
+      "--baseline-manifest",
+      "--baseline-manifest-sha256",
+      "--baseline-source"
+    ],
+    "source_roots": "candidate current repository; baseline separately supplied full compiled source snapshot",
+    "population": "two native correctness checks then three alternating native baseline/candidate pairs, 16 samples each; eight processes, 96 timed frames, 9011200 correctness bytes"
+  },
+  "checks": {
+    "synthetic_groups": 35,
+    "existing_groups": 25,
+    "new_groups": 10,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tools -p test_native_raster_timing_host.py -v",
+    "first_test_pass": {
+      "path": "/tmp/eris-native-buffer-reuse-host-checks/tests-1.log",
+      "bytes": 6612,
+      "sha256": "987ffefee783ce41fc00981739c7ed8d04698118693f73d29ba3c43466f73a20"
+    },
+    "final_test_pass": {
+      "path": "/tmp/eris-native-buffer-reuse-host-checks/tests-2.log",
+      "bytes": 6612,
+      "sha256": "ef48062d4a60cdb8bbbe016d5ce30c17e5cbfaa4729e10a4eafda0e6c081bff1"
+    },
+    "data_check": {
+      "path": "/tmp/eris-native-buffer-reuse-host-checks/data-check.json",
+      "bytes": 823,
+      "sha256": "dbde9c6ad554d4e18af12df795e85e854257b506ab2b0c8f9a4868ee1ae0573e"
+    },
+    "whitespace": "git diff --check passed for both owned files"
+  },
+  "preexecution_correction": {
+    "reason": "The real 120-file baseline check found Path sorting used components rather than relative POSIX string ordering. All source identities matched. Fixed ordering and expanded synthetic fixture with matching file/directory-name pattern; all 35 tests passed again. No actual process attempt occurred.",
+    "initial_source_ledger": {
+      "path": "/tmp/eris-native-buffer-reuse-host-checks/source-1.json",
+      "bytes": 426,
+      "sha256": "4d1aa30c0157873938c8dbd3403e829aa502e15aed31db5f5d2f254d788ace13"
+    },
+    "corrected_source_ledger": {
+      "path": "/tmp/eris-native-buffer-reuse-host-checks/source-2.json",
+      "bytes": 722,
+      "sha256": "c6774ef5f70cc20c21daa4d0f870943367b2a2441e9d3104fa691c09614bc1f7"
+    },
+    "initial_sources": [
+      {
+        "path": "/tmp/eris-native-buffer-reuse-host-checks/native_raster_timing_host.source-1.py",
+        "bytes": 44770,
+        "sha256": "3b09db31a20f068fb3126267a202dd34ddde7040d30cb339ae16c1376c597bfd"
+      },
+      {
+        "path": "/tmp/eris-native-buffer-reuse-host-checks/test_native_raster_timing_host.source-1.py",
+        "bytes": 45780,
+        "sha256": "d0423ee71a77749ac4a41ae8c2de91c6c136083fccd2ba31a144fb9e3e4b713e"
+      }
+    ]
+  },
+  "provenance": "Each pinned release manifest validates release profile, vulkan-raster feature, executable bytes/hash and complete bounded source inventory. Both trees/manifests/binaries and current imported host inputs are rechecked at every case boundary. No source mismatch exceptions.",
+  "behavior": "No changes to launch_owned, listener ownership, child descriptor isolation, protocol validation, cleanup or deadline helpers. Defaults retain existing route sequence and statistics. AB adds separate host variant labels without altering raw native reports; first sample vs every sample 2..16 retained; initialization and each host phase reported separately."
+}

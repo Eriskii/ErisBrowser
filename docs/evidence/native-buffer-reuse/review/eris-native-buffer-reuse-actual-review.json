@@ -1,0 +1,1072 @@
+{
+  "schema": 1,
+  "scope": "Independent retained actual native A/B audit: binary/source/manifest binding and raw data only; no engine/compiler/desktop/GPU executions",
+  "outcome": "clear",
+  "findings": [],
+  "inputs": [
+    {
+      "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/timing-host-results.json",
+      "bytes": 268763,
+      "sha256": "d67e6d66660478cb994639d0b2ea704429243cbd18c17a1f23145b74b5f62a5f"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-host-source-ready.json",
+      "bytes": 4278,
+      "sha256": "5125c710c4a4ddcf831b635b8b54876f16fd6a6c09e8e1069c215a00fc770d6e"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-1/environment-before-1.json",
+      "bytes": 1213,
+      "sha256": "3ebb5bfadb30e46414742f7bb2097cf09a3e19f80a30c47ab8ef77c027b324b9"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-1/environment-after-1.json",
+      "bytes": 1216,
+      "sha256": "7c9cd9b4c8f9b1105183b58b97c75c1a6a060dbcb42b439416c0c042303060e6"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/scene.ebni",
+      "bytes": 269,
+      "sha256": "be4e80583e6833fb4bd6ec7c57caed05e3dca9f534c31463966b4aead9720cf8"
+    }
+  ],
+  "variants": {
+    "baseline": {
+      "manifest": {
+        "path": "/tmp/eris-native-buffer-reuse-1/baseline-release.json",
+        "bytes": 19597,
+        "sha256": "7cb51712e2ad403b46144427e72bcc933df38f5617401baf1a3c0ad2678f1892"
+      },
+      "binary": {
+        "path": "/tmp/eris-native-timing-1/eris-browser-native-timing-2",
+        "bytes": 16138144,
+        "sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de"
+      },
+      "source_directory": "/tmp/eris-native-buffer-reuse-1/baseline-source",
+      "source_files_verified": 120
+    },
+    "candidate": {
+      "manifest": {
+        "path": "/tmp/eris-native-buffer-reuse-1/release-1.json",
+        "bytes": 20127,
+        "sha256": "375212f7ef96c3f6c3c56bfa9b471c6492c17c12e0454eeb1e1f8f6811c131f6"
+      },
+      "binary": {
+        "path": "/tmp/eris-native-buffer-reuse-1/eris-browser-native-reuse-1",
+        "bytes": 16151032,
+        "sha256": "7ba4070d2536f3b483b9886f7f2ab6229bdf1a3657972e9557a04c523d6482f2"
+      },
+      "source_directory": "/home/eriskii/Documents/Programming/Projects/ErisBrowser",
+      "source_files_verified": 123
+    }
+  },
+  "release_source_delta": [
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "kind": "changed",
+      "baseline": {
+        "path": "crates/raster-core/src/gpu.rs",
+        "bytes": 21803,
+        "sha256": "6897765438995db542e40a2f91223a597c3dcc2e2bb8dd89beca1576050a9f69"
+      },
+      "candidate": {
+        "path": "crates/raster-core/src/gpu.rs",
+        "bytes": 21945,
+        "sha256": "8af2d14a9735a612c081a7b466a75ea5214d1fc742d10c69a74342883a00eb9e"
+      }
+    },
+    {
+      "path": "crates/raster-core/src/gpu/reuse.rs",
+      "kind": "added",
+      "baseline": null,
+      "candidate": {
+        "path": "crates/raster-core/src/gpu/reuse.rs",
+        "bytes": 8184,
+        "sha256": "da107d426e5b015aa9f6810261606ef1a4eee332d575dfaedb383becdc8a2d9f"
+      }
+    },
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "kind": "changed",
+      "baseline": {
+        "path": "crates/raster-core/src/surface.rs",
+        "bytes": 16137,
+        "sha256": "a8057e3641f98120a7a4e3bd4445facf814cad51f0490cf50a7c7090e4575869"
+      },
+      "candidate": {
+        "path": "crates/raster-core/src/surface.rs",
+        "bytes": 16220,
+        "sha256": "7a9c7cce76323543458d504f650c17e8ce02127c1d53746349173671590cbf63"
+      }
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse.rs",
+      "kind": "added",
+      "baseline": null,
+      "candidate": {
+        "path": "crates/raster-core/src/surface/reuse.rs",
+        "bytes": 13040,
+        "sha256": "7153dbd91408fbe421a1a1c56b88daf454868ec9116639f615778cbda9ef60a0"
+      }
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse_tests.rs",
+      "kind": "added",
+      "baseline": null,
+      "candidate": {
+        "path": "crates/raster-core/src/surface/reuse_tests.rs",
+        "bytes": 8768,
+        "sha256": "f4e98fe53c2f90d31e0e4177ad354e3719b57b3b23ce3e1a4d29e31b349b5536"
+      }
+    },
+    {
+      "path": "src/presenter/vulkan.rs",
+      "kind": "changed",
+      "baseline": {
+        "path": "src/presenter/vulkan.rs",
+        "bytes": 31949,
+        "sha256": "50d90b8664b136bf1713e073e4155ce01182260eba43b91c9e2edb3b5c536ddb"
+      },
+      "candidate": {
+        "path": "src/presenter/vulkan.rs",
+        "bytes": 32928,
+        "sha256": "d6a8681401b9685da13c7123023773eb642df723d0bff24ef2c16ac43d4de765"
+      }
+    },
+    {
+      "path": "src/presenter/vulkan/control.rs",
+      "kind": "changed",
+      "baseline": {
+        "path": "src/presenter/vulkan/control.rs",
+        "bytes": 57237,
+        "sha256": "cefca28896617574f1a66f5d019849139fc22c03d9f7f39de830b3f1d3da8268"
+      },
+      "candidate": {
+        "path": "src/presenter/vulkan/control.rs",
+        "bytes": 73794,
+        "sha256": "350babb4a6df54b7d8ca7aac226040fc0f70ef85ee151c5fe9764477b4add79e"
+      }
+    },
+    {
+      "path": "src/presenter/vulkan/native.rs",
+      "kind": "changed",
+      "baseline": {
+        "path": "src/presenter/vulkan/native.rs",
+        "bytes": 16214,
+        "sha256": "5b7d0127b89f47037d2b09c13931150713c7043640d99f3906b1f736c296a327"
+      },
+      "candidate": {
+        "path": "src/presenter/vulkan/native.rs",
+        "bytes": 22219,
+        "sha256": "32db2b30629e3e402866cceb17109c51b27bb916079845b966a41e0cd06e6cfa"
+      }
+    }
+  ],
+  "common_source_files_unchanged": 115,
+  "host_bound_inputs_verified": 187,
+  "loader_names_verified": 3,
+  "fixture_files_verified": 5,
+  "runs": [
+    {
+      "name": "check-baseline",
+      "variant": "baseline",
+      "route": "native-raster",
+      "mode": "check",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-baseline.stdout.log",
+        "bytes": 927,
+        "sha256": "2818428450121275e607e6507999cd2c5f1c56ff07152c6167249c9dadcc9578"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-baseline.stderr.log",
+        "bytes": 1251,
+        "sha256": "da82545fb7e22d9ea8d87cb7ed18bc5f09864f86af06d727b1e7a16138c7fa7d"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-baseline.json",
+        "bytes": 1579,
+        "sha256": "e1ece57fc53788ccb7ab2c17065b88b21c1851a8c2af3f5ce2bd1d0cab327b76"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-baseline.window-control.json",
+        "bytes": 6964,
+        "sha256": "82e0f409aa004d4d05652d55f0c1fc126f6f256ec1c64283eed19985ab1331d1"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-baseline.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 0,
+      "serials": [],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "check-candidate",
+      "variant": "candidate",
+      "route": "native-raster",
+      "mode": "check",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-candidate.stdout.log",
+        "bytes": 920,
+        "sha256": "0fc5f49255ccdc378551b1a5bf870aecb37ddc2ce53acd55c7a2ddc8b0c24124"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-candidate.stderr.log",
+        "bytes": 1251,
+        "sha256": "c6b37f12db3e7b80a53c36f6b4b97af489c33c947a28c345171e07667d3cdb12"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-candidate.json",
+        "bytes": 1586,
+        "sha256": "5e552992ef972f341b936cc1dd8d4c9309a2bd57544ddfe4f0620f1c260e3698"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-candidate.window-control.json",
+        "bytes": 6485,
+        "sha256": "4996cd467c5ddc8a706bb507981ad4cc93168f48ca1449e2de06cb9c9fc8f46a"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/check-candidate.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 0,
+      "serials": [],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-1-baseline",
+      "variant": "baseline",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-baseline.stdout.log",
+        "bytes": 7369,
+        "sha256": "34dc2a2614250fa78dd7798a606429e3e275eb70f378fed0d26bedd5edb415a9"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-baseline.stderr.log",
+        "bytes": 850,
+        "sha256": "b6445d445dde90471584d211179234734c012d46f0a65bf9be944d6daad4c725"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-baseline.json",
+        "bytes": 1586,
+        "sha256": "0459f88fd916a45d136777b323f48cac51d52bba74ea669e85ec90ab6d797ed1"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-baseline.window-control.json",
+        "bytes": 6002,
+        "sha256": "9fc81383ac547396eafb751b66ad9068a9159429ace4af60f456a41f5bdcce19"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-baseline.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-1-candidate",
+      "variant": "candidate",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-candidate.stdout.log",
+        "bytes": 7305,
+        "sha256": "213326b533129b1681de1b80e4f1dfcac7c497012021c7652ba39b444b65f378"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-candidate.stderr.log",
+        "bytes": 850,
+        "sha256": "8f460bbeb76deffb5d449e0290e0403e2b6fc84c135f0bb5978d3d8787d5af62"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-candidate.json",
+        "bytes": 1592,
+        "sha256": "ad53a690602fb8b3cbd9d497573ed62754deeb4fd0fe01fb635a9865727a4fcc"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-candidate.window-control.json",
+        "bytes": 6491,
+        "sha256": "01af10566dd292caa1eaaa7fce4a20487279e43c5268c1c54335922d0237df4b"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-1-candidate.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-2-candidate",
+      "variant": "candidate",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-candidate.stdout.log",
+        "bytes": 7305,
+        "sha256": "afdf1d8732a346735ff7756b280edd052fe7053bb128cbc4416835340a96b9a6"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-candidate.stderr.log",
+        "bytes": 850,
+        "sha256": "15bf13e47022fc4ef6621afacdf6a2b1087285418434db742f5aa4b6bf2c1779"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-candidate.json",
+        "bytes": 1592,
+        "sha256": "b6a1245966b474cedf8d55db0d2ee73624333f4ae191d41352f45167a4e08803"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-candidate.window-control.json",
+        "bytes": 6007,
+        "sha256": "b11723f1c044a9db8227959a17c800aef8c9b9a21e3910efcedbfaccf86aed4a"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-candidate.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-2-baseline",
+      "variant": "baseline",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-baseline.stdout.log",
+        "bytes": 7369,
+        "sha256": "aa73c007952a66fcd811fa8826315cfe8e5d6ac305b34f85aaeac98cbf1aa62f"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-baseline.stderr.log",
+        "bytes": 850,
+        "sha256": "a48b60e5ad403a72c364f437e8f5f390618cc59e973bfaec730cc769f70e16a1"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-baseline.json",
+        "bytes": 1586,
+        "sha256": "08e0490036206039f1e378665c3553c07255f7c0e1c50ac53f62cfd0b225d803"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-baseline.window-control.json",
+        "bytes": 6002,
+        "sha256": "d7ad15ccdc1ed8f4272d25e378bbf55689f47d0c8eebc3c41c7d055e8df17ed9"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-2-baseline.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-3-baseline",
+      "variant": "baseline",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-baseline.stdout.log",
+        "bytes": 7369,
+        "sha256": "8d0f838778cb3706587a2e771de6e2c0d16e8ac4fcb9894c29e112ff73447a3e"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-baseline.stderr.log",
+        "bytes": 850,
+        "sha256": "aa69a6ba26da70aebc40a7bb93e9408bd18ac25ef2a41989502c98b4e5efeb69"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-baseline.json",
+        "bytes": 1586,
+        "sha256": "88a7ee66aba9b5bf368decc173291b18cc4bb07fbcfcdd498707d3b722c75233"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-baseline.window-control.json",
+        "bytes": 6002,
+        "sha256": "b2f4a23a67cfa5b56b7b0f5f12fc494d76c96f6739c89928c095c4bcab37e7e1"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-baseline.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    },
+    {
+      "name": "measure-3-candidate",
+      "variant": "candidate",
+      "route": "native-raster",
+      "mode": "measure",
+      "stdout": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-candidate.stdout.log",
+        "bytes": 7315,
+        "sha256": "8eab6db92c5b29ea3f8b3eb38e8d1dbea1547a36928e1b118f7525b3215cb5eb"
+      },
+      "stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-candidate.stderr.log",
+        "bytes": 850,
+        "sha256": "06fb1491c4c7888b8269e48c5f64839dd6f136644cf0698f8bd44732025ec5cd"
+      },
+      "supervisor": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-candidate.json",
+        "bytes": 1592,
+        "sha256": "bdabe529054110b2cacc118da7ccf23641a406b2a162a5c0fab90627c3eebbbc"
+      },
+      "controller": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-candidate.window-control.json",
+        "bytes": 6975,
+        "sha256": "4b63d844aeeb6ee876a06254d145721fb2fa184ebbaf02acc1dc3b8ead83deec"
+      },
+      "supervisor_stderr": {
+        "path": "/tmp/eris-native-buffer-reuse-1/comparison-1/measure-3-candidate.supervisor.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "sample_count": 16,
+      "serials": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "release_prefix_verified": true
+    }
+  ],
+  "counts": {
+    "successful_processes": 8,
+    "separate_native_correctness_checks": 2,
+    "checked_frames_per_variant": 1,
+    "compared_bytes_per_check": 4505600,
+    "total_separate_correctness_bytes": 9011200,
+    "measurement_processes": 6,
+    "timed_frames": 96,
+    "timed_frames_per_variant": 48,
+    "first_frames_per_variant": 3,
+    "subsequent_frames_per_variant": 45,
+    "measured_verification_records": 0,
+    "measured_readback_requested": false,
+    "outer_reaped_total": 8,
+    "outer_adopted_descendants_total": 0
+  },
+  "scene": {
+    "bytes": 269,
+    "sha256": "be4e80583e6833fb4bd6ec7c57caed05e3dca9f534c31463966b4aead9720cf8",
+    "identical_across_all_runs": true,
+    "decoded_identity": {
+      "width": 1280,
+      "height": 880,
+      "scroll": 0.0,
+      "zoom": 1.0,
+      "title": "N",
+      "address": "http://127.0.0.1:57335/admitted.html",
+      "address_focused": false,
+      "input_value": "",
+      "caret": 0,
+      "anchor": 0,
+      "focused_node": false,
+      "content_height": 1000.0,
+      "status": "Native timing scene"
+    },
+    "decoded_commands": [
+      {
+        "tag": 6,
+        "rect": [
+          0.0,
+          0.0,
+          1280.0,
+          1000.0
+        ],
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "radius": 0.0
+      },
+      {
+        "tag": 7,
+        "x": 0.0,
+        "y": 0.0,
+        "text": "A",
+        "size": 12.0,
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "bold": false,
+        "italic": false,
+        "monospace": true
+      },
+      {
+        "tag": 8,
+        "rect": [
+          7.224609375,
+          7.399999618530273,
+          8.0,
+          4.0
+        ],
+        "key": "two-pixels.png"
+      },
+      {
+        "tag": 2
+      },
+      {
+        "tag": 7,
+        "x": 6.0,
+        "y": 2.0,
+        "text": "F",
+        "size": 12.0,
+        "color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "bold": false,
+        "italic": false,
+        "monospace": true
+      },
+      {
+        "tag": 3
+      }
+    ],
+    "decoded_images": [
+      {
+        "key": "two-pixels.png",
+        "alias": 0,
+        "width": 2,
+        "height": 1,
+        "rgba_hex": "ff0000ff0000ff80"
+      }
+    ],
+    "generation": 1,
+    "viewport_revision": 5,
+    "scale_factor": 1,
+    "status_overrides_source_load_time": true
+  },
+  "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo",
+  "run_order": [
+    "check-baseline",
+    "check-candidate",
+    "measure-1-baseline",
+    "measure-1-candidate",
+    "measure-2-candidate",
+    "measure-2-baseline",
+    "measure-3-baseline",
+    "measure-3-candidate"
+  ],
+  "statistics_method": "Direct recomputation from all raw measurement JSON: first sample per process separate; all other 15 samples including frame2 retained; median and nearest-rank p95 index ceil(0.95*n)-1. No sum of phase quantiles.",
+  "recomputed_statistics_ns": {
+    "baseline": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5599506,
+          "p95_nearest_rank_ns": 5682853
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 2086008,
+          "p95_nearest_rank_ns": 4789509
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5306730,
+          "p95_nearest_rank_ns": 5321989
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1817629,
+          "p95_nearest_rank_ns": 4481875
+        }
+      }
+    },
+    "candidate": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5263618,
+          "p95_nearest_rank_ns": 5413403
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1308623,
+          "p95_nearest_rank_ns": 4117273
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5000319,
+          "p95_nearest_rank_ns": 5098966
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1062015,
+          "p95_nearest_rank_ns": 3873521
+        }
+      }
+    }
+  },
+  "recomputed_phase_statistics_ns": {
+    "baseline": {
+      "ui_prepare_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 309737,
+          "p95_nearest_rank_ns": 370412
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 265573,
+          "p95_nearest_rank_ns": 320838
+        }
+      },
+      "queue_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 7625,
+          "p95_nearest_rank_ns": 8797
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 8947,
+          "p95_nearest_rank_ns": 18816
+        }
+      },
+      "acquire_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 8116,
+          "p95_nearest_rank_ns": 9729
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 17063,
+          "p95_nearest_rank_ns": 21531
+        }
+      },
+      "encode_upload_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 541808,
+          "p95_nearest_rank_ns": 556737
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 376825,
+          "p95_nearest_rank_ns": 424566
+        }
+      },
+      "submit_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 3330630,
+          "p95_nearest_rank_ns": 3341682
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 258210,
+          "p95_nearest_rank_ns": 2698451
+        }
+      },
+      "completion_wait_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 867286,
+          "p95_nearest_rank_ns": 870812
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 698014,
+          "p95_nearest_rank_ns": 872055
+        }
+      },
+      "cleanup_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 366746,
+          "p95_nearest_rank_ns": 373389
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 364121,
+          "p95_nearest_rank_ns": 399568
+        }
+      },
+      "present_call_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 192074,
+          "p95_nearest_rank_ns": 201132
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 48913,
+          "p95_nearest_rank_ns": 59392
+        }
+      }
+    },
+    "candidate": {
+      "ui_prepare_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 259031,
+          "p95_nearest_rank_ns": 308195
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 234885,
+          "p95_nearest_rank_ns": 291853
+        }
+      },
+      "queue_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 6473,
+          "p95_nearest_rank_ns": 8556
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 8666,
+          "p95_nearest_rank_ns": 19728
+        }
+      },
+      "acquire_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5621,
+          "p95_nearest_rank_ns": 5671
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 16832,
+          "p95_nearest_rank_ns": 19707
+        }
+      },
+      "encode_upload_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 551146,
+          "p95_nearest_rank_ns": 565603
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 48041,
+          "p95_nearest_rank_ns": 77397
+        }
+      },
+      "submit_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 3367831,
+          "p95_nearest_rank_ns": 3484312
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 263350,
+          "p95_nearest_rank_ns": 2859136
+        }
+      },
+      "completion_wait_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 864640,
+          "p95_nearest_rank_ns": 867366
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 681474,
+          "p95_nearest_rank_ns": 865051
+        }
+      },
+      "cleanup_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 1292,
+          "p95_nearest_rank_ns": 1483
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 742,
+          "p95_nearest_rank_ns": 852
+        }
+      },
+      "present_call_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 190742,
+          "p95_nearest_rank_ns": 192425
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 44133,
+          "p95_nearest_rank_ns": 55635
+        }
+      }
+    }
+  },
+  "recomputed_initialization_statistics_ns": {
+    "baseline": {
+      "count": 3,
+      "median_ns": 150065151,
+      "p95_nearest_rank_ns": 151230613
+    },
+    "candidate": {
+      "count": 3,
+      "median_ns": 153428042,
+      "p95_nearest_rank_ns": 158115658
+    }
+  },
+  "second_frames_retained": {
+    "baseline": [
+      {
+        "process": 1,
+        "sample_id": 2,
+        "prepare_to_present_ns": 4789509,
+        "submit_ns": 2698451,
+        "included_in_steady_population": true
+      },
+      {
+        "process": 2,
+        "sample_id": 2,
+        "prepare_to_present_ns": 4947729,
+        "submit_ns": 2918528,
+        "included_in_steady_population": true
+      },
+      {
+        "process": 3,
+        "sample_id": 2,
+        "prepare_to_present_ns": 4845515,
+        "submit_ns": 2853675,
+        "included_in_steady_population": true
+      }
+    ],
+    "candidate": [
+      {
+        "process": 1,
+        "sample_id": 2,
+        "prepare_to_present_ns": 4154984,
+        "submit_ns": 2859136,
+        "included_in_steady_population": true
+      },
+      {
+        "process": 2,
+        "sample_id": 2,
+        "prepare_to_present_ns": 4117273,
+        "submit_ns": 2881869,
+        "included_in_steady_population": true
+      },
+      {
+        "process": 3,
+        "sample_id": 2,
+        "prepare_to_present_ns": 4187717,
+        "submit_ns": 2958555,
+        "included_in_steady_population": true
+      }
+    ]
+  },
+  "environment": {
+    "records_bound_above": true,
+    "governor_before_after": [
+      "performance",
+      "performance"
+    ],
+    "energy_preference_before_after": [
+      "performance",
+      "performance"
+    ],
+    "gpu_query_before_after": [
+      "name, driver_version, pstate, power.draw [W], power.limit [W], temperature.gpu, clocks.current.graphics [MHz], clocks.current.memory [MHz]\nNVIDIA GeForce RTX 4070 SUPER, 595.99.02, P5, 14.61 W, 220.00 W, 41, 360 MHz, 810 MHz\n",
+      "name, driver_version, pstate, power.draw [W], power.limit [W], temperature.gpu, clocks.current.graphics [MHz], clocks.current.memory [MHz]\nNVIDIA GeForce RTX 4070 SUPER, 595.99.02, P0, 31.27 W, 220.00 W, 42, 2505 MHz, 10501 MHz\n"
+    ],
+    "clocks_or_power_locked": false
+  },
+  "limitations": [
+    "This is one retained small-scene experiment, one NVIDIA RTX 4070 SUPER, 1280x880 Bgra8Unorm FIFO, three fresh measured processes per variant and 16 frames per process. No Chromium or general browser performance claim.",
+    "First-frame p95 is the maximum of only three observations; subsequent frames within a process are correlated. All second frames remain in the 45-observation subsequent population.",
+    "Before/after GPU state changed from P5 at 360 MHz/14.61 W to P0 at 2505 MHz/31.27 W; these are endpoint observations, not per-sample controls. Clocks/power and background activity were not locked.",
+    "Both checks verify the acquired texture before compositor in separate processes; the 96 timed frames request no readback and are not individually verified. Config/source/report evidence is not an independent GPU command trace.",
+    "Host timings are before compositor, not GPU timestamps or scanout/display latency; phase quantiles must not be added to estimate total quantiles.",
+    "A lower cache cleanup phase includes deferring retained-buffer destruction until eviction or owner release. Complete lifetime teardown cost is not included in per-frame prepare-to-present samples.",
+    "Fresh processes can perform startup font work before the first loaded frame; native mask preparation remains rebuilt per frame. No hidden warmup samples or frame2 exclusions are applied.",
+    "Exact scene/URL/scale/adapter and both release manifests are verified, but loader binding is not a full transitive driver/system-library inventory.",
+    "No runtime reruns or repository edits occurred in this audit."
+  ],
+  "audit_program": {
+    "path": "/tmp/eris-native-buffer-reuse-actual-audit.py",
+    "bytes": 18906,
+    "sha256": "e4ef47817ed6089a1258ef80f2930ffc95c3b1898d6e84cbb248099f81c73f2e"
+  }
+}

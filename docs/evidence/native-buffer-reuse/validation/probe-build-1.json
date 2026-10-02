@@ -1,0 +1,235 @@
+{
+  "binary": "/tmp/eris-native-buffer-reuse-1/eris-vulkan-reuse-check-1",
+  "bytes": 18467624,
+  "sha256": "2a10f3ad1e3beec8f5383b3fcc74fadc0cabe04e9249c7778dd6054b5818e595",
+  "toolchain": "1.88.0",
+  "profile": "dev debug=0",
+  "features": [],
+  "source_files": [
+    {
+      "path": "crates/raster-core/Cargo.lock",
+      "bytes": 23783,
+      "sha256": "5fe923bf47baaa9844ffb8c6300a4ed7a929a081a47137c1335bb6135fbaa30a"
+    },
+    {
+      "path": "crates/raster-core/Cargo.toml",
+      "bytes": 450,
+      "sha256": "b5f776ce46bf7f8d3a8606b1cf1b8e4fd1bdb40ff5a37e785e592fc3b5368df4"
+    },
+    {
+      "path": "crates/raster-core/src/glyph.wgsl",
+      "bytes": 3578,
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7"
+    },
+    {
+      "path": "crates/raster-core/src/gpu/reuse.rs",
+      "bytes": 8184,
+      "sha256": "da107d426e5b015aa9f6810261606ef1a4eee332d575dfaedb383becdc8a2d9f"
+    },
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "bytes": 21945,
+      "sha256": "8af2d14a9735a612c081a7b466a75ea5214d1fc742d10c69a74342883a00eb9e"
+    },
+    {
+      "path": "crates/raster-core/src/image.wgsl",
+      "bytes": 2959,
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446"
+    },
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "bytes": 34224,
+      "sha256": "942ece33951829f3e6640b8305a0e5ea5979077ed0e54bd8ec97327b78b4363e"
+    },
+    {
+      "path": "crates/raster-core/src/phase_tests.rs",
+      "bytes": 15233,
+      "sha256": "f327f13950b53f1bf756a7e5f30c98c2395fa366d2291ee5d922b56fe67d0d05"
+    },
+    {
+      "path": "crates/raster-core/src/profile.rs",
+      "bytes": 3825,
+      "sha256": "6ab8d215d4e90603814f892f4e3d81d1a7ec03dd184e283e905852a69a1bc86a"
+    },
+    {
+      "path": "crates/raster-core/src/profile_tests.rs",
+      "bytes": 8254,
+      "sha256": "bb0e572cb15dae4e8659ff5793f3af0f7e1783b5e4624fee9aaf52dd9fffc537"
+    },
+    {
+      "path": "crates/raster-core/src/rect.wgsl",
+      "bytes": 1593,
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa"
+    },
+    {
+      "path": "crates/raster-core/src/rounded.rs",
+      "bytes": 16984,
+      "sha256": "e8d46955f2cd29e7e54e73ce9100165d3b2c7926b37f14847f44e427ce2d6f2e"
+    },
+    {
+      "path": "crates/raster-core/src/rounded_tests.rs",
+      "bytes": 24396,
+      "sha256": "0234378d1633ee10e84deba046089f71805249daf74a16493db3924a5fae8bfa"
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "bytes": 3624,
+      "sha256": "c826d780ae3c62f1233239292b5f7e5e0e4aa4de2217be68ce3378530014f340"
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse.rs",
+      "bytes": 13040,
+      "sha256": "7153dbd91408fbe421a1a1c56b88daf454868ec9116639f615778cbda9ef60a0"
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse_tests.rs",
+      "bytes": 8768,
+      "sha256": "f4e98fe53c2f90d31e0e4177ad354e3719b57b3b23ce3e1a4d29e31b349b5536"
+    },
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "bytes": 16220,
+      "sha256": "7a9c7cce76323543458d504f650c17e8ce02127c1d53746349173671590cbf63"
+    },
+    {
+      "path": "crates/raster-core/src/surface.wgsl",
+      "bytes": 1077,
+      "sha256": "8b58a0ad05a2c7721da1891c18e9dc33b84ce1ef6abff818a8ed901321748def"
+    },
+    {
+      "path": "crates/raster-core/src/surface_tests.rs",
+      "bytes": 10469,
+      "sha256": "0c2a5cf68bc28fcf2f3ede54142616dc7d18193b55bbf7ea91783a915d358543"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.lock",
+      "bytes": 81556,
+      "sha256": "039facb572b6564faa1263293116fe1adc168c6edf5c282dcecb5910c9d4ad3a"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 1118,
+      "sha256": "59b1bfec11cbaabe18101d49dfa018c5868d2ec81969b88d117bf8bc7eeb0bd0"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+      "bytes": 25781,
+      "sha256": "a67934fd08cb9095c6b00b1e2d875315d87b00dc7525b6d3252ccaaa2ebb61b7"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/browser-check.rs",
+      "bytes": 22413,
+      "sha256": "c61193f5fc625ba78a13d74a14bacb0f55e0b0a2c33d8e30c5f83dee04150451"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs",
+      "bytes": 13330,
+      "sha256": "3716cf3c921ef02fb5fd955bbd07599f7143dfcf40e95a2d30dc59c0b45b7cdf"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/glyph-check.rs",
+      "bytes": 11926,
+      "sha256": "9f88ba6feb66fb2fb01b1b56c72354b0df587e94a442b91710ceeacf4d4d280a"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/reuse-check.rs",
+      "bytes": 1189,
+      "sha256": "4f8ff60b4344471b2b81dac5b39d92cdaf9399131952193892a7636e5a0bed81"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/surface-check.rs",
+      "bytes": 7714,
+      "sha256": "db549d89cac285703eb78b4f1c45f9606f7b80789e5a12cdcdb6348329f0e657"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/worker-text-check.rs",
+      "bytes": 22379,
+      "sha256": "1ff049f0494086171630a3d618707d1b39256154486ebed0afa649d29d4ab934"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_adapter.rs",
+      "bytes": 118,
+      "sha256": "39e188ec6de1db53a497d543bdf469cc3c00fb026dc3d8b397f329ad9c24c215"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/browser_fixtures.rs",
+      "bytes": 21380,
+      "sha256": "15300b65d7e1ebfbd00df96f16dfcd5c08da200f5da19699baeee60c6c5f8e16"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/fixtures.rs",
+      "bytes": 4785,
+      "sha256": "7779ecab36a587f2792acf258b28709b9b4606ece0976c48c0c04aa8e1a45ab8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph.wgsl",
+      "bytes": 3578,
+      "sha256": "a045be94313471d703e7a797f36d1956785b43e69129851d9eb8a99ad9dc86b7"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_fixtures/font_inventory.rs",
+      "bytes": 21064,
+      "sha256": "fc57a9b0664cd3c654e705cae0d983e878b87f2a9e62871f38783d0ba9d8a5dd"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_fixtures/literal_inventory.rs",
+      "bytes": 23628,
+      "sha256": "42a72998217703683cd9c89a61aa8cb2e92dd4644506c223f1534864039beee8"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/glyph_tests.rs",
+      "bytes": 13760,
+      "sha256": "44c3339ff5df30becefbc8e6e434322a4898abc98e971f01b4c4e2e6ad3accbd"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/gpu.rs",
+      "bytes": 8348,
+      "sha256": "98b6052c70f13c504c18f407c88861342d98696dcd9629501ede346f690622b3"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image.wgsl",
+      "bytes": 2959,
+      "sha256": "ede39857bf369d5a33f5503e7ae96bd04bd5ca06a11937f28fa97793011b3446"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/image_fixtures.rs",
+      "bytes": 19757,
+      "sha256": "d7fd6c1970f1bfad52021b0ae48401596d3124c5a7e29a1171a310d6d6f096ee"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 794,
+      "sha256": "3801ed4e172dc41a348a193805b646a193d60a55e37204b28dcf5f15edc3d4b3"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/main.rs",
+      "bytes": 2019,
+      "sha256": "692a4bff79c1fe15e24961e1ca29372c8f94697a7387f5e3eb10c7eb9c97175d"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/rect.wgsl",
+      "bytes": 1593,
+      "sha256": "b0f67e88f3b5630cb98c8406ee20df6e8890b3ca42410451f105f64fb2a68afa"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/reuse_fixtures.rs",
+      "bytes": 5890,
+      "sha256": "b463f8e69ee220afc5cb5a9de6cdb517819df05866092b8cc7e2b3c9cd050639"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/reuse_gpu.rs",
+      "bytes": 14001,
+      "sha256": "6ad65ec6e91939eda311dd8aba54a76c75ef9d85cb21ff6d48c92fbbc5a0d77c"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/surface_gpu.rs",
+      "bytes": 9644,
+      "sha256": "e10e0223c8acea81805d9ec860ffafad46cac7f0c7ae8fc01d03b9d9d67ab0a6"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/tests.rs",
+      "bytes": 38696,
+      "sha256": "0453f0431e7f352015876ee801c28bfcda49d9be6c5d4c5605144629534bef61"
+    }
+  ]
+}

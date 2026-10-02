@@ -26,10 +26,14 @@ compositing and performance work. There is no measured Chromium parity.
 
 The experimental [native frame benchmark](docs/native-render-benchmark.md)
 records completion-paced CPU-upload or shader frames with exact scene identity
-and separate correctness checks. One controlled release comparison completes
-all 96 timed frames and both exact pixel checks. For its tiny fixture, the native shader route has
-a lower subsequent-frame median and higher first-frame and p95 times; full
-records and limits are retained.
+and separate correctness checks. The original CPU/native comparison is retained.
+A later [native buffer-reuse comparison](docs/evidence/vulkan-native-buffer-reuse.json)
+completes another 96 timed frames and two exact acquired-pixel checks. For that
+single fixture, the reuse candidate's subsequent preparation-through-present
+median is 1.309 ms versus 2.086 ms baseline, and p95 is 4.117 ms versus 4.790 ms.
+Early second-frame tails remain included; changing, unlocked GPU clocks limit
+attribution. This is no
+general browser or Chromium performance result.
 
 Drawing plans and GPU encoding live in the reusable
 [raster core](crates/raster-core/README.md), separate from comparison tools.
@@ -335,7 +339,17 @@ older observations remain identical; the full inventory reaches 9,418 modes and
 ## Implementation
 
 The [architecture notes](docs/ARCHITECTURE.md) describe the page pipeline and native process boundaries.
-The browser has an optional [Linux Vulkan presenter](docs/vulkan-rendering.md): build with `--features vulkan-presenter`, then launch the binary with `--presenter=vulkan`. It uploads custom CPU-painted frames; software remains the default and headless path. A separate [custom Vulkan raster probe](tools/vulkan-raster-probe/README.md) renders unrounded rectangles, nearest-neighbor images and bounded glyph masks with source alpha over opaque RGB. Its original 30 cases and separate 26 glyph cases pass on three adapters. Native-window rasterization, broader text support and group compositing remain on the [development docket](docs/ROADMAP.md); no performance comparison is established.
+The optional [Linux Vulkan presenter](docs/vulkan-rendering.md) uploads CPU-painted
+frames when built with `--features vulkan-presenter` and launched with
+`--presenter=vulkan`. Build with `--features vulkan-raster` and launch with
+`--presenter=vulkan --raster=gpu` for custom shaders in the actual window, with
+CPU-prepared font/rounded coverage and whole-frame fallback. One exact-size
+retired GPU buffer set can be reused; every frame still rewrites inputs and
+draws the complete scene. Software remains the default and headless path. The
+separate [raster probe](tools/vulkan-raster-probe/README.md) retains its original
+30 cases and 26 glyph cases on three adapters. Broader text, group compositing
+and scene coverage remain on the [development docket](docs/ROADMAP.md); the
+narrow timing comparisons do not establish Chromium parity.
 
 JavaScript [parses directly into flat code records](tests/conformance/flat-parser.md)
 and uses [shared execution continuations](tests/conformance/activation-frames.md),

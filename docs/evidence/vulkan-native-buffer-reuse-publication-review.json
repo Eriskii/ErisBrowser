@@ -1,0 +1,596 @@
+{
+  "schema": 1,
+  "status": "clear after two primary-record precision corrections; no unresolved concrete publication defect",
+  "review_scope": "Read-only package and documentation audit; no compiler, browser, engine, GPU, benchmark or host execution",
+  "primary": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/vulkan-native-buffer-reuse.json",
+    "bytes": 16452,
+    "sha256": "9e3917fc5d033ff70da3f830573855dd7b42ac309569a31562b3e4ef46dcef2a"
+  },
+  "index": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/evidence/native-buffer-reuse/index.json",
+    "bytes": 30591,
+    "sha256": "b9409c633f00400202cc5e901de5ee1b6d630416e71803fc3dbb2d60ede69f17"
+  },
+  "payloads": {
+    "count": 177,
+    "bytes": 1477285,
+    "unique_safe_paths": true,
+    "all_bytes_and_hashes_verified": true,
+    "all_exact_against_retained_originals": true,
+    "unindexed_extra_payloads": [],
+    "symlinks_or_executable_binary_formats": [],
+    "secret_signature_matches": []
+  },
+  "source_reconstruction": {
+    "baseline": {
+      "files": 120,
+      "overlay_blobs": 0,
+      "git_commit": "51ca9edcc35e3705404607e60cb88afefcd85efd",
+      "result": "every source byte reconstructed and verified"
+    },
+    "candidate": {
+      "files": 123,
+      "overlay_blobs": 8,
+      "git_commit": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+      "result": "every source byte reconstructed and verified"
+    },
+    "host": {
+      "files": 187,
+      "overlay_blobs": 13,
+      "git_commit": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+      "result": "every source byte reconstructed and verified"
+    },
+    "probe": {
+      "files": 45,
+      "overlay_blobs": 11,
+      "git_commit": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+      "result": "every source byte reconstructed and verified"
+    }
+  },
+  "raw_evidence": {
+    "comparison_processes": 8,
+    "correctness_processes": 2,
+    "correctness_bytes": 9011200,
+    "measured_frames": 96,
+    "scene_bytes": 269,
+    "scene_sha256": "be4e80583e6833fb4bd6ec7c57caed05e3dca9f534c31463966b4aead9720cf8",
+    "raw_reports_and_transcripts": "All8 rebound to embedded reports/control/supervision and prior independent full-run audit; no changed observation",
+    "offscreen": "Exact copy of prior independent3-adapter/84-frame/4680-byte audit and every raw transcript; 39 frame allocations plus18 cancellation leases,45 frame reuses",
+    "cleanup": "Every retained comparison process exit0, reaped1, no descendants; offscreen retained prior independent audit confirms4 clean processes"
+  },
+  "statistics": "Primary statistics/phase/initialization dictionaries equal completed raw-host summaries previously independently recomputed; percentages recomputed again; second-frame tails retained",
+  "environment": "Exact before/after snapshots retained; P5/360MHz toP0/2505MHz correctly disclosed without per-frame clock or sole-cause claim",
+  "validation_commands": [
+    {
+      "record": "validation/all-probe-python.json",
+      "exit": 0,
+      "command": [
+        "/run/current-system/sw/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/vulkan-raster-probe",
+        "-p",
+        "test_*.py"
+      ],
+      "test_summaries": [
+        "Ran 93 tests in 2.986s"
+      ]
+    },
+    {
+      "record": "validation/all-root-python.json",
+      "exit": 0,
+      "command": [
+        "/run/current-system/sw/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "test_*.py"
+      ],
+      "test_summaries": [
+        "Ran 357 tests in 51.418s"
+      ]
+    },
+    {
+      "record": "validation/core-clippy-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--features",
+        "gpu",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/core-tests-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "crates/raster-core/Cargo.toml",
+        "--features",
+        "gpu"
+      ],
+      "test_summaries": [
+        "test result: ok. 107 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.03s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "record": "validation/default-clippy-188-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/default-clippy-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/native-clippy-188-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/native-clippy-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/native-tests-188-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "test_summaries": [
+        "test result: ok. 1130 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.98s",
+        "test result: ok. 105 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s",
+        "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+        "test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.64s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "record": "validation/native-tests-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "test_summaries": [
+        "test result: ok. 1130 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.39s",
+        "test result: ok. 105 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s",
+        "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+        "test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "record": "validation/presenter-clippy-188-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/presenter-clippy-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/probe-clippy-1.json",
+      "exit": 101,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/probe-clippy-188-3.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/probe-clippy-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/probe-clippy-2.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/probe-test-2.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml"
+      ],
+      "test_summaries": [
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "record": "validation/probe-test-initial.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml"
+      ],
+      "test_summaries": [
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "record": "validation/probe-tests-188-3.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge"
+      ],
+      "test_summaries": [
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "record": "validation/probe-tests-198-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge"
+      ],
+      "test_summaries": [
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    },
+    {
+      "record": "validation/release-build-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--release",
+        "--bin",
+        "eris-browser"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/reuse-probe-build-1.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--bin",
+        "eris-vulkan-reuse-check"
+      ],
+      "test_summaries": []
+    },
+    {
+      "record": "validation/reuse-probe-build-2.json",
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--bin",
+        "eris-vulkan-reuse-check"
+      ],
+      "test_summaries": []
+    }
+  ],
+  "documentation": {
+    "receipt": {
+      "path": "/tmp/eris-native-buffer-reuse-docs-ready.json",
+      "bytes": 2708,
+      "sha256": "aa0971e8ad05c5cf47d8d1ed9ecd335ab3f12d7d42b6b2e23c4b9239b266d78f"
+    },
+    "files": [
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/README.md",
+        "bytes": 37806,
+        "sha256": "e207144a8e6c04c8a4ea9ded28a04077eb75f8b6060b51b0f111fa1169679390"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/native-render-benchmark.md",
+        "bytes": 16267,
+        "sha256": "5bfac7d5e88a0f1d360cf87900e4466d9fb4d8bf057bf97b8064c32441427e7d"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/vulkan-rendering.md",
+        "bytes": 37378,
+        "sha256": "de2e5358edfb88168f52e9bb704c218752c7ea27dc737c604b0facdd2473209f"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/ROADMAP.md",
+        "bytes": 18930,
+        "sha256": "c41fa6daa779888f2f3fec36c30934888579b0d9b81dc77402568a3078b132f8"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/docs/VALIDATION.md",
+        "bytes": 281131,
+        "sha256": "0988bca6a7ab85ec1a7e4c492c327a6d20b0dc0d0742afa0cae29f8fac85bb63"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/README.md",
+        "bytes": 9713,
+        "sha256": "c574d12b1305b16cf2deb028f8d3de2b1c2c9fabbc3a5f8f3286b4518ca931cd"
+      }
+    ],
+    "local_links_checked": 386,
+    "result": "New prose/tables agree with retained counts and measured populations; historical CPU/native sequence separate; no Chromium or general-browser claim"
+  },
+  "corrections": {
+    "strict_clippy": "Now names default/vulkan-presenter/vulkan-raster, plus separate core/probe configurations; no unsupported bridge-only claim",
+    "formatting": "Core log retained; root/probe empty-output shell success explicitly attributed without claiming retained separate logs"
+  },
+  "timing_boundary": "Original presenter review and separately bound wording addendum both retained; cache-return bookkeeping inside owner_total only, final cached destruction outside frame timing before positive release/report",
+  "retained_preexecution_attempts": [
+    "Initial E0599 probe Clippy failure and corrected success",
+    "Original alpha literal draft and final independent integer expectation",
+    "Initial source-sort host files, focused tests and final source"
+  ],
+  "limitations": [
+    "No independent new measurement, build or runtime execution in this review",
+    "Secret check covers known private-key/token signatures and bounded manual artifact review, not an exhaustive forensic claim",
+    "Explicit-buffer and host timing claims exclude allocator/driver/queue staging and compositor/throughput guarantees",
+    "One tiny scene/one NVIDIA surface A/B; three independent offscreen adapters are a separate correctness population"
+  ],
+  "findings": []
+}

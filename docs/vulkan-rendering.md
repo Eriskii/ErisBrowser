@@ -11,10 +11,21 @@ The [native-window record](vulkan-native-window.md) now includes a gated 1280×8
 comparison (4,505,600 acquired bytes) using two-strip rounded coverage and a
 separate reference-free run. The earlier 1180×880 comparison, opacity/overdraw
 fallback and initial refusals remain tied to their original executable. These
-checks cover one NVIDIA surface/format before the compositor. No speedup or
-Chromium comparison follows.
+checks cover one NVIDIA surface/format before the compositor. Pixel agreement
+alone establishes no speedup or Chromium comparison.
 The default and headless paths remain software. `--presenter=vulkan` alone retains
 the existing CPU upload route.
+
+The native owner now retains one exact-size buffer lease after successful
+retirement, scopes and presentation. Every frame still rewrites all inputs and
+uniforms and executes the full clear/draw/conversion sequence. Mismatched shapes,
+reconfiguration and CPU fallback evict before replacement. Idle retains the
+charge under the existing 16 MiB native / 24 MiB with readback / 128 MiB presenter
+bounds; failed or uncertain work cannot return to the cache. The
+[reuse record](evidence/vulkan-native-buffer-reuse.json) separates three-adapter
+changed-content checks from an actual native-window A/B comparison. Its exact
+one-scene inputs and timing limits are described in the
+[benchmark record](native-render-benchmark.md#native-baseline-versus-retired-buffer-reuse).
 
 The [raster core](../crates/raster-core/README.md) and browser adapter now provide
 whole-scene planning on the existing graphics owner. Earlier
@@ -558,7 +569,12 @@ requested Chromium performance threshold.
 
 The opt-in [native frame benchmark](native-render-benchmark.md) now provides
 completion-paced host intervals with a bounded exact-scene identity and a
-separate correctness mode. Its source/unit/CLI checks pass. A first controlled
-release pair sequence completes 96 measured frames and two exact acquired-pixel
-checks; the native median improves on that small fixture while first-frame and
-p95 times remain higher. The full records preserve this tradeoff.
+separate correctness mode. The first CPU/native sequence retains 96 measured
+frames and two exact acquired-pixel checks; its native median is lower while
+first-frame and p95 times are higher. A later native baseline/reuse sequence
+completes another 96 measured frames and 9,011,200 acquired correctness bytes.
+Subsequent prepare-through-present median/p95 move from 2.086/4.790 ms to
+1.309/4.117 ms, retaining every early second-frame submission tail. GPU clocks
+were unlocked; environment snapshots changed from P5/360 MHz to P0/2505 MHz.
+Those observations cannot establish per-frame clocks or attribute all gains to
+reuse. Both sequences remain narrow host measurements, not a Chromium result.

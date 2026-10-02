@@ -1,0 +1,494 @@
+{
+  "schema": 1,
+  "base_commit": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+  "baseline_runtime_commit": "51ca9edcc35e3705404607e60cb88afefcd85efd",
+  "scope": "Exact-size complete retired native buffer reuse; changed offscreen frames and one controlled native browser release comparison before compositor",
+  "implementation": {
+    "native_only": true,
+    "idle_leases_maximum": 1,
+    "identity": "Private Arc context and exact checked dimensions, format, lengths, alignment and actual buffer descriptors",
+    "overwrite": "All input and uniform bytes rewritten; full clear and all ordered draws and conversion encoded every frame",
+    "success_boundary": "Specific submission retired, all scopes successful, requested verification and presentation complete, final locked current/deadline checks",
+    "unchanged_caps": {
+      "native_plan_bytes": 16777216,
+      "active_plus_readback_bytes": 25165824,
+      "application_ledger_bytes": 134217728,
+      "next_ui_reservation_bytes": 16777216
+    },
+    "excluded": "Driver, allocator, queue staging and binding overhead remain outside explicit-buffer ledger; this is not RSS/VRAM measurement",
+    "probe_and_one_shot_api_preserved": true
+  },
+  "sources": {
+    "overlays": "native-buffer-reuse/source; apply to base_commit for changed source files",
+    "host_bound_files": 187,
+    "candidate_compiled_files": 123,
+    "baseline_compiled_files": 120,
+    "probe_compiled_scope_files": 45,
+    "baseline_snapshot": "Every manifest blob was recovered from baseline_runtime_commit and verified before execution; public manifest retained, executable excluded"
+  },
+  "tests": {
+    "root_native_each_toolchain": 1397,
+    "toolchains": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "new_presenter_groups": 10,
+    "core_gpu_each_toolchain": 107,
+    "core_default_minimum_toolchain": 84,
+    "new_core_groups": 12,
+    "all_python": 450,
+    "root_python": 357,
+    "raster_probe_python": 93,
+    "new_native_ab_host_groups": 10,
+    "new_reuse_protocol_groups": 3,
+    "strict_clippy": "Root default, vulkan-presenter and vulkan-raster configurations on both toolchains; core GPU and probe with browser bridge on both toolchains",
+    "formatting": "Root, core and raster probe pass Rust1.88 fmt checks; core log retained, root/probe checks observed in an empty-output successful shell execution without separately retained logs"
+  },
+  "offscreen": {
+    "attempts": 1,
+    "adapters": [
+      "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+      "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+      "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+    ],
+    "frames": 84,
+    "successful_frame_allocations": 39,
+    "successful_frame_reuses": 45,
+    "successful_frame_evictions": 39,
+    "cancellation_guard_cases": 18,
+    "disposable_cancellation_allocations": 18,
+    "total_lease_allocations": 57,
+    "compared_active_bytes": 4680,
+    "formats": [
+      "Bgra8Unorm",
+      "Rgba8Unorm"
+    ],
+    "reference": "Independent literal geometry/color pixels; no reference enters encoders",
+    "checks": "Equal-size changed images, alpha, masks, row origins, uniforms, clear colors; input absence, hidden work, sizes, format and context changes; six guarded cancellations per adapter",
+    "cleanup": "Four successful processes, four reaps, zero surviving descendants, empty checker/supervisor stderr",
+    "acquired_surface": false
+  },
+  "comparison": {
+    "attempts": 1,
+    "successful_processes": 8,
+    "check_processes": 2,
+    "checked_bytes_each": 4505600,
+    "total_checked_bytes": 9011200,
+    "timed_processes": 6,
+    "frames_each": 16,
+    "total_timed_frames": 96,
+    "first_frames_each_variant": 3,
+    "subsequent_frames_each_variant": 45,
+    "measured_reference_or_readback": false,
+    "size": [
+      1280,
+      880
+    ],
+    "scene_bytes": 269,
+    "scene_sha256": "be4e80583e6833fb4bd6ec7c57caed05e3dca9f534c31463966b4aead9720cf8",
+    "url": "http://127.0.0.1:57335/admitted.html",
+    "scale_factor": 1,
+    "adapter": "presenter: Vulkan adapter=\"NVIDIA GeForce RTX 4070 SUPER\" type=DiscreteGpu driver=\"NVIDIA\" format=Bgra8Unorm color_space=Srgb alpha=Opaque mode=Fifo; raster=native-shaders with complete CPU admission fallback",
+    "releases": {
+      "baseline": {
+        "binary": "/tmp/eris-native-timing-1/eris-browser-native-timing-2",
+        "bytes": 16138144,
+        "sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+        "profile": "release",
+        "toolchain": "1.98.0",
+        "features": [
+          "vulkan-raster"
+        ]
+      },
+      "candidate": {
+        "binary": "/tmp/eris-native-buffer-reuse-1/eris-browser-native-reuse-1",
+        "bytes": 16151032,
+        "sha256": "7ba4070d2536f3b483b9886f7f2ab6229bdf1a3657972e9557a04c523d6482f2",
+        "profile": "release",
+        "toolchain": "1.98.0",
+        "features": [
+          "vulkan-raster"
+        ]
+      }
+    },
+    "cleanup": "All eight browser children and wrappers exited0 and were reaped; each supervisor reports complete cleanup, reaped1 and zero descendants"
+  },
+  "statistics": {
+    "baseline": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5599506,
+          "p95_nearest_rank_ns": 5682853
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 2086008,
+          "p95_nearest_rank_ns": 4789509
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5306730,
+          "p95_nearest_rank_ns": 5321989
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1817629,
+          "p95_nearest_rank_ns": 4481875
+        }
+      }
+    },
+    "candidate": {
+      "prepare_to_present_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5263618,
+          "p95_nearest_rank_ns": 5413403
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1308623,
+          "p95_nearest_rank_ns": 4117273
+        }
+      },
+      "owner_total_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5000319,
+          "p95_nearest_rank_ns": 5098966
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 1062015,
+          "p95_nearest_rank_ns": 3873521
+        }
+      }
+    }
+  },
+  "phase_statistics": {
+    "baseline": {
+      "ui_prepare_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 309737,
+          "p95_nearest_rank_ns": 370412
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 265573,
+          "p95_nearest_rank_ns": 320838
+        }
+      },
+      "queue_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 7625,
+          "p95_nearest_rank_ns": 8797
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 8947,
+          "p95_nearest_rank_ns": 18816
+        }
+      },
+      "acquire_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 8116,
+          "p95_nearest_rank_ns": 9729
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 17063,
+          "p95_nearest_rank_ns": 21531
+        }
+      },
+      "encode_upload_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 541808,
+          "p95_nearest_rank_ns": 556737
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 376825,
+          "p95_nearest_rank_ns": 424566
+        }
+      },
+      "submit_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 3330630,
+          "p95_nearest_rank_ns": 3341682
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 258210,
+          "p95_nearest_rank_ns": 2698451
+        }
+      },
+      "completion_wait_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 867286,
+          "p95_nearest_rank_ns": 870812
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 698014,
+          "p95_nearest_rank_ns": 872055
+        }
+      },
+      "cleanup_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 366746,
+          "p95_nearest_rank_ns": 373389
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 364121,
+          "p95_nearest_rank_ns": 399568
+        }
+      },
+      "present_call_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 192074,
+          "p95_nearest_rank_ns": 201132
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 48913,
+          "p95_nearest_rank_ns": 59392
+        }
+      }
+    },
+    "candidate": {
+      "ui_prepare_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 259031,
+          "p95_nearest_rank_ns": 308195
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 234885,
+          "p95_nearest_rank_ns": 291853
+        }
+      },
+      "queue_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 6473,
+          "p95_nearest_rank_ns": 8556
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 8666,
+          "p95_nearest_rank_ns": 19728
+        }
+      },
+      "acquire_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 5621,
+          "p95_nearest_rank_ns": 5671
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 16832,
+          "p95_nearest_rank_ns": 19707
+        }
+      },
+      "encode_upload_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 551146,
+          "p95_nearest_rank_ns": 565603
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 48041,
+          "p95_nearest_rank_ns": 77397
+        }
+      },
+      "submit_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 3367831,
+          "p95_nearest_rank_ns": 3484312
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 263350,
+          "p95_nearest_rank_ns": 2859136
+        }
+      },
+      "completion_wait_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 864640,
+          "p95_nearest_rank_ns": 867366
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 681474,
+          "p95_nearest_rank_ns": 865051
+        }
+      },
+      "cleanup_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 1292,
+          "p95_nearest_rank_ns": 1483
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 742,
+          "p95_nearest_rank_ns": 852
+        }
+      },
+      "present_call_ns": {
+        "first_frame": {
+          "count": 3,
+          "median_ns": 190742,
+          "p95_nearest_rank_ns": 192425
+        },
+        "steady_frames": {
+          "count": 45,
+          "median_ns": 44133,
+          "p95_nearest_rank_ns": 55635
+        }
+      }
+    }
+  },
+  "initialization_statistics": {
+    "baseline": {
+      "count": 3,
+      "median_ns": 150065151,
+      "p95_nearest_rank_ns": 151230613
+    },
+    "candidate": {
+      "count": 3,
+      "median_ns": 153428042,
+      "p95_nearest_rank_ns": 158115658
+    }
+  },
+  "environment": {
+    "before": {
+      "schema": 1,
+      "time_unix": 1790935018.4535663,
+      "kernel": "7.2.6",
+      "architecture": "x86_64",
+      "scope": "Read-only before/after environment snapshot; clocks and power were not locked; monitor settings are not a compositor latency measurement",
+      "scaling_governor": "performance",
+      "energy_performance_preference": "performance",
+      "monitors": [
+        {
+          "id": 1,
+          "width": 2560,
+          "height": 1440,
+          "refreshRate": 59.951,
+          "scale": 1,
+          "dpmsStatus": true,
+          "disabled": false,
+          "vrr": false
+        },
+        {
+          "id": 0,
+          "width": 3840,
+          "height": 2160,
+          "refreshRate": 143.99899,
+          "scale": 1.5,
+          "dpmsStatus": true,
+          "disabled": false,
+          "vrr": false
+        }
+      ],
+      "gpu_query": {
+        "command": [
+          "nvidia-smi",
+          "--query-gpu=name,driver_version,pstate,power.draw,power.limit,temperature.gpu,clocks.gr,clocks.mem",
+          "--format=csv"
+        ],
+        "exit": 0,
+        "stdout": "name, driver_version, pstate, power.draw [W], power.limit [W], temperature.gpu, clocks.current.graphics [MHz], clocks.current.memory [MHz]\nNVIDIA GeForce RTX 4070 SUPER, 595.99.02, P5, 14.61 W, 220.00 W, 41, 360 MHz, 810 MHz\n",
+        "stderr": ""
+      }
+    },
+    "after": {
+      "schema": 1,
+      "time_unix": 1790935027.1687706,
+      "kernel": "7.2.6",
+      "architecture": "x86_64",
+      "scope": "Read-only before/after environment snapshot; clocks and power were not locked; monitor settings are not a compositor latency measurement",
+      "scaling_governor": "performance",
+      "energy_performance_preference": "performance",
+      "monitors": [
+        {
+          "id": 1,
+          "width": 2560,
+          "height": 1440,
+          "refreshRate": 59.951,
+          "scale": 1,
+          "dpmsStatus": true,
+          "disabled": false,
+          "vrr": false
+        },
+        {
+          "id": 0,
+          "width": 3840,
+          "height": 2160,
+          "refreshRate": 143.99899,
+          "scale": 1.5,
+          "dpmsStatus": true,
+          "disabled": false,
+          "vrr": false
+        }
+      ],
+      "gpu_query": {
+        "command": [
+          "nvidia-smi",
+          "--query-gpu=name,driver_version,pstate,power.draw,power.limit,temperature.gpu,clocks.gr,clocks.mem",
+          "--format=csv"
+        ],
+        "exit": 0,
+        "stdout": "name, driver_version, pstate, power.draw [W], power.limit [W], temperature.gpu, clocks.current.graphics [MHz], clocks.current.memory [MHz]\nNVIDIA GeForce RTX 4070 SUPER, 595.99.02, P0, 31.27 W, 220.00 W, 42, 2505 MHz, 10501 MHz\n",
+        "stderr": ""
+      }
+    }
+  },
+  "candidate_percent_change_in_direct_prepare_to_present": {
+    "first_frame": {
+      "median_ns": -5.9985,
+      "p95_nearest_rank_ns": -4.7415
+    },
+    "steady_frames": {
+      "median_ns": -37.2666,
+      "p95_nearest_rank_ns": -14.0356
+    }
+  },
+  "retained_preexecution_corrections": [
+    "Initial checker compile rejected Result<(),String>::as_deref; error log retained and corrected before actual execution",
+    "Source review corrected one handwritten alpha-blend reference from0x0819aa to0x091aab using integer round-to-nearest; original fixture draft retained",
+    "A/B source binding canonical path sorting corrected before actual execution; initial host source and both focused runs retained"
+  ],
+  "limits": [
+    "One tiny static fixture on one NVIDIA window surface/format; three fresh processes per variant",
+    "Sample1 kept separately; all samples2..16 retained, including elevated early submit intervals; no failed actual attempt or outlier removed",
+    "Host intervals through prepare/present/retirement, not GPU timestamps, display latency, throughput or Chromium-relative results",
+    "GPU clocks and power not locked; before snapshot P5/360MHz, after snapshot P0/2505MHz; these do not measure frequencies during frames or isolate the cause of every observed difference",
+    "Cache-return bookkeeping is after the direct prepare-to-present endpoint and inside owner_total; final retained-cache destruction occurs during owner release outside frame timing",
+    "Fresh native plans and coverage rebuilt each frame; queue write staging still allocates; no retained plan/pixel/reference cache",
+    "Complete web compatibility, production security and Chromium performance target remain unfulfilled"
+  ],
+  "package": {
+    "index": "native-buffer-reuse/index.json",
+    "sha256": "b9409c633f00400202cc5e901de5ee1b6d630416e71803fc3dbb2d60ede69f17",
+    "files": 177,
+    "payload_bytes": 1477285
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "clippy",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "tools/vulkan-raster-probe/Cargo.toml",
+    "--all-targets",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.432,
+  "log": "probe-clippy-2.log",
+  "sha256": "05d89faaa23712b9928468e0337b4cff91361c4df5fbc1de91d38576f6ed6dad"
+}

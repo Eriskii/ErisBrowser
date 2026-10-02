@@ -1,13 +1,18 @@
 # Development docket
 
-The [native frame benchmark](native-render-benchmark.md) now has an opt-in
-completion-paced API, bounded exact scene identity and a separate acquired-pixel
-check mode. Both Rust toolchains pass 1,387 native-feature tests. One controlled
-release comparison now retains 96 timed frames: the shader route has a lower
-subsequent-frame median but a higher first-frame median and p95. Broader scene
-coverage and the elevated early submission intervals remain ahead; no
-Chromium threshold is claimed. [Retained API validation](evidence/vulkan-native-timing-api.json)
-binds the source and compiled CLI checks.
+The native owner now reuses one exact-size, fully retired GPU buffer set while
+rewriting every input and drawing each complete scene. Limits, queued-write
+failure retirement and positive-drop accounting remain unchanged. The
+[native benchmark](native-render-benchmark.md#native-baseline-versus-retired-buffer-reuse)
+retains an eight-process baseline/reuse comparison with 96 timed frames and two
+exact acquired-pixel checks. For its one scene, subsequent median/p95 move from
+2.086/4.790 ms to 1.309/4.117 ms; all early submission tails remain included.
+Both Rust versions pass 1,397 native-feature tests. The
+[reuse evidence](evidence/vulkan-native-buffer-reuse.json) preserves the separate
+three-adapter changed-content checks and original CPU/native timing record.
+Broader scene measurements, queue staging costs and early submission tails
+remain open. GPU clocks were unlocked and changed between environment
+snapshots; no Chromium threshold or general speedup is claimed.
 
 [ArrayBuffer](../tests/conformance/array-buffer.md) adds nonshared fixed and
 resizable backing storage, resizing, same-realm species slicing, transfers and
@@ -184,8 +189,9 @@ Software remains the default/headless path. The optional bounded
 compositing, driver isolation and performance work remain open.
 Native rounded shapes can use two adjacent masks without raising shared limits.
 Two gated 1280×880 window cases pass, including 4,505,600 acquired bytes matching
-the CPU reference. Next measurements will compare release-build CPU and GPU
-routes on equal scenes, with preparation and presentation costs kept separate.
+the CPU reference. Release CPU/native and native baseline/reuse comparisons
+now use equal scenes with preparation and presentation costs kept separate.
+Further measurements need more scenes and repeated environment observations.
 
 Acceptance work:
 

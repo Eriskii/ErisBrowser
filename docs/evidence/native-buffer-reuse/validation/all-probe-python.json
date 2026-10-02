@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/run/current-system/sw/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/vulkan-raster-probe",
+    "-p",
+    "test_*.py"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 3.0657975673675537,
+  "log": "all-probe-python.log",
+  "sha256": "695adbdb8c4edfee7abd543b19dc552b413c9b25543573cd607699cf29758c19"
+}

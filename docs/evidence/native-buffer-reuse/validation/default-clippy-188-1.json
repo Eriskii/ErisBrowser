@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "clippy",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--all-targets",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.548,
+  "log": "default-clippy-188-1.log",
+  "sha256": "efe91b3d475689d3dac779cd592287cba0e08b2a272d025146377210cc216dc4"
+}

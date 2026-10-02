@@ -1,0 +1,15 @@
+{
+  "scope": "focused synthetic Python tests; no browser/GPU",
+  "files": [
+    {
+      "path": "tools/native_raster_timing_host.py",
+      "bytes": 44770,
+      "sha256": "3b09db31a20f068fb3126267a202dd34ddde7040d30cb339ae16c1376c597bfd"
+    },
+    {
+      "path": "tools/test_native_raster_timing_host.py",
+      "bytes": 45780,
+      "sha256": "d0423ee71a77749ac4a41ae8c2de91c6c136083fccd2ba31a144fb9e3e4b713e"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "crates/raster-core/src/gpu.rs",
+    "sha256": "8af2d14a9735a612c081a7b466a75ea5214d1fc742d10c69a74342883a00eb9e"
+  },
+  {
+    "path": "crates/raster-core/src/surface.rs",
+    "sha256": "7a9c7cce76323543458d504f650c17e8ce02127c1d53746349173671590cbf63"
+  },
+  {
+    "path": "crates/raster-core/src/gpu/reuse.rs",
+    "sha256": "da107d426e5b015aa9f6810261606ef1a4eee332d575dfaedb383becdc8a2d9f"
+  },
+  {
+    "path": "crates/raster-core/src/surface/reuse.rs",
+    "sha256": "7153dbd91408fbe421a1a1c56b88daf454868ec9116639f615778cbda9ef60a0"
+  },
+  {
+    "path": "crates/raster-core/src/surface/reuse_tests.rs",
+    "sha256": "f4e98fe53c2f90d31e0e4177ad354e3719b57b3b23ce3e1a4d29e31b349b5536"
+  }
+]

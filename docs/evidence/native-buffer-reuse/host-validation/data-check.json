@@ -1,0 +1,31 @@
+{
+  "scope": "data-only source and release-manifest check; no executable launched",
+  "baseline_manifest_sha256": "7cb51712e2ad403b46144427e72bcc933df38f5617401baf1a3c0ad2678f1892",
+  "baseline_binary_sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+  "baseline_source_count": 120,
+  "changed_existing_functions": [
+    "main",
+    "run_host",
+    "statistics_for"
+  ],
+  "unchanged_existing_functions_and_classes": [
+    "IdentityReader",
+    "distributions",
+    "fixture_data",
+    "integer",
+    "launch_owned",
+    "parse_identity",
+    "sequence",
+    "source_binding",
+    "strict_json",
+    "validate_control",
+    "validate_report",
+    "validate_stderr"
+  ],
+  "new_functions": [
+    "comparison_sequence",
+    "compiled_binding",
+    "compiled_sources",
+    "sample_statistics"
+  ]
+}

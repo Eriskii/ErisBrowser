@@ -1,0 +1,40 @@
+   Compiling eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+   Compiling eris-vulkan-raster-prototype v0.0.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe)
+    Finished `test` profile [unoptimized] target(s) in 2.08s
+     Running unittests src/lib.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/eris_vulkan_raster_prototype-70cb2bf90f0dbd7a)
+
+running 5 tests
+test alpha_fixtures::tests::alpha_fixture_frozen_counter_arithmetic ... ok
+test alpha_fixtures::tests::alpha_fixture_inputs_and_literal_outputs_are_bounded ... ok
+test surface_gpu::tests::comparison_checks_both_byte_orders_and_alpha_with_padded_rows ... ok
+test reuse_fixtures::tests::changed_input_frames_have_equal_allocations_and_different_contents ... ok
+test gpu::tests::pending_future_uses_finite_deadline_without_gpu ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/eris_vulkan_raster_prototype-51c1c901bc002f7e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/reuse-check.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/eris_vulkan_reuse_check-53639f31599c09ef)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/glyph_contracts.rs (/tmp/eris-vulkan-raster-prototype/target-msrv/debug/deps/glyph_contracts-0b87bc6304ab17cb)
+
+running 2 tests
+test frozen_refusal_inventory_covers_nineteen_recipes_and_six_culling_variants ... ok
+test frozen_positive_inventory_covers_all_three_exact_cap_plans ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests eris_vulkan_raster_prototype
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

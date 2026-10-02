@@ -1,0 +1,1002 @@
+{
+  "schema": 1,
+  "scope": "Independent read-only audit of retained offscreen lease-reuse checker results and default host seam; no runner/renderer/compiler/desktop/GPU execution",
+  "outcome": "clear",
+  "findings": [],
+  "inputs": [
+    {
+      "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/host-results.json",
+      "bytes": 7252,
+      "sha256": "081156a8bf562d4af8785cf0a9b71a113df2ee96e1a4efc4c23fa8970f26cf1b"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-1/probe-build-1.json",
+      "bytes": 8198,
+      "sha256": "77fe0552d5d034b50f0082f31ccdb3ba3114f93bec8286faa3c5f9dfbecb902d"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-core-source-ready.json",
+      "bytes": 3213,
+      "sha256": "1831687ac04a48e766b09a604fdcb3ff21433570fbdb12626065029790ed5816"
+    }
+  ],
+  "binary": {
+    "path": "/tmp/eris-native-buffer-reuse-1/eris-vulkan-reuse-check-1",
+    "bytes": 18467624,
+    "sha256": "2a10f3ad1e3beec8f5383b3fcc74fadc0cabe04e9249c7778dd6054b5818e595"
+  },
+  "frozen_source_files_verified": 45,
+  "host_helper_bindings_verified": {
+    "run_surface_host.py": "d9f5f4280bfadff9f5e49701fb8b0c08cc0277d57270a14cb4da8dc5221e337c",
+    "run_browser_host.py": "99eeaf2e1f2aba9b653712fb837c27aaa0b17f8a00576e14d5ef808f4cc6356b",
+    "run_glyph_host.py": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525",
+    "glyph_protocol.py": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4",
+    "run_host.py": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6",
+    "bridge_supervisor.py": "931509790971677103a555461695f1962924010a5839e8845b943dc8df6dad23",
+    "run_reuse_host.py": "09557bc0b0cc1f7360631223e07c52e9f6a50e40260d5d7c5eea5d89f515e68d"
+  },
+  "loader_names_verified": 3,
+  "adapters": [
+    "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+    "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+    "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+  ],
+  "runs": [
+    {
+      "name": "enumeration",
+      "artifacts": [
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/enumeration.json",
+          "bytes": 737,
+          "sha256": "a7342faaa23e882e2998838e75aebbcd91bcc8b55c4d291b0b4af884f9435042"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/enumeration.stdout.log",
+          "bytes": 465,
+          "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/enumeration.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/enumeration.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      }
+    },
+    {
+      "name": "adapter-0",
+      "artifacts": [
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-0.json",
+          "bytes": 751,
+          "sha256": "26d8a493360742fb193ebac579730faf3bb7344d6b9bc3fc709ba15d5adf1858"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-0.stdout.log",
+          "bytes": 4932,
+          "sha256": "494d04cfeac0ed6f4b99785078925420aa23227ef46d82b2e878d0e2e87a653a"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-0.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-0.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "frames": [
+        {
+          "name": "inputs-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "clear-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "hidden-clear",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "resize-width",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1100,
+          "compared_bytes": 60
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "inputs-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "clear-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "hidden-clear",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "resize-width",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1100,
+          "compared_bytes": 60
+        },
+        {
+          "name": "resize-height",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": true,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        }
+      ],
+      "frame_allocations": 13,
+      "frame_reuses": 15,
+      "frame_evictions": 13,
+      "cancellation_cases": 6,
+      "cancellation_flush_submissions": 6,
+      "compared_bytes": 1560
+    },
+    {
+      "name": "adapter-1",
+      "artifacts": [
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-1.json",
+          "bytes": 750,
+          "sha256": "279ed94ef48713d1447d5ab280e2ed391f4d10e6b800badf3d4241aaccdad8fb"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-1.stdout.log",
+          "bytes": 4932,
+          "sha256": "1da85f9fb9be351615ecf58c09de5d683376e340c3580c3a95b27ef16345e982"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-1.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-1.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "frames": [
+        {
+          "name": "inputs-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "clear-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "hidden-clear",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "resize-width",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1100,
+          "compared_bytes": 60
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "inputs-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "clear-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "hidden-clear",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "resize-width",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1100,
+          "compared_bytes": 60
+        },
+        {
+          "name": "resize-height",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": true,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        }
+      ],
+      "frame_allocations": 13,
+      "frame_reuses": 15,
+      "frame_evictions": 13,
+      "cancellation_cases": 6,
+      "cancellation_flush_submissions": 6,
+      "compared_bytes": 1560
+    },
+    {
+      "name": "adapter-2",
+      "artifacts": [
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-2.json",
+          "bytes": 751,
+          "sha256": "d4136e02e90364bf73a3523085c77dc2031f5fc741e8c871574deb8b47608679"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-2.stdout.log",
+          "bytes": 4932,
+          "sha256": "1e76fa677941f9ba04983d8c8e0a427178d5e19c7457271d51e6e41ea34e876c"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-2.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/eris-native-buffer-reuse-1/reuse-gpu-1/adapter-2.supervisor.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "frames": [
+        {
+          "name": "inputs-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-b",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "clear-a",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "hidden-clear",
+          "format": "Bgra8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "resize-width",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1100,
+          "compared_bytes": 60
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "inputs-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "inputs-c",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1888,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "rectangle-b",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1344,
+          "compared_bytes": 48
+        },
+        {
+          "name": "clear-a",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "hidden-clear",
+          "format": "Rgba8Unorm",
+          "width": 4,
+          "height": 3,
+          "reused": true,
+          "planned_bytes": 1088,
+          "compared_bytes": 48
+        },
+        {
+          "name": "resize-width",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 3,
+          "reused": false,
+          "planned_bytes": 1100,
+          "compared_bytes": 60
+        },
+        {
+          "name": "resize-height",
+          "format": "Rgba8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": false,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        },
+        {
+          "name": "resize-height",
+          "format": "Bgra8Unorm",
+          "width": 5,
+          "height": 4,
+          "reused": true,
+          "planned_bytes": 1376,
+          "compared_bytes": 80
+        }
+      ],
+      "frame_allocations": 13,
+      "frame_reuses": 15,
+      "frame_evictions": 13,
+      "cancellation_cases": 6,
+      "cancellation_flush_submissions": 6,
+      "compared_bytes": 1560
+    }
+  ],
+  "totals": {
+    "successful_processes": 4,
+    "adapter_runs": 3,
+    "frame_comparisons": 84,
+    "frame_allocations": 39,
+    "frame_reuses": 45,
+    "frame_evictions": 39,
+    "cancellation_cases": 18,
+    "cancellation_allocations_separate": 18,
+    "cancellation_flush_submissions": 18,
+    "all_lease_allocations_including_cancellation": 57,
+    "compared_active_pixel_bytes": 4680,
+    "owned_reaped": 4,
+    "adopted_descendants": 0
+  },
+  "source_review": [
+    "Both formats execute complete native draw and conversion encoders, compare every active pixel including alpha through surface_gpu::compare, and publish PASS only after specific submission completion, successful mapping/full equality and all three error scopes. References are never uploaded to the encoders.",
+    "Each cancellation guard poisons the outer owned lease, discards its encoder, performs exactly one empty flush, polls that submission, rejects output/compatibility/reusable access, pops all three scopes, and publishes PASS only on success.",
+    "All six reachable cancellation callback cutpoints are exercised: initial guard, clear/rectangle/image/glyph guards, and conversion guard. Cancellation allocations are separate from the 13 allocation counters in each successful-frame sequence.",
+    "Frame sequence changes source images, glyph coverage/row origins, clear colors and uniforms without size changes, then no-input and clear-only layouts, hidden work, width/height/format, and a fresh context over the same Device/Queue. Old buffers are destroyed before incompatible replacement allocation.",
+    "Frame counts are harness-local allocation/checkout/eviction counters; 13 frame evictions include the final cached set. All three adapters have the same exact plan storage amounts independently recalculated from packed/padded pixels, draw uniforms, conversion uniform and input arena.",
+    "The new reuse validator requires exact inventory prefix, ordered six cancellation rows, ordered 28 frame routes and cache decisions, dimension/comparison lengths, bounded planned/readback bytes and exact terminal totals. It uses bounds rather than exact per-fixture planned values; this audit additionally checks exact values.",
+    "run_surface_host defaults remain validate_run and empty extra_helpers. Its previous source equals current source after exactly the three additive seam substitutions; old CLI authorization/signals, validation, binary/loader/helper pre/post checks, fresh output and stop-on-first-failure behavior remain unchanged.",
+    "run_reuse_host explicitly supplies its validator and includes itself in pre/post helper bindings. Host success follows every supervised positive exit, complete cleanup, empty checker/supervisor stderr and final identity recheck."
+  ],
+  "default_host_preservation": {
+    "parent_commit": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+    "parent_source_sha256": "60a35ad10b3cd51e62dbe11c7bab8c4a517a9b80ecc4a014efee91d7672d85f1",
+    "current_source": {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_surface_host.py",
+      "bytes": 8424,
+      "sha256": "d9f5f4280bfadff9f5e49701fb8b0c08cc0277d57270a14cb4da8dc5221e337c"
+    },
+    "exactly_three_additive_substitutions": true
+  },
+  "limitations": [
+    "Offscreen buffer encoding/conversion checks only; no acquired native surface, compositor result, browser integration or performance claim.",
+    "Literal references cover all active pixels, including output alpha, but not unused padded row bytes. Raw GPU pixel dumps are not stored; full comparisons are evidenced by the frozen checker source and guarded successful output rows.",
+    "Scope completion is evidenced by source control flow plus successful rows/empty stderr, not a separate low-level driver trace.",
+    "Allocation counts describe core lease allocations in this harness, not driver allocation/VRAM/staging metrics; six disposable cancellation leases per adapter are counted separately.",
+    "Explicit loader binding is not a complete transitive driver/system-library inventory.",
+    "No actual reruns or runtime source edits were performed during this audit."
+  ],
+  "audit_program": {
+    "path": "/tmp/eris-native-buffer-reuse-gpu-audit.py",
+    "bytes": 11853,
+    "sha256": "e445c4503e04cc015168b4f19e355a05fcb079aff800c201a521a97b880e0994"
+  }
+}

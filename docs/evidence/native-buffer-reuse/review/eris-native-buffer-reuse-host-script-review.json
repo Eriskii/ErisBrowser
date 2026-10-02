@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "scope": "Independent source-only A/B host review; no test, browser, GPU or benchmark execution by reviewer.",
+  "result": "No concrete issue found in the held reviewed delta.",
+  "inputs": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_timing_host.py",
+      "bytes": 44822,
+      "sha256": "a30d4e941ea50c88ff5b9ef0de22b1d9f504f54982bbe1c9e93c6295316d83bf"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/test_native_raster_timing_host.py",
+      "bytes": 45820,
+      "sha256": "668ac233c193fa86666d8a15eb620664122457acbe10bc3707975a172b74f3df"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_host.py",
+      "bytes": 27438,
+      "sha256": "7ed60d976cf14efd3d50e210dc49dff2433b6163ffa791fe1802e784a953dc52"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_wide_host.py",
+      "bytes": 29183,
+      "sha256": "b52aad9b1fa50d313210afe2096f61f59f1f3e7f3112a82034c2973d750c5fea"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/native_raster_followup.py",
+      "bytes": 20680,
+      "sha256": "edd7b1f6ead0fde62f6aea8dc7e18952620f5d17529366fdf52e493529a7dcce"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/run_browser_host.py",
+      "bytes": 9069,
+      "sha256": "99eeaf2e1f2aba9b653712fb837c27aaa0b17f8a00576e14d5ef808f4cc6356b"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-raster-probe/bridge_supervisor.py",
+      "bytes": 15712,
+      "sha256": "931509790971677103a555461695f1962924010a5839e8845b943dc8df6dad23"
+    }
+  ],
+  "plan": {
+    "path": "/tmp/eris-native-buffer-reuse-host-plan.md",
+    "bytes": 2893,
+    "sha256": "3e325753badf57a7247a80151106d6cd46fb07dbf7afcee1cb28a6b782ca59be"
+  },
+  "author_receipt": {
+    "path": "/tmp/eris-native-buffer-reuse-host-source-ready.json",
+    "bytes": 4278,
+    "sha256": "5125c710c4a4ddcf831b635b8b54876f16fd6a6c09e8e1069c215a00fc770d6e"
+  },
+  "checks": [
+    "Pinned release manifests bind executable size/hash, release feature/profile/toolchain schema and complete independently rooted source inventories. No stale-source exception; both trees, binaries, original/copied manifests and current helper sources are checked across cases.",
+    "Fixed two correctness checks plus three alternating 16-frame native pairs give exactly eight processes, 96 timed frames and 9011200 separately verified acquired bytes on success. Variant labels stay outside the unchanged native-raster reports.",
+    "One inherited listener supplies the exact same URL. Complete scene bytes, scale and adapter/format/presentation-mode diagnostic prefix must match across every case. Existing gate, PID control, raw-output and cleanup validators are unchanged.",
+    "Attempts persist before launch. Raw outputs, supervision and available control receipts survive failures; a failed case stops the sequence and cannot produce successful aggregate statistics.",
+    "Three first samples and all 45 subsequent samples per variant are retained, including every second-frame submission tail. Direct owner_total and prepare_to_present statistics, phase distributions and initialization remain separate.",
+    "New synthetic tests cover complete source and manifest admission, wrong-root and mutation refusal, exact run population, wrong route/scene/scale/adapter, late failure retention and sample-two tail preservation. Default CPU/native sequence and protocol remain unchanged."
+  ],
+  "limits": [
+    "Source review does not independently prove compilation provenance; trusted supplied release manifests and root freezes establish that binding.",
+    "Author reports 35 passing synthetic groups; reviewer did not rerun them. Actual A/B behavior remains for root execution."
+  ],
+  "receipt_preparation_note": "An initial data-only receipt script used tools/bridge_supervisor.py instead of tools/vulkan-raster-probe/bridge_supervisor.py and stopped before writing any receipt. Corrected path here; no reviewed source changed."
+}

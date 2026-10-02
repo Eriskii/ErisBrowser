@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "scope": "Independent source-only presenter review against sealed core lease API; no executions or edits.",
+  "result": "No concrete issue found.",
+  "files": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan/native.rs",
+      "bytes": 22219,
+      "sha256": "32db2b30629e3e402866cceb17109c51b27bb916079845b966a41e0cd06e6cfa"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan/control.rs",
+      "bytes": 73794,
+      "sha256": "350babb4a6df54b7d8ca7aac226040fc0f70ef85ee151c5fe9764477b4add79e"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan.rs",
+      "bytes": 32928,
+      "sha256": "d6a8681401b9685da13c7123023773eb642df723d0bff24ef2c16ac43d4de765"
+    }
+  ],
+  "core_api": {
+    "path": "/tmp/eris-native-buffer-reuse-api.md",
+    "bytes": 14401,
+    "sha256": "a67bc99c8cba5a330aa8c7b27a7068942d30169be6661860de15beb75c9aed50"
+  },
+  "core_ready": {
+    "path": "/tmp/eris-native-buffer-reuse-core-source-ready.json",
+    "bytes": 3213,
+    "sha256": "1831687ac04a48e766b09a604fdcb3ff21433570fbdb12626065029790ed5816"
+  },
+  "checks": [
+    "Lease checkout establishes outer-scope ownership before writes. Encode errors retain handles through metadata flush, exact submission retirement and all three error scopes. Uncertain completion uses ordinary drop and whole-owner release, never cache return.",
+    "Exact requirements govern compatibility. Mismatch eviction drops the whole retired graph before releasing its charge and before replacement admission. CPU fallback and surface reconfiguration also evict first.",
+    "Reuse requires retirement, clean scopes, presentation, currentness and requested verification. Core mark-reusable precedes final locked charge transfer; only infallible Option movement follows success. A later return refusal destroys the retired local lease.",
+    "Retired bytes survive idle. Checked active/cache/readback transfers preserve 16 MiB planned, 24 MiB active-plus-readback and 128 MiB application caps. Packet drop precedes idle; conservative charges clear after owner resources drop."
+  ]
+}

@@ -1,5 +1,43 @@
 # Validation record
 
+## Native retired-buffer reuse
+
+The owner retains one exact-size complete GPU buffer lease only after tracked
+retirement, successful scopes and presentation. Every frame rewrites its full
+input/uniform arenas and clears/draws the whole target. Resize, format/shape
+mismatch and CPU fallback evict before replacement; failed or uncertain work
+cannot enter the cache. The retained charge survives idle under unchanged
+16 MiB native, 24 MiB native-plus-readback and 128 MiB application bounds.
+
+Rust 1.88 and 1.98 each pass **1,397 native-feature tests** and **107 GPU-feature
+core groups**. Rust 1.88 also passes **84 default core groups**. All **450 Python
+groups** pass. Separate real-GPU
+checks on three adapters pass **84 frames, 45 reuse hits, 18 cancellation
+guards and 4,680 literal comparison bytes**. The **39 successful-frame buffer
+allocations** exclude the 18 extra cancellation leases. These offscreen counts
+are distinct from browser-window timings. The initial checker compile failure
+(`E0599` during Clippy), preexecution oracle literal correction and host
+source-sort correction remain retained with corrected records. No probe unit
+test failed in this increment.
+
+The first native baseline/reuse comparison passes **eight owned processes**:
+two correctness processes match **9,011,200 acquired bytes** in total, followed
+by six processes completing **96 measured frames**. Both independently bound
+executables use Rust 1.98's normal release profile. One URL, exact 269-byte paint
+identity, scale and NVIDIA BGRA8/FIFO adapter configuration remain equal; all
+owned children are reaped with no survivors. Subsequent prepare-through-present
+median/p95 are **2.086/4.790 ms baseline** and **1.309/4.117 ms reuse**. First-frame
+and owner-total distributions remain separate, and all second-frame submission
+tails remain included. Environment snapshots change from P5/360 MHz before
+to P0/2505 MHz after; GPU clocks were unlocked. Those snapshots do not measure
+per-frame clocks or attribute the entire difference to reuse. No compositor,
+throughput or Chromium result is inferred.
+Final cached-buffer destruction happens during positive owner release outside
+frame timing; successful report output still waits for that release.
+See [interpretation and reproduction](native-render-benchmark.md#native-baseline-versus-retired-buffer-reuse),
+[source-bound evidence](evidence/vulkan-native-buffer-reuse.json) and the
+[artifact index](evidence/native-buffer-reuse/index.json).
+
 ## First controlled native timing comparison
 
 All **eight owned window processes** pass using the frozen release from

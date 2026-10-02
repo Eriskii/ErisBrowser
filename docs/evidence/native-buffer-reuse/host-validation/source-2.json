@@ -1,0 +1,15 @@
+{
+  "reason": "Data-only check against real 120-file baseline found Path component ordering differed from manifest string ordering at src/browser.rs versus src/browser/native_benchmark.rs. All names, sizes and hashes matched. Corrected sorting to relative POSIX strings; synthetic fixture now includes analogous file/directory names. No browser/engine run.",
+  "files": [
+    {
+      "path": "tools/native_raster_timing_host.py",
+      "bytes": 44822,
+      "sha256": "a30d4e941ea50c88ff5b9ef0de22b1d9f504f54982bbe1c9e93c6295316d83bf"
+    },
+    {
+      "path": "tools/test_native_raster_timing_host.py",
+      "bytes": 45820,
+      "sha256": "668ac233c193fa86666d8a15eb620664122457acbe10bc3707975a172b74f3df"
+    }
+  ]
+}

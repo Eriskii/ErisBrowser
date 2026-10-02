@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "No concrete issue found in bounded read-only presenter integration review.",
+  "scope": "Read source and three presenter diffs against sealed core API and ledger. No code edits, test/build execution, browser/desktop or GPU runs. Existing core/probe outcome reports were not re-audited.",
+  "base_commit": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+  "sources": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan.rs",
+      "bytes": 32928,
+      "sha256": "d6a8681401b9685da13c7123023773eb642df723d0bff24ef2c16ac43d4de765"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan/control.rs",
+      "bytes": 73794,
+      "sha256": "350babb4a6df54b7d8ca7aac226040fc0f70ef85ee151c5fe9764477b4add79e"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan/native.rs",
+      "bytes": 22219,
+      "sha256": "32db2b30629e3e402866cceb17109c51b27bb916079845b966a41e0cd06e6cfa"
+    }
+  ],
+  "contracts": [
+    {
+      "path": "/tmp/eris-native-buffer-reuse-ledger.md",
+      "bytes": 15746,
+      "sha256": "f1a39e18ea4f97328730e1b53fc79594eda5f687bd046f83f1cb7f6abd5e5011"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-api.md",
+      "bytes": 14401,
+      "sha256": "a67bc99c8cba5a330aa8c7b27a7068942d30169be6661860de15beb75c9aed50"
+    }
+  ],
+  "core_interfaces_inspected": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/surface/reuse.rs",
+      "bytes": 13040,
+      "sha256": "7153dbd91408fbe421a1a1c56b88daf454868ec9116639f615778cbda9ef60a0"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core/src/gpu/reuse.rs",
+      "bytes": 8184,
+      "sha256": "da107d426e5b015aa9f6810261606ef1a4eee332d575dfaedb383becdc8a2d9f"
+    }
+  ],
+  "presenter_diff_sha256": "a1cec85e1a449be7229b11c857b123d150fe7e3ea4a8a54c0a2ee0ed580d45fd",
+  "findings": [],
+  "checked": [
+    "live_bytes includes retained native charge beside active bundle/readback, packet capacities, scratch and benchmark reservation, preserving the next-UI 16 MiB allowance and existing 128 MiB limit. Native reserve/checkout preflight 16 MiB bundle, 24 MiB bundle+readback, checked current aggregate and acquired/deadline/stop state before atomic charge changes.",
+    "Only one owner-held retired slot exists. Exact core context/key/descriptor compatibility is checked before checkout. Miss/CPU upload/reconfigure evicts outside the mutex, with handle destruction/drop preceding retained-charge acknowledgment and replacement allocation. Acquire-none does not check out a compatible cache.",
+    "Allocation returns the complete lease before queue writes. The lease remains outside the fallible encode closure. MayHaveWrites precedes encoding; incomplete encoders are dropped, metadata is flushed at most once, and the specific submission is polled under the existing deadline. Every reverse error scope is collected, including after earlier failures.",
+    "Cache admission additionally requires successful complete draws, known retirement, successful scopes/readback, presentation and requested verification, no cancellation/suboptimal result, and a final under-lock current/stop/failure/deadline check. Core marking precedes transfer; only an infallible Option move follows successful charge transfer. Declined transfers keep active charge until safely dropped/idle or owner release.",
+    "Uncertain retirement uses ordinary handle drop and owner failure/release, never explicit destroy or recache. Readback is not retained. idle preserves retired charge; begin_release does not clear it. Only outer acknowledgment after run_owner and Gpu/lease drops clears retained charge. Driver callback failure cannot manufacture reuse or release.",
+    "Existing timing phase calls and successful completion ordering are preserved: packet drops before idle; active/readback charges must be zero before completion, separately retained cache is allowed, and reports still require positive owner release. Cache-return work remains within owner-total/prepare-through-present durations even when outside the individual cleanup bracket. Native cache stores no Plan, CPU reference, scene identity or stamp.",
+    "Inspected ten new synthetic groups: seven ledger/accounting/deadline/timing groups and three eviction-order/failure/empty-slot groups. Their assertions exercise charge transfer, exact limits, stop/stale refusal, post-drop acknowledgment and positive release; no claim that these pure tests inject real driver failures."
+  ],
+  "limitations": "Explicit buffer accounting preserves existing driver, queue staging, pipeline/bind-group and allocator-overhead exclusions; synchronous driver-call interruption remains outside the guarantee. Completion is an owner proof supplied to the core lease API, not something the lease independently detects."
+}

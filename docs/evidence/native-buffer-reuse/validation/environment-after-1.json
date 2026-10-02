@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "time_unix": 1790935027.1687706,
+  "kernel": "7.2.6",
+  "architecture": "x86_64",
+  "scope": "Read-only before/after environment snapshot; clocks and power were not locked; monitor settings are not a compositor latency measurement",
+  "scaling_governor": "performance",
+  "energy_performance_preference": "performance",
+  "monitors": [
+    {
+      "id": 1,
+      "width": 2560,
+      "height": 1440,
+      "refreshRate": 59.951,
+      "scale": 1,
+      "dpmsStatus": true,
+      "disabled": false,
+      "vrr": false
+    },
+    {
+      "id": 0,
+      "width": 3840,
+      "height": 2160,
+      "refreshRate": 143.99899,
+      "scale": 1.5,
+      "dpmsStatus": true,
+      "disabled": false,
+      "vrr": false
+    }
+  ],
+  "gpu_query": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,driver_version,pstate,power.draw,power.limit,temperature.gpu,clocks.gr,clocks.mem",
+      "--format=csv"
+    ],
+    "exit": 0,
+    "stdout": "name, driver_version, pstate, power.draw [W], power.limit [W], temperature.gpu, clocks.current.graphics [MHz], clocks.current.memory [MHz]\nNVIDIA GeForce RTX 4070 SUPER, 595.99.02, P0, 31.27 W, 220.00 W, 42, 2505 MHz, 10501 MHz\n",
+    "stderr": ""
+  }
+}

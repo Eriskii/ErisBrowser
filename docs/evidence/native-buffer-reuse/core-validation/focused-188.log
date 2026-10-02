@@ -1,0 +1,78 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling cfg_aliases v0.2.2
+   Compiling foldhash v0.2.0
+   Compiling cfg-if v1.0.5
+   Compiling equivalent v1.0.2
+   Compiling autocfg v1.5.1
+   Compiling libm v0.2.16
+   Compiling thiserror v2.0.21
+   Compiling num-traits v0.2.19
+   Compiling hashbrown v0.17.1
+   Compiling zerocopy v0.8.59
+   Compiling syn v3.0.6
+   Compiling syn v2.0.119
+   Compiling indexmap v2.14.2
+   Compiling bitflags v2.13.2
+   Compiling rustc-hash v1.1.0
+   Compiling libc v0.2.189
+   Compiling log v0.4.34
+   Compiling naga v30.0.1
+   Compiling parking_lot_core v0.9.12
+   Compiling ash v0.38.0+1.3.281
+   Compiling bit-vec v0.9.1
+   Compiling unicode-width v0.2.2
+   Compiling bit-set v0.10.0
+   Compiling codespan-reporting v0.13.1
+   Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling thiserror-impl v2.0.21
+   Compiling bytemuck_derive v1.12.1
+   Compiling zerocopy-derive v0.8.59
+   Compiling libloading v0.8.9
+   Compiling raw-window-handle v0.6.2
+   Compiling naga-types v30.0.1
+   Compiling scopeguard v1.2.0
+   Compiling arrayvec v0.7.8
+   Compiling smallvec v1.16.2
+   Compiling static_assertions v1.1.0
+   Compiling allocator-api2 v0.2.21
+   Compiling once_cell v1.21.4
+   Compiling bytemuck v1.25.2
+   Compiling wgpu-types v30.0.1
+   Compiling hashbrown v0.16.1
+   Compiling lock_api v0.4.14
+   Compiling wgpu-hal v30.0.1
+   Compiling presser v0.3.1
+   Compiling parking_lot v0.12.5
+   Compiling ordered-float v5.3.0
+   Compiling profiling v1.0.18
+   Compiling renderdoc-sys v1.1.0
+   Compiling wgpu-core v30.0.1
+   Compiling litrs v1.0.0
+   Compiling wgpu v30.0.1
+   Compiling document-features v0.2.12
+   Compiling half v2.7.1
+   Compiling gpu-allocator v0.28.0
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)
+    Finished `test` profile [unoptimized] target(s) in 12.30s
+     Running unittests src/lib.rs (/tmp/eris-native-buffer-reuse-core-target/debug/deps/eris_raster_core-f85e41eeaa0180ea)
+
+running 12 tests
+test surface::reuse::tests::actual_descriptors_require_exact_sizes_and_usages_not_supersets ... ok
+test surface::reuse::tests::buffer_accounting_keeps_exact_cap_and_rejects_one_over_and_overflow ... ok
+test surface::reuse::tests::changed_clear_and_draw_contents_reuse_shape_but_not_current_work_metadata ... ok
+test surface::reuse::tests::every_exact_shape_key_component_invalidates_reuse ... ok
+test surface::reuse::tests::exact_four_buffer_clear_accounting_and_no_dummy_input ... ok
+test surface::reuse::tests::exact_five_buffer_image_bytes_include_source_and_coordinate_words ... ok
+test surface::reuse::tests::draw_uniform_and_input_arena_device_limits_are_independently_checked ... ok
+test surface::reuse::tests::lease_cannot_reencode_or_expose_output_before_caller_retirement ... ok
+test surface::reuse::tests::glyph_only_input_uses_same_five_buffer_graph ... ok
+test surface::reuse::tests::native_only_format_alignment_and_device_storage_checks_precede_allocation ... ok
+test surface::reuse::tests::native_viewport_targets_are_exact_without_capacity_rounding ... ok
+test surface::reuse::tests::owner_identity_requires_same_arc_even_for_equal_values_and_keys ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 0.00s
+

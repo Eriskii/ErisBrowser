@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "ready": true,
+  "files": [
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "sha256": "8af2d14a9735a612c081a7b466a75ea5214d1fc742d10c69a74342883a00eb9e",
+      "bytes": 21945
+    },
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "sha256": "7a9c7cce76323543458d504f650c17e8ce02127c1d53746349173671590cbf63",
+      "bytes": 16220
+    },
+    {
+      "path": "crates/raster-core/src/gpu/reuse.rs",
+      "sha256": "da107d426e5b015aa9f6810261606ef1a4eee332d575dfaedb383becdc8a2d9f",
+      "bytes": 8184
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse.rs",
+      "sha256": "7153dbd91408fbe421a1a1c56b88daf454868ec9116639f615778cbda9ef60a0",
+      "bytes": 13040
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse_tests.rs",
+      "sha256": "f4e98fe53c2f90d31e0e4177ad354e3719b57b3b23ce3e1a4d29e31b349b5536",
+      "bytes": 8768
+    }
+  ],
+  "checks": [
+    {
+      "path": "/tmp/eris-native-buffer-reuse-core-1/all-gpu-lib-188.log",
+      "sha256": "9796ea490b7765ec1dd61055a6e4a71d940cbaa68d86fa548acfcf6e5f9196c9",
+      "tail": [
+        "",
+        "test result: ok. 107 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.12s",
+        ""
+      ]
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-core-1/clippy-188.log",
+      "sha256": "87fa228de7db5bbe30cf23f4c7d2bbb8ac948b3819a9f37417ffc4006c3b2fbb",
+      "tail": [
+        "    Checking wgpu v30.0.1",
+        "    Checking eris-raster-core v0.1.0 (/home/eriskii/Documents/Programming/Projects/ErisBrowser/crates/raster-core)",
+        "    Finished `dev` profile [unoptimized] target(s) in 8.77s"
+      ]
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-core-1/default-lib-188.log",
+      "sha256": "bb223401013e82272b94e8e4d9e834d6827357d8bc0d15e57a4be39f6121f1ff",
+      "tail": [
+        "",
+        "test result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.13s",
+        ""
+      ]
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-core-1/fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-core-1/focused-188.log",
+      "sha256": "9d63e31ec0234e1fe776ee2ec449aa4c597c69dd073721399e451ca75edd4b8b",
+      "tail": [
+        "",
+        "test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 0.00s",
+        ""
+      ]
+    }
+  ],
+  "new_pure_groups": 12,
+  "gpu_feature_lib_groups": 107,
+  "default_lib_groups": 84,
+  "old_encoder_bodies_exact_after_removing_hooks": true,
+  "all_four_shaders_unchanged": true,
+  "old_tests_unchanged": true,
+  "runtime_execution": "none: offline pure planner/lifecycle tests only; no adapter/device/window/GPU",
+  "api": "eris_raster_core::surface::{NativeEncoder, NativeRequirements, NativeBufferLease}",
+  "first_failures": [],
+  "review_found_probe_literal": {
+    "file": "tools/vulkan-raster-probe/src/reuse_fixtures.rs",
+    "case": "inputs-b first pixel",
+    "old": "0x0819aa",
+    "correct": "0x091aab",
+    "reason": "independent integer source-over rounding before GPU execution; root owns fix"
+  }
+}

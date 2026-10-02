@@ -90,6 +90,23 @@ The caller handles submission, error scopes, cancellation, surface acquisition
 and any later texture copy. Explicit destruction does not wait for completion;
 the caller must already have confirmed completion of every use.
 
+The additive `surface::NativeEncoder` owns a device/queue/pipeline context for
+exact-size Native reuse. `requirements` preflights a fresh Plan and format;
+`allocate` returns one complete `NativeBufferLease` before any queue writes.
+`encode` borrows that lease and retains its handles on every error. Compatibility
+requires the same private context, dimensions/format/stride, parameter/input
+sizes and actual buffer descriptors. Every encode rewrites the full arenas and
+conversion uniform, clears the target and executes every ordered draw.
+
+Only the caller can prove submission retirement and its complete frame policy.
+After that proof it may call `mark_reusable_after_completion`; an encoding error
+poisons the lease for reuse. An incomplete encoder must be discarded and queued
+writes retired before explicit destruction. Uncertain completion uses ordinary
+handle drop and owner teardown. There is no retained Plan, pixel content or
+readback, and no implicit submission or wait. Existing one-shot and Probe APIs
+remain unchanged. The browser keeps at most one retired lease, charges it across
+idle, and drops it before incompatible replacement or CPU fallback.
+
 Probe `Plan::gpu_buffer_bytes()` retains the original allowance for **two**
 packed targets, parameters and input storage. The probe allocates its readback
 separately and checks this total. Native instead reserves one packed target,
@@ -124,10 +141,18 @@ uses the separate supervised probe commands and their retained evidence.
 
 The browser now uses these APIs through its optional
 [native-window route](../../docs/vulkan-native-window.md). With the partition
-tests, **84 default / 95 GPU-feature groups** pass on Rust 1.88 and 1.98.
+and reuse tests, **107 GPU-feature groups** pass on Rust 1.88 and 1.98;
+**84 default groups** also pass on Rust 1.88.
 Core tests remain CPU-only. The browser owns actual acquisition, submission,
 verification and presentation; separate window evidence is required for those
 operations.
+
+The [reuse evidence](../../docs/evidence/vulkan-native-buffer-reuse.json) records
+separate real-GPU checks on three adapters: **84 frames, 45 reuse hits, 18
+cancellation guards and 4,680 literal comparison bytes**. The **39 allocations
+for successful frames** exclude the 18 cancellation leases. These checks cover
+changed same-size contents, exact format/shape misses and retirement boundaries;
+they are separate from the native-window timing observations.
 
 The earlier [native prerequisite checker](../../tools/vulkan-raster-probe/NATIVE_PREREQUISITES.md)
 exercises larger offscreen targets, rounded coverage and byte conversion.

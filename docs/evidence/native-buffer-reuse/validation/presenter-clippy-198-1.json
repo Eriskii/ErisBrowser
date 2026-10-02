@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.0",
+    "clippy",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "vulkan-presenter",
+    "--all-targets",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.757,
+  "log": "presenter-clippy-198-1.log",
+  "sha256": "ddc6f7e05857fddb320809cab33c8f3a77a6005db053d90ac818251e85f64286"
+}

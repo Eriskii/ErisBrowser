@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "success": true,
+  "binary": "/tmp/eris-native-buffer-reuse-1/eris-vulkan-reuse-check-1",
+  "binary_sha256": "2a10f3ad1e3beec8f5383b3fcc74fadc0cabe04e9249c7778dd6054b5818e595",
+  "loader": {
+    "directory": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib",
+    "files": [
+      {
+        "name": "libvulkan.so",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      },
+      {
+        "name": "libvulkan.so.1",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      },
+      {
+        "name": "libvulkan.so.1.4.357",
+        "resolved": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib/libvulkan.so.1.4.357",
+        "bytes": 726704,
+        "sha256": "c75ff661f583ea7308bc5526321f6d6c0527a12ec9cd708dfb21323ddbb297ba"
+      }
+    ],
+    "environment": {
+      "LD_LIBRARY_PATH": "/nix/store/iahmf8kl215rjcvb3zz3l7i9w2sf9x5v-vulkan-loader-1.4.357.0/lib",
+      "VK_DRIVER_FILES": null,
+      "VK_ICD_FILENAMES": null,
+      "VK_LAYER_PATH": null
+    },
+    "scope": "explicit loader directory and selected environment; not a complete transitive system-library inventory"
+  },
+  "host_source_bindings": {
+    "run_surface_host.py": "d9f5f4280bfadff9f5e49701fb8b0c08cc0277d57270a14cb4da8dc5221e337c",
+    "run_browser_host.py": "99eeaf2e1f2aba9b653712fb837c27aaa0b17f8a00576e14d5ef808f4cc6356b",
+    "run_glyph_host.py": "4afe738f5b65e1b229bfab341e3ae19fc96adf55208c67ed43c3eda01de4c525",
+    "glyph_protocol.py": "26c98d717f5ee8a94b6171867937398778e8f2bc0363a7d17f817b7884a2fee4",
+    "run_host.py": "bdea875e2a4ba522088b8b986150745569489bcab2b7f503034e858eee10bbd6",
+    "bridge_supervisor.py": "931509790971677103a555461695f1962924010a5839e8845b943dc8df6dad23",
+    "run_reuse_host.py": "09557bc0b0cc1f7360631223e07c52e9f6a50e40260d5d7c5eea5d89f515e68d"
+  },
+  "runs": [
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-buffer-reuse-1/eris-vulkan-reuse-check-1",
+        "--list"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.09628360904753208,
+      "captured_bytes": 465,
+      "observed_bytes": 465,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "enumeration",
+      "validation": {
+        "adapters": [
+          "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+          "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+          "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+        ]
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-buffer-reuse-1/eris-vulkan-reuse-check-1",
+        "--adapter",
+        "0"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.27216715295799077,
+      "captured_bytes": 4932,
+      "observed_bytes": 4932,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "494d04cfeac0ed6f4b99785078925420aa23227ef46d82b2e878d0e2e87a653a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-0",
+      "validation": {
+        "frames": 28,
+        "allocations": 13,
+        "reuses": 15,
+        "evictions": 13,
+        "cancellation_cutpoints": 6,
+        "gpu_compared_bytes": 1560,
+        "reference": "literal",
+        "acquired_surface": false
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-buffer-reuse-1/eris-vulkan-reuse-check-1",
+        "--adapter",
+        "1"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.1437430279329419,
+      "captured_bytes": 4932,
+      "observed_bytes": 4932,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "1da85f9fb9be351615ecf58c09de5d683376e340c3580c3a95b27ef16345e982",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-1",
+      "validation": {
+        "frames": 28,
+        "allocations": 13,
+        "reuses": 15,
+        "evictions": 13,
+        "cancellation_cutpoints": 6,
+        "gpu_compared_bytes": 1560,
+        "reference": "literal",
+        "acquired_surface": false
+      }
+    },
+    {
+      "status": "exited",
+      "returncode": 0,
+      "command": [
+        "/tmp/eris-native-buffer-reuse-1/eris-vulkan-reuse-check-1",
+        "--adapter",
+        "2"
+      ],
+      "timeout_seconds": 30.0,
+      "cleanup_seconds": 5.0,
+      "cleanup": {
+        "complete": true,
+        "reaped": 1,
+        "descendants": 0,
+        "checker_returncode": 0,
+        "error": null
+      },
+      "elapsed_seconds": 0.16811850806698203,
+      "captured_bytes": 4932,
+      "observed_bytes": 4932,
+      "output_limit_bytes": 2097152,
+      "cancellation_signal": null,
+      "capture_gate_required": false,
+      "capture_gate_granted": false,
+      "stdout_sha256": "1e76fa677941f9ba04983d8c8e0a427178d5e19c7457271d51e6e41ea34e876c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "error": null,
+      "name": "adapter-2",
+      "validation": {
+        "frames": 28,
+        "allocations": 13,
+        "reuses": 15,
+        "evictions": 13,
+        "cancellation_cutpoints": 6,
+        "gpu_compared_bytes": 1560,
+        "reference": "literal",
+        "acquired_surface": false
+      }
+    }
+  ],
+  "adapter_count": 3,
+  "scope": "offscreen raster and conversion only; no acquired native surface or performance claim"
+}

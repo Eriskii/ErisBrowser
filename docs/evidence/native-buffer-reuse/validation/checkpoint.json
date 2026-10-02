@@ -1,0 +1,29 @@
+{
+  "parent": "f26a63f4e5eb3e4fb1722f76c25fa814c4fc804a",
+  "baseline_commit": "51ca9edcc35e3705404607e60cb88afefcd85efd",
+  "baseline_source_files": 120,
+  "baseline_binary": "/tmp/eris-native-timing-1/eris-browser-native-timing-2",
+  "baseline_binary_sha256": "038ffe37d58b0e27189ee3681ec6a84ab183beba9433f4a22cca766e47af08de",
+  "notes": [
+    {
+      "path": "eris-native-timing-next-proposal.md",
+      "bytes": 9958,
+      "sha256": "d0a075768d7177ac813783c91e0f5bf4a0420d5548bbbdd07f78bdf9658b5457"
+    },
+    {
+      "path": "eris-native-buffer-reuse-api.md",
+      "bytes": 14401,
+      "sha256": "a67bc99c8cba5a330aa8c7b27a7068942d30169be6661860de15beb75c9aed50"
+    },
+    {
+      "path": "eris-native-buffer-reuse-ledger.md",
+      "bytes": 15746,
+      "sha256": "f1a39e18ea4f97328730e1b53fc79594eda5f687bd046f83f1cb7f6abd5e5011"
+    },
+    {
+      "path": "eris-native-buffer-reuse-host-plan.md",
+      "bytes": 2893,
+      "sha256": "3e325753badf57a7247a80151106d6cd46fb07dbf7afcee1cb28a6b782ca59be"
+    }
+  ]
+}

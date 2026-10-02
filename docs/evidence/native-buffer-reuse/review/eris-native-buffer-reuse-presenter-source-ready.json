@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "scope": "Presenter integration source ready; no compiler/test/browser/desktop/GPU execution by this owner",
+  "files": [
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan.rs",
+      "bytes": 32928,
+      "sha256": "d6a8681401b9685da13c7123023773eb642df723d0bff24ef2c16ac43d4de765"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan/control.rs",
+      "bytes": 73794,
+      "sha256": "350babb4a6df54b7d8ca7aac226040fc0f70ef85ee151c5fe9764477b4add79e"
+    },
+    {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/vulkan/native.rs",
+      "bytes": 22219,
+      "sha256": "32db2b30629e3e402866cceb17109c51b27bb916079845b966a41e0cd06e6cfa"
+    }
+  ],
+  "before_files": [
+    {
+      "path": "/tmp/eris-native-buffer-reuse-presenter-before/vulkan.rs",
+      "bytes": 31949,
+      "sha256": "50d90b8664b136bf1713e073e4155ce01182260eba43b91c9e2edb3b5c536ddb"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-presenter-before/control.rs",
+      "bytes": 57237,
+      "sha256": "cefca28896617574f1a66f5d019849139fc22c03d9f7f39de830b3f1d3da8268"
+    },
+    {
+      "path": "/tmp/eris-native-buffer-reuse-presenter-before/native.rs",
+      "bytes": 16214,
+      "sha256": "5b7d0127b89f47037d2b09c13931150713c7043640d99f3906b1f736c296a327"
+    }
+  ],
+  "design": {
+    "path": "/tmp/eris-native-buffer-reuse-ledger.md",
+    "bytes": 15746,
+    "sha256": "f1a39e18ea4f97328730e1b53fc79594eda5f687bd046f83f1cb7f6abd5e5011"
+  },
+  "core_api": {
+    "path": "/tmp/eris-native-buffer-reuse-api.md",
+    "bytes": 14401,
+    "sha256": "a67bc99c8cba5a330aa8c7b27a7068942d30169be6661860de15beb75c9aed50"
+  },
+  "core_ready": {
+    "path": "/tmp/eris-native-buffer-reuse-core-source-ready.json",
+    "bytes": 3213,
+    "sha256": "1831687ac04a48e766b09a604fdcb3ff21433570fbdb12626065029790ed5816"
+  },
+  "preserved_exact_blocks": [
+    {
+      "block": "submission/poll/map/compare",
+      "bytes": 4131,
+      "sha256": "c93fa6c937bed86794fca23540f844535d4c9e25380fc4d145173d629a58e205"
+    },
+    {
+      "block": "scope collection",
+      "bytes": 702,
+      "sha256": "c03dea8e91e6979bbab4aece42d3f1a827fe62bbd85baedf76833120295a7969"
+    },
+    {
+      "block": "QueueProgress and submission kinds",
+      "bytes": 775,
+      "sha256": "77625a01d722063cfc447fa00288ffd13173a73b7f14a6fb08f4960bc880ac74"
+    }
+  ],
+  "test_groups_by_file": {
+    "vulkan.rs": {
+      "before": 3,
+      "after": 3
+    },
+    "control.rs": {
+      "before": 19,
+      "after": 26
+    },
+    "native.rs": {
+      "before": 2,
+      "after": 5
+    }
+  },
+  "new_test_groups": 10,
+  "changes": [
+    "One owner-local exact-size NativeBufferLease cache; NativeEncoder replaces only native kernel facade.",
+    "Checked retained-to-active and active-to-retained transfer; every allocation is reserved before creation, no old/new bundle overlap.",
+    "Fresh/checkout require live active acquired frame and original unexpired deadline under the lock. Return requires Retiring, present deadline and current healthy frame.",
+    "Global 128 MiB, Native Plan 16 MiB, active plus readback 24 MiB and next UI 16 MiB reserve unchanged.",
+    "CPU route and reconfiguration evict before scratch/configuration/new allocation; destruction outside lock precedes uncharging.",
+    "Encode borrows outer lease through errors. Partial/cancelled frames flush once and never recache. Only successful tracked retirement, scopes, presentation and requested verification allow return.",
+    "Readback remains separate and is never cached. Idle preserves cached bytes; only actual drop or positive whole-owner release clears them.",
+    "No new timing clocks, report fields, CLI policy, shaders, reference pixels or scene identity changes."
+  ],
+  "static_checks": [
+    "Owned files formatted with direct installed Rust 1.88 rustfmt (skip_children=true).",
+    "git diff --check clean for all owned paths.",
+    "Submission/poll/map/compare, scope collection and QueueProgress blocks equal preserved parent bytes."
+  ],
+  "validation_pending": "Root owns integrated strict Clippy and Rust tests now that core API is held; peer source review requested from script."
+}

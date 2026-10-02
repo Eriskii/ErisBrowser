@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "kind": "wording correction only; original review retained unchanged",
+  "original_review": {
+    "path": "/tmp/eris-native-buffer-reuse-presenter-review.json",
+    "sha256": "1d754210806e7225de2e5b8957a3c4c2e7fe18a854582936ca49f13414c18627"
+  },
+  "correction": "Successful cache-return bookkeeping follows Trace::presented. It is included in owner_total_ns, which ends after packet drop/idle, but not prepare_to_present_ns or the cleanup bracket. The original review sentence incorrectly included it in both total intervals. No runtime/source/raw-measurement change or other review finding.",
+  "source": {
+    "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/src/presenter/timing.rs",
+    "sha256": "bdd7c21be84f8fd6e2d27c30c58ae87900db17c045b4a7b0514aad29c4134969"
+  },
+  "execution": "Read-only source inspection; no build, renderer or GPU execution."
+}

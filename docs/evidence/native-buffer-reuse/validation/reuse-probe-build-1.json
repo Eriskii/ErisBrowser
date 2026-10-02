@@ -1,0 +1,17 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "build",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "tools/vulkan-raster-probe/Cargo.toml",
+    "--bin",
+    "eris-vulkan-reuse-check"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 1.52,
+  "log": "reuse-probe-build-1.log",
+  "sha256": "7654bf44a6206ca8704a5fdf98829382325ddf20b7c33235c4f487b6f021551b"
+}

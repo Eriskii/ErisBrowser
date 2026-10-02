@@ -1,0 +1,38 @@
+ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name="NVIDIA GeForce RTX 4070 SUPER" driver="NVIDIA" info="595.99.02"
+ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name="AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)" driver="radv" info="Mesa 26.2.3"
+ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name="llvmpipe (LLVM 21.1.8, 256 bits)" driver="llvmpipe" info="Mesa 26.2.3 (LLVM 21.1.8)"
+PASS cancellation checkpoint=1 flush_submissions=1 retired=true reusable=false scopes=3
+PASS cancellation checkpoint=2 flush_submissions=1 retired=true reusable=false scopes=3
+PASS cancellation checkpoint=3 flush_submissions=1 retired=true reusable=false scopes=3
+PASS cancellation checkpoint=4 flush_submissions=1 retired=true reusable=false scopes=3
+PASS cancellation checkpoint=5 flush_submissions=1 retired=true reusable=false scopes=3
+PASS cancellation checkpoint=6 flush_submissions=1 retired=true reusable=false scopes=3
+PASS reuse-inputs-a format=Bgra8Unorm width=4 height=3 reused=false planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-b format=Bgra8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-c format=Bgra8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-a format=Bgra8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-b format=Bgra8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-c format=Bgra8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-rectangle-a format=Bgra8Unorm width=4 height=3 reused=false planned_bytes=1344 compared_bytes=48 reference=literal exact=true
+PASS reuse-rectangle-b format=Bgra8Unorm width=4 height=3 reused=true planned_bytes=1344 compared_bytes=48 reference=literal exact=true
+PASS reuse-clear-a format=Bgra8Unorm width=4 height=3 reused=false planned_bytes=1088 compared_bytes=48 reference=literal exact=true
+PASS reuse-hidden-clear format=Bgra8Unorm width=4 height=3 reused=true planned_bytes=1088 compared_bytes=48 reference=literal exact=true
+PASS reuse-resize-width format=Bgra8Unorm width=5 height=3 reused=false planned_bytes=1100 compared_bytes=60 reference=literal exact=true
+PASS reuse-resize-height format=Bgra8Unorm width=5 height=4 reused=false planned_bytes=1376 compared_bytes=80 reference=literal exact=true
+PASS reuse-resize-height format=Rgba8Unorm width=5 height=4 reused=false planned_bytes=1376 compared_bytes=80 reference=literal exact=true
+PASS reuse-inputs-a format=Rgba8Unorm width=4 height=3 reused=false planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-b format=Rgba8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-c format=Rgba8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-a format=Rgba8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-b format=Rgba8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-inputs-c format=Rgba8Unorm width=4 height=3 reused=true planned_bytes=1888 compared_bytes=48 reference=literal exact=true
+PASS reuse-rectangle-a format=Rgba8Unorm width=4 height=3 reused=false planned_bytes=1344 compared_bytes=48 reference=literal exact=true
+PASS reuse-rectangle-b format=Rgba8Unorm width=4 height=3 reused=true planned_bytes=1344 compared_bytes=48 reference=literal exact=true
+PASS reuse-clear-a format=Rgba8Unorm width=4 height=3 reused=false planned_bytes=1088 compared_bytes=48 reference=literal exact=true
+PASS reuse-hidden-clear format=Rgba8Unorm width=4 height=3 reused=true planned_bytes=1088 compared_bytes=48 reference=literal exact=true
+PASS reuse-resize-width format=Rgba8Unorm width=5 height=3 reused=false planned_bytes=1100 compared_bytes=60 reference=literal exact=true
+PASS reuse-resize-height format=Rgba8Unorm width=5 height=4 reused=false planned_bytes=1376 compared_bytes=80 reference=literal exact=true
+PASS reuse-resize-height format=Bgra8Unorm width=5 height=4 reused=false planned_bytes=1376 compared_bytes=80 reference=literal exact=true
+PASS reuse-resize-height format=Bgra8Unorm width=5 height=4 reused=false planned_bytes=1376 compared_bytes=80 reference=literal exact=true
+PASS reuse-resize-height format=Bgra8Unorm width=5 height=4 reused=true planned_bytes=1376 compared_bytes=80 reference=literal exact=true
+COMPLETE adapter=0 frames=28 allocations=13 reuses=15 evictions=13 formats=2 compared_bytes=1560 offscreen=true acquired_surface=false exact=true
