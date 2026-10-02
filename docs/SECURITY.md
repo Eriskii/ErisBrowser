@@ -235,28 +235,30 @@ and kind, independently of mutable prototype membership. Text, Comment and
 DocumentFragment constructors finish argument conversion and new-target
 prototype access before checking live document capacity and reserving retained
 storage. An alternate prototype is published only with its successful node;
-ordinary own-property bags remain separate. These JavaScript constructor paths
-still reject lone UTF-16 surrogates; the new [storage foundation](dom-strings.md)
-does not yet migrate their production. Work limits and cumulative heap limits
-are unchanged; the larger bootstrap object reservation is charged in full.
+ordinary own-property bags remain separate. Text and Comment now use the
+[exact data builder](dom-production.md) after conversion and prototype callbacks,
+then move one admitted canonical payload into checked owned storage. Work limits
+and cumulative heap limits are unchanged; the existing bootstrap object
+reservation remains charged in full.
 
 [ProcessingInstruction and CharacterData](processing-instruction.md) accessors
 check genuine receivers before conversion. Creation validates converted targets
 and data after new-target callbacks, then checks live document limits before
-publishing nodes or alternate prototypes. The current JavaScript writers still
-produce scalar buffers and refuse lone-surrogate data. Checked owned storage
-now also accepts canonical exact UTF-16 supplied by the host or transport.
-Replacement admission subtracts the previous payload and refuses excess input
-without truncation or partial mutation. Existing infallible Rc and B-tree
-allocations remain.
+publishing nodes or alternate prototypes. The scoped JavaScript data producers
+classify the complete UTF-16 stream and allocate either one scalar UTF-8 payload
+or one exact UTF-16 payload. PI targets keep their separate XML Name validation
+and scalar storage. Replacement admission subtracts the previous payload and
+refuses excess input without truncation or an outer data write. Existing
+infallible Rc and B-tree allocations remain.
 
 The five [CharacterData methods](character-data.md) finish argument conversion
 before reading live node data. Substring traverses only the reached code units
-and admits the selected UTF-16 result before allocation. Mutations prepay scans,
-validate the complete UTF-16 splice, reserve exact scalar output and move it
-through checked replacement. A terminal refusal preserves existing outer data
-and earlier author effects; these JavaScript mutation paths still refuse final
-lone-surrogate strings pending runtime migration.
+and admits the selected UTF-16 result before allocation. Mutations prepay the
+old-length pass and complete-splice classification, then reserve and emit the
+chosen scalar or exact-unit payload. The Units path also pays its separate
+canonicality validation. Fresh replacement admission precedes allocation and is
+rechecked at publication. A terminal refusal leaves the outer write unpublished;
+earlier author effects and cumulative temporary-allocation charges remain.
 
 The [DOM string foundation](dom-strings.md) retains one canonical payload, with
 UTF-8 byte charges for scalar strings and two bytes per stored UTF-16 unit for
@@ -388,9 +390,11 @@ The [focused validation](../tests/conformance/dom-string-conversion.json) includ
 allocation refusals and looping/recursive callbacks that cannot catch resource
 exhaustion, with execution-state cleanup checked afterward. These checks do not
 establish full DOM operation atomicity or exact process-wide memory accounting.
-The legacy conversion paths covered by that historical record still replace
-unpaired units. [Exact character-data storage](dom-strings.md) does not yet
-migrate every JavaScript writer or scalar host boundary.
+Some legacy conversion paths covered by that historical record still replace
+unpaired units. [Exact character-data production](dom-production.md) migrates the
+named constructors, factories, data setter and five methods; container,
+append-string, attribute and HTML-parser writes and scalar host boundaries remain
+separate work.
 
 ## Window binding reflection
 

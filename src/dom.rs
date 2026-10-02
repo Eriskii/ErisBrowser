@@ -1146,13 +1146,13 @@ impl Document {
         Ok(id)
     }
 
-    /// Replace authentic CharacterData after conversion and fresh admission.
-    /// Takes the owned buffer; node identity, PI target and tree links survive.
-    pub(crate) fn replace_character_data(
-        &mut self,
+    /// Check replacement size before allocating its payload, without mutation.
+    /// The returned ledger is advisory; publication repeats this fresh check.
+    pub(crate) fn check_character_data_replacement(
+        &self,
         id: NodeId,
-        data: DomString,
-    ) -> Result<(), DomDataError> {
+        stored_bytes: usize,
+    ) -> Result<usize, DomDataError> {
         let old = match self.nodes.get(id).map(|node| &node.kind) {
             Some(NodeKind::Text(text) | NodeKind::Comment(text))
             | Some(NodeKind::ProcessingInstruction { data: text, .. }) => text.stored_bytes(),
@@ -1161,12 +1161,23 @@ impl Document {
         let retained = self
             .retained_bytes
             .checked_sub(old)
-            .and_then(|bytes| bytes.checked_add(data.stored_bytes()))
+            .and_then(|bytes| bytes.checked_add(stored_bytes))
             .filter(|bytes| *bytes <= MAX_DOM_BYTES)
             .ok_or(DomDataError::LimitExceeded)?;
-        if data.stored_bytes() > MAX_TEXT {
+        if stored_bytes > MAX_TEXT {
             return Err(DomDataError::LimitExceeded);
         }
+        Ok(retained)
+    }
+
+    /// Replace authentic CharacterData after conversion and fresh admission.
+    /// Takes the owned buffer; node identity, PI target and tree links survive.
+    pub(crate) fn replace_character_data(
+        &mut self,
+        id: NodeId,
+        data: DomString,
+    ) -> Result<(), DomDataError> {
+        let retained = self.check_character_data_replacement(id, data.stored_bytes())?;
         let (NodeKind::Text(text)
         | NodeKind::Comment(text)
         | NodeKind::ProcessingInstruction { data: text, .. }) = &mut self.nodes[id].kind
@@ -10489,6 +10500,101 @@ mod tests {
         );
     }
     // Private accounting setup avoids allocating MAX_TEXT/MAX_DOM_BYTES payloads.
+
+    #[test]
+    fn character_data_preallocation_check_preserves_kind_and_size_boundaries() {
+        let mut doc = Document::parse("<p></p>");
+        let parent = doc.query_selector("p").unwrap();
+        let text = doc
+            .create_text_node_owned(DomString::from_nonscalar_units(vec![0xd800, 65]).unwrap())
+            .unwrap();
+        let comment = doc.create_comment("abcd");
+        let pi = doc
+            .create_processing_instruction_owned("probe".into(), "abcd".into())
+            .unwrap();
+        let count = doc.nodes.len();
+        let capacity = doc.nodes.capacity();
+        // Each existing payload is four bytes, despite differing encodings.
+        doc.retained_bytes = MAX_DOM_BYTES;
+        for id in [text, comment, pi] {
+            assert_eq!(
+                doc.check_character_data_replacement(id, 4),
+                Ok(MAX_DOM_BYTES)
+            );
+            assert_eq!(
+                doc.check_character_data_replacement(id, 5),
+                Err(DomDataError::LimitExceeded)
+            );
+            assert_eq!(
+                doc.check_character_data_replacement(id, 0),
+                Ok(MAX_DOM_BYTES - 4)
+            );
+        }
+        for id in [doc.root, parent, usize::MAX] {
+            assert_eq!(
+                doc.check_character_data_replacement(id, usize::MAX),
+                Err(DomDataError::InvalidNode)
+            );
+        }
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES);
+        doc.retained_bytes = 4;
+        assert_eq!(
+            doc.check_character_data_replacement(text, MAX_TEXT),
+            Ok(MAX_TEXT)
+        );
+        for bytes in [MAX_TEXT + 1, usize::MAX] {
+            assert_eq!(
+                doc.check_character_data_replacement(text, bytes),
+                Err(DomDataError::LimitExceeded)
+            );
+        }
+        doc.retained_bytes = 3;
+        assert_eq!(
+            doc.check_character_data_replacement(text, 0),
+            Err(DomDataError::LimitExceeded)
+        );
+        assert_eq!(doc.retained_bytes, 3);
+        assert_eq!((doc.nodes.len(), doc.nodes.capacity()), (count, capacity));
+        assert!(matches!(&doc.nodes[text].kind, NodeKind::Text(data)
+            if data.raw_units() == Some([0xd800, 65].as_slice())));
+        assert!(matches!(&doc.nodes[comment].kind, NodeKind::Comment(data) if data == "abcd"));
+        assert!(
+            matches!(&doc.nodes[pi].kind, NodeKind::ProcessingInstruction { target, data }
+            if target == "probe" && data == "abcd")
+        );
+    }
+
+    #[test]
+    fn character_data_publication_rechecks_after_an_earlier_admission() {
+        let mut doc = Document::parse("<p></p>");
+        let parent = doc.query_selector("p").unwrap();
+        let text = doc
+            .create_text_node_owned(DomString::from_nonscalar_units(vec![0xd800, 65]).unwrap())
+            .unwrap();
+        doc.append_child(parent, text);
+        let children = doc.nodes[parent].children.clone();
+        let count = doc.nodes.len();
+        let capacity = doc.nodes.capacity();
+        assert!(doc.check_character_data_replacement(text, 5).is_ok());
+        // An earlier admission is not a reservation of future document space.
+        doc.retained_bytes = MAX_DOM_BYTES;
+        assert_eq!(
+            doc.replace_character_data(text, "abcde".into()),
+            Err(DomDataError::LimitExceeded)
+        );
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES);
+        assert!(matches!(&doc.nodes[text].kind, NodeKind::Text(data)
+            if data.raw_units() == Some([0xd800, 65].as_slice())));
+        let scalar = "é".to_owned();
+        let pointer = scalar.as_ptr();
+        doc.replace_character_data(text, scalar.into()).unwrap();
+        assert_eq!(doc.retained_bytes, MAX_DOM_BYTES - 2);
+        assert!(matches!(&doc.nodes[text].kind, NodeKind::Text(data)
+            if data.scalar().is_some_and(|value| value == "é" && value.as_ptr() == pointer)));
+        assert_eq!((doc.nodes.len(), doc.nodes.capacity()), (count, capacity));
+        assert_eq!(doc.nodes[text].parent, Some(parent));
+        assert_eq!(doc.nodes[parent].children, children);
+    }
 
     #[test]
     fn checked_character_data_preserves_owned_buffers_identity_and_snapshot_accounting() {

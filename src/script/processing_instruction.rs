@@ -1,6 +1,6 @@
 //! Checked ProcessingInstruction construction and represented CharacterData.
-//! DOMString storage is exact for scalar strings. Pseudo-attribute methods,
-//! mutation observers/ranges and isolated-surrogate data remain separate gaps.
+//! CharacterData stores exact DOMString units. Pseudo-attribute methods and
+//! mutation observers/ranges remain separate gaps.
 use super::*;
 use crate::dom::DomDataError;
 
@@ -174,16 +174,17 @@ impl Runtime {
             return Err(self.pi_invalid_character("processing instruction data contains ?>")?);
         }
         let target = self.pi_scalar_string(&target)?;
-        let data = self.pi_scalar_string(&data)?;
+        let plan = self.plan_dom_data(data.units().iter().copied(), data.len(), data.len())?;
         let bytes = target
             .len()
-            .checked_add(data.len())
+            .checked_add(plan.stored_bytes())
             .ok_or_else(|| ScriptError::resource("PI text length overflow"))?;
         // Conversions and NewTarget callbacks have finished. Fresh admission
         // precedes every node/override publication; strings are moved, not copied.
         if !doc.admits_text_node(bytes) {
             return Err(ScriptError::resource("PI node or text limit exceeded"));
         }
+        let data = self.emit_dom_data(plan)?;
         self.ensure_dom_capacity(doc, 1)?;
         self.dom_admit_override(&prototype)?;
         self.work(8)?;
@@ -196,7 +197,7 @@ impl Runtime {
             )?;
         }
         let id = doc
-            .create_processing_instruction_owned(target, data.into())
+            .create_processing_instruction_owned(target, data)
             .map_err(dom_data_error)?;
         self.dom_publish_override(id, prototype);
         Ok(Value::Node(id))
@@ -331,9 +332,14 @@ impl Runtime {
                 } else {
                     self.string_hint(value, doc)?
                 };
-                let text = self.pi_scalar_string(&text)?;
+                let plan =
+                    self.plan_dom_data(text.units().iter().copied(), text.len(), text.len())?;
                 self.work(8)?;
-                doc.replace_character_data(id, text.into())
+                doc.check_character_data_replacement(id, plan.stored_bytes())
+                    .map_err(dom_data_error)?;
+                let text = self.emit_dom_data(plan)?;
+                self.work(8)?;
+                doc.replace_character_data(id, text)
                     .map_err(dom_data_error)?;
                 Ok(Value::Undefined)
             }

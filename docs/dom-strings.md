@@ -6,13 +6,15 @@ UTF-8, or `Units(Vec<u16>)` when an unpaired surrogate occurs. There is no cache
 second representation or implicit `Display`/`Deref<str>` conversion. PI targets,
 element names and attributes keep their existing scalar storage.
 
-This is a storage and consumer foundation. JavaScript constructors, setters and
-mutation methods have not yet migrated to exact nonscalar production. Older
-legacy writes can still replace unmatched units; newer CharacterData writes
-still refuse them. The eight existing [CharacterData](character-data.md)
-standards-success modes remain unmet in the final release replay. Their original sources and
-historical refusal records are preserved. This change does not establish full
-DOMString compatibility, production security or Chromium performance parity.
+This page describes the storage and consumer foundation. The subsequent
+[JavaScript production increment](dom-production.md) uses it for Text, Comment
+and PI construction, the PI/text factories, the data setter and five
+CharacterData methods. Other legacy writes can still replace unmatched units.
+The foundation release retained eight unmet CharacterData standards-success
+modes; their original sources and refusal records remain historical evidence.
+The new producer release now passes all eight unchanged expectations. Neither increment
+establishes full DOMString compatibility, production security or Chromium
+performance parity.
 
 ## Ownership and bounds
 
@@ -85,9 +87,11 @@ preserved units elsewhere in the value. Unit-aware native editing is unfinished.
 Form output and native titles remain scalar presentation/encoding boundaries,
 distinct from JavaScript DOMString values.
 
-The final source passes 1,552 default tests on Rust 1.88 and 1,675 Vulkan-feature
-tests on Rust 1.98, including confinement checks. All 4,064 compared case modes
-and 364 controls retain their observations and expectations. See the
+At the storage-foundation checkpoint, 1,552 default tests passed on Rust 1.88 and
+1,675 Vulkan-feature tests passed on Rust 1.98, including confinement checks.
+All 4,064 compared case modes and 364 controls retained their observations and
+expectations. These counts describe that checkpoint, not the later producer
+increment. See the
 [validation record](VALIDATION.md#exact-dom-string-storage) and
 [source-bound evidence](evidence/dom-strings.json), including initial failures
 and corrections. Earlier [PI](processing-instruction.md) and

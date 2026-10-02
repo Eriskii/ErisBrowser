@@ -157,61 +157,58 @@ fn all_methods_measured_exact_and_one_short_admission() {
 }
 
 #[test]
-fn final_nonscalar_policies_remain_explicit_without_outer_write() {
-    let policies = [
+fn unchanged_nonscalar_policy_sources_produce_exact_standard_units() {
+    // Original source bytes and the earlier Unsupported assertions/results are
+    // retained in preparation evidence. These are normative outcome checks.
+    let policies: [(&str, &str, &[u16]); 4] = [
         (
             "delete-leaves-low-unit",
             include_str!(
                 "../../../../tests/fixtures/character-data-policy-delete-leaves-low-unit.js"
             ),
+            &[65, 56606, 66],
         ),
         (
             "insert-between-pair-leaves-unpaired-units",
             include_str!(
                 "../../../../tests/fixtures/character-data-policy-insert-between-pair-leaves-unpaired-units.js"
             ),
+            &[65, 55348, 120, 56606, 66],
         ),
         (
             "append-lone-high-unit",
             include_str!(
                 "../../../../tests/fixtures/character-data-policy-append-lone-high-unit.js"
             ),
+            &[111, 108, 100, 55296],
         ),
         (
             "replace-leaves-lone-high-unit",
             include_str!(
                 "../../../../tests/fixtures/character-data-policy-replace-leaves-lone-high-unit.js"
             ),
+            &[65, 55348, 66],
         ),
     ];
-    for (id, source) in policies {
+    for (id, source, expected) in policies {
         for strict in [false, true] {
-            let (mut runtime, mut doc) = fresh();
-            let (prefix, _) = source.trim_end().rsplit_once('\n').unwrap();
-            let prefix_result = if strict {
-                runtime.execute_strict(prefix, &mut doc)
-            } else {
-                runtime.execute(prefix, &mut doc)
-            };
-            assert!(prefix_result.is_ok(), "{id} prefix {prefix_result:?}");
-            let before = format!("{doc:?}");
-            let node = runtime.environments[0].bindings["n"].value.clone();
-            let before_data = runtime.pi_native("data", node, &[], &mut doc).unwrap();
-            // Execute the unchanged entire input in another fresh runtime; the prefix
-            // above independently proves it reaches the intended successful setup.
             let (mut runtime, mut doc) = fresh();
             let result = if strict {
                 runtime.execute_strict(source, &mut doc)
             } else {
                 runtime.execute(source, &mut doc)
             };
-            assert!(result.unwrap_err().is_unsupported(), "{id} strict={strict}");
-            assert_eq!(format!("{doc:?}"), before);
+            assert!(result.is_ok(), "{id} strict={strict}: {result:?}");
             let node = runtime.environments[0].bindings["n"].value.clone();
             assert_eq!(
-                runtime.pi_native("data", node, &[], &mut doc).unwrap(),
-                before_data
+                runtime
+                    .pi_native("data", node.clone(), &[], &mut doc)
+                    .unwrap(),
+                Value::String(expected.to_vec().into())
             );
+            let Value::Node(node) = node else { panic!() };
+            let data = current_data(&doc, node).unwrap();
+            assert_eq!(data.raw_units(), Some(expected));
             clean(&runtime);
         }
     }
@@ -289,5 +286,117 @@ fn prototype_method_delete_does_not_resurrect_and_saved_brand_survives() {
         };
         assert_eq!(result.unwrap(), Value::Bool(true));
         clean(&runtime);
+    }
+}
+
+#[test]
+fn tiny_substring_of_large_exact_units_visits_only_the_selected_prefix() {
+    let (mut runtime, mut doc) = fresh();
+    let mut data = vec![0x78; MAX_STRING + 1];
+    data[0] = 0xd800;
+    data[1] = 0xdc00;
+    data[2] = 0xd800;
+    let id = doc
+        .create_text_node_owned(crate::dom::DomString::from_units_owned(data).unwrap())
+        .unwrap();
+    let before = runtime.steps;
+    for (offset, expected) in [(0, 0xd800), (1, 0xdc00), (2, 0xd800), (3, 0x78)] {
+        assert_eq!(
+            runtime
+                .character_data_native(
+                    "substringData",
+                    Value::Node(id),
+                    &[Value::Number(offset as f64), Value::Number(1.0)],
+                    &mut doc
+                )
+                .unwrap(),
+            Value::String(vec![expected].into())
+        );
+    }
+    assert!(before - runtime.steps < 1000);
+    assert!(current_data(&doc, id).unwrap().raw_units().is_some());
+    clean(&runtime);
+}
+
+#[test]
+fn exact_splice_measured_boundaries_preserve_outer_data_and_payload_ledger() {
+    for (initial, method, args, expected, scalar) in [
+        (
+            vec![0xd800],
+            "appendData",
+            vec![Value::String(vec![0xdc00].into())],
+            vec![0xd800, 0xdc00],
+            true,
+        ),
+        (
+            vec![0xd800, 0x41, 0xdc00],
+            "replaceData",
+            vec![
+                Value::Number(1.0),
+                Value::Number(1.0),
+                Value::String("B".into()),
+            ],
+            vec![0xd800, 0x42, 0xdc00],
+            false,
+        ),
+        (
+            vec![0xd800, 0x78, 0xdc00],
+            "deleteData",
+            vec![Value::Number(1.0), Value::Number(1.0)],
+            vec![0xd800, 0xdc00],
+            true,
+        ),
+    ] {
+        for kind in ["Text", "Comment", "PI"] {
+            let setup = || {
+                let (runtime, mut doc) = fresh();
+                let data = crate::dom::DomString::from_units_owned(initial.clone()).unwrap();
+                let id = match kind {
+                    "Text" => doc.create_text_node_owned(data),
+                    "Comment" => doc.create_comment_owned(data),
+                    _ => doc.create_processing_instruction_owned("p".into(), data),
+                }
+                .unwrap();
+                (runtime, doc, id)
+            };
+            let (mut witness, mut document, id) = setup();
+            let before = (witness.steps, witness.allocated, document.retained_bytes());
+            witness
+                .character_data_native(method, Value::Node(id), &args, &mut document)
+                .unwrap();
+            let value = current_data(&document, id).unwrap();
+            assert_eq!(value.units().collect::<Vec<_>>(), expected);
+            assert_eq!(value.scalar().is_some(), scalar);
+            let bytes = if scalar { 4 } else { 6 };
+            assert_eq!(value.stored_bytes(), bytes);
+            assert_eq!(
+                document.retained_bytes(),
+                before.2 - initial.len() * 2 + bytes
+            );
+            let (work, heap) = (before.0 - witness.steps, witness.allocated - before.1);
+            for (steps, available, success) in [
+                (work, heap, true),
+                (work - 1, heap, false),
+                (work, heap - 1, false),
+            ] {
+                let (mut runtime, mut doc, id) = setup();
+                let saved = format!("{doc:?}");
+                runtime.steps = steps;
+                runtime.allocated = MAX_HEAP - available;
+                let result =
+                    runtime.character_data_native(method, Value::Node(id), &args, &mut doc);
+                if success {
+                    assert_eq!(result.unwrap(), Value::Undefined);
+                    assert_eq!(
+                        current_data(&doc, id).unwrap().units().collect::<Vec<_>>(),
+                        expected
+                    );
+                } else {
+                    assert!(result.unwrap_err().is_resource_limit());
+                    assert_eq!(format!("{doc:?}"), saved);
+                }
+                clean(&runtime);
+            }
+        }
     }
 }

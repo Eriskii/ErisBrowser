@@ -1,0 +1,604 @@
+{
+  "kind": "Exact JavaScript CharacterData production",
+  "base_commit": "c80f97521fe6377c095fa56fa262adba0c975103",
+  "scope": "Text/Comment/PI constructors, Document text/PI factories, data setter and five CharacterData methods preserve exact UTF-16 through canonical owned storage; existing ERWA transport and resource limits unchanged.",
+  "source": {
+    "base_commit": "c80f97521fe6377c095fa56fa262adba0c975103",
+    "isolated_source_sha256": "9f67d40e5d6e202cb95a78d6f0b69ddfddc9da75a642f8beaa85550538750d41",
+    "files": [
+      {
+        "path": "src/dom.rs",
+        "bytes": 404240,
+        "sha256": "8af0de5cb5fc0e9300683092c85031873c4f3292e1c16b4d9e0744389c3d3b68"
+      },
+      {
+        "path": "src/script.rs",
+        "bytes": 907089,
+        "sha256": "3d4c779b4127ccfbd9a6d1b453848ebc9fe33cdb03239f17aaa432dbbbd9785a"
+      },
+      {
+        "path": "src/script/dom_bindings.rs",
+        "bytes": 48031,
+        "sha256": "e80b66ee91b774e16cff87f7d2dacd8f310c70b440908ea5630cec0c8c6a4359"
+      },
+      {
+        "path": "src/script/dom_data.rs",
+        "bytes": 8412,
+        "sha256": "ac5fdaeba54a85dd4128f662c11fe7d64e89774a6acffb116ffa52865e4e1887"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 30948,
+        "sha256": "6c7e12e7a08784f3ac4fa8175ebe98ef8ad4d5e58f16ece5087fe3d0a0f199d2"
+      },
+      {
+        "path": "src/script/dom_prototypes/tests.rs",
+        "bytes": 26948,
+        "sha256": "26db623b5490597f174d3116e268d52a69be4033a629294065618fe35da5a939"
+      },
+      {
+        "path": "src/script/processing_instruction.rs",
+        "bytes": 13556,
+        "sha256": "957d6b097fe8a8d376c1f4bb2b7c570f29a32870f39e4edabd26125cddbc0958"
+      },
+      {
+        "path": "src/script/processing_instruction/character_data.rs",
+        "bytes": 7162,
+        "sha256": "01e589d0ca4ba5567d4fbc3560efe7d853e717d4ffc1067dbaaee061d9482fc1"
+      },
+      {
+        "path": "src/script/processing_instruction/character_data/tests.rs",
+        "bytes": 15348,
+        "sha256": "6264c54b3424a304a19c9939a4c48184a64f3bc76b8fdce1081156e28e735bac"
+      },
+      {
+        "path": "src/script/processing_instruction/tests.rs",
+        "bytes": 21104,
+        "sha256": "39afb898f69f794fe591dc16e3f1dca2289a9203817eff48f375706ff3323e5f"
+      },
+      {
+        "path": "tests/fixtures/dom-production.html",
+        "bytes": 3847,
+        "sha256": "5aa32470360db346bc13672eb0826730e299cf8a4155f2a9efd90130afa7db09"
+      },
+      {
+        "path": "tests/fixtures/dom-production.js",
+        "bytes": 12900,
+        "sha256": "a3e376359b7fb74bc74e43b90ec2ecaa9972aeda2effbd6f50ae8382ee61d5f2"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 55670,
+        "sha256": "6fdd7016c6a01f5dbf4ea22ed54fd2f1b0a141dc64c0a390ab393d5b8200b507"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 90053,
+        "sha256": "560fda9f3411dd06f8243274f8562c442f6f2460ea13eb81d0fde23edf968f42"
+      }
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-dom-production-1/eris-js",
+    "bytes": 3642072,
+    "sha256": "4e613cf659787db1093ba1993bb4739e1ac0eb795d30ab164bbecca0df4ad207",
+    "source_manifest": "main-source-final.json",
+    "validation": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "full-default-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 24.859,
+      "log": "full-default-188-1.log",
+      "sha256": "cff76c1cf4255e18f59afb3d7829c542b41406e60db8ee548e7411e37c2604ce"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 19.952,
+      "log": "full-native-198-1.log",
+      "sha256": "2893cb14ec024f45e8505fe89255ba6a7dfbced34b91556c03a30c19ee490b23"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.978,
+      "log": "clippy-native-198-1.log",
+      "sha256": "b20174cf38f14c01728af8220e6d368ed69cd4998462df846fc0ccdfbcfa3b6a"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.887,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "a9b45d394904af77525bafd221a417fe5191c875c4df0346b88377d83d600d2c"
+    },
+    "format-198-final": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9311511539854109,
+      "log": "format-198-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 36.341,
+      "log": "release-adapter-188-1.log",
+      "sha256": "b69abe446e19e8d7d41db1aad09fe44a6f1bec56ff84aa7b278e94defb27d013"
+    }
+  },
+  "tests": {
+    "default": 1577,
+    "native": 1700,
+    "new_groups": 25,
+    "focused_unique": 105,
+    "focused_executions": 107,
+    "failed": 0,
+    "ignored": 0
+  },
+  "raw_bootstrap": {
+    "remaining_steps": 8246,
+    "allocated_bytes": 1777574,
+    "objects": 673,
+    "capacity": 673,
+    "native_registry": 321,
+    "legacy_prototypes": 25
+  },
+  "compatibility": [
+    {
+      "profile": "dom-method-identity",
+      "before_sha256": "413009bf4332bf8260c993cd9d4c66ee29be98a616e4967f955b8e47d323b8c7",
+      "after_sha256": "6b01d0f3bba7955f5bec9e7369b856365140c425ff18f745f3f0334edfe92720",
+      "counts": {
+        "passed": 52,
+        "unsupported": 2,
+        "resource": 4
+      },
+      "total": 58,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 44,
+      "controls_verified": 44,
+      "before_verified": 56,
+      "after_verified": 56
+    },
+    {
+      "profile": "object-is",
+      "before_sha256": "9e1e60cee309408ca173ca36a5e00e1ffd657ef4cd4ea2d1fd98b007ffc4a334",
+      "after_sha256": "46822db1603a64ffb802ead985bb111d512cdb6a41fca033d93e8133450e66e3",
+      "counts": {
+        "passed": 68,
+        "resource": 4,
+        "failed": 4,
+        "unsupported": 2
+      },
+      "total": 78,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 60,
+      "controls_verified": 60,
+      "before_verified": 72,
+      "after_verified": 72
+    },
+    {
+      "profile": "symbols",
+      "before_sha256": "edd722a9327f18857e3b5184cc882b72faaf6567a38a909a375a720ba5b9c2b4",
+      "after_sha256": "9cab6a563fedeb1c59d51daade63a857567dcb6758b2a321f115a3bba5510bc7",
+      "counts": {
+        "passed": 184,
+        "unsupported": 54,
+        "failed": 4
+      },
+      "total": 242,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 80,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "array-descriptors",
+      "before_sha256": "d11d78151b6493cefa4f0a443bc32450736875e24f5d3fd352768489731be933",
+      "after_sha256": "963ce7ebb62d20ddacf4be13e61fd6bf07fb7dd8c02354e1a46ec75f3dd732db",
+      "counts": {
+        "passed": 3556,
+        "unsupported": 18
+      },
+      "total": 3574,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 84,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "reflect-construction",
+      "before_sha256": "7a0bb11679ee19a57283b4f649756016f6fa095b7e074b52748e55cc6e24be33",
+      "after_sha256": "874f135c6c3501f7fe5068d8420a68fde690042abbd3a757e9df16a6987f2f58",
+      "counts": {
+        "passed": 38
+      },
+      "total": 38,
+      "cases_changes": [],
+      "controls_changes": [],
+      "controls_total": 96,
+      "controls_verified": true,
+      "before_verified": null,
+      "after_verified": null
+    },
+    {
+      "profile": "prior-CharacterData-regression",
+      "before_sha256": "1f41096391e9022a314d99cec96c79855fceb20611f40750d29377059344fa31",
+      "after_sha256": "bf1fed9c3afb5bc9e7b2a0f94c55672fb6b04ca8cbb41a0e9bd58a289077ecef",
+      "cases_changes": [
+        {
+          "id": "delete-leaves-low-unit#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "delete-leaves-low-unit#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "insert-between-pair-leaves-unpaired-units#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "insert-between-pair-leaves-unpaired-units#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "append-lone-high-unit#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "append-lone-high-unit#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "replace-leaves-lone-high-unit#sloppy",
+          "mode": "sloppy",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        },
+        {
+          "id": "replace-leaves-lone-high-unit#strict",
+          "mode": "strict",
+          "before": {
+            "status": "unsupported",
+            "observation": {
+              "status": "unsupported",
+              "phase": "runtime",
+              "error_type": "UnsupportedFeature",
+              "error_identity": "",
+              "message": "unpaired surrogate DOMString storage is not implemented",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          },
+          "after": {
+            "status": "passed",
+            "observation": {
+              "status": "complete",
+              "phase": "runtime",
+              "error_type": "",
+              "error_identity": "",
+              "message": "",
+              "harness": ""
+            },
+            "reason": null,
+            "expected_negative": null
+          }
+        }
+      ],
+      "total": 34,
+      "before_verified": 26,
+      "after_verified": 34,
+      "unmet": []
+    },
+    {
+      "profile": "prior-PI-regression",
+      "before_sha256": "f8be1cf9124ecb2ea38de4f750053999a376fe5c160b21aef7bbaf87f0521105",
+      "after_sha256": "3c25b90b64278c84f069f1119df686c5f1062964a3181d0c7734c80e97ddb048",
+      "cases_changes": [],
+      "total": 40,
+      "before_verified": 38,
+      "after_verified": 38
+    }
+  ],
+  "new_production_cases": {
+    "before_sha256": "852b0191fa769a56aca1413c2cb1e2f225c3c04e5f04709bab59ffc7430e17cf",
+    "after_sha256": "a3dfcae3125b2378d05dac8ce8c888a30936bea44ed03cfc3d1c62a6cd2371ad",
+    "matrix_sha256": "be966a592394e6341303d4092185c891561d789a158613db74f58079c0d51b2e",
+    "before_matched": 2,
+    "after_matched": 24,
+    "total": 24,
+    "controls": 8,
+    "controls_matched": 8,
+    "original_compared_modes": 4064,
+    "original_gains": 8,
+    "original_losses": 0,
+    "original_other_changes": 0,
+    "original_controls_unchanged": 364
+  },
+  "established_case_modes": 4064,
+  "established_gains": 8,
+  "established_losses": 0,
+  "established_other_changes": 0,
+  "established_controls_unchanged": 364,
+  "new_case_modes": 24,
+  "new_controls": 8,
+  "retained_corrections": [
+    "Source-review correction of integration test private API calls; scalar reference setup now uses a public API and asserts complete literal payload/ledger.",
+    "First compile E0616: removed a redundant sibling-private test assertion; production, public visibility, no-partial-node checks and constructor override tests unchanged.",
+    "Initial worker command selected one ignored test; corrected command executed the unchanged confined test.",
+    "Replay negative control intrinsic Error identity corrected using adapter contract; all JS bytes and ordinary success expectations unchanged.",
+    "Replay uses optional observation reads to retain timeout/adapter-error rows; all32 inputs and complete baseline records unchanged."
+  ],
+  "boundaries": [
+    "Legacy container textContent, innerText, title, textarea, append-string and attribute writes remain separate work.",
+    "Two original PI host-prototype mutation expectations remain unmet.",
+    "Exact nonscalar HTML serialization, unit-aware native editing, complete Node interfaces and mutation reactions remain incomplete.",
+    "No new GPU performance or Chromium comparison. Full web compatibility and production security are not achieved."
+  ],
+  "archive": {
+    "path": "dom-production.tar.gz",
+    "bytes": 1870749,
+    "sha256": "03382550b421f883231f81fdeb6a752f9fafccd077bed08494ce00e3ebe9697c",
+    "files": 197,
+    "manifest_verified": true
+  }
+}

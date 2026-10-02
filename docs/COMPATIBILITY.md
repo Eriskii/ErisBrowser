@@ -18,14 +18,15 @@ unmet. [DOM interface prototypes](dom-prototypes.md) now provide represented
 HTML, SVG and MathML chains, interface metadata, mutable ParentNode operations
 and Text, Comment and DocumentFragment construction.
 [Processing instructions](processing-instruction.md) add genuine construction,
-the Document factory, target and CharacterData data/length accessors for scalar
-strings. Five [CharacterData methods](character-data.md) now add exact UTF-16
-substring results and checked splicing, including repaired surrogate boundaries.
-The [DOM string foundation](dom-strings.md) preserves host-supplied unpaired
-units in Text, Comment and PI data, exact reads/clones and ERWA snapshots.
-JavaScript constructors, setters and mutation paths have not yet migrated to
-producing that data: the eight earlier standards-success modes remain unmet
-pending replay. PI pseudo-attributes and mutation notifications remain unfinished.
+the Document factory, target and CharacterData data/length accessors.
+[Exact data production](dom-production.md) covers Text, Comment and PI
+constructors, `createTextNode`, the PI factory and the data setter. Five
+[CharacterData methods](character-data.md) preserve exact UTF-16 substring and
+splice results, including isolated units and repaired boundaries. The
+[DOM string foundation](dom-strings.md) supplies canonical storage, exact
+reads/clones and unchanged ERWA snapshots. All eight earlier unmet expectations
+now pass, bringing the original CharacterData replay to 34/34; all 24 new modes
+also pass. PI pseudo-attributes and mutation notifications remain unfinished.
 Complete interface members,
 Document reflection and host prototype mutation remain incomplete. The unchanged
 DOM suite now verifies **56/58 expectations**, with all 44 controls healthy; the
@@ -225,10 +226,11 @@ constructor conformance remain incomplete.
 cover the supported creation, query, attribute, tree and class-list operations.
 String hooks run in argument order before those operations; borrowed methods use
 their actual receiver. Nullable text and Boolean properties retain distinct
-conversion rules. Exact character-data storage is described in
-[DOM strings](dom-strings.md); legacy author write paths, remaining interface
-members, general XML name handling, live collections and complete DOM hierarchy
-semantics remain incomplete.
+conversion rules. [Exact character-data production](dom-production.md) covers
+its named constructors, factories, data setter and five methods. Legacy container,
+append-string, attribute and HTML-parser writes remain separate, alongside
+remaining interface members, general XML name handling, live collections and
+complete DOM hierarchy semantics.
 
 [Symbol primitives and property keys](../tests/conformance/symbols.md) now include
 identity, registry/description behavior, descriptors, computed keys, JSON omission,
@@ -441,12 +443,13 @@ RegExp matching uses a custom parser and an explicit backtracking stack over UTF
 
 Text, Comment and PI data now use [canonical DOM string storage](dom-strings.md):
 UTF-8 for scalar strings, exact UTF-16 only when unpaired units occur. Existing
-data/length accessors, selected text readers and cloning preserve host-supplied
-units. Presentation explicitly replaces unmatched units without changing storage.
+data/length accessors, selected text readers and cloning preserve units from
+[JavaScript CharacterData production](dom-production.md), the host or transport.
+Presentation explicitly replaces unmatched units without changing storage.
 Attributes, console output and other scalar host boundaries remain separate;
-legacy writes can still replace unpaired units, and CharacterData production
-still refuses them. Inline JavaScript source and JavaScript HTML serialization
-explicitly refuse a nonscalar aggregate. This is not complete DOMString support.
+legacy container, append-string and HTML-parser writes can still replace unpaired
+units. Inline JavaScript source and JavaScript HTML serialization explicitly
+refuse a nonscalar aggregate. This is not complete DOMString support.
 
 `textarea.value` reads exact stored units with CRLF/CR normalization. Its legacy
 script setter, editor and form serializer still use scalar boundaries. Native

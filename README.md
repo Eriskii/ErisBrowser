@@ -23,11 +23,14 @@ DocumentFragment construction. [Processing instructions](docs/processing-instruc
 now add construction, the Document factory, target and CharacterData data/length
 accessors. Five [CharacterData methods](docs/character-data.md) add UTF-16
 substring and checked append, insert, delete and replace operations. The
-[DOM string foundation](docs/dom-strings.md) now preserves exact character data
-in canonical storage, tagged worker transport, host-supplied reads and clones.
-JavaScript production of unpaired data remains deferred; the eight earlier
-CharacterData standards-success modes remain unmet pending replay. Complete
-interface members and Document reflection remain unfinished. The
+[DOM string foundation](docs/dom-strings.md) preserves exact character data
+in canonical storage, tagged worker transport, reads and clones.
+[Exact JavaScript data production](docs/dom-production.md) now covers Text,
+Comment and PI constructors, the PI and text factories, the data setter and all
+five CharacterData methods, including unpaired units and complete-splice repairs.
+The release now passes all eight earlier unmet modes and all 24 new cases. Legacy
+container/attribute writes, complete interface members and Document reflection
+remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate
@@ -287,8 +290,10 @@ borrowed method receivers and perform JavaScript string conversion before their
 DOM effects. Attribute/append/class-list conversion preserves callback order and
 thrown values; nullable strings and Boolean setters use their respective rules.
 The original probes gain 16 passes with no regression in the existing inventories.
-[Exact character-data storage](docs/dom-strings.md) is now available, but
-runtime write paths and broader DOMString/Web IDL interfaces remain incomplete.
+[Exact character-data production](docs/dom-production.md) now covers the named
+constructors, factories, data setter and CharacterData methods. Legacy container,
+append-string and attribute writes, HTML parser input and broader DOMString/Web
+IDL interfaces remain incomplete.
 
 Supported [Window binding reflection](tests/conformance/window-reflection.md) now
 preserves numeric/string/symbol key order, intrinsic flags and live for-in behavior.

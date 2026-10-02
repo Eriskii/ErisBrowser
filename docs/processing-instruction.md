@@ -27,24 +27,26 @@ does not repeat the constructor's `?>` restriction. Clone, tree insertion and
 worker snapshots retain the stored target and data. Exact reads and explicit
 serialization/presentation boundaries are described in [DOM strings](dom-strings.md).
 
-The JavaScript creation/setter paths still convert to scalar strings. Checked
-storage now also takes ownership of canonical exact UTF-16 from the host or
-transport, with two retained bytes per stored unit. Admission failure
-refuses the operation instead of truncating data. Replacement accounts for the
+[Exact JavaScript data production](dom-production.md) now preserves unpaired
+UTF-16 units through PI creation and the CharacterData data setter. Complete data
+chooses one scalar UTF-8 payload or one exact UTF-16 payload, with two retained
+bytes per unit in the latter. PI target validation remains separate. Admission
+failure refuses the operation instead of truncating data. Replacement accounts for the
 old buffer's released bytes and preserves node identity, tree links and PI
 target. Node publication and alternate-prototype publication follow all checked
 admission. Existing work, heap, document byte and node limits remain unchanged.
 
-This is partial CharacterData/ProcessingInstruction support. JavaScript data
-production still explicitly refuses lone UTF-16 surrogates, although the
-[storage foundation](dom-strings.md) now preserves host-supplied units in reads,
-clones and tagged snapshots. Lone surrogates in a target remain invalid XML
-names. PI pseudo-attribute methods and their update hooks, mutation observers,
+This remains partial CharacterData/ProcessingInstruction support. Exact data
+production does not make unmatched units valid in PI targets: those remain
+invalid XML names. The [storage foundation](dom-strings.md) keeps data exact in
+reads, clones and tagged snapshots. PI pseudo-attribute methods and their update hooks, mutation observers,
 range maintenance,
 complete Node attribute descriptors and host prototype
 mutation are unfinished. Independent Document construction remains unsupported.
 The [CharacterData follow-up](character-data.md) adds the five substring and
-mutation methods with exact UTF-16 substring results and checked scalar storage.
+mutation methods with exact UTF-16 substring results and checked canonical
+scalar or exact-unit storage. The producer release keeps the original PI replay
+at 38/40; its two host-prototype-mutation expectations remain unmet.
 
 The original PI checkpoint checked 20 local cases in both script modes: 38 of
 40 expectations passed. Both modes of the original host-prototype-mutation case

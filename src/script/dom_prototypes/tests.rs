@@ -59,6 +59,13 @@ fn constructor_witness_id(value: Value) -> NodeId {
     id
 }
 
+fn constructor_witness_data(doc: &Document, id: NodeId) -> &crate::dom::DomString {
+    match &doc.nodes[id].kind {
+        NodeKind::Text(data) | NodeKind::Comment(data) => data,
+        other => panic!("unexpected character data: {other:?}"),
+    }
+}
+
 fn constructor_witness_kind(doc: &Document, id: NodeId, name: &str, text: &str) {
     assert_eq!(doc.nodes[id].parent, None);
     assert!(doc.nodes[id].children.is_empty());
@@ -148,81 +155,131 @@ fn constructor_witness_cutpoint_setup(grow: bool) -> (Runtime, Document, Value, 
 
 #[test]
 fn dom_constructor_measured_exact_and_one_short_admission_has_no_partial_node() {
-    for grow in [false, true] {
-        let arguments = [Value::String("A𝄞".into())];
-        let (mut measure, mut doc, target, _) = constructor_witness_cutpoint_setup(grow);
-        let before_heap = measure.allocated;
-        measure
-            .dom_interface_construct("DOM.Interface.Text", &arguments, target, &mut doc)
-            .unwrap();
-        let work = MAX_STEPS - measure.steps;
-        let heap = measure.allocated - before_heap;
-        assert!(work > 0 && heap > 0);
-        // Measure real debits; do not duplicate the production fee formula.
-        for (steps, available, succeeds) in [
-            (work, heap, true),
-            (work - 1, heap, false),
-            (work, heap - 1, false),
-        ] {
-            let (mut runtime, mut doc, target, prototype) =
-                constructor_witness_cutpoint_setup(grow);
-            let before = format!("{doc:?}");
-            let count = doc.nodes.len();
-            let capacity = doc.nodes.capacity();
-            runtime.steps = steps;
-            runtime.allocated = MAX_HEAP - available;
-            let result =
-                runtime.dom_interface_construct("DOM.Interface.Text", &arguments, target, &mut doc);
-            if succeeds {
-                assert_eq!(constructor_witness_id(result.unwrap()), count);
-                assert_eq!(doc.nodes.len(), count + 1);
-                constructor_witness_kind(&doc, count, "Text", "A𝄞");
-                assert_eq!(
-                    runtime.dom_prototypes.overrides.get(&count),
-                    Some(&prototype)
-                );
-                assert_eq!(runtime.dom_prototypes.overrides.len(), 1);
-                assert_eq!(runtime.steps, 0);
-                assert_eq!(runtime.allocated, MAX_HEAP);
-            } else {
-                assert!(result.unwrap_err().is_resource_limit());
-                assert_eq!(format!("{doc:?}"), before);
-                assert_eq!(doc.nodes.capacity(), capacity);
-                assert!(runtime.dom_prototypes.overrides.is_empty());
+    for name in ["Text", "Comment"] {
+        for units in [vec![0x41, 0xd834, 0xdd1e], vec![0xd800, 0x41, 0xdc00]] {
+            for grow in [false, true] {
+                let qualified = format!("{PREFIX}{name}");
+                let arguments = [Value::String(units.clone().into())];
+                let (mut measure, mut doc, target, _) = constructor_witness_cutpoint_setup(grow);
+                let before_heap = measure.allocated;
+                measure
+                    .dom_interface_construct(&qualified, &arguments, target, &mut doc)
+                    .unwrap();
+                let work = MAX_STEPS - measure.steps;
+                let heap = measure.allocated - before_heap;
+                assert!(work > 0 && heap > 0);
+                // Measure real debits; do not duplicate the production fee formula.
+                for (steps, available, succeeds) in [
+                    (work, heap, true),
+                    (work - 1, heap, false),
+                    (work, heap - 1, false),
+                ] {
+                    let (mut runtime, mut doc, target, prototype) =
+                        constructor_witness_cutpoint_setup(grow);
+                    let before = format!("{doc:?}");
+                    let count = doc.nodes.len();
+                    let capacity = doc.nodes.capacity();
+                    runtime.steps = steps;
+                    runtime.allocated = MAX_HEAP - available;
+                    let result =
+                        runtime.dom_interface_construct(&qualified, &arguments, target, &mut doc);
+                    if succeeds {
+                        assert_eq!(constructor_witness_id(result.unwrap()), count);
+                        assert_eq!(doc.nodes.len(), count + 1);
+                        assert_eq!(
+                            constructor_witness_data(&doc, count)
+                                .units()
+                                .collect::<Vec<_>>(),
+                            units
+                        );
+                        assert_eq!(
+                            runtime.dom_prototypes.overrides.get(&count),
+                            Some(&prototype)
+                        );
+                        assert_eq!(runtime.dom_prototypes.overrides.len(), 1);
+                        assert_eq!(runtime.steps, 0);
+                        assert_eq!(runtime.allocated, MAX_HEAP);
+                    } else {
+                        assert!(result.unwrap_err().is_resource_limit());
+                        assert_eq!(format!("{doc:?}"), before);
+                        assert_eq!(doc.nodes.capacity(), capacity);
+                        assert!(runtime.dom_prototypes.overrides.is_empty());
+                    }
+                    constructor_witness_clean(&runtime);
+                }
             }
+        }
+    }
+}
+
+// The former explicit-refusal witness is retained in the checkpoint evidence.
+// DOMString constructors now preserve the same inputs as exact code units.
+#[test]
+fn dom_constructor_preserves_surrogate_pairs_and_lone_units() {
+    for name in ["Text", "Comment"] {
+        for units in [
+            vec![0xd834, 0xdd1e],
+            vec![0xd800],
+            vec![0xdc00],
+            vec![0x61, 0xd800],
+        ] {
+            let mut runtime = Runtime::try_new().unwrap();
+            let mut doc = Document::parse("<p>kept</p>");
+            let target = runtime.environments[0].bindings[name].value.clone();
+            let before = doc.retained_bytes();
+            let value = runtime
+                .dom_interface_construct(
+                    &format!("{PREFIX}{name}"),
+                    &[Value::String(units.clone().into())],
+                    target,
+                    &mut doc,
+                )
+                .unwrap();
+            let id = constructor_witness_id(value);
+            let data = constructor_witness_data(&doc, id);
+            assert_eq!(data.units().collect::<Vec<_>>(), units);
+            assert_eq!(data.scalar().is_some(), units == [0xd834, 0xdd1e]);
+            assert_eq!(doc.retained_bytes() - before, data.stored_bytes());
+            assert!(doc.nodes[id].parent.is_none());
+            assert!(runtime.dom_prototypes.overrides.is_empty());
             constructor_witness_clean(&runtime);
         }
     }
 }
 
 #[test]
-fn dom_constructor_accepts_surrogate_pairs_and_explicitly_refuses_lone_units() {
+fn dom_constructor_unpaired_conversion_precedes_prototype_getter_and_abrupt_completion() {
     for name in ["Text", "Comment"] {
-        for units in [vec![0xd800], vec![0xdc00], vec![0x61, 0xd800]] {
+        for strict in [false, true] {
             let mut runtime = Runtime::try_new().unwrap();
-            let mut doc = Document::parse("<p>kept</p>");
-            let target = runtime.environments[0].bindings[name].value.clone();
-            let qualified = format!("{PREFIX}{name}");
-            let valid = runtime
-                .dom_interface_construct(
-                    &qualified,
-                    &[Value::String(vec![0xd834, 0xdd1e].into())],
-                    target.clone(),
-                    &mut doc,
-                )
-                .unwrap();
-            constructor_witness_kind(&doc, constructor_witness_id(valid), name, "𝄞");
-            let before = format!("{doc:?}");
-            let error = runtime
-                .dom_interface_construct(
-                    &qualified,
-                    &[Value::String(units.into())],
-                    target,
-                    &mut doc,
-                )
-                .unwrap_err();
-            assert!(error.is_unsupported());
-            assert_eq!(format!("{doc:?}"), before);
+            let mut doc = Document::parse("");
+            let count = doc.nodes.len();
+            let source = r#"
+                (function () {
+                    var order = '', marker = {}, input = {};
+                    input[Symbol.toPrimitive] = function (hint) {
+                        if (hint !== 'string') throw new Error('hint');
+                        order += 'D'; return '\ud800';
+                    };
+                    var target = (function () {}).bind(null);
+                    Object.defineProperty(target, 'prototype', { get: function () {
+                        order += 'P'; throw marker;
+                    }});
+                    var caught = false;
+                    try { Reflect.construct(INTERFACE, [input], target); }
+                    catch (e) { if (e !== marker) throw e; caught = true; }
+                    if (!caught || order !== 'DP') throw new Error('conversion/get order');
+                    return true;
+                })()
+            "#
+            .replace("INTERFACE", name);
+            let result = if strict {
+                runtime.execute_strict(&source, &mut doc)
+            } else {
+                runtime.execute(&source, &mut doc)
+            };
+            assert_eq!(result.unwrap(), Value::Bool(true));
+            assert_eq!(doc.nodes.len(), count);
             assert!(runtime.dom_prototypes.overrides.is_empty());
             constructor_witness_clean(&runtime);
         }
@@ -308,7 +365,7 @@ fn dom_constructor_rechecks_node_and_text_admission_after_prototype_getter() {
         let error = runtime
             .dom_interface_construct(
                 "DOM.Interface.Text",
-                &[Value::String("outer".into())],
+                &[Value::String(vec![0xd800].into())],
                 target,
                 &mut doc,
             )

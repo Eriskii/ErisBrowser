@@ -2177,3 +2177,139 @@ fn confined_character_data_methods_update_connected_text_and_pixels_through_call
         true,
     );
 }
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_exact_dom_production_roundtrips_units_and_literal_replacement_pixels() {
+    use eris::{
+        dom::NodeKind,
+        graphics::{Canvas, Color, DrawCommand, Fonts},
+        page::Page,
+    };
+    let source = include_str!("fixtures/dom-production.html");
+    let fixture = Fixture::new(source);
+    let mut client = fixture.spawn(true, 204);
+    load(&mut client, &fixture.navigation);
+    let fonts = Fonts::new();
+    let mut retained = None;
+    let mut button = None;
+    for (index, (state, color, units, projected, result)) in [
+        ("ready", 0x008000, [65, 55296, 66, 56320], "A�B�", "ready"),
+        ("clicked", 0x0000ff, [67, 56320, 68, 55296], "C�D�", "6"),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if index == 1 {
+            exchange_empty(
+                &mut client,
+                WorkerCommand::Click {
+                    node: button.unwrap(),
+                },
+            );
+        }
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.generation, 204);
+        assert_eq!(snapshot.processed_edit_sequence, 0);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|message| message.starts_with("Page process ")
+                    || message.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        let body = snapshot.document.query_selector("body").unwrap();
+        assert_eq!(snapshot.document.attr(body, "class"), Some(state));
+        button = Some(snapshot.document.query_selector("#change").unwrap());
+        let host = snapshot.document.query_selector("#exact").unwrap();
+        let status = snapshot.document.query_selector("#result").unwrap();
+        assert_eq!(snapshot.document.nodes[host].children.len(), 1);
+        assert_eq!(snapshot.document.nodes[status].children.len(), 1);
+        let text = snapshot.document.nodes[host].children[0];
+        let status_text = snapshot.document.nodes[status].children[0];
+        if let Some(previous) = retained {
+            assert_eq!(
+                (text, status_text),
+                previous,
+                "wire snapshots retain Text IDs"
+            );
+        } else {
+            retained = Some((text, status_text));
+        }
+        assert_eq!(snapshot.document.nodes[text].parent, Some(host));
+        let NodeKind::Text(data) = &snapshot.document.nodes[text].kind else {
+            panic!("wire snapshot must contain the real produced Text");
+        };
+        assert_eq!(data.raw_units(), Some(units.as_slice()));
+        assert_eq!(snapshot.document.text_content(status), result);
+        for expected in [projected, result] {
+            assert!(snapshot.layout.commands.iter().any(
+                |command| matches!(command, DrawCommand::Text { text, .. } if text == expected)
+            ));
+        }
+
+        // A scalar literal reference isolates presentation from exact wire data.
+        // No fixture JavaScript is executed by this reference Page.
+        let mut reference = Page::from_html(
+            Url::parse(&fixture.navigation.address).unwrap(),
+            source,
+            false,
+        );
+        reference.document = snapshot.document.clone();
+        // This public scalar mutator performs replacement-aware DOM admission.
+        // Verify its complete result so parser-style clamping cannot hide a
+        // failed reference setup; both old and literal payloads occupy 8 bytes.
+        reference.document.set_text_content(text, projected);
+        let NodeKind::Text(reference_data) = &reference.document.nodes[text].kind else {
+            panic!("reference must retain a Text node");
+        };
+        assert_eq!(reference_data.scalar(), Some(projected));
+        assert_eq!(reference.document.nodes[text].parent, Some(host));
+        assert_eq!(
+            reference.document.nodes.len(),
+            snapshot.document.nodes.len()
+        );
+        assert_eq!(
+            reference.document.retained_bytes(),
+            snapshot.document.retained_bytes()
+        );
+        let mut expected = Canvas::new(320, 240).unwrap();
+        expected.clear(Color::WHITE);
+        expected.paint(
+            &reference.layout(320.0, 240.0, &fonts).commands,
+            &fonts,
+            &reference.images,
+            0.0,
+            0.0,
+        );
+        let mut actual = Canvas::new(320, 240).unwrap();
+        actual.clear(Color::WHITE);
+        actual.paint(
+            &snapshot.layout.commands,
+            &fonts,
+            &snapshot.images,
+            0.0,
+            0.0,
+        );
+        assert!(!actual.exhausted() && !expected.exhausted());
+        assert_eq!(actual.pixels, expected.pixels, "{state} literal reference");
+        assert!(
+            actual.pixels[100 * 320..135 * 320]
+                .iter()
+                .any(|pixel| *pixel != 0xffffff)
+        );
+        for x in [10, 60, 110, 160, 210, 260] {
+            assert_eq!(actual.pixels[10 * 320 + x], color, "{state}, x={x}");
+        }
+        let NodeKind::Text(data) = &snapshot.document.nodes[text].kind else {
+            unreachable!()
+        };
+        assert_eq!(
+            data.raw_units(),
+            Some(units.as_slice()),
+            "decoded payload remains exact"
+        );
+    }
+}

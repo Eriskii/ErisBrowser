@@ -60,7 +60,7 @@ fn character_data_accessors_preserve_host_supplied_exact_units() {
 }
 
 #[test]
-fn exact_data_method_callbacks_run_before_fresh_scalar_boundary_check() {
+fn exact_data_method_callbacks_run_before_fresh_data_read() {
     for strict in [false, true] {
         let (mut runtime, mut doc) = fresh();
         let node = runtime.execute("var n=new Text('a');n", &mut doc).unwrap();
@@ -289,34 +289,39 @@ fn pi_newtarget_side_effect_consumes_last_node_before_fresh_admission() {
 }
 
 #[test]
-fn pi_and_character_data_lone_surrogates_refuse_without_mutation() {
+fn pi_and_character_data_lone_surrogates_are_exact_without_weakening_brands() {
     let (mut runtime, mut doc) = fresh();
-    let node = runtime
-        .execute("new ProcessingInstruction('probe','old')", &mut doc)
-        .unwrap();
-    let text = Value::String(vec![0xd800].into());
-    let before = format!("{doc:?}");
     let constructor = runtime.environments[0].bindings["ProcessingInstruction"]
         .value
         .clone();
-    assert!(
+    let node = runtime
+        .pi_construct(
+            &[
+                Value::String("probe".into()),
+                Value::String(vec![0xd800].into()),
+            ],
+            constructor,
+            &mut doc,
+        )
+        .unwrap();
+    assert_eq!(
         runtime
-            .pi_construct(
-                &[Value::String("probe".into()), text.clone()],
-                constructor,
-                &mut doc
-            )
-            .unwrap_err()
-            .is_unsupported()
+            .pi_native("data", node.clone(), &[], &mut doc)
+            .unwrap(),
+        Value::String(vec![0xd800].into())
     );
-    assert_eq!(format!("{doc:?}"), before);
-    assert!(
-        runtime
-            .pi_native("setData", node.clone(), &[text], &mut doc)
-            .unwrap_err()
-            .is_unsupported()
+    runtime
+        .pi_native(
+            "setData",
+            node.clone(),
+            &[Value::String(vec![0xdc00, 0].into())],
+            &mut doc,
+        )
+        .unwrap();
+    assert_eq!(
+        runtime.pi_native("data", node, &[], &mut doc).unwrap(),
+        Value::String(vec![0xdc00, 0].into())
     );
-    assert_eq!(format!("{doc:?}"), before);
     for receiver in [
         Value::Object(0),
         Value::Document,
@@ -463,5 +468,85 @@ fn authentic_brands_with_constructor_prototype_override() {
         };
         assert_eq!(result.unwrap(), Value::Bool(true));
         clean(&runtime);
+    }
+}
+
+#[test]
+fn exact_pi_constructor_and_setter_measured_boundaries_keep_publication_atomic() {
+    for setter in [false, true] {
+        for full in [false, true] {
+            let setup = || {
+                let (mut runtime, mut doc) = fresh();
+                let target = custom_target(&mut runtime, &mut doc);
+                let id = doc.create_processing_instruction("p", "old");
+                if full {
+                    doc.nodes.shrink_to_fit();
+                } else {
+                    doc.nodes.try_reserve_exact(1).unwrap();
+                }
+                (runtime, doc, target, id)
+            };
+            let operation = |runtime: &mut Runtime, doc: &mut Document, target: Value, id| {
+                let data = Value::String(vec![0xd800, 0, 0xdc00].into());
+                if setter {
+                    runtime.pi_native("setData", Value::Node(id), &[data], doc)
+                } else {
+                    runtime.pi_construct(&[Value::String("p".into()), data], target, doc)
+                }
+            };
+            let (mut witness, mut doc, target, id) = setup();
+            let before = (witness.steps, witness.allocated);
+            operation(&mut witness, &mut doc, target, id).unwrap();
+            let (work, heap) = (before.0 - witness.steps, witness.allocated - before.1);
+            for (steps, available, success) in [
+                (work, heap, true),
+                (work - 1, heap, false),
+                (work, heap - 1, false),
+            ] {
+                let (mut runtime, mut doc, target, id) = setup();
+                let before = format!("{doc:?}");
+                let count = doc.nodes.len();
+                runtime.steps = steps;
+                runtime.allocated = MAX_HEAP - available;
+                let result = operation(&mut runtime, &mut doc, target, id);
+                if success {
+                    let value = result.unwrap();
+                    let selected = if setter {
+                        id
+                    } else {
+                        assert_eq!(value, Value::Node(count));
+                        count
+                    };
+                    let NodeKind::ProcessingInstruction { target, data } =
+                        &doc.nodes[selected].kind
+                    else {
+                        panic!()
+                    };
+                    assert_eq!(target, "p");
+                    assert_eq!(data.raw_units(), Some([0xd800, 0, 0xdc00].as_slice()));
+                    assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+                } else {
+                    assert!(result.unwrap_err().is_resource_limit());
+                    assert_eq!(format!("{doc:?}"), before);
+                    // Failure may leave spare node capacity, but never an override
+                    // on the unused ID. A later default PI proves that distinction.
+                    runtime.steps = MAX_STEPS;
+                    runtime.allocated = 0;
+                    let constructor = runtime.environments[0].bindings["ProcessingInstruction"]
+                        .value
+                        .clone();
+                    let node = runtime
+                        .pi_construct(&[Value::String("p".into())], constructor, &mut doc)
+                        .unwrap();
+                    let expected =
+                        Value::Object(runtime.dom_proto_id("ProcessingInstruction").unwrap());
+                    assert_eq!(
+                        runtime.prototype_of_in(&node, &doc).unwrap(),
+                        Some(expected)
+                    );
+                }
+                clean(&runtime);
+            }
+        }
     }
 }

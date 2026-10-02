@@ -1,0 +1,52 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Exact DOM production through callbacks</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#construct{left:0}#factory{left:50px}#setter{left:100px}#splice{left:150px}#callback{left:200px}#roundtrip{left:250px}
+#change{position:absolute;top:60px;left:0}#exact{position:absolute;top:100px;left:0;font-size:24px}#result{position:absolute;top:140px;left:0}
+</style>
+<div id="construct" class="sample"></div><div id="factory" class="sample"></div>
+<div id="setter" class="sample"></div><div id="splice" class="sample"></div>
+<div id="callback" class="sample"></div><div id="roundtrip" class="sample"></div>
+<button id="change" type="button">Produce exact text</button><div id="exact"></div><div id="result"></div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function units(value,expected){check(value.length===expected.length,'unit length');for(let i=0;i<expected.length;i++)check(value.charCodeAt(i)===expected[i],'unit '+i);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+const exact=document.getElementById('exact'),result=document.getElementById('result'),change=document.getElementById('change');
+const live=new Text('A\uD800B\uDC00'),statusText=new Text('ready');
+exact.appendChild(live);result.appendChild(statusText);
+const setData=Object.getOwnPropertyDescriptor(CharacterData.prototype,'data').set;
+let runs=0;
+function apply(color){
+  check(runs===(color==='green'?0:1),'load then click');
+  if(runs===1){units(live.data,[65,55296,66,56320]);live.replaceData(0,live.length,'C\uDC00D\uD800');}
+  units(live.data,runs===0?[65,55296,66,56320]:[67,56320,68,55296]);
+  check(exact.firstChild===live&&live.parentNode===exact&&live.length===4,'same connected exact Text');mark('construct',color);
+
+  const text=document.createTextNode('\uD800\uD834\uDD1E'),comment=new Comment('\uDC00'),pi=document.createProcessingInstruction('probe','\uD800');
+  units(text.data,[55296,55348,56606]);units(comment.data,[56320]);units(pi.data,[55296]);
+  check(pi.target==='probe'&&text!==live,'factory identities');mark('factory',color);
+
+  check(typeof setData==='function','saved setter');setData.call(comment,'\uD800');units(comment.data,[55296]);
+  setData.call(comment,null);check(comment.data==='','null setter default');setData.call(comment);check(comment.data==='undefined','missing setter value');
+  setData.call(comment,'\uDC00');units(comment.data,[56320]);mark('setter',color);
+
+  const repair=new Text('A\uD800x\uDC00B');repair.deleteData(2,1);units(repair.data,[65,55296,56320,66]);
+  repair.insertData(2,'\uDC00\uD800');units(repair.data,[65,55296,56320,55296,56320,66]);
+  units(repair.substringData(1,1),[55296]);mark('splice',color);
+
+  const current=new Text('old');let conversions=0;
+  current.appendData({toString(){conversions++;current.data='\uD800';return '\uDC00';}});
+  check(conversions===1,'one conversion');units(current.data,[55296,56320]);mark('callback',color);
+
+  pi.data='?>\uD800';const copy=pi.cloneNode(false);units(copy.data,[63,62,55296]);
+  check(copy!==pi&&copy.target==='probe','clone skips creation validation');units(JSON.parse(JSON.stringify(live.data)),runs===0?[65,55296,66,56320]:[67,56320,68,55296]);
+  let error;try{new ProcessingInstruction('probe','?>\uD800');}catch(caught){error=caught;}
+  check(error instanceof DOMException&&error.name==='InvalidCharacterError'&&error.code===5,'creation rejects terminator');mark('roundtrip',color);
+  statusText.data=runs===0?'ready':'6';check(result.firstChild===statusText,'retained result Text');runs++;
+}
+change.onclick=function(){check(this===change,'click receiver');apply('blue');check(runs===2,'two runs');document.body.className='clicked';};
+apply('green');document.body.className='ready';
+</script>

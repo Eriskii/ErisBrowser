@@ -716,33 +716,12 @@ impl Runtime {
             _ => {}
         }
         let text = if matches!(kind, ConstructorKind::Text | ConstructorKind::Comment) {
-            let text = match args.first() {
+            Some(match args.first() {
                 None | Some(Value::Undefined) => JsString::default(),
                 Some(value) => self.string_hint(value.clone(), doc)?,
-            };
-            self.work(1 + text.len())?;
-            let mut bytes = 0usize;
-            for scalar in char::decode_utf16(text.units().iter().copied()) {
-                bytes += scalar
-                    .map_err(|_| {
-                        ScriptError::unsupported(
-                            "unpaired surrogate DOMString storage is not implemented",
-                        )
-                    })?
-                    .len_utf8();
-            }
-            self.work(1 + text.len())?;
-            self.charge(bytes)?;
-            let mut output = String::new();
-            output
-                .try_reserve_exact(bytes)
-                .map_err(|_| ScriptError::resource("DOM constructor text allocation failed"))?;
-            for scalar in char::decode_utf16(text.units().iter().copied()) {
-                output.push(scalar.unwrap());
-            }
-            output
+            })
         } else {
-            String::new()
+            None
         };
         let interface = name.strip_prefix(PREFIX).unwrap();
         let default = Value::Object(self.dom_proto_id(interface)?);
@@ -754,35 +733,48 @@ impl Runtime {
         };
         self.tick()?;
         let overrides_default = prototype != default;
+        let plan = text
+            .as_ref()
+            .map(|text| self.plan_dom_data(text.units().iter().copied(), text.len(), text.len()))
+            .transpose()?;
+        let bytes = plan.as_ref().map_or(0, |plan| plan.stored_bytes());
         // Re-read document limits after every author conversion/prototype getter.
-        if !doc.admits_text_node(text.len()) {
+        if plan.is_some() {
+            self.work(8)?;
+        }
+        if !doc.admits_text_node(bytes) {
             return Err(ScriptError::resource(
                 "DOM constructor node or text limit exceeded",
             ));
         }
         self.ensure_dom_capacity(doc, 1)?;
         let count = self.dom_prototypes.overrides.len();
-        // The DOM builder retains another UTF-8 copy after the two UTF-16
-        // conversion passes. Admit it before creating either kind of node.
-        self.work(1 + text.len())?;
-        self.charge(text.len())?;
+        // Exact character data owns one payload; its builder pays that buffer.
+        // Retain the empty fragment path's existing fixed work allowance.
+        if plan.is_none() {
+            self.work(1)?;
+        }
         if overrides_default {
             self.work(search(count, 0) + moves(count))?;
             self.charge(insert_bytes::<NodeId, Value>(count))?;
         }
-        if doc.nodes.len() == doc.nodes.capacity() {
-            self.work(1 + 2 * doc.nodes.len())?;
-            self.charge(
-                (doc.nodes.len() + 1).saturating_mul(std::mem::size_of::<crate::dom::Node>()),
-            )?;
-            doc.nodes
-                .try_reserve_exact(1)
-                .map_err(|_| ScriptError::resource("DOM constructor node allocation failed"))?;
-        }
+        let text = match plan {
+            Some(plan) => {
+                let text = self.emit_dom_data(plan)?;
+                self.work(8)?;
+                text
+            }
+            None => crate::dom::DomString::default(),
+        };
+        self.dom_reserve_node_growth(doc, 1)?;
         let id = match kind {
             ConstructorKind::DocumentFragment => doc.create_document_fragment(),
-            ConstructorKind::Text => doc.create_text_node(&text),
-            ConstructorKind::Comment => doc.create_comment(&text),
+            ConstructorKind::Text => doc
+                .create_text_node_owned(text)
+                .map_err(processing_instruction::dom_data_error)?,
+            ConstructorKind::Comment => doc
+                .create_comment_owned(text)
+                .map_err(processing_instruction::dom_data_error)?,
             _ => unreachable!(),
         };
         if overrides_default {

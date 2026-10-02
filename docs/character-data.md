@@ -27,19 +27,19 @@ ordinary property behavior.
 
 Substring results preserve individual UTF-16 units, including half of a
 surrogate pair. Only the selected result is subject to the JavaScript string
-length limit; traversal is bounded by the unchanged work allowance. Mutations
-validate the complete splice before publishing scalar output. A retained
-unit and an inserted unit may repair a pair. These runtime methods still require
-scalar data in the target node and refuse a final unpaired sequence, with the outer write
-refused. This is an implementation gap, not a DOM exception required by the
-standard.
+length limit; traversal is bounded by the unchanged work allowance. The
+[exact production increment](dom-production.md) now reads scalar and exact-unit
+node data directly. Mutations classify the complete splice before choosing
+canonical scalar or exact-unit storage. A retained unit and an inserted unit may
+repair a pair; deletion may join formerly separated units. Unmatched units
+elsewhere survive unchanged, and the insertion is never decoded in isolation.
 
-The [DOM string foundation](dom-strings.md) now stores host-supplied unpaired
-units canonically and preserves them through data/length getters, selected text
-reads, cloning and ERWA snapshots. It does not yet migrate these five methods or
-the JavaScript constructors/setters to produce exact nonscalar data. The eight
-existing standards-success modes remain unmet pending their next replay; their
-sources and historical refusal observations remain unchanged.
+The [DOM string foundation](dom-strings.md) preserves the result through exact
+data/length getters, selected text reads, cloning and unchanged ERWA snapshots.
+The eight original standards-success modes retain their source bytes and literal
+unit expectations; the producer release now passes all eight, bringing the
+original replay to 34/34. Their earlier Unsupported
+observations remain historical evidence, not a new expected outcome.
 
 Replacement preserves the node's identity, links and PI target. Checked storage
 accounts for released old data when checking the document byte limit, while the

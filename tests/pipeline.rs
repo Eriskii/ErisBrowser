@@ -1321,3 +1321,105 @@ fn character_data_methods_update_connected_text_and_pixels_through_callbacks() {
         true,
     );
 }
+
+#[test]
+fn exact_dom_production_preserves_connected_units_and_literal_replacement_pixels() {
+    use eris::dom::NodeKind;
+    let source = include_str!("fixtures/dom-production.html");
+    let mut actual = page(source);
+    let fonts = Fonts::new();
+    let mut retained = None;
+    for (index, (state, color, units, projected, result)) in [
+        ("ready", 0x008000, [65, 55296, 66, 56320], "A�B�", "ready"),
+        ("clicked", 0x0000ff, [67, 56320, 68, 55296], "C�D�", "6"),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if index == 1 {
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        let body = actual.document.query_selector("body").unwrap();
+        assert_eq!(actual.document.attr(body, "class"), Some(state));
+        let host = actual.document.query_selector("#exact").unwrap();
+        let status = actual.document.query_selector("#result").unwrap();
+        assert_eq!(actual.document.nodes[host].children.len(), 1);
+        assert_eq!(actual.document.nodes[status].children.len(), 1);
+        let text = actual.document.nodes[host].children[0];
+        let status_text = actual.document.nodes[status].children[0];
+        if let Some(previous) = retained {
+            assert_eq!(
+                (text, status_text),
+                previous,
+                "callback keeps both Text IDs"
+            );
+        } else {
+            retained = Some((text, status_text));
+        }
+        assert_eq!(actual.document.nodes[text].parent, Some(host));
+        let NodeKind::Text(data) = &actual.document.nodes[text].kind else {
+            panic!("JavaScript must create a real Text node");
+        };
+        assert_eq!(data.raw_units(), Some(units.as_slice()));
+        assert_eq!(actual.document.text_content(status), result);
+
+        // Keep the same rendered tree but replace only the exact live payload
+        // with independently authored scalar replacement characters. This page
+        // never runs the fixture's JavaScript, and no expected text is decoded
+        // from the actual stored units or actual drawing commands.
+        let mut reference = Page::from_html(actual.document.url().clone(), source, false);
+        reference.document = actual.document.clone();
+        // This public scalar mutator performs replacement-aware DOM admission.
+        // Verify its complete result so parser-style clamping cannot hide a
+        // failed reference setup; both old and literal payloads occupy 8 bytes.
+        reference.document.set_text_content(text, projected);
+        let NodeKind::Text(reference_data) = &reference.document.nodes[text].kind else {
+            panic!("reference must retain a Text node");
+        };
+        assert_eq!(reference_data.scalar(), Some(projected));
+        assert_eq!(reference.document.nodes[text].parent, Some(host));
+        assert_eq!(reference.document.nodes.len(), actual.document.nodes.len());
+        assert_eq!(
+            reference.document.retained_bytes(),
+            actual.document.retained_bytes()
+        );
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        for expected in [projected, result] {
+            assert!(layout.commands.iter().any(
+                |command| matches!(command, DrawCommand::Text { text, .. } if text == expected)
+            ));
+        }
+        let mut painted = Canvas::new(320, 240).unwrap();
+        painted.clear(Color::WHITE);
+        painted.paint(&layout.commands, &fonts, &actual.images, 0.0, 0.0);
+        let mut expected = Canvas::new(320, 240).unwrap();
+        expected.clear(Color::WHITE);
+        expected.paint(
+            &reference.layout(320.0, 240.0, &fonts).commands,
+            &fonts,
+            &reference.images,
+            0.0,
+            0.0,
+        );
+        assert!(!painted.exhausted() && !expected.exhausted());
+        assert_eq!(painted.pixels, expected.pixels, "{state} literal reference");
+        assert!(
+            painted.pixels[100 * 320..135 * 320]
+                .iter()
+                .any(|pixel| *pixel != 0xffffff)
+        );
+        for x in [10, 60, 110, 160, 210, 260] {
+            assert_eq!(painted.pixels[10 * 320 + x], color, "{state}, x={x}");
+        }
+        let NodeKind::Text(data) = &actual.document.nodes[text].kind else {
+            unreachable!()
+        };
+        assert_eq!(
+            data.raw_units(),
+            Some(units.as_slice()),
+            "paint must not rewrite data"
+        );
+    }
+}

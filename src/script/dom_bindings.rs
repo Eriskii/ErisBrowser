@@ -403,9 +403,9 @@ impl Runtime {
         self.alloc_native(full, Value::Undefined)
     }
 
-    // DOM storage currently uses UTF-8. Preserve the checked JavaScript
-    // conversion before that documented lossy boundary; reserve a worst-case
-    // UTF-8 result before decoding, including isolated surrogate replacement.
+    // Legacy scalar-only host interfaces retain this explicit replacement
+    // boundary after checked conversion. Exact character-data producers use
+    // the canonical DOM data builder instead.
     pub(super) fn dom_string(&mut self, value: Value, doc: &mut Document) -> Result<String> {
         let text = self.string_hint(value, doc)?;
         self.work(1 + text.len() / 8)?;
@@ -528,10 +528,23 @@ impl Runtime {
                 Ok(Value::Node(doc.create_element(&tag.to_ascii_lowercase())))
             }
             "createTextNode" => {
-                let text = self.dom_string(arg(0), doc)?;
+                let text = self.string_hint(arg(0), doc)?;
+                let plan =
+                    self.plan_dom_data(text.units().iter().copied(), text.len(), text.len())?;
+                self.work(8)?;
+                if !doc.admits_text_node(plan.stored_bytes()) {
+                    return Err(ScriptError::resource(
+                        "DOM text node or data limit exceeded",
+                    ));
+                }
                 self.ensure_dom_capacity(doc, 1)?;
-                self.charge(text.len())?;
-                Ok(Value::Node(doc.create_text_node(&text)))
+                let data = self.emit_dom_data(plan)?;
+                self.work(8)?;
+                self.dom_reserve_node_growth(doc, 1)?;
+                let id = doc
+                    .create_text_node_owned(data)
+                    .map_err(processing_instruction::dom_data_error)?;
+                Ok(Value::Node(id))
             }
             "createDocumentFragment" => {
                 self.ensure_dom_capacity(doc, 1)?;
@@ -876,6 +889,94 @@ mod tests {
             add.call(b.classList,'other');assert.sameValue(b.className,'other');assert.sameValue(a.className,'');
         "#,
         );
+    }
+
+    #[test]
+    fn create_text_node_preserves_units_after_conversion_and_distinguishes_defaults() {
+        check(
+            r#"
+            var input = {}, calls = 0;
+            input[Symbol.toPrimitive] = function (hint) {
+                if (hint !== 'string') throw new Error('hint');
+                calls++; return 'A\ud800B\udc00';
+            };
+            var node = document.createTextNode(input);
+            assert.sameValue(calls, 1);
+            assert.sameValue(node.data, 'A\ud800B\udc00');
+            assert.sameValue(node.length, 4);
+            assert.sameValue(node.data.charCodeAt(1), 55296);
+            assert.sameValue(node.data.charCodeAt(3), 56320);
+            assert.sameValue(document.createTextNode(undefined).data, 'undefined');
+            assert.sameValue(document.createTextNode(null).data, 'null');
+            assert.sameValue(new Text(undefined).data, '');
+            assert.sameValue(new Comment(undefined).data, '');
+            assert.sameValue(new Text(null).data, 'null');
+            assert.sameValue(new Comment(null).data, 'null');
+        "#,
+        );
+    }
+
+    #[test]
+    fn create_text_node_measured_boundaries_publish_no_partial_node() {
+        fn setup(grow: bool) -> (Runtime, Document) {
+            let mut runtime = Runtime::new();
+            let mut doc = Document::parse("<p>kept</p>");
+            doc.nodes = doc.nodes.into_boxed_slice().into_vec();
+            if !grow {
+                doc.nodes.try_reserve_exact(1).unwrap();
+            }
+            runtime.steps = MAX_STEPS;
+            (runtime, doc)
+        }
+        for units in [vec![0x41, 0xd834, 0xdd1e], vec![0xd800, 0x41, 0xdc00]] {
+            for grow in [false, true] {
+                let args = [Value::String(units.clone().into())];
+                let (mut measure, mut doc) = setup(grow);
+                let before_heap = measure.allocated;
+                measure
+                    .dom_native("createTextNode", Value::Document, &args, &mut doc)
+                    .unwrap();
+                let work = MAX_STEPS - measure.steps;
+                let heap = measure.allocated - before_heap;
+                for (steps, available, success) in [
+                    (work, heap, true),
+                    (work - 1, heap, false),
+                    (work, heap - 1, false),
+                ] {
+                    let (mut runtime, mut doc) = setup(grow);
+                    let before = format!("{doc:?}");
+                    let count = doc.nodes.len();
+                    let capacity = doc.nodes.capacity();
+                    runtime.steps = steps;
+                    runtime.allocated = MAX_HEAP - available;
+                    let result =
+                        runtime.dom_native("createTextNode", Value::Document, &args, &mut doc);
+                    if success {
+                        assert_eq!(result.unwrap(), Value::Node(count));
+                        assert_eq!(doc.nodes.len(), count + 1);
+                        let NodeKind::Text(data) = &doc.nodes[count].kind else {
+                            panic!("not Text")
+                        };
+                        assert_eq!(data.units().collect::<Vec<_>>(), units);
+                        assert_eq!(runtime.steps, 0);
+                        assert_eq!(runtime.allocated, MAX_HEAP);
+                    } else {
+                        assert!(result.unwrap_err().is_resource_limit());
+                        assert_eq!(format!("{doc:?}"), before);
+                        assert_eq!(doc.nodes.capacity(), capacity);
+                    }
+                    assert_eq!(
+                        (
+                            runtime.calls,
+                            runtime.stack_units,
+                            runtime.eval_depth,
+                            runtime.frames.len()
+                        ),
+                        (0, 0, 0, 0)
+                    );
+                }
+            }
+        }
     }
 
     #[test]

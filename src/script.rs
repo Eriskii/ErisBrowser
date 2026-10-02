@@ -26,6 +26,7 @@ mod construction;
 mod data_view;
 mod date_builtins;
 mod dom_bindings;
+mod dom_data;
 mod dom_own_properties;
 mod dom_prototypes;
 mod iterators;

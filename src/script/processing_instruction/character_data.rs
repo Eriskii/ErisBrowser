@@ -94,14 +94,12 @@ impl Runtime {
             Operation::Replace => self.string_hint(args[2].clone(), doc)?,
             _ => JsString::default(),
         };
-        let old = current_data(doc, id)?.scalar().ok_or_else(|| {
-            ScriptError::unsupported("nonscalar DOM data methods are not implemented")
-        })?;
+        let old = current_data(doc, id)?;
         if matches!(operation, Operation::Substring) {
             return self.character_data_substring(old, offset, count);
         }
-        self.work(1 + old.len())?;
-        let length = old.encode_utf16().count();
+        self.work(1 + old.stored_bytes())?;
+        let length = old.units().count();
         let offset = if matches!(operation, Operation::Append) {
             length
         } else {
@@ -111,11 +109,15 @@ impl Runtime {
             return Err(self.character_data_index_error()?);
         }
         let count = count.min(length - offset);
-        let result = self.character_data_splice(old, length, offset, count, &inserted)?;
+        let plan = self.character_data_splice(old, length, offset, count, &inserted)?;
+        self.work(8)?;
+        doc.check_character_data_replacement(id, plan.stored_bytes())
+            .map_err(dom_data_error)?;
+        let result = self.emit_dom_data(plan)?;
         // The owned output is already paid. This fresh checked publication
         // reuses replacement-aware DOM admission and moves without copying.
         self.work(8)?;
-        doc.replace_character_data(id, result.into())
+        doc.replace_character_data(id, result)
             .map_err(dom_data_error)?;
         Ok(Value::Undefined)
     }
@@ -129,11 +131,11 @@ impl Runtime {
 
     fn character_data_substring(
         &mut self,
-        old: &str,
+        old: &crate::dom::DomString,
         offset: usize,
         count: usize,
     ) -> Result<Value> {
-        let mut units = old.encode_utf16();
+        let mut units = old.units();
         for _ in 0..offset {
             // Includes attempted EOF: at most four UTF8 bytes, the UTF16
             // iterator state, and the surrounding loop decision per step.
@@ -165,63 +167,35 @@ impl Runtime {
         output
             .try_reserve_exact(selected)
             .map_err(|_| ScriptError::resource("CharacterData substring allocation failed"))?;
-        output.extend(old.encode_utf16().skip(offset).take(selected));
+        output.extend(old.units().skip(offset).take(selected));
         Ok(Value::String(output.into()))
     }
 
-    fn character_data_splice(
+    fn character_data_splice<'a>(
         &mut self,
-        old: &str,
+        old: &'a crate::dom::DomString,
         length: usize,
         offset: usize,
         count: usize,
-        inserted: &JsString,
-    ) -> Result<String> {
+        inserted: &'a JsString,
+    ) -> Result<dom_data::DomDataPlan<impl Iterator<Item = u16> + Clone + 'a + use<'a>>> {
         let end = offset.checked_add(count).ok_or_else(work_overflow)?;
         let result_units = length
             .checked_sub(count)
             .and_then(|n| n.checked_add(inserted.len()))
             .ok_or_else(work_overflow)?;
-        // Each pass can decode the old UTF8 prefix twice (suffix.skip starts
-        // at zero), visit the insertion, then decode/size all combined units.
-        let pass = old
-            .len()
+        // Both old iterators begin at zero; stored bytes bound their unit
+        // traversal for either payload. Canonicalize the complete splice.
+        let source_work = old
+            .stored_bytes()
             .checked_mul(2)
             .and_then(|n| n.checked_add(inserted.len()))
-            .and_then(|n| {
-                result_units
-                    .checked_mul(2)
-                    .and_then(|units| n.checked_add(units))
-            })
-            .and_then(|n| n.checked_add(8))
             .ok_or_else(work_overflow)?;
-        let sequence = || {
-            old.encode_utf16()
-                .take(offset)
-                .chain(inserted.units().iter().copied())
-                .chain(old.encode_utf16().skip(end))
-        };
-        self.work(pass)?;
-        let mut bytes = 0usize;
-        for scalar in char::decode_utf16(sequence()) {
-            let scalar = scalar.map_err(|_| {
-                ScriptError::unsupported("unpaired surrogate DOMString storage is not implemented")
-            })?;
-            bytes = bytes
-                .checked_add(scalar.len_utf8())
-                .ok_or_else(work_overflow)?;
-        }
-        // The complete splice determines representability: an inserted lone
-        // unit can validly pair with a retained prefix or suffix code unit.
-        self.work(pass.checked_add(bytes).ok_or_else(work_overflow)?)?;
-        self.charge(bytes)?;
-        let mut output = String::new();
-        output
-            .try_reserve_exact(bytes)
-            .map_err(|_| ScriptError::resource("CharacterData replacement allocation failed"))?;
-        for scalar in char::decode_utf16(sequence()) {
-            output.push(scalar.unwrap());
-        }
-        Ok(output)
+        let sequence = old
+            .units()
+            .take(offset)
+            .chain(inserted.units().iter().copied())
+            .chain(old.units().skip(end));
+        self.plan_dom_data(sequence, result_units, source_work)
     }
 }

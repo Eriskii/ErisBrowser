@@ -4419,3 +4419,50 @@ a complete final default rerun passed, as did the final native suite. All attemp
 and the bounded review are retained. No new GPU speed or Chromium comparison is
 assigned to this DOM change; full web compatibility and production security
 remain unachieved.
+
+### Exact JavaScript character-data production
+
+[Exact production](dom-production.md) now covers Text/Comment/PI constructors,
+Document text/PI factories, the CharacterData data setter and all five data
+methods. A paid canonical builder retains every UTF-16 unit, emits one chosen
+payload and validates a complete splice before publication. Fresh replacement
+admission precedes output allocation. Conversion order, genuine brands,
+creation-only PI validation, callback effects and sparse constructor overrides
+remain covered; substring still visits only its reached prefix and result.
+
+The final source passes **1,577 default tests on Rust 1.88** and **1,700 tests
+with Vulkan rasterization on Rust 1.98**, including confinement checks, with no
+failures or ignored tests. Strict all-target Clippy passes on Rust 1.98 with
+Vulkan rasterization and Rust 1.88 with the presenter; formatting passes.
+The 25 added test groups include complete-splice pair repair, retained isolated
+units, measured exact/one-short work and allocation boundaries, fresh callback
+state and direct/worker pixel witnesses. Focused validation passes 105 distinct
+tests across 107 executions. Bootstrap remains 8,246 unused work units,
+1,777,574 charged bytes, 673 objects/capacity, 321 native entries and 25 legacy
+prototype entries. Limits, reset behavior, ERWA and EWB1 are unchanged.
+
+The final release SHA-256 is
+`4e613cf659787db1093ba1993bb4739e1ac0eb795d30ab164bbecca0df4ad207`.
+The original 34 CharacterData modes now all pass, including eight unchanged
+standards-success expectations previously observed as Unsupported. No source
+or expected final unit array changed. Across 4,064 established case modes, only
+these eight gains occur; there are no losses or other complete-record changes.
+All 364 existing controls are unchanged. The 24 new independent modes advance
+from 2 to 24 passing expectations, with all eight new controls verified on both
+releases. PI remains 38/40. The array-descriptor report's two gains against its
+older gate predate this increment and are unchanged versus the foundation.
+
+Initial observations are retained: source review corrected integration tests'
+private API calls before compilation; compile one found a test accessing a
+sibling-private override map, fixed without changing production or public APIs;
+the first worker command selected one ignored test, then the corrected command
+executed it unchanged. Replay preparation corrected an intrinsic Error identity
+expectation and made absent observations retain timeout/adapter-error rows.
+All case source bytes and ordinary-success expectations stayed unchanged.
+
+See [the summary](evidence/dom-production.json) and its verified archive for
+source manifests, exact commands/logs, all before/after records and independent
+reviews. The [preceding storage checkpoint CI](evidence/dom-strings-ci.json)
+passed all nine jobs. Legacy container text writers, attributes, exact HTML
+serialization, unit-aware editing and broader Node/reaction semantics remain
+unfinished. No new GPU performance or Chromium comparison is claimed.
