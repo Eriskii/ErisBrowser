@@ -159,7 +159,18 @@ impl Runtime {
             "setNodeValue" => (true, false),
             "getTextContent" => (false, true),
             "setTextContent" => (true, true),
-            _ => return Err(ScriptError::type_error("unknown Node accessor")),
+            _ => {
+                // Keep the four successful accessor routes unchanged. Only an
+                // unmatched suffix pays this additional getter comparison.
+                self.work(1)?;
+                if method.len() == 14 {
+                    self.work(14)?;
+                    if method == "getIsConnected" {
+                        return self.node_is_connected(receiver, doc);
+                    }
+                }
+                return Err(ScriptError::type_error("unknown Node accessor"));
+            }
         };
         let id = match receiver {
             Value::Document

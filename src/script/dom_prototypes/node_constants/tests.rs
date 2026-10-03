@@ -48,7 +48,7 @@ cases!(
 fn prior_node_constant_inventory_after_removing_later_configurable_operations() {
     // This historical fixture describes the preceding represented inventory.
     // Deletion/restoration intentionally changes creation order, so each mode
-    // uses a disposable realm; the new equality fixture checks pristine order.
+    // uses a disposable realm; the new connection fixture checks pristine order.
     for strict in [false, true] {
         let mut runtime = Runtime::try_new().unwrap();
         let mut doc = Document::parse("");
@@ -61,10 +61,15 @@ fn prior_node_constant_inventory_after_removing_later_configurable_operations() 
               if(!d||!d.configurable||typeof d.value!=='function')throw new Error('later operation descriptor');
               saved.push(d);
             }}
+            const connection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+            if(!connection||typeof connection.get!=='function'||connection.set!==undefined||
+               !connection.enumerable||!connection.configurable)throw new Error('connection descriptor');
             try{{
+              if(!delete Node.prototype.isConnected)throw new Error('connection delete');
               for(var i=0;i<names.length;i++)if(!delete Node.prototype[names[i]])throw new Error('later operation delete');
               if(nodeConstantCases.prototype_complete_key_order()!==true)throw new Error('prior inventory');
             }}finally{{
+              Object.defineProperty(Node.prototype,'isConnected',connection);
               for(var i=0;i<names.length;i++)Object.defineProperty(Node.prototype,names[i],saved[i]);
             }}
             for(var i=0;i<names.length;i++){{
@@ -73,6 +78,10 @@ fn prior_node_constant_inventory_after_removing_later_configurable_operations() 
                  restored.enumerable!==d.enumerable||restored.configurable!==d.configurable)
                 throw new Error('restore descriptor');
             }}
+            const restoredConnection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+            if(restoredConnection.get!==connection.get||restoredConnection.set!==undefined||
+               restoredConnection.enumerable!==connection.enumerable||restoredConnection.configurable!==connection.configurable)
+              throw new Error('connection restoration');
             return true;
           }})()
         "#
@@ -163,11 +172,11 @@ fn setup() -> (Runtime, usize, usize, PropertyKey) {
         let values = &bag.values;
         bag.order.retain(|key| values.contains_key(key));
         bag.order.shrink_to_fit();
-        let capacity = if owner == prototype { 28 } else { 21 };
+        let capacity = if owner == prototype { 29 } else { 21 };
         bag.order
             .try_reserve_exact(capacity - bag.order.len())
             .unwrap();
-        let old = if owner == prototype { 9 } else { 3 };
+        let old = if owner == prototype { 10 } else { 3 };
         assert_eq!(bag.values.len(), old);
         assert_eq!(bag.order.len(), old);
     }
@@ -304,7 +313,7 @@ fn measured_exact_and_one_short_admission_precedes_taking_either_map() {
             result.unwrap();
             assert_eq!(runtime.steps, 0);
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects[prototype].values.len(), 27);
+            assert_eq!(runtime.objects[prototype].values.len(), 28);
             assert_eq!(runtime.objects[properties].values.len(), 21);
             assert_eq!(
                 runtime.objects[prototype].order.capacity(),
@@ -341,6 +350,14 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
         snapshot(&runtime, prototype),
         snapshot(&runtime, properties),
     ];
+    let PropertyValue::Accessor {
+        get: Value::Native(connection),
+        set: Value::Undefined,
+    } = &runtime.objects[prototype].values[&PropertyKey::from("isConnected")].value
+    else {
+        panic!("connection getter missing")
+    };
+    let connection = connection.clone();
     let mut handles = Vec::new();
     for name in ["nodeValue", "textContent"] {
         let property = &runtime.objects[prototype].values[&PropertyKey::from(name)];
@@ -376,6 +393,14 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
     runtime
         .install_node_constants(prototype, properties, &tag)
         .unwrap();
+    let PropertyValue::Accessor {
+        get: Value::Native(after),
+        set: Value::Undefined,
+    } = &runtime.objects[prototype].values[&PropertyKey::from("isConnected")].value
+    else {
+        panic!("connection getter missing after batch")
+    };
+    assert!(Rc::ptr_eq(&connection, after));
     for (name, method) in methods {
         let PropertyValue::Data {
             value: Value::Native(after),

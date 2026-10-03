@@ -53,6 +53,10 @@ remain recorded separately.
 element attributes and ordered ordinary children. Template contents are compared
 only when passed separately. All 32 release cases and 16 controls pass; historical
 prototype-inventory failures remain recorded separately.
+[Node.isConnected](docs/node-connected.md) adds an ordinary readonly getter over
+current parent links. It shares the bounded root walk; template content remains
+disconnected from its host. All 32 release cases and 16 controls pass, with a
+real-click branch-move witness in Page and the confined worker.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members

@@ -72,8 +72,11 @@ conversion and fresh ordinary ancestry after callbacks. Shadow roots and their
 composed ancestry remain absent.
 [Structural equality](node-equality.md) adds `isEqualNode` for represented kinds,
 comparing exact retained data, namespaced attributes and ordered ordinary children.
-The comparison uses the existing work and storage limits. Document-position
-comparison and other Node members remain unimplemented.
+The comparison uses the existing work and storage limits.
+[Connection state](node-connected.md) now adds `isConnected` through the shared
+bounded ordinary-root walk, preserving `getRootNode` options and traversal costs.
+Saved getters, readonly assignment and live branch moves are covered.
+Document-position comparison and other Node members remain unimplemented.
 Legacy `innerText`, textarea setters and attribute
 writes, unit-aware native editing, nonscalar source/HTML serialization,
 PI pseudo-attributes, remaining Node/Text operations and mutation notifications

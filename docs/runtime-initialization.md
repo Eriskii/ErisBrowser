@@ -121,3 +121,14 @@ the later constructor property; its order buffer reserves 28 slots. Numeric
 limits and reset sites remain unchanged. Equality's traversal scratch is charged
 separately to author work and cumulative heap; these bootstrap figures do not
 measure wall-clock time or physical memory.
+
+The subsequent [connection checkpoint](node-connected.md) adds one cached getter
+and expands the prototype constant batch from 27 to 28 entries, with 29 order
+slots for the later constructor property. Measured raw initialization retains
+7,292 work units and charges 1,765,502 bytes, with 688 objects/capacity, 321 native
+registry entries and 25 legacy prototypes. Relative to equality this is 524
+additional work units and 3,275 charged bytes, matching the held ledger. The
+constructor batch is unchanged; numeric limits and reset boundaries are unchanged.
+Three descriptive test literals were updated only after the successful measured
+connection test. A separate missed private preconstant count was corrected from
+nine to ten after retaining its six failing observations.

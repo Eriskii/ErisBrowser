@@ -194,3 +194,13 @@ Primary references: [isEqualNode](https://dom.spec.whatwg.org/#dom-node-isequaln
 [Node IDL](https://dom.spec.whatwg.org/#interface-node),
 [operation bindings](https://webidl.spec.whatwg.org/#es-operations), and
 [nullable conversion](https://webidl.spec.whatwg.org/#es-nullable-type).
+
+## Later connection checkpoint
+
+[Node.isConnected](node-connected.md) subsequently expands the pristine prototype
+to 29 keys. This chapter's frozen 28-key case loses both modes and its four
+reflected-order controls become unhealthy; the raw Error/TypeError observations
+remain recorded. Private historical wrappers temporarily remove the later getter,
+restore its exact descriptor and discard the realm. The current connection
+inventory is checked separately. Equality production code and its reached fees
+are unchanged.

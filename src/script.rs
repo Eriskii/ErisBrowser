@@ -33,6 +33,7 @@ mod dom_prototypes;
 mod iterators;
 mod machine;
 mod names;
+mod node_connected;
 mod node_data;
 mod node_equality;
 mod node_normalize;

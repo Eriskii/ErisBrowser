@@ -1674,3 +1674,30 @@ fn node_equality_tracks_exact_structural_changes() {
         ));
     }
 }
+
+#[path = "support/node_connected.rs"]
+mod node_connected_witness;
+
+#[test]
+fn node_connected_tracks_live_tree_membership() {
+    let mut actual = page(node_connected_witness::HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(actual.title(), node_connected_witness::metadata(phase));
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(node_connected_witness::check(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

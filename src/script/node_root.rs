@@ -59,12 +59,20 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<Value> {
         self.work(16)?;
-        let mut current = node_id(&receiver, doc)?;
+        let current = node_id(&receiver, doc)?;
         let _composed = self.node_root_options(args, doc)?;
         // No ShadowRoot kind is represented, so both composed values use the
         // ordinary root. Never follow a template fragment's host. Revisit this
         // branch when an actual ShadowRoot representation is introduced.
         // Only the authentic ID survives the Get; all links below are fresh.
+        self.node_ordinary_root_from_id(current, doc)
+    }
+
+    pub(super) fn node_ordinary_root_from_id(
+        &mut self,
+        mut current: NodeId,
+        doc: &Document,
+    ) -> Result<Value> {
         let mut edges = 0;
         loop {
             self.work(12)?;

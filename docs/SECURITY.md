@@ -775,3 +775,20 @@ and 3,256 charged bytes. The two tested dense 256-edge layouts use 65,681 and
 70,989 body work units, with 13,416 charged bytes each. Sparse IDs reach the
 existing work refusal. These logical accounting checks are not timing, physical
 memory or production-security results.
+
+The [Node connection getter](node-connected.md) authenticates its receiver before
+using the existing paid ordinary-root walk. It performs no authored property
+lookup or extra-argument conversion, follows no template host link and owns no
+traversal storage. The old `getRootNode` options boundary and all walk charges,
+local validation, reciprocal scans, errors and depth limits remain unchanged.
+Only unmatched data-accessor dispatch pays the new getter comparison. Generic
+VM/name-copy/diagnostic allocations retain their existing boundaries.
+
+Private tests cover work cuts, saved-call heap/work refusal and cleanup,
+malformed reached links, an accepted 256-edge snapshot and overdepth refusal.
+A wide parent scan preserves completed argument effects and fails terminally
+without running JavaScript catch/finally. Ordinary readonly semantics introduce
+no legacy fallback. Metadata admission adds one cached getter and retains both
+constant-map guards. No quotas, reset sites, worker authority or wire formats
+change. This remains bounded subset validation, with the existing physical
+allocation limitations; it does not establish production security.

@@ -45,7 +45,6 @@ fn independent(name: &str) {
 macro_rules! cases {($($name:ident),* $(,)?)=>{$(#[test]fn $name(){independent(stringify!($name));})*};}
 cases!(
     metadata_and_inherited_identity,
-    represented_complete_key_order,
     required_nullable_argument_without_coercion,
     authentic_receiver_and_argument_brands,
     exact_character_data_and_distinct_kinds,
@@ -61,6 +60,37 @@ cases!(
     internal_fields_ignore_public_shadows,
     authentic_alternate_prototype_does_not_change_equality,
 );
+
+#[test]
+fn prior_equality_inventory_after_removing_configurable_connection_accessor() {
+    // Restoration changes creation order, so each mode uses a disposable realm.
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        let source = format!(
+            r#"{CASES}
+        (function(){{
+          const saved=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+          if(!saved||typeof saved.get!=='function'||saved.set!==undefined||
+             !saved.enumerable||!saved.configurable)throw new Error('connection descriptor');
+          try{{
+            if(!delete Node.prototype.isConnected)throw new Error('connection delete');
+            if(nodeEqualityCases.represented_complete_key_order()!==true)throw new Error('prior equality inventory');
+          }}finally{{Object.defineProperty(Node.prototype,'isConnected',saved);}}
+          const d=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+          if(d.get!==saved.get||d.set!==undefined||d.enumerable!==saved.enumerable||
+             d.configurable!==saved.configurable)throw new Error('connection restoration');
+          return true;
+        }})()"#
+        );
+        let result = if strict {
+            runtime.execute_strict(&source, &mut doc)
+        } else {
+            runtime.execute(&source, &mut doc)
+        };
+        assert_eq!(result.unwrap(), Value::Bool(true));
+        clean(&runtime);
+    }
+}
 
 #[test]
 fn equality_bootstrap_reports_actual_admission() {

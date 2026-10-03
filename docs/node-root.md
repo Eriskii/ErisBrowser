@@ -150,3 +150,12 @@ Primary references: [getRootNode](https://dom.spec.whatwg.org/#dom-node-getrootn
 [dictionary conversion](https://webidl.spec.whatwg.org/#es-dictionary),
 [boolean conversion](https://webidl.spec.whatwg.org/#es-boolean), and
 [operation bindings](https://webidl.spec.whatwg.org/#es-operations).
+
+## Shared walk for connection state
+
+The later [Node.isConnected checkpoint](node-connected.md) extracts the existing
+1,771-byte paid ordinary-root loop into a shared internal helper. The loop and
+options conversion remain byte-exact. `getRootNode` retains its receiver check,
+options Get, fresh link reads, errors, canonical return values and costs. The new
+getter uses that helper without options conversion and pays separately for its
+Boolean result; template hosts remain outside ordinary ancestry.

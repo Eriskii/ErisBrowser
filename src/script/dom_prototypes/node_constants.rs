@@ -6,7 +6,7 @@ use super::*;
 mod tests;
 
 const COUNT: usize = 18;
-const PROTOTYPE_OLD: usize = 9;
+const PROTOTYPE_OLD: usize = 10;
 const CONSTRUCTOR_OLD: usize = 3;
 const PROTOTYPE_FINAL: usize = PROTOTYPE_OLD + COUNT;
 const CONSTRUCTOR_FINAL: usize = CONSTRUCTOR_OLD + COUNT;
@@ -14,7 +14,7 @@ const MAX_KEY_UNITS: usize = 41;
 const SORTED: [usize; COUNT] = [1, 3, 7, 10, 8, 16, 15, 12, 14, 17, 13, 9, 0, 5, 4, 11, 6, 2];
 
 // Rust 1.88/1.98: three (N-1)-comparison passes at full UTF-16 cost.
-// N=27 has height one and leaf overflows at items 12/24: initial leaf,
+// N=28 has height one and leaf overflows at items 12/24: initial leaf,
 // new root and second leaf, then a third leaf. N=21 still needs three nodes.
 // Right-border repair allocates nothing; full sort scratch remains separate.
 const fn map_work(old: usize, count: usize, overflows: usize, nodes: usize) -> usize {
@@ -77,6 +77,7 @@ fn owner_matches(bag: &ScriptObject, prototype: bool, tag: &PropertyKey) -> bool
             ExpectedKey::Text("contains"),
             ExpectedKey::Text("getRootNode"),
             ExpectedKey::Text("hasChildNodes"),
+            ExpectedKey::Text("isConnected"),
             ExpectedKey::Text("isEqualNode"),
             ExpectedKey::Text("isSameNode"),
             ExpectedKey::Text("nodeValue"),
@@ -94,6 +95,7 @@ fn owner_matches(bag: &ScriptObject, prototype: bool, tag: &PropertyKey) -> bool
     let order: &[ExpectedKey<'_>] = if prototype {
         &[
             ExpectedKey::Tag(tag),
+            ExpectedKey::Text("isConnected"),
             ExpectedKey::Text("nodeValue"),
             ExpectedKey::Text("textContent"),
             ExpectedKey::Text("getRootNode"),

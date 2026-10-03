@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset=utf-8>
+<base id=fixed-base href="https://connected.example/fixed/">
+<title id=heading>Connection ready</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#probe{left:0}#done{left:50px}.ready .sample{background:green}.clicked .sample{background:blue}
+#change{position:absolute;top:60px;left:0}
+#branch{position:absolute;top:100px;left:0;width:300px;font-size:24px;line-height:28px}
+#result{position:absolute;top:160px;left:0;font-size:20px}#template{display:none}
+</style>
+<body>
+<div id=probe class=sample></div><div id=done class=sample></div>
+<button id=change type=button>Move branch</button>
+<div id=branch><span id=label>Alpha</span><!--kept--></div>
+<div id=result>ready</div>
+<template id=template>inside</template>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+const descriptor=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+if(!descriptor||typeof descriptor.get!=='function')throw new TypeError('isConnected getter prerequisite');
+const get=descriptor.get;
+if(get.call(document)!==true||get.call(new Text('guard'))!==false)throw new TypeError('genuine connected and detached prerequisite');
+const body=document.body,branch=document.getElementById('branch'),label=document.getElementById('label');
+const text=label.firstChild,comment=branch.childNodes[1],template=document.getElementById('template');
+const content=template.content,inside=content.firstChild,ordinary=new Text('ordinary');
+const parking=new DocumentFragment(),parked=new Text('parked');
+const title=document.getElementById('heading').firstChild,status=document.getElementById('result').firstChild;
+template.append(ordinary);parking.append(parked);
+let phase=0,trace='';
+function connection(node,expected){
+  check(get.call(node)===expected&&node.isConnected===expected,'saved and ordinary boolean connection');
+}
+function branchState(expected,parent){
+  check(branch.parentNode===parent&&branch.childNodes.length===2&&branch.childNodes[0]===label&&branch.childNodes[1]===comment,'same branch children and parent');
+  check(label.firstChild===text&&label.childNodes.length===1&&text.parentNode===label&&comment.parentNode===branch,'same descendant links');
+  connection(branch,expected);connection(label,expected);connection(text,expected);connection(comment,expected);
+  check(comment.data==='kept','retained Comment data');
+}
+function verify(){
+  connection(document,true);connection(body,true);connection(template,true);connection(ordinary,true);
+  connection(content,false);connection(inside,false);connection(parking,false);connection(parked,false);
+  check(template.childNodes.length===1&&template.firstChild===ordinary&&ordinary.parentNode===template,'ordinary template tree');
+  check(content.parentNode===null&&content.childNodes.length===1&&content.firstChild===inside&&inside.parentNode===content,'hosted fragment remains separate');
+  check(parking.parentNode===null&&parking.childNodes.length===1&&parking.firstChild===parked&&parked.parentNode===parking,'detached fragment retained');
+  check(ordinary.data==='ordinary'&&inside.data==='inside'&&parked.data==='parked','retained detached and ordinary data');
+  branchState(true,body);
+  check(text.data===(phase===0?'Alpha':'Omega')&&trace===(phase===0?'':'fcob'),'literal phase data and move trace');
+}
+Object.defineProperty(branch,'isConnected',{value:'own shadow',writable:true,configurable:true});
+check(branch.isConnected==='own shadow'&&get.call(branch)===true,'saved getter ignores own shadow');
+check(delete branch.isConnected&&branch.isConnected===true,'ordinary getter restored');
+verify();body.className='ready';
+document.getElementById('change').onclick=function(){
+  check(phase===0,'one real click');
+  parking.append(branch);trace+='f';branchState(false,parking);connection(parking,false);
+  content.append(branch);trace+='c';branchState(false,content);connection(template,true);connection(content,false);connection(ordinary,true);
+  template.append(branch);trace+='o';branchState(true,template);connection(inside,false);connection(content,false);
+  body.append(branch);trace+='b';branchState(true,body);
+  check(text.data==='Alpha','moves preserve exact existing Text');
+  text.data='Omega';phase=1;verify();
+  title.data='Connection done';status.data='done';body.className='clicked';
+};
+</script>

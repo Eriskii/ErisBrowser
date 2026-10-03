@@ -4946,3 +4946,52 @@ Sparse reached pages and active-depth frames are paid before growth and cleanup;
 standard BTree allocation still has its inherited infallible process-OOM boundary.
 This increment does not establish complete web compatibility, production security
 or the requested Chromium performance threshold.
+
+## Ordinary Node connection state
+
+[Node.isConnected](node-connected.md) adds a cached readonly getter over current
+ordinary parent links. Its shared root traversal preserves `getRootNode` options,
+fees, validation, errors and the 256-edge endpoint. Template content remains a
+separate root; real ShadowRoot and independent documents remain unimplemented.
+
+Rust 1.88 passes **1,903 default tests** and Rust 1.98 passes **2,026 native Vulkan
+tests**, including ignored confinement tests with four test threads. Both strict
+Clippy checks, formatting and the release adapter build pass. All thirty new
+groups passed initially: sixteen independent cases in both language modes,
+twelve direct boundary groups and Page/worker real-click witnesses. The browser
+checks retain 21 identities and zero click-created nodes while testing four
+branch moves and literal full frames/text/title/status changes.
+
+Focused successful runs contain 250 observations across 243 test names. The first
+constant regression retains eleven passes and six failures from one shared stale
+preconstant size assertion. A one-literal nine-to-ten correction yields seventeen
+passes. Three other descriptive bootstrap literals were updated after measurement.
+All focused attempts retain 261 passes and the six original failures. No production
+source changed after initial compilation.
+
+Raw initialization measures 7,292 remaining work units / 1,765,502 charged bytes /
+688 objects and capacity, with 321 native entries and 25 legacy prototypes. The
+524-work/3,275-byte increase matches the preimplementation ledger. Numeric quotas
+and reset sites remain unchanged. The direct unary 256-edge getter uses 7,458
+work units; wide sibling scans can exhaust the unchanged allowance.
+
+The release records **32/32 new modes and 16/16 healthy controls**, versus 0/32
+and 4/16 in the prior published release. Complete comparison retains **4,330 of
+4,332 historical case rows and 504 of 508 controls byte-exact**. Only the old
+equality inventory's two cases and four controls change, as anticipated; the
+24 older unhealthy inventory rows stay unchanged. Historical healthy totals move
+from 4,238/492 to 4,236/488. The six losses remain Error/TypeError failures; the
+current 29-key cases and paired controls pass independently. Five historical
+profile commands and their aggregate retain exit one.
+
+The first independent result audit stopped at a stale preparation-manifest path
+after verifying source and test results. A reviewed reader-only correction binds
+the actual retained preparation records; the second audit passes with 369 bound
+inputs. The failed report and original reader remain in the evidence archive.
+
+The [summary](evidence/node-connected.json) and
+[archive](evidence/node-connected.tar.gz) retain frozen inputs, twenty final
+source paths, all attempts, exact corrections and an independent result audit.
+The [previous equality commit CI](evidence/node-equality-ci.json) has nine
+successful jobs. Local tests and prior CI do not establish full standards support,
+production security or a Chromium performance comparison.

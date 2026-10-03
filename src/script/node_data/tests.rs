@@ -84,9 +84,9 @@ fn attributes_precede_operations_and_constants_and_have_separate_nonconstructabl
     let (mut runtime, mut doc) = fresh();
     let source = r#"(function(){
         const keys=Object.getOwnPropertyNames(Node.prototype);
-        if(keys[0]!=='nodeValue'||keys[1]!=='textContent'||keys[2]!=='getRootNode'||
-           keys[3]!=='hasChildNodes'||keys[4]!=='normalize'||keys[5]!=='isEqualNode'||
-           keys[6]!=='isSameNode'||keys[7]!=='contains'||keys[8]!=='ELEMENT_NODE'||
+        if(keys[0]!=='isConnected'||keys[1]!=='nodeValue'||keys[2]!=='textContent'||keys[3]!=='getRootNode'||
+           keys[4]!=='hasChildNodes'||keys[5]!=='normalize'||keys[6]!=='isEqualNode'||
+           keys[7]!=='isSameNode'||keys[8]!=='contains'||keys[9]!=='ELEMENT_NODE'||
            keys[keys.length-1]!=='constructor')throw new Error('IDL order');
         const a=Object.getOwnPropertyDescriptor(Node.prototype,'nodeValue');
         const b=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');

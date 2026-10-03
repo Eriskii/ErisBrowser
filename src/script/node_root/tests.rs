@@ -70,15 +70,24 @@ fn prior_root_inventory_after_removing_configurable_equality() {
         (function(){{
           const saved=Object.getOwnPropertyDescriptor(Node.prototype,'isEqualNode');
           if(!saved||!saved.configurable||typeof saved.value!=='function')throw new Error('equality descriptor');
+          const connection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+          if(!connection||typeof connection.get!=='function'||connection.set!==undefined||
+             !connection.enumerable||!connection.configurable)throw new Error('connection descriptor');
           try{{
+            if(!delete Node.prototype.isConnected)throw new Error('connection delete');
             if(!delete Node.prototype.isEqualNode)throw new Error('equality delete');
             if(nodeRootCases.represented_complete_key_order()!==true)throw new Error('prior root inventory');
           }}finally{{
+            Object.defineProperty(Node.prototype,'isConnected',connection);
             Object.defineProperty(Node.prototype,'isEqualNode',saved);
           }}
           const d=Object.getOwnPropertyDescriptor(Node.prototype,'isEqualNode');
           if(d.value!==saved.value||d.writable!==saved.writable||d.enumerable!==saved.enumerable||
              d.configurable!==saved.configurable)throw new Error('equality restoration');
+          const restoredConnection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+          if(restoredConnection.get!==connection.get||restoredConnection.set!==undefined||
+             restoredConnection.enumerable!==connection.enumerable||restoredConnection.configurable!==connection.configurable)
+            throw new Error('connection restoration');
           return true;
         }})()"#
         );

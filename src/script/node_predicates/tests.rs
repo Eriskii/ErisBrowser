@@ -54,7 +54,7 @@ cases!(
 #[test]
 fn prior_predicate_inventory_after_removing_later_configurable_operations() {
     // Restoring creation order is impossible; each realm is disposable. The
-    // independent equality fixture checks the current pristine inventory.
+    // independent connection fixture checks the current pristine inventory.
     for strict in [false, true] {
         let (mut runtime, mut doc) = fresh();
         let source = format!(
@@ -66,10 +66,15 @@ fn prior_predicate_inventory_after_removing_later_configurable_operations() {
             if(!d||!d.configurable||typeof d.value!=='function')throw new Error('later descriptor');
             saved.push(d);
           }}
+          const connection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+          if(!connection||typeof connection.get!=='function'||connection.set!==undefined||
+             !connection.enumerable||!connection.configurable)throw new Error('connection descriptor');
           try{{
+            if(!delete Node.prototype.isConnected)throw new Error('connection delete');
             for(const name of names)if(!delete Node.prototype[name])throw new Error('later delete');
             if(nodePredicateCases.represented_complete_key_order()!==true)throw new Error('prior predicate inventory');
           }}finally{{
+            Object.defineProperty(Node.prototype,'isConnected',connection);
             for(let i=0;i<names.length;i++)Object.defineProperty(Node.prototype,names[i],saved[i]);
           }}
           for(let i=0;i<names.length;i++){{
@@ -77,6 +82,10 @@ fn prior_predicate_inventory_after_removing_later_configurable_operations() {
             if(d.value!==old.value||d.writable!==old.writable||d.enumerable!==old.enumerable||
                d.configurable!==old.configurable)throw new Error('later restoration');
           }}
+          const restoredConnection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
+          if(restoredConnection.get!==connection.get||restoredConnection.set!==undefined||
+             restoredConnection.enumerable!==connection.enumerable||restoredConnection.configurable!==connection.configurable)
+            throw new Error('connection restoration');
           return true;
         }})()"#
         );

@@ -45,6 +45,10 @@ ordinary ancestry after argument evaluation. Template contents remain separate.
 [Node root lookup](node-root.md) adds `getRootNode` for represented trees, with
 observable options conversion before following fresh parent links. Both composed
 values keep template content separate; ShadowRoot remains unimplemented.
+[Connection state](node-connected.md) adds the ordinary readonly `isConnected`
+getter for represented nodes. It follows current ordinary ancestry; a template's
+content remains disconnected even when its host is connected. Actual ShadowRoot
+and independent document ownership remain absent.
 [Structural equality](node-equality.md) adds `isEqualNode` for represented nodes,
 including exact character data, the fixed namespace/attribute model and ordered
 ordinary children. Template contents are compared only when supplied as operands;

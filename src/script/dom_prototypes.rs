@@ -59,6 +59,7 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 352
     + 2 * (INTERFACES.len() - 1)
     + 5
     + processing_instruction::METADATA_OBJECTS
+    + node_connected::METADATA_OBJECTS
     + node_data::METADATA_OBJECTS
     + node_normalize::METADATA_OBJECTS
     + node_predicates::METADATA_OBJECTS
@@ -470,7 +471,7 @@ impl Runtime {
                         "Document" => 2,
                         "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
-                        "Node" => 8,
+                        "Node" => 9,
                         "Text" => 2,
                         _ => 0,
                     },
@@ -521,6 +522,7 @@ impl Runtime {
                 self.install_dom_parent_prototype(interface.name, prototype)?;
             }
             if interface.name == "Node" {
+                self.install_node_connected(prototype)?;
                 self.install_node_data_members(prototype)?;
                 self.install_node_root(prototype)?;
                 self.install_node_has_child_nodes(prototype)?;
