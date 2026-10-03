@@ -29,3 +29,10 @@ first-script results and resource debits across the raw/new constructor paths,
 and prove that getters, conversions and nested event callbacks terminate on the
 shared work limit with clean state. Existing raw initialization and heap-failure
 tests retain their exact boundaries. See the [validation record](evidence/runtime-budget-boundary.json).
+
+The later [Node constant batching checkpoint](node-constants-bootstrap.md)
+replaces repeated property insertion with two admitted sorted builds. Its raw
+bootstrap leaves 11,022 work units and charges 1,734,936 bytes, with 679 objects,
+321 native entries and 25 legacy prototype entries. The fixed work/heap limits
+and success-only author grant remain unchanged. Existing blocks stay charged;
+eliminating unperformed insertions leaves more logical heap for author work.

@@ -5,6 +5,7 @@ use super::*;
 use std::collections::btree_map::Entry;
 
 mod interfaces;
+mod node_constants;
 #[cfg(test)]
 mod tests;
 
@@ -514,16 +515,7 @@ impl Runtime {
             }
             if interface.name == "Node" {
                 self.install_node_data_members(prototype)?;
-            }
-            for &(key, value) in constants {
-                let key: PropertyKey = self.dom_proto_text(key)?.into();
-                for owner in [prototype, properties] {
-                    self.dom_proto_property(
-                        owner,
-                        key.clone(),
-                        Property::data(Value::Number(value as f64), false, true, false),
-                    )?;
-                }
+                self.install_node_constants(prototype, properties, &tag_key)?;
             }
             self.install_pi_members(interface.name, prototype)?;
             // Web IDL places operations/constants before this string property.

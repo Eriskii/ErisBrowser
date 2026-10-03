@@ -35,8 +35,10 @@ fresh Text identity. [Exact append strings](docs/append-domstrings.md) preserve
 each argument in a separate Text, including unmatched units and retained failure
 prefixes. [Document.title](docs/document-title.md) now has ordinary accessors,
 exact normalized reads and staged raw-text replacement for HTML and SVG roots.
-Other legacy writers, complete interface members and Document reflection
-remain unfinished. The
+[Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
+initialization work and cumulative allocation charges while preserving the
+existing JavaScript observations. Other legacy writers, complete interface members
+and Document reflection remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate

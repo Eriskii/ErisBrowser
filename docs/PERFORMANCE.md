@@ -285,3 +285,40 @@ child-ownership rules. The report preserves complete raw timings, exact binary
 hashes and the distinct before/after source identities. A [separate output replay](benchmark-worker-date-pixels.json)
 confirms byte-identical PNGs on all nine fixtures. These local observations
 do not compare against Chromium or establish the requested performance target.
+
+## Node constant initialization batches
+
+The [Node batching checkpoint](node-constants-bootstrap.md) compares the title
+baseline with the new sorted-map initializer using pinned Rust 1.88 and 1.98
+release builds. Each fresh process performs 256 untimed warmups followed by
+1,024 timed public Runtime::try_new calls and drops. Twenty-four alternating
+adjacent pairs per toolchain produce 96 complete observations. Compilation and
+other deliberate heavy work finish before timing; no valid sample is discarded.
+The [summary and raw archive](evidence/node-constants-bootstrap.json) bind the
+fixed harness, schedule and uniformly corrected thin-LTO wrapper commands.
+
+The 96 valid observations did **not demonstrate a host-time speedup**. The median
+paired candidate/baseline ratio is 1.002219 on Rust 1.88 and 1.001350 on Rust 1.98:
+about 0.22% and 0.13% higher times, respectively. Both interquartile ranges span
+one. These small mixed differences are inconclusive on this host. The change is
+retained for its lower charged work and storage, without a speedup claim.
+
+| Rust | Baseline median (µs/init) | Candidate median (µs/init) | Median paired ratio | Ratio Q1–Q3 |
+| --- | ---: | ---: | ---: | ---: |
+| 1.88 | 341.251 | 341.963 | 1.002219 | 0.991496–1.013733 |
+| 1.98 | 339.012 | 339.442 | 1.001350 | 0.992422–1.006604 |
+
+Each row contains 24 pairs. Ratio minima/maxima are 0.934200/1.040843 and
+0.977853/1.026967, respectively. Quartiles use linear inclusive interpolation.
+The ratio median is computed from paired samples, not from the displayed arm
+medians. All samples, source and binary hashes, build commands, environment
+snapshots and pre/post input checks are retained in the evidence archive.
+
+This measures warmed initialization and destruction, including Result handling,
+loop/black-box overhead and the existing success-only author-budget reset.
+Process startup, warmup and output are excluded. It creates no script, DOM, Page,
+worker or renderer. One host's scheduling, allocator and frequency variation
+remain in the observations; no Chromium or general browser result follows.
+The separately measured helper accounting saves 4,742 work units and 69,264
+charged bytes under unchanged work and heap limits. Logical savings are not
+elapsed-time or physical resident-memory savings.

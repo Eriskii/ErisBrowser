@@ -4598,3 +4598,34 @@ all nine jobs passing for `7765fbf`. It is separate from title validation.
 Existing B-tree/URL allocation qualifications, incomplete reactions, Document
 ownership, XML parsing and remaining interfaces still apply. This is not a
 production-security certification or a new GPU/Chromium performance measurement.
+
+### Batched Node constant initialization
+
+The [batch initializer](node-constants-bootstrap.md) preserves the eighteen
+constants on Node and Node.prototype, their descriptors and creation order,
+existing native accessor handles and independent mutable runtime objects.
+Sixteen new groups cover those semantics, interleaved live runtimes, exact and
+one-short quota admission, malformed owner shapes and terminal private staging
+failure. All 84 passing focused observations cover 79 unique groups.
+
+Rust 1.88 passes **1,688 default tests** and Rust 1.98 passes **1,811 native-feature
+tests**, including ignored confinement tests. Strict native/presenter Clippy and
+formatting pass. All-target compilation and the release build pass. The first
+bootstrap filter retained 24 passes and one stale remaining-work assertion;
+its single literal changes only after measuring 11,022 remaining units. No quota,
+reset, descriptor expectation or independent fixture changes.
+
+The release comparison retains all **4,162 established case records and 420
+controls**, plus **14 independent Node modes and 12 controls**, without gains,
+losses, input drift or other complete-record changes. Existing unmet outcomes
+remain visible. This optimization adds no standards coverage. Helper charges
+fall from 12,986 to 8,244 work units and 103,140 to 33,876 bytes. Complete bootstrap
+charges become 1,734,936 bytes, with unchanged 679 objects, 321 native entries
+and 25 legacy prototypes.
+
+The [summary and archive](evidence/node-constants-bootstrap.json) retain source,
+reviews, all attempts, raw compatibility rows and the separate initialization/drop
+benchmark. The initial non-LTO benchmark wrapper link failure is retained; all
+four arms use the same corrected thin-LTO wrapper before any timing. No page,
+Vulkan or Chromium performance claim follows from these checks. The preceding
+Document.title commit passed all nine [GitHub CI jobs](evidence/document-title-ci.json).

@@ -69,8 +69,10 @@ remain open work.
 bootstrap failures through the browser, adapter and stress tool. Partial realms
 are not published, and failed initialization does not trigger a second attempt
 to draw an error page. Existing budgets and all compatibility observations remain
-unchanged. Broader fallible allocation coverage and bootstrap optimization remain
-open work.
+unchanged. [Batched Node constants](node-constants-bootstrap.md) now save 4,742
+charged work units and 69,264 charged bytes during initialization, with ordinary
+property order and separate mutable owners preserved. Broader fallible allocation
+coverage and bootstrap optimization remain open work.
 The [explicit work boundary](runtime-budget-boundary.md) now grants a successful
 runtime its fixed author allowance after charged initialization. Raw bootstrap
 limits, cumulative heap accounting and existing script/event entry resets remain

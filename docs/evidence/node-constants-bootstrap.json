@@ -1,0 +1,452 @@
+{
+  "kind": "Batched Node constant initialization",
+  "base_commit": "bb69700794bde2c0dbda26bd2994f767c3fd0712",
+  "scope": "Replace repeated bootstrap insertion of eighteen Node constants on two ordinary owners with two guarded, admitted sorted builds. Preserve descriptors, physical creation order, native handles, IDs and separate mutable objects.",
+  "source": {
+    "base": "bb69700794bde2c0dbda26bd2994f767c3fd0712",
+    "files": [
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 30995,
+        "sha256": "4e855ad96483e9a3e9cb2efafa509cd185bc49117be7bb89fc528381a9652074"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants.rs",
+        "bytes": 7510,
+        "sha256": "2ca996547cc23467cb77b017fbe69896178d6184eabbe0717d97fdc1b658cdb6"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants/tests.rs",
+        "bytes": 16188,
+        "sha256": "d686a320ec182c3275c8b2151dcf6daaf808d6eed7a0efe816746100a80c0cda"
+      },
+      {
+        "path": "tests/fixtures/node-constants.js",
+        "bytes": 11440,
+        "sha256": "e3253ef6cdc80310be70fa6975e5bbe41ba9482177ac568e6bc5dc2156685d1a"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15508,
+        "sha256": "e55cb436f5ff84e4922f6b621ff9c5e871d6cc639caf63ab11cd91e45a1255b7"
+      }
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-node-constants-batch-1/eris-js",
+    "sha256": "9e4ee4dc3b9f26c1b2970c72c80e40e31964627c94bd08050aae2aea7fa9257f",
+    "bytes": 3707608,
+    "source_manifest_sha256": "bb0f25c1a18b77a2eb6e1591360c9a6532deb68f2d11dcddc5f6c5ac9ff48be7",
+    "build_receipt": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "format-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9328478400129825,
+      "log": "format-198-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 7.087,
+      "log": "clippy-native-198-1.log",
+      "sha256": "2439119a9a374ce8bfd08bed41dec2092a6ecd7b1209f0d8c8ddd87a5e360e93"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 10.593,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "08cfbda3ddc32afa749a32d41855a5d32074f0c83178eb210dac353a14892deb"
+    },
+    "full-default-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 32.448,
+      "log": "full-default-188-1.log",
+      "sha256": "34da7e522143310f7ce7ac665b137c481dd11fce4ea9c6d99d84ef50eed16aa8"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 27.176,
+      "log": "full-native-198-1.log",
+      "sha256": "3bb81451aeef96817943dd096b7155680351fa2ef83e558b2a819ef39e546c92"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 37.178,
+      "log": "release-adapter-188-1.log",
+      "sha256": "ae87214f75ecd636c58bdd2e11feaa1797cf6557616b6404e12fa5c52f6e821a"
+    }
+  },
+  "tests": {
+    "default": 1688,
+    "native": 1811,
+    "new_groups": 16,
+    "passing_focused_executions": 84,
+    "passing_focused_unique_groups": 79,
+    "initial_failed_bootstrap": {
+      "passed": 24,
+      "failed": 1
+    },
+    "final_failed": 0,
+    "final_ignored": 0,
+    "all_commands_passed_first_attempt": false
+  },
+  "accounting": {
+    "raw_bootstrap_remaining_steps": 11022,
+    "raw_bootstrap_allocated": 1734936,
+    "objects": 679,
+    "object_capacity": 679,
+    "native_registry": 321,
+    "legacy_prototypes": 25,
+    "batch_work": 8244,
+    "batch_heap": 33876,
+    "legacy_work": 12986,
+    "legacy_heap": 103140,
+    "saved_work": 4742,
+    "saved_heap": 69264
+  },
+  "compatibility": {
+    "path": "node-constants-comparison.json",
+    "sha256": "55d5e1e0810dcd5133d9eea039eafd2b2bf6c799b7080fb0966ae80586635b0a",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4162,
+          "after_total": 4162,
+          "before_healthy": 4076,
+          "after_healthy": 4076,
+          "unchanged": 4162,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 420,
+          "after_total": 420,
+          "before_healthy": 420,
+          "after_healthy": 420,
+          "unchanged": 420,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 14,
+          "after_total": 14,
+          "before_healthy": 14,
+          "after_healthy": 14,
+          "unchanged": 14,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 12,
+          "after_total": 12,
+          "before_healthy": 12,
+          "after_healthy": 12,
+          "unchanged": 12,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    }
+  },
+  "timing": {
+    "path": "benchmark/runs/run-1/result.json",
+    "sha256": "30c04a9f67396a90a72a38dd33a07523e4cb517bebd58d340b61718b0a787609",
+    "input_manifest_sha256": "74c82adf9e801ea884dcdc05642e7edcb35ba971c857bca3c7aa0ef96ff81767",
+    "valid_observations": 96,
+    "discarded_valid_samples": 0,
+    "summaries": {
+      "1.88.0": {
+        "raw_elapsed_ns_by_sample": {
+          "baseline": [
+            350307817,
+            348460454,
+            372032592,
+            361031556,
+            347549097,
+            350914427,
+            366206477,
+            353242350,
+            350833533,
+            349165481,
+            350987455,
+            348252260,
+            347709941,
+            349425674,
+            346544402,
+            347870938,
+            360888275,
+            368414964,
+            346388817,
+            350355958,
+            346310990,
+            349456403,
+            348663680,
+            343336822
+          ],
+          "candidate": [
+            355474802,
+            347073896,
+            347552683,
+            349326036,
+            361744118,
+            363444551,
+            346256246,
+            345594992,
+            350504639,
+            351804784,
+            352151481,
+            355060697,
+            350429607,
+            349693071,
+            351606979,
+            353041409,
+            349911625,
+            365882113,
+            346777545,
+            352677469,
+            348171417,
+            344777373,
+            346522972,
+            347951791
+          ]
+        },
+        "paired_candidate_over_baseline": [
+          1.0147498421366943,
+          0.9960209028482756,
+          0.9341995579785117,
+          0.967577570975541,
+          1.0408432107075796,
+          1.0357070642752457,
+          0.9455219056652567,
+          0.9783509593342927,
+          0.9990625354503955,
+          1.007558888674909,
+          1.003316431922047,
+          1.0195503024158408,
+          1.0078216515529534,
+          1.000765247146665,
+          1.0146087398058734,
+          1.0148631875652687,
+          0.9695843540497402,
+          0.9931250050961556,
+          1.0011222302248863,
+          1.0066261496258042,
+          1.0053721280979273,
+          0.9866105472389928,
+          0.9938602495103591,
+          1.0134415207000431
+        ],
+        "ratio_median": 1.0022193310734666,
+        "ratio_min": 0.9341995579785117,
+        "ratio_max": 1.0408432107075796,
+        "ratio_q1": 0.991496390631865,
+        "ratio_q3": 1.0137333254765006,
+        "ratio_iqr": 0.022236934844635625,
+        "quartiles": "linear inclusive interpolation (Python statistics.quantiles)",
+        "median_ns_per_initialization": {
+          "baseline": 341251.01416015625,
+          "candidate": 341963.4921875
+        },
+        "samples_per_arm": 24,
+        "discarded_valid_samples": 0
+      },
+      "1.98.0": {
+        "raw_elapsed_ns_by_sample": {
+          "baseline": [
+            352655738,
+            348300752,
+            346843049,
+            345577069,
+            349982321,
+            350814168,
+            344428783,
+            349067276,
+            348704979,
+            345077883,
+            346477577,
+            346342670,
+            346504507,
+            344756794,
+            348460145,
+            348870122,
+            353170515,
+            344450885,
+            352586278,
+            350518338,
+            346894257,
+            344535224,
+            347402150,
+            345090918
+          ],
+          "candidate": [
+            348429627,
+            344641174,
+            349075641,
+            346364501,
+            347367934,
+            348041701,
+            348836569,
+            346872515,
+            350139950,
+            350900662,
+            348939944,
+            344530976,
+            346929984,
+            354053760,
+            348244006,
+            342989043,
+            346056037,
+            347809071,
+            344777454,
+            356495139,
+            348584762,
+            345316185,
+            345577320,
+            345598641
+          ]
+        },
+        "paired_candidate_over_baseline": [
+          0.9880163271297744,
+          0.9894930516831041,
+          1.0064368941699622,
+          1.0022786002621025,
+          0.9925299455340203,
+          0.99209704951255,
+          1.0127973799448695,
+          0.993712498561452,
+          1.0041151434204214,
+          1.0168738110636897,
+          1.0071068581733935,
+          0.9947690707587373,
+          1.0012279118782141,
+          1.026966737601116,
+          0.9993797310736928,
+          0.9831424973675447,
+          0.979855402141937,
+          1.009749389960197,
+          0.9778527285738556,
+          1.0170513218626525,
+          1.0048732573857515,
+          1.0022667087299033,
+          0.994747211552951,
+          1.0014712731443138
+        ],
+        "ratio_median": 1.0013495925112639,
+        "ratio_min": 0.9778527285738556,
+        "ratio_max": 1.026966737601116,
+        "ratio_q1": 0.9924217215286527,
+        "ratio_q3": 1.00660438517082,
+        "ratio_iqr": 0.014182663642167248,
+        "quartiles": "linear inclusive interpolation (Python statistics.quantiles)",
+        "median_ns_per_initialization": {
+          "baseline": 339011.91748046875,
+          "candidate": 339441.89697265625
+        },
+        "samples_per_arm": 24,
+        "discarded_valid_samples": 0
+      }
+    },
+    "interpretation": "No demonstrated host-time speedup. Paired median ratios are about 0.22% and 0.13% higher, and both interquartile ranges span one. Retained for lower charged work and storage; no physical resident-memory, page, Vulkan or Chromium speed claim."
+  },
+  "retained_history": [
+    "Initial all-target compilation and all sixteen new groups passed. First bootstrap filter retained 24 passes and one stale remaining-work failure; only that descriptive literal was changed after actual measurement.",
+    "First baseline 1.88 benchmark wrapper used non-LTO linking and could not consume LLVM bitcode from the thin-LTO release library. The original plan, command and error remain retained; all four wrappers use the same corrected thin-LTO command before any timing.",
+    "Production source and independent fixture remained byte-identical after initial review. Final source passed formatting, strict Clippy, both full suites and release build without further correction.",
+    "Exactly one complete frozen timing run was performed: all 96 observations and pre/post byte bindings passed. No sample was excluded or retried."
+  ],
+  "boundaries": [
+    "Numeric quotas and reset sites remain unchanged. Cumulative charged heap is lower, leaving more logical author headroom. Already spent old object/order/tree blocks are not refunded.",
+    "Fallible vector reservations and quota refusal precede map consumption. Postconsumption internal ordering failure discards the private initializer; reusable failed-map rollback is not promised.",
+    "Shared permutation and exact owner guards make second-only malformed ordering unreachable through the production caller. First-map failure is exercised; both-local publication ordering is also reviewed in source.",
+    "BTree and sort physical allocation failure remains an inherited infallible boundary; this is not comprehensive OOM recovery or production security.",
+    "No Web API or standards coverage is added. Established unsupported/failing outcomes remain. Full web compatibility and the requested Chromium threshold remain unachieved."
+  ],
+  "archive": {
+    "path": "node-constants-bootstrap.tar.gz",
+    "bytes": 1574488,
+    "sha256": "cd22c3b825345034a9650a25ab3f71621b7589a9f662594b432a407820f900a4",
+    "files": 633,
+    "manifest_verified": true
+  }
+}

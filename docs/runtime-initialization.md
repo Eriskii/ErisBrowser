@@ -72,3 +72,10 @@ omitted the mandatory output-directory argument and stopped before execution.
 Data-only audit readers also corrected a feature-specific CLI-test assumption
 and a release-record field name. No candidate test, expectation, budget or replay
 was changed in response.
+
+The later [Node constant batching checkpoint](node-constants-bootstrap.md)
+replaces repeated property insertion with two admitted sorted builds. Its raw
+bootstrap leaves 11,022 work units and charges 1,734,936 bytes, with 679 objects,
+321 native entries and 25 legacy prototype entries. The fixed work/heap limits
+and success-only author grant remain unchanged. Existing blocks stay charged;
+eliminating unperformed insertions leaves more logical heap for author work.

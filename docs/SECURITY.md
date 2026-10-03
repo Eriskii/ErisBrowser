@@ -631,3 +631,14 @@ caught panic or invariant failure. Exception rules and process authority
 are unchanged. Bounded independent code inspection found no concrete defect. These
 checks do not establish complete allocation accounting or a security audit;
 the Vulkan driver boundary is unchanged.
+
+The [Node constant batch initializer](node-constants-bootstrap.md) checks both
+owners' exact shape and order capacity, prepays both completed maps and all
+fallible vector reservations, then moves the existing descriptors. Both maps
+remain private until completion. Quota failure precedes map consumption;
+internal ordering failure afterward discards the private initializer without
+publishing a reusable realm. Existing tree/order charges remain cumulative;
+removing unperformed insertion allocations lowers bootstrap charges under the
+same 8 MiB ceiling. Standard BTree/sort allocator failure is still outside
+recoverable errors. The renderer's authority and execution reset sites do not
+change.
