@@ -29,7 +29,12 @@ fn data_kind(id: NodeId, doc: &Document) -> Result<DataKind> {
 }
 
 impl Runtime {
-    fn node_data_function(&mut self, suffix: &str, display: &str, length: usize) -> Result<Value> {
+    pub(super) fn node_data_function(
+        &mut self,
+        suffix: &str,
+        display: &str,
+        length: usize,
+    ) -> Result<Value> {
         let properties =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
         let name = self.dom_proto_text(display)?;
@@ -107,6 +112,15 @@ impl Runtime {
         args: &[Value],
         doc: &mut Document,
     ) -> Result<Value> {
+        // One reached length check for existing accessors; only the new
+        // nine-byte operation name reaches its separately paid comparison.
+        self.work(1)?;
+        if method.len() == 9 {
+            self.work(9)?;
+            if method == "normalize" {
+                return self.node_normalize(receiver, doc);
+            }
+        }
         self.work(8)?;
         let (setter, content) = match method {
             "getNodeValue" => (false, false),

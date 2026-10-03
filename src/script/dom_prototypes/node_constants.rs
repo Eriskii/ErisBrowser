@@ -6,25 +6,33 @@ use super::*;
 mod tests;
 
 const COUNT: usize = 18;
-const OLD_COUNT: usize = 3;
-const FINAL_COUNT: usize = OLD_COUNT + COUNT;
+const PROTOTYPE_OLD: usize = 4;
+const CONSTRUCTOR_OLD: usize = 3;
+const PROTOTYPE_FINAL: usize = PROTOTYPE_OLD + COUNT;
+const CONSTRUCTOR_FINAL: usize = CONSTRUCTOR_OLD + COUNT;
 const MAX_KEY_UNITS: usize = 41;
 const SORTED: [usize; COUNT] = [1, 3, 7, 10, 8, 16, 15, 12, 14, 17, 13, 9, 0, 5, 4, 11, 6, 2];
 
-// Rust 1.88/1.98: 20 actual-key comparisons each for validation, ascending
-// stable-sort detection and dedup. Full UTF-16 comparison work, not byte / 8.
-// Structure: setup; old traversal; entry transfers; bulk writes; overflow;
-// right-border repair; three node headers; root/iterator transitions.
-const MAP_WORK: usize = 3 * (FINAL_COUNT - 1) * (1 + MAX_KEY_UNITS)
-    + 64
-    + 4 * (OLD_COUNT + 1)
-    + 6 * FINAL_COUNT
-    + 8 * FINAL_COUNT
-    + 16
-    + 64
-    + 8 * 3
-    + 32;
-const OWNER_WORK: usize = 2 * (32 + 4 * (OLD_COUNT + 1) + 6 * (1 + MAX_KEY_UNITS));
+// Rust 1.88/1.98: three (N-1)-comparison passes at full UTF-16 cost.
+// N=21/22 each has height one and at most one leaf overflow: initial leaf
+// plus at most two overflow allocations is three nodes, including at N=22.
+const fn map_work(old: usize, count: usize) -> usize {
+    3 * (count - 1) * (1 + MAX_KEY_UNITS)
+        + 64
+        + 4 * (old + 1)
+        + 6 * count
+        + 8 * count
+        + 16
+        + 64
+        + 8 * 3
+        + 32
+}
+const fn owner_work(old: usize) -> usize {
+    32 + 4 * (old + 1) + 2 * old * (1 + MAX_KEY_UNITS)
+}
+const MAP_WORK: usize =
+    map_work(PROTOTYPE_OLD, PROTOTYPE_FINAL) + map_work(CONSTRUCTOR_OLD, CONSTRUCTOR_FINAL);
+const OWNER_WORK: usize = owner_work(PROTOTYPE_OLD) + owner_work(CONSTRUCTOR_OLD);
 
 fn invalid() -> ScriptError {
     ScriptError::resource("invalid Node constant bootstrap staging")
@@ -50,43 +58,52 @@ fn matches_key(key: &PropertyKey, expected: &ExpectedKey<'_>) -> bool {
     }
 }
 fn owner_matches(bag: &ScriptObject, prototype: bool, tag: &PropertyKey) -> bool {
-    if bag.values.len() != OLD_COUNT
-        || bag.order.len() != OLD_COUNT
-        || bag.order.capacity() < FINAL_COUNT + usize::from(prototype)
-    {
+    let old = if prototype {
+        PROTOTYPE_OLD
+    } else {
+        CONSTRUCTOR_OLD
+    };
+    let capacity = if prototype {
+        PROTOTYPE_FINAL + 1
+    } else {
+        CONSTRUCTOR_FINAL
+    };
+    if bag.values.len() != old || bag.order.len() != old || bag.order.capacity() < capacity {
         return false;
     }
-    let sorted = if prototype {
-        [
+    let sorted: &[ExpectedKey<'_>] = if prototype {
+        &[
             ExpectedKey::Text("nodeValue"),
+            ExpectedKey::Text("normalize"),
             ExpectedKey::Text("textContent"),
             ExpectedKey::Tag(tag),
         ]
     } else {
-        [
+        &[
             ExpectedKey::Text("length"),
             ExpectedKey::Text("name"),
             ExpectedKey::Text("prototype"),
         ]
     };
-    let order = if prototype {
-        [
+    let order: &[ExpectedKey<'_>] = if prototype {
+        &[
             ExpectedKey::Tag(tag),
             ExpectedKey::Text("nodeValue"),
             ExpectedKey::Text("textContent"),
+            ExpectedKey::Text("normalize"),
         ]
     } else {
-        [
+        &[
             ExpectedKey::Text("length"),
             ExpectedKey::Text("name"),
             ExpectedKey::Text("prototype"),
         ]
     };
-    bag.values.keys().zip(&sorted).all(|(key, expected)| {
+    bag.values.keys().zip(sorted).all(|(key, expected)| {
         key.as_string()
             .is_none_or(|text| text.len() <= MAX_KEY_UNITS)
             && matches_key(key, expected)
-    }) && bag.order.iter().zip(&order).all(|(key, expected)| {
+    }) && bag.order.iter().zip(order).all(|(key, expected)| {
         key.as_string()
             .is_none_or(|text| text.len() <= MAX_KEY_UNITS)
             && matches_key(key, expected)
@@ -172,15 +189,15 @@ impl Runtime {
         let scratch_and_nodes = add(mul(2 * 48, pair)?, mul(2 * 3, node)?)?;
         // Separate key stores, two order-vector writes and final publication.
         // Initial order blocks/old leaves stay charged. No refunds or growth.
-        self.work(2 * MAP_WORK + 2 * COUNT + 2 * 4 * COUNT + 8)?;
+        self.work(MAP_WORK + 2 * COUNT + 2 * 4 * COUNT + 8)?;
         self.charge(add(payload, scratch_and_nodes)?)?;
 
         let mut keys = self.dom_proto_vector::<PropertyKey>(COUNT)?;
         for (name, _) in NODE_CONSTANTS {
             keys.push(self.dom_proto_text(name)?.into());
         }
-        let mut prototype_entries = self.dom_proto_vector(FINAL_COUNT)?;
-        let mut constructor_entries = self.dom_proto_vector(FINAL_COUNT)?;
+        let mut prototype_entries = self.dom_proto_vector(PROTOTYPE_FINAL)?;
+        let mut constructor_entries = self.dom_proto_vector(CONSTRUCTOR_FINAL)?;
         for index in sorted {
             let value = NODE_CONSTANTS[*index].1;
             for entries in [&mut prototype_entries, &mut constructor_entries] {

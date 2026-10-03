@@ -80,11 +80,12 @@ fn node_data_bootstrap_admission() {
 }
 
 #[test]
-fn attributes_precede_constants_and_have_separate_nonconstructable_function_bags() {
+fn attributes_precede_operations_and_constants_and_have_separate_nonconstructable_function_bags() {
     let (mut runtime, mut doc) = fresh();
     let source = r#"(function(){
         const keys=Object.getOwnPropertyNames(Node.prototype);
-        if(keys[0]!=='nodeValue'||keys[1]!=='textContent'||keys[2]!=='ELEMENT_NODE'||
+        if(keys[0]!=='nodeValue'||keys[1]!=='textContent'||keys[2]!=='normalize'||
+           keys[3]!=='ELEMENT_NODE'||
            keys[keys.length-1]!=='constructor')throw new Error('IDL order');
         const a=Object.getOwnPropertyDescriptor(Node.prototype,'nodeValue');
         const b=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');

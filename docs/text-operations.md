@@ -114,9 +114,9 @@ literal green/blue pixels keep the comparison nonvacuous. Existing exact ERWA
 transport needs no protocol change.
 
 This increment does not add CDATASection, XMLDocument, live Range adjustments,
-MutationObserver records, slotting or custom-element reactions. Node normalization,
-legacy exact writers, dirty textarea semantics and full DOM coverage remain
-unfinished. No page, GPU, resident-memory or Chromium performance result is
+MutationObserver records, slotting or custom-element reactions. A later [Node normalization increment](node-normalize.md) handles represented
+ordinary Text descendant runs. Legacy exact writers, dirty textarea semantics
+and full DOM coverage remain unfinished. No page, GPU, resident-memory or Chromium performance result is
 claimed. Full compatibility and production security remain unmet goals.
 
 Normative references: [Text](https://dom.spec.whatwg.org/#interface-text),

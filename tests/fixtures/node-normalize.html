@@ -1,0 +1,76 @@
+<!doctype html>
+<meta charset="utf-8"><base id="fixed-base" href="https://normalize.example/fixed/"><title id="heading"></title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#probe{left:0}#done{left:50px}.ready #done{background:green}.clicked #done{background:blue}
+#change{position:absolute;top:60px;left:0}#scalar{position:absolute;top:100px;left:0;font-size:24px}
+#exact{position:absolute;top:135px;left:0;font-size:24px}#field{position:absolute;top:175px;left:0;width:200px;height:30px}
+#disclosure,#template{display:none}
+</style><style id="theme"></style>
+<div id="probe" class="sample"></div><div id="done" class="sample"></div>
+<button id="change" type="button">Normalize text</button>
+<div id="scalar"></div><div id="exact"></div><textarea id="field"></textarea>
+<template id="template"></template><details id="disclosure"><summary id="summary">kept summary</summary></details>
+<script>
+function check(v,m){if(!v)throw new Error(m);}
+function get(id){return document.getElementById(id);}
+function units(s,a){check(s.length===a.length,'unit length');for(let i=0;i<a.length;i++)check(s.charCodeAt(i)===a[i],'unit '+i);}
+const descriptor=Object.getOwnPropertyDescriptor(Node.prototype,'normalize');
+check(descriptor&&typeof descriptor.value==='function'&&descriptor.writable&&descriptor.enumerable&&descriptor.configurable,'ordinary normalize method');
+const normalize=descriptor.value;
+const scalar=get('scalar'),exact=get('exact'),heading=get('heading'),theme=get('theme'),field=get('field');
+const template=get('template'),content=template.content,details=get('disclosure'),summary=get('summary'),change=get('change');
+check(content&&content.nodeType===11&&template.childNodes.length===0&&content.childNodes.length===0,'separate empty template content');
+function makeRun(parent,left,right){
+  const nodes=[new Text(''),new Text(left),new Text(''),new Text(right),new Text('')];
+  parent.append(nodes[0],nodes[1],nodes[2],nodes[3],nodes[4]);return nodes;
+}
+const scalarRun=makeRun(scalar,'Alpha ','beta'),exactRun=makeRun(exact,'A\uD83D','\uDE80B');
+const titleRun=makeRun(heading,'Normalize ','ready'),styleRun=makeRun(theme,'#probe{','background:green}');
+const fieldRun=makeRun(field,'clean ','seed'),contentRun=makeRun(content,'con','tent');
+const ordinaryRun=makeRun(template,'out','side'),detailsRun=makeRun(details,'be','fore');
+details.append(summary);
+const parents=[scalar,exact,heading,theme,field,content,template,details];
+const runs=[scalarRun,exactRun,titleRun,styleRun,fieldRun,contentRun,ordinaryRun,detailsRun];
+const retained={label:'tail identity'};exactRun[3].retained=retained;
+const ownOverride=function(){throw new Error('saved native call must bypass this override');};scalar.normalize=ownOverride;
+let phase=0;
+function verifyRun(index,left,right){
+  const parent=parents[index],nodes=runs[index],count=phase===0?5:1,children=parent.childNodes;
+  check(children.length===count+(index===7?1:0),'run child count');
+  for(let i=0;i<5;i++){
+    check(nodes[i].nodeType===3,'retained Text brand');
+    if(phase===0)check(children[i]===nodes[i]&&nodes[i].parentNode===parent,'original run identity');
+    else if(i===1)check(children[0]===nodes[i]&&nodes[i].parentNode===parent,'same nonempty survivor');
+    else check(nodes[i].parentNode===null,'retained detached original');
+  }
+  check(nodes[0].data===''&&nodes[2].data===''&&nodes[4].data==='','empty payload retention');
+  check(nodes[1].data===(phase===0?left:left+right)&&nodes[3].data===right,'survivor and original tail data');
+  if(index===7)check(children[count]===summary&&summary.parentNode===details,'summary identity after shifts');
+}
+function verify(){
+  verifyRun(0,'Alpha ','beta');verifyRun(1,'A\uD83D','\uDE80B');
+  verifyRun(2,'Normalize ',phase===0?'ready':'done');
+  verifyRun(3,'#probe{',phase===0?'background:green}':'background:blue}');
+  verifyRun(4,'clean ',phase===0?'seed':'next');verifyRun(5,'con','tent');verifyRun(6,'out','side');verifyRun(7,'be','fore');
+  units(exactRun[1].data,phase===0?[65,55357]:[65,55357,56960,66]);
+  units(exactRun[3].data,[56960,66]);units(exact.textContent,[65,55357,56960,66]);
+  check(exactRun[3].retained===retained&&retained.label==='tail identity','detached own property identity');
+  check(scalar.normalize===ownOverride&&Node.prototype.normalize===normalize,'saved native and own override');
+  check(template.content===content&&content.parentNode===null&&content!==template,'template association retained');
+  check(document.title===(phase===0?'Normalize ready':'Normalize done'),'normalized title');
+  check(field.value===(phase===0?'clean seed':'clean next'),'clean textarea value');
+  check(document.baseURI==='https://normalize.example/fixed/','fixed base unchanged');
+}
+change.onclick=function(){
+  check(this===change&&phase===0,'one real click in same realm');
+  titleRun[3].data='done';styleRun[3].data='background:blue}';fieldRun[3].data='next';
+  for(let i=0;i<5;i++)check(normalize.call(parents[i])===undefined,'normalization return');
+  check(normalize.call(template)===undefined,'ordinary template normalization');
+  check(content.childNodes.length===5&&content.firstChild===contentRun[0]&&contentRun[1].data==='con'&&contentRun[3].data==='tent','ordinary walk excludes template content');
+  for(let i=0;i<5;i++)check(content.childNodes[i]===contentRun[i]&&contentRun[i].parentNode===content,'content identities untouched');
+  check(normalize.call(content)===undefined&&normalize.call(details)===undefined,'explicit content and details normalization');
+  phase=1;verify();document.body.className='clicked';
+};
+verify();document.body.className='ready';
+</script>

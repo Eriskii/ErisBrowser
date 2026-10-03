@@ -39,11 +39,42 @@ cases!(
     constructor_constant_descriptors,
     prototype_constant_descriptors,
     constructor_complete_key_order,
-    prototype_complete_key_order,
     saved_nonconstant_metadata_and_accessors,
     separate_mutable_constructor_and_prototype_bags,
     realm_markers_are_initially_absent,
 );
+
+#[test]
+fn prior_node_constant_inventory_after_removing_configurable_normalize() {
+    // This historical fixture describes the preceding represented inventory.
+    // Deletion/restoration intentionally changes creation order, so each mode
+    // uses a disposable realm; the new normalize fixture checks pristine order.
+    for strict in [false, true] {
+        let mut runtime = Runtime::try_new().unwrap();
+        let mut doc = Document::parse("");
+        let source = format!(
+            r#"{CASES}
+          (function(){{
+            var d=Object.getOwnPropertyDescriptor(Node.prototype,'normalize');
+            if(!d||!d.configurable||typeof d.value!=='function')throw new Error('normalize descriptor');
+            try{{
+              if(!delete Node.prototype.normalize)throw new Error('normalize delete');
+              if(nodeConstantCases.prototype_complete_key_order()!==true)throw new Error('prior inventory');
+            }}finally{{Object.defineProperty(Node.prototype,'normalize',d);}}
+            var restored=Object.getOwnPropertyDescriptor(Node.prototype,'normalize');
+            if(restored.value!==d.value||restored.writable!==d.writable||
+               restored.enumerable!==d.enumerable||restored.configurable!==d.configurable)
+              throw new Error('restore descriptor');
+            return true;
+          }})()
+        "#
+        );
+        assert_eq!(
+            evaluate(&mut runtime, &mut doc, &source, strict),
+            Value::Bool(true)
+        );
+    }
+}
 
 #[test]
 fn static_permutation_has_the_literal_strict_key_order() {
@@ -124,12 +155,13 @@ fn setup() -> (Runtime, usize, usize, PropertyKey) {
         let values = &bag.values;
         bag.order.retain(|key| values.contains_key(key));
         bag.order.shrink_to_fit();
-        let capacity = if owner == prototype { 22 } else { 21 };
+        let capacity = if owner == prototype { 23 } else { 21 };
         bag.order
             .try_reserve_exact(capacity - bag.order.len())
             .unwrap();
-        assert_eq!(bag.values.len(), 3);
-        assert_eq!(bag.order.len(), 3);
+        let old = if owner == prototype { 4 } else { 3 };
+        assert_eq!(bag.values.len(), old);
+        assert_eq!(bag.order.len(), old);
     }
     (runtime, prototype, properties, tag)
 }
@@ -264,7 +296,7 @@ fn measured_exact_and_one_short_admission_precedes_taking_either_map() {
             result.unwrap();
             assert_eq!(runtime.steps, 0);
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects[prototype].values.len(), 21);
+            assert_eq!(runtime.objects[prototype].values.len(), 22);
             assert_eq!(runtime.objects[properties].values.len(), 21);
             assert_eq!(
                 runtime.objects[prototype].order.capacity(),
@@ -313,12 +345,28 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
         };
         handles.push((name, get.clone(), set.clone()));
     }
+    let PropertyValue::Data {
+        value: Value::Native(normalize),
+        ..
+    } = &runtime.objects[prototype].values[&PropertyKey::from("normalize")].value
+    else {
+        panic!("normalize Native missing")
+    };
+    let normalize = normalize.clone();
     runtime
         .install_node_constants(prototype, properties, &tag)
         .unwrap();
+    let PropertyValue::Data {
+        value: Value::Native(after),
+        ..
+    } = &runtime.objects[prototype].values[&PropertyKey::from("normalize")].value
+    else {
+        panic!("normalize Native missing after batch")
+    };
+    assert!(Rc::ptr_eq(&normalize, after));
     for (owner, old) in [prototype, properties].into_iter().zip(before) {
         assert_eq!(other_fields(&runtime.objects[owner]), old.other);
-        assert_eq!(&runtime.objects[owner].order[..3], &old.order);
+        assert_eq!(&runtime.objects[owner].order[..old.order.len()], &old.order);
         assert_eq!(runtime.objects[owner].order.capacity(), old.capacity);
     }
     for (name, old_get, old_set) in handles {
@@ -337,7 +385,7 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
 
 #[test]
 fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
-    for case in 0..10 {
+    for case in 0..13 {
         let (mut runtime, prototype, properties, tag) = setup();
         let (mut p, mut c, mut key) = (prototype, properties, tag);
         match case {
@@ -363,6 +411,19 @@ fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
             }
             7 => runtime.objects[properties].order.shrink_to_fit(),
             9 => key = PropertyKey::from("toStringTag"),
+            10 => {
+                runtime.objects[prototype]
+                    .values
+                    .remove(&PropertyKey::from("normalize"));
+            }
+            11 => {
+                runtime.objects[properties].values.insert(
+                    "normalize".into(),
+                    Property::data(Value::Undefined, true, true, true),
+                );
+                runtime.objects[properties].order.push("normalize".into());
+            }
+            12 => runtime.objects[prototype].order.swap(2, 3),
             _ => unreachable!(),
         }
         let before = [

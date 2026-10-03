@@ -1563,3 +1563,33 @@ fn text_split_and_whole_text_preserve_exact_units_and_refresh_connected_content(
         ));
     }
 }
+
+#[path = "support/node_normalize.rs"]
+mod node_normalize_witness;
+
+#[test]
+fn normalize_retains_survivors_and_detached_data_with_connected_rendering() {
+    let mut actual = page(node_normalize_witness::HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            let details = actual.document.query_selector("#disclosure").unwrap();
+            let summary = actual.document.query_selector("#summary").unwrap();
+            assert_eq!(actual.document.first_summary(details), Some(summary));
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(actual.title(), node_normalize_witness::metadata(phase));
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(node_normalize_witness::check(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

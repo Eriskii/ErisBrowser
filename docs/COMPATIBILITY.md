@@ -36,7 +36,10 @@ for Document, Element and DocumentFragment; all fourteen new modes pass.
 ASCII-whitespace-normalized reads, HTML/SVG selection and staged replacement.
 [Text operations](text-operations.md) add ordinary `splitText` and readonly
 `wholeText`, exact UTF-16 offsets, fresh post-conversion state and contiguous
-ordinary Text reads. CDATA, live Ranges and cross-node text shaping remain gaps.
+ordinary Text reads. [Node normalization](node-normalize.md) removes empty ordinary
+Text descendants and merges contiguous runs while retaining detached identities
+and exact data. It does not traverse separate template content implicitly.
+CDATA, live Ranges and cross-node text shaping remain gaps.
 PI pseudo-attributes and mutation notifications remain unfinished.
 Complete interface members,
 Document reflection and host prototype mutation remain incomplete. The unchanged
@@ -244,7 +247,9 @@ its named constructors, factories, data setter and five methods. Ordinary
 preserves each string argument after ordered conversion, without coalescing
 separate Texts. [Document.title](document-title.md) adds exact raw writes and
 normalized direct-Text reads. [Text splitting and adjacent reads](text-operations.md)
-preserve exact units and separate node identities. Legacy `innerText`, textarea
+preserve exact units and separate node identities. [Node.normalize](node-normalize.md)
+uses exact internal streams and preserves the first nonempty Text in each run.
+Legacy `innerText`, textarea
 setters, attribute and
 HTML-parser writes remain separate, alongside
 remaining interface members, general XML name handling, live collections and

@@ -655,3 +655,30 @@ separately admits its temporary Vec and final Rc storage. Both helper outcomes
 copy spent counters back. Numeric quotas, execution resets, IPC protocol and
 process authority are unchanged. The tests cover quota refusals, not physical
 allocator failure, a comprehensive graph validator or complete browser security.
+
+[Node.normalize](node-normalize.md) validates authentic receivers, traverses
+ordinary descendants and ignores extra arguments without coercion. It pays for
+a bounded depth-first cursor, a reached-ID map and exact canonical run output;
+unrelated arena entries are not scanned. Duplicate/link checks precede current
+run replacement. The reached map includes prepaid comparison, growth and
+cleanup allowances, but its standard BTree allocation still has an infallible
+physical allocator boundary.
+
+Survivor replacement and tail removal are separately admitted stages. Resource
+termination can retain earlier removals, completed runs, or a merged survivor
+with its tails still attached; final bookkeeping can refuse after all mutations
+are complete. The removal helper prepays local validation, every detach and
+the actual suffix compaction before a commit with no remaining allocation or
+quota check. Both outcomes copy absolute spent counters back. Removed nodes and
+their exact payloads remain in the arena and provide no future allocation
+credit. Even a singleton nonempty run pays for its canonical replacement.
+
+The operation creates no nodes, does not enter template content through a host,
+and preserves base/summary Element identities without rebuilding metadata.
+Each separate suffix shift is charged; overall linear complexity is not claimed.
+The runtime supplies uniqueness immediately before the internal removal helper;
+that helper is not a complete validator for arbitrary public Rust mutations.
+Numeric limits, reset sites, process authority and wire formats are unchanged.
+CDATASection/XMLDocument, live Range adjustments, observer records and custom
+reactions remain missing; neither quota tests nor this implementation establish
+complete memory accounting or production security.

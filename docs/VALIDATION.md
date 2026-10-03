@@ -4674,3 +4674,63 @@ See the [summary](evidence/text-operations.json),
 [archive](evidence/text-operations.tar.gz), and
 [preceding Node constant CI receipt](evidence/node-constants-ci.json). All nine
 jobs passed for that preceding `774c275` checkpoint.
+
+### Exact descendant Text normalization
+
+[Node.normalize](node-normalize.md) adds one ordinary cached Node method. It
+removes empty ordinary Text descendants and joins each contiguous run into its
+first nonempty node, preserving exact UTF-16 units and retained detached data.
+It excludes the receiver and keeps template content separate. Canonical
+replacement and tail removal have distinct admitted stages; Resource refusal
+can retain earlier mutations, a joined survivor beside its attached tails, or
+a fully normalized tree before final bookkeeping.
+
+Rust 1.88 passes **1,775 default tests** and Rust 1.98 passes **1,898 native Vulkan
+tests**, including ignored confinement checks. Formatting and both strict
+Clippy configurations pass. The 42 new groups comprise eleven DOM, twenty-nine
+runtime and two browser/worker groups. Successful focused commands contain
+120 observations across 117 distinct groups.
+
+Initial compilation and all forty new DOM/runtime groups passed. The first
+bootstrap filter retained 25 passes and two stale descriptive assertion
+failures. Measurements were 10,199 remaining work units, 1,744,501 charged bytes,
+682 objects/capacity, 321 native entries and 25 legacy prototype entries. Only
+three descriptive literals changed in response. The first full default run
+then retained 1,535 passes and one old partial property-order assertion failure;
+that private group is explicitly renamed and now requires `normalize` between
+`textContent` and `ELEMENT_NODE`. Original sources, failures and independent
+review are retained. The initial sixteen source and fixture paths stayed
+byte-exact. No quota or execution reset changed.
+
+The Page and confined-worker witnesses load once and dispatch one real click.
+Eight five-Text runs retain eight original survivors and detach 32 original
+nodes without creating any. Both phases check exact payloads and IDs, title,
+stylesheet pixels, clean textarea text, separate template trees, summary ID and
+fixed base. Page primes its actual summary cache; the worker checks its decoded
+snapshot without claiming to prime the original worker's cache. Full-canvas
+literal references and nonempty glyph bands compare per-node replacement glyphs
+before joining and the scalar surrogate pair after joining.
+
+The release replay passes all **32 new strict/sloppy case modes**, up from zero,
+and all **16 controls**, up from four. All **4,202 other established case
+records and 440 controls** remain byte-exact. Two earlier Node constant case
+modes now fail with Error because they require the former full property list.
+Four old reflected-order controls are unhealthy with TypeError at their old
+inventory prerequisite; their positive partners fail, so matching an expected
+exception does not make a negative control healthy. The old sources and
+expectations are unchanged. Both the old Node profile and the aggregate replay
+command retain exit one. A separate classifier verifies these exact six
+anticipated changes, while preserving their raw losses. Current inventory
+cases and positive/wrong controls pass in the independent new profile.
+
+The release build passes. The [summary](evidence/node-normalize.json) and
+[archive](evidence/node-normalize.tar.gz) retain source holds, source-review
+corrections, failed and passing attempts, command logs, complete before/after
+reports, the predeclared inventory policy and the classifier's input bindings.
+The preceding [Text checkpoint CI receipt](evidence/text-operations-ci.json)
+records all nine GitHub jobs passing for `9825a53`.
+
+These selected records do not establish full DOM conformance. CDATA/XML,
+Range updates, mutation records, slotting and custom-element reactions remain
+unimplemented. No page, GPU, physical-memory or Chromium performance result is
+claimed, and complete compatibility and production security remain unmet.

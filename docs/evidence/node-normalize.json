@@ -1,0 +1,765 @@
+{
+  "kind": "Exact Node.normalize ordinary descendant Text runs",
+  "base_commit": "9825a53adf2f5751c85812e80dd60324a5c46258",
+  "scope": "Ordinary cached Node.prototype.normalize, authentic internal receivers, exact UTF-16 runs and first nonempty survivor identity. Empty removal, canonical replacement and tail removal retain separate admitted stages and detached data. Separate template content and unchanged worker transport.",
+  "source": {
+    "base": "9825a53adf2f5751c85812e80dd60324a5c46258",
+    "phase": "Final candidate after measured bootstrap literals and explicit private Node inventory correction; initial16 paths unchanged",
+    "files": [
+      {
+        "path": "src/dom.rs",
+        "bytes": 404707,
+        "sha256": "6e61bcb4dbb70886bccfa6531b4a4c991ce961b9f57fb88b236fea3add0038ae"
+      },
+      {
+        "path": "src/dom/node_normalize.rs",
+        "bytes": 4208,
+        "sha256": "094f57384edd672150c1285ce38026b86dca971ec1602ee187ee0a5335f83a62"
+      },
+      {
+        "path": "src/dom/node_normalize/tests.rs",
+        "bytes": 13956,
+        "sha256": "6858c4097cb3dec920ce8718b5586c795ef4c9f23356ec522e80ff1ee59422fa"
+      },
+      {
+        "path": "src/script.rs",
+        "bytes": 906515,
+        "sha256": "adbb4237a8d12dc21b2e214a7972493bb09dec3fcd7e713cab7d7681e4bcfb9f"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15508,
+        "sha256": "26fb1f66458a175204613eeeba41c272a214f40a3316c27fb8c0d84b8b08a9a6"
+      },
+      {
+        "path": "src/script/dom_bindings/identity_tests.rs",
+        "bytes": 35727,
+        "sha256": "0899e9512293a195bfd2618782c566ca4560573536c5bcbd9b5e1304de29b47a"
+      },
+      {
+        "path": "src/script/dom_data.rs",
+        "bytes": 8451,
+        "sha256": "83c2b87b711149ae093e42f3599e4f8a9de3772afee16834963da45a867791a9"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 31168,
+        "sha256": "1f1d409f6ce33e3d1e065585e61dfc031d36a70a267f9277d9a355ea057d1ed6"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants.rs",
+        "bytes": 8072,
+        "sha256": "da9723ec2717bae0e1d5560f3756d35119c6ccac37b0e2078df1d2cba9bcd12a"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants/tests.rs",
+        "bytes": 18807,
+        "sha256": "c753e6ae143b975996b51ecc12ddd4ca540c0c0f0b296a23a53980b8bd5e84ab"
+      },
+      {
+        "path": "src/script/node_data.rs",
+        "bytes": 7444,
+        "sha256": "4c3ef8694b2b21a184b5b243ff1b230b299acc4b42550e56dbf69e0b5dd9ec1b"
+      },
+      {
+        "path": "src/script/node_data/tests.rs",
+        "bytes": 18515,
+        "sha256": "80e6c5c5c128a6f654aab3a82329f5a42701129ffa297ecaed90d9902d431ed0"
+      },
+      {
+        "path": "src/script/node_normalize.rs",
+        "bytes": 11921,
+        "sha256": "ff30edb28f80fe3791806c5d22080e2fbcb6f9b4606150c668f2f4ae6ce1b72a"
+      },
+      {
+        "path": "src/script/node_normalize/tests.rs",
+        "bytes": 24306,
+        "sha256": "67f52ad842c6ea674469629a571e86f525b27c7e288782049f5cf999d551010a"
+      },
+      {
+        "path": "tests/fixtures/node-normalize.html",
+        "bytes": 5671,
+        "sha256": "a55e8ff5fa40c4a7270352edbf49253c163f1dc8360ee206f0029864b8463524"
+      },
+      {
+        "path": "tests/fixtures/node-normalize.js",
+        "bytes": 15892,
+        "sha256": "337b5acb013b8e1aea04e933913c50746c0372185117edd32f84b48c648d3f20"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 61707,
+        "sha256": "8bd7507483dc052cacb90c06669f97d7c4f803a4d58007b16e60dbc38b52fc3e"
+      },
+      {
+        "path": "tests/support/node_normalize.rs",
+        "bytes": 9397,
+        "sha256": "89ec1765731df8bf55a06209d62dc85480caf59b6f408c3f94bd08580fdb8fc7"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 99219,
+        "sha256": "9f87137ab5285efcfc529a918e4e16479f2455c5327772a2f77d967bbacedc63"
+      }
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-node-normalize-1/eris-js",
+    "sha256": "e46518df6539cae705c36dc0856143e9849808046a6ec7fc6e4d274039a35bdb",
+    "bytes": 3752664,
+    "source_manifest_sha256": "e0451e9828232e073f0a1b0a3ac224a3418768273e6333663e4f8b74f5405843",
+    "build_receipt": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "format-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9316415961366147,
+      "log": "format-198-2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy-native-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.363,
+      "log": "clippy-native-198-2.log",
+      "sha256": "663c9543edab1264e1de0255234421986ee478852335f286a4e1afb070b4003a"
+    },
+    "clippy-presenter-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.335,
+      "log": "clippy-presenter-188-2.log",
+      "sha256": "f83e583d79fb54acfbcc69d8af2cc615d394b757644dda63d74e887698d662a9"
+    },
+    "full-default-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 11.814,
+      "log": "full-default-188-2.log",
+      "sha256": "9d6757ac4c5ea8bd999d066b20087b42fcf1ffb941fb4d3e7ea8cee1236055dd"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 27.324,
+      "log": "full-native-198-1.log",
+      "sha256": "7576f9cb74e5656d392da120d1a2b359d765feb026ff46f0ab005f89a31aed9c"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 37.66,
+      "log": "release-adapter-188-1.log",
+      "sha256": "2f29ab6342336feb983f9582faa503dc24b20b31dbf6bde1ed91256c8505ad1f"
+    }
+  },
+  "tests": {
+    "default": 1775,
+    "native": 1898,
+    "new_groups": 42,
+    "focused": {
+      "successful_observations": 120,
+      "successful_unique_groups": 117,
+      "all_focused_attempt_pass_observations": 145,
+      "retained_focused_failed_observations": [
+        "script::dom_bindings::identity_tests::dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities",
+        "script::bootstrap_tests::bootstrap_convenience_and_try_paths_separate_work_and_retain_heap"
+      ],
+      "overlap": {
+        "script::node_normalize::tests::normalize_bootstrap_reports_actual_admission": 2,
+        "script::node_data::tests::node_data_bootstrap_admission": 2,
+        "script::dom_prototypes::node_constants::tests::node_constant_batch_bootstrap_reports_actual_remaining_budget": 2
+      },
+      "separate_first_full_attempt": {
+        "passed": 1535,
+        "failed": [
+          "script::node_data::tests::attributes_precede_constants_and_have_separate_nonconstructable_function_bags"
+        ],
+        "log": "validation/full-default-188-1.log"
+      },
+      "initial16_paths_unchanged": true,
+      "final_source_sha256": "e0451e9828232e073f0a1b0a3ac224a3418768273e6333663e4f8b74f5405843"
+    },
+    "final_failed": 0,
+    "final_ignored": 0,
+    "all_commands_passed_first_attempt": false
+  },
+  "accounting": {
+    "remaining_bootstrap_work": 10199,
+    "allocated_bytes": 1744501,
+    "objects": 682,
+    "object_capacity": 682,
+    "native_entries": 321,
+    "legacy_prototype_entries": 25,
+    "additional_work": 437,
+    "additional_charged_bytes": 3230,
+    "bootstrap_work_limit": 100000,
+    "author_work_limit": 100000,
+    "cumulative_heap_limit": 8388608,
+    "numeric_limits_and_resets_changed": false
+  },
+  "compatibility": {
+    "path": "normalize-comparison.json",
+    "sha256": "8d113d54c3da26e13635d4d27519c2559b7a9312b57ee61ae03e9afbcf0c6aef",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4204,
+          "after_total": 4204,
+          "before_healthy": 4118,
+          "after_healthy": 4116,
+          "unchanged": 4202,
+          "gains": 0,
+          "losses": 2,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 444,
+          "after_total": 444,
+          "before_healthy": 444,
+          "after_healthy": 440,
+          "unchanged": 440,
+          "gains": 0,
+          "losses": 4,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 32,
+          "after_total": 32,
+          "before_healthy": 0,
+          "after_healthy": 32,
+          "unchanged": 0,
+          "gains": 32,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 16,
+          "after_total": 16,
+          "before_healthy": 4,
+          "after_healthy": 16,
+          "unchanged": 4,
+          "gains": 12,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    },
+    "inventory_classification": {
+      "path": "inventory-classification.json",
+      "sha256": "9149fa8d59d57011a7485793cc55043d5c2c5adbee8b4b4765c3a6ba2e824f5f",
+      "report": {
+        "classification": "Six retained historical inventory assumptions are invalidated by the new ordinary Node method. Raw losses and unhealthy controls remain unchanged; no historical control-health waiver.",
+        "policy_sha256": "396002bf1bdff3c814a8e17bd6d4c503ec01be3d5e9453ae5a27c69344088a3f",
+        "comparison_sha256": "8d113d54c3da26e13635d4d27519c2559b7a9312b57ee61ae03e9afbcf0c6aef",
+        "classifier_sha256": "f5b35165175b9a7527e587e64fb5a1f0c76a2e06bae5e370fc9f183eac620921",
+        "expected_case_losses": 2,
+        "expected_unhealthy_controls": 4,
+        "unexpected_established_changes": 0,
+        "new_cases_healthy": 32,
+        "new_controls_healthy": 16,
+        "changes": [
+          {
+            "profile": "node-constants",
+            "kind": "cases",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "prototype_complete_key_order#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "prototype_complete_key_order#sloppy",
+                "file": "node-constants.js",
+                "mode": "sloppy",
+                "case_sha256": "f74d965fb5ace642de076d20922771b59c253e5ed56b2c95e83b0242568dedfb",
+                "source_sha256": "30442bee20f0f5192d2a77324994cf066447cdb00a48bdbcdaf4faddb7a65bc3",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": true
+              },
+              "after": {
+                "id": "prototype_complete_key_order#sloppy",
+                "file": "node-constants.js",
+                "mode": "sloppy",
+                "case_sha256": "f74d965fb5ace642de076d20922771b59c253e5ed56b2c95e83b0242568dedfb",
+                "source_sha256": "30442bee20f0f5192d2a77324994cf066447cdb00a48bdbcdaf4faddb7a65bc3",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": false
+              }
+            }
+          },
+          {
+            "profile": "node-constants",
+            "kind": "cases",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "prototype_complete_key_order#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "prototype_complete_key_order#strict",
+                "file": "node-constants.js",
+                "mode": "strict",
+                "case_sha256": "961b2b8bc87625fed0d651fa04b93fbb7757051f77212966aeabf9e3feaac089",
+                "source_sha256": "30442bee20f0f5192d2a77324994cf066447cdb00a48bdbcdaf4faddb7a65bc3",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": true
+              },
+              "after": {
+                "id": "prototype_complete_key_order#strict",
+                "file": "node-constants.js",
+                "mode": "strict",
+                "case_sha256": "961b2b8bc87625fed0d651fa04b93fbb7757051f77212966aeabf9e3feaac089",
+                "source_sha256": "30442bee20f0f5192d2a77324994cf066447cdb00a48bdbcdaf4faddb7a65bc3",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": false
+              }
+            }
+          },
+          {
+            "profile": "node-constants",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "reflected-order-positive#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "reflected-order-positive#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "586703f4ffbd59e5a11a08c6177603cfbcaa36b70490dbea347f4cada26e75bf",
+                "source_sha256": "bb674bf1f82573a88b0a83e596fafd491b9da18e2ebcdb0babf8173a2d00e5bc",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "reflected-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "reflected-order-positive#sloppy",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "reflected-order-positive#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "586703f4ffbd59e5a11a08c6177603cfbcaa36b70490dbea347f4cada26e75bf",
+                "source_sha256": "bb674bf1f82573a88b0a83e596fafd491b9da18e2ebcdb0babf8173a2d00e5bc",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "reflected-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "reflected-order-positive#sloppy",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-constants",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "reflected-order-positive#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "reflected-order-positive#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "5b4e6e860dba813428a851d35fbb300e306f0a32281782f8cfafa6cc3f2c4214",
+                "source_sha256": "bb674bf1f82573a88b0a83e596fafd491b9da18e2ebcdb0babf8173a2d00e5bc",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "reflected-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "reflected-order-positive#strict",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "reflected-order-positive#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "5b4e6e860dba813428a851d35fbb300e306f0a32281782f8cfafa6cc3f2c4214",
+                "source_sha256": "bb674bf1f82573a88b0a83e596fafd491b9da18e2ebcdb0babf8173a2d00e5bc",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "reflected-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "reflected-order-positive#strict",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-constants",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "reflected-order-wrong#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "reflected-order-wrong#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "db767c6dd6f36a9227322256db74f55ca874fff7c493409f2b916dd20d4b4b5d",
+                "source_sha256": "d4f53b0ad3fd1608c7875abd44d5a23089032e872a18ea52e7f3d036dc0b93c5",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "reflected-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "reflected-order-positive#sloppy",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "reflected-order-wrong#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "db767c6dd6f36a9227322256db74f55ca874fff7c493409f2b916dd20d4b4b5d",
+                "source_sha256": "d4f53b0ad3fd1608c7875abd44d5a23089032e872a18ea52e7f3d036dc0b93c5",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "reflected-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "reflected-order-positive#sloppy",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-constants",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "reflected-order-wrong#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "reflected-order-wrong#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "36630af70df7a5e4ebb871cef7d481ea47403dba11840aa3e18ee817edec5ba1",
+                "source_sha256": "d4f53b0ad3fd1608c7875abd44d5a23089032e872a18ea52e7f3d036dc0b93c5",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "reflected-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "reflected-order-positive#strict",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "reflected-order-wrong#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "36630af70df7a5e4ebb871cef7d481ea47403dba11840aa3e18ee817edec5ba1",
+                "source_sha256": "d4f53b0ad3fd1608c7875abd44d5a23089032e872a18ea52e7f3d036dc0b93c5",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "reflected-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "reflected-order-positive#strict",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "retained_history": [
+    "Initial all-target compilation and all40 new DOM/runtime groups passed. Initial bootstrap filter retained25 passes/two stale assertion failures; exactly three descriptive literals across two files changed after measurement.",
+    "First full default suite retained1535 passes/one old partial Node-order assertion failure. The private group is explicitly renamed and now requires normalize before ELEMENT_NODE; original source/failure and review are retained. Production and independently frozen fixtures are unchanged.",
+    "New replay baseline retains32 missing-method TypeErrors and4/16 healthy controls. Candidate preserves the expected nonzero historical Node profile and aggregate runner exit: two old inventory cases fail with Error and four old controls are unhealthy with TypeError. No health waiver or fixture rewrite."
+  ],
+  "boundaries": [
+    "Represented exclusive Text only. No CDATASection, XMLDocument, live Range updates, MutationObserver records, custom-element reactions or slotting.",
+    "Receiver itself is excluded. Ordinary descendants only; separate template content must be normalized explicitly. Removed IDs, data and own properties remain retained.",
+    "Canonical replacement precedes separately admitted tail removal. Late refusal can retain duplicated joined text with tails attached, previous mutations, or the fully changed tree before final bookkeeping. No transactional rollback or tail-byte credit.",
+    "Singleton runs use full canonical copies; full node arenas need no new slots. Reached traversal/map growth and each suffix compaction are charged; no universal linear-time or physical allocator OOM guarantee.",
+    "Page and confined-worker witnesses check exact units/identities, metadata/style/clean textarea, summary identity/cache and literal pixels. Per-node display projection can change surrogate glyphs after joining; no cross-node shaping equivalence claim.",
+    "No performance or physical-memory measurement. Full web compatibility, production security and the requested Chromium performance threshold remain unachieved."
+  ],
+  "archive": {
+    "path": "node-normalize.tar.gz",
+    "bytes": 2772786,
+    "sha256": "7fb668da9314576a49df4d9eb03f2a98f1f95d120c5ef1fc013e59666414d80e",
+    "files": 353,
+    "manifest_verified": true
+  }
+}

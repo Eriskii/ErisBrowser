@@ -60,6 +60,7 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 352
     + 5
     + processing_instruction::METADATA_OBJECTS
     + node_data::METADATA_OBJECTS
+    + node_normalize::METADATA_OBJECTS
     + document_title::METADATA_OBJECTS
     + text_operations::METADATA_OBJECTS;
 
@@ -465,7 +466,8 @@ impl Runtime {
                         "Document" => 2,
                         "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
-                        "Node" | "Text" => 2,
+                        "Node" => 3,
+                        "Text" => 2,
                         _ => 0,
                     },
             )?;
@@ -516,6 +518,7 @@ impl Runtime {
             }
             if interface.name == "Node" {
                 self.install_node_data_members(prototype)?;
+                self.install_node_normalize(prototype)?;
                 self.install_node_constants(prototype, properties, &tag_key)?;
             }
             self.install_pi_members(interface.name, prototype)?;

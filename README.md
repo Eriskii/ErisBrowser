@@ -37,6 +37,9 @@ prefixes. [Document.title](docs/document-title.md) now has ordinary accessors,
 exact normalized reads and staged raw-text replacement for HTML and SVG roots.
 [Text operations](docs/text-operations.md) now add exact `splitText` and adjacent
 `wholeText` reads, retaining node identities and separate failure stages.
+[Node.normalize](docs/node-normalize.md) merges exact descendant Text runs and
+removes empty Texts while retaining detached nodes and their data. Template
+content remains separate; resource refusal can preserve completed mutation stages.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members
@@ -307,6 +310,10 @@ ordinary descriptor behavior and retained detached subtrees.
 [ParentNode.append](docs/append-domstrings.md) now keeps exact separate string
 arguments after all conversions finish. [Document.title](docs/document-title.md)
 now preserves exact strings through ordinary accessors and normalized reads.
+[Node.normalize](docs/node-normalize.md) adds exact descendant Text merging and
+empty removal through an ordinary method. CDATA, live Range updates and mutation
+observers remain unsupported; the historical prototype-inventory changes are
+retained separately from the new feature checks.
 Legacy `innerText`, textarea setters and attribute writes, HTML parser input
 and broader DOMString/Web IDL interfaces remain incomplete.
 

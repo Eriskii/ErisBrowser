@@ -85,3 +85,11 @@ cached function bags for `splitText` and `wholeText`. Raw bootstrap leaves
 10,636 work units and charges 1,741,271 bytes, with 681 objects and capacity,
 321 native entries and 25 legacy prototype entries.
 No work or heap limit and no author-entry reset site changes.
+
+The later [Node normalization checkpoint](node-normalize.md) installs one ordinary
+cached method bag and admits the distinct prototype/constructor constant maps.
+Measured bootstrap leaves 10,199 work units and charges 1,744,501 bytes, with
+682 objects/capacity, 321 native entries and 25 legacy prototype entries. This
+adds 437 charged work units and 3,230 bytes. Numeric limits and reset sites stay
+unchanged. The method's descendant walk, exact payload copy and removals spend
+the existing author allowance; retained effects are not rolled back on refusal.

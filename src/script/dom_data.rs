@@ -2,7 +2,8 @@
 use super::*;
 use crate::dom::DomString;
 
-// Only borrowed slices and DomUnits/take/chain/skip streams enter this helper.
+// Only borrowed slices, DomUnits/take/chain/skip streams, and validated
+// borrowed normalize runs enter this helper.
 // Keep the original iterator in the plan: no callback or replacement source
 // may intervene between classification, fresh DOM admission and emission.
 pub(super) struct DomDataPlan<I> {

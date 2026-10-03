@@ -62,7 +62,10 @@ all fourteen new modes pass. [Document.title](document-title.md) adds ordinary
 accessors, exact normalized reads, HTML/SVG selection and retained failure
 prefixes. [Text operations](text-operations.md) add UTF-16 `splitText` and adjacent
 `wholeText` reads, preserving exact halves, ordinary descriptors and retained
-failure stages. Node normalization is next on this DOM track.
+failure stages. [Node normalization](node-normalize.md) now removes empty Texts
+and merges ordinary descendant runs with retained detached data and separately
+admitted mutation stages. CDATA, live Range updates and mutation notifications
+remain outside this increment.
 Legacy `innerText`, textarea setters and attribute
 writes, unit-aware native editing, nonscalar source/HTML serialization,
 PI pseudo-attributes, remaining Node/Text operations and mutation notifications

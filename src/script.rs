@@ -34,6 +34,7 @@ mod iterators;
 mod machine;
 mod names;
 mod node_data;
+mod node_normalize;
 mod object_integrity;
 mod object_is;
 mod own_keys;

@@ -1,6 +1,7 @@
 //! A bounded, independent HTML tree builder and CSS selector matcher.
 use std::collections::{BTreeMap, BTreeSet};
 
+mod node_normalize;
 mod string;
 #[cfg(test)]
 mod string_tests;
