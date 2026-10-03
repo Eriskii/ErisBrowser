@@ -219,7 +219,7 @@ fn ascii_space(c: char) -> bool {
 
 enum AppendValue {
     Node(NodeId),
-    Text(String),
+    Text(JsString),
 }
 
 impl Runtime {

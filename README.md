@@ -31,8 +31,10 @@ five CharacterData methods, including unpaired units and complete-splice repairs
 That producer checkpoint passes all eight earlier unmet modes and all 24 new
 cases. [Node data accessors](docs/node-data.md) now add ordinary `nodeValue` and
 `textContent`, exact descendant reads and checked container replacement with
-fresh Text identity. Other legacy writers, complete interface members and
-Document reflection remain unfinished. The
+fresh Text identity. [Exact append strings](docs/append-domstrings.md) preserve
+each argument in a separate Text, including unmatched units and retained failure
+prefixes. Other legacy writers, complete interface members and Document reflection
+remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
 fallback. Its 16 cases pass on three Vulkan adapters. A separate
@@ -295,8 +297,10 @@ The original probes gain 16 passes with no regression in the existing inventorie
 [Exact character-data production](docs/dom-production.md) now covers the named
 constructors, factories, data setter and CharacterData methods.
 [Node data accessors](docs/node-data.md) add exact `nodeValue`/`textContent` with
-ordinary descriptor behavior and retained detached subtrees. Legacy `innerText`,
-title/textarea setters, append-string and attribute writes, HTML parser input
+ordinary descriptor behavior and retained detached subtrees.
+[ParentNode.append](docs/append-domstrings.md) now keeps exact separate string
+arguments after all conversions finish. Legacy `innerText`, title/textarea
+setters and attribute writes, HTML parser input
 and broader DOMString/Web IDL interfaces remain incomplete.
 
 Supported [Window binding reflection](tests/conformance/window-reflection.md) now

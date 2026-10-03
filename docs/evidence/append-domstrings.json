@@ -1,0 +1,262 @@
+{
+  "kind": "Exact ParentNode.append string production",
+  "base_commit": "c47fe953a97c45f98045f1f75e43587e50479110",
+  "scope": "Document/Element/DocumentFragment append retains exact UTF-16 string arguments, materializes separate canonical Texts after complete conversion, and prepays typed arena growth immediately before Text/fragment publication while preserving earlier completed effects.",
+  "source": {
+    "base": "c47fe953a97c45f98045f1f75e43587e50479110",
+    "source_ready_sha256": "be73e0a8abc595520fc67dd37952f25e01a47c13c51dad90f9c61497dc325dd2",
+    "files": [
+      {
+        "path": "src/script/dom_bindings.rs",
+        "bytes": 48033,
+        "sha256": "c39aa88def0ced7e6ea30fe0bcf692b076a7587e3551d1d74e55335c1eb2e5d5"
+      },
+      {
+        "path": "src/script/dom_bindings/append.rs",
+        "bytes": 7833,
+        "sha256": "f3a1a9fc0a02f75fb0b52ad9698215925bbbf7b5cef676dfcb65ebaaf4358d26"
+      },
+      {
+        "path": "src/script/dom_bindings/append_tests.rs",
+        "bytes": 29889,
+        "sha256": "16a3251acd2fad143c936ce685e950c539cd0c0a0a4f719d05fbcf2cd3dffddf"
+      },
+      {
+        "path": "src/script/dom_bindings/append/exact_tests.rs",
+        "bytes": 12970,
+        "sha256": "62f24a97c2ecbc1306374af79398439bfe6f3ba8a7ef6e48458f2523484ea756"
+      },
+      {
+        "path": "tests/fixtures/append-domstrings.js",
+        "bytes": 5956,
+        "sha256": "6679318fdae5235ab4201560a0f853ddd3ea5a54fb1021b29a2cf3771b39bc17"
+      },
+      {
+        "path": "tests/fixtures/append-domstrings.html",
+        "bytes": 5425,
+        "sha256": "fe02aec30b81effb044a3b9bf79be65485d8de813159621645883e74d4203a9e"
+      },
+      {
+        "path": "tests/support/append_domstrings.rs",
+        "bytes": 9759,
+        "sha256": "0272d659a135206fb108276b1e1b499bc85c9031b4277eef255a5b433837e7d3"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 58464,
+        "sha256": "687eb602d6acaebc95411f01bf65651aa26eebd9e826d6fcdf82878cc5c503a1"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 94486,
+        "sha256": "9c456b7f9ffe25866b98106294d38a77066e8089a1757d98db56565c23f4599f"
+      }
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-append-domstrings-1/eris-js",
+    "bytes": 3666648,
+    "sha256": "71bb4c92d432ed247c483cf588d1cebaae9364194c5e9d0ed45c1c44b44a47b0",
+    "build": "validation/release-adapter-188-1.json",
+    "source": "main-source-final.json"
+  },
+  "final_validation": {
+    "full-default-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 23.537,
+      "log": "full-default-188-1.log",
+      "sha256": "973b1a71aab2b9785fad61f479fe859c18e8267b29fd908d9e42528c0abd6740"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 18.065,
+      "log": "full-native-198-1.log",
+      "sha256": "cfd02e553355e9bf955bda5231ebf49a00f46b757462a498c8eba6a3890bac0c"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.109,
+      "log": "clippy-native-198-1.log",
+      "sha256": "5e83bebf9494f6bc2b30ef8ffc4853c3bca9364d115aaeb3aeb1cf92484b0ded"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.853,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "e09d7cb41697dab9c99a635409153a13b3f4980e047d0a7ceb7f91f7e80a0677"
+    },
+    "format-198-final": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9659554958343506,
+      "log": "format-198-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 36.478,
+      "log": "release-adapter-188-1.log",
+      "sha256": "e7ae1b9f7c8755765f976abb5d2f7b4af451c34655857ec20d641cc55f3b68ae"
+    }
+  },
+  "tests": {
+    "default": 1637,
+    "native": 1760,
+    "new_groups": 18,
+    "focused_unique": 78,
+    "focused_executions": 81,
+    "failed": 0,
+    "ignored": 0,
+    "all_build_and_test_commands_passed_first_attempt": true
+  },
+  "raw_bootstrap": {
+    "steps_remaining": 6640,
+    "allocated": 1798334,
+    "objects": 677,
+    "object_capacity": 677,
+    "native_properties": 321,
+    "legacy_prototypes": 25
+  },
+  "compatibility": {
+    "path": "append-comparison.json",
+    "sha256": "aef587f54fe8f92a288a05f4a99d888920aa3006f0c17f12b7fb1532cf896af4",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4124,
+          "after_total": 4124,
+          "before_healthy": 4038,
+          "after_healthy": 4038,
+          "unchanged": 4124,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 388,
+          "after_total": 388,
+          "before_healthy": 388,
+          "after_healthy": 388,
+          "unchanged": 388,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 14,
+          "after_total": 14,
+          "before_healthy": 4,
+          "after_healthy": 14,
+          "unchanged": 4,
+          "gains": 10,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 16,
+          "after_total": 16,
+          "before_healthy": 12,
+          "after_healthy": 16,
+          "unchanged": 12,
+          "gains": 4,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    }
+  },
+  "retained_preparation_history": [
+    "The initial unexecuted fixture draft gained an explicit successful Document.append prerequisite guard; original draft retained, corrected bytes frozen before every engine invocation.",
+    "Two existing private test setups gained explicit test-owned spare capacity to isolate their unchanged node-cap and second-move assertions; separate tests exercise newly paid real growth refusal. Original files retained.",
+    "Capacity assessment clarified that large-arena growth work refusal precedes the unaffordable buffer charge. No quotas/reset points or original assertions changed."
+  ],
+  "boundaries": [
+    "General raw insertion child-vector/BTree/URL/encoding/IDNA allocations retain their existing limitations; this is not a fully fallible transaction or process-wide allocator meter.",
+    "Legacy innerText/title/textarea setters, attribute and parser writes remain separate work.",
+    "Prepend, replaceChildren, complete mutation reactions and cross-document adoption remain incomplete.",
+    "Two original PI host-prototype mutation expectations remain unmet.",
+    "No new GPU performance or Chromium comparison. Full web compatibility and production security are not achieved."
+  ],
+  "archive": {
+    "path": "append-domstrings.tar.gz",
+    "bytes": 1374997,
+    "sha256": "61bfcb8b4a9d5e07a447a1bff9ce1bf20b18feadb188edfbc34b5065c4f3c013",
+    "files": 215,
+    "manifest_verified": true
+  }
+}

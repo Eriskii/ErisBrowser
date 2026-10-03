@@ -29,8 +29,10 @@ now pass, bringing the original CharacterData replay to 34/34; all 24 new modes
 also pass. [Node data accessors](node-data.md) add ordinary `nodeValue` and
 `textContent`: exact CharacterData and descendant reads, nullable conversion,
 and fresh Text replacement that preserves detached old subtrees. Descriptor
-shadowing/deletion follows ordinary lookup. PI pseudo-attributes and mutation
-notifications remain unfinished.
+shadowing/deletion follows ordinary lookup. [Exact append strings](append-domstrings.md)
+retain separate Text identities, unpaired units and completed failure prefixes
+for Document, Element and DocumentFragment. Its validation remains pending.
+PI pseudo-attributes and mutation notifications remain unfinished.
 Complete interface members,
 Document reflection and host prototype mutation remain incomplete. The unchanged
 DOM suite now verifies **56/58 expectations**, with all 44 controls healthy; the
@@ -233,8 +235,10 @@ their actual receiver. Nullable text and Boolean properties retain distinct
 conversion rules. [Exact character-data production](dom-production.md) covers
 its named constructors, factories, data setter and five methods. Ordinary
 [Node data accessors](node-data.md) also preserve exact units through
-`nodeValue` and `textContent`. Legacy `innerText`, title/textarea setters,
-append-string, attribute and HTML-parser writes remain separate, alongside
+`nodeValue` and `textContent`. [ParentNode.append](append-domstrings.md) likewise
+preserves each string argument after ordered conversion, without coalescing
+separate Texts. Legacy `innerText`, title/textarea setters, attribute and
+HTML-parser writes remain separate, alongside
 remaining interface members, general XML name handling, live collections and
 complete DOM hierarchy semantics.
 
@@ -451,11 +455,12 @@ Text, Comment and PI data now use [canonical DOM string storage](dom-strings.md)
 UTF-8 for scalar strings, exact UTF-16 only when unpaired units occur. Existing
 data/length accessors, selected text readers and cloning preserve units from
 [JavaScript CharacterData production](dom-production.md),
-[Node data assignment](node-data.md), the host or transport.
+[Node data assignment](node-data.md), [append arguments](append-domstrings.md),
+the host or transport.
 Presentation explicitly replaces unmatched units without changing storage.
 Attributes, console output and other scalar host boundaries remain separate;
-legacy `innerText`, title/textarea setters, append-string and HTML-parser writes
-can still replace unpaired units. Inline JavaScript source and JavaScript HTML serialization explicitly
+legacy `innerText`, title/textarea setters and HTML-parser writes can still
+replace unpaired units. Inline JavaScript source and JavaScript HTML serialization explicitly
 refuse a nonscalar aggregate. This is not complete DOMString support.
 
 `textarea.value` reads exact stored units with CRLF/CR normalization. Its legacy

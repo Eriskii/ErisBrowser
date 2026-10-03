@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset="utf-8"><title>Exact append strings through load and click</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#separate{left:0}#detached{left:50px}#aggregate{left:100px}#conversion{left:150px}#hierarchy{left:200px}#restore{left:250px}
+#change{position:absolute;top:60px;left:0}#exact{position:absolute;top:100px;left:0;font-size:24px}
+#value{position:absolute;top:135px;left:0;font-size:24px}#result{position:absolute;top:175px;left:0}
+#pair-value{display:none}
+</style>
+<div id="separate" class="sample"></div><div id="detached" class="sample"></div>
+<div id="aggregate" class="sample"></div><div id="conversion" class="sample"></div>
+<div id="hierarchy" class="sample"></div><div id="restore" class="sample"></div>
+<button id="change" type="button">Append exact strings</button>
+<div id="exact"><span id="old-branch"></span></div><div id="value"></div><div id="result"></div><div id="pair-value"></div>
+<script>
+function check(v,m){if(!v)throw new Error(m);}
+function units(v,a){check(v.length===a.length,'length');for(let i=0;i<a.length;i++)check(v.charCodeAt(i)===a[i],'unit '+i);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+const exact=document.getElementById('exact'),value=document.getElementById('value'),result=document.getElementById('result');
+const change=document.getElementById('change'),branch=document.getElementById('old-branch'),pair=document.getElementById('pair-value');
+const root=document.documentElement,savedAppend=document.append;
+check(typeof savedAppend==='function'&&savedAppend.call(document)===undefined,'working Document append prerequisite');
+branch.append('old\uD800',new Comment('\uDC00'));
+const old=branch.firstChild,note=branch.childNodes[1];
+pair.append('\uD800',new Comment('excluded'),'\uDC00');
+const statusText=new Text('ready');result.append(statusText);
+let runs=0,previousLeft,previousRight,previousValue,previousFailure;
+function apply(color){
+  check(runs===(color==='green'?0:1),'load then click');
+  if(runs===0){exact.removeChild(branch);}
+  else{
+    exact.removeChild(previousLeft);exact.removeChild(previousRight);value.removeChild(previousValue);
+    check(previousLeft.parentNode===null&&previousRight.parentNode===null&&previousValue.parentNode===null,'old strings detached');
+    units(previousLeft.data,[65,55296]);units(previousRight.data,[66,56320]);units(previousValue.data,[86,55296]);
+  }
+  exact.append(runs===0?'A\uD800':'C\uDC00',runs===0?'B\uDC00':'D\uD800');
+  const left=exact.childNodes[0],right=exact.childNodes[1];
+  check(exact.childNodes.length===2&&left!==right&&left.nodeType===3&&right.nodeType===3,'distinct argument Text nodes');
+  check(left.parentNode===exact&&right.parentNode===exact,'exact parents');
+  units(left.data,runs===0?[65,55296]:[67,56320]);units(right.data,runs===0?[66,56320]:[68,55296]);
+  units(exact.textContent,runs===0?[65,55296,66,56320]:[67,56320,68,55296]);
+  previousLeft=left;previousRight=right;mark('separate',color);
+  check(branch.parentNode===null&&old.parentNode===branch&&note.parentNode===branch,'old branch retained');
+  units(old.data,[111,108,100,55296]);units(note.data,[56320]);mark('detached',color);
+  check(pair.childNodes.length===3&&pair.childNodes[0]!==pair.childNodes[2],'separate pair arguments');
+  units(pair.childNodes[0].data,[55296]);units(pair.childNodes[2].data,[56320]);units(pair.textContent,[55296,56320]);mark('aggregate',color);
+  let conversions=0;
+  value.append({toString(){conversions++;return runs===0?'V\uD800':'W\uDC00';}});
+  check(conversions===1&&value.childNodes.length===1,'one ordered string conversion');
+  previousValue=value.firstChild;units(previousValue.data,runs===0?[86,55296]:[87,56320]);mark('conversion',color);
+  let observed,temporary,created;
+  try{
+    try{savedAppend.call(document,root,runs===0?'\uD800':'\uDC00');}catch(error){observed=error;}
+    check(observed&&observed.name==='HierarchyRequestError'&&observed.code===3,'Document rejects created Text');
+    check(document.documentElement===null,'root was moved during assembly');
+    temporary=root.parentNode;
+    check(temporary&&temporary.nodeType===11&&temporary.parentNode===null&&temporary.childNodes.length===2,'retained temporary fragment');
+    check(temporary.firstChild===root,'root before string');created=temporary.childNodes[1];
+    check(created.nodeType===3&&created.parentNode===temporary,'created Text ownership');
+    units(created.data,runs===0?[55296]:[56320]);
+  }finally{
+    if(root.parentNode!==document)savedAppend.call(document,root);
+  }
+  mark('hierarchy',color);
+  check(document.documentElement===root&&root.parentNode===document,'author restored same root');
+  check(temporary.childNodes.length===1&&temporary.firstChild===created&&created.parentNode===temporary,'restore moves only root');
+  units(created.data,runs===0?[55296]:[56320]);
+  if(previousFailure){check(previousFailure.parentNode!==temporary&&previousFailure.parentNode.nodeType===11,'old failure fragment retained');units(previousFailure.data,[55296]);}
+  previousFailure=created;mark('restore',color);
+  statusText.nodeValue=runs===0?'ready':'6';check(result.firstChild===statusText,'status identity');runs++;
+}
+change.onclick=function(){check(this===change,'click receiver');apply('blue');document.body.className='clicked';};
+apply('green');document.body.className='ready';
+</script>

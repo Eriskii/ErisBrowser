@@ -133,8 +133,10 @@ nine jobs.
 
 Attr/CDATA and independent Document ownership, MutationObservers, live
 Range/NodeIterator updates, custom-element reactions, shadow-slot work and
-complete native Node members remain incomplete. Legacy `innerText`, title and
-textarea setters, append-string and attribute writes, HTML parser input, exact
+complete native Node members remain incomplete. A later
+[exact append increment](append-domstrings.md) preserves separate string
+arguments and failure prefixes without changing the Node checkpoint above.
+Legacy `innerText`, title and textarea setters, attribute writes, HTML parser input, exact
 nonscalar HTML serialization and unit-aware native editing remain separate
 boundaries. Replacing a title/style/textarea element's children through
 `textContent` does not make those other write APIs exact. This is not full Node

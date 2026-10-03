@@ -1477,3 +1477,29 @@ fn node_data_replacement_updates_connected_style_title_base_and_details() {
         ));
     }
 }
+
+#[path = "support/append_domstrings.rs"]
+mod append_domstrings_witness;
+
+#[test]
+fn append_exact_strings_preserve_separate_nodes_and_retained_hierarchy_prefixes() {
+    let mut actual = page(append_domstrings_witness::HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(append_domstrings_witness::check(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

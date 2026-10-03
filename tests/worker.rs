@@ -2401,3 +2401,48 @@ fn confined_node_data_replacement_updates_connected_metadata_and_style() {
         ));
     }
 }
+
+#[path = "support/append_domstrings.rs"]
+mod append_domstrings_witness;
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_append_exact_strings_preserve_nodes_units_and_restored_root() {
+    let fixture = Fixture::new(append_domstrings_witness::HTML);
+    let mut client = fixture.spawn(true, 207);
+    load(&mut client, &fixture.navigation);
+    let fonts = eris::graphics::Fonts::new();
+    let mut previous = None;
+    let mut button = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            exchange_empty(
+                &mut client,
+                WorkerCommand::Click {
+                    node: button.unwrap(),
+                },
+            );
+        }
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.generation, 207);
+        assert_eq!(snapshot.processed_edit_sequence, 0);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|message| message.starts_with("Page process ")
+                    || message.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        button = Some(snapshot.document.query_selector("#change").unwrap());
+        previous = Some(append_domstrings_witness::check(
+            &snapshot.document,
+            &snapshot.layout,
+            &snapshot.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

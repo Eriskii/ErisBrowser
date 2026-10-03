@@ -213,9 +213,17 @@ conformance remain unestablished.
 [Checked script insertion](document-append.md) now validates appendChild and
 Document/Element/DocumentFragment.append before their raw DOM mutations. Invalid
 hierarchies throw DOMException; implementation depth, work and storage refusals
-terminate script execution. Text admission checks UTF-8 storage before creating
-nodes, preventing silent truncation on this path. Conversion callbacks and
+terminate script execution. [Exact append strings](append-domstrings.md) admit
+the chosen scalar or exact-unit storage before creating nodes, preventing silent
+truncation on this path. Conversion callbacks and
 earlier temporary-fragment moves remain observable after later failures.
+All argument conversions complete before append materializes separate Texts.
+Each canonical payload, logical node and actual typed arena growth is paid before
+its publication; fragment growth remains after Text materialization. Later
+refusals retain earlier detached Texts and completed fragment moves. Removed
+lossy temporaries are not allocated, and cumulative charges are not refunded.
+The raw insertion child vectors, B-trees and base URL/encoding/IDNA internals
+retain their existing infallible-allocation and temporary-accounting limits.
 The parser's internal insertion path is unchanged. This does not add arbitrary
 cross-document adoption, mutation observers or complete DOM allocation recovery.
 
@@ -413,8 +421,9 @@ Some legacy conversion paths covered by that historical record still replace
 unpaired units. [Exact character-data production](dom-production.md) migrates the
 named constructors, factories, data setter and five methods.
 [Node data assignment](node-data.md) also preserves exact units through
-`nodeValue`/`textContent`. Legacy `innerText`, title/textarea setters,
-append-string, attribute and HTML-parser writes and scalar host boundaries
+`nodeValue`/`textContent`, and [append](append-domstrings.md) preserves separate
+string arguments. Legacy `innerText`, title/textarea setters, attribute and
+HTML-parser writes and scalar host boundaries
 remain separate work.
 
 ## Window binding reflection

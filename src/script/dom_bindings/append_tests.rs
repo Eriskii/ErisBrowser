@@ -500,6 +500,11 @@ fn terminal_second_move_keeps_the_first_node_in_the_temporary_fragment() {
     }
     // Calibrate a completed small operation on exactly the same initial arena.
     // This includes more work than its first move, without guessing helper fees.
+    // Both arenas have one test-owned fragment slot. This witness isolates
+    // move traversal; separately tested paid growth must not enter calibration.
+    initial.nodes.try_reserve_exact(1).unwrap();
+    let mut calibration_doc = initial.clone();
+    calibration_doc.nodes.try_reserve_exact(1).unwrap();
     let mut calibration = Runtime::new();
     let before = calibration.steps;
     calibration
@@ -507,7 +512,7 @@ fn terminal_second_move_keeps_the_first_node_in_the_temporary_fragment() {
             "Element.append",
             Value::Node(target),
             &[Value::Node(first), Value::Node(empty)],
-            &mut initial.clone(),
+            &mut calibration_doc,
         )
         .unwrap();
     let budget = before - calibration.steps + 1;
@@ -556,6 +561,9 @@ fn all_text_nodes_materialize_before_any_argument_moves() {
         children: Vec::new(),
         kind: NodeKind::Comment(String::new().into()),
     });
+    // One test-owned Text slot isolates the second-string node-cap refusal.
+    // Actual full-buffer work/heap refusal has separate focused coverage.
+    doc.nodes.try_reserve_exact(1).unwrap();
     let mut runtime = Runtime::new();
     let error = runtime
         .dom_native(

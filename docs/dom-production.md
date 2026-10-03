@@ -14,8 +14,10 @@ through this bounded set of DOM operations:
 
 The subsequent [Node accessor increment](node-data.md) adds ordinary
 `nodeValue`/`textContent` over represented kinds, including exact container
-replacement. Its validation and retained-subtree accounting are separate from
-the producer checkpoint recorded here.
+replacement. [Exact append strings](append-domstrings.md) further reuse the
+builder for separate Text arguments after all conversions complete. Those later
+increments have separate validation and accounting from the producer checkpoint
+recorded here.
 
 This uses the [storage foundation](dom-strings.md), with one canonical payload:
 UTF-8 when the complete result is well-formed, or UTF-16 when it contains an
@@ -109,8 +111,9 @@ release fingerprint, full comparisons and initial corrections. The
 [foundation CI receipt](evidence/dom-strings-ci.json) records all nine jobs passing.
 
 The later [Node data accessors](node-data.md) replace the legacy `textContent`
-route and add `nodeValue`; they do not migrate `innerText`, title/textarea setters,
-append-string or attribute writes. Those paths, HTML parser input, scalar form
+route and add `nodeValue`; [exact append strings](append-domstrings.md) separately
+migrate ParentNode.append. Neither migrates `innerText`, title/textarea setters
+or attribute writes. Those paths, HTML parser input, scalar form
 output, exact nonscalar HTML serialization and unit-aware native editing remain
 separate work. PI pseudo-attributes, MutationObserver/Range updates, broader
 children-changed reactions and remaining Node members are still incomplete.

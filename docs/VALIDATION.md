@@ -4508,3 +4508,42 @@ Remaining work includes legacy string writers and full DOM reactions/interfaces.
 Standard B-tree and URL/encoding/IDNA allocation remains infallible; logical
 script accounting is not complete process allocation recovery. This checkpoint
 adds no GPU timing or Chromium-performance result.
+
+### Exact string arguments in ParentNode.append
+
+[Exact append production](append-domstrings.md) preserves UTF-16 string
+arguments as separate canonical Text nodes. All conversions complete before
+materialization. Each Text and the later temporary fragment pay actual typed
+arena growth before publication; earlier detached Texts and completed argument
+moves survive later refusal. Existing hierarchy checks, metadata and reset
+rules are unchanged.
+
+All **1,637 default tests on Rust 1.88** and **1,760 Vulkan-feature tests on
+Rust 1.98** pass, including confinement tests. Strict all-target Clippy passes
+for Rust 1.98 native and Rust 1.88 presenter builds; formatting passes. The
+18 added groups include independent ordinary cases, measured resource boundaries
+and direct/worker load/click witnesses. Focused runs passed 78 distinct tests
+across 81 executions. Every compile/test command passed on its first attempt.
+Raw bootstrap remains 6,640 work units, 1,798,334 charged bytes, 677
+objects/capacity, 321 native entries and 25 legacy prototype entries.
+
+Release SHA-256:
+`71bb4c92d432ed247c483cf588d1cebaae9364194c5e9d0ed45c1c44b44a47b0`.
+All complete observations across 4,124 established case modes and 388 controls
+are unchanged. The new append inventory advances from 4/14 to 14/14 matched
+ordinary expectations; its controls advance from 12/16 to 16/16. Only the four
+exact-payload controls depend on the newly implemented fidelity. Source bytes,
+expected success records, and earlier failure records remain retained.
+
+Before compilation, two existing private tests received explicit test-owned
+spare capacity to preserve their original node-cap and second-move scenarios;
+all original assertions remain. New tests separately exercise real growth
+refusal. The original unexecuted literal draft also gained a successful saved
+Document.append prerequisite guard before freezing. These preparation changes
+and reviews are retained in the [summary](evidence/append-domstrings.json) and
+[archive](evidence/append-domstrings.tar.gz). The previous Node checkpoint
+[passed all nine CI jobs](evidence/node-data-ci.json).
+
+General insertion allocation limits, remaining scalar writers and full DOM
+reactions/interfaces remain open. No new GPU timing, Chromium comparison or
+production-security claim accompanies this change.

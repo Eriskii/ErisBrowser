@@ -1,6 +1,9 @@
 //! Script-facing append conversion and pre-insertion checks.
 use super::*;
 
+#[cfg(test)]
+mod exact_tests;
+
 impl Runtime {
     pub(super) fn dom_append(
         &mut self,
@@ -11,11 +14,16 @@ impl Runtime {
         // Web IDL converts every union argument before the DOM algorithm starts.
         // Author conversion can mutate the destination; no tree admission is
         // cached across it.
-        self.work(args.len() + 1)?;
+        self.work(
+            args.len()
+                .checked_add(1)
+                .ok_or_else(|| ScriptError::resource("DOM argument work overflow"))?,
+        )?;
         self.charge(
             args.len()
-                .saturating_mul(std::mem::size_of::<AppendValue>())
-                + 32,
+                .checked_mul(std::mem::size_of::<AppendValue>())
+                .and_then(|bytes| bytes.checked_add(32))
+                .ok_or_else(|| ScriptError::resource("DOM argument storage overflow"))?,
         )?;
         let mut values = Vec::new();
         values
@@ -25,7 +33,7 @@ impl Runtime {
             values.push(match value {
                 Value::Node(child) => AppendValue::Node(*child),
                 Value::Document => AppendValue::Node(doc.root),
-                _ => AppendValue::Text(self.dom_string(value.clone(), doc)?),
+                _ => AppendValue::Text(self.string_hint(value.clone(), doc)?),
             });
         }
 
@@ -35,13 +43,7 @@ impl Runtime {
         for value in &mut values {
             self.tick()?;
             if let AppendValue::Text(text) = value {
-                self.ensure_dom_capacity(doc, 1)?;
-                if !doc.admits_text_node(text.len()) {
-                    return Err(ScriptError::resource("DOM text storage limit exceeded"));
-                }
-                self.work(1 + text.len())?;
-                self.charge(text.len())?;
-                *value = AppendValue::Node(doc.create_text_node(text));
+                *value = AppendValue::Node(self.dom_append_text(text, doc)?);
             }
         }
 
@@ -53,6 +55,7 @@ impl Runtime {
         } else {
             self.ensure_dom_capacity(doc, 1)?;
             self.tick()?;
+            self.dom_reserve_node_growth(doc, 1)?;
             let fragment = doc.create_document_fragment();
             for value in values {
                 let AppendValue::Node(child) = value else {
@@ -65,6 +68,25 @@ impl Runtime {
             fragment
         };
         self.dom_checked_append(parent, child, doc)
+    }
+
+    // This phase is reached only after every argument conversion completes.
+    // Each payload and node are admitted separately, preserving completed Texts
+    // on a later refusal. No argument node moves during materialization.
+    fn dom_append_text(&mut self, text: &JsString, doc: &mut Document) -> Result<NodeId> {
+        let plan = self.plan_dom_data(text.units().iter().copied(), text.len(), text.len())?;
+        self.work(8)?;
+        if !doc.admits_text_node(plan.stored_bytes()) {
+            return Err(ScriptError::resource(
+                "DOM text node or storage limit exceeded",
+            ));
+        }
+        self.ensure_dom_capacity(doc, 1)?;
+        let data = self.emit_dom_data(plan)?;
+        self.work(8)?;
+        self.dom_reserve_node_growth(doc, 1)?;
+        doc.create_text_node_owned(data)
+            .map_err(processing_instruction::dom_data_error)
     }
 
     // DOM pre-insert validity for append: reference child is null and the

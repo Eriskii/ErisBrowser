@@ -11,8 +11,10 @@ This page describes the storage and consumer foundation. The subsequent
 and PI construction, the PI/text factories, the data setter and five
 CharacterData methods. [Node data accessors](node-data.md) additionally preserve
 units through ordinary `nodeValue`/`textContent` and checked container replacement.
-Other legacy writers, including `innerText`, title/textarea setters, append-string
-and attributes, can still replace unmatched units.
+[Exact append strings](append-domstrings.md) also preserve separate string
+arguments and completed failure prefixes. Other legacy writers, including
+`innerText`, title/textarea setters and attributes, can still replace unmatched
+units.
 The foundation release retained eight unmet CharacterData standards-success
 modes; their original sources and refusal records remain historical evidence.
 The new producer release now passes all eight unchanged expectations. Neither increment
