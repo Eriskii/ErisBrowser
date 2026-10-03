@@ -1,0 +1,322 @@
+{
+  "kind": "Exact Text splitText and wholeText",
+  "base_commit": "774c275b229198039a69cc996d0ffd05976dbf02",
+  "scope": "Ordinary Text prototype operations, authentic receiver checks and unsigned-long offset conversion; exact UTF-16 suffix creation/insertion/prefix replacement and local contiguous Text reads. Retained node identities, partial quota effects and unchanged worker transport.",
+  "source": {
+    "base": "774c275b229198039a69cc996d0ffd05976dbf02",
+    "phase": "Final candidate; measured descriptive assertion corrections only after initial source hold",
+    "files": [
+      {
+        "path": "src/dom.rs",
+        "bytes": 404687,
+        "sha256": "a01651b82b48eaca6ce9932bf937cd73ed4f11f8a4d3ff47d2a738d3ddc71a2a"
+      },
+      {
+        "path": "src/dom/text_operations.rs",
+        "bytes": 9409,
+        "sha256": "6ae3a7ae4017a548b412426aba960f55420f56dcf828de1f0a7bda3a91b95c96"
+      },
+      {
+        "path": "src/dom/text_operations/tests.rs",
+        "bytes": 16656,
+        "sha256": "b5d3d19d221aee15fb54ad14eb4c4327ae86c8a988fcc351a1d55ec8229ad025"
+      },
+      {
+        "path": "src/script.rs",
+        "bytes": 906495,
+        "sha256": "2c7bf3c3196bf2860a21a5815dcce5617c29dd6308e52f805ae4d6abf4438c05"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15508,
+        "sha256": "3717458966a3acb719f2fd3b0748efff79eb2d88faceedaf22c72acc964709b6"
+      },
+      {
+        "path": "src/script/dom_bindings/identity_tests.rs",
+        "bytes": 35727,
+        "sha256": "dc775cb9abf2bf2aa9b0a28e592418235220fa32a4c50e62ce9f3ed299e2b692"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 31044,
+        "sha256": "36924e131742e18fa8206d5ed45c72233a73a72e5aaeb5898ace1b94c90aefb5"
+      },
+      {
+        "path": "src/script/machine/calls.rs",
+        "bytes": 33741,
+        "sha256": "341a1fb447387b7aa85aa902fe330ae8796e4c9b3b1314c23829f634c55d6d2d"
+      },
+      {
+        "path": "src/script/processing_instruction.rs",
+        "bytes": 13620,
+        "sha256": "61bbaea85abf6d8dc1e4adc55f7341e956f1ed8e594c274b08e0833968bca397"
+      },
+      {
+        "path": "src/script/text_operations.rs",
+        "bytes": 8366,
+        "sha256": "4d7e59c102a20ff287891efe26b1f1803e4139d8911280451b8a1e88e00ea558"
+      },
+      {
+        "path": "src/script/text_operations/tests.rs",
+        "bytes": 21871,
+        "sha256": "d0d7045bd0910fe79716b884642cadc03be78e8cad812b977fb6f1bf5e69baef"
+      },
+      {
+        "path": "tests/fixtures/text-operations.html",
+        "bytes": 4960,
+        "sha256": "3df46a40b4d5a7ae72ac0cb2ec1ae3e0f8bf25db6454e02f415250e632a9a486"
+      },
+      {
+        "path": "tests/fixtures/text-operations.js",
+        "bytes": 14246,
+        "sha256": "6a7d6f008628d4fab814ab380dc1e1590a77a22b6154532ec7a39a4efc0e2363"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 60574,
+        "sha256": "54d2b82cf0ce6c6667a629b4d15ae4a1a62e414201484248830bd3a0a450b2f1"
+      },
+      {
+        "path": "tests/support/text_operations.rs",
+        "bytes": 8403,
+        "sha256": "edf57d87822431d1ccb1cdd3480515971a816010d15dc2c1a28575ababe8c3d8"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 97674,
+        "sha256": "49fffdd278bdddcbc8fccd0f879088ad396e4ff7a3869d1b73efdd67a5114994"
+      }
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-text-operations-1/eris-js",
+    "sha256": "6dfda06915ba0b62ec42090df7fef85cf1769128eb33adec6d92216696faa280",
+    "bytes": 3728088,
+    "source_manifest_sha256": "73014e72ceba8edc6369320ccbe3dbf6a148cc3409f1983651b1613a40e9765e",
+    "build_receipt": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "format-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9336576419882476,
+      "log": "format-198-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 7.1,
+      "log": "clippy-native-198-1.log",
+      "sha256": "04aad80e314a602c4ac65a6452554fff050c99847b381c65c42714db62456ec1"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 10.956,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "a4e08cb9be183709baa6115494d0b0b14c62c25eaee5402bf3f89920b4b35f74"
+    },
+    "full-default-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 32.191,
+      "log": "full-default-188-1.log",
+      "sha256": "d38aa34d9faad28399cd8cb1debf9ab5bf80ad8e5f36aec39efc43ebfce2a792"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 27.434,
+      "log": "full-native-198-1.log",
+      "sha256": "4234350492adc1db7af8871b6a923e2aa568d2aec13d1f35a906bff04bf3b556"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 37.263,
+      "log": "release-adapter-188-1.log",
+      "sha256": "eec41d16c7094e55f279b1f5c64c23a5475b34b89eae594440e11723a04b5d75"
+    }
+  },
+  "tests": {
+    "default": 1733,
+    "native": 1856,
+    "new_groups": 45,
+    "focused": {
+      "successful_observations": 149,
+      "successful_unique_groups": 143,
+      "all_attempt_pass_observations": 193,
+      "retained_failed_observations": [
+        "script::bootstrap_tests::bootstrap_convenience_and_try_paths_separate_work_and_retain_heap",
+        "script::dom_bindings::identity_tests::dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities",
+        "script::dom_bindings::identity_tests::dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities"
+      ],
+      "overlap": {
+        "script::text_operations::tests::text_operations_bootstrap_admission": 2,
+        "script::dom_prototypes::node_constants::tests::node_constant_batch_bootstrap_reports_actual_remaining_budget": 2,
+        "script::dom_bindings::identity_tests::dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities": 2,
+        "script::dom_bindings::identity_tests::dom_parent_batch_refusal_retains_only_prepaid_bootstrap_capacity": 2,
+        "script::dom_prototypes::tests::dom_prototypes_bootstrap_admission": 2,
+        "script::dom_bindings::identity_tests::dom_parent_bootstrap_reserve_is_prepaid_and_spare_capacity_is_free": 2
+      },
+      "source_ready_sha256": "3feff0ac1dcc1077a31c0911315a830a298801b1baf076a43b62fb8ab591d0d6",
+      "review": "Root verified raw test identity lines, logs and receipts; three descriptive literals only after measurement. Initial fourteen paths unchanged."
+    },
+    "final_failed": 0,
+    "final_ignored": 0,
+    "all_commands_passed_first_attempt": false
+  },
+  "accounting": {
+    "remaining_bootstrap_work": 10636,
+    "allocated_bytes": 1741271,
+    "objects": 681,
+    "object_capacity": 681,
+    "native_entries": 321,
+    "legacy_prototype_entries": 25,
+    "additional_work": 386,
+    "additional_charged_bytes": 6335,
+    "bootstrap_work_limit": 100000,
+    "author_work_limit": 100000,
+    "cumulative_heap_limit": 8388608,
+    "numeric_limits_and_resets_changed": false
+  },
+  "compatibility": {
+    "path": "text-comparison.json",
+    "sha256": "a6439fbe939313d866504ae8f157fdcb4a4b5a427ce1ad1553c8b034692aeb2f",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4176,
+          "after_total": 4176,
+          "before_healthy": 4090,
+          "after_healthy": 4090,
+          "unchanged": 4176,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 432,
+          "after_total": 432,
+          "before_healthy": 432,
+          "after_healthy": 432,
+          "unchanged": 432,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 28,
+          "after_total": 28,
+          "before_healthy": 0,
+          "after_healthy": 28,
+          "unchanged": 0,
+          "gains": 28,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 12,
+          "after_total": 12,
+          "before_healthy": 4,
+          "after_healthy": 12,
+          "unchanged": 4,
+          "gains": 8,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    }
+  },
+  "retained_history": [
+    "Initial all-target compilation and all43 new DOM/runtime groups passed; all28 independent ordinary modes passed within those groups.",
+    "Before correction, bootstrap filter retained24 passes/two failures and identity filter20 passes/one failure; two stale tests overlap. Exactly three descriptive literals across two paths changed after measured bootstrap accounting.",
+    "Independent replay baseline retains all28 ordinary missing-prerequisite TypeError outcomes and4/12 healthy controls; the nonzero runner exit records unmet expectations, not a passing baseline."
+  ],
+  "boundaries": [
+    "Represented Text only. No CDATASection, XMLDocument, live Range adjustment, MutationObserver records, custom-element reactions or slotting.",
+    "Three mutation stages admit cumulative work/storage separately. A late resource refusal can retain detached or attached suffix Text while original data remains full; future truncation credit is never borrowed.",
+    "wholeText uses local ordinary siblings, separate template lists, exact UTF16 concatenation and separately charged Vec/Rc copies under existing MAX_STRING.",
+    "Insertion validates a local fresh-Text contract and bounded host-inclusive depth; arbitrary public host graph corruption and physical allocator OOM recovery remain outside this validation.",
+    "Page and confined-worker witness verifies exact units, retained identities, title/style/clean textarea and literal pixels. Per-node replacement-glyph reference does not claim cross-node shaping equivalence.",
+    "No performance or physical-memory measurement. Full web compatibility, complete security and the requested Chromium performance threshold remain unachieved."
+  ],
+  "archive": {
+    "path": "text-operations.tar.gz",
+    "bytes": 3052064,
+    "sha256": "f379b8d6b089eb32a8d98ad7cce848e862c856c4c88375bef5e7b250792e8309",
+    "files": 316,
+    "manifest_verified": true
+  }
+}

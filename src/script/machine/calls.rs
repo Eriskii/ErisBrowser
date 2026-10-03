@@ -150,6 +150,23 @@ fn invoke_native(
             })
     } else if native
         .name
+        .starts_with(crate::script::text_operations::PREFIX)
+    {
+        runtime
+            .text_operations_call_preflight(&native.name)
+            .and_then(|()| {
+                runtime.native_call(
+                    &Native {
+                        properties: native.properties,
+                        name: native.name.clone(),
+                        receiver,
+                    },
+                    arguments,
+                    doc,
+                )
+            })
+    } else if native
+        .name
         .starts_with(crate::script::document_title::PREFIX)
     {
         runtime

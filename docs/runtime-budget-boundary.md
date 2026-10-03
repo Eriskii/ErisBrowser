@@ -36,3 +36,9 @@ bootstrap leaves 11,022 work units and charges 1,734,936 bytes, with 679 objects
 321 native entries and 25 legacy prototype entries. The fixed work/heap limits
 and success-only author grant remain unchanged. Existing blocks stay charged;
 eliminating unperformed insertions leaves more logical heap for author work.
+
+The later [Text operations checkpoint](text-operations.md) installs two ordinary
+cached function bags for `splitText` and `wholeText`. Raw bootstrap leaves
+10,636 work units and charges 1,741,271 bytes, with 681 objects and capacity,
+321 native entries and 25 legacy prototype entries.
+No work or heap limit and no author-entry reset site changes.

@@ -60,7 +60,8 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 352
     + 5
     + processing_instruction::METADATA_OBJECTS
     + node_data::METADATA_OBJECTS
-    + document_title::METADATA_OBJECTS;
+    + document_title::METADATA_OBJECTS
+    + text_operations::METADATA_OBJECTS;
 
 #[derive(Default)]
 pub(super) struct State {
@@ -464,7 +465,7 @@ impl Runtime {
                         "Document" => 2,
                         "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
-                        "Node" => 2,
+                        "Node" | "Text" => 2,
                         _ => 0,
                     },
             )?;

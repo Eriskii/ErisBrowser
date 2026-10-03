@@ -60,7 +60,10 @@ detached data. [Exact append strings](append-domstrings.md) now reuse the builde
 for separate Text arguments and admit actual arena growth at each creation step;
 all fourteen new modes pass. [Document.title](document-title.md) adds ordinary
 accessors, exact normalized reads, HTML/SVG selection and retained failure
-prefixes. Legacy `innerText`, textarea setters and attribute
+prefixes. [Text operations](text-operations.md) add UTF-16 `splitText` and adjacent
+`wholeText` reads, preserving exact halves, ordinary descriptors and retained
+failure stages. Node normalization is next on this DOM track.
+Legacy `innerText`, textarea setters and attribute
 writes, unit-aware native editing, nonscalar source/HTML serialization,
 PI pseudo-attributes, remaining Node/Text operations and mutation notifications
 remain open work.

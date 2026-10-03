@@ -4629,3 +4629,48 @@ benchmark. The initial non-LTO benchmark wrapper link failure is retained; all
 four arms use the same corrected thin-LTO wrapper before any timing. No page,
 Vulkan or Chromium performance claim follows from these checks. The preceding
 Document.title commit passed all nine [GitHub CI jobs](evidence/document-title-ci.json).
+
+
+### Exact Text splitting and adjacent reads
+
+[Text operations](text-operations.md) add ordinary cached `splitText` and
+`wholeText` functions over authentic represented Text. UTF-16 offsets use Web IDL
+unsigned-long conversion after receiver and required-argument checks. Data and
+parent reads follow author callbacks. Suffix creation, local insertion and
+original-prefix replacement are separately admitted; a late refusal retains
+completed stages. Adjacent reads use exact units, separate template lists and
+separately charged Vec/Rc copies.
+
+Rust 1.88 passes **1,733 default tests** and Rust 1.98 passes **1,856 native Vulkan
+tests**, including ignored confinement checks. Formatting, strict native Clippy,
+strict presenter Clippy and the release adapter build pass. Forty-five new groups
+cover 15 DOM, 28 runtime, one Page and one worker. Passing focused commands yield 149 observations
+covering 143 distinct groups, with six overlaps named in the evidence.
+
+Initial all-target compilation and all 43 new DOM/runtime groups passed. The first
+bootstrap filter retained 24 passes and two stale descriptive failures; the identity
+filter retained 20 passes and one repeated failure. Raw initialization measured 10,636
+remaining work, 1,741,271 charged bytes, 681 objects/capacity, 321 native entries and 25
+legacy prototypes. Only three descriptive literals across two tests changed
+after measurement. All production and independent fixture source stayed exact
+from initial review. Numeric limits and entry/reset behavior are unchanged.
+
+All **4,176 established case records and 432 controls** remain unchanged in the
+release replay. All 28 new independent strict/sloppy modes pass (baseline zero), and
+all 12 controls are healthy (baseline four). The baseline's missing-prerequisite
+TypeErrors and nonzero runner exit remain visible. No sources, expectations or
+control pairings changed; comparison retains complete rows and bindings.
+
+The browser fixture checks seven stable Text pairs and one additional split
+through a real click. Exact UTF-16 data, node IDs, backlinks, title metadata,
+style pixels, clean textarea text, separate template lists and base URL survive
+both Page and confined-worker paths. A summary's index shifts while its ID stays
+fixed; Page primes its cache before mutation. Per-node replacement-glyph canvas
+references preserve the split boundaries, with nonempty glyph and literal color
+checks. This does not establish cross-node text shaping, Range/observer delivery,
+CDATA support, complete security or the requested Chromium performance target.
+
+See the [summary](evidence/text-operations.json),
+[archive](evidence/text-operations.tar.gz), and
+[preceding Node constant CI receipt](evidence/node-constants-ci.json). All nine
+jobs passed for that preceding `774c275` checkpoint.

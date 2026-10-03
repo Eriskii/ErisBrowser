@@ -43,6 +43,7 @@ mod property_keys;
 mod regexp_builtins;
 mod string_builtins;
 mod symbols;
+mod text_operations;
 mod window;
 use symbols::PropertyKey;
 pub use symbols::Symbol;
@@ -8006,6 +8007,9 @@ impl Runtime {
             return Err(ScriptError::type_error(
                 "DOM interface constructor requires new",
             ));
+        }
+        if let Some(method) = native.name.strip_prefix(text_operations::PREFIX) {
+            return self.text_operations_native(method, native.receiver.clone(), &args, doc);
         }
         if let Some(method) = native.name.strip_prefix(document_title::PREFIX) {
             return self.document_title_native(method, native.receiver.clone(), &args, doc);

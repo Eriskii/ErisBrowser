@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8"><base id="fixed-base" href="https://text.example/fixed/"><title id="heading">Text ready</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#probe{left:0}#done{left:50px}.ready #done{background:green}.clicked #done{background:blue}
+#change{position:absolute;top:60px;left:0}#scalar{position:absolute;top:100px;left:0;font-size:24px}
+#exact{position:absolute;top:135px;left:0;font-size:24px}#field{position:absolute;top:175px;left:0;width:200px;height:30px}
+#disclosure,#template{display:none}
+</style><style id="theme">#probe{background:green}</style>
+<div id="probe" class="sample"></div><div id="done" class="sample"></div>
+<button id="change" type="button">Change split text</button>
+<div id="scalar">Alpha beta</div><div id="exact"></div><textarea id="field">clean seed</textarea>
+<template id="template">content</template><details id="disclosure">before<summary id="summary">kept summary</summary></details>
+<script>
+function check(v,m){if(!v)throw new Error(m);}
+function get(id){return document.getElementById(id);}
+function units(s,a){check(s.length===a.length,'unit length');for(let i=0;i<a.length;i++)check(s.charCodeAt(i)===a[i],'unit '+i);}
+const method=Object.getOwnPropertyDescriptor(Text.prototype,'splitText');
+const getter=Object.getOwnPropertyDescriptor(Text.prototype,'wholeText');
+check(method&&typeof method.value==='function'&&getter&&typeof getter.get==='function','Text operations exist');
+const split=method.value,whole=getter.get;
+const scalar=get('scalar'),exact=get('exact'),heading=get('heading'),theme=get('theme'),field=get('field');
+const template=get('template'),content=template.content,details=get('disclosure'),summary=get('summary'),change=get('change');
+const scalarHead=scalar.firstChild,scalarTail=split.call(scalarHead,6);
+const exactHead=new Text('A\uD83D\uDE80B');exact.append(exactHead);const exactTail=split.call(exactHead,2);
+const titleHead=heading.firstChild,titleTail=split.call(titleHead,5);
+const styleHead=theme.firstChild,styleTail=split.call(styleHead,7);
+const fieldHead=field.firstChild,fieldTail=split.call(fieldHead,6);
+check(content&&content.nodeType===11&&template.childNodes.length===0,'actual template content');
+const contentHead=content.firstChild,contentTail=split.call(contentHead,3);
+const ordinaryHead=new Text('outside');template.append(ordinaryHead);const ordinaryTail=split.call(ordinaryHead,3);
+const detailHead=details.firstChild,detailTail=split.call(detailHead,3);let detailLast;
+let phase=0;
+function pair(parent,head,tail,left,right){
+  check(head!==tail&&parent.childNodes.length===2&&parent.childNodes[0]===head&&parent.childNodes[1]===tail,'stable split children');
+  check(head.parentNode===parent&&tail.parentNode===parent&&head.data===left&&tail.data===right,'split data and links');
+  check(whole.call(head)===left+right&&whole.call(tail)===left+right,'wholeText adjacency');
+}
+function verify(){
+  pair(scalar,scalarHead,scalarTail,'Alpha ',phase===0?'beta':'gamma');
+  pair(exact,exactHead,exactTail,'A\uD83D',phase===0?'\uDE80B':'\uDE80C');
+  units(exactHead.data,[65,55357]);units(exactTail.data,[56960,phase===0?66:67]);
+  units(whole.call(exactHead),[65,55357,56960,phase===0?66:67]);
+  pair(heading,titleHead,titleTail,'Text ',phase===0?'ready':'changed');
+  pair(theme,styleHead,styleTail,'#probe{',phase===0?'background:green}':'background:blue}');
+  pair(field,fieldHead,fieldTail,'clean ',phase===0?'seed':'next');
+  check(field.value===(phase===0?'clean seed':'clean next'),'clean textarea value');
+  pair(content,contentHead,contentTail,'con',phase===0?'tent':'tained');
+  pair(template,ordinaryHead,ordinaryTail,'out',phase===0?'side':'bound');
+  check(template.content===content&&content.parentNode===null&&content!==template,'separate content tree');
+  check(document.title===(phase===0?'Text ready':'Text changed'),'joined title');
+  check(document.baseURI==='https://text.example/fixed/','unchanged fixed base');
+  check(details.childNodes.length===(phase===0?3:4)&&details.firstChild===detailHead,'details children');
+  check(details.childNodes[phase===0?2:3]===summary&&summary.parentNode===details,'same summary after index shift');
+  check(detailHead.data==='bef'&&detailTail.data===(phase===0?'ore':'o'),'details prefix');
+  if(phase===1)check(details.childNodes[2]===detailLast&&detailLast.data==='re'&&detailLast.parentNode===details,'details second split');
+  check(whole.call(detailHead)==='before','summary element stops Text run');
+}
+change.onclick=function(){
+  check(this===change&&phase===0,'one real click in same realm');
+  scalarTail.data='gamma';exactTail.data='\uDE80C';titleTail.data='changed';styleTail.data='background:blue}';fieldTail.data='next';
+  contentTail.data='tained';ordinaryTail.data='bound';detailLast=split.call(detailTail,1);phase=1;
+  verify();document.body.className='clicked';
+};
+verify();document.body.className='ready';
+</script>

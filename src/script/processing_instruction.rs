@@ -118,6 +118,7 @@ impl Runtime {
                     )?;
                 }
             }
+            "Text" => self.install_text_operations(prototype)?,
             _ => {}
         }
         Ok(())

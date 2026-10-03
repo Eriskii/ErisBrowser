@@ -35,6 +35,8 @@ fresh Text identity. [Exact append strings](docs/append-domstrings.md) preserve
 each argument in a separate Text, including unmatched units and retained failure
 prefixes. [Document.title](docs/document-title.md) now has ordinary accessors,
 exact normalized reads and staged raw-text replacement for HTML and SVG roots.
+[Text operations](docs/text-operations.md) now add exact `splitText` and adjacent
+`wholeText` reads, retaining node identities and separate failure stages.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members

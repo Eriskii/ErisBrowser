@@ -49,8 +49,9 @@ author callback effects. No work, heap or DOM limit is raised.
 Page rendering collects current text and styles on each layout. The broader
 children-changed reactions remain incomplete, including MutationObservers,
 live Ranges, textarea dirty/default value separation and PI pseudo-attribute
-updates. CDATASection, `splitText`, `wholeText`, normalization and complete Node
-attribute descriptors also remain unfinished.
+updates. The later [Text operations](text-operations.md) increment adds exact
+`splitText` and `wholeText` for represented Text. CDATASection, normalization
+and remaining Node members are still unfinished.
 
 The original CharacterData release replay passed 26 ordinary cases and retained
 eight unmet standards expectations for final lone-surrogate DOM data. Separate

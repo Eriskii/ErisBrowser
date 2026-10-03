@@ -4,6 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 mod string;
 #[cfg(test)]
 mod string_tests;
+mod text_operations;
 mod text_replacement;
 mod title;
 pub use string::{DomScalars, DomString, DomUnits};

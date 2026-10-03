@@ -1533,3 +1533,33 @@ fn append_exact_strings_preserve_separate_nodes_and_retained_hierarchy_prefixes(
         ));
     }
 }
+
+#[path = "support/text_operations.rs"]
+mod text_operations_witness;
+
+#[test]
+fn text_split_and_whole_text_preserve_exact_units_and_refresh_connected_content() {
+    let mut actual = page(text_operations_witness::HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            let details = actual.document.query_selector("#disclosure").unwrap();
+            let summary = actual.document.query_selector("#summary").unwrap();
+            assert_eq!(actual.document.first_summary(details), Some(summary));
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(actual.title(), text_operations_witness::metadata(phase));
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(text_operations_witness::check(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

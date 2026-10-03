@@ -642,3 +642,16 @@ removing unperformed insertion allocations lowers bootstrap charges under the
 same 8 MiB ceiling. Standard BTree/sort allocator failure is still outside
 recoverable errors. The renderer's authority and execution reset sites do not
 change.
+
+[Text splitting](text-operations.md) validates its authentic receiver before
+offset conversion, then reacquires current data and parent. Suffix creation,
+local sibling insertion and original-prefix replacement admit work and storage
+separately. Later refusal retains completed stages; future truncation is never
+credited to suffix admission. Checked vector growth precedes link publication.
+The local insertion helper preserves the existing maximum depth, Document-parent
+snapshot admission and summary NodeId caches without broad metadata rebuilding.
+`wholeText` pays bounded local sibling discovery and both exact-data passes, then
+separately admits its temporary Vec and final Rc storage. Both helper outcomes
+copy spent counters back. Numeric quotas, execution resets, IPC protocol and
+process authority are unchanged. The tests cover quota refusals, not physical
+allocator failure, a comprehensive graph validator or complete browser security.
