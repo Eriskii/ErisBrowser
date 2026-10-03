@@ -45,26 +45,34 @@ cases!(
 );
 
 #[test]
-fn prior_node_constant_inventory_after_removing_configurable_normalize() {
+fn prior_node_constant_inventory_after_removing_later_configurable_operations() {
     // This historical fixture describes the preceding represented inventory.
     // Deletion/restoration intentionally changes creation order, so each mode
-    // uses a disposable realm; the new normalize fixture checks pristine order.
+    // uses a disposable realm; the new predicates fixture checks pristine order.
     for strict in [false, true] {
         let mut runtime = Runtime::try_new().unwrap();
         let mut doc = Document::parse("");
         let source = format!(
             r#"{CASES}
           (function(){{
-            var d=Object.getOwnPropertyDescriptor(Node.prototype,'normalize');
-            if(!d||!d.configurable||typeof d.value!=='function')throw new Error('normalize descriptor');
+            var names=['hasChildNodes','normalize','isSameNode','contains'],saved=[];
+            for(var i=0;i<names.length;i++){{
+              var d=Object.getOwnPropertyDescriptor(Node.prototype,names[i]);
+              if(!d||!d.configurable||typeof d.value!=='function')throw new Error('later operation descriptor');
+              saved.push(d);
+            }}
             try{{
-              if(!delete Node.prototype.normalize)throw new Error('normalize delete');
+              for(var i=0;i<names.length;i++)if(!delete Node.prototype[names[i]])throw new Error('later operation delete');
               if(nodeConstantCases.prototype_complete_key_order()!==true)throw new Error('prior inventory');
-            }}finally{{Object.defineProperty(Node.prototype,'normalize',d);}}
-            var restored=Object.getOwnPropertyDescriptor(Node.prototype,'normalize');
-            if(restored.value!==d.value||restored.writable!==d.writable||
-               restored.enumerable!==d.enumerable||restored.configurable!==d.configurable)
-              throw new Error('restore descriptor');
+            }}finally{{
+              for(var i=0;i<names.length;i++)Object.defineProperty(Node.prototype,names[i],saved[i]);
+            }}
+            for(var i=0;i<names.length;i++){{
+              var restored=Object.getOwnPropertyDescriptor(Node.prototype,names[i]),d=saved[i];
+              if(restored.value!==d.value||restored.writable!==d.writable||
+                 restored.enumerable!==d.enumerable||restored.configurable!==d.configurable)
+                throw new Error('restore descriptor');
+            }}
             return true;
           }})()
         "#
@@ -155,11 +163,11 @@ fn setup() -> (Runtime, usize, usize, PropertyKey) {
         let values = &bag.values;
         bag.order.retain(|key| values.contains_key(key));
         bag.order.shrink_to_fit();
-        let capacity = if owner == prototype { 23 } else { 21 };
+        let capacity = if owner == prototype { 26 } else { 21 };
         bag.order
             .try_reserve_exact(capacity - bag.order.len())
             .unwrap();
-        let old = if owner == prototype { 4 } else { 3 };
+        let old = if owner == prototype { 7 } else { 3 };
         assert_eq!(bag.values.len(), old);
         assert_eq!(bag.order.len(), old);
     }
@@ -296,7 +304,7 @@ fn measured_exact_and_one_short_admission_precedes_taking_either_map() {
             result.unwrap();
             assert_eq!(runtime.steps, 0);
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects[prototype].values.len(), 22);
+            assert_eq!(runtime.objects[prototype].values.len(), 25);
             assert_eq!(runtime.objects[properties].values.len(), 21);
             assert_eq!(
                 runtime.objects[prototype].order.capacity(),
@@ -345,25 +353,32 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
         };
         handles.push((name, get.clone(), set.clone()));
     }
-    let PropertyValue::Data {
-        value: Value::Native(normalize),
-        ..
-    } = &runtime.objects[prototype].values[&PropertyKey::from("normalize")].value
-    else {
-        panic!("normalize Native missing")
-    };
-    let normalize = normalize.clone();
+    let methods: Vec<_> = ["hasChildNodes", "normalize", "isSameNode", "contains"]
+        .into_iter()
+        .map(|name| {
+            let PropertyValue::Data {
+                value: Value::Native(method),
+                ..
+            } = &runtime.objects[prototype].values[&PropertyKey::from(name)].value
+            else {
+                panic!("Node method Native missing")
+            };
+            (name, method.clone())
+        })
+        .collect();
     runtime
         .install_node_constants(prototype, properties, &tag)
         .unwrap();
-    let PropertyValue::Data {
-        value: Value::Native(after),
-        ..
-    } = &runtime.objects[prototype].values[&PropertyKey::from("normalize")].value
-    else {
-        panic!("normalize Native missing after batch")
-    };
-    assert!(Rc::ptr_eq(&normalize, after));
+    for (name, method) in methods {
+        let PropertyValue::Data {
+            value: Value::Native(after),
+            ..
+        } = &runtime.objects[prototype].values[&PropertyKey::from(name)].value
+        else {
+            panic!("Node method Native missing after batch")
+        };
+        assert!(Rc::ptr_eq(&method, after), "{name}");
+    }
     for (owner, old) in [prototype, properties].into_iter().zip(before) {
         assert_eq!(other_fields(&runtime.objects[owner]), old.other);
         assert_eq!(&runtime.objects[owner].order[..old.order.len()], &old.order);
@@ -385,7 +400,7 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
 
 #[test]
 fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
-    for case in 0..13 {
+    for case in 0..19 {
         let (mut runtime, prototype, properties, tag) = setup();
         let (mut p, mut c, mut key) = (prototype, properties, tag);
         match case {
@@ -424,6 +439,18 @@ fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
                 runtime.objects[properties].order.push("normalize".into());
             }
             12 => runtime.objects[prototype].order.swap(2, 3),
+            13..=15 => {
+                runtime.objects[prototype].values.remove(&PropertyKey::from(
+                    ["hasChildNodes", "isSameNode", "contains"][case - 13],
+                ));
+            }
+            16 => runtime.objects[prototype].order.shrink_to_fit(),
+            17 => runtime.objects[prototype].order.swap(3, 4),
+            18 => {
+                let bag = &mut runtime.objects[properties];
+                let old = bag.values.remove(&PropertyKey::from("name")).unwrap();
+                bag.values.insert("isSameNode".into(), old);
+            }
             _ => unreachable!(),
         }
         let before = [

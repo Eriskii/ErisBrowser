@@ -4734,3 +4734,69 @@ These selected records do not establish full DOM conformance. CDATA/XML,
 Range updates, mutation records, slotting and custom-element reactions remain
 unimplemented. No page, GPU, physical-memory or Chromium performance result is
 claimed, and complete compatibility and production security remain unmet.
+
+### Node child, identity and containment predicates
+
+[Node predicates](node-predicates.md) add ordinary cached `hasChildNodes`,
+`isSameNode` and `contains` methods. They authenticate represented receivers,
+apply required nullable Node argument conversion, and read current ordinary
+children and parent links. Containment includes the receiver and preserves the
+boundary between a template element and its separate content fragment.
+
+Rust 1.88 passes **1,805 default tests** and Rust 1.98 passes **1,928 native Vulkan
+tests**, including ignored confinement checks. Formatting, both strict Clippy
+configurations and the release build pass. The thirty new groups comprise
+sixteen independently authored runtime bodies, twelve private runtime checks,
+one Page test and one confined-worker test. Successful feature-focused commands
+contain 149 observations across 145 distinct groups.
+
+The first bootstrap filter retained 26 passes and two stale descriptive assertion
+failures. Exactly three literals changed to match measured initialization:
+8,807 remaining work units, 1,755,715 charged bytes, 685 objects/capacity,
+321 native entries and 25 legacy prototype entries. The change adds 1,392 work
+units, 11,214 bytes and three metadata bags. Limits and reset sites are unchanged.
+An unused mutable test-helper binding and three test-only cloned argument slices
+were corrected after compiler/Clippy diagnostics. Production and independent
+fixture bytes stayed unchanged after their initial source hold; all earlier
+sources and attempts remain retained.
+
+The first native full run retained 1,616 passes and one failure: a date-host
+helper's startup marker was not observed before capture returned under its
+existing one-second deadline. The failing assertion did not record the action
+or returned error. The unchanged exact test passed in isolation, and the unchanged full native suite
+passed with four test threads. Scheduling sensitivity is an inference, not a
+proven sole cause. No deadline, assertion or test inclusion was relaxed.
+
+Both browser paths load once and dispatch a real click that moves a branch and
+detaches a different subtree. Eighteen captured node identities remain stable,
+and the click creates no nodes. Saved predicate functions follow current links,
+retained detached descendants and separate template trees despite own-property
+shadowing. The tests check title/status, literal full-canvas references, text
+commands and green-to-blue pixels. They do not claim summary-cache priming.
+
+The release replay passes all **32 new strict/sloppy case modes** and all
+**16 controls**, up from zero and four. Of 4,236 established case records,
+**4,234 remain byte-exact**; of 460 established controls, **456 remain byte-exact**.
+The two newly failing cases and four newly unhealthy controls require Normalize's
+former complete property inventory. Raw case observations are Error and control
+observations are TypeError; their positive partners fail, so a matching negative
+exception is not healthy. The earlier Node-constant inventory's two case failures
+and four unhealthy controls remain unchanged. Both historical profile commands
+and the aggregate command retain exit one. Frozen sources, expectations and
+pairings are unchanged. A separately reviewed classifier verifies only these six
+anticipated new differences; the current independent 26-key inventory and its
+positive/wrong controls pass.
+
+The [summary](evidence/node-predicates.json) and
+[archive](evidence/node-predicates.tar.gz) retain the source holds and corrections,
+failed and passing attempts, all complete before/after records, comparison policy,
+release binding and reviews. The preceding [Normalize CI receipt](evidence/node-normalize-ci.json)
+records all nine GitHub jobs passing for `618fa35`.
+
+These methods do not add shadow trees, composed ancestry, cross-document
+adoption or the remaining Node interface. Traversal validates reached local
+shapes and reciprocal membership within the existing depth bound, and charges
+scanned sibling IDs. It allocates no owned traversal/payload storage; generic VM
+and inherited diagnostic allocation limits remain. This checkpoint makes no
+page/GPU/physical-memory speed claim and does not establish complete web
+compatibility, production security or the requested Chromium performance target.

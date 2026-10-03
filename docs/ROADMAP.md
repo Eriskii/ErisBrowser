@@ -65,7 +65,10 @@ prefixes. [Text operations](text-operations.md) add UTF-16 `splitText` and adjac
 failure stages. [Node normalization](node-normalize.md) now removes empty Texts
 and merges ordinary descendant runs with retained detached data and separately
 admitted mutation stages. CDATA, live Range updates and mutation notifications
-remain outside this increment.
+remain outside this increment. [Node predicates](node-predicates.md) add
+`hasChildNodes`, `isSameNode` and `contains` through ordinary prototype methods.
+Other Node members, including structural equality (`isEqualNode`) and
+document-position comparison, remain unimplemented.
 Legacy `innerText`, textarea setters and attribute
 writes, unit-aware native editing, nonscalar source/HTML serialization,
 PI pseudo-attributes, remaining Node/Text operations and mutation notifications

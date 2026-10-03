@@ -101,7 +101,7 @@ and three-entry constructor inputs before adding the same eighteen constants.
 Its guards, sorted map construction and order storage account for these actual
 shapes. Constructor properties and constant values do not change.
 
-The current represented prototype inventory has 23 own keys: `nodeValue`,
+At this checkpoint, the represented prototype inventory has 23 own keys: `nodeValue`,
 `textContent`, `normalize`, the eighteen constants, `constructor`, then
 `Symbol.toStringTag` in `Reflect.ownKeys`. This is the implemented subset, not a
 claim of a complete Node interface.
@@ -196,7 +196,10 @@ custom-element reactions. The standard uses *exclusive Text* for normalization:
 future CDATA nodes would be barriers, unlike their participation in `wholeText`.
 The current Node model has no CDATA kind. Live layout/title/style refresh is
 not a claim of complete synchronous DOM reactions. Dirty textarea behavior,
-legacy exact writers and full DOM/interface coverage remain unfinished.
+legacy exact writers and full DOM/interface coverage remain unfinished. A later
+[Node predicate increment](node-predicates.md) adds three query methods and
+expands the represented prototype inventory to 26 keys; the 23-key observations
+here remain historical evidence.
 
 Normative references: [Node.normalize](https://dom.spec.whatwg.org/#dom-node-normalize),
 [exclusive Text](https://dom.spec.whatwg.org/#exclusive-text-node),

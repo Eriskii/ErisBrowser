@@ -93,3 +93,13 @@ Measured bootstrap leaves 10,199 work units and charges 1,744,501 bytes, with
 adds 437 charged work units and 3,230 bytes. Numeric limits and reset sites stay
 unchanged. The method's descendant walk, exact payload copy and removals spend
 the existing author allowance; retained effects are not rolled back on refusal.
+
+The later [Node predicate checkpoint](node-predicates.md) installs three ordinary
+cached method bags for `hasChildNodes`, `isSameNode` and `contains`. Measured raw
+bootstrap leaves 8,807 work units and charges 1,755,715 bytes, with 685 objects
+and capacity, 321 native entries and 25 legacy prototype entries. This adds
+1,392 charged work units and 11,214 bytes. The larger prototype constant map
+needs four allocated tree nodes; the constructor map still needs three.
+Numeric limits and author-entry reset sites remain unchanged. Predicate bodies
+spend the existing allowance without allocating traversal or payload storage;
+generic invocation and inherited diagnostic allocation retain their own limits.

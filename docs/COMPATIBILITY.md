@@ -39,6 +39,9 @@ ASCII-whitespace-normalized reads, HTML/SVG selection and staged replacement.
 ordinary Text reads. [Node normalization](node-normalize.md) removes empty ordinary
 Text descendants and merges contiguous runs while retaining detached identities
 and exact data. It does not traverse separate template content implicitly.
+[Node predicates](node-predicates.md) add ordinary `hasChildNodes`, `isSameNode`
+and `contains`, with authentic identity, required nullable arguments and fresh
+ordinary ancestry after argument evaluation. Template contents remain separate.
 CDATA, live Ranges and cross-node text shaping remain gaps.
 PI pseudo-attributes and mutation notifications remain unfinished.
 Complete interface members,
@@ -249,6 +252,8 @@ separate Texts. [Document.title](document-title.md) adds exact raw writes and
 normalized direct-Text reads. [Text splitting and adjacent reads](text-operations.md)
 preserve exact units and separate node identities. [Node.normalize](node-normalize.md)
 uses exact internal streams and preserves the first nonempty Text in each run.
+[Node predicates](node-predicates.md) query current children, identity and ordinary
+containment without changing the tree or converting objects into Nodes.
 Legacy `innerText`, textarea
 setters, attribute and
 HTML-parser writes remain separate, alongside

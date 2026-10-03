@@ -40,6 +40,11 @@ exact normalized reads and staged raw-text replacement for HTML and SVG roots.
 [Node.normalize](docs/node-normalize.md) merges exact descendant Text runs and
 removes empty Texts while retaining detached nodes and their data. Template
 content remains separate; resource refusal can preserve completed mutation stages.
+[Node predicates](docs/node-predicates.md) add ordinary `hasChildNodes`,
+`isSameNode` and `contains` methods over authentic nodes and current parent links.
+Required nullable arguments do not invoke conversion hooks; template content
+remains a separate tree. All 32 new strict/sloppy modes pass with 16 healthy
+controls; historical prototype-inventory failures remain recorded separately.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members
@@ -314,6 +319,11 @@ now preserves exact strings through ordinary accessors and normalized reads.
 empty removal through an ordinary method. CDATA, live Range updates and mutation
 observers remain unsupported; the historical prototype-inventory changes are
 retained separately from the new feature checks.
+[Node predicates](docs/node-predicates.md) read direct children, identity and
+inclusive ancestry without mutating the tree. Their bounded local checks and
+visited sibling scans consume the existing author work allowance; prototype
+inventory changes retain explicit historical observations. The new 32 modes
+and 16 controls pass without changing numeric quotas.
 Legacy `innerText`, textarea setters and attribute writes, HTML parser input
 and broader DOMString/Web IDL interfaces remain incomplete.
 

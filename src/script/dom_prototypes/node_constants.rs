@@ -6,7 +6,7 @@ use super::*;
 mod tests;
 
 const COUNT: usize = 18;
-const PROTOTYPE_OLD: usize = 4;
+const PROTOTYPE_OLD: usize = 7;
 const CONSTRUCTOR_OLD: usize = 3;
 const PROTOTYPE_FINAL: usize = PROTOTYPE_OLD + COUNT;
 const CONSTRUCTOR_FINAL: usize = CONSTRUCTOR_OLD + COUNT;
@@ -14,24 +14,25 @@ const MAX_KEY_UNITS: usize = 41;
 const SORTED: [usize; COUNT] = [1, 3, 7, 10, 8, 16, 15, 12, 14, 17, 13, 9, 0, 5, 4, 11, 6, 2];
 
 // Rust 1.88/1.98: three (N-1)-comparison passes at full UTF-16 cost.
-// N=21/22 each has height one and at most one leaf overflow: initial leaf
-// plus at most two overflow allocations is three nodes, including at N=22.
-const fn map_work(old: usize, count: usize) -> usize {
+// N=25 has height one and leaf overflows at items 12/24: initial leaf,
+// new root and second leaf, then a third leaf. N=21 still needs three nodes.
+// Right-border repair allocates nothing; full sort scratch remains separate.
+const fn map_work(old: usize, count: usize, overflows: usize, nodes: usize) -> usize {
     3 * (count - 1) * (1 + MAX_KEY_UNITS)
         + 64
         + 4 * (old + 1)
         + 6 * count
         + 8 * count
-        + 16
+        + 16 * overflows
         + 64
-        + 8 * 3
+        + 8 * nodes
         + 32
 }
 const fn owner_work(old: usize) -> usize {
     32 + 4 * (old + 1) + 2 * old * (1 + MAX_KEY_UNITS)
 }
-const MAP_WORK: usize =
-    map_work(PROTOTYPE_OLD, PROTOTYPE_FINAL) + map_work(CONSTRUCTOR_OLD, CONSTRUCTOR_FINAL);
+const MAP_WORK: usize = map_work(PROTOTYPE_OLD, PROTOTYPE_FINAL, 2, 4)
+    + map_work(CONSTRUCTOR_OLD, CONSTRUCTOR_FINAL, 1, 3);
 const OWNER_WORK: usize = owner_work(PROTOTYPE_OLD) + owner_work(CONSTRUCTOR_OLD);
 
 fn invalid() -> ScriptError {
@@ -73,6 +74,9 @@ fn owner_matches(bag: &ScriptObject, prototype: bool, tag: &PropertyKey) -> bool
     }
     let sorted: &[ExpectedKey<'_>] = if prototype {
         &[
+            ExpectedKey::Text("contains"),
+            ExpectedKey::Text("hasChildNodes"),
+            ExpectedKey::Text("isSameNode"),
             ExpectedKey::Text("nodeValue"),
             ExpectedKey::Text("normalize"),
             ExpectedKey::Text("textContent"),
@@ -90,7 +94,10 @@ fn owner_matches(bag: &ScriptObject, prototype: bool, tag: &PropertyKey) -> bool
             ExpectedKey::Tag(tag),
             ExpectedKey::Text("nodeValue"),
             ExpectedKey::Text("textContent"),
+            ExpectedKey::Text("hasChildNodes"),
             ExpectedKey::Text("normalize"),
+            ExpectedKey::Text("isSameNode"),
+            ExpectedKey::Text("contains"),
         ]
     } else {
         &[
@@ -186,7 +193,7 @@ impl Runtime {
             add(mul(32, std::mem::size_of::<usize>())?, 64)?,
         )?;
         let payload = mul(2, add(mul(COUNT, 256)?, mul(4, key_bytes)?)?)?;
-        let scratch_and_nodes = add(mul(2 * 48, pair)?, mul(2 * 3, node)?)?;
+        let scratch_and_nodes = add(mul(2 * 48, pair)?, mul(4 + 3, node)?)?;
         // Separate key stores, two order-vector writes and final publication.
         // Initial order blocks/old leaves stay charged. No refunds or growth.
         self.work(MAP_WORK + 2 * COUNT + 2 * 4 * COUNT + 8)?;

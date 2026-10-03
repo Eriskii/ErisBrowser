@@ -682,3 +682,40 @@ Numeric limits, reset sites, process authority and wire formats are unchanged.
 CDATASection/XMLDocument, live Range adjustments, observer records and custom
 reactions remain missing; neither quota tests nor this implementation establish
 complete memory accounting or production security.
+
+[Node predicates](node-predicates.md) authenticate their receiver before checking
+required nullable Node arguments. `isSameNode` and `contains` throw TypeError for
+a missing argument; explicit null or undefined produces false. Non-node values
+are rejected without authored
+coercion hooks or property reads. JavaScript argument expressions still run before
+invocation, and their tree effects are visible to these read-only methods. Saved
+methods use internal IDs and links regardless of authored property shadows.
+
+`contains` follows ordinary parent links, without entering template content
+through its host. Each reached node and parent check is admitted before use;
+each followed parent's complete child-ID membership scan is prepaid. Work grows
+with reached ancestors and scanned siblings. A valid match at 256 edges is
+accepted. Invalid local IDs, backlinks, duplicate membership, malformed leaves
+or overlong chains refuse explicitly; self and null results need not audit
+unreached links. This is a bounded local policy, not a general validator for
+arbitrary Rust host mutation or ownership across unrelated Documents.
+
+The three method bodies allocate no owned traversal or payload storage and do
+not mutate the Document on success or refusal. Existing invocation-name copying,
+VM allocations and diagnostic-string allocation remain separate; zero body
+heap charge is not a whole-call allocation or recoverable-OOM guarantee. Wide
+sibling scans can terminate on work admission, and the existing terminal
+Resource behavior applies. Limits, reset sites, authority and wire formats stay
+unchanged.
+
+The adjusted constant initializer guards seven existing prototype entries and
+three constructor entries. Its 25-entry prototype build admits two overflows
+and four typed tree nodes on both pinned Rust versions, including all comparison,
+sort-scratch and map-buffer charges. Both replacement maps remain local until
+complete; quota refusals precede consumption, and a later invariant failure
+discards the private initializer. Standard BTree/sort allocation remains
+infallible at the process allocator boundary. Measured initialization consumes
+1,392 additional work units and 11,214 charged bytes under unchanged quotas.
+Full suites and admission tests pass. The release comparison retains the exact
+historical inventory losses and unhealthy controls separately. These checks do
+not establish complete allocation accounting or production security.

@@ -1,0 +1,56 @@
+<!doctype html>
+<meta charset="utf-8"><title id="heading">Predicates ready</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#probe{left:0}#done{left:50px}.ready .sample{background:green}.clicked .sample{background:blue}
+#change{position:absolute;top:60px;left:0}
+#left,#right{position:absolute;top:100px;width:150px;font-size:24px;line-height:28px}
+#left{left:0}#right{left:160px}#result{position:absolute;top:160px;left:0;font-size:20px}
+#old,#template{display:none}
+</style>
+<div id="probe" class="sample"></div><div id="done" class="sample"></div>
+<button id="change" type="button">Move subtree</button>
+<div id="left"><span id="branch">Same node</span><span id="old"><b id="old-leaf">retained</b></span></div><div id="right"></div>
+<div id="result">ready</div><template id="template"><span id="inert">content</span></template>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function get(id){return document.getElementById(id);}
+const h=Node.prototype.hasChildNodes,s=Node.prototype.isSameNode,c=Node.prototype.contains;
+if(typeof h!=='function'||typeof s!=='function'||typeof c!=='function')throw new TypeError('Node predicates prerequisite');
+const left=get('left'),right=get('right'),branch=get('branch'),branchText=branch.firstChild;
+const old=get('old'),oldLeaf=get('old-leaf'),oldText=oldLeaf.firstChild,change=get('change');
+const heading=get('heading'),titleText=heading.firstChild,result=get('result'),resultText=result.firstChild;
+const template=get('template'),content=template.content,inert=content.firstChild,inertText=inert.firstChild;
+const ordinary=new Text('ordinary');template.append(ordinary);
+const retained={label:'kept'};old.retained=retained;
+const shadow=function(){return 'own shadow';};branch.contains=shadow;
+let phase=0;
+function verify(){
+  const parent=phase===0?left:right;
+  check(h.call(left)===(phase===0)&&h.call(right)===(phase===1),'fresh child predicates');
+  check(h.call(branch)===true&&h.call(branchText)===false,'container versus Text');
+  check(s.call(branch,parent.firstChild)===true&&s.call(branch,old)===false,'same retained subtree');
+  check(s.call(branch,branch)===true&&s.call(branch,null)===false,'identity and nullable argument');
+  check(c.call(parent,branchText)===true&&c.call(branch,branchText)===true&&c.call(branchText,branch)===false,'containment direction');
+  check(c.call(left,branchText)===(phase===0)&&c.call(right,branchText)===(phase===1),'move changes ancestry');
+  check(c.call(document,branchText)===true&&c.call(branch,null)===false,'connected and nullable containment');
+  check(branch.parentNode===parent&&branch.firstChild===branchText&&branchText.data==='Same node','retained branch data');
+  check(old.parentNode===(phase===0?left:null)&&old.firstChild===oldLeaf&&oldLeaf.firstChild===oldText,'old subtree retained');
+  check(oldLeaf.parentNode===old&&oldText.parentNode===oldLeaf&&oldText.data==='retained','detached descendant links');
+  check(c.call(old,oldText)===true&&c.call(document,oldText)===(phase===0),'detached root containment');
+  check(s.call(oldText,oldLeaf.firstChild)===true&&old.retained===retained&&retained.label==='kept','detached identities');
+  check(template.content===content&&content.parentNode===null&&template.firstChild===ordinary,'separate template lists');
+  check(content.firstChild===inert&&inert.firstChild===inertText&&inertText.data==='content'&&ordinary.data==='ordinary','template content retained');
+  check(h.call(template)===true&&h.call(content)===true&&c.call(template,ordinary)===true,'ordinary template child');
+  check(c.call(template,inert)===false&&c.call(document,inert)===false&&c.call(content,inert)===true,'no content-host ancestry');
+  check(branch.contains===shadow&&branch.contains(branch)==='own shadow'&&Node.prototype.contains===c,'own shadow and saved native');
+  check(titleText===heading.firstChild&&resultText===result.firstChild,'retained status Texts');
+}
+change.onclick=function(){
+  check(this===change&&phase===0,'one real click');
+  right.append(branch);left.textContent='';phase=1;verify();
+  titleText.data='Predicates done';resultText.data='done';
+  check(document.title==='Predicates done','updated title');document.body.className='clicked';
+};
+verify();check(document.title==='Predicates ready','initial title');document.body.className='ready';
+</script>

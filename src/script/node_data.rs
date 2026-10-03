@@ -112,14 +112,35 @@ impl Runtime {
         args: &[Value],
         doc: &mut Document,
     ) -> Result<Value> {
-        // One reached length check for existing accessors; only the new
-        // nine-byte operation name reaches its separately paid comparison.
+        // One reached length discriminator; represented operation suffixes
+        // have distinct lengths and pay their full comparison before dispatch.
         self.work(1)?;
-        if method.len() == 9 {
-            self.work(9)?;
-            if method == "normalize" {
-                return self.node_normalize(receiver, doc);
+        match method.len() {
+            13 => {
+                self.work(13)?;
+                if method == "hasChildNodes" {
+                    return self.node_has_child_nodes(receiver, doc);
+                }
             }
+            9 => {
+                self.work(9)?;
+                if method == "normalize" {
+                    return self.node_normalize(receiver, doc);
+                }
+            }
+            10 => {
+                self.work(10)?;
+                if method == "isSameNode" {
+                    return self.node_is_same_node(receiver, args, doc);
+                }
+            }
+            8 => {
+                self.work(8)?;
+                if method == "contains" {
+                    return self.node_contains(receiver, args, doc);
+                }
+            }
+            _ => {}
         }
         self.work(8)?;
         let (setter, content) = match method {

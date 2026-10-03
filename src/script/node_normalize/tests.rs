@@ -28,7 +28,6 @@ fn independent(name: &str) {
 macro_rules! cases {($($name:ident),* $(,)?)=>{$(#[test]fn $name(){independent(stringify!($name));})*};}
 cases!(
     metadata,
-    represented_complete_key_order,
     receiver_is_not_a_descendant,
     only_empty_descendants_are_removed,
     first_nonempty_survives_with_detached_data,
@@ -44,6 +43,45 @@ cases!(
     internal_slots_ignore_authored_getters,
     removed_nodes_reuse_their_original_data,
 );
+
+#[test]
+fn prior_normalize_inventory_after_removing_configurable_predicates() {
+    // Restoring descriptors cannot restore creation order. This realm is
+    // disposable; the new independent predicate fixture checks pristine order.
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        let source = format!(
+            r#"{CASES}
+        (function(){{
+          const names=['hasChildNodes','isSameNode','contains'],saved=[];
+          for(const name of names){{
+            const d=Object.getOwnPropertyDescriptor(Node.prototype,name);
+            if(!d||!d.configurable||typeof d.value!=='function')throw new Error('predicate descriptor');
+            saved.push(d);
+          }}
+          try{{
+            for(const name of names)if(!delete Node.prototype[name])throw new Error('predicate delete');
+            if(nodeNormalizeCases.represented_complete_key_order()!==true)throw new Error('prior Normalize inventory');
+          }}finally{{
+            for(let i=0;i<names.length;i++)Object.defineProperty(Node.prototype,names[i],saved[i]);
+          }}
+          for(let i=0;i<names.length;i++){{
+            const d=Object.getOwnPropertyDescriptor(Node.prototype,names[i]),old=saved[i];
+            if(d.value!==old.value||d.writable!==old.writable||d.enumerable!==old.enumerable||
+               d.configurable!==old.configurable)throw new Error('predicate restoration');
+          }}
+          return true;
+        }})()"#
+        );
+        let result = if strict {
+            runtime.execute_strict(&source, &mut doc)
+        } else {
+            runtime.execute(&source, &mut doc)
+        };
+        assert_eq!(result.unwrap(), Value::Bool(true), "strict={strict}");
+        clean(&runtime);
+    }
+}
 
 #[test]
 fn normalize_bootstrap_reports_actual_admission() {

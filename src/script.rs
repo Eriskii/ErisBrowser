@@ -35,6 +35,7 @@ mod machine;
 mod names;
 mod node_data;
 mod node_normalize;
+mod node_predicates;
 mod object_integrity;
 mod object_is;
 mod own_keys;
