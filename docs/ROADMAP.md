@@ -70,8 +70,10 @@ remain outside this increment. [Node predicates](node-predicates.md) add
 [Root lookup](node-root.md) adds `getRootNode`, including observable dictionary
 conversion and fresh ordinary ancestry after callbacks. Shadow roots and their
 composed ancestry remain absent.
-Other Node members, including structural equality (`isEqualNode`) and
-document-position comparison, remain unimplemented.
+[Structural equality](node-equality.md) adds `isEqualNode` for represented kinds,
+comparing exact retained data, namespaced attributes and ordered ordinary children.
+The comparison uses the existing work and storage limits. Document-position
+comparison and other Node members remain unimplemented.
 Legacy `innerText`, textarea setters and attribute
 writes, unit-aware native editing, nonscalar source/HTML serialization,
 PI pseudo-attributes, remaining Node/Text operations and mutation notifications

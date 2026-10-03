@@ -43,7 +43,6 @@ fn independent(name: &str) {
 macro_rules! cases {($($name:ident),* $(,)?)=>{$(#[test]fn $name(){independent(stringify!($name));})*};}
 cases!(
     metadata_and_inherited_identity,
-    represented_complete_key_order,
     connected_detached_and_document_aliases,
     leaf_roots_preserve_exact_data_and_identity,
     template_content_never_crosses_host,
@@ -59,6 +58,36 @@ cases!(
     internal_tree_ignores_public_properties_and_nested_call,
     authentic_alternate_prototype_keeps_node_brand,
 );
+
+#[test]
+fn prior_root_inventory_after_removing_configurable_equality() {
+    // The old fixture remains byte-exact. Descriptor restoration changes key
+    // order, so this wrapper always uses a disposable realm.
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        let source = format!(
+            r#"{CASES}
+        (function(){{
+          const saved=Object.getOwnPropertyDescriptor(Node.prototype,'isEqualNode');
+          if(!saved||!saved.configurable||typeof saved.value!=='function')throw new Error('equality descriptor');
+          try{{
+            if(!delete Node.prototype.isEqualNode)throw new Error('equality delete');
+            if(nodeRootCases.represented_complete_key_order()!==true)throw new Error('prior root inventory');
+          }}finally{{
+            Object.defineProperty(Node.prototype,'isEqualNode',saved);
+          }}
+          const d=Object.getOwnPropertyDescriptor(Node.prototype,'isEqualNode');
+          if(d.value!==saved.value||d.writable!==saved.writable||d.enumerable!==saved.enumerable||
+             d.configurable!==saved.configurable)throw new Error('equality restoration');
+          return true;
+        }})()"#
+        );
+        assert_eq!(
+            evaluate(&mut runtime, &mut doc, &source, strict),
+            Value::Bool(true)
+        );
+    }
+}
 
 #[test]
 fn root_bootstrap_reports_actual_admission() {

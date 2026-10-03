@@ -41,7 +41,7 @@ prototype property replacement or deletion; deletion does not reveal a hidden fa
 Inheriting from `Node.prototype` does not manufacture a brand. Authentic nodes
 created through the supported alternate-constructor-prototype path keep theirs.
 
-In the current represented Node subset, `Reflect.ownKeys(Node.prototype)` has
+At this checkpoint, `Reflect.ownKeys(Node.prototype)` has
 27 keys: `nodeValue`, `textContent`, `getRootNode`, `hasChildNodes`, `normalize`,
 `isSameNode`, `contains`, the eighteen Node constants, `constructor`, then
 `Symbol.toStringTag`. The constructor's 21-key inventory remains unchanged.
@@ -137,6 +137,12 @@ from this increment's local validation. No speedup or platform-wide conformance
 rate is claimed.
 Missing ShadowRoot, Proxy, BigInt, broader Node members and unrelated existing
 DOM/allocator limitations remain outside this increment.
+
+The subsequent [equality checkpoint](node-equality.md) adds `isEqualNode` and
+expands the represented prototype to 28 keys. The 27-key inventory and its
+original results above remain historical evidence. This root checkpoint's
+[CI receipt](evidence/node-root-ci.json) records all nine jobs passing for
+`51907b7`; it is separate from equality validation.
 
 Primary references: [getRootNode](https://dom.spec.whatwg.org/#dom-node-getrootnode),
 [Node IDL](https://dom.spec.whatwg.org/#interface-node),

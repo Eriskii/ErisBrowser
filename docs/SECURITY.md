@@ -746,3 +746,32 @@ prototype entries and three constructor entries before its paid builds, retainin
 pre-consumption admission and the existing infallible BTree/sort boundary.
 Measured bootstrap adds 489 work units and 3,256 charged bytes. Focused checks,
 default and native Vulkan suites pass; these do not establish production security.
+
+The [Node.isEqualNode](node-equality.md) increment authenticates its
+receiver before a required nullable Node argument. It performs no authored
+conversion or property lookup in the comparison body. Argument expressions can
+already have mutated the tree or thrown before invocation. The body borrows the
+current internal data and does not mutate the DOM; refusal cannot undo effects
+that preceded the call. Default and native Vulkan validation pass, including
+measured refusal boundaries and Page/worker witnesses.
+
+The selected equality policy checks reached local shapes, namespace annotations,
+descendant backlinks and repeated IDs. A top-level same-ID result and an early
+mismatch do not certify unvisited state. Template content and host links are
+excluded from ordinary child traversal. A paired depth-first walk admits work
+for fields, iterator steps and graph checks, using two separate sparse page-bit
+maps and a typed frame vector only when traversal needs them. Reached storage
+and cleanup are charged; no arena-wide bitmap or comparison payload copy is
+created. ID spacing, long fields and wide trees can exhaust the unchanged work
+allowance even when the DOM itself fits its structural limits.
+
+Borrowed attribute iteration and sparse-map admission use bounds tied to the
+pinned Rust library implementations. The standard BTree allocator remains
+infallible at process OOM, and native dispatch, VM and inherited diagnostic
+allocation remain separate. Logical precharges do not measure physical memory
+or make allocator failure recoverable. The change alters no numeric quota, reset,
+authority, process boundary or wire format. Measured bootstrap adds 502 work units
+and 3,256 charged bytes. The two tested dense 256-edge layouts use 65,681 and
+70,989 body work units, with 13,416 charged bytes each. Sparse IDs reach the
+existing work refusal. These logical accounting checks are not timing, physical
+memory or production-security results.

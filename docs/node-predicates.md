@@ -226,6 +226,8 @@ and allocation limitations remain.
 A later [root lookup checkpoint](node-root.md) adds `getRootNode` before
 `hasChildNodes` and expands the represented prototype to 27 own keys. The
 26-key inventory and its original outcomes here remain historical evidence.
+The subsequent [equality checkpoint](node-equality.md) adds `isEqualNode`, bringing
+the represented inventory to 28 keys without changing those frozen expectations.
 
 Normative references: [Node](https://dom.spec.whatwg.org/#interface-node),
 [hasChildNodes](https://dom.spec.whatwg.org/#dom-node-haschildnodes),

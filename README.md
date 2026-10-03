@@ -49,6 +49,10 @@ controls; historical prototype-inventory failures remain recorded separately.
 with one member read for object options, preserving callback effects and separate template-content
 roots. All 32 release cases and 16 controls pass; historical inventory failures
 remain recorded separately.
+[Node.isEqualNode](docs/node-equality.md) compares exact character data, represented
+element attributes and ordered ordinary children. Template contents are compared
+only when passed separately. All 32 release cases and 16 controls pass; historical
+prototype-inventory failures remain recorded separately.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members
@@ -331,6 +335,9 @@ and 16 controls pass without changing numeric quotas.
 [Node.getRootNode](docs/node-root.md) reads fresh parent links after dictionary
 conversion, with bounded ancestor and sibling scans. Actual ShadowRoot and
 shadow-including ancestry remain absent. Default and native Vulkan validation pass.
+[Node equality](docs/node-equality.md) compares internal structure without authored
+getters or coercion. Its local graph checks and paid traversal retain the existing
+quotas. Default and native Vulkan suites pass, including both browser witnesses.
 Legacy `innerText`, textarea setters and attribute writes, HTML parser input
 and broader DOMString/Web IDL interfaces remain incomplete.
 

@@ -1647,3 +1647,30 @@ fn node_root_reads_fresh_links_after_options_callbacks() {
         ));
     }
 }
+
+#[path = "support/node_equality.rs"]
+mod node_equality_witness;
+
+#[test]
+fn node_equality_tracks_exact_structural_changes() {
+    let mut actual = page(node_equality_witness::HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(actual.title(), node_equality_witness::metadata(phase));
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(node_equality_witness::check(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

@@ -111,3 +111,13 @@ charges 1,758,971 bytes, with 686 objects and capacity, 321 native entries and
 Numeric limits and author-entry reset sites remain unchanged. The root walk
 owns no traversal storage; object options separately pay for the fixed member
 key and ordinary lookup/callback work before fresh parent links are read.
+
+The later [structural equality checkpoint](node-equality.md) installs one cached
+`isEqualNode` method bag. Measured raw bootstrap leaves 7,816 work units and
+charges 1,762,227 bytes, with 687 objects and capacity, 321 native entries and
+25 legacy prototype entries. This adds 502 work units and 3,256 charged bytes.
+The prototype constant batch now guards nine old entries and builds 27 before
+the later constructor property; its order buffer reserves 28 slots. Numeric
+limits and reset sites remain unchanged. Equality's traversal scratch is charged
+separately to author work and cumulative heap; these bootstrap figures do not
+measure wall-clock time or physical memory.

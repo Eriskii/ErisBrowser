@@ -63,6 +63,7 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 352
     + node_normalize::METADATA_OBJECTS
     + node_predicates::METADATA_OBJECTS
     + node_root::METADATA_OBJECTS
+    + node_equality::METADATA_OBJECTS
     + document_title::METADATA_OBJECTS
     + text_operations::METADATA_OBJECTS;
 
@@ -469,7 +470,7 @@ impl Runtime {
                         "Document" => 2,
                         "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
-                        "Node" => 7,
+                        "Node" => 8,
                         "Text" => 2,
                         _ => 0,
                     },
@@ -524,6 +525,7 @@ impl Runtime {
                 self.install_node_root(prototype)?;
                 self.install_node_has_child_nodes(prototype)?;
                 self.install_node_normalize(prototype)?;
+                self.install_node_equality(prototype)?;
                 self.install_node_identity_members(prototype)?;
                 self.install_node_constants(prototype, properties, &tag_key)?;
             }

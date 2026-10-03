@@ -1,0 +1,81 @@
+<!doctype html>
+<meta charset=utf-8>
+<base id=fixed-base href="https://equality.example/fixed/">
+<title id=heading>Equality ready</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#probe{left:0}#done{left:50px}.ready .sample{background:green}.clicked .sample{background:blue}
+#change{position:absolute;top:60px;left:0}
+#live{position:absolute;top:100px;left:0;width:300px;font-size:24px;line-height:28px}
+#result{position:absolute;top:160px;left:0;font-size:20px}#template{display:none}
+</style>
+<body>
+<div id=probe class=sample></div><div id=done class=sample></div>
+<button id=change type=button>Compare trees</button>
+<div id=live data-note=base><span class=label>Alpha</span><span class=label> beta</span></div>
+<div id=result>ready</div>
+<template id=template>inside</template>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function units(value,expected){
+  check(value.length===expected.length,'literal unit count');
+  for(let i=0;i<expected.length;i++)check(value.charCodeAt(i)===expected[i],'literal unit');
+}
+const equal=Node.prototype.isEqualNode;
+if(typeof equal!=='function')throw new TypeError('isEqualNode callable prerequisite');
+const live=document.querySelector('#live'),first=live.childNodes[0],second=live.childNodes[1];
+const firstText=first.firstChild,secondText=second.firstChild,comment=new Comment('raw\uD800');
+live.append(comment);
+// Independently constructed literals, with reverse attribute insertion order.
+const peer=document.createElement('div');peer.setAttribute('data-note','base');peer.setAttribute('id','live');
+const peerFirst=document.createElement('span'),peerSecond=document.createElement('span');
+peerFirst.setAttribute('class','label');peerSecond.setAttribute('class','label');
+const peerFirstText=new Text('Alpha'),peerSecondText=new Text(' beta'),peerComment=new Comment('raw\uD800');
+peerFirst.append(peerFirstText);peerSecond.append(peerSecondText);peer.append(peerFirst,peerSecond,peerComment);
+if(equal.call(firstText,peerFirstText)!==true||equal.call(firstText,peerSecondText)!==false)
+  throw new TypeError('genuine equality and inequality prerequisite');
+const template=document.querySelector('#template'),content=template.content,contentText=content.firstChild;
+check(contentText.data==='inside','parsed template content');
+const ordinary=new Text('ordinary');template.append(ordinary);
+const peerTemplate=document.createElement('template');peerTemplate.setAttribute('id','template');
+const peerContent=peerTemplate.content,peerContentText=new Text('different'),peerOrdinary=new Text('ordinary');
+peerContent.append(peerContentText);peerTemplate.append(peerOrdinary);
+const loose=new DocumentFragment(),looseText=new Text('inside');loose.append(looseText);
+const titleText=document.querySelector('#heading').firstChild,resultText=document.querySelector('#result').firstChild;
+live.isEqualNode=function(){return 'own shadow';};live.retained={label:'live'};peer.retained=42;
+let phase=0,trace='';
+function verify(){
+  check(live!==peer&&first!==peerFirst&&second!==peerSecond&&comment!==peerComment,'independent identities');
+  check(live.parentNode===document.body&&peer.parentNode===null,'connection ignored');
+  check(document.querySelector('#live')===live&&document.querySelector('#template')===template,'connected selectors');
+  check(live.childNodes.length===3&&live.childNodes[0]===first&&live.childNodes[1]===second&&live.childNodes[2]===comment,'live children');
+  check(peer.childNodes.length===3&&peer.childNodes[0]===peerFirst&&peer.childNodes[1]===peerSecond&&peer.childNodes[2]===peerComment,'peer children');
+  check(first.firstChild===firstText&&second.firstChild===secondText&&peerFirst.firstChild===peerFirstText&&peerSecond.firstChild===peerSecondText,'Text identities');
+  check(live.isEqualNode(peer)==='own shadow'&&Node.prototype.isEqualNode===equal,'saved native and own bag');
+  check(equal.call(live,peer)===true&&equal.call(peer,live)===true,'ordinary subtrees equal');
+  units(comment.data,[114,97,119,55296]);units(peerComment.data,[114,97,119,55296]);
+  check(firstText.data==='Alpha'&&peerFirstText.data==='Alpha','first literal');
+  check(secondText.data===(phase===0?' beta':' gamma')&&peerSecondText.data===secondText.data,'phase literal');
+  check(live.getAttribute('data-note')==='base'&&peer.getAttribute('data-note')==='base','restored scalar attribute');
+  check(template.firstChild===ordinary&&peerTemplate.firstChild===peerOrdinary,'ordinary template children retained');
+  check(template.content===content&&peerTemplate.content===peerContent&&content.firstChild===contentText&&peerContent.firstChild===peerContentText,'content identities');
+  check(contentText.data==='inside'&&peerContentText.data==='different'&&ordinary.data==='ordinary'&&peerOrdinary.data==='ordinary','template literals');
+  check(equal.call(template,peerTemplate)===true&&equal.call(content,peerContent)===false,'template content excluded from element equality');
+  check(equal.call(content,loose)===true&&loose.firstChild===looseText,'fragment host excluded');
+  check(document.baseURI==='https://equality.example/fixed/','fixed base');
+  check(trace===(phase===0?'':'data;attribute;visible;'),'completed comparison stages');
+}
+document.querySelector('#change').onclick=function(){
+  check(phase===0,'single real click');
+  peerComment.data='raw\uFFFD';
+  check(equal.call(live,peer)===false,'unmatched unit differs from replacement glyph');
+  peerComment.data='raw\uD800';check(equal.call(live,peer)===true,'exact data restored');trace+='data;';
+  peer.setAttribute('data-note','changed');check(equal.call(live,peer)===false,'attribute inequality');
+  peer.setAttribute('data-note','base');check(equal.call(live,peer)===true,'attribute restored');trace+='attribute;';
+  secondText.data=' gamma';check(equal.call(live,peer)===false,'live text changes equality');
+  peerSecondText.data=' gamma';check(equal.call(live,peer)===true,'independent peer text restored');trace+='visible;';
+  phase=1;verify();titleText.data='Equality done';resultText.data='done';
+  check(document.title==='Equality done','updated title');document.body.className='clicked';
+};
+verify();check(document.title==='Equality ready','initial title');document.body.className='ready';
+</script>

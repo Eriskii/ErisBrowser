@@ -62,7 +62,11 @@ impl Runtime {
         Ok(())
     }
 
-    fn predicate_argument(&mut self, args: &[Value], doc: &Document) -> Result<Option<NodeId>> {
+    pub(super) fn predicate_argument(
+        &mut self,
+        args: &[Value],
+        doc: &Document,
+    ) -> Result<Option<NodeId>> {
         self.work(4)?;
         let value = args
             .first()

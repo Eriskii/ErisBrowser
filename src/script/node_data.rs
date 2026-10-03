@@ -113,13 +113,18 @@ impl Runtime {
         doc: &mut Document,
     ) -> Result<Value> {
         // One reached length discriminator; represented operation suffixes
-        // have distinct lengths and pay their full comparison before dispatch.
+        // pay their full comparison before dispatch. The two length-11 names
+        // have separate reached comparisons; getRootNode retains its first arm.
         self.work(1)?;
         match method.len() {
             11 => {
                 self.work(11)?;
                 if method == "getRootNode" {
                     return self.node_get_root_node(receiver, args, doc);
+                }
+                self.work(11)?;
+                if method == "isEqualNode" {
+                    return self.node_is_equal_node(receiver, args, doc);
                 }
             }
             13 => {

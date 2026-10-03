@@ -4878,3 +4878,71 @@ object options separately pay their member key and ordinary Get/callback costs.
 Generic VM and inherited allocation limitations remain. No shadow ancestry,
 cross-document adoption, general graph validation, performance threshold,
 complete compatibility or production-security result follows from this increment.
+
+### Represented Node structural equality
+
+`Node.prototype.isEqualNode` is an ordinary cached, nonconstructible method with
+required nullable Node conversion. It compares exact retained character data,
+represented namespaces and attributes, and ordered ordinary children without
+authored getters or coercion in the native body. Template content is a separate
+operand tree. Local same-ID and early-mismatch paths are explicitly scoped;
+paired traversal validates reached backlinks, kinds, depth and per-side repeats.
+
+Rust 1.88 passes **1,873 default tests**, and Rust 1.98 passes **1,996 native Vulkan
+tests**, including ignored confinement tests. Both full suites use four test
+threads. Formatting, both strict Clippy checks and the release build pass.
+The **36 new groups** comprise 16 independent Runtime groups, 18 private groups
+and Page/worker integration. Focused checks retain **219 passing observations**
+covering **213 unique names**. Initial compilation and all new groups passed.
+
+Measured raw bootstrap leaves **7,816 work units** and charges **1,762,227 bytes**,
+with 687 objects and capacity, 321 native entries and 25 legacy prototype entries.
+This matches the forecast of 502 additional work units and 3,256 charged bytes.
+The initial bootstrap filter retains 28 passes and two stale descriptive snapshot
+failures. Exactly three literals in two files were corrected after measurement;
+no production source correction followed initial compilation. All numeric quotas
+and reset sites remain unchanged.
+
+The tested contiguous and alternating 256-edge branches consume 65,681 and
+70,989 body work units, respectively, and 13,416 charged bytes each. Exact and
+one-short work/heap retries retain the entire Document and its capacities.
+A sparse layout refuses under the ordinary work allowance; its full calculated
+schedule is not a measured success. These are logical accounting results, with
+construction and invocation charges separate, not timing or physical memory.
+
+Both browser paths load once and dispatch one real click. Independently created
+live/detached peers compare equal before temporary changes to exact Comment data,
+an attribute and visible Text. Intermediate mismatches and restored equality
+are checked. All 29 recorded identities and the total node count stay unchanged,
+with zero click-created nodes. Literal full-canvas references, green/blue markers,
+glyph bands, text placement, `Equality ready`/`Equality done` titles and status
+checks pass. Rendering changes follow explicit mutations, not equality itself.
+
+The release passes all **32 new case modes** and **16 controls**, from baseline
+zero and four. Of 4,300 established cases, **4,298 remain byte-exact**; of 492
+controls, **488 remain byte-exact**. Two frozen getRootNode inventory cases newly
+fail with Error and four controls become unhealthy with TypeError because their
+positive prerequisites require the former complete member list. Eighteen older
+Node-constant, Normalize and predicate inventory observations remain unhealthy
+and byte-exact. Established healthy totals move from 4,208 to 4,206 cases and
+480 to 476 controls. No frozen input, pairing or raw health is rewritten.
+
+All four historical inventory profile commands and the aggregate replay retain
+exit one. The independent classifier identifies only the six anticipated new
+losses. The pristine 28-key inventory and its paired controls pass. Source-only
+test corrections, the original truncated-name inventory and its data correction,
+and the final HTML review's corrected timing statement are retained. That final
+binding followed compiler start; root and layout final reviews plus the earlier
+HTML incremental review preceded it. No engine rerun substitutes for a failure.
+
+The [summary](evidence/node-equality.json) and
+[archive](evidence/node-equality.tar.gz) retain held inputs, source, all attempts,
+full comparisons and reviews. The preceding [root CI receipt](evidence/node-root-ci.json)
+records all nine jobs passing for `51907b7`; it is distinct from these local checks.
+
+The fixed namespace model, absent ShadowRoot/Attr/CDATA, cross-document ownership,
+remaining DOM/JS interfaces and inherited allocator boundaries remain limits.
+Sparse reached pages and active-depth frames are paid before growth and cleanup;
+standard BTree allocation still has its inherited infallible process-OOM boundary.
+This increment does not establish complete web compatibility, production security
+or the requested Chromium performance threshold.

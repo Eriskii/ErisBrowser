@@ -34,6 +34,7 @@ mod iterators;
 mod machine;
 mod names;
 mod node_data;
+mod node_equality;
 mod node_normalize;
 mod node_predicates;
 mod node_root;

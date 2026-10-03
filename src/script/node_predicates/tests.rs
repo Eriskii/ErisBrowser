@@ -52,25 +52,31 @@ cases!(
 );
 
 #[test]
-fn prior_predicate_inventory_after_removing_configurable_get_root_node() {
-    // Descriptor restoration changes creation order. Each mode's realm is
-    // disposable; the independent root fixture checks the pristine inventory.
+fn prior_predicate_inventory_after_removing_later_configurable_operations() {
+    // Restoring creation order is impossible; each realm is disposable. The
+    // independent equality fixture checks the current pristine inventory.
     for strict in [false, true] {
         let (mut runtime, mut doc) = fresh();
         let source = format!(
             r#"{CASES}
         (function(){{
-          const saved=Object.getOwnPropertyDescriptor(Node.prototype,'getRootNode');
-          if(!saved||!saved.configurable||typeof saved.value!=='function')throw new Error('root descriptor');
+          const names=['getRootNode','isEqualNode'],saved=[];
+          for(const name of names){{
+            const d=Object.getOwnPropertyDescriptor(Node.prototype,name);
+            if(!d||!d.configurable||typeof d.value!=='function')throw new Error('later descriptor');
+            saved.push(d);
+          }}
           try{{
-            if(!delete Node.prototype.getRootNode)throw new Error('root delete');
+            for(const name of names)if(!delete Node.prototype[name])throw new Error('later delete');
             if(nodePredicateCases.represented_complete_key_order()!==true)throw new Error('prior predicate inventory');
           }}finally{{
-            Object.defineProperty(Node.prototype,'getRootNode',saved);
+            for(let i=0;i<names.length;i++)Object.defineProperty(Node.prototype,names[i],saved[i]);
           }}
-          const d=Object.getOwnPropertyDescriptor(Node.prototype,'getRootNode');
-          if(d.value!==saved.value||d.writable!==saved.writable||d.enumerable!==saved.enumerable||
-             d.configurable!==saved.configurable)throw new Error('root restoration');
+          for(let i=0;i<names.length;i++){{
+            const d=Object.getOwnPropertyDescriptor(Node.prototype,names[i]),old=saved[i];
+            if(d.value!==old.value||d.writable!==old.writable||d.enumerable!==old.enumerable||
+               d.configurable!==old.configurable)throw new Error('later restoration');
+          }}
           return true;
         }})()"#
         );

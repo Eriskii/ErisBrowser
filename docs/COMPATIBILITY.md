@@ -45,6 +45,10 @@ ordinary ancestry after argument evaluation. Template contents remain separate.
 [Node root lookup](node-root.md) adds `getRootNode` for represented trees, with
 observable options conversion before following fresh parent links. Both composed
 values keep template content separate; ShadowRoot remains unimplemented.
+[Structural equality](node-equality.md) adds `isEqualNode` for represented nodes,
+including exact character data, the fixed namespace/attribute model and ordered
+ordinary children. Template contents are compared only when supplied as operands;
+large comparisons can exhaust the unchanged work or storage allowance.
 CDATA, live Ranges and cross-node text shaping remain gaps.
 PI pseudo-attributes and mutation notifications remain unfinished.
 Complete interface members,
@@ -259,6 +263,9 @@ uses exact internal streams and preserves the first nonempty Text in each run.
 containment without changing the tree or converting objects into Nodes.
 [Root lookup](node-root.md) returns the existing ordinary root after one
 inherited `composed` member read for object options, preserving getter effects.
+[Structural equality](node-equality.md) compares retained data without replacement
+projection and without changing either tree. It performs no authored property
+lookup or conversion inside the native comparison.
 Legacy `innerText`, textarea
 setters, attribute and
 HTML-parser writes remain separate, alongside
