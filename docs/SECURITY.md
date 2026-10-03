@@ -719,3 +719,30 @@ infallible at the process allocator boundary. Measured initialization consumes
 Full suites and admission tests pass. The release comparison retains the exact
 historical inventory losses and unhealthy controls separately. These checks do
 not establish complete allocation accounting or production security.
+
+[Node.getRootNode](node-root.md) authenticates its receiver before dictionary
+conversion. Omitted, null and undefined options need no member read. Object
+options perform one paid ordinary inherited Get of `composed`, using the original
+options receiver; other primitives throw TypeError. Member boolean conversion
+does not call authored conversion hooks. The getter may run arbitrary supported
+script, throw or mutate the tree. Completed effects and consumed budget remain;
+the native walk reads fresh links only after conversion succeeds.
+
+The root walk owns no traversal storage and follows only ordinary parents.
+Each reached shape check and full reciprocal child-ID scan is prepaid under
+the existing allowance. The endpoint at 256 edges is accepted; reached invalid
+links, duplicate membership and overlong paths refuse explicitly. These are
+local malformed-host checks, not a whole-Document validator or cross-document
+identity guarantee. Template hosts are never followed, including for
+`composed: true`; actual ShadowRoots remain unrepresented.
+
+Object options separately pay for an exact `composed` key Vec and Rc plus
+existing lookup and callback charges. Default options avoid this key allocation.
+Native dispatch and VM costs remain additional, and inherited diagnostic and
+standard allocator limitations remain. Refusal cannot undo completed callback
+effects; terminal Resource handling and every quota, reset site, process boundary
+and wire format stay unchanged. The constant initializer now guards eight
+prototype entries and three constructor entries before its paid builds, retaining
+pre-consumption admission and the existing infallible BTree/sort boundary.
+Measured bootstrap adds 489 work units and 3,256 charged bytes. Focused checks,
+default and native Vulkan suites pass; these do not establish production security.

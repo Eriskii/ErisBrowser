@@ -42,6 +42,9 @@ and exact data. It does not traverse separate template content implicitly.
 [Node predicates](node-predicates.md) add ordinary `hasChildNodes`, `isSameNode`
 and `contains`, with authentic identity, required nullable arguments and fresh
 ordinary ancestry after argument evaluation. Template contents remain separate.
+[Node root lookup](node-root.md) adds `getRootNode` for represented trees, with
+observable options conversion before following fresh parent links. Both composed
+values keep template content separate; ShadowRoot remains unimplemented.
 CDATA, live Ranges and cross-node text shaping remain gaps.
 PI pseudo-attributes and mutation notifications remain unfinished.
 Complete interface members,
@@ -254,6 +257,8 @@ preserve exact units and separate node identities. [Node.normalize](node-normali
 uses exact internal streams and preserves the first nonempty Text in each run.
 [Node predicates](node-predicates.md) query current children, identity and ordinary
 containment without changing the tree or converting objects into Nodes.
+[Root lookup](node-root.md) returns the existing ordinary root after one
+inherited `composed` member read for object options, preserving getter effects.
 Legacy `innerText`, textarea
 setters, attribute and
 HTML-parser writes remain separate, alongside

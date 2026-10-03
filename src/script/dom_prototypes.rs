@@ -62,6 +62,7 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 352
     + node_data::METADATA_OBJECTS
     + node_normalize::METADATA_OBJECTS
     + node_predicates::METADATA_OBJECTS
+    + node_root::METADATA_OBJECTS
     + document_title::METADATA_OBJECTS
     + text_operations::METADATA_OBJECTS;
 
@@ -270,7 +271,8 @@ fn merged_map<K: Ord, V>(
 
 impl Runtime {
     pub(super) fn dom_proto_text(&mut self, text: &str) -> Result<JsString> {
-        // Installer strings are static ASCII. Two copies: exact Vec then Rc.
+        // Static ASCII inputs: installer text and the fixed root-options key.
+        // Two copies are paid: exact Vec then Rc.
         self.work(8 + 2 * text.len())?;
         self.charge(64 + 4 * text.len())?;
         let mut units = Vec::new();
@@ -467,7 +469,7 @@ impl Runtime {
                         "Document" => 2,
                         "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
-                        "Node" => 6,
+                        "Node" => 7,
                         "Text" => 2,
                         _ => 0,
                     },
@@ -519,6 +521,7 @@ impl Runtime {
             }
             if interface.name == "Node" {
                 self.install_node_data_members(prototype)?;
+                self.install_node_root(prototype)?;
                 self.install_node_has_child_nodes(prototype)?;
                 self.install_node_normalize(prototype)?;
                 self.install_node_identity_members(prototype)?;

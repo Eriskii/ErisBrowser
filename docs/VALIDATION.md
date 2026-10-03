@@ -4814,3 +4814,67 @@ Python tests** passed, including the existing real descendant-cleanup checks.
 The [record](evidence/vulkan-probe-proc-race.json) retains the original CI failure,
 source hashes and local before/after outputs. It does not claim a new GPU result
 or substitute a retry for the original failed observation.
+
+The [original CI receipt](evidence/node-predicates-ci-first.json) records eight
+successful jobs and the Vulkan probe failure for `6834288`. The separate
+[corrective CI receipt](evidence/probe-fix-ci.json) records all nine jobs passing
+for `066435f`. The [binding record](evidence/preceding-ci-review.json) distinguishes
+these two commits; the correction does not change Runtime source.
+
+### Ordinary Node roots after options conversion
+
+`Node.prototype.getRootNode` is an ordinary cached nonconstructible method for
+represented nodes. Receiver authentication precedes dictionary conversion;
+object options perform one inherited `composed` Get with their original receiver.
+Only the node ID survives that callback, and the root walk reads fresh links.
+Default/nullish options perform no Get. Template content remains a separate
+ordinary root for both composed values; ShadowRoot is not represented.
+
+Rust 1.88 passes **1,837 default tests**, and Rust 1.98 passes **1,960 native Vulkan
+tests**, including ignored confinement tests. Both full suites use four test
+threads. Formatting, both strict Clippy checks and the release build pass.
+The **32 new groups** are 16 independent and 14 direct Runtime groups plus Page
+and confined-worker witnesses. Focused checks retain 182 passing observations
+covering 177 unique test names.
+
+The initial bootstrap filter retained 27 passes and two stale descriptive
+snapshot failures. Exactly three literals across two test files were corrected
+after actual measurement: 8,318 work units remaining, 1,758,971 charged bytes,
+686 objects/capacity, 321 native entries and 25 legacy prototype entries. The
+new method adds 489 work units and 3,256 charged bytes. Numeric quotas and reset
+sites remain unchanged. Initial compilation and all new groups passed; no
+production source correction was needed. A data-only correction-preparation
+assertion first used the wrong local variable name and stopped before editing;
+that attempt and the retained original file remain in the evidence.
+
+Both browser paths load once and dispatch one real click. Three inherited
+options getters temporarily move a receiver, move its ancestor and detach a
+retained branch. Returned roots follow the resulting internal links. Twenty
+captured identities and the total node count stay unchanged. Titles, status,
+literal full-canvas references, green-to-blue pixels, text placement and distinct
+template/fragment trees all pass.
+
+The release passes all **32 new case modes** and **16 controls**, from baseline
+zero and four. Of 4,268 established case records, **4,266 remain byte-exact**;
+of 476 controls, **472 remain byte-exact**. Two predicate full-inventory cases
+newly fail with Error and four controls become unhealthy with TypeError because
+their positive prerequisites require the earlier complete prototype inventory.
+The twelve older Node-constant and Normalize inventory observations remain
+unhealthy and byte-exact. All three historical profile exits and the aggregate
+exit remain one. Frozen inputs and pairings are unchanged; the classifier
+annotates only the six anticipated new losses. The current pristine 27-key
+inventory and its paired controls pass. Established healthy counts change from
+4,178 to 4,176 cases and from 468 to 464 controls; no historical failure is waived.
+
+The [summary](evidence/node-root.json) and [archive](evidence/node-root.tar.gz)
+retain the held sources, failed and passing attempts, original and corrected
+fixture preparation, complete comparisons and independent reviews. The preceding
+CI receipts above distinguish the predicate commit's failure from the separate
+probe test correction's nine successful jobs.
+
+The method charges reached local checks and full reciprocal sibling-ID scans,
+with up to 256 edges and 257 visits. It allocates no traversal storage, while
+object options separately pay their member key and ordinary Get/callback costs.
+Generic VM and inherited allocation limitations remain. No shadow ancestry,
+cross-document adoption, general graph validation, performance threshold,
+complete compatibility or production-security result follows from this increment.

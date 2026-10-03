@@ -1,0 +1,791 @@
+{
+  "kind": "Represented ordinary Node roots after observable options conversion",
+  "base_commit": "066435fb0682449c62be6ecb999ca457653af7a1",
+  "scope": "Ordinary cached Node.prototype.getRootNode; authentic receiver, optional dictionary with one composed Get for object options, fresh ordinary parent links after callbacks, canonical Document identity and separate template roots. No ShadowRoot representation.",
+  "source": {
+    "base": "066435fb0682449c62be6ecb999ca457653af7a1",
+    "files": [
+      {
+        "path": "src/script.rs",
+        "bytes": 906551,
+        "sha256": "1dbca27dcd22fd2cf00b35142ebc7c7f4dfb78b70ffc4b169ab0a377cd6aabef"
+      },
+      {
+        "path": "src/script/node_root.rs",
+        "bytes": 4386,
+        "sha256": "5a1af300bc3b7c851346ebd7089a6b3ec2459148c002a20de4b8c0ca2abce1d4"
+      },
+      {
+        "path": "src/script/node_root/tests.rs",
+        "bytes": 21246,
+        "sha256": "4c466ee24cfff61b3fd9378b0e9849e6a96827912b7732b937f5d59ddcb65f69"
+      },
+      {
+        "path": "src/script/node_predicates.rs",
+        "bytes": 5456,
+        "sha256": "23720e96b0df865531e6be194fe75b980d2a7bfe15fdefbf236d4ab8c9966729"
+      },
+      {
+        "path": "src/script/node_predicates/tests.rs",
+        "bytes": 21937,
+        "sha256": "663a623662ffa949a81e371f0be9f7f1ff7fa3b24b9b08fdebaee000287d08b9"
+      },
+      {
+        "path": "src/script/node_data.rs",
+        "bytes": 8312,
+        "sha256": "fe79e122aa38349db1899f7ba3966f20a8c3a864acde427052c1912a4337a7f1"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 31473,
+        "sha256": "3f8344e3b0fdf9da9211346452884346e517f470d53d9b57fd6fdc6d74598722"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants.rs",
+        "bytes": 8573,
+        "sha256": "efd0af62e03512cfaf47911a81df4b19de9745bf9c946f22e0b4f1c5c53bfecd"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants/tests.rs",
+        "bytes": 20223,
+        "sha256": "9f2f35b259f8af21b4131ec5932845c3e43e915ed155fbfb20e607a1f502fc25"
+      },
+      {
+        "path": "src/script/node_normalize/tests.rs",
+        "bytes": 26035,
+        "sha256": "ce0ce8430b8f3bc7ff9be2224fd65c3023942074703c8d410081e658ed6397c6"
+      },
+      {
+        "path": "src/script/node_data/tests.rs",
+        "bytes": 18625,
+        "sha256": "5017c84826e2e71dbefd6b5e532c71c12969baf1803007e0a388caaf1104bdc1"
+      },
+      {
+        "path": "tests/fixtures/node-root.js",
+        "bytes": 17483,
+        "sha256": "65e3b34ac5b80a095d59505ab8693ec22b26225ae9d7f3408163070593ed6af3"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 63445,
+        "sha256": "1a519d0c72c017b449203c72348857f403d4fba705a7a92a3776bac049aa8b55"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 102286,
+        "sha256": "c49750d655f5ab1bb6bb1f6e47dcee1e8f90b5edb9f180b30c8e6a575bfdc30b"
+      },
+      {
+        "path": "tests/fixtures/node-root.html",
+        "bytes": 5841,
+        "sha256": "7e6e3fbaddeed5198e4ccbefbd5f3f321dfc33fdc4a52d78c667499c8e8c8889"
+      },
+      {
+        "path": "tests/support/node_root.rs",
+        "bytes": 8040,
+        "sha256": "aceba82721f7701ff7a4dbf6206b44cea0700ab675c5f53364f19046252687cf"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15507,
+        "sha256": "eacbf5061b0c36304433db09624778b093f3e131ebbdfeb59c62a0d27167f6f3"
+      },
+      {
+        "path": "src/script/dom_bindings/identity_tests.rs",
+        "bytes": 35727,
+        "sha256": "7d8344881bd4536522419c7d7ce2227dcebcc0615446f15120944384330949a0"
+      }
+    ],
+    "review": "Initial implementation unchanged; only three measured descriptive literals updated in two additional test files.",
+    "runtime_groups": 30,
+    "browser_groups": 2
+  },
+  "release": {
+    "path": "/tmp/eris-node-root-1/eris-js",
+    "sha256": "3198cd31112100406a47052d3bc179924435c9711ec9f37a5240939572fa6834",
+    "bytes": 3760856,
+    "source_manifest": "candidate-source-final.json",
+    "source_manifest_sha256": "ccace7ea810ad2739f65ef073dc0022211d7eba725b1701dfbe117e09d1f7f81",
+    "build_receipt": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "format-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9641015168745071,
+      "log": "format-198-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 7.323,
+      "log": "clippy-native-198-1.log",
+      "sha256": "4be4bfa32121967d682c34004ffc1138603de8375400c959d4c7b2827b71b69d"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 11.231,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "c0e5e4417944eaf25e38bf1c171199cc854904f9c4f92cb42c63ed82d772ad8a"
+    },
+    "full-default-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 22.849,
+      "log": "full-default-188-1.log",
+      "sha256": "3e766553995122dcf9ad4e146f50ea8adff97bc1ec3e00c5f1da2243e6d61ed9"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 37.784,
+      "log": "full-native-198-1.log",
+      "sha256": "1d917fcd7bf2555048c48882420ae3297946e2933e92fc217290ff5b02e4a457"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 37.673,
+      "log": "release-adapter-188-1.log",
+      "sha256": "6bb361e54004ee3899a3b7416deab7cb9c2e6f8b3c44ad909db46537af958524"
+    }
+  },
+  "tests": {
+    "default": 1837,
+    "native": 1960,
+    "new_groups": 32,
+    "focused": {
+      "successful_observations": 182,
+      "unique_successful_test_names": 177,
+      "retained_first_bootstrap_passes": 27,
+      "retained_first_bootstrap_failures": 2,
+      "all_focused_pass_observations": 209,
+      "commands": [
+        {
+          "label": "root-188-1",
+          "passes": 32,
+          "receipt_sha256": "81781d4f50657084d9204e45215fba74010c31950a2b17f13dd4306b16463e7b"
+        },
+        {
+          "label": "bootstrap-188-2",
+          "passes": 29,
+          "receipt_sha256": "83c54480bb527fb658a5cfa8cdfb1cd8d583fe2e6f26138f7f4ed0c64a283da5"
+        },
+        {
+          "label": "constants-188-1",
+          "passes": 17,
+          "receipt_sha256": "951eeb096f6afa42c366a480c687abfa2ad1c0af1518642594513fbc00c607d5"
+        },
+        {
+          "label": "node-data-188-1",
+          "passes": 34,
+          "receipt_sha256": "a254475b3d311eed942606bafb411beae4504ddfc141bb5c3a6dd46d5da9f50c"
+        },
+        {
+          "label": "normalize-188-1",
+          "passes": 40,
+          "receipt_sha256": "7ef3f37a6b51fe67f63334dbbf50937cf85db7d512ec65dd29cfba0308cf2821"
+        },
+        {
+          "label": "predicates-188-1",
+          "passes": 30,
+          "receipt_sha256": "561739284011678f05d7d00ad731ad60f1080d25d1462f30613486431a901bdc"
+        }
+      ],
+      "duplicates": {
+        "script::node_root::tests::root_bootstrap_reports_actual_admission": 2,
+        "script::node_data::tests::node_data_bootstrap_admission": 2,
+        "script::dom_prototypes::node_constants::tests::node_constant_batch_bootstrap_reports_actual_remaining_budget": 2,
+        "script::node_normalize::tests::normalize_bootstrap_reports_actual_admission": 2,
+        "script::node_predicates::tests::predicates_bootstrap_reports_actual_admission": 2
+      }
+    },
+    "final_failed": 0,
+    "final_ignored": 0,
+    "all_commands_passed_first_attempt": false,
+    "full_test_threads": 4
+  },
+  "accounting": {
+    "remaining_bootstrap_work": 8318,
+    "allocated_bytes": 1758971,
+    "objects": 686,
+    "object_capacity": 686,
+    "native_entries": 321,
+    "legacy_prototype_entries": 25,
+    "additional_work": 489,
+    "additional_charged_bytes": 3256,
+    "bootstrap_work_limit": 100000,
+    "author_work_limit": 100000,
+    "cumulative_heap_limit": 8388608,
+    "numeric_limits_and_resets_changed": false
+  },
+  "compatibility": {
+    "path": "root-comparison.json",
+    "sha256": "25c36eeebc4e1637c74dbbab49bea27e1a3b08ff365275e55cd742a957aecad5",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4268,
+          "after_total": 4268,
+          "before_healthy": 4178,
+          "after_healthy": 4176,
+          "unchanged": 4266,
+          "gains": 0,
+          "losses": 2,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 476,
+          "after_total": 476,
+          "before_healthy": 468,
+          "after_healthy": 464,
+          "unchanged": 472,
+          "gains": 0,
+          "losses": 4,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 32,
+          "after_total": 32,
+          "before_healthy": 0,
+          "after_healthy": 32,
+          "unchanged": 0,
+          "gains": 32,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 16,
+          "after_total": 16,
+          "before_healthy": 4,
+          "after_healthy": 16,
+          "unchanged": 4,
+          "gains": 12,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    },
+    "inventory_classification": {
+      "path": "inventory-classification.json",
+      "sha256": "89e6642b23d8bf8f8238f75760e9e10cf73fc124bc69bcf86a363db9e02ec199",
+      "report": {
+        "classification": "Six predicate inventory assumptions are invalidated by getRootNode. Older Node and Normalize inventory failures remain unchanged. Raw losses and unhealthy controls retain their health; no waiver.",
+        "policy_sha256": "b8eb87ca9264b7f8b5abafa963174ac54e017525c1171d5b86ffb6600a6af054",
+        "comparison_sha256": "25c36eeebc4e1637c74dbbab49bea27e1a3b08ff365275e55cd742a957aecad5",
+        "classifier_sha256": "8d2437dc7571be4039f8aaa683f172686eb75256a9e7c693c69a8422f9ed175a",
+        "expected_case_losses": 2,
+        "expected_unhealthy_controls": 4,
+        "unexpected_established_changes": 0,
+        "new_cases_healthy": 32,
+        "new_controls_healthy": 16,
+        "changes": [
+          {
+            "profile": "node-predicates",
+            "kind": "cases",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented_complete_key_order#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "represented_complete_key_order#sloppy",
+                "file": "node-predicates.js",
+                "mode": "sloppy",
+                "case_sha256": "b4ba55bd3b1690ab37cf1361d6e6cf4e57bc134f6374fc7ec6bf78eab41ee88f",
+                "source_sha256": "ffb161d613b5eca56341bacba4ff500d32a8a1529ca5a37c3bccfe3959879f88",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": true
+              },
+              "after": {
+                "id": "represented_complete_key_order#sloppy",
+                "file": "node-predicates.js",
+                "mode": "sloppy",
+                "case_sha256": "b4ba55bd3b1690ab37cf1361d6e6cf4e57bc134f6374fc7ec6bf78eab41ee88f",
+                "source_sha256": "ffb161d613b5eca56341bacba4ff500d32a8a1529ca5a37c3bccfe3959879f88",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": false
+              }
+            }
+          },
+          {
+            "profile": "node-predicates",
+            "kind": "cases",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented_complete_key_order#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "represented_complete_key_order#strict",
+                "file": "node-predicates.js",
+                "mode": "strict",
+                "case_sha256": "72acb57f2b7547ade7a1bb61ae009ca433e655d071ea5091151e71a592fa9eb5",
+                "source_sha256": "ffb161d613b5eca56341bacba4ff500d32a8a1529ca5a37c3bccfe3959879f88",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": true
+              },
+              "after": {
+                "id": "represented_complete_key_order#strict",
+                "file": "node-predicates.js",
+                "mode": "strict",
+                "case_sha256": "72acb57f2b7547ade7a1bb61ae009ca433e655d071ea5091151e71a592fa9eb5",
+                "source_sha256": "ffb161d613b5eca56341bacba4ff500d32a8a1529ca5a37c3bccfe3959879f88",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": false
+              }
+            }
+          },
+          {
+            "profile": "node-predicates",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-positive#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-positive#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "08dbe11439a334cce972c342a839248cbcd1dee7e6f2ea29bf36f157c2e0f17d",
+                "source_sha256": "83f029fafccb15ce8a1a3821405d78ef85127e3c760cd0104b240e3c2fc89e6d",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-positive#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "08dbe11439a334cce972c342a839248cbcd1dee7e6f2ea29bf36f157c2e0f17d",
+                "source_sha256": "83f029fafccb15ce8a1a3821405d78ef85127e3c760cd0104b240e3c2fc89e6d",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-predicates",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-positive#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-positive#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "73c3c51f533b0e0a8d54a36377bbc410df713f907690a53ea2bc618034424a2e",
+                "source_sha256": "83f029fafccb15ce8a1a3821405d78ef85127e3c760cd0104b240e3c2fc89e6d",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-positive#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "73c3c51f533b0e0a8d54a36377bbc410df713f907690a53ea2bc618034424a2e",
+                "source_sha256": "83f029fafccb15ce8a1a3821405d78ef85127e3c760cd0104b240e3c2fc89e6d",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-predicates",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-wrong#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-wrong#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "94c66d5894b0561498c73e6fcff8d564f40c45f47c13d94e4c36d43a668696e1",
+                "source_sha256": "12c6b9ab2bd9ef39652d655340c0962ee6eaa1653b9ca6e9601580dfba6f3f8e",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-wrong#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "94c66d5894b0561498c73e6fcff8d564f40c45f47c13d94e4c36d43a668696e1",
+                "source_sha256": "12c6b9ab2bd9ef39652d655340c0962ee6eaa1653b9ca6e9601580dfba6f3f8e",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-predicates",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-wrong#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-wrong#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "32cc932180fed667eb4bbd6b2cd178f42d204122a7cb0d77699b6ad22de6a3c1",
+                "source_sha256": "12c6b9ab2bd9ef39652d655340c0962ee6eaa1653b9ca6e9601580dfba6f3f8e",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-wrong#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "32cc932180fed667eb4bbd6b2cd178f42d204122a7cb0d77699b6ad22de6a3c1",
+                "source_sha256": "12c6b9ab2bd9ef39652d655340c0962ee6eaa1653b9ca6e9601580dfba6f3f8e",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "retained_history": [
+    "Initial all-target compilation and all32newgroups passed. Initial bootstrap filter retained27passes/two stale descriptive snapshot failures. Exactly three literals across two test files changed after measurement; initial16implementation paths remain unchanged.",
+    "Data-only correction preparation first named raw instead of the actual reference local; assertion stopped before any source change or compiler. The error and original first file remain retained.",
+    "Initial data audit could not count two interleaved nocapture status lines. The failed audit remains retained; the corrected reader reassembles only two exact fragments under the immutable raw-log SHA, preserving all raw bytes and both failures. No engine rerun.",
+    "Before baseline execution, independent fixture metadata case gained a successful authentic alternate-constructor prerequisite. Original and final fixtures, readiness and exact correction remain retained; controls and expected inventory unchanged. Candidate baseline then retained32missing-method TypeErrors and4/16healthy controls. No candidate compiler had run.",
+    "Candidate retains nonzero Nodeconstant, Normalize and Predicate historical profile exits and aggregate exit. Twelve older Node/Normalize unhealthy inventory observations remain byte-exact; two Predicate inventory cases newly fail with Error and four controls become unhealthy with TypeError. No fixture rewrite or health waiver.",
+    "The predecessor predicate commit6834288 had8successfulCIjobs/1Vulkanprobe failure from reading a disappeared proc entry. Separate Python test-helper correction066435f has9successfulCIjobs; Runtime source unchanged. Both receipts remain retained."
+  ],
+  "boundaries": [
+    "Represented ordinary node tree only; no ShadowRoot/composed ancestry, cross-document adoption, XMLDocument/CDATA construction or remaining Node methods.",
+    "Options getter mutations and throws preserve completed effects. The walk validates reached local shapes and reciprocal ordinary parent membership up to256edges/257visits. It does not validate the whole graph or traverse template hosts.",
+    "Default traversal owns no heap storage; object options separately allocate a paid24work/96byte literal composed key and retain actual lookup/callback charges. Existing invocation name-copy, generic VM and diagnostic String allocation remain; no complete allocation or physical allocator recovery claim.",
+    "Page and confined-worker real-click witnesses retain20IDs without new click nodes, follow receiver/ancestor moves and retained detachment, and check literal whole-canvas/style/text results with distinct template and unhosted fragment trees.",
+    "No page/GPU/physical-memory performance measurement. Full web compatibility, production security and requested Chromium performance threshold remain unachieved."
+  ],
+  "archive": {
+    "path": "node-root.tar.gz",
+    "bytes": 2959875,
+    "sha256": "6ce3c1fc185065699497b1d8aeff86c93973762f85edb45ecd6b838c76e8df31",
+    "files": 385,
+    "manifest_verified": true
+  }
+}

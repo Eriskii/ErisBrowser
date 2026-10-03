@@ -116,6 +116,12 @@ impl Runtime {
         // have distinct lengths and pay their full comparison before dispatch.
         self.work(1)?;
         match method.len() {
+            11 => {
+                self.work(11)?;
+                if method == "getRootNode" {
+                    return self.node_get_root_node(receiver, args, doc);
+                }
+            }
             13 => {
                 self.work(13)?;
                 if method == "hasChildNodes" {

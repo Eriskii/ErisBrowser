@@ -13,7 +13,7 @@ fn invalid() -> ScriptError {
 }
 
 // Every caller prepays the fixed brand/conversion or local-shape work.
-fn node_id(value: &Value, doc: &Document) -> Result<NodeId> {
+pub(super) fn node_id(value: &Value, doc: &Document) -> Result<NodeId> {
     match value {
         Value::Document
             if matches!(
@@ -28,7 +28,7 @@ fn node_id(value: &Value, doc: &Document) -> Result<NodeId> {
     }
 }
 
-fn local_node(doc: &Document, id: NodeId) -> Result<&crate::dom::Node> {
+pub(super) fn local_node(doc: &Document, id: NodeId) -> Result<&crate::dom::Node> {
     let node = doc.nodes.get(id).ok_or_else(invalid)?;
     if doc.nodes.len() > crate::dom::MAX_NODES || node.children.len() > crate::dom::MAX_NODES {
         return Err(invalid());

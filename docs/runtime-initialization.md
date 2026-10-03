@@ -103,3 +103,11 @@ needs four allocated tree nodes; the constructor map still needs three.
 Numeric limits and author-entry reset sites remain unchanged. Predicate bodies
 spend the existing allowance without allocating traversal or payload storage;
 generic invocation and inherited diagnostic allocation retain their own limits.
+
+The later [ordinary root checkpoint](node-root.md) installs one cached
+`getRootNode` method bag. Measured raw bootstrap leaves 8,318 work units and
+charges 1,758,971 bytes, with 686 objects and capacity, 321 native entries and
+25 legacy prototype entries. This adds 489 work units and 3,256 charged bytes.
+Numeric limits and author-entry reset sites remain unchanged. The root walk
+owns no traversal storage; object options separately pay for the fixed member
+key and ordinary lookup/callback work before fresh parent links are read.

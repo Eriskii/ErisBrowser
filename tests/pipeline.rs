@@ -1620,3 +1620,30 @@ fn node_predicates_follow_live_moves_and_retained_detached_nodes() {
         ));
     }
 }
+
+#[path = "support/node_root.rs"]
+mod node_root_witness;
+
+#[test]
+fn node_root_reads_fresh_links_after_options_callbacks() {
+    let mut actual = page(node_root_witness::HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(actual.title(), node_root_witness::metadata(phase));
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(node_root_witness::check(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

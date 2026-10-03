@@ -45,6 +45,10 @@ content remains separate; resource refusal can preserve completed mutation stage
 Required nullable arguments do not invoke conversion hooks; template content
 remains a separate tree. All 32 new strict/sloppy modes pass with 16 healthy
 controls; historical prototype-inventory failures remain recorded separately.
+[Node.getRootNode](docs/node-root.md) adds ordinary roots after options conversion,
+with one member read for object options, preserving callback effects and separate template-content
+roots. All 32 release cases and 16 controls pass; historical inventory failures
+remain recorded separately.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members
@@ -324,6 +328,9 @@ inclusive ancestry without mutating the tree. Their bounded local checks and
 visited sibling scans consume the existing author work allowance; prototype
 inventory changes retain explicit historical observations. The new 32 modes
 and 16 controls pass without changing numeric quotas.
+[Node.getRootNode](docs/node-root.md) reads fresh parent links after dictionary
+conversion, with bounded ancestor and sibling scans. Actual ShadowRoot and
+shadow-including ancestry remain absent. Default and native Vulkan validation pass.
 Legacy `innerText`, textarea setters and attribute writes, HTML parser input
 and broader DOMString/Web IDL interfaces remain incomplete.
 

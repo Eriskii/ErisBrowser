@@ -1,0 +1,77 @@
+<!doctype html>
+<meta charset="utf-8"><title id="heading">Roots ready</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#probe{left:0}#done{left:50px}.ready .sample{background:green}.clicked .sample{background:blue}
+#change{position:absolute;top:60px;left:0}
+#left,#right{position:absolute;top:100px;width:150px;font-size:24px;line-height:28px}
+#left{left:0}#right{left:160px}#result{position:absolute;top:160px;left:0;font-size:20px}
+#old,#template{display:none}
+</style>
+<div id="probe" class="sample"></div><div id="done" class="sample"></div>
+<button id="change" type="button">Read fresh roots</button>
+<div id="left"><span id="branch">Same root</span><span id="old"><b id="old-leaf">retained</b></span></div><div id="right"></div>
+<div id="result">ready</div><template id="template"><span id="inert">content</span></template>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+function get(id){return document.getElementById(id);}
+const root=Node.prototype.getRootNode;
+if(typeof root!=='function')throw new TypeError('getRootNode prerequisite');
+check(root.call(document)===document,'successful Document prerequisite');
+const left=get('left'),right=get('right'),branch=get('branch'),branchText=branch.firstChild;
+const old=get('old'),oldLeaf=get('old-leaf'),oldText=oldLeaf.firstChild,change=get('change');
+const heading=get('heading'),titleText=heading.firstChild,result=get('result'),resultText=result.firstChild;
+const template=get('template'),content=template.content,inert=content.firstChild,inertText=inert.firstChild;
+const ordinary=new Text('ordinary');template.append(ordinary);
+const fragment=new DocumentFragment(),fragmentText=new Text('fragment');fragment.append(fragmentText);
+const retained={label:'kept'};old.retained=retained;
+const shadow=function(){return 'own shadow';};branch.getRootNode=shadow;
+let phase=0,reads=0,trace='';
+function verify(){
+  const parent=phase===0?left:right;
+  check(branch.parentNode===parent&&parent.firstChild===branch&&branch.firstChild===branchText,'stable visible subtree');
+  check(branchText.parentNode===branch&&branchText.data==='Same root','stable visible Text');
+  check(root.call(branch)===document&&root.call(branchText,{composed:true})===document,'connected canonical Document');
+  check(root.call(document,null)===document&&root.call(document.documentElement.parentNode)===document,'Document and public parent alias');
+  check(old.parentNode===(phase===0?left:null)&&old.firstChild===oldLeaf&&oldLeaf.firstChild===oldText,'retained old subtree');
+  check(oldLeaf.parentNode===old&&oldText.parentNode===oldLeaf&&oldText.data==='retained','retained descendants');
+  check(root.call(oldText)===(phase===0?document:old)&&root.call(old,{composed:true})===(phase===0?document:old),'detached ancestor root');
+  check(old.retained===retained&&retained.label==='kept','retained own payload');
+  check(fragment.parentNode===null&&fragment.firstChild===fragmentText&&fragmentText.parentNode===fragment,'ordinary fragment links');
+  check(root.call(fragment)===fragment&&root.call(fragmentText,{composed:true})===fragment&&fragmentText.data==='fragment','ordinary fragment roots');
+  check(template.content===content&&content.parentNode===null&&template.firstChild===ordinary,'separate template trees');
+  check(content.firstChild===inert&&inert.firstChild===inertText&&inertText.data==='content'&&ordinary.data==='ordinary','template data retained');
+  check(root.call(ordinary,{composed:true})===document&&root.call(inertText)===content,'ordinary versus content roots');
+  check(root.call(inertText,{composed:true})===content&&root.call(content,{composed:true})===content,'composed does not cross template host');
+  check(branch.getRootNode===shadow&&branch.getRootNode()==='own shadow'&&Node.prototype.getRootNode===root,'saved method and own shadow');
+  check(titleText===heading.firstChild&&resultText===result.firstChild,'retained status Texts');
+  check(reads===(phase===0?0:3)&&trace===(phase===0?'':'rad'),'one Get per moving options object');
+}
+function inheritedOptions(getter){
+  const prototype={};Object.defineProperty(prototype,'composed',{get:getter});return Object.create(prototype);
+}
+change.onclick=function(){
+  check(this===change&&phase===0,'one real click');
+  const receiverOptions=inheritedOptions(function(){
+    check(this===receiverOptions,'receiver getter this');reads++;trace+='r';content.append(branchText);return false;
+  });
+  check(root.call(branchText,receiverOptions)===content,'fresh root after receiver move');
+  check(branch.firstChild===null&&content.childNodes[1]===branchText,'completed receiver move');
+  branch.append(branchText);
+  const truthy={valueOf:function(){throw new Error('unexpected valueOf');},toString:function(){throw new Error('unexpected toString');}};
+  truthy[Symbol.toPrimitive]=function(){throw new Error('unexpected ToPrimitive');};
+  const ancestorOptions=inheritedOptions(function(){
+    check(this===ancestorOptions,'ancestor getter this');reads++;trace+='a';content.append(branch);return truthy;
+  });
+  check(root.call(branchText,ancestorOptions)===content,'fresh composed root after ancestor move');
+  check(branch.parentNode===content&&content.childNodes[1]===branch,'completed ancestor move');
+  right.append(branch);
+  const detachOptions=inheritedOptions(function(){
+    check(this===detachOptions,'detach getter this');reads++;trace+='d';left.textContent='';return true;
+  });
+  check(root.call(oldText,detachOptions)===old,'fresh root after ancestor detachment');
+  phase=1;verify();titleText.data='Roots done';resultText.data='done';
+  check(document.title==='Roots done','updated title');document.body.className='clicked';
+};
+verify();check(document.title==='Roots ready','initial title');document.body.className='ready';
+</script>

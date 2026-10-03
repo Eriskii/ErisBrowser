@@ -1,0 +1,17 @@
+{
+  "status": "Nine jobs pass on separate published test-harness correction; original predicate job failure is retained",
+  "feature_commit": "6834288f9ef68d26ebbae4016802219cc606eacd",
+  "corrective_commit": "066435fb0682449c62be6ecb999ca457653af7a1",
+  "runtime_source_change": false,
+  "first_run": {
+    "path": "node-predicates-ci-first.json",
+    "sha256": "4941d15b5e6aacde433461c076e603eb7cea011e246c5298a4714b6cc9bcda11",
+    "conclusion": "failure"
+  },
+  "corrective_run": {
+    "path": "probe-fix-ci.json",
+    "sha256": "04e393234f52bdcaada75f42a79eb24a8ffca4adca52da8f78cfdc17f474a750",
+    "conclusion": "success"
+  },
+  "correction": "tools/vulkan-probe/test_run_host.py accepts ProcessLookupError reading a disappearing proc entry, alongside prior FileNotFoundError; realcleanup/permissionchecks remain."
+}

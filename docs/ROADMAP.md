@@ -67,6 +67,9 @@ and merges ordinary descendant runs with retained detached data and separately
 admitted mutation stages. CDATA, live Range updates and mutation notifications
 remain outside this increment. [Node predicates](node-predicates.md) add
 `hasChildNodes`, `isSameNode` and `contains` through ordinary prototype methods.
+[Root lookup](node-root.md) adds `getRootNode`, including observable dictionary
+conversion and fresh ordinary ancestry after callbacks. Shadow roots and their
+composed ancestry remain absent.
 Other Node members, including structural equality (`isEqualNode`) and
 document-position comparison, remain unimplemented.
 Legacy `innerText`, textarea setters and attribute

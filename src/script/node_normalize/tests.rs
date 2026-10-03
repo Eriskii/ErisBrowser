@@ -45,15 +45,15 @@ cases!(
 );
 
 #[test]
-fn prior_normalize_inventory_after_removing_configurable_predicates() {
+fn prior_normalize_inventory_after_removing_later_configurable_operations() {
     // Restoring descriptors cannot restore creation order. This realm is
-    // disposable; the new independent predicate fixture checks pristine order.
+    // disposable; the new independent root fixture checks pristine order.
     for strict in [false, true] {
         let (mut runtime, mut doc) = fresh();
         let source = format!(
             r#"{CASES}
         (function(){{
-          const names=['hasChildNodes','isSameNode','contains'],saved=[];
+          const names=['getRootNode','hasChildNodes','isSameNode','contains'],saved=[];
           for(const name of names){{
             const d=Object.getOwnPropertyDescriptor(Node.prototype,name);
             if(!d||!d.configurable||typeof d.value!=='function')throw new Error('predicate descriptor');

@@ -35,7 +35,6 @@ fn independent(name: &str) {
 macro_rules! cases {($($name:ident),* $(,)?)=>{$(#[test]fn $name(){independent(stringify!($name));})*};}
 cases!(
     metadata,
-    represented_complete_key_order,
     direct_children_include_empty_text_and_comments,
     contains_inclusive_direction_and_disjoint_trees,
     same_node_uses_identity_not_data_or_position,
@@ -51,6 +50,39 @@ cases!(
     authentic_alternate_prototype_still_has_node_brand,
     represented_leaf_kinds_and_detached_payloads,
 );
+
+#[test]
+fn prior_predicate_inventory_after_removing_configurable_get_root_node() {
+    // Descriptor restoration changes creation order. Each mode's realm is
+    // disposable; the independent root fixture checks the pristine inventory.
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        let source = format!(
+            r#"{CASES}
+        (function(){{
+          const saved=Object.getOwnPropertyDescriptor(Node.prototype,'getRootNode');
+          if(!saved||!saved.configurable||typeof saved.value!=='function')throw new Error('root descriptor');
+          try{{
+            if(!delete Node.prototype.getRootNode)throw new Error('root delete');
+            if(nodePredicateCases.represented_complete_key_order()!==true)throw new Error('prior predicate inventory');
+          }}finally{{
+            Object.defineProperty(Node.prototype,'getRootNode',saved);
+          }}
+          const d=Object.getOwnPropertyDescriptor(Node.prototype,'getRootNode');
+          if(d.value!==saved.value||d.writable!==saved.writable||d.enumerable!==saved.enumerable||
+             d.configurable!==saved.configurable)throw new Error('root restoration');
+          return true;
+        }})()"#
+        );
+        let result = if strict {
+            runtime.execute_strict(&source, &mut doc)
+        } else {
+            runtime.execute(&source, &mut doc)
+        };
+        assert_eq!(result.unwrap(), Value::Bool(true), "strict={strict}");
+        clean(&runtime);
+    }
+}
 
 #[test]
 fn predicates_bootstrap_reports_actual_admission() {

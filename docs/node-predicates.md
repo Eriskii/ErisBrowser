@@ -90,7 +90,7 @@ sites, process authority and ERWA transport remain unchanged.
 ## Metadata order and constant publication
 
 The represented Node operations appear in IDL order: `hasChildNodes`,
-`normalize`, `isSameNode`, `contains`. The pristine prototype now has 26 own
+`normalize`, `isSameNode`, `contains`. At this checkpoint, the pristine prototype has 26 own
 keys: `nodeValue`, `textContent`, those four operations, the eighteen constants,
 `constructor`, then `Symbol.toStringTag` in `Reflect.ownKeys`. This is the
 current represented subset, not complete Node interface coverage. The original
@@ -222,6 +222,10 @@ all nine jobs passing for `618fa359`; it is not a predicate-checkpoint CI result
 These methods do not add shadow-tree/composed ancestry, cross-document adoption,
 CDATA/XMLDocument construction, or missing Node members. Existing unrelated DOM
 and allocation limitations remain.
+
+A later [root lookup checkpoint](node-root.md) adds `getRootNode` before
+`hasChildNodes` and expands the represented prototype to 27 own keys. The
+26-key inventory and its original outcomes here remain historical evidence.
 
 Normative references: [Node](https://dom.spec.whatwg.org/#interface-node),
 [hasChildNodes](https://dom.spec.whatwg.org/#dom-node-haschildnodes),
