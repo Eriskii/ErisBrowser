@@ -4800,3 +4800,17 @@ scanned sibling IDs. It allocates no owned traversal/payload storage; generic VM
 and inherited diagnostic allocation limits remain. This checkpoint makes no
 page/GPU/physical-memory speed claim and does not establish complete web
 compatibility, production security or the requested Chromium performance target.
+
+### Vulkan probe cleanup observation race
+
+The predicate checkpoint's GitHub Vulkan probe job exposed a Linux process-exit
+race in its Python test helper: reading an already opened `/proc/<pid>/stat`
+raised `ProcessLookupError` after the process disappeared. The helper now accepts
+that specific disappearance alongside `FileNotFoundError`; permission errors
+still propagate. Production process supervision is unchanged.
+
+The new regression first reproduced the failure, then all **13 Vulkan probe
+Python tests** passed, including the existing real descendant-cleanup checks.
+The [record](evidence/vulkan-probe-proc-race.json) retains the original CI failure,
+source hashes and local before/after outputs. It does not claim a new GPU result
+or substitute a retry for the original failed observation.

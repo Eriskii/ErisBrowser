@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Bounded fake-process tests; these do not require Vulkan or a GPU."""
 import contextlib
+import errno
 import io
 import json
 import os
@@ -99,7 +100,7 @@ class ProcessTests(unittest.TestCase):
         while time.monotonic() < deadline:
             try:
                 state = Path(f"/proc/{pid}/stat").read_text().split(") ", 1)[1][0]
-            except FileNotFoundError:
+            except (FileNotFoundError, ProcessLookupError):
                 return
             if state == "Z":
                 return  # Killed descendants can await their external reaper.
@@ -118,6 +119,20 @@ class ProcessTests(unittest.TestCase):
                 "    file.write(str(pid))\n"
                 "print('ready', flush=True)\n" +
                 ("os._exit(0)\n" if leader_exit else "time.sleep(30)\n")), path
+
+    def test_cleanup_observation_accepts_only_disappeared_proc_entries(self):
+        # Linux can lose the process after opening its proc file but before
+        # reading it. ESRCH and ENOENT both mean it is no longer observable.
+        for error in (FileNotFoundError(errno.ENOENT, "gone before open"),
+                      ProcessLookupError(errno.ESRCH, "gone before read")):
+            with self.subTest(error=type(error).__name__), \
+                    mock.patch.object(Path, "read_text", side_effect=error), \
+                    mock.patch.object(os, "kill") as kill:
+                self.assert_not_running(123456)
+                kill.assert_not_called()
+        with mock.patch.object(Path, "read_text", side_effect=PermissionError(errno.EACCES, "denied")), \
+                self.assertRaises(PermissionError):
+            self.assert_not_running(123456)
 
     def test_success_spaces_and_portable_loader_environment(self):
         devices = [adapter(), adapter(1)]

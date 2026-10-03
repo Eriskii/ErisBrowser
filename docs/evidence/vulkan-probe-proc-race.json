@@ -1,0 +1,135 @@
+{
+  "kind": "Vulkan probe test helper proc-file disappearance race",
+  "base_commit": "6834288f9ef68d26ebbae4016802219cc606eacd",
+  "ci": {
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37095499085/job/111124460654",
+    "job": "vulkan-probe",
+    "job_conclusion": "failure",
+    "overall_run_status_at_capture": "in_progress",
+    "failure_excerpt": "2026-10-03T04:08:43.2173553Z ERROR: test_timeout_kills_descendants_even_when_leader_exits (test_run_host.ProcessTests.test_timeout_kills_descendants_even_when_leader_exits) (leader_exit=True)\n2026-10-03T04:08:43.2175397Z ----------------------------------------------------------------------\n2026-10-03T04:08:43.2176391Z Traceback (most recent call last):\n2026-10-03T04:08:43.2178222Z   File \"/home/runner/work/ErisBrowser/ErisBrowser/tools/vulkan-probe/test_run_host.py\", line 182, in test_timeout_kills_descendants_even_when_leader_exits\n2026-10-03T04:08:43.2179719Z     self.assert_not_running(int(pid_path.read_text()))\n2026-10-03T04:08:43.2180631Z   File \"/home/runner/work/ErisBrowser/ErisBrowser/tools/vulkan-probe/test_run_host.py\", line 101, in assert_not_running\n2026-10-03T04:08:43.2181766Z     state = Path(f\"/proc/{pid}/stat\").read_text().split(\") \", 1)[1][0]\n2026-10-03T04:08:43.2182374Z             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n2026-10-03T04:08:43.2182896Z   File \"/usr/lib/python3.12/pathlib.py\", line 1030, in read_text\n2026-10-03T04:08:43.2183486Z     return f.read()\n2026-10-03T04:08:43.2183851Z            ^^^^^^^^\n2026-10-03T04:08:43.2184270Z ProcessLookupError: [Errno 3] No such process\n2026-10-03T04:08:43.2184651Z \n2026-10-03T04:08:43.2184872Z ----------------------------------------------------------------------\n2026-10-03T04:08:43.2185411Z Ran 12 tests in 0.853s\n2026-10-03T04:08:43.2185637Z \n2026-10-03T04:08:43.2185833Z FAILED (errors=1)",
+    "complete_job_log_sha256": "0ce97ae4f9f06ffda273b95a80768aaff45f632a8e7fd24af5bad5e64ea812ba"
+  },
+  "change": "Only the test helper catches the specific ProcessLookupError raised when Linux loses a process after its proc file is opened. Existing FileNotFoundError acceptance, zombie handling, timeout checks and production cleanup remain unchanged.",
+  "source": {
+    "path": "tools/vulkan-probe/test_run_host.py",
+    "before_sha256": "ce8eacde52699219a73b57ce8fbb98f910f570d03d8fcf6a1fab60d23fed80d5",
+    "after_sha256": "724f8550b94c6a39093e4ae90bdebc8a5075837d07f5682f7ed20e90d455a1ef"
+  },
+  "validation": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "test_run_host.ProcessTests.test_cleanup_observation_accepts_only_disappeared_proc_entries"
+      ],
+      "exit": 1,
+      "log": "regression-before.log",
+      "sha256": "74765850b83980a9d1780b2e6566298faf0a93cf2f9285830b63793e0950608d",
+      "output": "E\n======================================================================\nERROR: test_cleanup_observation_accepts_only_disappeared_proc_entries (test_run_host.ProcessTests.test_cleanup_observation_accepts_only_disappeared_proc_entries) (error='ProcessLookupError')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-probe/test_run_host.py\", line 131, in test_cleanup_observation_accepts_only_disappeared_proc_entries\n    self.assert_not_running(123456)\n    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^\n  File \"/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-probe/test_run_host.py\", line 102, in assert_not_running\n    state = Path(f\"/proc/{pid}/stat\").read_text().split(\") \", 1)[1][0]\n            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/nix/store/d64q19q1xjdwfhqx6czvrjgrhq0n3lcc-python3-3.14.7/lib/python3.14/unittest/mock.py\", line 1176, in __call__\n    return self._mock_call(*args, **kwargs)\n           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/nix/store/d64q19q1xjdwfhqx6czvrjgrhq0n3lcc-python3-3.14.7/lib/python3.14/unittest/mock.py\", line 1180, in _mock_call\n    return self._execute_mock_call(*args, **kwargs)\n           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/nix/store/d64q19q1xjdwfhqx6czvrjgrhq0n3lcc-python3-3.14.7/lib/python3.14/unittest/mock.py\", line 1241, in _execute_mock_call\n    raise effect\nProcessLookupError: [Errno 3] gone before read\n\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nFAILED (errors=1)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/vulkan-probe",
+        "-p",
+        "test_*.py"
+      ],
+      "exit": 0,
+      "log": "suite-after.log",
+      "sha256": "6b9aa4dc259c3d44dd80f4a4f02be5f1d189f0726a1c3755939d6aa67c1fdbca",
+      "output": ".............\n----------------------------------------------------------------------\nRan 13 tests in 0.785s\n\nOK\n"
+    }
+  ],
+  "limits": "Local13 Python tests, including real process-group cleanup, pass. No new GPU/device, production sandbox or broad security claim. Original failed CI outcome remains recorded; no retry is substituted for it.",
+  "independent_review": {
+    "status": "clear",
+    "reviewed_source": {
+      "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-probe/test_run_host.py",
+      "bytes": 13014,
+      "sha256": "724f8550b94c6a39093e4ae90bdebc8a5075837d07f5682f7ed20e90d455a1ef"
+    },
+    "bindings": [
+      {
+        "path": "/tmp/eris-vulkan-probe-proc-race-1/test_run_host.before.py",
+        "bytes": 12106,
+        "sha256": "ce8eacde52699219a73b57ce8fbb98f910f570d03d8fcf6a1fab60d23fed80d5"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-probe/test_run_host.py",
+        "bytes": 13014,
+        "sha256": "724f8550b94c6a39093e4ae90bdebc8a5075837d07f5682f7ed20e90d455a1ef"
+      },
+      {
+        "path": "/home/eriskii/Documents/Programming/Projects/ErisBrowser/tools/vulkan-probe/run_host.py",
+        "bytes": 12604,
+        "sha256": "e984e7d282d26df677d2ec8f35a7e3915466a274c6915070f971fb36a8e68da6"
+      },
+      {
+        "path": "/tmp/eris-vulkan-probe-proc-race-1/failed-ci-job.log",
+        "bytes": 25140,
+        "sha256": "0ce97ae4f9f06ffda273b95a80768aaff45f632a8e7fd24af5bad5e64ea812ba"
+      },
+      {
+        "path": "/tmp/eris-vulkan-probe-proc-race-1/predicate-ci.json",
+        "bytes": 25510,
+        "sha256": "a76857833da0128fa4eadc123e0138235cf8af987a2187f3b9816944b0c222b4"
+      },
+      {
+        "path": "/tmp/eris-vulkan-probe-proc-race-1/regression-before.json",
+        "bytes": 287,
+        "sha256": "70e31b385c377f1d7f2c8fbdef5b0b2a2fceb1e5774cb72ce63bf8038f2f4840"
+      },
+      {
+        "path": "/tmp/eris-vulkan-probe-proc-race-1/regression-before.log",
+        "bytes": 1629,
+        "sha256": "74765850b83980a9d1780b2e6566298faf0a93cf2f9285830b63793e0950608d"
+      },
+      {
+        "path": "/tmp/eris-vulkan-probe-proc-race-1/suite-after.json",
+        "bytes": 263,
+        "sha256": "8fd112d30c0f950629be79c21976e6746f55a66485fd99e0b561ecf91277d359"
+      },
+      {
+        "path": "/tmp/eris-vulkan-probe-proc-race-1/suite-after.log",
+        "bytes": 112,
+        "sha256": "6b9aa4dc259c3d44dd80f4a4f02be5f1d189f0726a1c3755939d6aa67c1fdbca"
+      }
+    ],
+    "diff": {
+      "bytes": 2058,
+      "sha256": "f6419198e358457d22419aba3bf6f95b339df229249239600b3bed1efd5183fd",
+      "text": "diff --git a/tools/vulkan-probe/test_run_host.py b/tools/vulkan-probe/test_run_host.py\nindex 0a6a075..90a1111 100644\n--- a/tools/vulkan-probe/test_run_host.py\n+++ b/tools/vulkan-probe/test_run_host.py\n@@ -1,6 +1,7 @@\n #!/usr/bin/env python3\n \"\"\"Bounded fake-process tests; these do not require Vulkan or a GPU.\"\"\"\n import contextlib\n+import errno\n import io\n import json\n import os\n@@ -99,7 +100,7 @@ class ProcessTests(unittest.TestCase):\n         while time.monotonic() < deadline:\n             try:\n                 state = Path(f\"/proc/{pid}/stat\").read_text().split(\") \", 1)[1][0]\n-            except FileNotFoundError:\n+            except (FileNotFoundError, ProcessLookupError):\n                 return\n             if state == \"Z\":\n                 return  # Killed descendants can await their external reaper.\n@@ -119,6 +120,20 @@ class ProcessTests(unittest.TestCase):\n                 \"print('ready', flush=True)\\n\" +\n                 (\"os._exit(0)\\n\" if leader_exit else \"time.sleep(30)\\n\")), path\n \n+    def test_cleanup_observation_accepts_only_disappeared_proc_entries(self):\n+        # Linux can lose the process after opening its proc file but before\n+        # reading it. ESRCH and ENOENT both mean it is no longer observable.\n+        for error in (FileNotFoundError(errno.ENOENT, \"gone before open\"),\n+                      ProcessLookupError(errno.ESRCH, \"gone before read\")):\n+            with self.subTest(error=type(error).__name__), \\\n+                    mock.patch.object(Path, \"read_text\", side_effect=error), \\\n+                    mock.patch.object(os, \"kill\") as kill:\n+                self.assert_not_running(123456)\n+                kill.assert_not_called()\n+        with mock.patch.object(Path, \"read_text\", side_effect=PermissionError(errno.EACCES, \"denied\")), \\\n+                self.assertRaises(PermissionError):\n+            self.assert_not_running(123456)\n+\n     def test_success_spaces_and_portable_loader_environment(self):\n         devices = [adapter(), adapter(1)]\n         self.executable(\"import json,os,sys\\n\"\n"
+    },
+    "findings": [],
+    "conclusion": [
+      "The retained CI traceback reports ProcessLookupError/ESRCH while reading an opened proc stat file; FileNotFoundError alone does not accept that disappeared-process observation.",
+      "The helper now catches exactly FileNotFoundError and ProcessLookupError. PermissionError and unrelated OSError still propagate; unchanged zombie/poll/failure handling remains.",
+      "The added regression injects ENOENT and ESRCH and requires no kill, then requires PermissionError propagation. The first regression failed specifically ESRCH; the final complete13-test suite passed.",
+      "Only the test helper/regression is changed. run_host.py matches the published predicate commit byte-exact; no renderer or process-supervisor behavior is changed."
+    ],
+    "validation_observed": {
+      "initial_regression": {
+        "exit": 1,
+        "tests": 1,
+        "errors": 1,
+        "specific_subtest": "ProcessLookupError"
+      },
+      "final_suite": {
+        "exit": 0,
+        "tests": 13,
+        "errors": 0
+      }
+    },
+    "review_execution": {
+      "engine": false,
+      "compiler": false,
+      "tests": false,
+      "source_edits": false
+    }
+  }
+}
