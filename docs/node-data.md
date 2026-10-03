@@ -136,7 +136,8 @@ Range/NodeIterator updates, custom-element reactions, shadow-slot work and
 complete native Node members remain incomplete. A later
 [exact append increment](append-domstrings.md) preserves separate string
 arguments and failure prefixes without changing the Node checkpoint above.
-Legacy `innerText`, title and textarea setters, attribute writes, HTML parser input, exact
+The later [Document.title increment](document-title.md) migrates title writes
+and normalized reads. Legacy `innerText` and textarea setters, attribute writes, HTML parser input, exact
 nonscalar HTML serialization and unit-aware native editing remain separate
 boundaries. Replacing a title/style/textarea element's children through
 `textContent` does not make those other write APIs exact. This is not full Node

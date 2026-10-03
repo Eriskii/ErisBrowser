@@ -1481,6 +1481,36 @@ fn node_data_replacement_updates_connected_style_title_base_and_details() {
 #[path = "support/append_domstrings.rs"]
 mod append_domstrings_witness;
 
+#[path = "support/document_title.rs"]
+mod document_title_witness;
+
+#[test]
+fn document_title_preserves_exact_storage_and_projects_normalized_metadata() {
+    let mut actual = page(document_title_witness::HTML);
+    let fonts = Fonts::new();
+    let mut previous = None;
+    for phase in 0..3 {
+        if phase > 0 {
+            let button = actual.document.query_selector("#change").unwrap();
+            assert!(actual.click(button).is_none());
+        }
+        assert!(actual.diagnostics.is_empty(), "{:?}", actual.diagnostics);
+        assert_eq!(
+            actual.title(),
+            document_title_witness::metadata(phase, actual.document.url().as_str(), false)
+        );
+        let layout = actual.layout(320.0, 240.0, &fonts);
+        previous = Some(document_title_witness::check(
+            &actual.document,
+            &layout,
+            &actual.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}
+
 #[test]
 fn append_exact_strings_preserve_separate_nodes_and_retained_hierarchy_prefixes() {
     let mut actual = page(append_domstrings_witness::HTML);

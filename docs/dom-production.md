@@ -112,8 +112,9 @@ release fingerprint, full comparisons and initial corrections. The
 
 The later [Node data accessors](node-data.md) replace the legacy `textContent`
 route and add `nodeValue`; [exact append strings](append-domstrings.md) separately
-migrate ParentNode.append. Neither migrates `innerText`, title/textarea setters
-or attribute writes. Those paths, HTML parser input, scalar form
+migrate ParentNode.append. A further [Document.title increment](document-title.md)
+adds ordinary exact title accessors and normalized reads. Legacy `innerText` and
+textarea setters, attribute writes, HTML parser input, scalar form
 output, exact nonscalar HTML serialization and unit-aware native editing remain
 separate work. PI pseudo-attributes, MutationObserver/Range updates, broader
 children-changed reactions and remaining Node members are still incomplete.

@@ -224,6 +224,12 @@ refusals retain earlier detached Texts and completed fragment moves. Removed
 lossy temporaries are not allocated, and cumulative charges are not refunded.
 The raw insertion child vectors, B-trees and base URL/encoding/IDNA internals
 retain their existing infallible-allocation and temporary-accounting limits.
+[Document.title](document-title.md) separately prepays incremental selection,
+normalized direct-Text reads and narrow empty-title creation/insertion. A later
+refusal preserves the completed creation/insertion prefix. Host projection has
+a finite bound derived from document limits; author quotas and reset points are
+unchanged. Existing-target replacement retains the Node helper's allocation
+limitations.
 The parser's internal insertion path is unchanged. This does not add arbitrary
 cross-document adoption, mutation observers or complete DOM allocation recovery.
 
@@ -422,7 +428,9 @@ unpaired units. [Exact character-data production](dom-production.md) migrates th
 named constructors, factories, data setter and five methods.
 [Node data assignment](node-data.md) also preserves exact units through
 `nodeValue`/`textContent`, and [append](append-domstrings.md) preserves separate
-string arguments. Legacy `innerText`, title/textarea setters, attribute and
+string arguments. [Document.title](document-title.md) uses the same exact
+builder and checked replacement after conversion and current-tree selection.
+Legacy `innerText`, textarea setters, attribute and
 HTML-parser writes and scalar host boundaries
 remain separate work.
 

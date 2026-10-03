@@ -33,7 +33,9 @@ cases. [Node data accessors](docs/node-data.md) now add ordinary `nodeValue` and
 `textContent`, exact descendant reads and checked container replacement with
 fresh Text identity. [Exact append strings](docs/append-domstrings.md) preserve
 each argument in a separate Text, including unmatched units and retained failure
-prefixes. Other legacy writers, complete interface members and Document reflection
+prefixes. [Document.title](docs/document-title.md) now has ordinary accessors,
+exact normalized reads and staged raw-text replacement for HTML and SVG roots.
+Other legacy writers, complete interface members and Document reflection
 remain unfinished. The
 [Vulkan snapshot bridge](tools/vulkan-raster-probe/BROWSER_BRIDGE.md) now checks
 real browser display lists with the custom GPU rasterizer and whole-frame CPU
@@ -299,8 +301,9 @@ constructors, factories, data setter and CharacterData methods.
 [Node data accessors](docs/node-data.md) add exact `nodeValue`/`textContent` with
 ordinary descriptor behavior and retained detached subtrees.
 [ParentNode.append](docs/append-domstrings.md) now keeps exact separate string
-arguments after all conversions finish. Legacy `innerText`, title/textarea
-setters and attribute writes, HTML parser input
+arguments after all conversions finish. [Document.title](docs/document-title.md)
+now preserves exact strings through ordinary accessors and normalized reads.
+Legacy `innerText`, textarea setters and attribute writes, HTML parser input
 and broader DOMString/Web IDL interfaces remain incomplete.
 
 Supported [Window binding reflection](tests/conformance/window-reflection.md) now

@@ -148,6 +148,23 @@ fn invoke_native(
                     doc,
                 )
             })
+    } else if native
+        .name
+        .starts_with(crate::script::document_title::PREFIX)
+    {
+        runtime
+            .document_title_call_preflight(&native.name)
+            .and_then(|()| {
+                runtime.native_call(
+                    &Native {
+                        properties: native.properties,
+                        name: native.name.clone(),
+                        receiver,
+                    },
+                    arguments,
+                    doc,
+                )
+            })
     } else if native.name.starts_with(crate::script::node_data::PREFIX) {
         runtime
             .node_data_call_preflight(&native.name)

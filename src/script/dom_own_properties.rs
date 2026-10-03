@@ -518,7 +518,7 @@ impl Runtime {
             // missing binding; do not silently create an expando for them.
             Node(_) if document => Unavailable,
             Element(write) if element => write,
-            Html(write) if html || (document && key == "title") => write,
+            Html(write) if html => write,
             Tags(tags, write) if html && self.dom_str_in(tag, tags)? => write,
             Parent if parent => Readonly,
             Parent if document => Unavailable,

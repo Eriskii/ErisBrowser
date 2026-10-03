@@ -5,8 +5,10 @@ mod string;
 #[cfg(test)]
 mod string_tests;
 mod text_replacement;
+mod title;
 pub use string::{DomScalars, DomString, DomUnits};
 pub(crate) use text_replacement::DomMutationBudget;
+pub(crate) use title::{TitleMode, TitleTarget};
 
 pub type NodeId = usize;
 pub const MAX_NODES: usize = 100_000;
@@ -1907,8 +1909,14 @@ impl Document {
         }
     }
     pub fn title(&self) -> String {
-        self.first_html_element("title")
-            .map(|id| self.text_content(id))
+        // Host metadata has its own structural/output bounds, not a fresh
+        // author execution allowance. Page retains its empty-title URL fallback.
+        let mut budget = DomMutationBudget {
+            steps: title::HOST_TITLE_WORK,
+            allocated: 0,
+            heap_limit: usize::MAX,
+        };
+        self.title_projection_bounded(MAX_TEXT, &mut budget)
             .unwrap_or_default()
     }
     /// Find document metadata without scanning past the first applicable HTML element.

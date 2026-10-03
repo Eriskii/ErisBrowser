@@ -31,7 +31,9 @@ also pass. [Node data accessors](node-data.md) add ordinary `nodeValue` and
 and fresh Text replacement that preserves detached old subtrees. Descriptor
 shadowing/deletion follows ordinary lookup. [Exact append strings](append-domstrings.md)
 retain separate Text identities, unpaired units and completed failure prefixes
-for Document, Element and DocumentFragment. Its validation remains pending.
+for Document, Element and DocumentFragment; all fourteen new modes pass.
+[Document.title](document-title.md) adds ordinary prototype accessors, exact
+ASCII-whitespace-normalized reads, HTML/SVG selection and staged replacement.
 PI pseudo-attributes and mutation notifications remain unfinished.
 Complete interface members,
 Document reflection and host prototype mutation remain incomplete. The unchanged
@@ -237,7 +239,8 @@ its named constructors, factories, data setter and five methods. Ordinary
 [Node data accessors](node-data.md) also preserve exact units through
 `nodeValue` and `textContent`. [ParentNode.append](append-domstrings.md) likewise
 preserves each string argument after ordered conversion, without coalescing
-separate Texts. Legacy `innerText`, title/textarea setters, attribute and
+separate Texts. [Document.title](document-title.md) adds exact raw writes and
+normalized direct-Text reads. Legacy `innerText`, textarea setters, attribute and
 HTML-parser writes remain separate, alongside
 remaining interface members, general XML name handling, live collections and
 complete DOM hierarchy semantics.
@@ -456,10 +459,11 @@ UTF-8 for scalar strings, exact UTF-16 only when unpaired units occur. Existing
 data/length accessors, selected text readers and cloning preserve units from
 [JavaScript CharacterData production](dom-production.md),
 [Node data assignment](node-data.md), [append arguments](append-domstrings.md),
+[Document.title](document-title.md),
 the host or transport.
 Presentation explicitly replaces unmatched units without changing storage.
 Attributes, console output and other scalar host boundaries remain separate;
-legacy `innerText`, title/textarea setters and HTML-parser writes can still
+legacy `innerText`, textarea setters and HTML-parser writes can still
 replace unpaired units. Inline JavaScript source and JavaScript HTML serialization explicitly
 refuse a nonscalar aggregate. This is not complete DOMString support.
 

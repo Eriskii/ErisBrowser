@@ -25,6 +25,7 @@ mod code;
 mod construction;
 mod data_view;
 mod date_builtins;
+mod document_title;
 mod dom_bindings;
 mod dom_data;
 mod dom_own_properties;
@@ -5827,12 +5828,6 @@ impl Runtime {
                         .map(Value::Node)
                         .unwrap_or(Value::Null));
                 }
-                "title" => {
-                    return match doc.first_html_element("title") {
-                        Some(id) => Ok(Value::String(self.dom_text_units(id, doc)?.into())),
-                        None => self.string(""),
-                    };
-                }
                 "readyState" => return self.string("complete"),
                 "getElementById"
                 | "getElementsByTagName"
@@ -6022,24 +6017,6 @@ impl Runtime {
             Value::Window => {
                 let key = self.global_name_key(key)?;
                 self.set_key_strict(Value::Window, &key, value, false, doc)?;
-            }
-            Value::Document if key == "title" => {
-                let text = self.dom_string(value, doc)?;
-                let id = if let Some(id) = doc.first_html_element("title") {
-                    id
-                } else {
-                    let Some(parent) = html_document_child(doc, "head") else {
-                        return Ok(());
-                    };
-                    self.ensure_dom_capacity(doc, 1)?;
-                    let id = doc.create_element("title");
-                    doc.append_child(parent, id);
-                    id
-                };
-                self.ensure_dom_capacity(doc, 1)?;
-                self.charge(text.len())?;
-                self.charge_dom_clear(id, doc)?;
-                doc.set_text_content(id, &text);
             }
             Value::Node(id) => {
                 if id >= doc.nodes.len() {
@@ -8029,6 +8006,9 @@ impl Runtime {
             return Err(ScriptError::type_error(
                 "DOM interface constructor requires new",
             ));
+        }
+        if let Some(method) = native.name.strip_prefix(document_title::PREFIX) {
+            return self.document_title_native(method, native.receiver.clone(), &args, doc);
         }
         if let Some(method) = native.name.strip_prefix(node_data::PREFIX) {
             return self.node_data_native(method, native.receiver.clone(), &args, doc);

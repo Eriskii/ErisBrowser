@@ -2405,6 +2405,55 @@ fn confined_node_data_replacement_updates_connected_metadata_and_style() {
 #[path = "support/append_domstrings.rs"]
 mod append_domstrings_witness;
 
+#[path = "support/document_title.rs"]
+mod document_title_witness;
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_document_title_preserves_exact_snapshots_and_scalar_metadata_cap() {
+    let fixture = Fixture::new(document_title_witness::HTML);
+    let mut client = fixture.spawn(true, 208);
+    load(&mut client, &fixture.navigation);
+    let fonts = eris::graphics::Fonts::new();
+    let mut previous = None;
+    let mut button = None;
+    for phase in 0..3 {
+        if phase > 0 {
+            exchange_empty(
+                &mut client,
+                WorkerCommand::Click {
+                    node: button.unwrap(),
+                },
+            );
+        }
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.generation, 208);
+        assert_eq!(snapshot.processed_edit_sequence, 0);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|message| message.starts_with("Page process ")
+                    || message.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        assert_eq!(
+            snapshot.title,
+            document_title_witness::metadata(phase, snapshot.document.url().as_str(), true)
+        );
+        button = Some(snapshot.document.query_selector("#change").unwrap());
+        previous = Some(document_title_witness::check(
+            &snapshot.document,
+            &snapshot.layout,
+            &snapshot.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}
+
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
 fn confined_append_exact_strings_preserve_nodes_units_and_restored_root() {

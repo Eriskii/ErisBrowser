@@ -58,7 +58,8 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 352
     + 2 * (INTERFACES.len() - 1)
     + 5
     + processing_instruction::METADATA_OBJECTS
-    + node_data::METADATA_OBJECTS;
+    + node_data::METADATA_OBJECTS
+    + document_title::METADATA_OBJECTS;
 
 #[derive(Default)]
 pub(super) struct State {
@@ -459,7 +460,8 @@ impl Runtime {
                     + methods
                     + usize::from(!unscopables.is_empty())
                     + match interface.name {
-                        "Document" | "ProcessingInstruction" => 1,
+                        "Document" => 2,
+                        "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
                         "Node" => 2,
                         _ => 0,
@@ -503,6 +505,9 @@ impl Runtime {
                     unscopables_key.clone(),
                     Property::data(Value::Object(bag), false, false, true),
                 )?;
+            }
+            if interface.name == "Document" {
+                self.install_document_title(prototype)?;
             }
             if methods != 0 {
                 self.install_dom_parent_prototype(interface.name, prototype)?;

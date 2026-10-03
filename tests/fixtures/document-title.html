@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8"><title id="subject">seed</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#normalized{left:0}#raw{left:50px}#fresh{left:100px}#retained{left:150px}#descriptor{left:200px}#visible{left:250px}
+#change{position:absolute;top:60px;left:0}#status{position:absolute;top:105px;left:0;font-size:24px}
+</style>
+<div id="normalized" class="sample"></div><div id="raw" class="sample"></div>
+<div id="fresh" class="sample"></div><div id="retained" class="sample"></div>
+<div id="descriptor" class="sample"></div><div id="visible" class="sample"></div>
+<button id="change" type="button">Next title phase</button><div id="status"></div>
+<script>
+function check(v,m){if(!v)throw new Error(m);}
+function units(v,a){check(v.length===a.length,'length');for(let i=0;i<a.length;i++)check(v.charCodeAt(i)===a[i],'unit '+i);}
+function mark(id,color){document.getElementById(id).style.backgroundColor=color;}
+const title=document.getElementById('subject'),button=document.getElementById('change'),status=document.getElementById('status');
+const descriptor=Object.getOwnPropertyDescriptor(Document.prototype,'title');
+check(descriptor&&typeof descriptor.get==='function'&&typeof descriptor.set==='function','ordinary title prerequisite');
+check(descriptor.enumerable&&descriptor.configurable,'ordinary descriptor flags');
+const branch=document.createElement('span');branch.id='old-title-branch';
+const oldText=new Text('old\uD800'),oldComment=new Comment('\uDC00');branch.append(oldText,oldComment);
+title.textContent='';title.appendChild(branch);
+const statusText=new Text('');status.appendChild(statusText);
+const longPrefix='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+check(longPrefix.length===511,'literal long prefix');
+const longInput=longPrefix+'\uD83D\uDE80\uD800';
+const inputs=[' \tA\uD800\r\n B\u00A0\u000B ', ' \t\r\n\f ', longInput];
+const prior=[];let phase=0;
+function apply(){
+  check(phase>=0&&phase<3&&prior.length===phase,'three ordered phases');
+  const color=phase===0?'green':phase===1?'blue':'purple';
+  document.title=inputs[phase];
+  const text=title.firstChild,value=document.title;
+  if(phase===0)units(value,[65,55296,32,66,160,11]);
+  else if(phase===1)units(value,[]);
+  else{
+    check(value===longInput&&value.length===514,'long exact getter');
+    check(value.charCodeAt(511)===55357&&value.charCodeAt(512)===56960&&value.charCodeAt(513)===55296,'literal long suffix');
+  }
+  mark('normalized',color);
+  check(text&&text.nodeType===3&&text.data===inputs[phase]&&title.childNodes.length===1,'one exact raw Text');
+  if(phase===0)units(text.data,[32,9,65,55296,13,10,32,66,160,11,32]);
+  if(phase===1)units(text.data,[32,9,13,10,12,32]);
+  mark('raw',color);
+  for(let i=0;i<prior.length;i++)check(prior[i]!==text&&prior[i].parentNode===null&&prior[i].data===inputs[i],'retained earlier title Text');
+  check(text.parentNode===title&&title.parentNode===document.head,'live title identity');
+  prior.push(text);mark('fresh',color);
+  check(branch.parentNode===null&&branch.childNodes.length===2&&oldText.parentNode===branch&&oldComment.parentNode===branch,'old subtree retained');
+  units(oldText.data,[111,108,100,55296]);units(oldComment.data,[56320]);mark('retained',color);
+  check(descriptor.get.call(document)===value&&Object.getOwnPropertyDescriptor(document,'title')===undefined,'saved accessor and no own title');
+  mark('descriptor',color);
+  statusText.nodeValue=phase===0?'L\uD800':phase===1?'B\uDC00':'P\uD800';
+  units(statusText.data,phase===0?[76,55296]:phase===1?[66,56320]:[80,55296]);
+  check(status.firstChild===statusText&&status.childNodes.length===1,'stable visible Text');mark('visible',color);
+  document.body.className=phase===0?'ready':phase===1?'empty':'long';
+}
+button.onclick=function(){check(this===button,'original click receiver');phase++;apply();};
+apply();
+</script>

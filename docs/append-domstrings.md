@@ -121,9 +121,11 @@ preserve the same exact live and detached data through unchanged `ERWA` transpor
 Earlier [producer](dom-production.md), [Node accessor](node-data.md) and
 [checked-append](document-append.md) reports remain records of their own
 checkpoints. This increment does not implement `prepend`, `replaceChildren`,
-exact attribute or remaining `innerText`/title/textarea writes, the dirty
+exact attribute or remaining `innerText`/textarea writes, the dirty
 textarea model, complete mutation/custom-element reactions, cross-document
-adoption or full DOM compatibility.
+adoption or full DOM compatibility. A later [Document.title increment](document-title.md)
+adds ordinary exact title accessors and normalized reads; it does not alter the
+append checkpoint measurements above.
 
 Normative references: [converting nodes into a node](https://dom.spec.whatwg.org/#converting-nodes-into-a-node),
 [ParentNode.append](https://dom.spec.whatwg.org/#dom-parentnode-append),

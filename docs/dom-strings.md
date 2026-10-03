@@ -12,8 +12,9 @@ and PI construction, the PI/text factories, the data setter and five
 CharacterData methods. [Node data accessors](node-data.md) additionally preserve
 units through ordinary `nodeValue`/`textContent` and checked container replacement.
 [Exact append strings](append-domstrings.md) also preserve separate string
-arguments and completed failure prefixes. Other legacy writers, including
-`innerText`, title/textarea setters and attributes, can still replace unmatched
+arguments and completed failure prefixes. [Document.title](document-title.md)
+adds exact raw writes and normalized reads through ordinary accessors. Other
+legacy writers, including `innerText`, textarea setters and attributes, can still replace unmatched
 units.
 The foundation release retained eight unmet CharacterData standards-success
 modes; their original sources and refusal records remain historical evidence.

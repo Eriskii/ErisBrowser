@@ -4547,3 +4547,54 @@ and reviews are retained in the [summary](evidence/append-domstrings.json) and
 General insertion allocation limits, remaining scalar writers and full DOM
 reactions/interfaces remain open. No new GPU timing, Chromium comparison or
 production-security claim accompanies this change.
+
+
+### Ordinary exact Document.title
+
+[Document.title](document-title.md) now has ordinary configurable/enumerable
+prototype accessors. Exact UTF-16 direct-Text reads strip/collapse only ASCII
+whitespace, with HTML tree-order or direct SVG selection. Raw writes perform
+DOMString conversion before current-tree selection and preserve staged creation,
+insertion and later replacement effects under resource refusal. Host metadata
+projects the same normalized units, retains URL fallback and caps worker titles
+at 512 Unicode scalars. Author quotas, reset points and transport are unchanged.
+
+The sixteen-path final source passes **1,672 default Rust 1.88 tests** and
+**1,795 Vulkan-feature Rust 1.98 tests**, with zero failures or ignored tests.
+Strict all-target Clippy passes for Vulkan rasterization and the Rust 1.88
+presenter; formatting passes. Thirty-five groups were added: 12 independent
+case bodies in both modes, 21 other private groups, and two Page/worker tests.
+Final passing focused commands contain 82 executions of 78 unique tests.
+
+The first compile caught an ambiguous empty-array assertion; an equivalent
+is_empty assertion fixed its type. The initial bootstrap filter retained 22
+passes and two stale descriptive-count failures. After a successful measurement,
+three work/object count literals were updated. Strict Clippy then requested a
+nested-conditional rewrite; a let-chain preserves
+the same short-circuit order and budget/error behavior. Both full suites were
+rechecked on that final source. Original source, failures, formatting-edition mistakes,
+pre-execution depth correction and all retries remain retained.
+
+Raw bootstrap is 6,280 remaining work units, 1,804,200 charged bytes, 679 objects
+and capacity, 321 native entries and 25 legacy prototypes. Title installation adds
+360 work units, including its two accessor bags and subsequent property-insertion
+costs; no budget increased.
+
+The final release preserves complete rows for all 4,138 established case modes
+and 404 controls. The 24 new ordinary-success title modes advance from 4 to 24;
+the 16 controls advance from 12 to 16. There are 20 case gains and four
+title-dependent control gains, with no losses, other changes or input drift.
+Sources and expectations remain frozen. A compact three-phase browser witness
+checks exact storage and identities, retained old subtrees, full Page title versus
+worker scalar truncation, matching text draw commands, and full-canvas literal
+glyph references with six colored squares.
+
+The [summary](evidence/document-title.json) and
+[verified archive](evidence/document-title.tar.gz) bind all sources, commands,
+raw reports, reviews, measured bootstrap and release fingerprints.
+The [preceding append CI receipt](evidence/append-domstrings-ci.json) records
+all nine jobs passing for `7765fbf`. It is separate from title validation.
+
+Existing B-tree/URL allocation qualifications, incomplete reactions, Document
+ownership, XML parsing and remaining interfaces still apply. This is not a
+production-security certification or a new GPU/Chromium performance measurement.

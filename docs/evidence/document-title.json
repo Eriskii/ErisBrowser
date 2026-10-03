@@ -1,0 +1,305 @@
+{
+  "kind": "Ordinary exact Document.title accessors",
+  "base_commit": "7765fbf8f44c3dea96b6a09316ea352f59a2a57d",
+  "scope": "Ordinary Document.title accessors preserve exact UTF-16, share normalized direct-Text selection with host presentation, handle HTML/SVG roots, and retain staged title creation/insertion effects under refusal.",
+  "source": {
+    "base": "7765fbf8f44c3dea96b6a09316ea352f59a2a57d",
+    "files": [
+      {
+        "path": "src/dom.rs",
+        "bytes": 404666,
+        "sha256": "e107a386350500e8565211b58ae0ebd4e4bafa3386ac4eaa3c221c88b40e8bae"
+      },
+      {
+        "path": "src/dom/text_replacement.rs",
+        "bytes": 32223,
+        "sha256": "8036bb0203fbdd67e143fdf435583aef661ee2b92c0edaed72d6d619335ead53"
+      },
+      {
+        "path": "src/dom/title.rs",
+        "bytes": 39066,
+        "sha256": "decf13ae47dbe28f1126ec206d120a24670faeb5224aacc573f4b38eb3bc1184"
+      },
+      {
+        "path": "src/script.rs",
+        "bytes": 906289,
+        "sha256": "fa0170bb6e1ebdd9a3c984f3de56e12e5897d441c68b2b0bfdcb9e04a54cd736"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15507,
+        "sha256": "0660b80b353e400bdf5b9ba18543350eb43190d4becac652158fb0a16e2573b7"
+      },
+      {
+        "path": "src/script/document_title.rs",
+        "bytes": 6322,
+        "sha256": "b59a66aedb22cea98b8098a3c02666084dda6c0421405d79a2f76fb6e64761c4"
+      },
+      {
+        "path": "src/script/document_title/tests.rs",
+        "bytes": 16357,
+        "sha256": "4af39a1191bc357d279ebda69bf8a41c02e655d3bf05546493930a18d7ca34be"
+      },
+      {
+        "path": "src/script/dom_bindings/identity_tests.rs",
+        "bytes": 35727,
+        "sha256": "a0075ca4447d983c13c67d9ae3068e0b95b124f7b738ea585db3aef90a04a7e2"
+      },
+      {
+        "path": "src/script/dom_own_properties.rs",
+        "bytes": 23670,
+        "sha256": "86a7b66949e7e542c058a455f52cfbdb82f029e82b01ea0d36cb4571678496de"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 31327,
+        "sha256": "ff58aaf7bf6317736f9b6d5fc8b61771d214492db87b67232bfb02dd6eaa680e"
+      },
+      {
+        "path": "src/script/machine/calls.rs",
+        "bytes": 33217,
+        "sha256": "0d417d83433aa5aaccecdd63063b87e662bb3d0e6684fc23904f0cb79f0384f4"
+      },
+      {
+        "path": "tests/fixtures/document-title.html",
+        "bytes": 4368,
+        "sha256": "b690a43de5dc7d176c7f3dd2173a174dc2be2806baba0cf9fd165658cf526d9a"
+      },
+      {
+        "path": "tests/fixtures/document-title.js",
+        "bytes": 15457,
+        "sha256": "9be504456e25a2ae87dd3ff8239a5dab4bb7f682d86478e1857f4e585182121c"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 59430,
+        "sha256": "c62808834fd50a060668f2431ec0c6e528e00ea0cde2fdbbd21dc2586740cd84"
+      },
+      {
+        "path": "tests/support/document_title.rs",
+        "bytes": 6471,
+        "sha256": "02d64c0d78a5d97024deca8898d07660ac6e2f495aec8c00867282fa799c1b58"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 96113,
+        "sha256": "0e448405b166998a3b0e4916a0aef4a13d325fded707ae9031ead63fcd616330"
+      }
+    ],
+    "post_integration_corrections": [
+      "clippy-correction/receipt.json"
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-document-title-1/eris-js",
+    "sha256": "24cdea483ce41791232c9a6411b4773263e98ee878321695d303db49f86d9659",
+    "bytes": 3678936,
+    "source_manifest_sha256": "7dccfa9009acc50947e0ad186ed66f4697d792c6c435cc07739b6ac09be5f918",
+    "build_receipt": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "full-default-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 21.726,
+      "log": "full-default-188-2.log",
+      "sha256": "54a7c8a1b77387162b35b924c8ccf6044b78d961acd7906915c27d3e8c0f8ff8"
+    },
+    "full-native-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 15.701,
+      "log": "full-native-198-2.log",
+      "sha256": "468a18a19b85b19e804834a1f65f9c099f461dfb33cf6c6e14574a5909b9afed"
+    },
+    "clippy-native-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.57,
+      "log": "clippy-native-198-2.log",
+      "sha256": "797f8d5035c17ada8306e921c92aab3495699b4c1492a65c4410ca31830a085b"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 9.477,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "287412f93b035cdcae5834355c95112113d31feddc0ce42081a29c9bb524e951"
+    },
+    "format-198-final-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9121540740597993,
+      "log": "format-198-final-2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 36.696,
+      "log": "release-adapter-188-1.log",
+      "sha256": "6c87482e447d980107432ced4f62c00bc33a766f4419312cf5d88eb6142ca79a"
+    }
+  },
+  "tests": {
+    "default": 1672,
+    "native": 1795,
+    "new_groups": 35,
+    "final_passing_focused_commands_unique": 78,
+    "final_passing_focused_commands_executions": 82,
+    "initial_failed_bootstrap_command": {
+      "passed": 22,
+      "failed": 2
+    },
+    "final_failed": 0,
+    "final_ignored": 0,
+    "all_build_and_test_commands_passed_first_attempt": false
+  },
+  "raw_bootstrap": {
+    "steps_remaining": 6280,
+    "allocated_bytes": 1804200,
+    "objects": 679,
+    "object_capacity": 679,
+    "native_registry": 321,
+    "legacy_prototypes": 25
+  },
+  "compatibility": {
+    "path": "title-comparison.json",
+    "sha256": "0d9fef4b9484b09cee9cf729c9e1fe7f1dae84a126ca8c1d390a3742520a9f8a",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4138,
+          "after_total": 4138,
+          "before_healthy": 4052,
+          "after_healthy": 4052,
+          "unchanged": 4138,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 404,
+          "after_total": 404,
+          "before_healthy": 404,
+          "after_healthy": 404,
+          "unchanged": 404,
+          "gains": 0,
+          "losses": 0,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 24,
+          "after_total": 24,
+          "before_healthy": 4,
+          "after_healthy": 24,
+          "unchanged": 4,
+          "gains": 20,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 16,
+          "after_total": 16,
+          "before_healthy": 12,
+          "after_healthy": 16,
+          "unchanged": 12,
+          "gains": 4,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    }
+  },
+  "retained_preparation_history": [
+    "Before execution, source review corrected the Document-frame depth accounting to retain accepted edge depth 256. Host ceiling proof includes empty Text per-entry work.",
+    "Standalone formatting initially used edition 2021 and rejected existing 2024 let-chains; corrected edition passed.",
+    "First compile failed only on an ambiguous empty-array assertion; equivalent is_empty assertion corrected its type without changing expected behavior or production.",
+    "First bootstrap filter retained 22 passes and two stale-description failures. Three measured work/object-count literals were updated only after raw bootstrap measurement; no allowance/reset/admission changes.",
+    "All independent 24 ordinary case modes and 16 controls remain byte-bound to their baseline inputs. The only later production source rewrite collapsed nested title-selection conditions into a let-chain for strict Clippy; evaluation, budget and error ordering remained identical. Original source and failed lint log retained; both full suites rechecked final source."
+  ],
+  "boundaries": [
+    "Existing Node replacement BTree/URL/encoding/IDNA and process-OOM limitations remain.",
+    "Legacy innerText/textarea setters, exact attributes, parser/scalar-source boundaries and dirty textarea state remain separate work.",
+    "Complete mutation reactions, independent document ownership, XML parsing and remaining DOM interfaces are incomplete.",
+    "Two original PI host-prototype mutation expectations remain unmet.",
+    "No new GPU performance or Chromium comparison. Full web compatibility and production security are not achieved."
+  ],
+  "archive": {
+    "path": "document-title.tar.gz",
+    "bytes": 2960639,
+    "sha256": "6d8a4bda450c46fcc02495f82e968150998653513448d77df8ad2ff40cdc4cfa",
+    "files": 311,
+    "manifest_verified": true
+  }
+}
