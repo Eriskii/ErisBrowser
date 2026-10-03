@@ -792,3 +792,27 @@ no legacy fallback. Metadata admission adds one cached getter and retains both
 constant-map guards. No quotas, reset sites, worker authority or wire formats
 change. This remains bounded subset validation, with the existing physical
 allocation limitations; it does not establish production security.
+
+The [ordinary Node position increment](node-position.md) authenticates the
+receiver before its required nonnullable Node argument, without authored coercion
+or public-property tree lookup. Its body holds immutable DOM access,
+validates each distinct operand's complete ordinary ancestry, and pays for depth
+alignment and a full selected-sibling scan before returning a mask. It owns no
+traversal or payload allocation; generic invocation, native-name copying,
+initialization and diagnostics keep their separate charges and inherited
+infallible-allocation boundaries. Body allocation scope is not a claim that the
+entire call is allocation-free or that process OOM is recoverable.
+
+The same-ID shortcut checks reached local shape and canonical Document
+identity, without validating unvisited ancestry. The 256-edge endpoint and
+checked work arithmetic remain; wide reached sibling lists can exhaust work at
+shallow depth. Disconnected direction uses original canonical operand IDs within
+the current retained append-only arena, not pointers or arbitrary cross-document
+ownership. Argument expressions can mutate or throw before invocation; completed
+effects and consumed work remain after refusal. No authored callback or DOM
+mutation occurs inside the comparison body. Quotas, reset points, worker authority
+and ERWA/EWB1 formats are unchanged. Private exact/one-short and terminal-refusal
+checks, both full suites and the independent result audit pass. Measured bootstrap
+adds 693 logical work units and 3,412 charged bytes; these are not physical memory
+or timing measurements. This remains bounded subset validation, without a
+whole-graph, production-security or performance guarantee.

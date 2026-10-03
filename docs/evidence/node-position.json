@@ -1,0 +1,1059 @@
+{
+  "kind": "Represented ordinary Node document position",
+  "base_commit": "53859161acf081bac70ee4c0e0daf000abe9088b",
+  "scope": "Ordinary cached Node.prototype.compareDocumentPosition with required nonnullable authentic Node conversion, paid current ordinary-tree order and deterministic original-operand-ID order for disconnected nodes.",
+  "source": {
+    "base": "53859161acf081bac70ee4c0e0daf000abe9088b",
+    "files": [
+      {
+        "path": "src/script.rs",
+        "bytes": 906609,
+        "sha256": "1c1a9cd4369c1883717d71458bd20cf3e36fef5b077deea5030cba1e383e1e42"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15507,
+        "sha256": "0d3f0adf1e62539589f6313961b6d8894b0037884521e3b2d506107c79c991a4"
+      },
+      {
+        "path": "src/script/dom_bindings/identity_tests.rs",
+        "bytes": 35727,
+        "sha256": "dc95b1a1318e31653f8b2f3b25c0d64774e30cb9ff0aae935e4b1556ed656af9"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 31702,
+        "sha256": "a6ee5d258a0def4710dd9d5b69503bb9f6869f6b26ba94ba9e4bdbc02679dc31"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants.rs",
+        "bytes": 8950,
+        "sha256": "fcea65339a5133b327afa6c3524d4180c2db884c87950cd82807ab6736e3ede3"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants/tests.rs",
+        "bytes": 22236,
+        "sha256": "a355d64bc2092ec502f33b1cd113a88da2c4e9604b39198048fc55305ce7e866"
+      },
+      {
+        "path": "src/script/node_connected/tests.rs",
+        "bytes": 21487,
+        "sha256": "953386721f19dfca1840cdc0f406c21e225f04163e5a108d137f776c2a191378"
+      },
+      {
+        "path": "src/script/node_data.rs",
+        "bytes": 9241,
+        "sha256": "d419647f34a78e50eb56f384607aaaf0d3f8e37a2a2c27c1adc4c026904ec8e9"
+      },
+      {
+        "path": "src/script/node_data/tests.rs",
+        "bytes": 18713,
+        "sha256": "545f6197118ea395b0c56d621295726b21c7c008c31d48e29b322ea31e1e3ae8"
+      },
+      {
+        "path": "src/script/node_equality/tests.rs",
+        "bytes": 31866,
+        "sha256": "cc0d05b9cebd62e2785e381f4da50b8ebcccdc1cd74746fc0655f5ff1855617f"
+      },
+      {
+        "path": "src/script/node_normalize/tests.rs",
+        "bytes": 26899,
+        "sha256": "4ad7a25829092b079ed135b9b7c39ba2c89a3c80911f9e639ec36391d753eaf8"
+      },
+      {
+        "path": "src/script/node_position.rs",
+        "bytes": 6348,
+        "sha256": "dc8600d13c4adf8b06cbc2f26c9ed7e7f2d3019eba3f3b7fc0ee0a22f6b83cf1"
+      },
+      {
+        "path": "src/script/node_position/tests.rs",
+        "bytes": 32813,
+        "sha256": "eb7de5ecf920aad1232d9c8d17b682f31cb6f465d1b6135c9b4f1675a70f6338"
+      },
+      {
+        "path": "src/script/node_predicates.rs",
+        "bytes": 5525,
+        "sha256": "6f600e052ff5563e2e06c098394f9a0f50a0ed840c6812bc2bad688026d25bc2"
+      },
+      {
+        "path": "src/script/node_predicates/tests.rs",
+        "bytes": 23015,
+        "sha256": "d1af1d3d4ac919e1e46cfdba3989aae46fb3547a1a55ad523cc2eeab35224e34"
+      },
+      {
+        "path": "src/script/node_root/tests.rs",
+        "bytes": 24157,
+        "sha256": "27978aebaa291a2f65f5ffe6c3dcdcabe466cf332211cefed4895b2edd727f51"
+      },
+      {
+        "path": "tests/fixtures/node-position.html",
+        "bytes": 4456,
+        "sha256": "2b6fcca35412a1b93a79bbad8af946d25b7a3c0f91b645908f75f5bdf5b4faf3"
+      },
+      {
+        "path": "tests/fixtures/node-position.js",
+        "bytes": 21673,
+        "sha256": "97855d380d9a18edbef4fd0c317ac5430265d78d07f9adeb5511542fcbb84575"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 66039,
+        "sha256": "92117ec03b65e3e106d45874f6424fd8348387722cf4f6a82759295e95349205"
+      },
+      {
+        "path": "tests/support/node_position.rs",
+        "bytes": 8408,
+        "sha256": "c4e5dadc917d84b4ef9a36fc955bdb65d119423c43a25a44e5c283a279d752ee"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 106881,
+        "sha256": "862238590c6ddcb325259e28885fbafa390489d8abbb9e0126400d2bc0fdebf8"
+      }
+    ]
+  },
+  "release": {
+    "path": "/tmp/eris-node-position-1/eris-js",
+    "sha256": "f0b249ba7a726e943685315c95bb55b5ba8ca5e3add50051e1c6553bbcbb7007",
+    "bytes": 3793624,
+    "source_manifest": "candidate-source-final.json",
+    "source_manifest_sha256": "c6d4423dadf42a2812b69717fa86bb4ddae0543c9dd1b1caa092151b6c8f5377",
+    "build_receipt": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "position-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_position",
+        "--",
+        "--include-ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.108,
+      "log": "position-188-1.log",
+      "sha256": "002896f6f6e3364e478de76154748fdd115351dee82b4d822dbe2e2314079ee0"
+    },
+    "bootstrap-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "bootstrap",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.038,
+      "log": "bootstrap-188-1.log",
+      "sha256": "5c9d87b76e4234aea4634ece393fb7d6a7ee1cbacbde9d3949b650621812b85e"
+    },
+    "constants-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_constant",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.399,
+      "log": "constants-188-1.log",
+      "sha256": "9f6f302a9d82bd28c44e0174c0b5b6e0e01ad514223125e15899a3a49471483b"
+    },
+    "node-data-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_data",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.591,
+      "log": "node-data-188-1.log",
+      "sha256": "c71777acec9ae173fae81ccfffc0eee60614591b8b1b89ee3b6aef460c33a0cb"
+    },
+    "normalize-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_normalize",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.509,
+      "log": "normalize-188-1.log",
+      "sha256": "3b64f881bcfc6a24db7526da1c83ead3870ae5f5364b7a6aa319233a4b5f189e"
+    },
+    "predicates-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_predicates",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.468,
+      "log": "predicates-188-1.log",
+      "sha256": "410bccf61425b85424bb8d4ef28b7d244a1a39093f9794a4b1757f78422c4432"
+    },
+    "root-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_root",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.511,
+      "log": "root-188-1.log",
+      "sha256": "ae7d440b8d16b8c84fbb571a5b4406def58e740d067a835853d2b5b5e93e4673"
+    },
+    "equality-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_equality",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.455,
+      "log": "equality-188-1.log",
+      "sha256": "e926e7b6acf35f0574249fb4be2e87e8b4e034f45276e1da93146405131d7088"
+    },
+    "connected-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_connected",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.465,
+      "log": "connected-188-1.log",
+      "sha256": "84ea44e99fad435ca238de5c39325d4f69fe353a11d621f5533412ab929dcbfd"
+    },
+    "full-default-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 23.325,
+      "log": "full-default-188-1.log",
+      "sha256": "7205bf3dafc32166d9b5372c6813c9a7ac94e0daacfc5ab8fe746dee4214f201"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 38.38,
+      "log": "full-native-198-1.log",
+      "sha256": "7a8e604cf7c5629b73cc35c34c9eb52f7106d73abc2287e41d501d0852d961f8"
+    },
+    "compile-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--no-run"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 21.653,
+      "log": "compile-188-1.log",
+      "sha256": "55ef32942ff0bad614b405bbe56d720ae8ebbca810542f883940d0ef94ae4429"
+    },
+    "format-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9932071301154792,
+      "log": "format-198-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 7.598,
+      "log": "clippy-native-198-1.log",
+      "sha256": "375fb8c722a3ae357a11b4e8571c494c316e8eb89dd14372881c50c19a0510a2"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 11.549,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "900af27015f341118a3b36739d5ea204920ecf28141dc281b55737a1f7254292"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 37.979,
+      "log": "release-adapter-188-1.log",
+      "sha256": "2d2a3c841fa3cc804fba4d83500e6dfb885f873ff9f1d7e51dc5700467930c31"
+    }
+  },
+  "tests": {
+    "default": 1938,
+    "native": 2061,
+    "new_groups": 35,
+    "independent_groups": 16,
+    "private_groups": 17,
+    "browser_groups": 2,
+    "independent_modes": 32,
+    "focused": {
+      "status": "allnine focusedcommands passed firstattempt",
+      "commands": [
+        {
+          "label": "position",
+          "passed": 35,
+          "log": "position-188-1.log",
+          "sha256": "002896f6f6e3364e478de76154748fdd115351dee82b4d822dbe2e2314079ee0"
+        },
+        {
+          "label": "bootstrap",
+          "passed": 32,
+          "log": "bootstrap-188-1.log",
+          "sha256": "5c9d87b76e4234aea4634ece393fb7d6a7ee1cbacbde9d3949b650621812b85e"
+        },
+        {
+          "label": "constants",
+          "passed": 17,
+          "log": "constants-188-1.log",
+          "sha256": "9f6f302a9d82bd28c44e0174c0b5b6e0e01ad514223125e15899a3a49471483b"
+        },
+        {
+          "label": "node-data",
+          "passed": 34,
+          "log": "node-data-188-1.log",
+          "sha256": "c71777acec9ae173fae81ccfffc0eee60614591b8b1b89ee3b6aef460c33a0cb"
+        },
+        {
+          "label": "normalize",
+          "passed": 40,
+          "log": "normalize-188-1.log",
+          "sha256": "3b64f881bcfc6a24db7526da1c83ead3870ae5f5364b7a6aa319233a4b5f189e"
+        },
+        {
+          "label": "predicates",
+          "passed": 30,
+          "log": "predicates-188-1.log",
+          "sha256": "410bccf61425b85424bb8d4ef28b7d244a1a39093f9794a4b1757f78422c4432"
+        },
+        {
+          "label": "root",
+          "passed": 32,
+          "log": "root-188-1.log",
+          "sha256": "ae7d440b8d16b8c84fbb571a5b4406def58e740d067a835853d2b5b5e93e4673"
+        },
+        {
+          "label": "equality",
+          "passed": 36,
+          "log": "equality-188-1.log",
+          "sha256": "e926e7b6acf35f0574249fb4be2e87e8b4e034f45276e1da93146405131d7088"
+        },
+        {
+          "label": "connected",
+          "passed": 30,
+          "log": "connected-188-1.log",
+          "sha256": "84ea44e99fad435ca238de5c39325d4f69fe353a11d621f5533412ab929dcbfd"
+        }
+      ],
+      "passed_observations": 286,
+      "unique_names": 278,
+      "failed_observations": 0,
+      "new_groups": 35,
+      "bootstrap": {
+        "steps": 6599,
+        "allocated": 1768914,
+        "objects": 689,
+        "capacity": 689,
+        "native": 321,
+        "prototypes": 25
+      },
+      "note": "Only three measured descriptive bootstrap literals changed after successfulnewtest; no failingbootstraprun and no productionchanges."
+    },
+    "final_failed": 0,
+    "final_ignored": 0,
+    "validation_commands": 16,
+    "all_commands_passed_first_attempt": true,
+    "full_test_threads": 4
+  },
+  "accounting": {
+    "remaining_bootstrap_work": 6599,
+    "allocated_bytes": 1768914,
+    "objects": 689,
+    "object_capacity": 689,
+    "native_entries": 321,
+    "legacy_prototype_entries": 25,
+    "additional_work": 693,
+    "additional_charged_bytes": 3412,
+    "additional_objects": 1,
+    "scoped_native_work": 60,
+    "scoped_native_bytes": 64,
+    "self_body_work": 66,
+    "detached_body_work": 118,
+    "disconnected_body": "118 + 29D + 4S",
+    "ancestor_body": "130 + 29D + 4S + 10A",
+    "divergent_body": "143 + 29D + 4S + 10A + 20J + 6L",
+    "variables": "D and S are summed over both complete paths; S counts scanned sibling slots; A is depth difference; J is paired ascent rounds; L is the selected common-parent child count.",
+    "six_measured_geometry_body_work": [
+      118,
+      249,
+      11138,
+      17003,
+      17014,
+      22179
+    ],
+    "prototype_map_entries": 29,
+    "prototype_preconstant_entries": 11,
+    "prototype_order_capacity": 30,
+    "prototype_bulk_typed_nodes": 4,
+    "batch_work": 10124,
+    "bootstrap_work_limit": 100000,
+    "author_work_limit": 100000,
+    "cumulative_heap_limit": 8388608,
+    "numeric_limits_and_resets_changed": false
+  },
+  "compatibility": {
+    "path": "position-comparison.json",
+    "sha256": "21ce19c22ba3a32b9c9ba5e6aa38be2328f67a66524503652a0a7ef210b93588",
+    "summary": {
+      "established": {
+        "cases": {
+          "before_total": 4364,
+          "after_total": 4364,
+          "before_healthy": 4268,
+          "after_healthy": 4266,
+          "unchanged": 4362,
+          "gains": 0,
+          "losses": 2,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 524,
+          "after_total": 524,
+          "before_healthy": 504,
+          "after_healthy": 500,
+          "unchanged": 520,
+          "gains": 0,
+          "losses": 4,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 32,
+          "after_total": 32,
+          "before_healthy": 0,
+          "after_healthy": 32,
+          "unchanged": 0,
+          "gains": 32,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 16,
+          "after_total": 16,
+          "before_healthy": 4,
+          "after_healthy": 16,
+          "unchanged": 4,
+          "gains": 12,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    },
+    "replay_profiles": 20,
+    "replay_nonzero_commands": 6,
+    "aggregate_exit": 1,
+    "older_unhealthy_rows_unchanged": 30,
+    "inventory_classification": {
+      "path": "inventory-classification.json",
+      "sha256": "ef022e1b2c569f743873c00f33ddc67f27500b3b48154433d1f6005f220fea72",
+      "report": {
+        "classification": "Six connected inventory assumptions are invalidated by compareDocumentPosition. Older Nodeconstant, Normalize, Predicate, root and equality inventory failures remain unchanged. Raw losses and unhealthy controls retain their health; no waiver.",
+        "policy_sha256": "94c6769ad8b31eaf5c8e1aa36542e65634ff4f93da74f1f1650a213ca1de8496",
+        "comparison_sha256": "21ce19c22ba3a32b9c9ba5e6aa38be2328f67a66524503652a0a7ef210b93588",
+        "classifier_sha256": "366ff6bbeb9f830c9448aefc7f5af425a1b53a870962181b0c010311f19849e2",
+        "expected_case_losses": 2,
+        "expected_unhealthy_controls": 4,
+        "unexpected_established_changes": 0,
+        "new_cases_healthy": 32,
+        "new_controls_healthy": 16,
+        "changes": [
+          {
+            "profile": "node-connected",
+            "kind": "cases",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented_complete_key_order#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "represented_complete_key_order#sloppy",
+                "file": "node-connected.js",
+                "mode": "sloppy",
+                "case_sha256": "ee9a535256df1cd6bd9b7725e1f4595e4b8ae5c68808a78b59fae028a5ced0f5",
+                "source_sha256": "ad0ce11c5d98d5ee7730c136bdb5ddb33df0b08459549510e53c8b58aa220115",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": true
+              },
+              "after": {
+                "id": "represented_complete_key_order#sloppy",
+                "file": "node-connected.js",
+                "mode": "sloppy",
+                "case_sha256": "ee9a535256df1cd6bd9b7725e1f4595e4b8ae5c68808a78b59fae028a5ced0f5",
+                "source_sha256": "ad0ce11c5d98d5ee7730c136bdb5ddb33df0b08459549510e53c8b58aa220115",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": false
+              }
+            }
+          },
+          {
+            "profile": "node-connected",
+            "kind": "cases",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented_complete_key_order#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "represented_complete_key_order#strict",
+                "file": "node-connected.js",
+                "mode": "strict",
+                "case_sha256": "acce352432df07d6c1ab2594c37db95f61b9abde47368a1d859599dce0519409",
+                "source_sha256": "1e8e448d88e634c27d90f0bf2c1d76859fdcef8740470614c92f343241acfef3",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": true
+              },
+              "after": {
+                "id": "represented_complete_key_order#strict",
+                "file": "node-connected.js",
+                "mode": "strict",
+                "case_sha256": "acce352432df07d6c1ab2594c37db95f61b9abde47368a1d859599dce0519409",
+                "source_sha256": "1e8e448d88e634c27d90f0bf2c1d76859fdcef8740470614c92f343241acfef3",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "case",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "matches_expectation": false
+              }
+            }
+          },
+          {
+            "profile": "node-connected",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-positive#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-positive#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "e738301b5599bfb093cdd485122f8751ede286d97919a52675bb7f97357218d2",
+                "source_sha256": "ba3867eec15c4846c8ecfb33639d9267134048b3833bced14c6c0289c5843d8a",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-positive#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "e738301b5599bfb093cdd485122f8751ede286d97919a52675bb7f97357218d2",
+                "source_sha256": "ba3867eec15c4846c8ecfb33639d9267134048b3833bced14c6c0289c5843d8a",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-connected",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-positive#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-positive#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "f8b89053ced3b739ccb7e30b57b765821f55ee85bd3b3a956f5945ca11692e47",
+                "source_sha256": "ba3867eec15c4846c8ecfb33639d9267134048b3833bced14c6c0289c5843d8a",
+                "expected_negative": null,
+                "status": "passed",
+                "observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": "",
+                  "message": "",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-positive#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "f8b89053ced3b739ccb7e30b57b765821f55ee85bd3b3a956f5945ca11692e47",
+                "source_sha256": "ba3867eec15c4846c8ecfb33639d9267134048b3833bced14c6c0289c5843d8a",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "complete",
+                  "phase": "runtime",
+                  "error_type": "",
+                  "error_identity": ""
+                },
+                "pair": "represented-node-order",
+                "positive": true,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-connected",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-wrong#sloppy",
+              "mode": "sloppy",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-wrong#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "37cc12d17782357a37a3857784d87caadb5af7fe37d93530ed5850b3562a1a77",
+                "source_sha256": "86f33cabce954b3949a9b1990a8a948ac12f0dccb48d001cff48399427eb254f",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-wrong#sloppy",
+                "file": "controls",
+                "mode": "sloppy",
+                "case_sha256": "37cc12d17782357a37a3857784d87caadb5af7fe37d93530ed5850b3562a1a77",
+                "source_sha256": "86f33cabce954b3949a9b1990a8a948ac12f0dccb48d001cff48399427eb254f",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#sloppy",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          },
+          {
+            "profile": "node-connected",
+            "kind": "controls",
+            "classification": "anticipated historical represented-inventory loss",
+            "raw_change": {
+              "id": "represented-node-order-wrong#strict",
+              "mode": "strict",
+              "classification": "losses",
+              "before": {
+                "id": "represented-node-order-wrong#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "3fd4fae31e32b977bc4682889059a1e62dcd04136b86c5084edad84abf776284",
+                "source_sha256": "86f33cabce954b3949a9b1990a8a948ac12f0dccb48d001cff48399427eb254f",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": true,
+                "positive_partner_matches": true,
+                "verified": true
+              },
+              "after": {
+                "id": "represented-node-order-wrong#strict",
+                "file": "controls",
+                "mode": "strict",
+                "case_sha256": "3fd4fae31e32b977bc4682889059a1e62dcd04136b86c5084edad84abf776284",
+                "source_sha256": "86f33cabce954b3949a9b1990a8a948ac12f0dccb48d001cff48399427eb254f",
+                "expected_negative": null,
+                "status": "failed",
+                "observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "TypeError",
+                  "error_identity": "TypeError",
+                  "message": "uncaught exception: [object Object]",
+                  "harness": ""
+                },
+                "kind": "control",
+                "expected_observation": {
+                  "status": "exception",
+                  "phase": "runtime",
+                  "error_type": "Error",
+                  "error_identity": "Error"
+                },
+                "pair": "represented-node-order",
+                "positive": false,
+                "area": "feature",
+                "partner": "represented-node-order-positive#strict",
+                "matches_expectation": false,
+                "positive_partner_matches": false,
+                "verified": false
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "independent_audit": {
+    "path": "independent-results-review.json",
+    "sha256": "bdb9c7ab31c89572627108ffa2c9d28abb8ca4705e80e9774f7d547b6ad69abc",
+    "original_path": "audit-results-1.json",
+    "bound_inputs": 378,
+    "status": "clear",
+    "complete_attempts": 1,
+    "failed_complete_attempts": 0
+  },
+  "retained_history": [
+    "The sole published-base baseline preceded implementation: 0/32 new ordinary cases and 4/16 healthy controls, with missing-method TypeError outcomes and no binding drift.",
+    "Initial compilation and all 35 new groups passed. Successful measurement preceded three descriptive snapshot literal updates in two files. All 19 initially held source paths remain exact in the final 21-path source; no failing bootstrap attempt or production correction occurred.",
+    "All 16 local validation commands passed on their first attempts, including both full suites with ignored tests and four test threads. Nine focused commands contain 286 passing observations and 278 unique test names.",
+    "Before any complete data-only audit, its source was corrected to read the actual focused-summary field names and per-command log schema. The original reader, hold and exact source-only correction remain retained; Runtime code, test expectations and raw outcomes did not change.",
+    "The first complete data-only audit passed with 378 bound inputs. No failed complete-audit attempt is part of this checkpoint.",
+    "Six historical inventory profile commands and the aggregate retain exit 1. Thirty older unhealthy inventory rows remain unchanged. Two connected inventory cases newly fail with Error, and four connected controls are unhealthy TypeError observations; no health waiver or all-history-healthy claim applies.",
+    "Six frozen historical JavaScript fixtures remain byte-exact. Private historical inventory wrappers use disposable realms and explicitly remove and restore newer configurable descriptors; the new independent fixture asserts the current 30-key prototype inventory.",
+    "Preceding connected commit 53859161 has nine successful GitHub CI jobs. That evidence is separate from current candidate local validation."
+  ],
+  "tested_boundaries": [
+    "Required nonnullable argument and authentic receiver ordering; canonical Document aliases; no authored coercion; argument-expression effects and throws occur before the read.",
+    "Two literal 8-by-8 matrices cover all 128 ordered comparisons before and after reordering a mixed-depth tree. Six geometry witnesses cover both directions, exact work and one-short refusal, including accepted 256-edge snapshots and a separately added 257th ordinary parent edge.",
+    "Malformed reached shape, backlinks, duplicate selected-child membership, endpoint and intermediate false canonical roots, and bounded cycles refuse explicitly on either complete walk. Same-ID local checks intentionally do not certify ancestors or off-path graph state.",
+    "Separate first-walk, second-walk and final-sibling-scan terminal refusals retain prior authored effects and suppress catch/finally completion. Ignored extra-expression exhaustion occurs before native invocation. Small representative calls exercise every work cut; deep cases use exact and one-short endpoints.",
+    "Saved native work/heap boundaries preserve metadata identity and execution cleanup; two live realms retain distinct cached metadata. Method body succeeds with exhausted owned-allocation allowance because it owns no traversal or payload storage.",
+    "Page and confined-worker real-click witnesses preserve 22 captured IDs and create no click-time nodes. They check literal masks, saved and ordinary calls, the fcop move trace, template separation, reordered text, title/status, command order and a full literal reference canvas."
+  ],
+  "boundaries": [
+    "No Attr, ShadowRoot, CDATA or independent document ownership support. Template content uses its ordinary fragment root, never its host association.",
+    "Disconnected 35/37 direction follows the original canonical operand IDs after both complete root walks. It is a deterministic represented policy, not a portable cross-browser ordering guarantee.",
+    "Reached-local validation is not a whole-arena graph validator. Wide sibling vectors can consume the unchanged work allowance; malformed or resource-heavy input is not promised successful traversal.",
+    "Zero owned method-body traversal/payload storage does not remove generic VM, native-name, exception or inherited allocator costs. Existing getRootNode, isConnected, equality and predicate body fees remain unchanged.",
+    "Logical accounting and functional validation do not establish a host performance gain, production-security guarantee or complete web compatibility."
+  ],
+  "archive": {
+    "path": "node-position.tar.gz",
+    "bytes": 4163412,
+    "sha256": "dc7ab0526625c646233935e45caff1a3f76ea9c00ead145f4557797f03250a61",
+    "files": 580,
+    "manifest_verified": true
+  }
+}

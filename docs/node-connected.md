@@ -90,7 +90,9 @@ expectations, both test corrections, complete logs, before/after release rows an
 an independent data-only result audit. Earlier holds and their additive audit or
 review-metadata corrections remain intact. The
 [preceding equality CI record](evidence/node-equality-ci.json) has nine successful
-jobs and is separate from this checkpoint's local validation.
+jobs and is separate from this checkpoint's local validation. The subsequent
+[connected CI record](evidence/node-connected-ci.json), for published commit
+`53859161`, also records nine successful jobs.
 
 The first independent result audit stopped at a stale preparation-manifest path
 after verifying source and test results. A reviewed reader-only correction binds

@@ -48,7 +48,6 @@ fn independent(name: &str) {
 macro_rules! cases {($($name:ident),* $(,)?)=>{$(#[test]fn $name(){independent(stringify!($name));})*};}
 cases!(
     metadata_and_cached_getter,
-    represented_complete_key_order,
     authentic_receiver_brand_without_properties,
     document_alias_and_connected_character_kinds,
     detached_leaves_branches_and_fragment_splicing,
@@ -64,6 +63,35 @@ cases!(
     prototype_replacement_deletion_and_saved_getter,
     authentic_alternate_prototype_retains_connection_brand,
 );
+
+#[test]
+fn prior_connection_inventory_after_removing_later_configurable_operation() {
+    // Descriptor restoration changes creation order; each realm is disposable.
+    // Keep the original fixture exact and let the new fixture check pristine order.
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        let source = format!(
+            r#"{CASES}
+        (function(){{
+          const saved=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
+          if(!saved||typeof saved.value!=='function'||!saved.writable||!saved.enumerable||!saved.configurable)
+            throw new Error('position descriptor');
+          try{{
+            if(!delete Node.prototype.compareDocumentPosition)throw new Error('position delete');
+            if(nodeConnectedCases.represented_complete_key_order({strict})!==true)throw new Error('prior connection inventory');
+          }}finally{{Object.defineProperty(Node.prototype,'compareDocumentPosition',saved);}}
+          const d=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
+          if(d.value!==saved.value||d.writable!==saved.writable||d.enumerable!==saved.enumerable||
+             d.configurable!==saved.configurable)throw new Error('position restoration');
+          return true;
+        }})()"#
+        );
+        assert_eq!(
+            evaluate(&mut runtime, &mut doc, &source, strict),
+            Value::Bool(true)
+        );
+    }
+}
 
 #[test]
 fn connected_bootstrap_reports_actual_admission() {

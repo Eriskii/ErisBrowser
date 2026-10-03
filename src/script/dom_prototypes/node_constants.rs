@@ -6,7 +6,7 @@ use super::*;
 mod tests;
 
 const COUNT: usize = 18;
-const PROTOTYPE_OLD: usize = 10;
+const PROTOTYPE_OLD: usize = 11;
 const CONSTRUCTOR_OLD: usize = 3;
 const PROTOTYPE_FINAL: usize = PROTOTYPE_OLD + COUNT;
 const CONSTRUCTOR_FINAL: usize = CONSTRUCTOR_OLD + COUNT;
@@ -14,9 +14,10 @@ const MAX_KEY_UNITS: usize = 41;
 const SORTED: [usize; COUNT] = [1, 3, 7, 10, 8, 16, 15, 12, 14, 17, 13, 9, 0, 5, 4, 11, 6, 2];
 
 // Rust 1.88/1.98: three (N-1)-comparison passes at full UTF-16 cost.
-// N=28 has height one and leaf overflows at items 12/24: initial leaf,
+// N=29 has height one and leaf overflows at items 12/24: initial leaf,
 // new root and second leaf, then a third leaf. N=21 still needs three nodes.
-// Right-border repair allocates nothing; full sort scratch remains separate.
+// Its right leaf has five pairs and needs no redistribution. Keep the repair
+// allowance; full sort scratch remains separate from typed tree admission.
 const fn map_work(old: usize, count: usize, overflows: usize, nodes: usize) -> usize {
     3 * (count - 1) * (1 + MAX_KEY_UNITS)
         + 64
@@ -74,6 +75,7 @@ fn owner_matches(bag: &ScriptObject, prototype: bool, tag: &PropertyKey) -> bool
     }
     let sorted: &[ExpectedKey<'_>] = if prototype {
         &[
+            ExpectedKey::Text("compareDocumentPosition"),
             ExpectedKey::Text("contains"),
             ExpectedKey::Text("getRootNode"),
             ExpectedKey::Text("hasChildNodes"),
@@ -103,6 +105,7 @@ fn owner_matches(bag: &ScriptObject, prototype: bool, tag: &PropertyKey) -> bool
             ExpectedKey::Text("normalize"),
             ExpectedKey::Text("isEqualNode"),
             ExpectedKey::Text("isSameNode"),
+            ExpectedKey::Text("compareDocumentPosition"),
             ExpectedKey::Text("contains"),
         ]
     } else {

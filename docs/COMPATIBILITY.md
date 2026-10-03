@@ -49,6 +49,15 @@ values keep template content separate; ShadowRoot remains unimplemented.
 getter for represented nodes. It follows current ordinary ancestry; a template's
 content remains disconnected even when its host is connected. Actual ShadowRoot
 and independent document ownership remain absent.
+[Ordinary position](node-position.md) adds `compareDocumentPosition`: identity
+`0`, earlier/later branches `2`/`4`, and ancestor/descendant masks `10`/`20`.
+The required Node argument is nonnullable; omitted/null/undefined inputs throw
+TypeError without coercion hooks. Disconnected ordinary trees use `35` or `37`,
+with a stable original-operand-ID policy within the retained arena. Actual Attr
+ordering, ShadowRoot and independent document ownership remain outside this scope.
+All 32 new modes and 16 controls pass; the 30-key prototype/21-key constructor
+inventory and 22-ID Page/worker witness pass. Historical losses retain their
+ordinary Error or unhealthy TypeError observations, without a health waiver.
 [Structural equality](node-equality.md) adds `isEqualNode` for represented nodes,
 including exact character data, the fixed namespace/attribute model and ordered
 ordinary children. Template contents are compared only when supplied as operands;

@@ -73,11 +73,15 @@ fn prior_root_inventory_after_removing_configurable_equality() {
           const connection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
           if(!connection||typeof connection.get!=='function'||connection.set!==undefined||
              !connection.enumerable||!connection.configurable)throw new Error('connection descriptor');
+          const position=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
+          if(!position||!position.configurable||typeof position.value!=='function')throw new Error('position descriptor');
           try{{
+            if(!delete Node.prototype.compareDocumentPosition)throw new Error('position delete');
             if(!delete Node.prototype.isConnected)throw new Error('connection delete');
             if(!delete Node.prototype.isEqualNode)throw new Error('equality delete');
             if(nodeRootCases.represented_complete_key_order()!==true)throw new Error('prior root inventory');
           }}finally{{
+            Object.defineProperty(Node.prototype,'compareDocumentPosition',position);
             Object.defineProperty(Node.prototype,'isConnected',connection);
             Object.defineProperty(Node.prototype,'isEqualNode',saved);
           }}
@@ -88,6 +92,10 @@ fn prior_root_inventory_after_removing_configurable_equality() {
           if(restoredConnection.get!==connection.get||restoredConnection.set!==undefined||
              restoredConnection.enumerable!==connection.enumerable||restoredConnection.configurable!==connection.configurable)
             throw new Error('connection restoration');
+          const restoredPosition=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
+          if(restoredPosition.value!==position.value||restoredPosition.writable!==position.writable||
+             restoredPosition.enumerable!==position.enumerable||restoredPosition.configurable!==position.configurable)
+            throw new Error('position restoration');
           return true;
         }})()"#
         );

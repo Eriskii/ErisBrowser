@@ -132,3 +132,20 @@ constructor batch is unchanged; numeric limits and reset boundaries are unchange
 Three descriptive test literals were updated only after the successful measured
 connection test. A separate missed private preconstant count was corrected from
 nine to ten after retaining its six failing observations.
+
+The subsequent [ordinary position checkpoint](node-position.md) installs one
+cached `compareDocumentPosition` method between `isSameNode` and `contains`.
+Its prototype constant batch starts with eleven entries, builds 29 and reserves
+thirty order slots; the constructor remains three/21/21. Reflected inventories
+are 30 prototype keys and 21 constructor keys.
+
+Measured raw initialization retains 6,599 work units, charges 1,768,914 bytes,
+and has 689 objects and capacity, with 321 native entries and 25 legacy prototypes.
+Relative to connected this adds 693 work units, 3,412 charged bytes and one object,
+matching the source-derived typed ledger. These logical accounting results are
+not ABI, physical memory or timing guarantees. Numeric limits and success-only
+author/reset boundaries are unchanged. Initial compilation and all 35 new groups
+passed before three descriptive snapshot literals in two test files were updated
+from the diagnostic; there was no failed bootstrap attempt. All sixteen validation
+commands and the first complete independent result audit pass, with source before
+images and all raw history retained.

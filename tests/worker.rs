@@ -2771,3 +2771,49 @@ fn confined_node_connected_tracks_live_tree_membership() {
         ));
     }
 }
+
+#[path = "support/node_position.rs"]
+mod node_position_witness;
+
+#[test]
+#[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]
+fn confined_node_position_tracks_reordered_ordinary_branches() {
+    let fixture = Fixture::new(node_position_witness::HTML);
+    let mut client = fixture.spawn(true, 215);
+    load(&mut client, &fixture.navigation);
+    let fonts = eris::graphics::Fonts::new();
+    let mut previous = None;
+    let mut button = None;
+    for phase in 0..2 {
+        if phase == 1 {
+            exchange_empty(
+                &mut client,
+                WorkerCommand::Click {
+                    node: button.unwrap(),
+                },
+            );
+        }
+        let snapshot = render(&mut client);
+        assert_eq!(snapshot.generation, 215);
+        assert_eq!(snapshot.processed_edit_sequence, 0);
+        assert!(
+            snapshot
+                .diagnostics
+                .iter()
+                .all(|message| message.starts_with("Page process ")
+                    || message.starts_with("Resource broker ")),
+            "{:?}",
+            snapshot.diagnostics
+        );
+        assert_eq!(snapshot.title, node_position_witness::metadata(phase));
+        button = Some(snapshot.document.query_selector("#change").unwrap());
+        previous = Some(node_position_witness::check(
+            &snapshot.document,
+            &snapshot.layout,
+            &snapshot.images,
+            &fonts,
+            phase,
+            previous.as_ref(),
+        ));
+    }
+}

@@ -48,14 +48,14 @@ cases!(
 fn prior_node_constant_inventory_after_removing_later_configurable_operations() {
     // This historical fixture describes the preceding represented inventory.
     // Deletion/restoration intentionally changes creation order, so each mode
-    // uses a disposable realm; the new connection fixture checks pristine order.
+    // uses a disposable realm; the new position fixture checks pristine order.
     for strict in [false, true] {
         let mut runtime = Runtime::try_new().unwrap();
         let mut doc = Document::parse("");
         let source = format!(
             r#"{CASES}
           (function(){{
-            var names=['getRootNode','hasChildNodes','normalize','isEqualNode','isSameNode','contains'],saved=[];
+            var names=['getRootNode','hasChildNodes','normalize','isEqualNode','isSameNode','compareDocumentPosition','contains'],saved=[];
             for(var i=0;i<names.length;i++){{
               var d=Object.getOwnPropertyDescriptor(Node.prototype,names[i]);
               if(!d||!d.configurable||typeof d.value!=='function')throw new Error('later operation descriptor');
@@ -172,11 +172,11 @@ fn setup() -> (Runtime, usize, usize, PropertyKey) {
         let values = &bag.values;
         bag.order.retain(|key| values.contains_key(key));
         bag.order.shrink_to_fit();
-        let capacity = if owner == prototype { 29 } else { 21 };
+        let capacity = if owner == prototype { 30 } else { 21 };
         bag.order
             .try_reserve_exact(capacity - bag.order.len())
             .unwrap();
-        let old = if owner == prototype { 10 } else { 3 };
+        let old = if owner == prototype { 11 } else { 3 };
         assert_eq!(bag.values.len(), old);
         assert_eq!(bag.order.len(), old);
     }
@@ -313,7 +313,7 @@ fn measured_exact_and_one_short_admission_precedes_taking_either_map() {
             result.unwrap();
             assert_eq!(runtime.steps, 0);
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects[prototype].values.len(), 28);
+            assert_eq!(runtime.objects[prototype].values.len(), 29);
             assert_eq!(runtime.objects[properties].values.len(), 21);
             assert_eq!(
                 runtime.objects[prototype].order.capacity(),
@@ -376,6 +376,7 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
         "normalize",
         "isEqualNode",
         "isSameNode",
+        "compareDocumentPosition",
         "contains",
     ]
     .into_iter()
@@ -432,7 +433,7 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
 
 #[test]
 fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
-    for case in 0..22 {
+    for case in 0..24 {
         let (mut runtime, prototype, properties, tag) = setup();
         let (mut p, mut c, mut key) = (prototype, properties, tag);
         match case {
@@ -494,6 +495,12 @@ fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
                     .remove(&PropertyKey::from("isEqualNode"));
             }
             21 => runtime.objects[prototype].order.swap(5, 6),
+            22 => {
+                runtime.objects[prototype]
+                    .values
+                    .remove(&PropertyKey::from("compareDocumentPosition"));
+            }
+            23 => runtime.objects[prototype].order.swap(9, 10),
             _ => unreachable!(),
         }
         let before = [

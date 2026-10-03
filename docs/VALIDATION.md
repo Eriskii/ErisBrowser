@@ -4995,3 +4995,63 @@ source paths, all attempts, exact corrections and an independent result audit.
 The [previous equality commit CI](evidence/node-equality-ci.json) has nine
 successful jobs. Local tests and prior CI do not establish full standards support,
 production security or a Chromium performance comparison.
+
+## Ordinary Node document position
+
+[Node.compareDocumentPosition](node-position.md) adds ordinary masks over authentic
+represented nodes, with required nonnullable input, canonical Document identity,
+preorder and stable disconnected directions. Template content remains a separate
+root. Paid complete root/depth walks, alignment and sibling scans use constant
+body traversal storage and preserve the existing 256-edge/work bounds. Actual
+Attr, ShadowRoot and independent document ownership remain unrepresented.
+
+Rust 1.88 passes **1,938 default tests** and Rust 1.98 passes **2,061 native Vulkan
+tests**, including ignored confinement tests. Initial compilation, formatting,
+both strict Clippy checks and release construction pass. All **sixteen validation
+commands pass on their first attempt**. Thirty-five new groups comprise sixteen
+independent Runtime bodies in strict/sloppy modes, seventeen private groups and
+Page/worker witnesses. Nine focused commands contain **286 observations across
+278 unique names**, with no failed attempt.
+
+Raw bootstrap measures **6,599 remaining work / 1,768,914 charged bytes /
+689 objects and capacity**, with 321 native entries and 25 legacy prototypes.
+The increase is 693 work units and 3,412 charged bytes relative to connected,
+matching the held typed ledger. Three descriptive literals in two test files
+were updated after the successful measurement; no failing bootstrap run occurred.
+The initial nineteen source/fixture paths and final twenty-one paths retain exact
+before images and the correction. No production source changed after initial
+compilation, and no numeric quota or execution reset changed.
+
+Both browser paths load once and dispatch one actual click. A retained branch
+moves through a detached fragment, actual template content, an ordinary template
+child and back into the visible pair. All 22 captured identities and total node
+count remain stable, with no click-created nodes. The literal Alpha/Beta order
+reverses, title/status and green/blue samples change, and independent full-canvas
+references and nonempty glyph assertions pass. Comparisons themselves do not
+mutate the tree or render the scene.
+
+The release passes **32/32 new modes and 16/16 paired controls**, from the published
+predecessor's 0/32 and 4/16. Among **4,364 established case rows and 524 controls**,
+**4,362 and 520 remain byte-exact**. The only new changes are connected's two
+complete-inventory Error failures and four unhealthy TypeError controls; all
+thirty older unhealthy rows stay exact. Established healthy totals move from
+4,268/504 to 4,266/500. The new pristine 30-key inventory and its same-mode
+positive/wrong controls pass independently. Six historical job exits and the
+aggregate retain exit one; comparison and classification exit zero. No raw
+expectation, input or health flag is rewritten to hide those losses.
+
+The first complete independent data-only audit clears with **378 bound inputs**,
+no findings and unchanged pre/post hashes. Source preparation retained its
+focused-summary schema correction and original reader before execution; no
+complete audit failed. It reconstructs complete raw records and literal test
+statuses, binds the actual baseline and final manifests, checks every correction,
+and preserves all recorded command results.
+
+The [summary](evidence/node-position.json) and [archive](evidence/node-position.tar.gz)
+retain the exact source, release, raw observations, before images and audit
+provenance. Release SHA-256 is
+`f0b249ba7a726e943685315c95bb55b5ba8ca5e3add50051e1c6553bbcbb7007`;
+final source-manifest SHA-256 is
+`c6d4423dadf42a2812b69717fa86bb4ddae0543c9dd1b1caa092151b6c8f5377`.
+These checks do not establish complete web compatibility, production security,
+comprehensive verification or the Chromium performance requirement.

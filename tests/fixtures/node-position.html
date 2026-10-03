@@ -1,0 +1,65 @@
+<!doctype html>
+<meta charset=utf-8>
+<base id=fixed-base href="https://position.example/fixed/">
+<title id=heading>Position ready</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;width:40px;height:40px;background:red}
+#probe{left:0}#done{left:50px}.ready .sample{background:green}.clicked .sample{background:blue}
+#change{position:absolute;top:60px;left:0}
+#pair{position:absolute;top:100px;left:0;width:300px;font-size:24px;line-height:28px}
+#result{position:absolute;top:160px;left:0;font-size:20px}#template{display:none}
+</style>
+<body>
+<div id=probe class=sample></div><div id=done class=sample></div>
+<button id=change type=button>Reorder branches</button>
+<div id=pair><span id=left>Alpha</span><span id=right>Beta</span></div>
+<div id=result>ready</div>
+<template id=template>inside</template>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+const descriptor=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
+if(!descriptor||typeof descriptor.value!=='function')throw new TypeError('position method prerequisite');
+const method=descriptor.value;
+if(method.call(document,document)!==0||method.call(document,document.body)!==20||method.call(document.body,document)!==10)throw new TypeError('genuine position prerequisite');
+const body=document.body,pair=document.getElementById('pair'),left=document.getElementById('left'),right=document.getElementById('right');
+const alpha=left.firstChild,beta=right.firstChild,template=document.getElementById('template');
+const content=template.content,inside=content.firstChild,ordinary=new Text('ordinary');
+const parking=new DocumentFragment(),parked=new Text('parked');
+const title=document.getElementById('heading').firstChild,status=document.getElementById('result').firstChild;
+template.append(ordinary);parking.append(parked);
+let phase=0,trace='';
+function position(a,b,expected){
+  check(method.call(a,b)===expected&&a.compareDocumentPosition(b)===expected,'saved and ordinary literal position');
+}
+function separate(a,b){
+  const forward=method.call(a,b),reverse=method.call(b,a);
+  check((forward===35&&reverse===37)||(forward===37&&reverse===35),'opposite disconnected directions');
+  check(method.call(a,b)===forward&&a.compareDocumentPosition(b)===forward,'stable disconnected result');
+}
+function verify(){
+  check(pair.childNodes.length===2&&pair.childNodes[phase===0?0:1]===left&&pair.childNodes[phase===0?1:0]===right,'literal branch order');
+  check(left.parentNode===pair&&right.parentNode===pair&&left.firstChild===alpha&&right.firstChild===beta,'retained branch identities');
+  check(alpha.data==='Alpha'&&beta.data==='Beta'&&alpha.parentNode===left&&beta.parentNode===right,'retained Text data and links');
+  position(left,left,0);position(pair,left,20);position(left,pair,10);
+  position(left,alpha,20);position(alpha,left,10);position(document,alpha,20);position(alpha,document,10);
+  position(left,right,phase===0?4:2);position(right,left,phase===0?2:4);
+  position(alpha,beta,phase===0?4:2);position(beta,alpha,phase===0?2:4);
+  position(template,ordinary,20);position(content,inside,20);position(inside,content,10);
+  position(parking,parked,20);separate(left,inside);separate(ordinary,inside);separate(left,parked);
+  check(template.childNodes.length===1&&template.firstChild===ordinary&&content.childNodes.length===1&&content.firstChild===inside,'template ordinary and hosted trees');
+  check(parking.childNodes.length===1&&parking.firstChild===parked,'detached fragment retained');
+  check(trace===(phase===0?'':'fcop'),'literal completed move trace');
+}
+left.compareDocumentPosition=function(){return 99;};
+check(left.compareDocumentPosition(right)===99&&method.call(left,right)===4,'saved method ignores own shadow');
+check(delete left.compareDocumentPosition&&left.compareDocumentPosition(right)===4,'ordinary method restored');
+verify();body.className='ready';
+document.getElementById('change').onclick=function(){
+  check(phase===0,'one real click');
+  parking.append(left);trace+='f';position(parking,left,20);position(parked,left,4);separate(left,right);
+  content.append(left);trace+='c';position(content,left,20);position(inside,left,4);separate(left,right);
+  template.append(left);trace+='o';position(template,left,20);position(ordinary,left,4);separate(left,inside);
+  pair.append(left);trace+='p';phase=1;verify();
+  title.data='Position done';status.data='done';body.className='clicked';
+};
+</script>

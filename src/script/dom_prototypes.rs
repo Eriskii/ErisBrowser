@@ -65,6 +65,7 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 352
     + node_predicates::METADATA_OBJECTS
     + node_root::METADATA_OBJECTS
     + node_equality::METADATA_OBJECTS
+    + node_position::METADATA_OBJECTS
     + document_title::METADATA_OBJECTS
     + text_operations::METADATA_OBJECTS;
 
@@ -471,7 +472,7 @@ impl Runtime {
                         "Document" => 2,
                         "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
-                        "Node" => 9,
+                        "Node" => 10,
                         "Text" => 2,
                         _ => 0,
                     },

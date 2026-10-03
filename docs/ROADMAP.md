@@ -76,7 +76,13 @@ The comparison uses the existing work and storage limits.
 [Connection state](node-connected.md) now adds `isConnected` through the shared
 bounded ordinary-root walk, preserving `getRootNode` options and traversal costs.
 Saved getters, readonly assignment and live branch moves are covered.
-Document-position comparison and other Node members remain unimplemented.
+[Ordinary position](node-position.md) now adds `compareDocumentPosition` over
+represented trees, with constant traversal storage, required nonnullable authentic
+operands, paid 256-edge bounds and reached sibling scans. Template content remains
+separate. The release passes all 32 new modes and 16 controls; default/native
+suites and the independent audit pass, with historical inventory failures retained.
+Actual Attr ordering, ShadowRoot, independent document ownership and other Node
+members remain open.
 Legacy `innerText`, textarea setters and attribute
 writes, unit-aware native editing, nonscalar source/HTML serialization,
 PI pseudo-attributes, remaining Node/Text operations and mutation notifications

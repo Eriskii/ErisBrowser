@@ -117,6 +117,12 @@ impl Runtime {
         // have separate reached comparisons; getRootNode retains its first arm.
         self.work(1)?;
         match method.len() {
+            23 => {
+                self.work(23)?;
+                if method == "compareDocumentPosition" {
+                    return self.node_compare_document_position(receiver, args, doc);
+                }
+            }
             11 => {
                 self.work(11)?;
                 if method == "getRootNode" {

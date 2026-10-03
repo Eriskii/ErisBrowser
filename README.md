@@ -57,6 +57,11 @@ prototype-inventory failures remain recorded separately.
 current parent links. It shares the bounded root walk; template content remains
 disconnected from its host. All 32 release cases and 16 controls pass, with a
 real-click branch-move witness in Page and the confined worker.
+[Node.compareDocumentPosition](docs/node-position.md) adds ordinary position masks
+for authentic nodes, with required nonnullable input and current ordinary-tree
+order. Disconnected directions are stable within the represented arena, and
+template content remains separate. All 32 release case modes and 16 controls
+pass; six historical inventory losses remain recorded with their raw failures.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members

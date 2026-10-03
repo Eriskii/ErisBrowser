@@ -62,7 +62,7 @@ cases!(
 );
 
 #[test]
-fn prior_equality_inventory_after_removing_configurable_connection_accessor() {
+fn prior_equality_inventory_after_removing_later_configurable_members() {
     // Restoration changes creation order, so each mode uses a disposable realm.
     for strict in [false, true] {
         let (mut runtime, mut doc) = fresh();
@@ -72,13 +72,22 @@ fn prior_equality_inventory_after_removing_configurable_connection_accessor() {
           const saved=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
           if(!saved||typeof saved.get!=='function'||saved.set!==undefined||
              !saved.enumerable||!saved.configurable)throw new Error('connection descriptor');
+          const position=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
+          if(!position||!position.configurable||typeof position.value!=='function')throw new Error('position descriptor');
           try{{
+            if(!delete Node.prototype.compareDocumentPosition)throw new Error('position delete');
             if(!delete Node.prototype.isConnected)throw new Error('connection delete');
             if(nodeEqualityCases.represented_complete_key_order()!==true)throw new Error('prior equality inventory');
-          }}finally{{Object.defineProperty(Node.prototype,'isConnected',saved);}}
+          }}finally{{
+            Object.defineProperty(Node.prototype,'compareDocumentPosition',position);
+            Object.defineProperty(Node.prototype,'isConnected',saved);}}
           const d=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
           if(d.get!==saved.get||d.set!==undefined||d.enumerable!==saved.enumerable||
              d.configurable!==saved.configurable)throw new Error('connection restoration');
+          const restoredPosition=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
+          if(restoredPosition.value!==position.value||restoredPosition.writable!==position.writable||
+             restoredPosition.enumerable!==position.enumerable||restoredPosition.configurable!==position.configurable)
+            throw new Error('position restoration');
           return true;
         }})()"#
         );

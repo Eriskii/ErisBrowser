@@ -37,6 +37,7 @@ mod node_connected;
 mod node_data;
 mod node_equality;
 mod node_normalize;
+mod node_position;
 mod node_predicates;
 mod node_root;
 mod object_integrity;

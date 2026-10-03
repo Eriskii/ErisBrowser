@@ -54,13 +54,13 @@ cases!(
 #[test]
 fn prior_predicate_inventory_after_removing_later_configurable_operations() {
     // Restoring creation order is impossible; each realm is disposable. The
-    // independent connection fixture checks the current pristine inventory.
+    // independent position fixture checks the current pristine inventory.
     for strict in [false, true] {
         let (mut runtime, mut doc) = fresh();
         let source = format!(
             r#"{CASES}
         (function(){{
-          const names=['getRootNode','isEqualNode'],saved=[];
+          const names=['getRootNode','isEqualNode','compareDocumentPosition'],saved=[];
           for(const name of names){{
             const d=Object.getOwnPropertyDescriptor(Node.prototype,name);
             if(!d||!d.configurable||typeof d.value!=='function')throw new Error('later descriptor');

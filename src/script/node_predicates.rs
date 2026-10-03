@@ -55,7 +55,7 @@ impl Runtime {
 
     pub(super) fn install_node_identity_members(&mut self, prototype: usize) -> Result<()> {
         self.work(4)?;
-        for name in ["isSameNode", "contains"] {
+        for name in ["isSameNode", "compareDocumentPosition", "contains"] {
             let method = self.node_data_function(name, name, 1)?;
             self.dom_proto_named(prototype, name, Property::data(method, true, true, true))?;
         }
