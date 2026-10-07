@@ -1,0 +1,156 @@
+{
+  "base": "56bbcdffce92417bcfdd52b89cbf67e777c00c16",
+  "transformation": "Move pure codec block without body changes; widen only module visibility and add imports. Existing tests and runtime call sites/charges unchanged.",
+  "normalized_block_identical": true,
+  "old_block_sha256": "86e491135102df489352a148152998488a60df57c831897a88b75d5fc988a772",
+  "files": {
+    "src/script.rs": "bb15c410535e0a3fdb8c6267e4fd71831e38d1ced6ab050041e90cc310af55ed",
+    "src/script/data_view.rs": "6754b7788139401af0e51c0b51fa9b25105128ffece0f5c14ec5ee572869b26e",
+    "src/script/scalar_codec.rs": "273867d136d819bb8f795faff48bb6440a77ce2056f56653525f900286747589",
+    "src/script/data_view/tests.rs": "ec678fa7be4b23fd239950f77ec7a298e3f1a10d831672d02c1b9e9f4cc29ef6"
+  },
+  "format_correction": "Remove the extracted separator blank line at EOF; no token/body change.",
+  "normalization": "Remove the documented pub(super) visibility additions and trim the final separator whitespace; all codec tokens and bodies match the retained Git predecessor.",
+  "validation": {
+    "data_view": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "script::data_view",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 15.51546236500144,
+      "log": "scalar-codec-dataview-188-1.log",
+      "sha256": "76829bd8617630c86cea92085bcdea4fc7dccdb705d24dd5bff4ea2cd4f2040a",
+      "passed": 28
+    },
+    "regression": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 37.42825001291931,
+      "log": "scalar-codec-all-188-1.log",
+      "sha256": "92e22949aecf287039e850014fcfb67c121354fe49317eaced4a4cc045115905",
+      "passed": 2161
+    },
+    "clippy": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 13.121209853095934,
+      "log": "scalar-codec-clippy-188-1.log",
+      "sha256": "6943d743755050b98c722bfb4e73bcc0c9376a8f8608d164b2e5af40e176dcfd"
+    },
+    "format": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.990472205914557,
+      "log": "fmt-188-2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "bootstrap": {
+    "remaining_steps": 4709,
+    "allocated": 1782581,
+    "native_properties": 320,
+    "prototypes": 25,
+    "unchanged": true
+  },
+  "retained_format_failure": {
+    "receipt": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--check"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 1.0146531120408326,
+      "log": "fmt-188-1.log",
+      "sha256": "0e2b3b1466d30ee659fb9e948ca6196b56932d1c744c98d6fd36052ed443837e"
+    },
+    "cause": "The moved source block retained its separator blank line at the new module EOF. Removed that whitespace and reran fmt."
+  },
+  "limits": "Mechanical extraction only; adds no TypedArray constructors or new web compatibility.",
+  "source_review": {
+    "status": "clear",
+    "created_utc": "2026-10-07T22:31:13.354347+00:00",
+    "timing": "source-only peer after root reported 28 DataView / 2161 full tests, unchanged 4709 bootstrap and formatting/Clippy; this receipt does not independently execute or re-audit those results",
+    "base": "56bbcdffce92417bcfdd52b89cbf67e777c00c16",
+    "hold": {
+      "path": "/tmp/eris-scalar-codec-extraction-1/source-ready-2.json",
+      "sha256": "417828f2ddb4122ed4a03f6dc645e228666538f20261f3c10f945dec8a6fe58a"
+    },
+    "files": [
+      {
+        "path": "src/script.rs",
+        "sha256": "bb15c410535e0a3fdb8c6267e4fd71831e38d1ced6ab050041e90cc310af55ed",
+        "bytes": 901105
+      },
+      {
+        "path": "src/script/data_view.rs",
+        "sha256": "6754b7788139401af0e51c0b51fa9b25105128ffece0f5c14ec5ee572869b26e",
+        "bytes": 17782
+      },
+      {
+        "path": "src/script/scalar_codec.rs",
+        "sha256": "273867d136d819bb8f795faff48bb6440a77ce2056f56653525f900286747589",
+        "bytes": 5461
+      },
+      {
+        "path": "src/script/data_view/tests.rs",
+        "sha256": "ec678fa7be4b23fd239950f77ec7a298e3f1a10d831672d02c1b9e9f4cc29ef6",
+        "bytes": 40257
+      }
+    ],
+    "findings": [
+      "Normalized extracted enum/impl/Float16 helper block is exact base bytes modulo pub(super) visibility and trailing separator whitespace.",
+      "DataView reverse transformation restores exact base; only imports and block move differ.",
+      "script.rs adds only scalar_codec module declaration. Existing DataView tests are base-Git exact.",
+      "Nine codecs, native dispatch, conversion order, numerical bodies, work() and caller work/storage fees are unchanged. rounded_significand stays module-private; necessary codec/Float16 entry points widen only to parent-module visibility."
+    ],
+    "limitations": [
+      "No project edits, compiler, tests or engine execution by reviewer.",
+      "Future Uint8Clamped or TypedArray caller correctness is outside this mechanical extraction review."
+    ]
+  }
+}

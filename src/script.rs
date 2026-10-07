@@ -49,6 +49,7 @@ mod parser;
 mod processing_instruction;
 mod property_keys;
 mod regexp_builtins;
+mod scalar_codec;
 mod string_builtins;
 mod symbols;
 mod text_operations;
