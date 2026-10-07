@@ -1,0 +1,814 @@
+{
+  "format": 1,
+  "status": "Source-authored prospective full-pixel expectations before candidate execution",
+  "predecessor_literals": {
+    "path": "literal-fixtures.json",
+    "sha256": "3e879cf28127f6bc1400b3c26c481bb5613fc1a4e75b024ea195faaaa6f0d764",
+    "nine_positive_cases_unchanged": true,
+    "historical_refusals": "Two backing-only refusals become positive cases below; non-grid opacity still refuses."
+  },
+  "arithmetic": "Canvas separate f32 nearest-even stages and final half-away round. No shader helper or candidate output generates these literals.",
+  "coordinate_rules": "Full-frame caller clip; zero document/fixed offset; integer geometry. RGB hexadecimal row-major arrays.",
+  "cases": [
+    {
+      "name": "multiple-rect-group-without-first-covering-backing",
+      "frame": {
+        "width": 4,
+        "height": 1,
+        "clear": "ffffff"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            2,
+            1
+          ],
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "op": "rect",
+          "rect": [
+            1,
+            0,
+            2,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "ff8080",
+        "8080ff",
+        "8080ff",
+        "ffffff"
+      ],
+      "scratch_bytes": 24,
+      "previous_case": "uncertified-multiple-rect-backing-remains-fallback"
+    },
+    {
+      "name": "translucent-image-only-group",
+      "frame": {
+        "width": 2,
+        "height": 1,
+        "clear": "ffffff"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "ffbfbf",
+        "ffffff"
+      ],
+      "scratch_bytes": 8,
+      "images": [
+        {
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            255,
+            0,
+            0,
+            128
+          ]
+        }
+      ],
+      "previous_case": "translucent-image-only-group-remains-fallback"
+    },
+    {
+      "name": "transparent-black-alpha55-three-quarters-root-rounding",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "222222"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 192,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            55
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "1c1c1c"
+      ],
+      "scratch_bytes": 8,
+      "incorrect_ideal_rational_pixels": [
+        "1d1d1d"
+      ]
+    },
+    {
+      "name": "inner-rounding-survives-outer-pop",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "2c2c2c"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 127,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            151,
+            151,
+            151,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            38
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "5c5c5c"
+      ],
+      "scratch_bytes": 16,
+      "incorrect_ideal_rational_pixels": [
+        "5b5b5b"
+      ]
+    },
+    {
+      "name": "transparent-parent-retains-partial-alpha",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "ffffff"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            128
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "dfdfdf"
+      ],
+      "scratch_bytes": 16
+    },
+    {
+      "name": "opaque-islands-with-transparent-hole",
+      "frame": {
+        "width": 3,
+        "height": 1,
+        "clear": "0a0a0a"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            255,
+            0,
+            0,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "op": "rect",
+          "rect": [
+            2,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            255,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "850505",
+        "0a0a0a",
+        "050585"
+      ],
+      "scratch_bytes": 24
+    },
+    {
+      "name": "transparent-glyph-coverage-without-backing",
+      "frame": {
+        "width": 3,
+        "height": 1,
+        "clear": "ffffff"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            255,
+            0,
+            0,
+            128
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "ffffff",
+        "ffdfdf",
+        "ffffff"
+      ],
+      "scratch_bytes": 16,
+      "masks": [
+        {
+          "width": 2,
+          "height": 1,
+          "coverage": [
+            0,
+            128
+          ]
+        }
+      ],
+      "rows": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "name": "zero-alpha-image-preserves-root",
+      "frame": {
+        "width": 2,
+        "height": 1,
+        "clear": "123456"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "image",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "123456",
+        "123456"
+      ],
+      "scratch_bytes": 8,
+      "images": [
+        {
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            255,
+            0,
+            255,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "transparent_reuse_cases": [
+    {
+      "name": "opacity-transparent-reuse-a",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            4,
+            1
+          ],
+          "rgba": [
+            65,
+            0,
+            0,
+            128
+          ],
+          "radius": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            1,
+            0,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            0,
+            0,
+            65,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "100000",
+        "002100",
+        "000021",
+        "100000",
+        "000000",
+        "000000",
+        "000000",
+        "000000"
+      ],
+      "scratch_bytes": 32,
+      "images": [
+        {
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            0,
+            65,
+            0,
+            255
+          ]
+        }
+      ],
+      "masks": [
+        {
+          "width": 1,
+          "height": 1,
+          "coverage": [
+            255
+          ]
+        }
+      ],
+      "rows": [
+        [
+          2
+        ]
+      ],
+      "planned_bytes": 2148
+    },
+    {
+      "name": "opacity-transparent-reuse-b",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 64,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            1,
+            4,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            65,
+            128
+          ],
+          "radius": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            3,
+            1,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 1,
+          "rgba": [
+            65,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "000008",
+        "000008",
+        "100000",
+        "001000"
+      ],
+      "scratch_bytes": 32,
+      "images": [
+        {
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            0,
+            65,
+            0,
+            255
+          ]
+        }
+      ],
+      "masks": [
+        {
+          "width": 1,
+          "height": 1,
+          "coverage": [
+            255
+          ]
+        }
+      ],
+      "rows": [
+        [
+          2
+        ]
+      ],
+      "planned_bytes": 2148
+    },
+    {
+      "name": "opacity-transparent-reuse-c",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 192,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            1,
+            0,
+            2,
+            2
+          ],
+          "rgba": [
+            65,
+            65,
+            65,
+            128
+          ],
+          "radius": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            65,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "000000",
+        "181818",
+        "310000",
+        "000000",
+        "000000",
+        "000000",
+        "181818",
+        "000000"
+      ],
+      "scratch_bytes": 32,
+      "images": [
+        {
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            0,
+            0,
+            0,
+            255
+          ]
+        }
+      ],
+      "masks": [
+        {
+          "width": 1,
+          "height": 1,
+          "coverage": [
+            255
+          ]
+        }
+      ],
+      "rows": [
+        [
+          2
+        ]
+      ],
+      "planned_bytes": 2148
+    },
+    {
+      "name": "opacity-transparent-reuse-resized",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "numerator": 128,
+          "denominator": 256
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "rgba": [
+            65,
+            65,
+            65,
+            128
+          ],
+          "radius": 0
+        },
+        {
+          "op": "image",
+          "rect": [
+            0,
+            1,
+            1,
+            1
+          ],
+          "source": 0
+        },
+        {
+          "op": "glyph",
+          "source": 0,
+          "rows": 0,
+          "y": 0,
+          "rgba": [
+            65,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "101010",
+        "101010",
+        "210000",
+        "000000",
+        "000000",
+        "101010",
+        "101010",
+        "000000"
+      ],
+      "scratch_bytes": 48,
+      "images": [
+        {
+          "width": 1,
+          "height": 1,
+          "rgba": [
+            0,
+            0,
+            0,
+            255
+          ]
+        }
+      ],
+      "masks": [
+        {
+          "width": 1,
+          "height": 1,
+          "coverage": [
+            255
+          ]
+        }
+      ],
+      "rows": [
+        [
+          2
+        ]
+      ],
+      "planned_bytes": 2164
+    }
+  ],
+  "totals_per_adapter": {
+    "literal_cases": 17,
+    "literal_frames": 34,
+    "literal_bytes": 512,
+    "planner_refusals": 1,
+    "opaque_reuse_frames": 14,
+    "opaque_reuse_bytes": 448,
+    "transparent_reuse_frames": 14,
+    "transparent_reuse_bytes": 448,
+    "all_frames": 62,
+    "all_compared_bytes": 1408,
+    "cancellation_checkpoints_per_reuse_corpus": 8
+  },
+  "reuse_sequence_per_corpus": "Existing run_opacity schedule unchanged: both formats A/B/C/A/resized plus format-switch resized; replacement-context resized then reuse. Seven allocations/reuses/evictions each; first-frame eight terminal cuts."
+}

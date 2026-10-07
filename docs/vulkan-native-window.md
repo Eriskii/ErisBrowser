@@ -56,9 +56,9 @@ optional CPU reference is painted. Zoom changes invalidate queued frames at the
 old scale and request immediate redraw while relayout proceeds.
 
 [Bounded group opacity](vulkan-opacity.md) uses cropped RGBA16 intermediates
-when each materialized group has a proved opaque rectangular backing and
-`k/256` opacity. Scratch storage and all clear/composite work share the existing
-frame limits. Transparent-backed or non-grid groups, process-error overlays, excessive
+for nested transparent or opaque groups at `k/256` opacity. The
+[transparent compositor](vulkan-transparent-opacity.md) reproduces each CPU rounding stage. Scratch storage and all clear/composite work share the existing
+frame limits. Non-grid groups, process-error overlays, excessive
 viewport dimensions, command/source limits, preparation limits or raster work
 refuse the entire native scene. The complete existing CPU painter then draws
 the page and chrome, and its pixels use the existing upload path. No accepted

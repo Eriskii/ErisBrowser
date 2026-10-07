@@ -1,10 +1,10 @@
 # Development docket
 
 [Native group opacity](vulkan-opacity.md) now has an exact integer Vulkan path
-for opaque-backed nested groups at `k/256` opacity. Cropped RGBA16 scratch,
+for nested groups at `k/256` opacity, including [transparent sources](vulkan-transparent-opacity.md). Cropped RGBA16 scratch,
 clear/composite dispatches and retained reuse all share the existing limits.
-Three-adapter literal and changed-content checks pass. Transparent backings,
-arbitrary opacity values and larger scene admission remain on the docket.
+Both opaque and transparent sources pass three-adapter literal and changed-content checks.
+Arbitrary opacity values and larger scene admission remain on the docket.
 Native clip/fixed scope accounting now charges metadata work without reserving
 full-frame pixel work, allowing sparsely painted nested-clipping scenes to fit
 the existing limits. Primitive and opacity pixel reserves remain unchanged.
@@ -296,7 +296,7 @@ Acceptance work:
 
 - Expand the bounded native route to more browser scenes, preserving clipping,
   fixed coordinates, text coverage and alpha while expanding nested opacity
-  beyond proved opaque backings and `k/256` values.
+  beyond `k/256` values and the current scene limits.
 - Bound GPU allocations, command work, uploads and retained resources. Decide
   the GPU process/driver boundary explicitly; GPU access must not broaden the
   renderer's filesystem or network authority.

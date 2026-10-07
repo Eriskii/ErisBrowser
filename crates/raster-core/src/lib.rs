@@ -796,7 +796,7 @@ impl<'a> PlannerDraft<'a> {
                     draw,
                     image: None,
                     glyph: Some(GlyphDraft { source, rows, y }),
-                    group: self.opacity.paint(draw, false),
+                    group: self.opacity.paint(draw),
                 });
                 continue;
             }
@@ -861,9 +861,7 @@ impl<'a> PlannerDraft<'a> {
                 draw,
                 image,
                 glyph: None,
-                group: self
-                    .opacity
-                    .paint(draw, image.is_none() && color >> 24 == 255),
+                group: self.opacity.paint(draw),
             });
         }
         coordinates.finish()?;
@@ -1022,6 +1020,8 @@ pub fn validate_source_images(sources: &[SourceImage<'_>]) -> Result<usize> {
 
 #[cfg(feature = "gpu")]
 pub mod gpu;
+#[cfg(test)]
+mod opacity_arithmetic_tests;
 #[cfg(test)]
 mod opacity_tests;
 #[cfg(test)]

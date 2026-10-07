@@ -1,6 +1,6 @@
-//! Native-only cropped intermediates. Admission proves an opaque first backing
-//! rectangle for every nonempty partial-opacity group. This permits exact
-//! integer k/256 compositing without changing Canvas's rounding semantics.
+//! Native-only cropped premultiplied intermediates. Every effective descendant
+//! contributes to the conservative region, including transparent source pixels.
+//! The compositor reproduces Canvas's staged rounding for k/256 opacity.
 use super::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -99,27 +99,16 @@ impl Bounds {
             height: (self.y + self.height).max(other.y + other.height) - y,
         }
     }
-    fn contains(self, other: Self) -> bool {
-        self.x <= other.x
-            && self.y <= other.y
-            && self.x + self.width >= other.x + other.width
-            && self.y + self.height >= other.y + other.height
-    }
 }
 
 struct Group {
     parent: Option<usize>,
     opacity: u32,
     bounds: Option<Bounds>,
-    // Some(None) means the first effective paint was not an opaque rectangle.
-    first: Option<Option<Bounds>>,
     region: Option<Region>,
 }
 impl Group {
-    fn include(&mut self, bounds: Bounds, backing: bool) {
-        if self.first.is_none() {
-            self.first = Some(backing.then_some(bounds));
-        }
+    fn include(&mut self, bounds: Bounds) {
         self.bounds = Some(self.bounds.map_or(bounds, |old| old.union(bounds)));
     }
 }
@@ -181,7 +170,6 @@ impl State {
                 parent: self.destination,
                 opacity: scaled as u32,
                 bounds: None,
-                first: None,
                 region: None,
             });
             Some(index)
@@ -208,7 +196,7 @@ impl State {
         self.suppressed = saved.suppressed;
         if let Some(index) = saved.created {
             if let (Some(parent), Some(bounds)) = (saved.destination, self.groups[index].bounds) {
-                self.groups[parent].include(bounds, false);
+                self.groups[parent].include(bounds);
             }
             Ok(Some(placeholder(Pending::Composite(index))))
         } else {
@@ -216,10 +204,10 @@ impl State {
         }
     }
 
-    pub fn paint(&mut self, draw: Draw, opaque_rectangle: bool) -> Pending {
+    pub fn paint(&mut self, draw: Draw) -> Pending {
         match self.destination {
             Some(index) => {
-                self.groups[index].include(Bounds::of(draw), opaque_rectangle);
+                self.groups[index].include(Bounds::of(draw));
                 Pending::Paint(index)
             }
             None => Pending::Root,
@@ -243,13 +231,6 @@ impl State {
         let mut bytes = 0u64;
         for group in &mut self.groups {
             let Some(bounds) = group.bounds else { continue };
-            if !group
-                .first
-                .flatten()
-                .is_some_and(|first| first.contains(bounds))
-            {
-                return Err("opacity group requires opaque rectangular backing".into());
-            }
             let area_bytes = u64::from(bounds.width)
                 .checked_mul(u64::from(bounds.height))
                 .and_then(|area| area.checked_mul(8))

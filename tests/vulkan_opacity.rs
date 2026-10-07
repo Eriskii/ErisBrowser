@@ -48,7 +48,11 @@ impl Drop for Fixture {
 
 #[test]
 fn loaded_opacity_click_retains_ids_and_matches_native_canvas() {
-    for scene in [witness::Scene::Public, witness::Scene::Button] {
+    for scene in [
+        witness::Scene::Public,
+        witness::Scene::Button,
+        witness::Scene::Transparent,
+    ] {
         let fixture = Fixture::new(scene);
         let mut page = Page::load(&fixture.address, true).unwrap();
         let fonts = Fonts::new();
@@ -90,7 +94,11 @@ fn confined_opacity_click_retains_ids_and_matches_native_canvas() {
         worker::{Command, WorkerClient},
     };
     use std::path::Path;
-    for scene in [witness::Scene::Public, witness::Scene::Button] {
+    for scene in [
+        witness::Scene::Public,
+        witness::Scene::Button,
+        witness::Scene::Transparent,
+    ] {
         let fixture = Fixture::new(scene);
         let navigation = Navigation::get(&fixture.address);
         let mut client = WorkerClient::spawn_at(

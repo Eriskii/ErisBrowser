@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "checkpoint": "Transparent native Vulkan opacity at k/256",
+  "base_commit": "98d282216c004abae3752746fe974c4a7af28ae9",
+  "scope": "Remove opaque-backing prerequisite; reproduce separate Canvas binary32 stages with u32 pairs. Zero/opaque fast paths and complete-scene admission remain.",
+  "renderer_limits_raised": false,
+  "harness_inventory_changes": {
+    "surface_cases": [
+      16,
+      17
+    ],
+    "host_records": [
+      96,
+      128
+    ]
+  },
+  "package": {
+    "path": "native-transparent-opacity/index.json",
+    "sha256": "700ae65bee6b7ae38f23aea73ef06854f2becacc997a3a6064e538d533634ce7",
+    "archive": {
+      "path": "records.tar.gz",
+      "bytes": 415884,
+      "sha256": "2988979d66a088ee5035964f9ac708907ff81235a5bdd4a04bf3c400bbb4ccc7"
+    },
+    "files": 156,
+    "payload_bytes": 1774712
+  },
+  "record_paths": "records/ and source/ members inside the archive; recorded absolute paths identify original local inputs",
+  "validation": {
+    "rust": "1.88.0",
+    "full_native_tests": 2149,
+    "ignored_confinement_tests_included": true,
+    "bridge_groups": 73,
+    "core_gpu_tests": 137,
+    "core_default_tests": 106,
+    "probe_tests": 7,
+    "probe_python_tests": 98,
+    "strict_clippy": [
+      "validation/native-clippy-188-1.json",
+      "validation/core-clippy-188-1.json",
+      "validation/probe-clippy-188-final.json"
+    ],
+    "formatting": "validation/fmt-final.json"
+  },
+  "arithmetic": {
+    "inverse_pairs": 16711680,
+    "channel_checks": 812438,
+    "root_checks": 275247,
+    "root_boundary_checks": 1400,
+    "seeded_premultiplied_samples": 262144,
+    "standalone": "arithmetic/run-1.json",
+    "also_retained_as_six_core_tests": true,
+    "root_literal": {
+      "gray": 34,
+      "black_alpha": 55,
+      "opacity_numerator": 192,
+      "result": 28,
+      "ideal_rational_result": 29
+    },
+    "nested_literal": {
+      "result": 92,
+      "ideal_rational_result": 91
+    }
+  },
+  "offscreen": {
+    "record": "offscreen-2/host-results.json",
+    "binary": {
+      "path": "/tmp/eris-vulkan-transparent-opacity-1/eris-vulkan-transparent-opacity-check-2",
+      "bytes": 6699984,
+      "sha256": "d1e0e11184b118c56a9eb535788962b744428b8d0fb54187236a37b123a6924b"
+    },
+    "adapters": [
+      "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+      "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+      "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+    ],
+    "frames_per_adapter": 62,
+    "bytes_per_adapter": 1408,
+    "total_frames": 186,
+    "total_compared_bytes": 4224,
+    "per_adapter": {
+      "literal": [
+        34,
+        512
+      ],
+      "opaque_reuse": [
+        14,
+        448
+      ],
+      "transparent_reuse": [
+        14,
+        448
+      ],
+      "successful_allocations": 14,
+      "successful_reuses": 14,
+      "successful_evictions": 14,
+      "separate_cancellation_checks": 16
+    },
+    "unique_planner_refusals": 1,
+    "acquired_surface": false,
+    "all_owned_children_cleaned_up": true
+  },
+  "browser": {
+    "release_build": "validation/browser-build-2.json",
+    "binary": {
+      "path": "/tmp/eris-vulkan-transparent-opacity-1/eris-browser-native-1",
+      "bytes": 17502016,
+      "sha256": "0c4e69b49e74731ac0bdf40f91abbdc3f1d98512ac0c5086bd8684e759549419"
+    },
+    "new_example": "examples/vulkan-transparent-opacity.html",
+    "Page_and_worker_each_test_three_scenes_before_and_after_real_click": true,
+    "new_window_execution": false
+  },
+  "retained_failures": [
+    {
+      "record": "offscreen-1/host-results.json",
+      "cause": "Offline checker16-case inventory cap rejected17 literals before Vulkan initialization.",
+      "correction": "harness-correction/receipt.json"
+    },
+    {
+      "record": "validation/browser-build-1.json",
+      "cause": "Root supplied library name eris as --bin; corrected to declared eris-browser target. No source change."
+    }
+  ],
+  "preceding_checkpoint": {
+    "commit": "98d282216c004abae3752746fe974c4a7af28ae9",
+    "all_nine_CI_jobs_successful": true,
+    "CI": "native-scope-accounting-ci.json",
+    "publication_review": "native-scope-accounting-publication-review.json"
+  },
+  "remaining": "Non-grid opacity, broader native admission, complete CSS/web compatibility, production security and Chromium-relative performance remain unfinished.",
+  "security_or_performance_claim": false
+}

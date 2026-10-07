@@ -10,7 +10,7 @@ fn run() -> Result<()> {
         _ => return Err("usage: eris-vulkan-opacity-check --list | --adapter INDEX".into()),
     };
     let cases = opacity_fixtures::fixtures()?;
-    if cases.len() != 9 {
+    if cases.len() != 17 {
         return Err("opacity literal inventory".into());
     }
     let plans = cases
@@ -29,18 +29,25 @@ fn run() -> Result<()> {
         Ok(())
     })?;
     if let Some(adapter) = selected {
-        if frames != 18 || compared != 376 {
+        if frames != 34 || compared != 512 {
             return Err("opacity literal completion count".into());
         }
         let reuse = opacity_fixtures::reuse_fixtures()?;
         let counts = reuse_gpu::run_opacity(Some(adapter), &reuse)?;
+        let transparent = opacity_fixtures::transparent_reuse_fixtures()?;
+        let transparent_counts = reuse_gpu::run_opacity(Some(adapter), &transparent)?;
         println!(
-            "COMPLETE adapter={adapter} literal_frames={frames} literal_bytes={compared} refusals=3 reuse_frames={} reuse_bytes={} allocations={} reuses={} evictions={} offscreen=true acquired_surface=false exact=true",
+            "COMPLETE adapter={adapter} literal_frames={frames} literal_bytes={compared} refusals=1 reuse_frames={} reuse_bytes={} allocations={} reuses={} evictions={} transparent_reuse_frames={} transparent_reuse_bytes={} transparent_allocations={} transparent_reuses={} transparent_evictions={} offscreen=true acquired_surface=false exact=true",
             counts.frames,
             counts.compared_bytes,
             counts.allocations,
             counts.reuses,
-            counts.evictions
+            counts.evictions,
+            transparent_counts.frames,
+            transparent_counts.compared_bytes,
+            transparent_counts.allocations,
+            transparent_counts.reuses,
+            transparent_counts.evictions
         );
     }
     Ok(())

@@ -1,5 +1,9 @@
 # Bounded native group opacity
 
+This document records the initial opaque-backed milestone. The current route
+also admits [transparent groups](vulkan-transparent-opacity.md) at `k/256`;
+the original measurements and refusal records below are historical.
+
 The optional Vulkan raster route can composite nested opacity groups with an
 opaque rectangular backing. It uses custom integer shaders and cropped RGBA16
 scratch storage. The software renderer remains the default and handles complete

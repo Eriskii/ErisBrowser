@@ -72,25 +72,33 @@ fn decode(plan: &Plan) -> Vec<u32> {
                     }
                     DrawKind::GroupComposite => {
                         let source = scratch[scratch_index(p, 24, x, y)];
-                        assert_eq!(source[3], 65535, "backing certificate must hold");
-                        let k = u64::from(p(29));
+                        assert!(source[..3].iter().all(|&channel| channel <= source[3]));
+                        let k = p(29);
                         assert!((1..256).contains(&k));
+                        // Deliberately use Canvas's separate f32 stages, not the
+                        // shader's integer emulation or its opaque fast path.
+                        let opacity = k as f32 / 256.0;
+                        let inverse = 1.0 - source[3] as f32 / 65535.0 * opacity;
                         if draw.target_is_group() {
                             assert_eq!(p(21), 1);
                             let index = scratch_index(p, 16, x, y);
-                            assert_eq!(scratch[index][3], 65535);
                             for (c, source_channel) in source.into_iter().enumerate() {
-                                let n = u64::from(source_channel) * k
-                                    + u64::from(scratch[index][c]) * (256 - k);
-                                scratch[index][c] = ((n + 128) / 256) as u32;
+                                scratch[index][c] = (source_channel as f32 * opacity
+                                    + scratch[index][c] as f32 * inverse)
+                                    .round()
+                                    as u32;
                             }
+                            assert!(scratch[index][3] <= 65535);
+                            assert!(scratch[index][..3].iter().all(|&c| c <= scratch[index][3]));
                         } else {
                             assert_eq!(p(21), 0);
                             let mut color = 0;
                             for (c, shift) in [16, 8, 0].into_iter().enumerate() {
-                                let d = u64::from((pixels[root] >> shift) & 255) * 257;
-                                let n = u64::from(source[c]) * k + d * (256 - k);
-                                color |= (((n + 32896) / 65792) as u32) << shift;
+                                let d = ((pixels[root] >> shift) & 255) * 257;
+                                let channel = source[c] as f32 * opacity + d as f32 * inverse;
+                                let next = (channel / 257.0).round() as u32;
+                                assert!(next <= 255);
+                                color |= next << shift;
                             }
                             pixels[root] = color;
                         }
@@ -477,23 +485,27 @@ fn opacity_values_are_exact_grid_members_even_when_empty_or_suppressed() {
 }
 
 #[test]
-fn opacity_requires_first_direct_rect_to_cover_the_final_descendant_union() {
+fn opacity_transparent_regions_admit_independent_first_paints_and_fixed_holes() {
     let frame = Frame::new(4, 1, 0xffffff);
-    let error = "opacity group requires opaque rectangular backing";
     let disjoint_backing = [
         Command::PushOpacity(0.5),
         rect(0., 0., 2., 1., 0xff0000),
         rect(1., 0., 2., 1., 0x0000ff),
         Command::PopOpacity,
     ];
-    assert_eq!(native(frame, &disjoint_backing).unwrap_err(), error);
+    let disjoint = native(frame, &disjoint_backing).unwrap();
+    assert_eq!(decode(&disjoint), [0xff8080, 0x8080ff, 0x8080ff, 0xffffff]);
+    assert_eq!(disjoint.group_scratch_bytes(), 24);
     let partial_first = [
         Command::PushOpacity(0.5),
         rgba(Rect::new(0., 0., 1., 1.), [255, 0, 0, 128]),
         rect(0., 0., 1., 1., 0xffffff),
         Command::PopOpacity,
     ];
-    assert_eq!(native(frame, &partial_first).unwrap_err(), error);
+    assert_eq!(
+        decode(&native(frame, &partial_first).unwrap()),
+        [0xffffff; 4]
+    );
     let child_first = [
         Command::PushOpacity(0.5),
         Command::PushOpacity(0.5),
@@ -501,7 +513,9 @@ fn opacity_requires_first_direct_rect_to_cover_the_final_descendant_union() {
         Command::PopOpacity,
         Command::PopOpacity,
     ];
-    assert_eq!(native(frame, &child_first).unwrap_err(), error);
+    let child = native(frame, &child_first).unwrap();
+    assert_eq!(decode(&child), [0xffffff; 4]);
+    assert_eq!(child.group_scratch_bytes(), 16);
     let escaped_backing = [
         Command::PushClip(Rect::new(0., 0., 1., 1.)),
         Command::PushOpacity(0.5),
@@ -512,31 +526,154 @@ fn opacity_requires_first_direct_rect_to_cover_the_final_descendant_union() {
         Command::PopOpacity,
         Command::PopClip,
     ];
-    assert_eq!(native(frame, &escaped_backing).unwrap_err(), error);
+    let escaped = native(frame, &escaped_backing).unwrap();
+    assert_eq!(decode(&escaped), [0xff8080, 0xffffff, 0xffffff, 0x8080ff]);
+    assert_eq!(escaped.group_scratch_bytes(), 32);
     let image = [SourceImage {
         width: 1,
         height: 1,
         rgba: &[255, 0, 0, 128],
     }];
+    let image_only = plan_with_masks_for_profile(
+        Profile::Native,
+        frame,
+        &[
+            Command::PushOpacity(0.5),
+            Command::Image {
+                rect: Rect::new(0., 0., 1., 1.),
+                source: 0,
+            },
+            Command::PopOpacity,
+        ],
+        &image,
+        &[],
+        &[],
+    )
+    .unwrap();
     assert_eq!(
-        plan_with_masks_for_profile(
-            Profile::Native,
-            frame,
-            &[
-                Command::PushOpacity(0.5),
-                Command::Image {
-                    rect: Rect::new(0., 0., 1., 1.),
-                    source: 0
-                },
-                Command::PopOpacity,
-            ],
-            &image,
-            &[],
-            &[]
-        )
-        .unwrap_err(),
-        error
+        decode(&image_only),
+        [0xffbfbf, 0xffffff, 0xffffff, 0xffffff]
     );
+    assert_eq!(image_only.group_scratch_bytes(), 8);
+}
+
+#[test]
+fn opacity_transparent_rounding_keeps_both_root_and_nested_counterexamples() {
+    let root = native(
+        Frame::new(1, 1, 0x222222),
+        &[
+            Command::PushOpacity(192.0 / 256.0),
+            rgba(Rect::new(0., 0., 1., 1.), [0, 0, 0, 55]),
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    // Ideal rational source-over would produce1d1d1d. Canvas's final f32
+    // division is just below28.5 and must retain1c1c1c.
+    assert_eq!(decode(&root), [0x1c1c1c]);
+    assert_eq!(root.group_scratch_bytes(), 8);
+
+    let nested = native(
+        Frame::new(1, 1, 0x2c2c2c),
+        &[
+            Command::PushOpacity(127.0 / 256.0),
+            rect(0., 0., 1., 1., 0x979797),
+            Command::PushOpacity(0.5),
+            rgba(Rect::new(0., 0., 1., 1.), [0, 0, 0, 38]),
+            Command::PopOpacity,
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    // The inner channel stores35916 (a half tie), not ideal35915. That
+    // one RGBA16 level survives the outer pop:92 rather than91.
+    assert_eq!(decode(&nested), [0x5c5c5c]);
+    assert_eq!(nested.group_scratch_bytes(), 16);
+}
+
+#[test]
+fn opacity_transparent_parent_alpha_and_unpainted_union_holes_survive_pop() {
+    let nested = native(
+        Frame::new(1, 1, 0xffffff),
+        &[
+            Command::PushOpacity(0.5),
+            Command::PushOpacity(0.5),
+            rgba(Rect::new(0., 0., 1., 1.), [0, 0, 0, 128]),
+            Command::PopOpacity,
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&nested), [0xdfdfdf]);
+    assert_eq!(nested.group_scratch_bytes(), 16);
+    let holes = native(
+        Frame::new(3, 1, 0x0a0a0a),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 1., 1., 0xff0000),
+            rect(2., 0., 1., 1., 0x0000ff),
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&holes), [0x850505, 0x0a0a0a, 0x050585]);
+    assert_eq!(holes.group_scratch_bytes(), 24);
+    assert_eq!(holes.draws()[1].bounds(), (0, 0, 3, 1));
+    assert_eq!(holes.draws().last().unwrap().bounds(), (0, 0, 3, 1));
+}
+
+#[test]
+fn opacity_transparent_glyph_coverage_and_zero_alpha_image_keep_exact_pixels() {
+    let glyph = plan_with_masks_for_profile(
+        Profile::Native,
+        Frame::new(3, 1, 0xffffff),
+        &[
+            Command::PushOpacity(0.5),
+            Command::Glyph {
+                source: 0,
+                rows: 0,
+                y: 0,
+                rgba: [255, 0, 0, 128],
+            },
+            Command::PopOpacity,
+        ],
+        &[],
+        &[SourceMask {
+            width: 2,
+            height: 1,
+            coverage: &[0, 128],
+        }],
+        &[&[0]],
+    )
+    .unwrap();
+    assert_eq!(decode(&glyph), [0xffffff, 0xffdfdf, 0xffffff]);
+    assert_eq!(glyph.group_scratch_bytes(), 16);
+    assert!(glyph.has_glyphs());
+    let image = plan_with_masks_for_profile(
+        Profile::Native,
+        Frame::new(2, 1, 0x123456),
+        &[
+            Command::PushOpacity(0.5),
+            Command::Image {
+                rect: Rect::new(0., 0., 1., 1.),
+                source: 0,
+            },
+            Command::PopOpacity,
+        ],
+        &[SourceImage {
+            width: 1,
+            height: 1,
+            rgba: &[255, 0, 255, 0],
+        }],
+        &[],
+        &[],
+    )
+    .unwrap();
+    assert_eq!(decode(&image), [0x123456; 2]);
+    // Conservative geometry and uploads remain even when image pixels are
+    // transparent. Only the compositor's alpha-zero identity skips the write.
+    assert_eq!(image.group_scratch_bytes(), 8);
+    assert!(image.draws().iter().any(|d| d.kind() == DrawKind::Image));
 }
 
 #[test]

@@ -68,13 +68,14 @@ counted once, and allocation failure returns no partial collection. Aggregate
 coverage, source, row, storage and dispatch limits remain unchanged. The legacy
 single-mask API and Probe admission rules retain their existing refusals.
 
-Native opacity groups require `k/256` values and a first effective direct opaque
-rectangle covering their conservative descendant bounds. Each materialized group
+Native opacity groups require `k/256` values and support transparent descendants
+without an opaque backing. Each materialized group
 gets a disjoint cropped RGBA16 scratch region; clears and composites count toward
 the same operation, buffer and dispatch ledgers. Zero scopes suppress pixels only
-after input validation, and unit scopes preserve the current target. Unproved
-backings and non-grid opacity return an error for whole-frame fallback. See the
-[admission and arithmetic contract](../../docs/vulkan-opacity.md).
+after input validation, and unit scopes preserve the current target. Non-grid
+opacity returns an error for whole-frame fallback. Integer emulation preserves
+the software painter's separate binary32 rounding stages for transparent pops.
+See the [admission and arithmetic contract](../../docs/vulkan-transparent-opacity.md).
 
 ## GPU ownership
 
@@ -166,5 +167,5 @@ The earlier [native prerequisite checker](../../tools/vulkan-raster-probe/NATIVE
 exercises larger offscreen targets, rounded coverage and byte conversion.
 Its eleven cases pass in both formats on three Vulkan adapters, with
 81,393,120 bytes compared. Those results are distinct from the later acquired
-browser-window checks. Group opacity, broader compatibility and performance
-remain unfinished.
+browser-window checks. Arbitrary opacity values, broader compatibility and
+performance remain unfinished.

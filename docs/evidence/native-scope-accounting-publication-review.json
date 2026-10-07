@@ -1,0 +1,365 @@
+{
+  "status": "clear",
+  "scope": "bounded final staged-publication and archive audit; no compiler/renderer/engine/GPU execution",
+  "time_utc": "2026-10-07T09:34:15.836977+00:00",
+  "findings": [],
+  "staged": [
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/.github/workflows/check.yml",
+      "bytes": 17108,
+      "sha256": "ac5f62dfa77f3ce2676563bc39d611aa7eeaba7fea14aab29c860bf71b8826c2",
+      "git_path": ".github/workflows/check.yml",
+      "staged_blob_sha256": "ac5f62dfa77f3ce2676563bc39d611aa7eeaba7fea14aab29c860bf71b8826c2"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/ROADMAP.md",
+      "bytes": 26152,
+      "sha256": "8d1140a43fbaf22fd7810999ca623bf75cb0fcd89a22bbba6486d34bd493140b",
+      "git_path": "docs/ROADMAP.md",
+      "staged_blob_sha256": "8d1140a43fbaf22fd7810999ca623bf75cb0fcd89a22bbba6486d34bd493140b"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/VALIDATION.md",
+      "bytes": 355550,
+      "sha256": "129dd55c5352d1e1b60ead99a9c39c8e1804718c0b9f9b3eeb61f26602a391da",
+      "git_path": "docs/VALIDATION.md",
+      "staged_blob_sha256": "129dd55c5352d1e1b60ead99a9c39c8e1804718c0b9f9b3eeb61f26602a391da"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/native-scope-accounting.json",
+      "bytes": 3056,
+      "sha256": "d1f63ded3227983ed025bb94828dad03c5005f66b9a4eab78a9589f77037b8ab",
+      "git_path": "docs/evidence/native-scope-accounting.json",
+      "staged_blob_sha256": "d1f63ded3227983ed025bb94828dad03c5005f66b9a4eab78a9589f77037b8ab"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/native-scope-accounting/index.json",
+      "bytes": 7158,
+      "sha256": "7f66ad34096bf0af1076afd65eaad779637c00c3c52bb961359f85c9f3d0dee4",
+      "git_path": "docs/evidence/native-scope-accounting/index.json",
+      "staged_blob_sha256": "7f66ad34096bf0af1076afd65eaad779637c00c3c52bb961359f85c9f3d0dee4"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/native-scope-accounting/records.tar.gz",
+      "bytes": 279832,
+      "sha256": "0c67c5b005bb5640e393bec541535cf30b224975c8d58017a2480237dfb71c86",
+      "git_path": "docs/evidence/native-scope-accounting/records.tar.gz",
+      "staged_blob_sha256": "0c67c5b005bb5640e393bec541535cf30b224975c8d58017a2480237dfb71c86"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/vulkan-native-opacity-ci.json",
+      "bytes": 26182,
+      "sha256": "229d31916177ccc266677539e54f09e39a5d847197da2c463424a850691ba5ee",
+      "git_path": "docs/evidence/vulkan-native-opacity-ci.json",
+      "staged_blob_sha256": "229d31916177ccc266677539e54f09e39a5d847197da2c463424a850691ba5ee"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/vulkan-native-opacity-publication-review.json",
+      "bytes": 12885,
+      "sha256": "4d8ac5f2689abaeb1719ec08650f0d678bc4c5787caf4674d7bae08808046f0c",
+      "git_path": "docs/evidence/vulkan-native-opacity-publication-review.json",
+      "staged_blob_sha256": "4d8ac5f2689abaeb1719ec08650f0d678bc4c5787caf4674d7bae08808046f0c"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/vulkan-native-window.md",
+      "bytes": 16329,
+      "sha256": "aae6ecbdb634f0480ca8aa5cbde243bcd74acd42034e4caf8c9303f356f45238",
+      "git_path": "docs/vulkan-native-window.md",
+      "staged_blob_sha256": "aae6ecbdb634f0480ca8aa5cbde243bcd74acd42034e4caf8c9303f356f45238"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/src/browser/native_scene.rs",
+      "bytes": 34894,
+      "sha256": "c12ed6d16a17cf28718fdcb01b11e10c52807c9789616f6f484afee3866eeec4",
+      "git_path": "src/browser/native_scene.rs",
+      "staged_blob_sha256": "c12ed6d16a17cf28718fdcb01b11e10c52807c9789616f6f484afee3866eeec4"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/src/graphics/raster_bridge/native.rs",
+      "bytes": 37094,
+      "sha256": "f76c0ef66dcf7c9e26d9349f2b0333b48b03b4defb1ba197c391ed98c244c115",
+      "git_path": "src/graphics/raster_bridge/native.rs",
+      "staged_blob_sha256": "f76c0ef66dcf7c9e26d9349f2b0333b48b03b4defb1ba197c391ed98c244c115"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "bytes": 14029,
+      "sha256": "cecfaeb41bcf503c7b3548db79de3229780e156ba98f5ec82ea8c263623e2ad8",
+      "git_path": "src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "staged_blob_sha256": "cecfaeb41bcf503c7b3548db79de3229780e156ba98f5ec82ea8c263623e2ad8"
+    },
+    {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 39661,
+      "sha256": "c6284d3f97e9eee47226607297ba9612334effc438c84f9fe74b3bffba4a1526",
+      "git_path": "src/graphics/raster_bridge/native/tests.rs",
+      "staged_blob_sha256": "c6284d3f97e9eee47226607297ba9612334effc438c84f9fe74b3bffba4a1526"
+    }
+  ],
+  "archive": {
+    "archive": {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/native-scope-accounting/records.tar.gz",
+      "bytes": 279832,
+      "sha256": "0c67c5b005bb5640e393bec541535cf30b224975c8d58017a2480237dfb71c86"
+    },
+    "index": {
+      "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/native-scope-accounting/index.json",
+      "bytes": 7158,
+      "sha256": "7f66ad34096bf0af1076afd65eaad779637c00c3c52bb961359f85c9f3d0dee4"
+    },
+    "safe_regular_unique_members": 40,
+    "payload_bytes": 1178946,
+    "all_member_hashes_and_current_originals_match": true,
+    "source_copies": 8
+  },
+  "validation": {
+    "bridge-188-1": {
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "raster-bridge",
+        "--lib",
+        "graphics::raster_bridge::",
+        "--",
+        "--test-threads=1"
+      ],
+      "result_rows": [
+        [
+          "ok",
+          69,
+          0,
+          0
+        ]
+      ],
+      "passed": 69,
+      "failed": 0,
+      "ignored": 0
+    },
+    "fmt-final": {
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--check"
+      ],
+      "result_rows": [],
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native-clippy-188-1": {
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "result_rows": [],
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native-clippy-188-final": {
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "result_rows": [],
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native-full-188-1": {
+      "exit": 101,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=2"
+      ],
+      "result_rows": [
+        [
+          "ok",
+          1822,
+          0,
+          0
+        ],
+        [
+          "FAILED",
+          114,
+          1,
+          0
+        ]
+      ],
+      "passed": 1936,
+      "failed": 1,
+      "ignored": 0
+    },
+    "native-full-188-2": {
+      "exit": 0,
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=2"
+      ],
+      "result_rows": [
+        [
+          "ok",
+          1822,
+          0,
+          0
+        ],
+        [
+          "ok",
+          115,
+          0,
+          0
+        ],
+        [
+          "ok",
+          4,
+          0,
+          0
+        ],
+        [
+          "ok",
+          9,
+          0,
+          0
+        ],
+        [
+          "ok",
+          5,
+          0,
+          0
+        ],
+        [
+          "ok",
+          7,
+          0,
+          0
+        ],
+        [
+          "ok",
+          17,
+          0,
+          0
+        ],
+        [
+          "ok",
+          80,
+          0,
+          0
+        ],
+        [
+          "ok",
+          1,
+          0,
+          0
+        ],
+        [
+          "ok",
+          9,
+          0,
+          0
+        ],
+        [
+          "ok",
+          2,
+          0,
+          0
+        ],
+        [
+          "ok",
+          2,
+          0,
+          0
+        ],
+        [
+          "ok",
+          72,
+          0,
+          0
+        ],
+        [
+          "ok",
+          0,
+          0,
+          0
+        ]
+      ],
+      "passed": 2145,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "summary": {
+    "path": "/tmp/eris-native-scope-accounting-1/worktree/docs/evidence/native-scope-accounting.json",
+    "bytes": 3056,
+    "sha256": "d1f63ded3227983ed025bb94828dad03c5005f66b9a4eab78a9589f77037b8ab"
+  },
+  "preceding_ci": {
+    "jobs_successful": 9,
+    "head_sha": "da2d75b618159bfa9d3e6ef95d5fb67424bd8c88",
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/37598041542"
+  },
+  "claims_checked": [
+    "Four scope variants only; nontext operation count and primitive/opacity fees retained",
+    "Six independent groups remain byte-exact; actual Page20-command full-array witness passed",
+    "69 bridge and2145 full native observations from raw retained logs; initial full-run failure remains archived",
+    "Zoom correction is test-only and matches archived before/after plus final staged source",
+    "All eight source/doc/workflow copies match staged bytes and final-source identities; previous CI/publication copies exact"
+  ],
+  "relative_document_links_checked": 391,
+  "no_mutation": "All13 staged/worktree bytes unchanged after audit; archive closed and not repacked."
+}

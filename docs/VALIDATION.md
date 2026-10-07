@@ -5168,3 +5168,29 @@ contract comparison, not a fresh execution of those cases. The preceding
 [cloning commit CI](evidence/node-clone-ci.json) passed all nine jobs.
 No new Rust build, GPU rendering or Chromium performance comparison is claimed
 for this validation-only increment. Full browser compatibility remains unfinished.
+
+## Transparent native opacity
+
+The optional Vulkan route now admits unbacked groups at `k/256`, with integer
+emulation of the software painter's separate binary32 rounding stages. Renderer
+budgets remain unchanged. The prior coordinate-scope commit
+[`98d2822`](https://github.com/Eriskii/ErisBrowser/commit/98d282216c004abae3752746fe974c4a7af28ae9)
+passed all nine [CI jobs](https://github.com/Eriskii/ErisBrowser/actions/runs/37601580414).
+
+The new candidate passes 2,149 native-feature tests including ignored confinement
+checks, 73 bridge groups, 137 GPU-feature/106 default core tests, seven probe tests,
+strict Clippy and formatting on Rust 1.88. Six arithmetic groups verify 16,711,680
+inverse pairs, 812,438 channel results and 275,247 root results. The new public
+example is loaded and clicked through both Page and confined-worker tests;
+complete plan interpretations match Canvas before and after the click.
+
+Actual offscreen execution on NVIDIA, AMD RADV and llvmpipe passes 186 frames and
+4,224 literal compared bytes across two formats. Each adapter checks 17 literal
+cases plus separate opaque and transparent reuse sequences, with 16 cancellation
+boundaries. The first checker run failed before Vulkan initialization because
+its inventory cap was 16; the harness-only correction admits 17 test cases. Raw
+failure and successful run records are retained. All 98 probe-host Python tests pass.
+
+See [the compositor contract](vulkan-transparent-opacity.md) and
+[evidence package](evidence/vulkan-transparent-opacity.json). No new acquired
+browser-window result, general security claim or Chromium speed claim follows.

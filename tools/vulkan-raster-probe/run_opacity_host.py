@@ -17,10 +17,11 @@ from run_host import child_environment, inventory
 ROOT = Path(__file__).resolve().parent
 MAX_BINARY = 128 * 1024 * 1024
 LITERAL_SHA256 = '3e879cf28127f6bc1400b3c26c481bb5613fc1a4e75b024ea195faaaa6f0d764'
+TRANSPARENT_SHA256 = '7e7f9a2cde6df607daf0b1f0bfd8a31ed8219c04fdddd27e52e503e77ad7ef03'
 EMPTY_SHA256 = hashlib.sha256(b'').hexdigest()
 FORMATS = ('Bgra8Unorm', 'Rgba8Unorm')
 # Name, scratch bytes, complete active-pixel bytes. Literal frame geometry and
-# opaque backing regions fix these independently of candidate output.
+# conservative descendant unions fix these independently of candidate output.
 LITERALS = (
     ('halfway-red-65-over-black', 8, 12),
     ('opaque-backed-overlap-and-after-pop', 96, 64),
@@ -30,7 +31,15 @@ LITERALS = (
     ('fixed-escape-stays-inside-opaque-backing', 80, 48),
     ('unit-scope-preserves-current-direct-rgb8-target', 0, 4),
     ('fractional-caller-clip-integer-origin-containment', 8, 12),
+    ('multiple-rect-group-without-first-covering-backing', 24, 16),
+    ('translucent-image-only-group', 8, 8),
     ('zero-scope-suppresses-pixels-and-restores-root', 0, 8),
+    ('transparent-black-alpha55-three-quarters-root-rounding', 8, 4),
+    ('inner-rounding-survives-outer-pop', 16, 4),
+    ('transparent-parent-retains-partial-alpha', 16, 4),
+    ('opaque-islands-with-transparent-hole', 24, 12),
+    ('transparent-glyph-coverage-without-backing', 16, 12),
+    ('zero-alpha-image-preserves-root', 8, 8),
 )
 # All reuse targets are 4x2. Six ordered draws mean 1536 parameter bytes;
 # root 32 + inputs 20 + conversion 528 + scratch 32/48 => 2148/2164 bytes.
@@ -38,7 +47,7 @@ REUSE_SEQUENCE = (('a', False), ('b', True), ('c', True), ('a', True), ('resized
 FIRST_REUSE_DRAWS = 6  # root clear, group clear, backing, image, glyph, composite
 CANCEL_CHECKPOINTS = FIRST_REUSE_DRAWS + 2  # initial and conversion guards
 REUSE = re.compile(
-    r'PASS reuse-opacity-reuse-(a|b|c|resized) format=(Bgra8Unorm|Rgba8Unorm) '
+    r'PASS reuse-(opacity-reuse|opacity-transparent-reuse)-(a|b|c|resized) format=(Bgra8Unorm|Rgba8Unorm) '
     r'width=4 height=2 reused=(true|false) planned_bytes=(2148|2164) '
     r'compared_bytes=32 reference=literal exact=true')
 
@@ -49,7 +58,9 @@ def _lines(stdout: bytes) -> list[str]:
     if not stdout.endswith(b'\n') or b'\r' in stdout or b'\0' in stdout:
         raise ValueError('stdout must contain complete LF records')
     lines = stdout[:-1].decode('utf-8', errors='strict').split('\n')
-    if len(lines) > 96 or any(not line or len(line) > 4096 for line in lines):
+    # At most16 adapters are listed by each of3 sessions, plus34 literal,
+    # 2*(8 cancellation+14 reuse) and1 completion records:127 lines.
+    if len(lines) > 128 or any(not line or len(line) > 4096 for line in lines):
         raise ValueError('stdout record bound')
     return lines
 
@@ -83,38 +94,49 @@ def validate_run(stdout: bytes, adapters: list[str], selected: int) -> dict:
         f'PASS opacity-{name} format={fmt} scratch_bytes={scratch} compared_bytes={size} exact=true reference=literal'
         for name, scratch, size in LITERALS for fmt in FORMATS
     ]
-    if rows[:18] != expected_literals:
+    if rows[:34] != expected_literals:
         raise ValueError('literal case/format/route/byte sequence changed')
-    rows = rows[18:]
-    # Reuse creates a fresh Vulkan instance/device and reports its inventory.
-    if rows[:count] != adapters:
-        raise ValueError('reuse adapter inventory changed')
-    rows = rows[count:]
+    rows = rows[34:]
     expected_reuse = expected_reuse_sequence()
-    if len(rows) != CANCEL_CHECKPOINTS + len(expected_reuse) + 1:
+    per_reuse = count + CANCEL_CHECKPOINTS + len(expected_reuse)
+    if len(rows) != 2 * per_reuse + 1:
         raise ValueError('opacity record count')
-    for cut in range(1, CANCEL_CHECKPOINTS + 1):
-        if rows[cut - 1] != (f'PASS cancellation checkpoint={cut} flush_submissions=1 '
-                             'retired=true reusable=false scopes=3'):
-            raise ValueError('cancellation retirement/scopes mismatch')
-    for line, wanted in zip(rows[CANCEL_CHECKPOINTS:-1], expected_reuse, strict=True):
-        match = REUSE.fullmatch(line)
-        if not match:
-            raise ValueError('malformed reuse evidence')
-        name, fmt, reused, planned = match.groups()
-        if (name, fmt, reused == 'true') != wanted:
-            raise ValueError('reuse sequence/cache decision changed')
-        if int(planned) != (2164 if name == 'resized' else 2148):
-            raise ValueError('reuse exact scratch accounting changed')
-    completion = (f'COMPLETE adapter={selected} literal_frames=18 literal_bytes=376 refusals=3 '
+    for prefix in ('opacity-reuse', 'opacity-transparent-reuse'):
+        # Each corpus creates a fresh Vulkan instance/device. Retain and check
+        # both enumerations and every cut, including the transparent corpus.
+        if rows[:count] != adapters:
+            raise ValueError('reuse adapter inventory changed')
+        rows = rows[count:]
+        for cut in range(1, CANCEL_CHECKPOINTS + 1):
+            if rows[cut - 1] != (f'PASS cancellation checkpoint={cut} flush_submissions=1 '
+                                 'retired=true reusable=false scopes=3'):
+                raise ValueError('cancellation retirement/scopes mismatch')
+        start = CANCEL_CHECKPOINTS
+        end = start + len(expected_reuse)
+        for line, wanted in zip(rows[start:end], expected_reuse, strict=True):
+            match = REUSE.fullmatch(line)
+            if not match:
+                raise ValueError('malformed reuse evidence')
+            actual_prefix, name, fmt, reused, planned = match.groups()
+            if actual_prefix != prefix or (name, fmt, reused == 'true') != wanted:
+                raise ValueError('reuse sequence/cache decision changed')
+            if int(planned) != (2164 if name == 'resized' else 2148):
+                raise ValueError('reuse exact scratch accounting changed')
+        rows = rows[end:]
+    completion = (f'COMPLETE adapter={selected} literal_frames=34 literal_bytes=512 refusals=1 '
                   'reuse_frames=14 reuse_bytes=448 allocations=7 reuses=7 evictions=7 '
+                  'transparent_reuse_frames=14 transparent_reuse_bytes=448 transparent_allocations=7 '
+                  'transparent_reuses=7 transparent_evictions=7 '
                   'offscreen=true acquired_surface=false exact=true')
     if rows[-1] != completion:
         raise ValueError('opacity completion mismatch')
-    return {'literal_frames': 18, 'literal_bytes': 376, 'literal_cases': 9, 'formats': 2,
+    return {'literal_frames': 34, 'literal_bytes': 512, 'literal_cases': 17, 'formats': 2,
             'reuse_frames': 14, 'reuse_bytes': 448, 'allocations': 7, 'reuses': 7,
             'evictions': 7, 'cancellation_checkpoints': CANCEL_CHECKPOINTS,
-            'planner_refusals': 3, 'reference': 'literal', 'acquired_surface': False,
+            'transparent_reuse_frames': 14, 'transparent_reuse_bytes': 448,
+            'transparent_allocations': 7, 'transparent_reuses': 7, 'transparent_evictions': 7,
+            'transparent_cancellation_checkpoints': CANCEL_CHECKPOINTS,
+            'planner_refusals': 1, 'reference': 'literal', 'acquired_surface': False,
             'scope': 'offscreen Native GPU pixels and explicit lease events; refusal assertions run before Vulkan; no native-window or speed claim'}
 
 
@@ -132,10 +154,13 @@ def run_host(binary: Path, output: Path, loader: Path | None, timeout: float = 6
     names = ('run_opacity_host.py', 'run_browser_host.py', 'run_glyph_host.py',
              'run_host.py', 'bridge_supervisor.py', 'browser_protocol.py', 'glyph_protocol.py',
              'src/bin/opacity-check.rs', 'src/opacity_fixtures.rs', 'src/reuse_gpu.rs',
-             'src/surface_gpu.rs', 'opacity-fixtures/literal-fixtures.json')
+             'src/surface_gpu.rs', 'opacity-fixtures/literal-fixtures.json',
+             'opacity-fixtures/transparent-fixtures.json')
     bindings = {name: digest(ROOT / name, 1024 * 1024) for name in names}
     if bindings['opacity-fixtures/literal-fixtures.json'] != LITERAL_SHA256:
         raise ValueError('independent opacity fixture changed')
+    if bindings['opacity-fixtures/transparent-fixtures.json'] != TRANSPARENT_SHA256:
+        raise ValueError('independent transparent opacity fixture changed')
     output.mkdir(parents=True)
     result = {'schema': 1, 'success': False, 'binary': str(binary), 'binary_sha256': binary_sha,
               'loader': loader_record, 'source_bindings': bindings, 'runs': [],

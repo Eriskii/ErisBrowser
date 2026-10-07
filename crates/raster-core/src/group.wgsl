@@ -137,6 +137,92 @@ fn group_glyph(@builtin(global_invocation_id) id: vec3<u32>) {
     blend_group(index, (p.color & 0x00ffffffu) | (alpha << 24u));
 }
 
+// Reproduce Canvas's separate binary32 rounding stages using integers. Every
+// value is nonnegative and normal; pairs are (low, high) on a 2^-24 scale.
+// No optional shader integer width, floating-point division, or FMA is used.
+fn opacity_round_even(value: u32, shift: u32) -> u32 {
+    if (shift == 0u) { return value; }
+    // Caller bounds: 1 <= shift <= 23.
+    let quotient = value >> shift;
+    let remainder = value & ((1u << shift) - 1u);
+    let half = 1u << (shift - 1u);
+    return quotient + u32(remainder > half || (remainder == half && (quotient & 1u) != 0u));
+}
+
+fn opacity_inverse(alpha: u32, k: u32) -> u32 {
+    // Called only for 0 < alpha < 65535, 0 < k < 256.
+    let h = 31u - countLeadingZeros(alpha);
+    let x = alpha << (23u - h);
+    let m = x + (x + 32767u) / 65535u;
+    let product = m * k; // < 2^32
+    let shift = max(32u - countLeadingZeros(product), 24u) - 24u;
+    let rounded = opacity_round_even(product, shift);
+    // Keep the original scale even if rounding carries into bit 24.
+    return 16777216u - opacity_round_even(rounded, 23u - h - shift);
+}
+
+fn opacity_add(a: vec2<u32>, b: vec2<u32>) -> vec2<u32> {
+    let low = a.x + b.x;
+    return vec2<u32>(low, a.y + b.y + u32(low < a.x));
+}
+
+fn opacity_product(channel: u32, inverse: u32) -> vec2<u32> {
+    let low = channel * (inverse & 65535u);
+    let high = channel * (inverse >> 16u);
+    let sum = low + (high << 16u);
+    return vec2<u32>(sum, (high >> 16u) + u32(sum < low));
+}
+
+fn opacity_bits(value: vec2<u32>) -> u32 {
+    if (value.y != 0u) { return 64u - countLeadingZeros(value.y); }
+    return 32u - countLeadingZeros(value.x);
+}
+
+fn opacity_round24(value: vec2<u32>) -> vec2<u32> {
+    let bits = opacity_bits(value);
+    if (bits <= 24u) { return value; }
+    let shift = bits - 24u; // at most 17; no shift by 32
+    let quotient = (value.x >> shift) | (value.y << (32u - shift));
+    let remainder = value.x & ((1u << shift) - 1u);
+    let half = 1u << (shift - 1u);
+    let rounded = quotient + u32(remainder > half || (remainder == half && (quotient & 1u) != 0u));
+    return vec2<u32>(rounded << shift, rounded >> (32u - shift));
+}
+
+fn opacity_channel(source: u32, destination: u32, k: u32, inverse: u32) -> vec2<u32> {
+    let weighted = source * k;
+    let source_pair = vec2<u32>(weighted << 16u, weighted >> 16u);
+    let destination_pair = opacity_round24(opacity_product(destination, inverse));
+    return opacity_round24(opacity_add(source_pair, destination_pair));
+}
+
+fn opacity_parent(value: vec2<u32>) -> u32 {
+    return (value.y << 8u) + (value.x >> 24u) + u32((value.x & 16777215u) >= 8388608u);
+}
+
+fn opacity_root(value: vec2<u32>) -> u32 {
+    let bits = opacity_bits(value);
+    if (bits == 0u) { return 0u; }
+    var significand: u32;
+    if (bits > 24u) {
+        let shift = bits - 24u;
+        significand = (value.x >> shift) | (value.y << (32u - shift));
+    } else {
+        significand = value.x << (24u - bits);
+    }
+    // Exact normalization of division by257. Its odd denominator has no ties.
+    var exponent_shift = 8u;
+    if (significand < 8421376u) {
+        significand *= 2u;
+        exponent_shift = 9u;
+    }
+    let divided = significand - (significand + 128u) / 257u;
+    let shift = 48u + exponent_shift - bits;
+    if (shift > 24u) { return 0u; }
+    // Positive .round(): halfway away from zero, following the f32 division.
+    return (divided + (1u << (shift - 1u))) >> shift;
+}
+
 @compute @workgroup_size(8, 8, 1)
 fn group_composite(@builtin(global_invocation_id) id: vec3<u32>) {
     if (!dispatch_visible(id) || p.group_info.y == 0u || p.group_info.y >= 256u) { return; }
@@ -145,23 +231,42 @@ fn group_composite(@builtin(global_invocation_id) id: vec3<u32>) {
     let source_index = group_index(p.group_source, p.group_info.x, x, y);
     if (source_index >= arrayLength(&layers)) { return; }
     let source = load_group(source_index);
-    // The complete planner proves an opaque backing for this whole source.
-    if (source.w != 65535u) { return; }
+    if (source.w == 0u) { return; }
     let k = p.group_info.y;
+    var inverse = 0u;
+    if (source.w != 65535u) { inverse = opacity_inverse(source.w, k); }
     if (p.destination_info.y == 1u) {
         let destination_index = group_index(p.destination, p.destination_info.x, x, y);
         if (destination_index >= arrayLength(&layers)) { return; }
         let destination = load_group(destination_index);
-        let numerator = source * k + destination * (256u - k);
-        store_group(destination_index, (numerator + vec4<u32>(128u)) / 256u);
+        if (source.w == 65535u) {
+            let numerator = source * k + destination * (256u - k);
+            store_group(destination_index, (numerator + vec4<u32>(128u)) / 256u);
+        } else {
+            store_group(destination_index, vec4<u32>(
+                opacity_parent(opacity_channel(source.x, destination.x, k, inverse)),
+                opacity_parent(opacity_channel(source.y, destination.y, k, inverse)),
+                opacity_parent(opacity_channel(source.z, destination.z, k, inverse)),
+                opacity_parent(opacity_channel(source.w, destination.w, k, inverse))
+            ));
+        }
     } else if (p.destination_info.y == 0u) {
         let words = arrayLength(&pixels);
         if (p.canvas.x == 0u || p.canvas.x > words || y >= words / p.canvas.x) { return; }
         let index = y * p.canvas.x + x;
         let packed = pixels[index];
         let destination = vec3<u32>((packed >> 16u) & 255u, (packed >> 8u) & 255u, packed & 255u) * 257u;
-        let numerator = source.xyz * k + destination * (256u - k);
-        let rgb = (numerator + vec3<u32>(32896u)) / 65792u;
+        var rgb: vec3<u32>;
+        if (source.w == 65535u) {
+            let numerator = source.xyz * k + destination * (256u - k);
+            rgb = (numerator + vec3<u32>(32896u)) / 65792u;
+        } else {
+            rgb = vec3<u32>(
+                opacity_root(opacity_channel(source.x, destination.x, k, inverse)),
+                opacity_root(opacity_channel(source.y, destination.y, k, inverse)),
+                opacity_root(opacity_channel(source.z, destination.z, k, inverse))
+            );
+        }
         pixels[index] = (rgb.x << 16u) | (rgb.y << 8u) | rgb.z;
     }
 }

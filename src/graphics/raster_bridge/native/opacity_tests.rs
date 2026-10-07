@@ -1,6 +1,6 @@
 use super::*;
 
-// Independent integer interpretation of the packed plan ABI, used only by
+// Independent packed-plan interpretation with integer primitive blending and f32 group pop, used only by
 // these bridge tests. Literal expected pixels below are the oracle; neither
 // this decoder nor Canvas execution is evidence about a GPU driver.
 fn decode_opacity_pixels(plan: &Plan) -> Vec<u32> {
@@ -41,17 +41,25 @@ fn decode_opacity_pixels(plan: &Plan) -> Vec<u32> {
                     }
                     DrawKind::GroupComposite => {
                         let source = scratch[index(24, x, y)];
-                        assert_eq!(source[3], 65535);
-                        let k = u64::from(p(29));
+                        assert!(source.iter().all(|&channel| channel <= 65535));
+                        assert!(source[..3].iter().all(|&channel| channel <= source[3]));
+                        let k = p(29);
                         assert!((1..256).contains(&k));
+                        // Independent oracle: preserve Canvas's separate f32
+                        // division, multiplication, subtraction and pop stages.
+                        // Do not reproduce the shader's integer emulation here.
+                        let opacity = k as f32 / 256.0;
+                        let inverse = 1.0 - source[3] as f32 / 65535.0 * opacity;
                         let mut next = [0; 4];
                         for (channel, next) in next.iter_mut().enumerate() {
-                            let numerator = source[channel] * k + destination[channel] * (256 - k);
+                            let value = source[channel] as f32 * opacity
+                                + destination[channel] as f32 * inverse;
                             *next = if group {
-                                (numerator + 128) / 256
+                                value.round() as u64
                             } else {
-                                ((numerator + 32896) / 65792) * 257
+                                (value / 257.0).round() as u64 * 257
                             };
+                            assert!(*next <= 65535);
                         }
                         next
                     }
@@ -280,20 +288,19 @@ fn native_opacity_fixed_escape_uses_caller_clip_and_restores_document_offset() {
     assert_eq!(result.plan().group_scratch_bytes(), 80);
     let mut outside = commands.clone();
     outside[4] = fill(5.0, 0.0, 1.0, 1.0, Color::rgb(0, 0, 255), 0.0);
-    assert_eq!(
-        plan_native_scene(
-            target,
-            &[NativePhase {
-                frame: phase,
-                commands: &outside
-            }],
-            &ImageStore::new(),
-            &Fonts::new()
-        )
-        .unwrap_err()
-        .kind,
-        FallbackKind::UnsupportedOpacity
+    let outside = checked_pixels(
+        target,
+        &[NativePhase {
+            frame: phase,
+            commands: &outside,
+        }],
+        &ImageStore::new(),
+        &[
+            0x80ff80, 0xff8080, 0xff8080, 0xff8080, 0xff8080, 0x8080ff, 0xff8080, 0xff8080,
+            0xff8080, 0xff8080, 0xff8080, 0xffffff,
+        ],
     );
+    assert_eq!(outside.plan().group_scratch_bytes(), 96);
 }
 
 #[test]
@@ -392,7 +399,7 @@ fn native_opacity_text_and_rounded_masks_remain_inside_opaque_backing() {
 }
 
 #[test]
-fn native_opacity_unproved_sources_and_nongrid_values_refuse_whole_scene() {
+fn native_opacity_unbacked_sources_admit_but_nongrid_values_refuse_whole_scene() {
     let target = Frame::new(4, 1, 0xffffff);
     let ordinary = [fill(3.0, 0.0, 1.0, 1.0, Color::rgb(0, 255, 0), 0.0)];
     let mut images = ImageStore::new();
@@ -408,26 +415,23 @@ fn native_opacity_unproved_sources_and_nongrid_values_refuse_whole_scene() {
         let mut commands = vec![DrawCommand::PushOpacity { opacity: 0.5 }];
         commands.extend(body);
         commands.push(DrawCommand::PopOpacity);
-        assert_eq!(
-            plan_native_scene(
-                target,
-                &[
-                    NativePhase {
-                        frame: target,
-                        commands: &ordinary
-                    },
-                    NativePhase {
-                        frame: target,
-                        commands: &commands
-                    }
-                ],
-                &images,
-                &Fonts::new()
-            )
-            .unwrap_err()
-            .kind,
-            FallbackKind::UnsupportedOpacity
-        );
+        let phases = [
+            NativePhase {
+                frame: target,
+                commands: &ordinary,
+            },
+            NativePhase {
+                frame: target,
+                commands: &commands,
+            },
+        ];
+        let fonts = Fonts::new();
+        let result = plan_native_scene(target, &phases, &images, &fonts).unwrap();
+        let decoded = decode_opacity_pixels(result.plan());
+        assert_eq!(decoded, canvas_pixels(target, &phases, &images, &fonts));
+        assert_ne!(decoded[0], 0xffffff);
+        assert_eq!(decoded[3], 0x00ff00);
+        assert!(result.plan().group_scratch_bytes() > 0);
     }
     for prefix in [None, Some(0.0)] {
         let mut commands = Vec::new();
@@ -632,4 +636,199 @@ fn native_opacity_group_clear_and_pop_keep_the_four_million_work_limit() {
         single(&commands, target).unwrap_err().kind,
         FallbackKind::PlannerLimit
     );
+}
+
+#[test]
+fn native_opacity_transparent_pop_keeps_root_and_nested_f32_rounding_literals() {
+    let root = Frame::new(1, 1, 0x222222);
+    let commands = [
+        DrawCommand::PushOpacity { opacity: 0.75 },
+        fill(0.0, 0.0, 1.0, 1.0, Color::rgba(0, 0, 0, 55), 0.0),
+        DrawCommand::PopOpacity,
+    ];
+    let result = checked_pixels(
+        root,
+        &[NativePhase {
+            frame: root,
+            commands: &commands,
+        }],
+        &ImageStore::new(),
+        &[0x1c1c1c],
+    );
+    assert_eq!(result.plan().group_scratch_bytes(), 8);
+    // Ideal rational source-over would yield29 instead of this literal28.
+    let root = Frame::new(1, 1, 0x2c2c2c);
+    let commands = [
+        DrawCommand::PushOpacity {
+            opacity: 127.0 / 256.0,
+        },
+        fill(0.0, 0.0, 1.0, 1.0, Color::rgb(151, 151, 151), 0.0),
+        DrawCommand::PushOpacity { opacity: 0.5 },
+        fill(0.0, 0.0, 1.0, 1.0, Color::rgba(0, 0, 0, 38), 0.0),
+        DrawCommand::PopOpacity,
+        DrawCommand::PopOpacity,
+    ];
+    let result = checked_pixels(
+        root,
+        &[NativePhase {
+            frame: root,
+            commands: &commands,
+        }],
+        &ImageStore::new(),
+        &[0x5c5c5c],
+    );
+    // The separately rounded inner parent value35916 makes the final channel92.
+    assert_eq!(result.plan().group_scratch_bytes(), 16);
+}
+
+#[test]
+fn native_opacity_transparent_parent_holes_and_fixed_escape_keep_literal_pixels() {
+    let target = Frame::new(1, 1, 0xffffff);
+    let commands = [
+        DrawCommand::PushOpacity { opacity: 0.5 },
+        DrawCommand::PushOpacity { opacity: 0.5 },
+        fill(0.0, 0.0, 1.0, 1.0, Color::rgba(0, 0, 0, 128), 0.0),
+        DrawCommand::PopOpacity,
+        DrawCommand::PopOpacity,
+    ];
+    let result = checked_pixels(
+        target,
+        &[NativePhase {
+            frame: target,
+            commands: &commands,
+        }],
+        &ImageStore::new(),
+        &[0xdfdfdf],
+    );
+    assert_eq!(result.plan().group_scratch_bytes(), 16);
+    let target = Frame::new(5, 1, 0x0a0a0a);
+    let commands = [
+        DrawCommand::PushOpacity { opacity: 0.5 },
+        fill(0.0, 0.0, 1.0, 1.0, Color::rgb(255, 0, 0), 0.0),
+        DrawCommand::PushClip {
+            rect: BrowserRect {
+                x: 0.0,
+                y: 0.0,
+                width: 0.0,
+                height: 0.0,
+            },
+        },
+        DrawCommand::PushFixed,
+        fill(4.0, 0.0, 1.0, 1.0, Color::rgb(0, 0, 255), 0.0),
+        DrawCommand::PopFixed,
+        fill(0.0, 0.0, 5.0, 1.0, Color::rgb(0, 255, 0), 0.0),
+        DrawCommand::PopClip,
+        DrawCommand::PopOpacity,
+        fill(2.0, 0.0, 1.0, 1.0, Color::rgb(0, 255, 0), 0.0),
+    ];
+    let result = checked_pixels(
+        target,
+        &[NativePhase {
+            frame: target,
+            commands: &commands,
+        }],
+        &ImageStore::new(),
+        &[0x850505, 0x0a0a0a, 0x00ff00, 0x0a0a0a, 0x050585],
+    );
+    assert_eq!(result.plan().group_scratch_bytes(), 40);
+}
+
+#[test]
+fn native_opacity_image_only_alpha_and_zero_source_keep_root_channels() {
+    let target = Frame::new(3, 1, 0x222222);
+    let mut images = ImageStore::new();
+    images.insert(
+        "alpha-strip".into(),
+        Arc::new(RasterImage {
+            width: 3,
+            height: 1,
+            rgba: vec![0, 0, 0, 55, 255, 0, 0, 128, 0, 0, 255, 0],
+        }),
+    );
+    let commands = [
+        DrawCommand::PushOpacity { opacity: 0.75 },
+        DrawCommand::Image {
+            rect: BrowserRect {
+                x: 0.0,
+                y: 0.0,
+                width: 3.0,
+                height: 1.0,
+            },
+            key: "alpha-strip".into(),
+        },
+        DrawCommand::PopOpacity,
+    ];
+    let result = checked_pixels(
+        target,
+        &[NativePhase {
+            frame: target,
+            commands: &commands,
+        }],
+        &images,
+        &[0x1c1c1c, 0x751515, 0x222222],
+    );
+    assert_eq!(result.stats().bridge.referenced_sources, 1);
+    assert_eq!(result.stats().bridge.referenced_rgba_bytes, 12);
+    assert_eq!(result.plan().group_scratch_bytes(), 24);
+    assert_eq!(
+        result
+            .plan()
+            .draws()
+            .iter()
+            .filter(|d| d.kind() == DrawKind::Image && d.target_is_group())
+            .count(),
+        1
+    );
+}
+
+#[test]
+fn native_opacity_rounded_only_and_glyph_only_groups_match_full_canvas() {
+    let target = frame();
+    let images = ImageStore::new();
+    let fonts = Fonts::new();
+    for (primitive, is_text) in [
+        (
+            fill(0.0, 0.0, 20.0, 20.0, Color::rgba(255, 0, 0, 128), 6.0),
+            false,
+        ),
+        (text("A"), true),
+    ] {
+        let commands = [
+            DrawCommand::PushOpacity { opacity: 0.5 },
+            primitive,
+            DrawCommand::PopOpacity,
+        ];
+        let phases = [NativePhase {
+            frame: target,
+            commands: &commands,
+        }];
+        let result = plan_native_scene(target, &phases, &images, &fonts).unwrap();
+        let pixels = decode_opacity_pixels(result.plan());
+        assert_eq!(pixels, canvas_pixels(target, &phases, &images, &fonts));
+        assert!(pixels.iter().any(|&p| p != 0xffffff));
+        assert_eq!(pixels[0], 0xffffff);
+        assert!(result.plan().group_scratch_bytes() > 0);
+        assert!(
+            result
+                .plan()
+                .draws()
+                .iter()
+                .filter(|d| d.kind() == DrawKind::Glyph)
+                .all(|d| d.target_is_group())
+        );
+        if is_text {
+            assert_eq!(result.stats().text.occurrences, 1);
+            assert_eq!(result.stats().rounded_masks, 0);
+            assert!(
+                pixels
+                    .iter()
+                    .all(|&p| (p & 255) == ((p >> 8) & 255) && (p & 255) == ((p >> 16) & 255))
+            );
+        } else {
+            assert_eq!(result.stats().rounded_masks, 1);
+            assert_eq!(result.stats().text.occurrences, 0);
+            assert_eq!(pixels[10 * 64 + 10], 0xffbfbf);
+            assert_eq!(result.plan().group_scratch_bytes(), 3200);
+        }
+    }
 }

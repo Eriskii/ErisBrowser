@@ -894,9 +894,7 @@ pub fn plan_native_scene(
     }
     let plan = eris_raster_core::plan_native_phases(target, &core_phases, &sources, &masks, &rows)
         .map_err(|error| {
-            let kind = if error.starts_with("unsupported opacity")
-                || error == "opacity group requires opaque rectangular backing"
-            {
+            let kind = if error.starts_with("unsupported opacity") {
                 FallbackKind::UnsupportedOpacity
             } else {
                 FallbackKind::PlannerLimit

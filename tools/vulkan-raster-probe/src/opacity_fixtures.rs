@@ -1,4 +1,5 @@
-//! Literal fixtures transcribed from opacity-fixtures/literal-fixtures.json.
+//! Literal fixtures transcribed from opacity-fixtures/literal-fixtures.json
+//! and the additive opacity-fixtures/transparent-fixtures.json.
 //! Expectations were authored before candidate execution, not painted from it.
 use crate::reuse_fixtures::Fixture;
 use eris_raster_core::{
@@ -468,13 +469,15 @@ pub fn fixtures() -> Result<Vec<Fixture>> {
         let rows: &[&[i32]] = &[];
         let plan =
             plan_with_masks_for_profile(Profile::Native, frame, &commands, &images, &masks, rows);
-        if plan.as_ref().err().map(String::as_str)
-            != Some("opacity group requires opaque rectangular backing")
-        {
-            return Err(
-                "uncertified-multiple-rect-backing-remains-fallback: refusal mismatch".into(),
-            );
+        let plan = plan?;
+        if plan.group_scratch_bytes() != 24 {
+            return Err("multiple-rect group scratch mismatch".into());
         }
+        cases.push(Fixture {
+            name: "multiple-rect-group-without-first-covering-backing",
+            plan,
+            expected: vec![0xff8080, 0x8080ff, 0x8080ff, 0xffffff],
+        });
     }
     {
         let frame = Frame {
@@ -502,11 +505,15 @@ pub fn fixtures() -> Result<Vec<Fixture>> {
         let rows: &[&[i32]] = &[];
         let plan =
             plan_with_masks_for_profile(Profile::Native, frame, &commands, &images, &masks, rows);
-        if plan.as_ref().err().map(String::as_str)
-            != Some("opacity group requires opaque rectangular backing")
-        {
-            return Err("translucent-image-only-group-remains-fallback: refusal mismatch".into());
+        let plan = plan?;
+        if plan.group_scratch_bytes() != 8 {
+            return Err("translucent image group scratch mismatch".into());
         }
+        cases.push(Fixture {
+            name: "translucent-image-only-group",
+            plan,
+            expected: vec![0xffbfbf, 0xffffff],
+        });
     }
     {
         let frame = Frame {
@@ -574,6 +581,247 @@ pub fn fixtures() -> Result<Vec<Fixture>> {
                 "non-grid-opacity-remains-fallback-with-original-pixels: refusal mismatch".into(),
             );
         }
+    }
+    transparent_literals(&mut cases)?;
+    Ok(cases)
+}
+
+fn transparent_literals(cases: &mut Vec<Fixture>) -> Result<()> {
+    let rect = |rgba| Command::Rect {
+        rect: Rect::new(0.0, 0.0, 1.0, 1.0),
+        rgba,
+        radius: 0.0,
+    };
+    let descriptions = [
+        (
+            "transparent-black-alpha55-three-quarters-root-rounding",
+            Frame::new(1, 1, 0x222222),
+            vec![
+                Command::PushOpacity(192.0 / 256.0),
+                rect([0, 0, 0, 55]),
+                Command::PopOpacity,
+            ],
+            vec![0x1c1c1c],
+            8,
+        ),
+        (
+            "inner-rounding-survives-outer-pop",
+            Frame::new(1, 1, 0x2c2c2c),
+            vec![
+                Command::PushOpacity(127.0 / 256.0),
+                rect([151, 151, 151, 255]),
+                Command::PushOpacity(0.5),
+                rect([0, 0, 0, 38]),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+            vec![0x5c5c5c],
+            16,
+        ),
+        (
+            "transparent-parent-retains-partial-alpha",
+            Frame::new(1, 1, 0xffffff),
+            vec![
+                Command::PushOpacity(0.5),
+                Command::PushOpacity(0.5),
+                rect([0, 0, 0, 128]),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+            vec![0xdfdfdf],
+            16,
+        ),
+        (
+            "opaque-islands-with-transparent-hole",
+            Frame::new(3, 1, 0x0a0a0a),
+            vec![
+                Command::PushOpacity(0.5),
+                rect([255, 0, 0, 255]),
+                Command::Rect {
+                    rect: Rect::new(2.0, 0.0, 1.0, 1.0),
+                    rgba: [0, 0, 255, 255],
+                    radius: 0.0,
+                },
+                Command::PopOpacity,
+            ],
+            vec![0x850505, 0x0a0a0a, 0x050585],
+            24,
+        ),
+    ];
+    for (name, frame, commands, expected, scratch) in descriptions {
+        let plan = plan_with_masks_for_profile(Profile::Native, frame, &commands, &[], &[], &[])?;
+        if plan.group_scratch_bytes() != scratch {
+            return Err("transparent literal scratch mismatch".into());
+        }
+        cases.push(Fixture {
+            name,
+            plan,
+            expected,
+        });
+    }
+    let plan = plan_with_masks_for_profile(
+        Profile::Native,
+        Frame::new(3, 1, 0xffffff),
+        &[
+            Command::PushOpacity(0.5),
+            Command::Glyph {
+                source: 0,
+                rows: 0,
+                y: 0,
+                rgba: [255, 0, 0, 128],
+            },
+            Command::PopOpacity,
+        ],
+        &[],
+        &[SourceMask {
+            width: 2,
+            height: 1,
+            coverage: &[0, 128],
+        }],
+        &[&[0]],
+    )?;
+    if plan.group_scratch_bytes() != 16 || !plan.has_glyphs() {
+        return Err("transparent glyph literal route mismatch".into());
+    }
+    cases.push(Fixture {
+        name: "transparent-glyph-coverage-without-backing",
+        plan,
+        expected: vec![0xffffff, 0xffdfdf, 0xffffff],
+    });
+    let plan = plan_with_masks_for_profile(
+        Profile::Native,
+        Frame::new(2, 1, 0x123456),
+        &[
+            Command::PushOpacity(0.5),
+            Command::Image {
+                rect: Rect::new(0.0, 0.0, 1.0, 1.0),
+                source: 0,
+            },
+            Command::PopOpacity,
+        ],
+        &[SourceImage {
+            width: 1,
+            height: 1,
+            rgba: &[255, 0, 255, 0],
+        }],
+        &[],
+        &[],
+    )?;
+    if plan.group_scratch_bytes() != 8 {
+        return Err("zero-alpha image literal scratch mismatch".into());
+    }
+    cases.push(Fixture {
+        name: "zero-alpha-image-preserves-root",
+        plan,
+        expected: vec![0x123456, 0x123456],
+    });
+    Ok(())
+}
+
+/// A separate corpus retains the opaque sequence unchanged. Its first paint
+/// has alpha128, so same-size reuse must rewrite both RGB and partial alpha.
+pub fn transparent_reuse_fixtures() -> Result<Vec<Fixture>> {
+    let descriptions = [
+        (
+            "opacity-transparent-reuse-a",
+            Rect::new(0.0, 0.0, 4.0, 1.0),
+            0.5,
+            [65, 0, 0, 128],
+            Rect::new(1.0, 0.0, 1.0, 1.0),
+            [0, 65, 0, 255],
+            2,
+            0,
+            [0, 0, 65, 255],
+            [0x100000, 0x002100, 0x000021, 0x100000, 0, 0, 0, 0],
+        ),
+        (
+            "opacity-transparent-reuse-b",
+            Rect::new(0.0, 1.0, 4.0, 1.0),
+            0.25,
+            [0, 0, 65, 128],
+            Rect::new(3.0, 1.0, 1.0, 1.0),
+            [0, 65, 0, 255],
+            2,
+            1,
+            [65, 0, 0, 255],
+            [0, 0, 0, 0, 0x000008, 0x000008, 0x100000, 0x001000],
+        ),
+        (
+            "opacity-transparent-reuse-c",
+            Rect::new(1.0, 0.0, 2.0, 2.0),
+            0.75,
+            [65, 65, 65, 128],
+            Rect::new(1.0, 1.0, 1.0, 1.0),
+            [0, 0, 0, 255],
+            2,
+            0,
+            [65, 0, 0, 255],
+            [0, 0x181818, 0x310000, 0, 0, 0, 0x181818, 0],
+        ),
+        (
+            "opacity-transparent-reuse-resized",
+            Rect::new(0.0, 0.0, 3.0, 2.0),
+            0.5,
+            [65, 65, 65, 128],
+            Rect::new(0.0, 1.0, 1.0, 1.0),
+            [0, 0, 0, 255],
+            2,
+            0,
+            [65, 0, 0, 255],
+            [0x101010, 0x101010, 0x210000, 0, 0, 0x101010, 0x101010, 0],
+        ),
+    ];
+    let mut cases = Vec::new();
+    for (name, backing, opacity, color, image_rect, image, row, y, glyph, expected) in descriptions
+    {
+        let commands = [
+            Command::PushOpacity(opacity),
+            Command::Rect {
+                rect: backing,
+                rgba: color,
+                radius: 0.0,
+            },
+            Command::Image {
+                rect: image_rect,
+                source: 0,
+            },
+            Command::Glyph {
+                source: 0,
+                rows: 0,
+                y,
+                rgba: glyph,
+            },
+            Command::PopOpacity,
+        ];
+        let plan = plan_with_masks_for_profile(
+            Profile::Native,
+            Frame::new(4, 2, 0),
+            &commands,
+            &[SourceImage {
+                width: 1,
+                height: 1,
+                rgba: &image,
+            }],
+            &[SourceMask {
+                width: 1,
+                height: 1,
+                coverage: &[255],
+            }],
+            &[&[row]],
+        )?;
+        let expected_scratch = if name == "opacity-transparent-reuse-resized" {
+            48
+        } else {
+            32
+        };
+        if plan.group_scratch_bytes() != expected_scratch {
+            return Err("opacity reuse scratch extent mismatch".into());
+        }
+        cases.push(Fixture {
+            name,
+            plan,
+            expected: expected.to_vec(),
+        });
     }
     Ok(cases)
 }

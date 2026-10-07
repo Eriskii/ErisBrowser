@@ -18,17 +18,21 @@ def transcript():
         ('fixed-escape-stays-inside-opaque-backing', 80, 48),
         ('unit-scope-preserves-current-direct-rgb8-target', 0, 4),
         ('fractional-caller-clip-integer-origin-containment', 8, 12),
+        ('multiple-rect-group-without-first-covering-backing', 24, 16),
+        ('translucent-image-only-group', 8, 8),
         ('zero-scope-suppresses-pixels-and-restores-root', 0, 8),
+        ('transparent-black-alpha55-three-quarters-root-rounding', 8, 4),
+        ('inner-rounding-survives-outer-pop', 16, 4),
+        ('transparent-parent-retains-partial-alpha', 16, 4),
+        ('opaque-islands-with-transparent-hole', 24, 12),
+        ('transparent-glyph-coverage-without-backing', 16, 12),
+        ('zero-alpha-image-preserves-root', 8, 8),
     )
     rows = [ADAPTER]
     for name, scratch, size in cases:
         for fmt in ('Bgra8Unorm', 'Rgba8Unorm'):
             rows.append(f'PASS opacity-{name} format={fmt} scratch_bytes={scratch} '
                         f'compared_bytes={size} exact=true reference=literal')
-    rows.append(ADAPTER)
-    for cut in range(1, 9):
-        rows.append(f'PASS cancellation checkpoint={cut} flush_submissions=1 '
-                    'retired=true reusable=false scopes=3')
     reuse = (
         ('a', 'Bgra8Unorm', False), ('b', 'Bgra8Unorm', True),
         ('c', 'Bgra8Unorm', True), ('a', 'Bgra8Unorm', True),
@@ -38,13 +42,20 @@ def transcript():
         ('resized', 'Rgba8Unorm', False), ('resized', 'Bgra8Unorm', False),
         ('resized', 'Bgra8Unorm', False), ('resized', 'Bgra8Unorm', True),
     )
-    for name, fmt, reused in reuse:
-        planned = 2164 if name == 'resized' else 2148
-        rows.append(f'PASS reuse-opacity-reuse-{name} format={fmt} width=4 height=2 '
-                    f'reused={str(reused).lower()} planned_bytes={planned} compared_bytes=32 '
-                    'reference=literal exact=true')
-    rows.append('COMPLETE adapter=0 literal_frames=18 literal_bytes=376 refusals=3 '
+    for prefix in ('opacity-reuse', 'opacity-transparent-reuse'):
+        rows.append(ADAPTER)
+        for cut in range(1, 9):
+            rows.append(f'PASS cancellation checkpoint={cut} flush_submissions=1 '
+                        'retired=true reusable=false scopes=3')
+        for name, fmt, reused in reuse:
+            planned = 2164 if name == 'resized' else 2148
+            rows.append(f'PASS reuse-{prefix}-{name} format={fmt} width=4 height=2 '
+                        f'reused={str(reused).lower()} planned_bytes={planned} compared_bytes=32 '
+                        'reference=literal exact=true')
+    rows.append('COMPLETE adapter=0 literal_frames=34 literal_bytes=512 refusals=1 '
                 'reuse_frames=14 reuse_bytes=448 allocations=7 reuses=7 evictions=7 '
+                'transparent_reuse_frames=14 transparent_reuse_bytes=448 transparent_allocations=7 '
+                'transparent_reuses=7 transparent_evictions=7 '
                 'offscreen=true acquired_surface=false exact=true')
     return ('\n'.join(rows) + '\n').encode()
 
@@ -54,13 +65,15 @@ class OpacityProtocolTests(unittest.TestCase):
         # Negative cases must begin from an accepted complete transcript.
         self.good = transcript()
         result = validate_run(self.good, [ADAPTER], 0)
-        self.assertEqual((result['literal_bytes'], result['reuse_bytes']), (376, 448))
+        self.assertEqual((result['literal_bytes'], result['reuse_bytes'],
+                          result['transparent_reuse_bytes']), (512, 448, 448))
 
     def test_success_totals_cannot_replace_missing_duplicate_or_reordered_work(self):
         rows = self.good.splitlines(keepends=True)
         for bad in (rows[:3] + rows[4:], rows[:3] + [rows[2]] + rows[4:],
                     rows[:3] + [rows[4], rows[3]] + rows[5:],
-                    rows[:20] + rows[21:], rows + [b'PASS extra\n'], rows[:-1]):
+                    rows[:36] + rows[37:], rows[:59] + rows[60:],
+                    rows[:58] + rows[81:], rows + [b'PASS extra\n'], rows[:-1]):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
                 validate_run(b''.join(bad), [ADAPTER], 0)
 
@@ -75,7 +88,13 @@ class OpacityProtocolTests(unittest.TestCase):
             (b'checkpoint=8', b'checkpoint=9'),
             (b'planned_bytes=2164', b'planned_bytes=2148'),
             (b'reused=true', b'reused=false'),
-            (b'evictions=7', b'evictions=6'), (b'refusals=3', b'refusals=2'),
+            (b'evictions=7', b'evictions=6'), (b'refusals=1', b'refusals=2'),
+            (b'transparent_reuse_frames=14', b'transparent_reuse_frames=13'),
+            (b'transparent_reuse_bytes=448', b'transparent_reuse_bytes=447'),
+            (b'transparent_allocations=7', b'transparent_allocations=6'),
+            (b'transparent_reuses=7', b'transparent_reuses=6'),
+            (b'transparent_evictions=7', b'transparent_evictions=6'),
+            (b'PASS reuse-opacity-transparent-reuse-a', b'PASS reuse-opacity-reuse-a'),
             (b'acquired_surface=false', b'acquired_surface=true'),
             (b'adapter=0', b'adapter=1'),
         )
@@ -85,12 +104,13 @@ class OpacityProtocolTests(unittest.TestCase):
 
     def test_second_enumeration_cannot_change_device_or_add_unlisted_adapters(self):
         rows = self.good.splitlines(keepends=True)
-        self.assertEqual(rows[19], (ADAPTER + '\n').encode())
-        changed = list(rows)
-        changed[19] = rows[19].replace(b'device=0x5678', b'device=0x5679')
-        for bad in (b''.join(changed), b''.join(rows[:19] + rows[20:])):
-            with self.assertRaises(ValueError):
-                validate_run(bad, [ADAPTER], 0)
+        for index in (35, 58):
+            self.assertEqual(rows[index], (ADAPTER + '\n').encode())
+            changed = list(rows)
+            changed[index] = rows[index].replace(b'device=0x5678', b'device=0x5679')
+            for bad in (b''.join(changed), b''.join(rows[:index] + rows[index + 1:])):
+                with self.assertRaises(ValueError):
+                    validate_run(bad, [ADAPTER], 0)
         for selected in (-1, 1, True):
             with self.assertRaises(ValueError):
                 validate_run(self.good, [ADAPTER], selected)
@@ -108,6 +128,19 @@ class OpacityProtocolTests(unittest.TestCase):
                     self.good + b'\xff\n', b'x' * (2 * 1024 * 1024 + 1)):
             with self.subTest(size=len(bad)), self.assertRaises(ValueError):
                 validate_run(bad, [ADAPTER], 0)
+
+    def test_three_full_adapter_enumerations_fit_the_derived_record_bound(self):
+        adapters = [ADAPTER.replace('ADAPTER 0 ', f'ADAPTER {i} ') for i in range(16)]
+        listing = ('\n'.join(adapters) + '\n').encode()
+        self.assertEqual(validate_listing(listing), adapters)
+        full = self.good.replace((ADAPTER + '\n').encode(), listing)
+        full = full.replace(b'COMPLETE adapter=0 ', b'COMPLETE adapter=15 ')
+        self.assertEqual(len(full.splitlines()), 127)
+        result = validate_run(full, adapters, 15)
+        self.assertEqual((result['literal_frames'], result['reuse_frames'],
+                          result['transparent_reuse_frames']), (34, 14, 14))
+        with self.assertRaises(ValueError):
+            validate_run(full + b'PASS extra\nPASS extra\n', adapters, 15)
 
 
 if __name__ == '__main__':

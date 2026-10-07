@@ -12,6 +12,7 @@ pub const WIDTH: u32 = 320;
 pub const HEIGHT: u32 = 200;
 pub const PNG: &[u8] = include_bytes!("../../examples/vulkan-opacity.png");
 pub const PUBLIC_HTML: &str = include_str!("../../examples/vulkan-opacity.html");
+pub const TRANSPARENT_HTML: &str = include_str!("../../examples/vulkan-transparent-opacity.html");
 
 // The public scene leaves room for native browser chrome. This richer scene
 // independently exercises an actual button and two overlapping siblings in
@@ -44,24 +45,27 @@ document.getElementById('heading').firstChild.data=phase?'Native opacity 0.75':'
 pub enum Scene {
     Public,
     Button,
+    Transparent,
 }
 impl Scene {
     pub fn html(self) -> &'static str {
         match self {
             Self::Public => PUBLIC_HTML,
             Self::Button => BUTTON_HTML,
+            Self::Transparent => TRANSPARENT_HTML,
         }
     }
     pub fn hit(self) -> (f32, f32) {
         match self {
             Self::Public => (20.0, 20.0),
-            Self::Button => (96.0, 174.0),
+            Self::Button | Self::Transparent => (96.0, 174.0),
         }
     }
     fn nontext(self) -> usize {
         match self {
             Self::Public => 9,
             Self::Button => 11,
+            Self::Transparent => 9,
         }
     }
 }
@@ -111,7 +115,7 @@ pub fn check(
     ] {
         ids.push(find(selector));
     }
-    if matches!(scene, Scene::Button) {
+    if matches!(scene, Scene::Button | Scene::Transparent) {
         ids.extend([find("#card"), find("#blue"), find("#green")]);
     }
     for (index, id) in ids.iter().enumerate() {
@@ -127,7 +131,7 @@ pub fn check(
     let hit = layout.hit_test(x, y).unwrap();
     match scene {
         Scene::Public => assert_eq!(hit, change),
-        Scene::Button => {
+        Scene::Button | Scene::Transparent => {
             // Buttons use ordinary child layout. Hit testing returns the Text
             // node; the real Click dispatched above bubbles to its button.
             assert_eq!(doc.nodes[change].children, [hit]);
@@ -195,7 +199,14 @@ pub fn check(
     .expect("actual loaded display list takes the Native route");
     let plan = native.plan();
     assert_eq!(plan.profile(), Profile::Native);
-    assert_eq!(plan.group_scratch_bytes(), 262_144);
+    assert_eq!(
+        plan.group_scratch_bytes(),
+        if matches!(scene, Scene::Transparent) {
+            139_904
+        } else {
+            262_144
+        }
+    );
     assert_eq!(
         plan.draws()
             .iter()
@@ -243,24 +254,44 @@ pub fn check(
         "full viewport Canvas reference"
     );
     let sample = |x: usize, y: usize| canvas.pixels[y * WIDTH as usize + x];
-    for (x, y, expected) in [
-        (20, 20, [0xff8080, 0xff4040]),
-        (156, 36, [0xbf80bf, 0x9f409f]),
-        (176, 56, [0xbfbf80, 0x9f9f40]),
-        (114, 110, [0xffc0c0, 0xffa0a0]),
-        (124, 110, [0x8080ff, 0x4040ff]),
-        (156, 118, [0xffff80, 0xffff40]),
-        (300, 190, [0xffffff, 0xffffff]),
-    ] {
+    let literals = if matches!(scene, Scene::Transparent) {
+        [
+            (20, 20, [0xffffff, 0xffffff]),
+            (156, 36, [0xffffff, 0xffffff]),
+            (176, 56, [0xdfffdf, 0xcfffcf]),
+            (114, 110, [0xffffff, 0xffffff]),
+            (124, 110, [0x8080ff, 0x4040ff]),
+            (156, 118, [0xffff80, 0xffff40]),
+            (300, 190, [0xffffff, 0xffffff]),
+        ]
+    } else {
+        [
+            (20, 20, [0xff8080, 0xff4040]),
+            (156, 36, [0xbf80bf, 0x9f409f]),
+            (176, 56, [0xbfbf80, 0x9f9f40]),
+            (114, 110, [0xffc0c0, 0xffa0a0]),
+            (124, 110, [0x8080ff, 0x4040ff]),
+            (156, 118, [0xffff80, 0xffff40]),
+            (300, 190, [0xffffff, 0xffffff]),
+        ]
+    };
+    for (x, y, expected) in literals {
         assert_eq!(
             sample(x, y),
             expected[phase],
             "literal pixel ({x},{y}), {scene:?}, phase {phase}"
         );
     }
-    if matches!(scene, Scene::Button) {
+    if matches!(scene, Scene::Button | Scene::Transparent) {
         assert_eq!(sample(40, 40), [0x8080ff, 0x4040ff][phase]);
         assert_eq!(sample(72, 64), [0x80ff80, 0x40ff40][phase]);
+    }
+    if matches!(scene, Scene::Transparent) {
+        // Both group containers lack a background. Rounded/glyph/image draws
+        // and their transparent holes must survive the new admission path.
+        assert!(layout.commands.iter().any(|command| matches!(command,
+            DrawCommand::Rect { color, .. } if *color == Color::rgba(0, 255, 0, 128))));
+        assert!((108..126).any(|y| (32..50).any(|x| sample(x, y) != 0xffffff)));
     }
     if let Some(previous) = previous {
         assert_eq!(ids, previous.ids);
@@ -280,7 +311,7 @@ pub fn check(
     }
 }
 
-// Test-only independent integer interpretation of the packed Native ABI.
+// Test-only independent Native ABI interpretation with Canvas f32 group pop.
 // The same decoder is used by the focused native bridge opacity tests; this
 // copy lets real loaded Page/IPC display lists meet the full Canvas oracle.
 fn word(bytes: &[u8], index: usize) -> u32 {
@@ -327,17 +358,25 @@ fn decode_opacity_pixels(plan: &Plan) -> Vec<u32> {
                     }
                     DrawKind::GroupComposite => {
                         let source = scratch[index(24, x, y)];
-                        assert_eq!(source[3], 65535);
-                        let k = u64::from(p(29));
+                        assert!(source.iter().all(|&channel| channel <= 65535));
+                        assert!(source[..3].iter().all(|&channel| channel <= source[3]));
+                        let k = p(29);
                         assert!((1..256).contains(&k));
+                        // Independent oracle: preserve Canvas's separate f32
+                        // division, multiplication, subtraction and pop stages.
+                        // Do not reproduce the shader's integer emulation here.
+                        let opacity = k as f32 / 256.0;
+                        let inverse = 1.0 - source[3] as f32 / 65535.0 * opacity;
                         let mut next = [0; 4];
                         for (channel, next) in next.iter_mut().enumerate() {
-                            let numerator = source[channel] * k + destination[channel] * (256 - k);
+                            let value = source[channel] as f32 * opacity
+                                + destination[channel] as f32 * inverse;
                             *next = if group {
-                                (numerator + 128) / 256
+                                value.round() as u64
                             } else {
-                                ((numerator + 32896) / 65792) * 257
+                                (value / 257.0).round() as u64 * 257
                             };
+                            assert!(*next <= 65535);
                         }
                         next
                     }

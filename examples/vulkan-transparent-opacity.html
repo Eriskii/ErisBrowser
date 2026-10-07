@@ -1,0 +1,23 @@
+<!doctype html><meta charset=utf-8>
+<title id=heading>Native opacity 0.50</title><style>
+body{margin:0}
+#card{position:absolute;left:16px;top:16px;width:224px;height:128px;opacity:.5}
+#blue{position:absolute;left:16px;top:16px;width:64px;height:48px;background:#0000ff}
+#green{position:absolute;left:48px;top:40px;width:56px;height:40px;background:#00ff00}
+#panel{position:absolute;left:136px;top:16px;width:64px;height:64px;opacity:.5}
+#panel-green{position:absolute;left:16px;top:16px;width:32px;height:32px;background:#00ff0080}
+#label{position:absolute;left:16px;top:90px;font-size:16px;line-height:20px;color:black}
+#image{position:absolute;left:96px;top:90px;width:16px;height:16px}
+#rounded{position:absolute;left:128px;top:90px;width:24px;height:24px;background:#ffff00;border-radius:6px}
+#change{position:absolute;left:16px;top:160px;width:160px;height:28px;border:0;padding:0;background:transparent;font-size:16px;line-height:20px}
+</style><body data-phase=ready>
+<div id=card><div id=blue></div><div id=green></div><div id=panel><div id=panel-green></div></div><span id=label>Hi</span><img id=image src=vulkan-opacity.png alt="two pixels"><div id=rounded></div></div>
+<button id=change type=button>Toggle opacity</button>
+<script>
+var phase=0;var card=document.getElementById('card');
+document.getElementById('change').addEventListener('click',function(){
+phase=1-phase;card.style.opacity=phase?'0.75':'0.5';
+document.body.setAttribute('data-phase',phase?'changed':'ready');
+document.getElementById('heading').firstChild.data=phase?'Native opacity 0.75':'Native opacity 0.50';
+});
+</script>
