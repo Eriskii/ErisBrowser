@@ -112,6 +112,27 @@ impl PartialEq<&str> for DomString {
 }
 
 impl DomString {
+    /// The caller admits the exact payload allocation and complete copy work.
+    /// Reusing this private representation cannot create a noncanonical value.
+    pub(super) fn try_clone_exact_owned(&self) -> Result<Self, DomDataError> {
+        Ok(Self(match &self.0 {
+            Storage::Scalar(value) => {
+                let mut copy = String::new();
+                copy.try_reserve_exact(value.len())
+                    .map_err(|_| DomDataError::AllocationFailed)?;
+                copy.push_str(value);
+                Storage::Scalar(copy)
+            }
+            Storage::Units(value) => {
+                let mut copy = Vec::new();
+                copy.try_reserve_exact(value.len())
+                    .map_err(|_| DomDataError::AllocationFailed)?;
+                copy.extend_from_slice(value);
+                Storage::Units(copy)
+            }
+        }))
+    }
+
     pub fn scalar(&self) -> Option<&str> {
         match &self.0 {
             Storage::Scalar(value) => Some(value),
@@ -252,6 +273,31 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn exact_fallible_copy_preserves_variant_and_independent_buffers() {
+        for value in [
+            DomString::default(),
+            DomString::from("A🚀B"),
+            DomString::from_nonscalar_units(vec![0xd800, 65, 0xdc00]).unwrap(),
+        ] {
+            let copy = value.try_clone_exact_owned().unwrap();
+            assert_eq!(copy, value);
+            match (&value.0, &copy.0) {
+                (Storage::Scalar(a), Storage::Scalar(b)) => {
+                    if !a.is_empty() {
+                        assert_ne!(a.as_ptr(), b.as_ptr());
+                    }
+                    assert_eq!(a.as_bytes(), b.as_bytes());
+                }
+                (Storage::Units(a), Storage::Units(b)) => {
+                    assert_ne!(a.as_ptr(), b.as_ptr());
+                    assert_eq!(b, &[0xd800, 65, 0xdc00]);
+                }
+                _ => panic!("exact copy changed its private canonical variant"),
+            }
+        }
+    }
 
     #[test]
     fn owned_scalar_and_nonscalar_buffers_move_without_duplicate_storage() {

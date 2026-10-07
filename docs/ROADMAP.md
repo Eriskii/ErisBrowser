@@ -81,6 +81,11 @@ represented trees, with constant traversal storage, required nonnullable authent
 operands, paid 256-edge bounds and reached sibling scans. Template content remains
 separate. The release passes all 32 new modes and 16 controls; default/native
 suites and the independent audit pass, with historical inventory failures retained.
+[Checked cloning](node-clone.md) now stages complete selected graphs before
+publication, with fresh identities and exact stored payloads. It also adds the
+`Object.hasOwn` static API used by the browser witness. Full default/native suites
+and the new clone and ownership release cases pass. Full Document cloning, form
+dirty state and script cloning hooks remain ahead.
 Actual Attr ordering, ShadowRoot, independent document ownership and other Node
 members remain open.
 Legacy `innerText`, textarea setters and attribute

@@ -33,6 +33,7 @@ mod dom_prototypes;
 mod iterators;
 mod machine;
 mod names;
+mod node_clone;
 mod node_connected;
 mod node_data;
 mod node_equality;
@@ -40,6 +41,7 @@ mod node_normalize;
 mod node_position;
 mod node_predicates;
 mod node_root;
+mod object_has_own;
 mod object_integrity;
 mod object_is;
 mod own_keys;
@@ -2249,7 +2251,7 @@ impl Runtime {
             },
         )?;
         self.initialize_dom_prototypes()?;
-        Ok(())
+        self.install_object_has_own_intrinsic()
     }
 
     fn initialize_number_statics(&mut self) -> Result<()> {
@@ -5974,7 +5976,6 @@ impl Runtime {
                     }
                     "appendChild" | "removeChild" | "remove" | "setAttribute" | "getAttribute"
                     | "hasAttribute" | "removeAttribute" => return self.dom_method(key, false),
-                    "cloneNode" => return self.dom_method(key, false),
                     _ => {}
                 }
             }
@@ -6452,140 +6453,6 @@ impl Runtime {
         doc.append_child(id, staging);
         Ok(())
     }
-    fn clone_dom_node(&mut self, source: NodeId, deep: bool, doc: &mut Document) -> Result<NodeId> {
-        if source >= doc.nodes.len() {
-            return Err(ScriptError::type_error("invalid DOM clone source"));
-        }
-        let mut pending = vec![source];
-        let mut new_nodes = 0usize;
-        let mut details_count = 0usize;
-        let mut details_name_bytes = 0usize;
-        self.charge(std::mem::size_of::<NodeId>())?;
-        while let Some(node) = pending.pop() {
-            self.tick()?;
-            new_nodes += 1;
-            if doc.namespace(node) == Some(Namespace::Html) && doc.tag(node) == Some("details") {
-                details_count += 1;
-                details_name_bytes =
-                    details_name_bytes.saturating_add(doc.attr(node, "name").map_or(0, str::len));
-            }
-            if deep {
-                let edges = doc.nodes[node].children.len()
-                    + usize::from(doc.template_contents(node).is_some());
-                self.charge(edges.saturating_mul(2 * std::mem::size_of::<NodeId>()))?;
-                pending.extend(doc.nodes[node].children.iter().copied());
-                if let Some(contents) = doc.template_contents(node) {
-                    pending.push(contents);
-                }
-            } else {
-                new_nodes += usize::from(doc.template_contents(node).is_some());
-            }
-        }
-        self.work(doc.details_bulk_change_work(new_nodes, details_name_bytes))?;
-        self.charge(
-            details_count
-                .saturating_mul(256)
-                .saturating_add(details_name_bytes.saturating_mul(4)),
-        )?;
-        let root = self.clone_dom_shallow(source, doc)?;
-        if !deep {
-            return Ok(root);
-        }
-        let mut pending = vec![(source, root, 0usize)];
-        self.charge(24)?;
-        while let Some((old, new, depth)) = pending.pop() {
-            if depth >= 96 {
-                return Err(ScriptError::resource("DOM clone nesting limit exceeded"));
-            }
-            self.tick()?;
-            self.charge(doc.nodes[old].children.len().saturating_mul(32))?;
-            let children = doc.nodes[old].children.clone();
-            for child in children {
-                let copy = self.clone_dom_shallow(child, doc)?;
-                doc.append_child(new, copy);
-                pending.push((child, copy, depth + 1));
-            }
-            if let Some(old_content) = doc.template_contents(old)
-                && let Some(new_content) = doc.template_contents(new)
-            {
-                self.charge(24)?;
-                pending.push((old_content, new_content, depth + 1));
-            }
-        }
-        Ok(root)
-    }
-    fn clone_dom_shallow(&mut self, source: NodeId, doc: &mut Document) -> Result<NodeId> {
-        let node = doc
-            .nodes
-            .get(source)
-            .ok_or_else(|| ScriptError::type_error("invalid DOM clone source"))?;
-        let bytes = match &node.kind {
-            NodeKind::Element(element) => {
-                element.tag.len()
-                    + element
-                        .attrs
-                        .iter()
-                        .map(|(k, v)| k.len() + v.len() + 96)
-                        .sum::<usize>()
-            }
-            NodeKind::Text(text) | NodeKind::Comment(text) => text.stored_bytes(),
-            NodeKind::ProcessingInstruction { target, data } => target.len() + data.stored_bytes(),
-            NodeKind::Doctype(value) => {
-                value.name.len()
-                    + value.public_id.as_ref().map_or(0, String::len)
-                    + value.system_id.as_ref().map_or(0, String::len)
-            }
-            NodeKind::DocumentFragment { .. } => 0,
-            NodeKind::Document => {
-                return Err(ScriptError::unsupported(
-                    "Document cloning is not implemented",
-                ));
-            }
-        };
-        let count = if doc.template_contents(source).is_some() {
-            2
-        } else {
-            1
-        };
-        if bytes > crate::dom::MAX_DOM_BYTES.saturating_sub(doc.retained_bytes()) {
-            return Err(ScriptError::resource("DOM clone storage limit exceeded"));
-        }
-        self.work(1 + bytes / 16)?;
-        self.charge(bytes.saturating_mul(2))?;
-        self.ensure_dom_capacity(doc, count)?;
-        self.dom_reserve_node_growth(doc, count)?;
-        let kind = doc.nodes[source].kind.clone();
-        let id = match kind {
-            NodeKind::Document => unreachable!(),
-            NodeKind::DocumentFragment { .. } => doc.create_document_fragment(),
-            NodeKind::Text(text) => doc
-                .create_text_node_owned(text)
-                .map_err(processing_instruction::dom_data_error)?,
-            NodeKind::Comment(text) => doc
-                .create_comment_owned(text)
-                .map_err(processing_instruction::dom_data_error)?,
-            NodeKind::ProcessingInstruction { target, data } => doc
-                .create_processing_instruction_owned(target, data)
-                .map_err(processing_instruction::dom_data_error)?,
-            NodeKind::Doctype(value) => doc.create_doctype(value),
-            NodeKind::Element(element) => {
-                let id = doc.create_element_ns(element.namespace, &element.tag);
-                for (key, value) in element.attrs {
-                    if let Some(namespace) = element.attr_namespaces.get(&key) {
-                        doc.set_attr_ns(id, *namespace, &key, &value);
-                    } else {
-                        doc.set_attr(id, &key, &value);
-                    }
-                }
-                id
-            }
-        };
-        if id == doc.root {
-            return Err(ScriptError::resource("DOM clone storage limit exceeded"));
-        }
-        Ok(id)
-    }
-
     // Native callbacks, constructors, event dispatch and JSON can recurse into
     // one another. Their retained Rust frames share this weighted guard. Fully
     // iterative JavaScript is bounded by continuation storage and logical calls.
@@ -8025,6 +7892,9 @@ impl Runtime {
         }
         if let Some(method) = native.name.strip_prefix(processing_instruction::PREFIX) {
             return self.pi_native(method, native.receiver.clone(), &args, doc);
+        }
+        if native.name == "Object.hasOwn" {
+            return self.object_has_own(&args, doc);
         }
         if native.name == "Object.is" {
             return self.object_is(&args);
@@ -10071,7 +9941,12 @@ mod tests {
             doc.append_child(parent, id);
         }
         let mut runtime = Runtime::new();
-        let copy = runtime.clone_dom_node(parent, true, &mut doc).unwrap();
+        let Value::Node(copy) = runtime
+            .node_clone_node(Value::Node(parent), &[Value::Bool(true)], &mut doc)
+            .unwrap()
+        else {
+            panic!("clone result");
+        };
         assert_ne!(copy, parent);
         let copied = doc.nodes[copy].children.clone();
         assert_eq!(copied.len(), 3);
@@ -10117,7 +9992,9 @@ mod tests {
         admitted.nodes.shrink_to_fit();
         let mut runtime = Runtime::new();
         let initial = runtime.allocated;
-        runtime.clone_dom_shallow(text, &mut admitted).unwrap();
+        runtime
+            .node_clone_node(Value::Node(text), &[], &mut admitted)
+            .unwrap();
         let debit = runtime.allocated - initial;
         assert!(debit >= (before.nodes.len() + 1) * std::mem::size_of::<crate::dom::Node>());
         let mut refused = before.clone();
@@ -10125,7 +10002,7 @@ mod tests {
         let mut cut = Runtime::new();
         cut.allocated = MAX_HEAP - debit + 1;
         assert!(
-            cut.clone_dom_shallow(text, &mut refused)
+            cut.node_clone_node(Value::Node(text), &[], &mut refused)
                 .unwrap_err()
                 .is_resource_limit()
         );
@@ -15805,7 +15682,7 @@ mod tests {
         let before = document.nodes.len();
         assert!(
             runtime
-                .clone_dom_node(source, true, &mut document)
+                .node_clone_node(Value::Node(source), &[Value::Bool(true)], &mut document)
                 .unwrap_err()
                 .is_resource_limit()
         );

@@ -5055,3 +5055,42 @@ final source-manifest SHA-256 is
 `c6d4423dadf42a2812b69717fa86bb4ddae0543c9dd1b1caa092151b6c8f5377`.
 These checks do not establish complete web compatibility, production security,
 comprehensive verification or the Chromium performance requirement.
+
+## Checked Node cloning and Object.hasOwn
+
+[Node.cloneNode](node-clone.md) now copies selected non-Document graphs with fresh
+identities, exact stored payloads and separate template content. Checked staging
+precedes publication; ordinary Result refusals preserve the original document.
+Document ownership, complete element-specific cloning state and inherited
+allocator boundaries remain unfinished. The unchanged browser fixture exposed
+missing `Object.hasOwn`, which this increment also implements for represented
+own descriptors.
+
+Rust 1.88 passes **2,004 default tests** and Rust 1.98 passes **2,127 native Vulkan
+tests**, including confinement tests. Formatting, strict Clippy in both feature
+configurations and release construction pass. The **66 new groups** comprise
+49 cloning groups and 17 ownership groups. Fourteen successful focused commands
+contain 420 observations across 407 unique names. Three failed test observations
+and 109 passing observations in those failed commands remain retained; the
+initial compiler error and a Cargo cache failure are recorded separately.
+
+The release passes **34/34 clone modes with 16/16 controls**, and a separate
+**16/16 ownership modes with 8/8 controls**. The established 4,396 cases and 540
+controls retain 4,394 and 536 byte-exact rows. Only the six anticipated previous
+prototype-inventory expectations change; all 36 older unhealthy rows remain
+unchanged. Seven historical jobs retain exit one, while comparison and
+classification pass. The page and worker witnesses preserve 20 original captured
+identities, add exactly ten copies, and pass exact canvas and glyph checks.
+
+The [summary](evidence/node-clone.json) and [archive](evidence/node-clone.tar.gz)
+retain all attempts and source corrections. The new release SHA-256 is
+`e77a1efcd0b08a2ac570d65e0d0a4579aa55b51f02a4c99188b6bbbf19e7310d`;
+the final 31-path source manifest is
+`76b82bdfc67a7bc28f364be0caa9cf13c9f8105a707e873fb95db389df018196`.
+The [preceding position CI](evidence/node-position-ci.json) records nine
+successful jobs. These results do not establish complete standards coverage,
+production security or performance within 30% of Chromium.
+
+The first complete independent result audit passes with 686 bound inputs and no
+findings. It reconstructs the raw outcomes, source corrections and all recorded
+commands, including failed attempts, and verifies unchanged input hashes.

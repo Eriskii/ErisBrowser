@@ -58,6 +58,13 @@ ordering, ShadowRoot and independent document ownership remain outside this scop
 All 32 new modes and 16 controls pass; the 30-key prototype/21-key constructor
 inventory and 22-ID Page/worker witness pass. Historical losses retain their
 ordinary Error or unhealthy TypeError observations, without a health waiver.
+[Checked cloning](node-clone.md) adds ordinary `cloneNode` for represented
+non-Document nodes, detached fresh identities, exact retained payloads and separate
+template content. Its 34 release modes and 16 controls pass. `Object.hasOwn` also
+passes 16 independent modes and eight controls for represented own descriptors.
+Document cloning, complete per-element cloning state and universal host reflection
+remain incomplete.
+
 [Structural equality](node-equality.md) adds `isEqualNode` for represented nodes,
 including exact character data, the fixed namespace/attribute model and ordered
 ordinary children. Template contents are compared only when supplied as operands;

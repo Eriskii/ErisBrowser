@@ -1,6 +1,8 @@
 //! A bounded, independent HTML tree builder and CSS selector matcher.
 use std::collections::{BTreeMap, BTreeSet};
 
+mod mutation_budget;
+mod node_clone;
 mod node_normalize;
 mod string;
 #[cfg(test)]
@@ -8,8 +10,8 @@ mod string_tests;
 mod text_operations;
 mod text_replacement;
 mod title;
+pub(crate) use mutation_budget::DomMutationBudget;
 pub use string::{DomScalars, DomString, DomUnits};
-pub(crate) use text_replacement::DomMutationBudget;
 pub(crate) use title::{TitleMode, TitleTarget};
 
 pub type NodeId = usize;

@@ -55,10 +55,12 @@ use interfaces::{ConstructorKind, INTERFACES};
 pub(super) const PREFIX: &str = "DOM.Interface.";
 // Five unscopables objects: ParentNode's three including interfaces, plus
 // CharacterData and DocumentType's ChildNode lists (Element combines both).
-pub(super) const BOOTSTRAP_OBJECTS: usize = 352
+pub(super) const BOOTSTRAP_OBJECTS: usize = 351
+    + object_has_own::METADATA_OBJECTS
     + 2 * (INTERFACES.len() - 1)
     + 5
     + processing_instruction::METADATA_OBJECTS
+    + node_clone::METADATA_OBJECTS
     + node_connected::METADATA_OBJECTS
     + node_data::METADATA_OBJECTS
     + node_normalize::METADATA_OBJECTS
@@ -472,7 +474,7 @@ impl Runtime {
                         "Document" => 2,
                         "ProcessingInstruction" => 1,
                         "CharacterData" => 7,
-                        "Node" => 10,
+                        "Node" => 11,
                         "Text" => 2,
                         _ => 0,
                     },
@@ -528,6 +530,7 @@ impl Runtime {
                 self.install_node_root(prototype)?;
                 self.install_node_has_child_nodes(prototype)?;
                 self.install_node_normalize(prototype)?;
+                self.install_node_clone(prototype)?;
                 self.install_node_equality(prototype)?;
                 self.install_node_identity_members(prototype)?;
                 self.install_node_constants(prototype, properties, &tag_key)?;

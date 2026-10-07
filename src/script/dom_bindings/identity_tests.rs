@@ -97,7 +97,6 @@ fn dom_parent_nine_keys_metadata_and_legacy_inventory_are_exact() {
         ("DOM.appendChild", 1),
         ("DOM.removeChild", 1),
         ("DOM.remove", 0),
-        ("DOM.cloneNode", 0),
         ("DOMTokenList.add", 0),
         ("DOMTokenList.remove", 0),
         ("DOMTokenList.toggle", 1),
@@ -128,7 +127,7 @@ fn dom_parent_nine_keys_metadata_and_legacy_inventory_are_exact() {
             .keys()
             .filter(|name| name.starts_with("DOM.") || name.starts_with("DOMTokenList."))
             .count(),
-        27
+        26
     );
 }
 
@@ -948,7 +947,7 @@ fn dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities() {
     );
     assert!(runtime.steps < MAX_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
-    assert_eq!(runtime.objects.len(), 689);
+    assert_eq!(runtime.objects.len(), 690);
     assert!(runtime.objects.capacity() >= BOOTSTRAP_OBJECT_CAPACITY);
     // Runtime::new additionally compares this capacity to its actual immediate
     // post-reserve capacity on every test build, detecting any later growth.

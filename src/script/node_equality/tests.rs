@@ -74,11 +74,15 @@ fn prior_equality_inventory_after_removing_later_configurable_members() {
              !saved.enumerable||!saved.configurable)throw new Error('connection descriptor');
           const position=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
           if(!position||!position.configurable||typeof position.value!=='function')throw new Error('position descriptor');
+          const clone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(!clone||typeof clone.value!=='function'||!clone.writable||!clone.enumerable||!clone.configurable)throw new Error('clone descriptor');
           try{{
+            if(!delete Node.prototype.cloneNode)throw new Error('clone delete');
             if(!delete Node.prototype.compareDocumentPosition)throw new Error('position delete');
             if(!delete Node.prototype.isConnected)throw new Error('connection delete');
             if(nodeEqualityCases.represented_complete_key_order()!==true)throw new Error('prior equality inventory');
           }}finally{{
+            Object.defineProperty(Node.prototype,'cloneNode',clone);
             Object.defineProperty(Node.prototype,'compareDocumentPosition',position);
             Object.defineProperty(Node.prototype,'isConnected',saved);}}
           const d=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
@@ -88,6 +92,8 @@ fn prior_equality_inventory_after_removing_later_configurable_members() {
           if(restoredPosition.value!==position.value||restoredPosition.writable!==position.writable||
              restoredPosition.enumerable!==position.enumerable||restoredPosition.configurable!==position.configurable)
             throw new Error('position restoration');
+          const restoredClone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(restoredClone.value!==clone.value||restoredClone.writable!==clone.writable||restoredClone.enumerable!==clone.enumerable||restoredClone.configurable!==clone.configurable)throw new Error('clone restoration');
           return true;
         }})()"#
         );

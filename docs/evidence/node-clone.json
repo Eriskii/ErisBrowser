@@ -1,0 +1,875 @@
+{
+  "kind": "Checked represented Node cloning and Object.hasOwn",
+  "base_commit": "0df8d80d99412fb701c9ef7d55ab9d9d15b6efb5",
+  "scope": [
+    "Ordinary cached Node.cloneNode and atomic checked graph preparation for represented non-Document nodes",
+    "Exact stored payloads, fresh identities, template content and copied details metadata",
+    "Object.hasOwn with ordered conversion and represented own descriptor presence"
+  ],
+  "source": {
+    "base": "0df8d80d99412fb701c9ef7d55ab9d9d15b6efb5",
+    "status": "Final candidate implementation and fixture source; full validation in progress",
+    "files": [
+      {
+        "path": "src/dom.rs",
+        "bytes": 404743,
+        "sha256": "16ef8c02a612dc1257b06fee22e910ac7cb561ff3c91399e3db02a66f45d2ade"
+      },
+      {
+        "path": "src/dom/mutation_budget.rs",
+        "bytes": 2896,
+        "sha256": "0b9ea5747ef7b6f4347466670e8d1d15f70eebe073e79df5ac96fcacf9517ab2"
+      },
+      {
+        "path": "src/dom/node_clone.rs",
+        "bytes": 23937,
+        "sha256": "3168be3d18cc7e6213ac48a226a6faa4cb17e465f1829b221e9f50d42378a8c7"
+      },
+      {
+        "path": "src/dom/node_clone/tests.rs",
+        "bytes": 34349,
+        "sha256": "3b28cead3a697a8d8235175ad564c8442b7aff1ead4dd36af94ea3e85f26edd7"
+      },
+      {
+        "path": "src/dom/string.rs",
+        "bytes": 12022,
+        "sha256": "a4b564b750b92a2f0ccb40c29f1b04b92abf77da8d32637963c68915bf8fa663"
+      },
+      {
+        "path": "src/dom/text_replacement.rs",
+        "bytes": 29614,
+        "sha256": "fbde0e4c3edcbe861544908415030aa42ccdfee1222807ce5a80df68f6804fe0"
+      },
+      {
+        "path": "src/script.rs",
+        "bytes": 901087,
+        "sha256": "7c88b1f9ed9d17300bbfca452f030f68509f42477da0bd4931b65b852fc36b77"
+      },
+      {
+        "path": "src/script/bootstrap_tests.rs",
+        "bytes": 15507,
+        "sha256": "db2d52719f33478250f1c1c30e26d9ca590b015a7d3c5e616b9620ec9d3c7cca"
+      },
+      {
+        "path": "src/script/dom_bindings.rs",
+        "bytes": 47820,
+        "sha256": "181ab4db72ae9fcecab596101ee1e745d679043d3cacf0b58c1117ba3f55d764"
+      },
+      {
+        "path": "src/script/dom_bindings/identity_tests.rs",
+        "bytes": 35697,
+        "sha256": "884c207ce8a8fc2503169a45cf5aefe580f4cc472b6ef08899a762e0b2568108"
+      },
+      {
+        "path": "src/script/dom_prototypes.rs",
+        "bytes": 31829,
+        "sha256": "2afff8ba42fa433e427a8f05d366afb59cd97e176e33460aaadada4de152f821"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants.rs",
+        "bytes": 9037,
+        "sha256": "735f5f48a289d673e76194381d6f00463ec1cee4330494e7a78ab3de781054ca"
+      },
+      {
+        "path": "src/script/dom_prototypes/node_constants/tests.rs",
+        "bytes": 23175,
+        "sha256": "1fdc18ccd476d70e37457bec17447c6ece97cfe4c37733ad67456e1788cfc418"
+      },
+      {
+        "path": "src/script/node_clone.rs",
+        "bytes": 2480,
+        "sha256": "459c33923987cbd8880a8f17935f364e7c83f912c096d2de69f75c5d476cb2cb"
+      },
+      {
+        "path": "src/script/node_clone/tests.rs",
+        "bytes": 23219,
+        "sha256": "04c033a39acc4775315d239b1b395c9338c31f1b0cb1ffc8ab56127a0f3e6a3e"
+      },
+      {
+        "path": "src/script/node_connected/tests.rs",
+        "bytes": 22178,
+        "sha256": "123964eaf5627656bbc3b71724597a13bd709d1ea030013808068e18be02432b"
+      },
+      {
+        "path": "src/script/node_data.rs",
+        "bytes": 9403,
+        "sha256": "a6019e3e4db2d6db7c7938eec20f74f36102070e19f87655cd9c5292f6ac32f7"
+      },
+      {
+        "path": "src/script/node_data/tests.rs",
+        "bytes": 18737,
+        "sha256": "0a8b10f3666804107e37770b353ebf65a252af91fc23f64acb1c552d201a8ca0"
+      },
+      {
+        "path": "src/script/node_equality/tests.rs",
+        "bytes": 32557,
+        "sha256": "9faee62fa7dbfa183647926ae689e0ce97175c177776949ce75cf13a5acf5481"
+      },
+      {
+        "path": "src/script/node_normalize/tests.rs",
+        "bytes": 27590,
+        "sha256": "a109e569baac9e44762a324ddf0cffd1c46e72a8e43078b3bc4134955dae3c1e"
+      },
+      {
+        "path": "src/script/node_position/tests.rs",
+        "bytes": 34137,
+        "sha256": "9a069d49af700bac1ee9bb8aad270379a9b15e5c25f2ee5b08de1870f435ac69"
+      },
+      {
+        "path": "src/script/node_predicates/tests.rs",
+        "bytes": 23706,
+        "sha256": "4845cfdec467801576b8e815f4e975429f21af1fd6d5c967e67b325595c7cf37"
+      },
+      {
+        "path": "src/script/node_root/tests.rs",
+        "bytes": 24848,
+        "sha256": "ff4600c4339f5c62cd1ad63f195b5f08510d2228c9f3dcf3c72984e0247af0c3"
+      },
+      {
+        "path": "src/script/object_has_own.rs",
+        "bytes": 6658,
+        "sha256": "a64ac3155adddc4fe5459bfab0aa9f8d0d2d7177c271844695ef848a063df8d5"
+      },
+      {
+        "path": "src/script/object_has_own/tests.rs",
+        "bytes": 13592,
+        "sha256": "85e0df41d03523c9b1baf2dfeff66d21ef4387276a4d73fc39bbe13df9bd006f"
+      },
+      {
+        "path": "tests/fixtures/node-clone.html",
+        "bytes": 4489,
+        "sha256": "358b61ea4bc84a8de2901f9ba15884ad0f4e8fc01b063fa590cb848a7919b7e2"
+      },
+      {
+        "path": "tests/fixtures/node-clone.js",
+        "bytes": 26587,
+        "sha256": "bf66956a6ca0e1ef138a2d634ab3c31968754415f04c4b2197a2b07e9ec63479"
+      },
+      {
+        "path": "tests/fixtures/object-has-own.js",
+        "bytes": 12004,
+        "sha256": "4cfdacc069d83792f20d4be1efec38b91ab748114eadef1b04c46e306ce3053f"
+      },
+      {
+        "path": "tests/pipeline.rs",
+        "bytes": 67024,
+        "sha256": "5f8def6ba7e69ef09fa7718ffabc7b01099021bbbb12715cb72e6ccbd84fb983"
+      },
+      {
+        "path": "tests/support/node_clone.rs",
+        "bytes": 10062,
+        "sha256": "8d5595d6c07c34d04bb25ed652d00aef9acdc33eed657b8e28841fdc9bb2b77c"
+      },
+      {
+        "path": "tests/worker.rs",
+        "bytes": 108403,
+        "sha256": "afa9ace0ed3d5bf66b37f6b5efa03554617284bfac92a21c49a37c8f5fccacb8"
+      }
+    ],
+    "new_groups": {
+      "clone": 49,
+      "object_has_own": 17,
+      "total": 66
+    }
+  },
+  "release": {
+    "path": "/tmp/eris-node-clone-1/eris-js",
+    "bytes": 3826392,
+    "sha256": "e77a1efcd0b08a2ac570d65e0d0a4579aa55b51f02a4c99188b6bbbf19e7310d",
+    "source_manifest": "candidate-source-final.json",
+    "source_manifest_sha256": "76b82bdfc67a7bc28f364be0caa9cf13c9f8105a707e873fb95db389df018196",
+    "build_receipt": "validation/release-adapter-188-1.json"
+  },
+  "final_validation": {
+    "bootstrap-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "bootstrap",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.377,
+      "log": "bootstrap-188-1.log",
+      "sha256": "fac8860cfee49ce65dbd1564dbbb210143bbe4b0db6b2a7f89e9d872a2e157d4"
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 0.143,
+      "log": "clippy-native-198-1.log",
+      "sha256": "42c4ed7185e9e55b84edf66c1ae7c42bfc22ca127dcf6c8537be1cd3ba99cda4"
+    },
+    "clippy-native-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 8.606,
+      "log": "clippy-native-198-2.log",
+      "sha256": "03276d3cd484dfa4d32f6e0e6f2f7fb31c88f28729e39f73fc3ce3b78d041c37"
+    },
+    "clippy-presenter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-presenter",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 12.479,
+      "log": "clippy-presenter-188-1.log",
+      "sha256": "6702d0661ab92405c738b639af1b551b9c79b6fe97d5979f4b6616557d06769e"
+    },
+    "clone-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_clone",
+        "--",
+        "--include-ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 1.188,
+      "log": "clone-188-1.log",
+      "sha256": "5d505d1964ff60a237e189eabf26ee7d24917c6cc1ba5b01fa22713f8f42c2bb"
+    },
+    "clone-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_clone",
+        "--",
+        "--include-ignored",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.614,
+      "log": "clone-188-2.log",
+      "sha256": "372a7ef98a7776febee969e006063b6d8b16f1db14570e5fd6d8cdfc57368f75"
+    },
+    "clone-legacy-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "dom_clone",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.344,
+      "log": "clone-legacy-188-1.log",
+      "sha256": "ec4744a725e5d98ff0899476a7acf542f4fcf4380fa44852796cfa48030fae71"
+    },
+    "clone-page-diagnostic-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--test",
+        "pipeline",
+        "node_clone",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 2.914,
+      "log": "clone-page-diagnostic-188-1.log",
+      "sha256": "235ad2e2cd78835a3d27b8d833ee2500741427381c0c0a014530dd287f6240a6"
+    },
+    "clone-storage-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "exact_fallible_copy_preserves_variant_and_independent_buffers",
+        "--",
+        "--include-ignored",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.605,
+      "log": "clone-storage-188-1.log",
+      "sha256": "c772a615fcd7e0b08e402ef704b77f176df37859ba8378fcd808e49539d8116a"
+    },
+    "compile-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--no-run"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 8.722,
+      "log": "compile-188-1.log",
+      "sha256": "b83ec31914d7393efe87251abc25756c5aa9efd0cec2d2216167e79b47449329"
+    },
+    "compile-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--no-run"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 18.464,
+      "log": "compile-188-2.log",
+      "sha256": "99ae5541a587e318c2eeb366fd7aa5dfd7d755e34adef692edf9d9e91fd62352"
+    },
+    "connected-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_connected",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.492,
+      "log": "connected-188-1.log",
+      "sha256": "c856386d0c342fa27337c799c8fcece64c07ac6719ddf8e5fd7b7a0d4f5188b3"
+    },
+    "constants-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_constant",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.419,
+      "log": "constants-188-1.log",
+      "sha256": "b65df1597253267f1f5c2633f3bd1de2d4ef085a529a2edbdb6a21a588f84b42"
+    },
+    "dom-bindings-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "dom_bindings",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 101,
+      "elapsed_seconds": 0.981,
+      "log": "dom-bindings-188-1.log",
+      "sha256": "5a9be2d8a5e19c77a7423038fed728269563f21206b0999f16474bb2fde3f7b0"
+    },
+    "dom-bindings-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "dom_bindings",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.11,
+      "log": "dom-bindings-188-2.log",
+      "sha256": "ca8bae974680570b8820c1d1a16ed4c4a6b8f8f92158e83371e2fa4b1b76011e"
+    },
+    "equality-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_equality",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.488,
+      "log": "equality-188-1.log",
+      "sha256": "8c3c9c1cbd7cc3c256b26bcd26847f9826d13325f9eda96f807c144a08372aa8"
+    },
+    "format-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.2561716409400105,
+      "log": "format-198-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "full-default-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 24.338,
+      "log": "full-default-188-1.log",
+      "sha256": "2c3544d8130bfe099c4337e54308f8f7f597f49a6e90d6c76e57fdf69e9246f7"
+    },
+    "full-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 42.21,
+      "log": "full-native-198-1.log",
+      "sha256": "5b2f940f3f9bc460c177c0f810cb0f0148a0160e66ff6b4bfa7ea113cb1ce419"
+    },
+    "has-own-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "object_has_own",
+        "--",
+        "--include-ignored",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 15.663,
+      "log": "has-own-188-1.log",
+      "sha256": "31dde43df6bfafff99cee17feadc493eceede9324d7363028e51dea7224b884f"
+    },
+    "node-data-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_data",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.611,
+      "log": "node-data-188-1.log",
+      "sha256": "f0a5ad3608b166a63de72975d3aa7bb0cbca18ea6803b2175e766fdb9cb0f8c3"
+    },
+    "normalize-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_normalize",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.624,
+      "log": "normalize-188-1.log",
+      "sha256": "9d39aa42d379cd4a5c19d34fd5abc7ab48b6a8e94207efcc95214bf4226b5735"
+    },
+    "position-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_position",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.528,
+      "log": "position-188-1.log",
+      "sha256": "30d64e9669857a1909f2342956417a4495174096796c00e5626e3e8a373accd4"
+    },
+    "predicates-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_predicates",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.492,
+      "log": "predicates-188-1.log",
+      "sha256": "31e6fc071774b11f8b75f77929d8d6194224c667d520d33e8e03527e58847c9a"
+    },
+    "release-adapter-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--release",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 40.738,
+      "log": "release-adapter-188-1.log",
+      "sha256": "3f23b89824ea25da60968779347536249a4e840c7b58e4f18a5a615768ad058b"
+    },
+    "root-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "node_root",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.539,
+      "log": "root-188-1.log",
+      "sha256": "0121025695ec3725e1d40dd31897df94af75acfe6a10e3b421f1dce8efad487d"
+    }
+  },
+  "tests": {
+    "default": 2004,
+    "native_vulkan": 2127,
+    "new_groups": 66,
+    "clone_groups": 49,
+    "object_has_own_groups": 17,
+    "focused": {
+      "focused_observations": 420,
+      "focused_unique": 407,
+      "new_groups": 66,
+      "clone_groups": 49,
+      "object_has_own_groups": 17,
+      "failed_test_observations": 3,
+      "passing_observations_in_failed_commands": 109,
+      "commands": [
+        {
+          "log": "clone-storage-188-1.log",
+          "passed": 1,
+          "sha256": "c772a615fcd7e0b08e402ef704b77f176df37859ba8378fcd808e49539d8116a"
+        },
+        {
+          "log": "has-own-188-1.log",
+          "passed": 17,
+          "sha256": "31dde43df6bfafff99cee17feadc493eceede9324d7363028e51dea7224b884f"
+        },
+        {
+          "log": "clone-188-2.log",
+          "passed": 48,
+          "sha256": "372a7ef98a7776febee969e006063b6d8b16f1db14570e5fd6d8cdfc57368f75"
+        },
+        {
+          "log": "bootstrap-188-1.log",
+          "passed": 34,
+          "sha256": "fac8860cfee49ce65dbd1564dbbb210143bbe4b0db6b2a7f89e9d872a2e157d4"
+        },
+        {
+          "log": "constants-188-1.log",
+          "passed": 17,
+          "sha256": "b65df1597253267f1f5c2633f3bd1de2d4ef085a529a2edbdb6a21a588f84b42"
+        },
+        {
+          "log": "node-data-188-1.log",
+          "passed": 34,
+          "sha256": "f0a5ad3608b166a63de72975d3aa7bb0cbca18ea6803b2175e766fdb9cb0f8c3"
+        },
+        {
+          "log": "normalize-188-1.log",
+          "passed": 40,
+          "sha256": "9d39aa42d379cd4a5c19d34fd5abc7ab48b6a8e94207efcc95214bf4226b5735"
+        },
+        {
+          "log": "predicates-188-1.log",
+          "passed": 30,
+          "sha256": "31e6fc071774b11f8b75f77929d8d6194224c667d520d33e8e03527e58847c9a"
+        },
+        {
+          "log": "root-188-1.log",
+          "passed": 32,
+          "sha256": "0121025695ec3725e1d40dd31897df94af75acfe6a10e3b421f1dce8efad487d"
+        },
+        {
+          "log": "equality-188-1.log",
+          "passed": 36,
+          "sha256": "8c3c9c1cbd7cc3c256b26bcd26847f9826d13325f9eda96f807c144a08372aa8"
+        },
+        {
+          "log": "connected-188-1.log",
+          "passed": 30,
+          "sha256": "c856386d0c342fa27337c799c8fcece64c07ac6719ddf8e5fd7b7a0d4f5188b3"
+        },
+        {
+          "log": "position-188-1.log",
+          "passed": 35,
+          "sha256": "30d64e9669857a1909f2342956417a4495174096796c00e5626e3e8a373accd4"
+        },
+        {
+          "log": "clone-legacy-188-1.log",
+          "passed": 2,
+          "sha256": "ec4744a725e5d98ff0899476a7acf542f4fcf4380fa44852796cfa48030fae71"
+        },
+        {
+          "log": "dom-bindings-188-2.log",
+          "passed": 64,
+          "sha256": "ca8bae974680570b8820c1d1a16ed4c4a6b8f8f92158e83371e2fa4b1b76011e"
+        }
+      ],
+      "failed_commands": [
+        {
+          "label": "clone-188-1",
+          "passed": 46,
+          "failed": 1,
+          "ignored": 0
+        },
+        {
+          "label": "clone-page-diagnostic-188-1",
+          "passed": 0,
+          "failed": 1,
+          "ignored": 0
+        },
+        {
+          "label": "dom-bindings-188-1",
+          "passed": 63,
+          "failed": 1,
+          "ignored": 0
+        }
+      ]
+    }
+  },
+  "accounting": {
+    "raw_remaining_work": 4709,
+    "charged_bytes": 1782581,
+    "objects": 690,
+    "capacity": 690,
+    "native_registry": 320,
+    "legacy_prototypes": 25,
+    "has_own_delta": {
+      "work": 1310,
+      "bytes": 7517
+    },
+    "forecast_correction": "Original owner insertion subtotal941 corrected to961; original ledger retained; production unchanged."
+  },
+  "compatibility": {
+    "clone_profiles": {
+      "established": {
+        "cases": {
+          "before_total": 4396,
+          "after_total": 4396,
+          "before_healthy": 4298,
+          "after_healthy": 4296,
+          "unchanged": 4394,
+          "gains": 0,
+          "losses": 2,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 540,
+          "after_total": 540,
+          "before_healthy": 516,
+          "after_healthy": 512,
+          "unchanged": 536,
+          "gains": 0,
+          "losses": 4,
+          "other_changes": 0
+        }
+      },
+      "new": {
+        "cases": {
+          "before_total": 34,
+          "after_total": 34,
+          "before_healthy": 0,
+          "after_healthy": 34,
+          "unchanged": 0,
+          "gains": 34,
+          "losses": 0,
+          "other_changes": 0
+        },
+        "controls": {
+          "before_total": 16,
+          "after_total": 16,
+          "before_healthy": 4,
+          "after_healthy": 16,
+          "unchanged": 4,
+          "gains": 12,
+          "losses": 0,
+          "other_changes": 0
+        }
+      }
+    },
+    "has_own": {
+      "before_cases": 0,
+      "after_cases": 16,
+      "total_cases": 16,
+      "before_healthy_controls": 4,
+      "after_healthy_controls": 8,
+      "total_controls": 8
+    },
+    "historical_inventory_losses": {
+      "cases": 2,
+      "controls": 4,
+      "older_unhealthy_unchanged": 36
+    }
+  },
+  "independent_audit": {
+    "path": "independent-results-review.json",
+    "sha256": "12aee64014165289b5cbde8afbc9c72913fbf34ad19c5f673d1620a6e0f75247",
+    "bound_inputs": 686,
+    "status": "clear"
+  },
+  "retained_history": [
+    "Initial compiler mutability error",
+    "Clone Page failure and diagnostic failure exposed missing Object.hasOwn; HTML unchanged",
+    "Legacy-method aggregate corrected27to26 following exact roster change",
+    "Temporary Cargo cache failure repaired from checksum-verified locked archives",
+    "Source-only placement and fee-arithmetic corrections, original holds and exact images preserved"
+  ],
+  "boundaries": [
+    "Document cloning, independent owners, form dirty state, script-started state, full Attr/ShadowRoot/custom-element semantics remain unfinished",
+    "Object.hasOwn supports represented host descriptors; Proxy and unimplemented host reflection remain incomplete",
+    "Inherited infallible BTree allocation and subsequent VM failures are outside copy preparation rollback",
+    "No full web compatibility, production security, comprehensive verification or Chromium performance claim"
+  ],
+  "archive": {
+    "path": "node-clone.tar.gz",
+    "bytes": 9072523,
+    "sha256": "9091cee89904dea115816d4fa3a2f554c72f4de6cac0b30a86143f2a6831c8d7",
+    "files": 854,
+    "manifest_verified": true,
+    "manifest_sha256": "e2719b9d1b6ca1bcdd6b7f3e0a177facb48202214a55015d85f55409a5943180",
+    "excluded_entries": 15,
+    "reproducible_metadata": true,
+    "release_binary_included": true
+  }
+}

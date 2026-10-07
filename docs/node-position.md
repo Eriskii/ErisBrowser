@@ -183,6 +183,9 @@ records remain historical. The release adapter SHA-256 is
 the final twenty-one-path source manifest is
 `c6d4423dadf42a2812b69717fa86bb4ddae0543c9dd1b1caa092151b6c8f5377`.
 
+The subsequent [position CI record](evidence/node-position-ci.json) for published
+commit `0df8d80d` records nine successful jobs, including its Vulkan configurations.
+
 Actual Attr ordering, ShadowRoot, CDATA, independent document ownership, remaining
 DOM/JS interfaces and inherited allocator boundaries remain limits. Full web
 compatibility, production security, comprehensive verification and the requested

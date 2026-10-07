@@ -48,7 +48,7 @@ cases!(
 fn prior_node_constant_inventory_after_removing_later_configurable_operations() {
     // This historical fixture describes the preceding represented inventory.
     // Deletion/restoration intentionally changes creation order, so each mode
-    // uses a disposable realm; the new position fixture checks pristine order.
+    // uses a disposable realm; the new clone fixture checks pristine order.
     for strict in [false, true] {
         let mut runtime = Runtime::try_new().unwrap();
         let mut doc = Document::parse("");
@@ -64,11 +64,15 @@ fn prior_node_constant_inventory_after_removing_later_configurable_operations() 
             const connection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
             if(!connection||typeof connection.get!=='function'||connection.set!==undefined||
                !connection.enumerable||!connection.configurable)throw new Error('connection descriptor');
-            try{{
+            const clone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(!clone||typeof clone.value!=='function'||!clone.writable||!clone.enumerable||!clone.configurable)throw new Error('clone descriptor');
+          try{{
+            if(!delete Node.prototype.cloneNode)throw new Error('clone delete');
               if(!delete Node.prototype.isConnected)throw new Error('connection delete');
               for(var i=0;i<names.length;i++)if(!delete Node.prototype[names[i]])throw new Error('later operation delete');
               if(nodeConstantCases.prototype_complete_key_order()!==true)throw new Error('prior inventory');
             }}finally{{
+            Object.defineProperty(Node.prototype,'cloneNode',clone);
               Object.defineProperty(Node.prototype,'isConnected',connection);
               for(var i=0;i<names.length;i++)Object.defineProperty(Node.prototype,names[i],saved[i]);
             }}
@@ -82,7 +86,9 @@ fn prior_node_constant_inventory_after_removing_later_configurable_operations() 
             if(restoredConnection.get!==connection.get||restoredConnection.set!==undefined||
                restoredConnection.enumerable!==connection.enumerable||restoredConnection.configurable!==connection.configurable)
               throw new Error('connection restoration');
-            return true;
+            const restoredClone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(restoredClone.value!==clone.value||restoredClone.writable!==clone.writable||restoredClone.enumerable!==clone.enumerable||restoredClone.configurable!==clone.configurable)throw new Error('clone restoration');
+          return true;
           }})()
         "#
         );
@@ -172,11 +178,11 @@ fn setup() -> (Runtime, usize, usize, PropertyKey) {
         let values = &bag.values;
         bag.order.retain(|key| values.contains_key(key));
         bag.order.shrink_to_fit();
-        let capacity = if owner == prototype { 30 } else { 21 };
+        let capacity = if owner == prototype { 31 } else { 21 };
         bag.order
             .try_reserve_exact(capacity - bag.order.len())
             .unwrap();
-        let old = if owner == prototype { 11 } else { 3 };
+        let old = if owner == prototype { 12 } else { 3 };
         assert_eq!(bag.values.len(), old);
         assert_eq!(bag.order.len(), old);
     }
@@ -313,7 +319,7 @@ fn measured_exact_and_one_short_admission_precedes_taking_either_map() {
             result.unwrap();
             assert_eq!(runtime.steps, 0);
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects[prototype].values.len(), 29);
+            assert_eq!(runtime.objects[prototype].values.len(), 30);
             assert_eq!(runtime.objects[properties].values.len(), 21);
             assert_eq!(
                 runtime.objects[prototype].order.capacity(),
@@ -374,6 +380,7 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
         "getRootNode",
         "hasChildNodes",
         "normalize",
+        "cloneNode",
         "isEqualNode",
         "isSameNode",
         "compareDocumentPosition",
@@ -433,7 +440,7 @@ fn batch_keeps_saved_native_handles_and_all_other_object_fields() {
 
 #[test]
 fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
-    for case in 0..24 {
+    for case in 0..26 {
         let (mut runtime, prototype, properties, tag) = setup();
         let (mut p, mut c, mut key) = (prototype, properties, tag);
         match case {
@@ -501,6 +508,12 @@ fn invalid_owner_shapes_refuse_before_allocating_or_taking_maps() {
                     .remove(&PropertyKey::from("compareDocumentPosition"));
             }
             23 => runtime.objects[prototype].order.swap(9, 10),
+            24 => {
+                runtime.objects[prototype]
+                    .values
+                    .remove(&PropertyKey::from("cloneNode"));
+            }
+            25 => runtime.objects[prototype].order.swap(6, 7),
             _ => unreachable!(),
         }
         let before = [

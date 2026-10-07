@@ -69,11 +69,15 @@ fn prior_predicate_inventory_after_removing_later_configurable_operations() {
           const connection=Object.getOwnPropertyDescriptor(Node.prototype,'isConnected');
           if(!connection||typeof connection.get!=='function'||connection.set!==undefined||
              !connection.enumerable||!connection.configurable)throw new Error('connection descriptor');
+          const clone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(!clone||typeof clone.value!=='function'||!clone.writable||!clone.enumerable||!clone.configurable)throw new Error('clone descriptor');
           try{{
+            if(!delete Node.prototype.cloneNode)throw new Error('clone delete');
             if(!delete Node.prototype.isConnected)throw new Error('connection delete');
             for(const name of names)if(!delete Node.prototype[name])throw new Error('later delete');
             if(nodePredicateCases.represented_complete_key_order()!==true)throw new Error('prior predicate inventory');
           }}finally{{
+            Object.defineProperty(Node.prototype,'cloneNode',clone);
             Object.defineProperty(Node.prototype,'isConnected',connection);
             for(let i=0;i<names.length;i++)Object.defineProperty(Node.prototype,names[i],saved[i]);
           }}
@@ -86,6 +90,8 @@ fn prior_predicate_inventory_after_removing_later_configurable_operations() {
           if(restoredConnection.get!==connection.get||restoredConnection.set!==undefined||
              restoredConnection.enumerable!==connection.enumerable||restoredConnection.configurable!==connection.configurable)
             throw new Error('connection restoration');
+          const restoredClone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(restoredClone.value!==clone.value||restoredClone.writable!==clone.writable||restoredClone.enumerable!==clone.enumerable||restoredClone.configurable!==clone.configurable)throw new Error('clone restoration');
           return true;
         }})()"#
         );

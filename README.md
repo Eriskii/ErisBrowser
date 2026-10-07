@@ -62,6 +62,11 @@ for authentic nodes, with required nonnullable input and current ordinary-tree
 order. Disconnected directions are stable within the represented arena, and
 template content remains separate. All 32 release case modes and 16 controls
 pass; six historical inventory losses remain recorded with their raw failures.
+[Node.cloneNode](docs/node-clone.md) now makes checked detached copies with fresh
+identities, exact stored character data and separate template content. The same
+increment adds `Object.hasOwn` for represented own-property descriptors, including
+DOM expandos. Independent Document ownership and complete cloning state remain
+unfinished.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members

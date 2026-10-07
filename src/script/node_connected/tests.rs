@@ -76,13 +76,19 @@ fn prior_connection_inventory_after_removing_later_configurable_operation() {
           const saved=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
           if(!saved||typeof saved.value!=='function'||!saved.writable||!saved.enumerable||!saved.configurable)
             throw new Error('position descriptor');
+          const clone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(!clone||typeof clone.value!=='function'||!clone.writable||!clone.enumerable||!clone.configurable)throw new Error('clone descriptor');
           try{{
+            if(!delete Node.prototype.cloneNode)throw new Error('clone delete');
             if(!delete Node.prototype.compareDocumentPosition)throw new Error('position delete');
             if(nodeConnectedCases.represented_complete_key_order({strict})!==true)throw new Error('prior connection inventory');
-          }}finally{{Object.defineProperty(Node.prototype,'compareDocumentPosition',saved);}}
+          }}finally{{
+            Object.defineProperty(Node.prototype,'cloneNode',clone);Object.defineProperty(Node.prototype,'compareDocumentPosition',saved);}}
           const d=Object.getOwnPropertyDescriptor(Node.prototype,'compareDocumentPosition');
           if(d.value!==saved.value||d.writable!==saved.writable||d.enumerable!==saved.enumerable||
              d.configurable!==saved.configurable)throw new Error('position restoration');
+          const restoredClone=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(restoredClone.value!==clone.value||restoredClone.writable!==clone.writable||restoredClone.enumerable!==clone.enumerable||restoredClone.configurable!==clone.configurable)throw new Error('clone restoration');
           return true;
         }})()"#
         );

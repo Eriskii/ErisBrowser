@@ -144,6 +144,10 @@ impl Runtime {
                 if method == "normalize" {
                     return self.node_normalize(receiver, doc);
                 }
+                self.work(9)?;
+                if method == "cloneNode" {
+                    return self.node_clone_node(receiver, args, doc);
+                }
             }
             10 => {
                 self.work(10)?;

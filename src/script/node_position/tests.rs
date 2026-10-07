@@ -48,7 +48,6 @@ fn independent(name: &str) {
 macro_rules! cases {($($name:ident),* $(,)?)=>{$(#[test]fn $name(){independent(stringify!($name));})*};}
 cases!(
     metadata_and_cached_method,
-    represented_complete_key_order,
     authentic_receiver_brand_without_public_properties,
     required_nonnullable_argument_without_coercion,
     identity_document_alias_and_structural_equality,
@@ -64,6 +63,35 @@ cases!(
     own_shadows_prototype_replacement_deletion_and_saved_calls,
     authentic_alternate_prototype_retains_node_brand,
 );
+
+#[test]
+fn prior_position_inventory_after_removing_configurable_clone() {
+    // Restoration changes creation order, so each mode uses a disposable realm.
+    for strict in [false, true] {
+        let (mut runtime, mut doc) = fresh();
+        let source = format!(
+            r#"{CASES}
+        (function(){{
+          const saved=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(!saved||typeof saved.value!=='function'||!saved.writable||!saved.enumerable||!saved.configurable)
+            throw new Error('clone descriptor');
+          try{{
+            if(!delete Node.prototype.cloneNode)throw new Error('clone delete');
+            if(nodePositionCases.represented_complete_key_order({strict})!==true)throw new Error('prior position inventory');
+          }}finally{{Object.defineProperty(Node.prototype,'cloneNode',saved);}}
+          const restored=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+          if(restored.value!==saved.value||restored.writable!==saved.writable||
+             restored.enumerable!==saved.enumerable||restored.configurable!==saved.configurable)
+            throw new Error('clone restoration');
+          return true;
+        }})()"#
+        );
+        assert_eq!(
+            execute(&mut runtime, &mut doc, &source, strict).unwrap(),
+            Value::Bool(true)
+        );
+    }
+}
 
 #[test]
 fn position_bootstrap_reports_actual_admission() {

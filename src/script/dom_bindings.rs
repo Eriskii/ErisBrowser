@@ -24,7 +24,6 @@ const METHODS: &[(&str, usize)] = &[
     ("DOM.appendChild", 1),
     ("DOM.removeChild", 1),
     ("DOM.remove", 0),
-    ("DOM.cloneNode", 0),
     ("DOMTokenList.add", 0),
     ("DOMTokenList.remove", 0),
     ("DOMTokenList.toggle", 1),
@@ -475,7 +474,7 @@ impl Runtime {
             }
             "querySelector" | "querySelectorAll" | "append" => parent,
             "getAttribute" | "hasAttribute" | "setAttribute" | "removeAttribute" => element,
-            "appendChild" | "removeChild" | "cloneNode" => node.is_some(),
+            "appendChild" | "removeChild" => node.is_some(),
             "remove" => node.is_some_and(|id| {
                 !matches!(
                     doc.nodes[id].kind,
@@ -489,10 +488,7 @@ impl Runtime {
         }
         let required = if name == "setAttribute" {
             2
-        } else if matches!(
-            name,
-            "append" | "remove" | "cloneNode" | "createDocumentFragment"
-        ) {
+        } else if matches!(name, "append" | "remove" | "createDocumentFragment") {
             0
         } else {
             1
@@ -601,9 +597,6 @@ impl Runtime {
                 self.dom_append(id, args, doc)?;
                 Ok(Value::Undefined)
             }
-            "cloneNode" => self
-                .clone_dom_node(id, arg(0).truthy(), doc)
-                .map(Value::Node),
             "remove" => {
                 if let Some(parent) = doc.nodes[id].parent {
                     self.charge_dom_remove(parent, doc)?;

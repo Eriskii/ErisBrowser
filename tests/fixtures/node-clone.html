@@ -1,0 +1,68 @@
+<!doctype html>
+<meta charset=utf-8>
+<base id=fixed-base href="https://clone.example/fixed/">
+<title id=heading>Clone ready</title>
+<style>
+body{margin:0}.sample{position:absolute;top:0;left:0;width:40px;height:40px;background:red}
+.ready .sample{background:green}.clicked .sample{background:blue}
+#change{position:absolute;top:60px;left:0}
+.card{position:absolute;top:100px;left:0;width:140px;height:36px;background:green;font-size:24px;line-height:28px}
+#copy{left:150px;background:blue}#result{position:absolute;top:160px;left:0;font-size:20px}template{display:none}
+</style>
+<body>
+<div id=probe class=sample></div>
+<button id=change type=button>Duplicate card</button>
+<div id=card class=card><span id=label>Alpha</span><!--separator--><template id=card-template><b>inert</b></template></div>
+<div id=result>ready</div>
+<script>
+function check(value,message){if(!value)throw new Error(message);}
+const descriptor=Object.getOwnPropertyDescriptor(Node.prototype,'cloneNode');
+if(!descriptor||typeof descriptor.value!=='function')throw new TypeError('ordinary clone prerequisite');
+const clone=descriptor.value;
+check(clone.name==='cloneNode'&&clone.length===0&&descriptor.writable&&descriptor.enumerable&&descriptor.configurable,'ordinary clone descriptor');
+const body=document.body,source=document.getElementById('card');
+const label=source.childNodes[0],text=label.firstChild,comment=source.childNodes[1],template=source.childNodes[2];
+const content=template.content,bold=content.firstChild,inert=bold.firstChild;
+const ordinary=new Text('ordinary\ud800'),pi=document.createProcessingInstruction('probe','seed');
+template.append(ordinary);source.append(pi);
+comment.data='mark\ud800';inert.data='inert\udc00';pi.data='seed?>\ud800';
+const originals=[source,label,text,comment,template,content,bold,inert,ordinary,pi];
+const title=document.getElementById('heading').firstChild,status=document.getElementById('result').firstChild;
+let hits=0,phase=0;
+source.expando='source only';source.onclick=function(){hits+=1;};
+function graph(root,word){
+  check(root.childNodes.length===4,'four ordinary card children');
+  const l=root.childNodes[0],t=l.firstChild,c=root.childNodes[1],h=root.childNodes[2],p=root.childNodes[3];
+  const f=h.content,b=f.firstChild,i=b.firstChild,o=h.firstChild;
+  check(l.nodeName==='SPAN'&&l.childNodes.length===1&&t.data===word&&t.parentNode===l,'literal visible label');
+  check(c.nodeType===8&&c.data==='mark\ud800'&&c.childNodes.length===0,'exact comment');
+  check(h.nodeName==='TEMPLATE'&&h.childNodes.length===1&&o.data==='ordinary\ud800'&&o.parentNode===h,'ordinary template child');
+  check(f.nodeType===11&&f.parentNode===null&&f.childNodes.length===1&&b.nodeName==='B'&&b.parentNode===f,'separate content graph');
+  check(b.childNodes.length===1&&i.parentNode===b&&i.data==='inert\udc00','exact inert data');
+  check(p.nodeType===7&&p.target==='probe'&&p.data==='seed?>\ud800'&&p.childNodes.length===0,'exact PI without factory revalidation');
+  check(l.parentNode===root&&c.parentNode===root&&h.parentNode===root&&p.parentNode===root,'reciprocal ordinary links');
+  check(root.className==='card'&&l.id==='label'&&h.id==='card-template','copied scalar attributes');
+  return [root,l,t,c,h,f,b,i,o,p];
+}
+const initial=graph(source,'Alpha');
+for(let k=0;k<10;k+=1)check(initial[k]===originals[k],'original identities');
+body.className='ready';
+document.getElementById('change').onclick=function(){
+  check(phase===0,'one real click');
+  const copy=clone.call(source,true),copies=graph(copy,'Alpha');
+  check(copy.parentNode===null&&copy.id==='card','fresh detached root with copied id');
+  check(!Object.hasOwn(copy,'expando')&&copy.onclick!==source.onclick,'source properties and assigned handler absent');
+  check(Object.getPrototypeOf(copy)===Object.getPrototypeOf(source),'default intrinsic interface');
+  for(let a=0;a<10;a+=1){
+    for(let b=0;b<10;b+=1){
+      check(copies[a]!==originals[b],'no copied source identity');
+      if(a!==b)check(copies[a]!==copies[b],'unique copied identities');
+    }
+  }
+  copy.id='copy';copies[2].data='Copy';body.append(copy);
+  const retained=graph(source,'Alpha'),published=graph(copy,'Copy');
+  for(let k=0;k<10;k+=1){check(retained[k]===originals[k],'source retained');check(published[k]===copies[k],'copy retained');}
+  check(copy.parentNode===body&&source.parentNode===body&&hits===0,'explicit insertion only');
+  phase=1;title.data='Clone done';status.data='done';body.className='clicked';
+};
+</script>
