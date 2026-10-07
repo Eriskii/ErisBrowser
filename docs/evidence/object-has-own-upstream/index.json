@@ -1,0 +1,66 @@
+{
+  "scope": "Complete pinned Object.hasOwn upstream profile; validation/tooling only",
+  "base_commit": "3ee89d4835a40d652b1be6fe73cff425f7598289",
+  "runtime_changed": false,
+  "binary": {
+    "path": "/tmp/eris-node-clone-1/eris-js",
+    "sha256": "e77a1efcd0b08a2ac570d65e0d0a4579aa55b51f02a4c99188b6bbbf19e7310d",
+    "bytes": 3826392
+  },
+  "results": {
+    "sources": 62,
+    "source_bytes": 33881,
+    "modes": 124,
+    "passed": 124,
+    "healthy_controls": 64
+  },
+  "python": {
+    "new_groups": 10,
+    "first_test262_suite": {
+      "tests": 261,
+      "failures": 3,
+      "exit": 1
+    },
+    "corrected_full_suite": {
+      "tests": 394,
+      "failures": 0,
+      "exit": 0
+    }
+  },
+  "correction": "Three older fixed-population tests now exclude only the newly added profile; historical expected counts and fingerprints are unchanged.",
+  "historical_contracts": {
+    "status": "byte-identical historical contracts",
+    "counts": {
+      "cases": 19727,
+      "preflights": 4564,
+      "profiles": 44
+    },
+    "sha256": "5124e0e1d79ca93a46dab73218c6ec2188ad8c7a2ae3279936722afff4f71786",
+    "bytes": 21010856,
+    "adapter_execution": false
+  },
+  "review_scope": "Independent data-only review of 124 results, 64 controls, 81 engine input bindings and baseline; historical Python corrections reviewed separately by root.",
+  "no_new_rust_build": true,
+  "no_gpu_or_performance_measurement": true,
+  "evidence": {
+    "report.json": {
+      "bytes": 134783,
+      "sha256": "7223fd72a961af94997b13670bc1a4f67a027697af99e953a84e7a53aa3ec7c2"
+    },
+    "result-review.json": {
+      "bytes": 5498,
+      "sha256": "f577244728ebb632f2d0e1c33baf9f43f05bdc034b0dba8b03adfb47f01e5f1a"
+    },
+    "records.tar.gz": {
+      "bytes": 5790880,
+      "sha256": "70d3971974a14434bd6d17cd5480a2478c64f6fcc959b896b38b926c0c395810"
+    }
+  },
+  "archive_members": 158,
+  "archive_manifest_sha256": "f9d3e4a0a0318d0b64e0628efbfda2b81442bad268e3cc021b385f6fc0a538fd",
+  "limitations": [
+    "Selected upstream directory is not full ECMAScript conformance.",
+    "Proxy, BigInt, universal host reflection and full browser compatibility remain incomplete.",
+    "Historical contract comparison is data-only, not a fresh engine replay."
+  ]
+}

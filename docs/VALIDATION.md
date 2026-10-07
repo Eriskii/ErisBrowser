@@ -5094,3 +5094,25 @@ production security or performance within 30% of Chromium.
 The first complete independent result audit passes with 686 bound inputs and no
 findings. It reconstructs the raw outcomes, source corrections and all recorded
 commands, including failed attempts, and verifies unchanged input hashes.
+
+## Complete pinned Object.hasOwn directory
+
+The [new upstream profile](../tests/conformance/object-has-own.md) passes all
+**124 modes from 62 unchanged sources**, with all **64 harness controls healthy**.
+The actual release is the published cloning executable `e77a1efc…`; no Rust
+source, executable or resource limit changed. The compact baseline and raw
+report agree on every case and source fingerprint. CI now gates this profile.
+
+All **394 Python tooling tests pass**, including ten new ownership regression
+groups. The initial 261-test Test262-only run had three failures because old
+fixed-population tests also included the new profile. Their corrections exclude
+only this later profile and retain all historical counts and hash expectations.
+The original failed run is retained with the successful full rerun in the
+[evidence](evidence/object-has-own-upstream/index.json).
+
+The 44 existing profiles' complete case, policy and control definitions remain
+byte-identical: 19,727 case modes and 4,564 preflights. This is a data-only
+contract comparison, not a fresh execution of those cases. The preceding
+[cloning commit CI](evidence/node-clone-ci.json) passed all nine jobs.
+No new Rust build, GPU rendering or Chromium performance comparison is claimed
+for this validation-only increment. Full browser compatibility remains unfinished.

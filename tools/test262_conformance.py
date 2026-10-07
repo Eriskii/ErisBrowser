@@ -56,6 +56,7 @@ ARRAY_DESCRIPTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 ARRAY_PREDICATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 OBJECT_INTEGRITY_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 OBJECT_IS_FEATURES = OBJECT_INTEGRITY_FEATURES | {'Object.is'}
+OBJECT_HAS_OWN_FEATURES = {'Object.hasOwn', 'Symbol', 'Symbol.toPrimitive', 'Reflect.construct', 'arrow-function'}
 DATE_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 FOR_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'for-of', 'let', 'const'}
 CORE_ITERATOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'Array.prototype.values'}
@@ -76,7 +77,7 @@ ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'object-is': OBJECT_IS_FEATURES, 'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'object-has-own': OBJECT_HAS_OWN_FEATURES, 'object-is': OBJECT_IS_FEATURES, 'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -203,13 +204,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -520,6 +521,26 @@ def core_iterator_preflight_variants():
     return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def object_has_own_preflight_variants():
+    """Pinned own-property scope; every negative requires real positive behavior."""
+    guard = "assert.sameValue(typeof Object.hasOwn,'function');assert.sameValue(typeof Object.create,'function');var ownGuardParent={inherited:1},ownGuardTarget=Object.create(ownGuardParent);ownGuardTarget.own=undefined;assert.sameValue(Object.hasOwn(ownGuardTarget,'own'),true);assert.sameValue(Object.hasOwn(ownGuardTarget,'inherited'),false);assert.sameValue(Object.hasOwn(ownGuardTarget,'missing'),false);\n"
+    pairs = [
+        ('own-inherited', "var inherited={x:1},target=Object.create(inherited);target.y=undefined;assert.sameValue(Object.hasOwn(target,'x'),false);assert.sameValue(Object.hasOwn(target,'y'),true);", "Object.hasOwn(target,'absent')", 'false', 'true'),
+        ('accessor-presence', "var reads=0,target={};Object.defineProperty(target,'x',{get:function(){reads++;throw new Error('getter executed');}});assert.sameValue(Object.hasOwn(target,'x'),true);", 'reads', '0', '1'),
+        ('target-before-key', "var reads=0,key={};Object.defineProperty(key,'toString',{get:function(){reads++;throw new Error('key getter executed');}});Object.defineProperty(key,'valueOf',{get:function(){reads++;throw new Error('key getter executed');}});assert.throws(TypeError,function(){Object.hasOwn(null,key);});assert.throws(TypeError,function(){Object.hasOwn(undefined,key);});", 'reads', '0', '1'),
+        ('symbol-exotic', "assert.sameValue(typeof Symbol,'function');assert.sameValue(typeof Symbol.toPrimitive,'symbol');var s=Symbol('key'),target={},key={},calls=0;target[s]=undefined;assert.sameValue(Object.hasOwn(target,s),true);key[Symbol.toPrimitive]=function(hint){assert.sameValue(hint,'string');calls++;return s;};assert.sameValue(Object.hasOwn(target,key),true);", 'calls', '1', '2'),
+        ('symbol-to-string', "assert.sameValue(typeof Symbol,'function');var s=Symbol('key'),target={},trace='';target[s]=1;assert.sameValue(Object.hasOwn(target,s),true);var key={toString:function(){trace+='s';return s;},valueOf:function(){trace+='v';throw new Error('unexpected valueOf');}};assert.sameValue(Object.hasOwn(target,key),true);", 'trace', "'s'", "'sv'"),
+        ('symbol-value-of', "assert.sameValue(typeof Symbol,'function');var s=Symbol('key'),target={},calls=0;target[s]=1;assert.sameValue(Object.hasOwn(target,s),true);var key={toString:null,valueOf:function(){calls++;return s;}};assert.sameValue(Object.hasOwn(target,key),true);", 'calls', '1', '2'),
+        ('property-metadata', "var method=Object.hasOwn;verifyProperty(Object,'hasOwn',{value:method,writable:true,enumerable:false,configurable:true},{restore:true});verifyProperty(method,'name',{value:'hasOwn',writable:false,enumerable:false,configurable:true},{restore:true});verifyProperty(method,'length',{value:2,writable:false,enumerable:false,configurable:true},{restore:true});assert.sameValue(Object.getPrototypeOf(method),Function.prototype);assert.sameValue(Object.getOwnPropertyDescriptor(method,'prototype'),undefined);", 'method.length', '2', '3'),
+        ('nonconstructor', "assert.sameValue(typeof Reflect.construct,'function');function Guard(){this.marker=7;}var made=Reflect.construct(Guard,[]);assert.sameValue(made.marker,7);assert.sameValue(Object.getPrototypeOf(made),Guard.prototype);var caught=false;try{Reflect.construct(Object.hasOwn,[]);}catch(error){assert.sameValue(error.constructor,TypeError);caught=true;}", 'caught', 'true', 'false'),
+    ]
+    return [('object-has-own-' + name + '-' + variant,
+             guard + setup + '\n' + f'assert.sameValue({actual},{value});', expected, mode)
+            for name, setup, actual, good, bad in pairs
+            for variant, value, expected in (('positive', good, 'passed'), ('wrong', bad, 'failed'))
+            for mode in ('sloppy', 'strict')]
 
 
 def object_is_preflight_variants():
@@ -2306,6 +2327,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         variants += array_buffer_preflight_variants()
     if profile == 'data-view':
         variants += data_view_preflight_variants()
+    if profile == 'object-has-own':
+        variants += object_has_own_preflight_variants()
     if profile == 'object-is':
         variants += object_is_preflight_variants()
     if profile == 'array-concat':
@@ -2351,6 +2374,20 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                      if item['name'].startswith('object-is-') and item['expected'] == 'passed'}
         for item in outcomes:
             if item['name'].startswith('object-is-') and item['name'].endswith('-wrong'):
+                partner = positives[(item['name'].removesuffix('-wrong') + '-positive',
+                                     item['result']['mode'])]
+                result = partner['result']
+                item['prerequisite'] = dict(name=partner['name'], mode=result['mode'],
+                    case_sha256=result['case_sha256'], source_sha256=result['source_sha256'],
+                    expected=partner['expected'], verified=partner['verified'])
+                item['verified'] = item['verified'] and partner['verified']
+    if profile == 'object-has-own':
+        # Preserve the independently authored positive/wrong names and require
+        # the positive source to succeed in the same mode before verifying it.
+        positives = {(item['name'], item['result']['mode']): item for item in outcomes
+                     if item['name'].startswith('object-has-own-') and item['expected'] == 'passed'}
+        for item in outcomes:
+            if item['name'].startswith('object-has-own-') and item['name'].endswith('-wrong'):
                 partner = positives[(item['name'].removesuffix('-wrong') + '-positive',
                                      item['result']['mode'])]
                 result = partner['result']

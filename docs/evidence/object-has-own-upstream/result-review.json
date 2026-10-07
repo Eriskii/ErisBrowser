@@ -1,0 +1,124 @@
+{
+  "status": "clear",
+  "sealed_utc": "2026-10-07T08:06:07.874979+00:00",
+  "scope": "Independent data-only review of the completed first upstream Object.hasOwn profile execution; no reviewed modules imported, engines or compiler executed, or source files changed.",
+  "published_base_commit": "3ee89d4835a40d652b1be6fe73cff425f7598289",
+  "binary": {
+    "path": "/tmp/eris-node-clone-1/eris-js",
+    "sha256": "e77a1efcd0b08a2ac570d65e0d0a4579aa55b51f02a4c99188b6bbbf19e7310d",
+    "bytes": 3826392
+  },
+  "checked": {
+    "input_bindings": 81,
+    "frozen_tool_sources_exact": true,
+    "source_files": 62,
+    "mode_cases": 124,
+    "case_mode_counts": {
+      "sloppy": 62,
+      "strict": 62
+    },
+    "case_roster_sha256": "0b8bf07ff2d7c961d529585a5bd8480013bf842a6a892f19e0a4a17514a14a8e",
+    "case_passes": 124,
+    "controls": 64,
+    "common_controls": 32,
+    "feature_controls": 32,
+    "control_success_observations": 28,
+    "control_deliberate_Test262Error_observations": 36,
+    "feature_same_mode_positive_prerequisites": 16,
+    "healthy_controls": 64,
+    "compact_baseline_exact_projection": true,
+    "execution_exit": 0,
+    "execution_log_and_command_bound": true,
+    "observed_input_drift": false
+  },
+  "findings": [],
+  "limits": [
+    "The 62 files are the complete pinned Object.hasOwn subtree at the stated Test262 revision, not full Test262 or full JavaScript conformance.",
+    "Wrong controls intentionally have failed status; all 64 controls are healthy because their raw observations satisfy their literal expectations. Test262Error is a harness error and carries empty intrinsic error_identity.",
+    "This receipt inspects retained execution outputs and current pinned bytes; it does not rerun the engine or independently observe elapsed execution. First-attempt status is supported by the exclusive-output supervisor and retained root receipt.",
+    "DOM/Window, resource boundaries, and other local-only coverage are outside this upstream profile.",
+    "The separately reported broader Python tool-suite historical exclusion failures and their pending corrections are outside this result review; this clear result does not certify that suite."
+  ],
+  "references": [
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/upstream-report.json",
+      "bytes": 134783,
+      "sha256": "7223fd72a961af94997b13670bc1a4f67a027697af99e953a84e7a53aa3ec7c2"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/upstream-execution.json",
+      "bytes": 717,
+      "sha256": "2299afc4f6f062f8e7b640fc68a26d579f287e2d36c2279f66212687b5ef6c37"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/upstream-execution.log",
+      "bytes": 149,
+      "sha256": "5be8e780cf41aeed8cfa5ea7b224760e6f5b8a6697fd13c3a5f75ab538ba588b"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/engine-inputs.json",
+      "bytes": 21644,
+      "sha256": "3f232af9e42c5057a26923c9996de37a0ef57486fff34f6342450e1a5a3defd3"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/run-profile.py",
+      "bytes": 1959,
+      "sha256": "3b45503aa138d3fed1535b42439e8c5674e1af46e7f1300970ce72a8ca7a2cac"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/base.json",
+      "bytes": 447,
+      "sha256": "eaf990f172bfd095c5f39a23d0aec7e94d5fe0a87a67f79d55892bf17106baaf"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/worktree/tests/upstream/test262-object-has-own/manifest.json",
+      "bytes": 26757,
+      "sha256": "ec06ac5c6d9df81904821234389ed31d6638d7e2421df43345818ca8a12f05b9"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-1/worktree/tests/conformance/test262-object-has-own-current.json",
+      "bytes": 37599,
+      "sha256": "fb46ee6e514ffbdb54ffba5bc9140f9ce8a1e6f3551892e714faaca909cd3c4c"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-preparation-1/layout/source-ready.json",
+      "bytes": 22575,
+      "sha256": "a7f355e36eba461974780bfd7c48103744ccc01d4bd8b8c3738c9224e5d98e55"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-preparation-1/layout/inventory.json",
+      "bytes": 50878,
+      "sha256": "06d3caad6a4b5b5e2ff440681209b6fc43f044f7000de6766688178cf5b6d25e"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-preparation-1/layout/regression-expectations.json",
+      "bytes": 1473,
+      "sha256": "29c4b10b0f6c5aca364d8b0affe1d29e449f5e4692cc89ce729b57bee6e0a559"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-preparation-1/layout/regression-source-ready.json",
+      "bytes": 4537,
+      "sha256": "ac9e1791e535897089eed289f7c9691c1ab64eb29851a8d6c736f16fa33afe0d"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-preparation-1/runtime/source-ready.json",
+      "bytes": 9060,
+      "sha256": "be7c180ea4376b33a8de2d69a591d2c4307609dea8bac9d7ef777b5b08b27997"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-preparation-1/runtime/frozen-controls.json",
+      "bytes": 33845,
+      "sha256": "0513c9a3ffcac6c61d66554aae47dfd0c86e90ba4fbd05eabe8ead52cf206399"
+    },
+    {
+      "path": "/tmp/eris-object-has-own-upstream-preparation-1/runtime/preflight-pairs.json",
+      "bytes": 3485,
+      "sha256": "1d12fdfe5c2b09cfffcc07c26639ca75986ab7d1527e2e26ce227876bd64c10a"
+    },
+    {
+      "path": "/tmp/eris-object-is-preparation-1/tooling/new-profile-contract.json",
+      "bytes": 122844,
+      "sha256": "a15cd4ef08cf8163abcbb456a396ec0b555199a6f7b2b576314996ab039a2419"
+    }
+  ]
+}

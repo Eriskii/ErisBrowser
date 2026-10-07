@@ -1,0 +1,628 @@
+{
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "ec06ac5c6d9df81904821234389ed31d6638d7e2421df43345818ca8a12f05b9",
+  "runner_policy_sha256": "ac943560e42343b05eebbefacd4cc77d1cb839ee060630fd5d4a1876a1fbcc7d",
+  "binary_sha256": "e77a1efcd0b08a2ac570d65e0d0a4579aa55b51f02a4c99188b6bbbf19e7310d",
+  "cases": {
+    "test/built-ins/Object/hasOwn/descriptor.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "032d3f144281656c444f2742c761f0d4e79d74cf30e5127ead445463b438baea",
+      "source_sha256": "49aee990e8448161f2b2c6aff94263b2284d1bdec7f1290186d9e23f6d5257d0"
+    },
+    "test/built-ins/Object/hasOwn/descriptor.js:strict": {
+      "status": "passed",
+      "case_sha256": "00b9cb7d8dcf37235b4488612798b978587bb063012dd1b1059f0ab8430261d0",
+      "source_sha256": "49aee990e8448161f2b2c6aff94263b2284d1bdec7f1290186d9e23f6d5257d0"
+    },
+    "test/built-ins/Object/hasOwn/hasown.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "578dc10b3e5d6e3c26e49c773923096cbb4ceacd9322f30bff860cecc5900ef8",
+      "source_sha256": "3884ec704c52d91e43422519f6aa21a4464e5d0d526e2e95f636502ed71ff351"
+    },
+    "test/built-ins/Object/hasOwn/hasown.js:strict": {
+      "status": "passed",
+      "case_sha256": "0bf105444d8d6380bea91d576187d08db634291b6fc3b32937d334c2a07f1403",
+      "source_sha256": "3884ec704c52d91e43422519f6aa21a4464e5d0d526e2e95f636502ed71ff351"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_exists.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "32d62d824fab42b16434fe7cb31df255f6fc97b8b78abc1831ad236512fe2148",
+      "source_sha256": "8ab65e79da10f6c694f00fdf392b278cd7f2ce8262bafd5c403bbb9a3ea8140f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_exists.js:strict": {
+      "status": "passed",
+      "case_sha256": "69aba3c74a0d0c57f115c8e9f064959f19cc974e1c55bede0fe18c24ab68f3fb",
+      "source_sha256": "8ab65e79da10f6c694f00fdf392b278cd7f2ce8262bafd5c403bbb9a3ea8140f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "331429c651796a91c0467bc1bbde6f3fe1b87533e4f46030d9b5059aa0ad35a5",
+      "source_sha256": "434c663b5df7ba9a1ea9c3a3358e0e0990f82776f4e9d6fbb5fb7a242a6acde6"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter.js:strict": {
+      "status": "passed",
+      "case_sha256": "02eaca2bd6f601e1869a979e7b397133ee4e57d67a436c031334d3f493c94928",
+      "source_sha256": "434c663b5df7ba9a1ea9c3a3358e0e0990f82776f4e9d6fbb5fb7a242a6acde6"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "f282ed8c7e7abda5cc553eba671f602f324dd0adef1226a0db6358cfc8600f6e",
+      "source_sha256": "f9a78f671909b0e605eafd13b67bae602ae925209bea29ed4c9541f19cfa4792"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js:strict": {
+      "status": "passed",
+      "case_sha256": "3b883244e6027cadacfb57788d04b376958c37199635984f31202c95b774423a",
+      "source_sha256": "f9a78f671909b0e605eafd13b67bae602ae925209bea29ed4c9541f19cfa4792"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "cee2ab18d370779f52d8033faf6a8cf51d7c459c35b26a171370b34e41978d39",
+      "source_sha256": "9d90da908937ffcc92a6d5efc2469ee9c4ae7614193fd07b4b8a7fd5ce1608a3"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "0c6a20c03e8109efec24ef08c58c58530b6051b30a50a426d08bb2adcfed518f",
+      "source_sha256": "9d90da908937ffcc92a6d5efc2469ee9c4ae7614193fd07b4b8a7fd5ce1608a3"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "967b55eaee90f47ccce477fe52fffd10a4113eb0a6a639e76c54b8c2dcc05f3d",
+      "source_sha256": "003db4cc51f6b94fd66bed902aa898d4f3bea6e2e2b100b391eebc237309b91f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "89b971f606e38a307c00f8f8c712d99b96e653243fda515b5924a9ef34dd20da",
+      "source_sha256": "003db4cc51f6b94fd66bed902aa898d4f3bea6e2e2b100b391eebc237309b91f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "d5cc6312fbffedfc96c75945ccef1607742da099cd49081f21113e3c71260352",
+      "source_sha256": "2560a9e7caa9384799df021173136243dcb4301911630ce9fa0121a10918236f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "d0efc8c502fce483123b3e2d07fef1ef9c0dfa52b2b2dc1bb448c21ff448d259",
+      "source_sha256": "2560a9e7caa9384799df021173136243dcb4301911630ce9fa0121a10918236f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "c70e85f9a551e1af0379bf5a7960627aec1266fc368e788e53335b258f584867",
+      "source_sha256": "b0d6ed557d4bacec60fa3dcb69ad4ece71f6843afd0f2e6b77366d6a5adf501f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "a9c3ebec95f87f87a44c54134e48084c2322cda0b71482b9e100a77c36d215b8",
+      "source_sha256": "b0d6ed557d4bacec60fa3dcb69ad4ece71f6843afd0f2e6b77366d6a5adf501f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "0c6129de3b4d88f53193e89fa91b53e8d145c36b3cad64d1f65de088a692a0e9",
+      "source_sha256": "c8a0671ec65d3929b4c8bf51996ad3cbaf50fba263e518298e6948ffc4a5b47a"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "af1c481a1243f2b5ef258b80e062d6bbc9cc1d6e712cc17072e3542ba2e45f70",
+      "source_sha256": "c8a0671ec65d3929b4c8bf51996ad3cbaf50fba263e518298e6948ffc4a5b47a"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "9e0de642318b6fa9981225cf07d06d7a938219e18167c3a9c29a9d2beed1eb3f",
+      "source_sha256": "6bf42bfb04b84ff0ccb4be7a74517cc198526e95f213f532ed8060dd4322b2d5"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "f5befbb4d91b3476b40d679f54c039a6347abbe31a4b079ab11a6bd34f5655f0",
+      "source_sha256": "6bf42bfb04b84ff0ccb4be7a74517cc198526e95f213f532ed8060dd4322b2d5"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "1699135dac144e6b649ec0d64cd639c643a5b1ca36bda63a15acd1507a494c20",
+      "source_sha256": "7d4fd21c47cfc2026f630f4579c25c911327f8bc4f8b726efa33cdbccd827d71"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "cd6305e3ce37b5d197d8e22fdf0997f7a90c59f3ff639f2a4b14c00fb9139c2c",
+      "source_sha256": "7d4fd21c47cfc2026f630f4579c25c911327f8bc4f8b726efa33cdbccd827d71"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "0c8fece7aaac638a8834ad4459da0993fd45438327d4611910dc8ae0cccfedc6",
+      "source_sha256": "4c5794ec821999b27bbba57b75b2961968499d3e7c2c24470f80ed7512a7e99a"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "8b492dc5209eec981b02266624d25ffdf78cfe8e703fd9f3db1e10cebabdd589",
+      "source_sha256": "4c5794ec821999b27bbba57b75b2961968499d3e7c2c24470f80ed7512a7e99a"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "92c3a6a869acf385b2efd7715e6c07f597944cacc6df9009892d2f69ce7c00d1",
+      "source_sha256": "038928ea2efb805515a63e8c4d204bbc0dd0dd877b9f251854463e61bcff3c2f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "f0a811071142916e56e8f4408a0141539b767effaa61432ccd5d0ee8e16a8bbf",
+      "source_sha256": "038928ea2efb805515a63e8c4d204bbc0dd0dd877b9f251854463e61bcff3c2f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "7b0e9b396537f8ea354904b6452b30a3f9bec816011bfeca4bb8c98463f71a43",
+      "source_sha256": "a4d6e7d15a53982566255c3003c9dd264e33de2967d292f954d3db56c577b0dd"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "ca661c351c561aa2ef9d097d5d8647b640218db81de8d452c4054d7e85c270ca",
+      "source_sha256": "a4d6e7d15a53982566255c3003c9dd264e33de2967d292f954d3db56c577b0dd"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "8e4c51795222ead8546ef898b718b6ff5d08e898fefa8e3bffa7409fec09b751",
+      "source_sha256": "71015042480136acea6eb8b49557a3e612e2fb3ba4eb286401ebcdda1cef2ec4"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "8274217e4bd0f6726644d3a8e8376a7aed4f8095fa33373b9c90ee4851e0aaa1",
+      "source_sha256": "71015042480136acea6eb8b49557a3e612e2fb3ba4eb286401ebcdda1cef2ec4"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "19c131eebb8380a4cdd44ac3ce63ed2064435c7c41b37e4b7a6537b155be1596",
+      "source_sha256": "5e65948e641a1c4741c066fd1ea176ca76f7be6c1c7fb2818298be3ec41e997c"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "a1e040f3f61f3b06faa3617ad113aaffecda4a7e74f6e286b86f17b1668883bb",
+      "source_sha256": "5e65948e641a1c4741c066fd1ea176ca76f7be6c1c7fb2818298be3ec41e997c"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "b403c2df282b0da5b91db2126deedde376870d67eeb7b769f74a57ff659a5a3b",
+      "source_sha256": "0b8f503458b951aa82a145d76861d359e99f97e7521218a1a2cd671362560a3e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter.js:strict": {
+      "status": "passed",
+      "case_sha256": "74ce6206f51c0ea00980f9a6a9905f31ec6162e386c84faceb26a9a8d4b9ac50",
+      "source_sha256": "0b8f503458b951aa82a145d76861d359e99f97e7521218a1a2cd671362560a3e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "ffa81ff24030ef477192d22fc40442f7827d19b5db2063f8992d8e0cbb09a44a",
+      "source_sha256": "0e43c7c7b3d6778f96a39aa2c5a6a1b3cd32191dbaa1c58b7bd4a6f837d51865"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "067f5970b5975ba6d580e639c9932341460302a98e64e9572daf74750513b91e",
+      "source_sha256": "0e43c7c7b3d6778f96a39aa2c5a6a1b3cd32191dbaa1c58b7bd4a6f837d51865"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "077d67df2b36b6f9e3ac654c2c1784cd413e6aaf1ec879ade100255ebe14fde0",
+      "source_sha256": "dc6d6f426f9b072230e22f80336003c7328ba46401cfb1f4281fbfa1235861c6"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "c14053c6c345a859d6b2f9e05d379a396bf0d7d2bc03a74579d05da5b734ada0",
+      "source_sha256": "dc6d6f426f9b072230e22f80336003c7328ba46401cfb1f4281fbfa1235861c6"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "b4aafa19dcce91685cc98d6e055eb7dba38c72b4fbcfb71a02bb63b90b693bdf",
+      "source_sha256": "1b23c1ac5928f458ba5175b891addb231a0b513cc49f8b6e43fa3bae6322c065"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "990842b86d733931035408834792e43ee40b010caccd00b2255552b7aee3770f",
+      "source_sha256": "1b23c1ac5928f458ba5175b891addb231a0b513cc49f8b6e43fa3bae6322c065"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "b7b44cf3e12aa6e1e6f57a496f6f305fe7fa2fa33e9c3e7e3690ac302cdb180d",
+      "source_sha256": "273a9f92ea740f46151776934a600a93957cd108fae92e5bfe68b34c85153f69"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "2a2cd928c30076e12cc8bb77fe5637bfaceda21c3f41e4c711d004002f57d2f6",
+      "source_sha256": "273a9f92ea740f46151776934a600a93957cd108fae92e5bfe68b34c85153f69"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "4985927dfd0a310b71f5ec2b4c35ce2ed5f4ed5a08e18957bb063ca23b9b5def",
+      "source_sha256": "1cd027ff6c5337f8ca4fb3491cf6de6991416a5c1926de3d2eefff641ad29bf1"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "7c6fc0c09a2eec1be3a27ba75a752905d862ecb80f83509373545ec52847cf89",
+      "source_sha256": "1cd027ff6c5337f8ca4fb3491cf6de6991416a5c1926de3d2eefff641ad29bf1"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "63315434d7d328bbf902345525e879b109c62b9f4951af2e2b1ed45237e53491",
+      "source_sha256": "3633206a5d19bad34b2948d363a7b2f3f34616ceb34a8089b86e546b79ef97ab"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "996b0f6399dc6f2f94f68b356fbf03a192888fafb52bdcb2411b47e133f06eba",
+      "source_sha256": "3633206a5d19bad34b2948d363a7b2f3f34616ceb34a8089b86e546b79ef97ab"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "55938bfba99d3d897797845988547e12135f08956b2688349a383af9085e682b",
+      "source_sha256": "e02d1c28fd7612f976488fd6879cd6648e92e3624d4607f4eb6459a58c41c03b"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "6f5b06006c7e64438bac958d3154d979bc6c64fbe53e983e1e6fecb5249eefee",
+      "source_sha256": "e02d1c28fd7612f976488fd6879cd6648e92e3624d4607f4eb6459a58c41c03b"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "4546d3f58124f5947511c43231ec59d86a2be2cb8621eec5c83413c3a5b2980b",
+      "source_sha256": "770af2bbfec0964212f1e807ed16f311ad1b4bdc96cd6f63b1bffd12f3e449a9"
+    },
+    "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "a08afb44c0a4438cb91c3aa54abf73d7967eb486554448c2c356702cc375e6f9",
+      "source_sha256": "770af2bbfec0964212f1e807ed16f311ad1b4bdc96cd6f63b1bffd12f3e449a9"
+    },
+    "test/built-ins/Object/hasOwn/hasown_nonexistent.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "7fea350e0247be7e74a447b75dfd31aeaf16a00afb11c9657720dbec86fd20bd",
+      "source_sha256": "2cf837b4e55061f0a80f346f64bcb4c67027842f73aecb61a04f0b4c1769c254"
+    },
+    "test/built-ins/Object/hasOwn/hasown_nonexistent.js:strict": {
+      "status": "passed",
+      "case_sha256": "004409d1d38c8c79a4907110266fc20112a4d3b74c0b863e86c2a1c9a270282f",
+      "source_sha256": "2cf837b4e55061f0a80f346f64bcb4c67027842f73aecb61a04f0b4c1769c254"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "6328074c4f2bd442c508429f982c2b02424623153a08745f563b87ae5f68652a",
+      "source_sha256": "4914d53bb00f747bb9e126aee0143ea9c9512020a8fbe80a9f44bb2898470d44"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter.js:strict": {
+      "status": "passed",
+      "case_sha256": "867cb537c7defad7f3f42b605d6157c608828b4acebaf789930027831e0863f9",
+      "source_sha256": "4914d53bb00f747bb9e126aee0143ea9c9512020a8fbe80a9f44bb2898470d44"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "e1b1850d8a68de7298c794c1a02ac06861da8ca18b7f96d632876e13fc4c7b30",
+      "source_sha256": "7b6b84153b94f77810e1897a77c32ee96ceb40a7d049111e6a2e43f4eaf33915"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js:strict": {
+      "status": "passed",
+      "case_sha256": "01f4741a3b13ffd0c93194c2929cf2afdcadb1a66886b7a3df031916e78675b6",
+      "source_sha256": "7b6b84153b94f77810e1897a77c32ee96ceb40a7d049111e6a2e43f4eaf33915"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "67dfcb889a1dab9a8fd7d8ecc88a6e12bc81fe54950f94b7f2d9949ab0bca4c5",
+      "source_sha256": "28b5c0d0845ea2bb8195bdf1a9a81010d48870bd7c270139c9187b7b87a4fbed"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "15f37d8f970c444bd1157b74d66763e4b03d78389cf9f97bd7c769a221d4373c",
+      "source_sha256": "28b5c0d0845ea2bb8195bdf1a9a81010d48870bd7c270139c9187b7b87a4fbed"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "3b9482a62eb9334140ebe72cf452fba875ce2fd82a6942068dc330c45f763e5a",
+      "source_sha256": "a8ab0f903398108b277b7447ed23987ea7ab8f08864f7f0ba88f4c768616de2e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "55284e86bf7ac966a6ea45acc124ea0d70a8f2560acfa11c625742a3d3951cea",
+      "source_sha256": "a8ab0f903398108b277b7447ed23987ea7ab8f08864f7f0ba88f4c768616de2e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "f0a1f575e61cceab4febf1f088164bcccdb3e9f35c12597ca08d1c6eff093819",
+      "source_sha256": "97d247336326e9dc00484a8da812718705dd74d03e1ab43540ab81dbc183785c"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "1fdd3aa8b346f7ea5654c1e665c9821631f71bf76d71bb332860649008464192",
+      "source_sha256": "97d247336326e9dc00484a8da812718705dd74d03e1ab43540ab81dbc183785c"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "ee221073ac4a76ac4ea9512b6dd665db5f89520eb6466a11aedd170684f122b3",
+      "source_sha256": "ce1197cf2ed80348286fba3f9a18f378c2d8fa77286dd46f214aacff0bea61d4"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "20a8963c3827238b9265c4df5173165cd597402fcdfb0f7090acea25646678f7",
+      "source_sha256": "ce1197cf2ed80348286fba3f9a18f378c2d8fa77286dd46f214aacff0bea61d4"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "438722d203981158815a3ddc7093c7d8fc3ba2752104d1d88ffd26db550854d7",
+      "source_sha256": "aa2101111fa83fa3f2afed222d4f4b8f798e8c2e76d427ba3ac53ed5136b36fd"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "af81e8fb976e7f2b6c3bba60cfd000745d4db16327a2f82e7ea797f05b6ce56f",
+      "source_sha256": "aa2101111fa83fa3f2afed222d4f4b8f798e8c2e76d427ba3ac53ed5136b36fd"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "281d00e5a79ad2162a55ffc2e83f7132b4ed95535220729c278e0871111d45e4",
+      "source_sha256": "4f91776718d86cd9b9cbb8f2a731b7df55fa0c48e9d54d9615b5d5bae1acaf88"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "d9e4dd5ba9f3eabcfc86b73dc1c23a4eda7dab4912df879f076c8a7265ad4e41",
+      "source_sha256": "4f91776718d86cd9b9cbb8f2a731b7df55fa0c48e9d54d9615b5d5bae1acaf88"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "317be7b1f65ce97197a1af1448039f3fcad14198fcd5764c1c6fb0d55a2ee50b",
+      "source_sha256": "780c98046cdc404585f7bf60c6c313d002f8103cad1b8cef881a282e7819075d"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "8d503c24916b5edcea51dcb188b60a841b3e9b2d981065d29f616667877db8db",
+      "source_sha256": "780c98046cdc404585f7bf60c6c313d002f8103cad1b8cef881a282e7819075d"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "ae1f2e2928b84f8bcf80c7289983d58216cb3fcd0b21389fb373b12c23f8723a",
+      "source_sha256": "2fd6fcd5df544fb0303a6de00845307e15703a38035b42cb3f2f9301fe06fb2e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "a41320726d6486bdeee5784f34fc7d5f6931f9bff1ff68672c927c8b0cd791d6",
+      "source_sha256": "2fd6fcd5df544fb0303a6de00845307e15703a38035b42cb3f2f9301fe06fb2e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "caa17bbb43e8dda97961fff16d3ff1fa6a68a238a8abefd0ae1dd32a65eed813",
+      "source_sha256": "e66462012c71faef3bd409c29465d422279c018d3fed7360c7582da7f4473dd8"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "3c671627bd645a4e77fbe8d939748dfb9a55f7d7e10652c85488463f4339d67a",
+      "source_sha256": "e66462012c71faef3bd409c29465d422279c018d3fed7360c7582da7f4473dd8"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "03ff15da03e34200bddca5ae398b88ed8649bb2d5edaabe9d2573f166a0c591b",
+      "source_sha256": "877328f2987a5a479ba8d1749db48306ab6b5552e96030a2d58b55f00a0242f7"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "ca6913d8d5ca20f1cf822b6f578ff997536eafed317cafdb68947ec1cdda0384",
+      "source_sha256": "877328f2987a5a479ba8d1749db48306ab6b5552e96030a2d58b55f00a0242f7"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "d5fa2ad0eb9dd73d0215483f4da78e6faff22acd8f9ca490033eaee93fc1e693",
+      "source_sha256": "46049145ff50be7aa30f247536b679ad1cfebf382063f784787e5e584b3f2398"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "215ead846a17d4ee738c88436a57f871a737f5f14576d891644fddaedd9a481a",
+      "source_sha256": "46049145ff50be7aa30f247536b679ad1cfebf382063f784787e5e584b3f2398"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "ab81cbfda8ac96ecc5b32cef23c96ad43014045ddf30a6898083a77e406a6282",
+      "source_sha256": "67918d0989eb7d98d3aa499dcfd56ce2f47bae6ad19c6d8cb6c9c63c6bc1dd4e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "ade5c0aad6d6705c8e05e3d1ab61d9040fb8392238b43eaa8bc81566daa095f1",
+      "source_sha256": "67918d0989eb7d98d3aa499dcfd56ce2f47bae6ad19c6d8cb6c9c63c6bc1dd4e"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_property_exists.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "13022b957f2f545f09a0831c0d4846053f65d72b98bf9e793daac966d8654762",
+      "source_sha256": "1db038aa023638a555b82474578f60c66f0d3e233f2efc0bcf3d770f93ea58c0"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_property_exists.js:strict": {
+      "status": "passed",
+      "case_sha256": "b2f41d8e2923d92fe11c7f19727d920d10be0fb30b1ba568ee8782556d7745e8",
+      "source_sha256": "1db038aa023638a555b82474578f60c66f0d3e233f2efc0bcf3d770f93ea58c0"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "971dd46df37ebfff9392fc375a9624aaff3cacee0bead82c0b61b94914fb0faa",
+      "source_sha256": "8619862c0d7d68cfa63e088672c53977c6bc1e80c73774641f5e2858b733d108"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter.js:strict": {
+      "status": "passed",
+      "case_sha256": "73cf30b87d445fc2b11fa68cc746fcc8bd7ab94ccf2a824c66f9f1103fc3702e",
+      "source_sha256": "8619862c0d7d68cfa63e088672c53977c6bc1e80c73774641f5e2858b733d108"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "f8267a916c921fb16dc4ca11e6dec6133d1adbd47745a3ada92427423ef08f64",
+      "source_sha256": "611617e641518b102f9a1eb57296831713486a7538b9472156f8a3213c117bd1"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "e7550e4d4b671a9f812f396098f7d2702376eb1c40150cebd16a41b450bdb6d4",
+      "source_sha256": "611617e641518b102f9a1eb57296831713486a7538b9472156f8a3213c117bd1"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "d75dc402d6c35c0e7251dfac4004a3e03ea4da09ec950699466cc20325fab132",
+      "source_sha256": "2fca307b30b06b241da25f8576bc92cff65530df4920d73476ffa204de74218b"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "232fb73ecc55aabcdef72c99fa3452d1e2179da09dd1b4659dbed61e087e5be5",
+      "source_sha256": "2fca307b30b06b241da25f8576bc92cff65530df4920d73476ffa204de74218b"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "ba0c713942d02a02ee9c74955106350e926c72e4be6dfd3a7492dbf0ef162d29",
+      "source_sha256": "60fd450f1c8c7da313c6ac8e21566448bba29ae961f431ef6f65f54478355e6f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "afcb4c4912394c566c5d937a2ce2511fe6a06374deb7ce6c51a59541f56b6f7e",
+      "source_sha256": "60fd450f1c8c7da313c6ac8e21566448bba29ae961f431ef6f65f54478355e6f"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "6aa85830b5a7a54ffdca71a6c9712122ba3a567bf3c9d98bc7d13bcef72121c8",
+      "source_sha256": "bf8b7d9cb5f16e8189f39f640b3925b3b13ebb94cec9e709d7f9d2dd4081ee60"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "dcaa43b2a1c8c43651ca1811e43017ebe16bc8ca517d9bf8a52ca5c028ff26d2",
+      "source_sha256": "bf8b7d9cb5f16e8189f39f640b3925b3b13ebb94cec9e709d7f9d2dd4081ee60"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "89de5d02fb42516aa06b128aa5d54c66bb035d7c1516d44dd9c769291acbe013",
+      "source_sha256": "9475b1c7d1b8aad5605fb189e036f427c99250da3840d70c59cedaa8541a6306"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "052ede6f78234a2b809d7c3d610f37ecb5635df92972095e0ce00e0560fe5c02",
+      "source_sha256": "9475b1c7d1b8aad5605fb189e036f427c99250da3840d70c59cedaa8541a6306"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "f2946d109c86a88884741b9fcbb3c8b7ffe3339acdf9036312ac7028e468ab0e",
+      "source_sha256": "643a8b3a1ca0a4e28517fac30981b7f7e19d11a7d3958b622b5deb7656c58e75"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "aebe12ca290d5aa414cacc20dfcb73b2c87898b68d49ea9c231bbc73266af7b8",
+      "source_sha256": "643a8b3a1ca0a4e28517fac30981b7f7e19d11a7d3958b622b5deb7656c58e75"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "f037b4928866b95780635a480779e76a74efc4d8af3664d5f2195d8d9471a90a",
+      "source_sha256": "1450c48c4ba067f600290ab2850bd611658c0bb7f92e6c424adc9b1932b370fa"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "b540ffc898efe9913ec4771c4f5e1063bc285062824a59e599c21a6fdd88e5ce",
+      "source_sha256": "1450c48c4ba067f600290ab2850bd611658c0bb7f92e6c424adc9b1932b370fa"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "7bd7c1b5c62dc4ca0dacf7c1f4850d45cf19d32daf95b4c031b69f2a845d2d2a",
+      "source_sha256": "82d63e2e9a25a28ec0be4b05143fee17861601d0e0cbb4d4f4ac2ccae68cacb0"
+    },
+    "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js:strict": {
+      "status": "passed",
+      "case_sha256": "26e268cefa4e61e504e14e3f2e7dfd1a46924cb1985134006076874fa624ad32",
+      "source_sha256": "82d63e2e9a25a28ec0be4b05143fee17861601d0e0cbb4d4f4ac2ccae68cacb0"
+    },
+    "test/built-ins/Object/hasOwn/length.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "ae9c1d86ec879dbe8cf8acbfbf9a7af860f5057c606979ecc968e6d651e90157",
+      "source_sha256": "3582cce17fd9f3ff66ba903efebc6ccb7abf34cc4f306d8868fc5ed789f5f79e"
+    },
+    "test/built-ins/Object/hasOwn/length.js:strict": {
+      "status": "passed",
+      "case_sha256": "6642a4128d8fcc200838401fbad0202365bbcfd42648fb0ca7dbf834714ad787",
+      "source_sha256": "3582cce17fd9f3ff66ba903efebc6ccb7abf34cc4f306d8868fc5ed789f5f79e"
+    },
+    "test/built-ins/Object/hasOwn/name.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "e85f0bce1d3596f04f1a1c7b1cecf958f40b7d937cf7c52f5bcfc3f0661cbf91",
+      "source_sha256": "07e0219ac2140775f9433d6dca98b936a4ec49346c3ed74dad51b6e7eb1485ee"
+    },
+    "test/built-ins/Object/hasOwn/name.js:strict": {
+      "status": "passed",
+      "case_sha256": "39742af8bcf9925083835c2146ee257ca66ff780831412dfc1bb0053873aa311",
+      "source_sha256": "07e0219ac2140775f9433d6dca98b936a4ec49346c3ed74dad51b6e7eb1485ee"
+    },
+    "test/built-ins/Object/hasOwn/not-a-constructor.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "84982d5ab4474e8420a1dfd578bd0318f4338e939fdc3821df99df502498da25",
+      "source_sha256": "f94f22cd217cd82973cb2774b734c02327b5d78be7e1632f24a0f2f82bf3ec8a"
+    },
+    "test/built-ins/Object/hasOwn/not-a-constructor.js:strict": {
+      "status": "passed",
+      "case_sha256": "e2799638984f4c447b8924a6c199cee3a6d65897dd8ad956ea8dc6596b06be91",
+      "source_sha256": "f94f22cd217cd82973cb2774b734c02327b5d78be7e1632f24a0f2f82bf3ec8a"
+    },
+    "test/built-ins/Object/hasOwn/prototype.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "614516704ef692612828102c8e699440dc144f1127d1fb469a620820b075301a",
+      "source_sha256": "67c46a0decf243d7fde2c375b84a6f447b601447de257878091dfc416c60efe9"
+    },
+    "test/built-ins/Object/hasOwn/prototype.js:strict": {
+      "status": "passed",
+      "case_sha256": "8e30b30d55ed577d8cce553c4e4ef605aa43421a21fef636e484fcb95a887459",
+      "source_sha256": "67c46a0decf243d7fde2c375b84a6f447b601447de257878091dfc416c60efe9"
+    },
+    "test/built-ins/Object/hasOwn/symbol_own_property.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "8811eeba1ec0bcf75d5310d6b550a7d8e8668d2c53d12bbabcd75f6b145bdc2f",
+      "source_sha256": "5069af0bf5a145a349e9a76e501c7e1f885eb321ef27a59004e7674754c7611e"
+    },
+    "test/built-ins/Object/hasOwn/symbol_own_property.js:strict": {
+      "status": "passed",
+      "case_sha256": "07cb4c7a5111f11ee887063e2dc7c695a4a1025469eeb29554d4df7832d556e4",
+      "source_sha256": "5069af0bf5a145a349e9a76e501c7e1f885eb321ef27a59004e7674754c7611e"
+    },
+    "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "cf8210469c3b0a870fb0b84a932673e72307af7f7cfd1153c46995c508546a71",
+      "source_sha256": "50b9d35fc52eb3cac90a32754b4f9d554d0dc555e48c506e63f870b76948ffc3"
+    },
+    "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js:strict": {
+      "status": "passed",
+      "case_sha256": "d4335c4bec598f1d8480f08ebe46a51aa247d12e568d03f64c8a898c501ff1b4",
+      "source_sha256": "50b9d35fc52eb3cac90a32754b4f9d554d0dc555e48c506e63f870b76948ffc3"
+    },
+    "test/built-ins/Object/hasOwn/symbol_property_toString.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "65d172b9bb58a9a1c651c0f67a496979c85d4c29aac5305d6d92564bc0198607",
+      "source_sha256": "956f1903952d2143c50d9835acdee1098f7eec8d84fd7421a2f9cd7eecfb7105"
+    },
+    "test/built-ins/Object/hasOwn/symbol_property_toString.js:strict": {
+      "status": "passed",
+      "case_sha256": "e8eef2a69a1ccf40e5e5f13be539d82bb41f71eb81f3b2421d81250606ba5119",
+      "source_sha256": "956f1903952d2143c50d9835acdee1098f7eec8d84fd7421a2f9cd7eecfb7105"
+    },
+    "test/built-ins/Object/hasOwn/symbol_property_valueOf.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "6c6f42c22d0d26f807179bfce98501471ba43eb26bd62ea9b316da53d9511cd5",
+      "source_sha256": "d9e2bea4c022e73c172284fe8ceadfbe63f0b7335f09a9de262f872da75ab722"
+    },
+    "test/built-ins/Object/hasOwn/symbol_property_valueOf.js:strict": {
+      "status": "passed",
+      "case_sha256": "d733f42c3321ad056d985b66b179e651a98918923ef303090a9685654fbed611",
+      "source_sha256": "d9e2bea4c022e73c172284fe8ceadfbe63f0b7335f09a9de262f872da75ab722"
+    },
+    "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "8ad134e0e7972f2cbe80b5cda921d9ffca40a0c2ff01075e7807802815583844",
+      "source_sha256": "640b706f2a0e404526ccab96ab1d92521a44483863d3a235a9f70a1cb208678c"
+    },
+    "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js:strict": {
+      "status": "passed",
+      "case_sha256": "da9723107d2c1b771c1e46861e96d9bb02b44ee717d6990be7316ceaf74b7ed6",
+      "source_sha256": "640b706f2a0e404526ccab96ab1d92521a44483863d3a235a9f70a1cb208678c"
+    },
+    "test/built-ins/Object/hasOwn/toobject_null.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "84d5c2356dc96bb682de51643f25eb274f8bececb99eb76521ac341412b5bc3d",
+      "source_sha256": "1b78af5069383a9d8793e5a321505cb6c9523ec2da3f942a41b94b30340259ad"
+    },
+    "test/built-ins/Object/hasOwn/toobject_null.js:strict": {
+      "status": "passed",
+      "case_sha256": "a2c86fe282157bb3b3a55b87fdd83e1b989ad28a94e985b3466b23bee5418037",
+      "source_sha256": "1b78af5069383a9d8793e5a321505cb6c9523ec2da3f942a41b94b30340259ad"
+    },
+    "test/built-ins/Object/hasOwn/toobject_undefined.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "5091b5d7d85cd893d435bc5cba2edb1c3e9988fcf22a9feb600cc72f7c7a4e7a",
+      "source_sha256": "abe0d5ae85bf79e51188635140f819db59211854c1a87fb957bc15c6a6c0adbd"
+    },
+    "test/built-ins/Object/hasOwn/toobject_undefined.js:strict": {
+      "status": "passed",
+      "case_sha256": "734dcd916a331250cd73857a59e782587010c97cf6c3f72a9018058db80c6c6c",
+      "source_sha256": "abe0d5ae85bf79e51188635140f819db59211854c1a87fb957bc15c6a6c0adbd"
+    }
+  }
+}

@@ -62,6 +62,8 @@ ordinary Error or unhealthy TypeError observations, without a health waiver.
 non-Document nodes, detached fresh identities, exact retained payloads and separate
 template content. Its 34 release modes and 16 controls pass. `Object.hasOwn` also
 passes 16 independent modes and eight controls for represented own descriptors.
+Its complete pinned [upstream directory](../tests/conformance/object-has-own.md)
+passes all 124 modes, with 64 healthy controls.
 Document cloning, complete per-element cloning state and universal host reflection
 remain incomplete.
 

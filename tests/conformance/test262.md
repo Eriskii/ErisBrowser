@@ -1,5 +1,10 @@
 # Pinned Test262 String and JSON selection
 
+The separate [Object.hasOwn profile](object-has-own.md) retains its complete
+62-source pinned directory and passes all 124 strict/sloppy modes, with 64
+healthy controls. It adds a CI gate without changing the 44 existing profiles'
+case, policy or control contracts.
+
 The later [dynamic Function checkpoint](function-constructor.md) updates current
 counts and records remaining string-conversion failures. The measurements below
 retain this earlier checkpoint's source and policy boundaries.

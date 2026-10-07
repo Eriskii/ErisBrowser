@@ -65,8 +65,9 @@ pass; six historical inventory losses remain recorded with their raw failures.
 [Node.cloneNode](docs/node-clone.md) now makes checked detached copies with fresh
 identities, exact stored character data and separate template content. The same
 increment adds `Object.hasOwn` for represented own-property descriptors, including
-DOM expandos. Independent Document ownership and complete cloning state remain
-unfinished.
+DOM expandos. Its complete pinned [Object.hasOwn profile](tests/conformance/object-has-own.md)
+now passes all 124 modes with 64 healthy controls. Independent Document ownership
+and complete cloning state remain unfinished.
 [Batched Node constants](docs/node-constants-bootstrap.md) now reduce runtime
 initialization work and cumulative allocation charges while preserving the
 existing JavaScript observations. Other legacy writers, complete interface members

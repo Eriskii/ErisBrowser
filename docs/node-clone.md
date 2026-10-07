@@ -137,3 +137,6 @@ compatibility, production security or the requested Chromium performance thresho
 The first complete independent result audit passes with 686 bound inputs and no
 findings. It reconstructs the raw outcomes, source corrections and all recorded
 commands, including failed attempts, and verifies unchanged input hashes.
+
+The subsequent [GitHub CI record](evidence/node-clone-ci.json) for commit
+`3ee89d4` records nine successful jobs, including the Vulkan configurations.

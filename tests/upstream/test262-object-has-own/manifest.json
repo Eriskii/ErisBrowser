@@ -1,0 +1,547 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all .js files in the complete recursive built-ins/Object/hasOwn subtree; original root-linked Git proofs; no implementation",
+  "directories": {
+    "Object/hasOwn": [
+      "descriptor.js",
+      "hasown.js",
+      "hasown_inherited_exists.js",
+      "hasown_inherited_getter.js",
+      "hasown_inherited_getter_and_setter.js",
+      "hasown_inherited_getter_and_setter_configurable_enumerable.js",
+      "hasown_inherited_getter_and_setter_configurable_nonenumerable.js",
+      "hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js",
+      "hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "hasown_inherited_getter_configurable_enumerable.js",
+      "hasown_inherited_getter_configurable_nonenumerable.js",
+      "hasown_inherited_getter_nonconfigurable_enumerable.js",
+      "hasown_inherited_getter_nonconfigurable_nonenumerable.js",
+      "hasown_inherited_nonwritable_configurable_enumerable.js",
+      "hasown_inherited_nonwritable_configurable_nonenumerable.js",
+      "hasown_inherited_nonwritable_nonconfigurable_enumerable.js",
+      "hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js",
+      "hasown_inherited_setter.js",
+      "hasown_inherited_setter_configurable_enumerable.js",
+      "hasown_inherited_setter_configurable_nonenumerable.js",
+      "hasown_inherited_setter_nonconfigurable_enumerable.js",
+      "hasown_inherited_setter_nonconfigurable_nonenumerable.js",
+      "hasown_inherited_writable_configurable_enumerable.js",
+      "hasown_inherited_writable_configurable_nonenumerable.js",
+      "hasown_inherited_writable_nonconfigurable_enumerable.js",
+      "hasown_inherited_writable_nonconfigurable_nonenumerable.js",
+      "hasown_nonexistent.js",
+      "hasown_own_getter.js",
+      "hasown_own_getter_and_setter.js",
+      "hasown_own_getter_and_setter_configurable_enumerable.js",
+      "hasown_own_getter_and_setter_configurable_nonenumerable.js",
+      "hasown_own_getter_and_setter_nonconfigurable_enumerable.js",
+      "hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "hasown_own_getter_configurable_enumerable.js",
+      "hasown_own_getter_configurable_nonenumerable.js",
+      "hasown_own_getter_nonconfigurable_enumerable.js",
+      "hasown_own_getter_nonconfigurable_nonenumerable.js",
+      "hasown_own_nonwritable_configurable_enumerable.js",
+      "hasown_own_nonwritable_nonconfigurable_enumerable.js",
+      "hasown_own_nonwriteable_configurable_nonenumerable.js",
+      "hasown_own_nonwriteable_nonconfigurable_nonenumerable.js",
+      "hasown_own_property_exists.js",
+      "hasown_own_setter.js",
+      "hasown_own_setter_configurable_enumerable.js",
+      "hasown_own_setter_configurable_nonenumerable.js",
+      "hasown_own_setter_nonconfigurable_enumerable.js",
+      "hasown_own_setter_nonconfigurable_nonenumerable.js",
+      "hasown_own_writable_configurable_enumerable.js",
+      "hasown_own_writable_configurable_nonenumerable.js",
+      "hasown_own_writable_nonconfigurable_enumerable.js",
+      "hasown_own_writable_nonconfigurable_nonenumerable.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prototype.js",
+      "symbol_own_property.js",
+      "symbol_property_toPrimitive.js",
+      "symbol_property_toString.js",
+      "symbol_property_valueOf.js",
+      "toobject_before_topropertykey.js",
+      "toobject_null.js",
+      "toobject_undefined.js"
+    ]
+  },
+  "test_files": 62,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/descriptor.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/descriptor.js",
+      "bytes": 398,
+      "sha256": "49aee990e8448161f2b2c6aff94263b2284d1bdec7f1290186d9e23f6d5257d0"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown.js",
+      "bytes": 542,
+      "sha256": "3884ec704c52d91e43422519f6aa21a4464e5d0d526e2e95f636502ed71ff351"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_exists.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_exists.js",
+      "bytes": 419,
+      "sha256": "8ab65e79da10f6c694f00fdf392b278cd7f2ce8262bafd5c403bbb9a3ea8140f"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter.js",
+      "bytes": 447,
+      "sha256": "434c663b5df7ba9a1ea9c3a3358e0e0990f82776f4e9d6fbb5fb7a242a6acde6"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js",
+      "bytes": 484,
+      "sha256": "f9a78f671909b0e605eafd13b67bae602ae925209bea29ed4c9541f19cfa4792"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js",
+      "bytes": 595,
+      "sha256": "9d90da908937ffcc92a6d5efc2469ee9c4ae7614193fd07b4b8a7fd5ce1608a3"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js",
+      "bytes": 579,
+      "sha256": "003db4cc51f6b94fd66bed902aa898d4f3bea6e2e2b100b391eebc237309b91f"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js",
+      "bytes": 577,
+      "sha256": "2560a9e7caa9384799df021173136243dcb4301911630ce9fa0121a10918236f"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "bytes": 561,
+      "sha256": "b0d6ed557d4bacec60fa3dcb69ad4ece71f6843afd0f2e6b77366d6a5adf501f"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js",
+      "bytes": 562,
+      "sha256": "c8a0671ec65d3929b4c8bf51996ad3cbaf50fba263e518298e6948ffc4a5b47a"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js",
+      "bytes": 546,
+      "sha256": "6bf42bfb04b84ff0ccb4be7a74517cc198526e95f213f532ed8060dd4322b2d5"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js",
+      "bytes": 544,
+      "sha256": "7d4fd21c47cfc2026f630f4579c25c911327f8bc4f8b726efa33cdbccd827d71"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js",
+      "bytes": 528,
+      "sha256": "4c5794ec821999b27bbba57b75b2961968499d3e7c2c24470f80ed7512a7e99a"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js",
+      "bytes": 548,
+      "sha256": "038928ea2efb805515a63e8c4d204bbc0dd0dd877b9f251854463e61bcff3c2f"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js",
+      "bytes": 532,
+      "sha256": "a4d6e7d15a53982566255c3003c9dd264e33de2967d292f954d3db56c577b0dd"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js",
+      "bytes": 530,
+      "sha256": "71015042480136acea6eb8b49557a3e612e2fb3ba4eb286401ebcdda1cef2ec4"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js",
+      "bytes": 514,
+      "sha256": "5e65948e641a1c4741c066fd1ea176ca76f7be6c1c7fb2818298be3ec41e997c"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_setter.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_setter.js",
+      "bytes": 433,
+      "sha256": "0b8f503458b951aa82a145d76861d359e99f97e7521218a1a2cd671362560a3e"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js",
+      "bytes": 548,
+      "sha256": "0e43c7c7b3d6778f96a39aa2c5a6a1b3cd32191dbaa1c58b7bd4a6f837d51865"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js",
+      "bytes": 532,
+      "sha256": "dc6d6f426f9b072230e22f80336003c7328ba46401cfb1f4281fbfa1235861c6"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js",
+      "bytes": 530,
+      "sha256": "1b23c1ac5928f458ba5175b891addb231a0b513cc49f8b6e43fa3bae6322c065"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js",
+      "bytes": 514,
+      "sha256": "273a9f92ea740f46151776934a600a93957cd108fae92e5bfe68b34c85153f69"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js",
+      "bytes": 562,
+      "sha256": "1cd027ff6c5337f8ca4fb3491cf6de6991416a5c1926de3d2eefff641ad29bf1"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js",
+      "bytes": 546,
+      "sha256": "3633206a5d19bad34b2948d363a7b2f3f34616ceb34a8089b86e546b79ef97ab"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js",
+      "bytes": 544,
+      "sha256": "e02d1c28fd7612f976488fd6879cd6648e92e3624d4607f4eb6459a58c41c03b"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js",
+      "bytes": 528,
+      "sha256": "770af2bbfec0964212f1e807ed16f311ad1b4bdc96cd6f63b1bffd12f3e449a9"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_nonexistent.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_nonexistent.js",
+      "bytes": 371,
+      "sha256": "2cf837b4e55061f0a80f346f64bcb4c67027842f73aecb61a04f0b4c1769c254"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter.js",
+      "bytes": 417,
+      "sha256": "4914d53bb00f747bb9e126aee0143ea9c9512020a8fbe80a9f44bb2898470d44"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js",
+      "bytes": 454,
+      "sha256": "7b6b84153b94f77810e1897a77c32ee96ceb40a7d049111e6a2e43f4eaf33915"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js",
+      "bytes": 562,
+      "sha256": "28b5c0d0845ea2bb8195bdf1a9a81010d48870bd7c270139c9187b7b87a4fbed"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js",
+      "bytes": 546,
+      "sha256": "a8ab0f903398108b277b7447ed23987ea7ab8f08864f7f0ba88f4c768616de2e"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js",
+      "bytes": 544,
+      "sha256": "97d247336326e9dc00484a8da812718705dd74d03e1ab43540ab81dbc183785c"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "bytes": 528,
+      "sha256": "ce1197cf2ed80348286fba3f9a18f378c2d8fa77286dd46f214aacff0bea61d4"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js",
+      "bytes": 529,
+      "sha256": "aa2101111fa83fa3f2afed222d4f4b8f798e8c2e76d427ba3ac53ed5136b36fd"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js",
+      "bytes": 513,
+      "sha256": "4f91776718d86cd9b9cbb8f2a731b7df55fa0c48e9d54d9615b5d5bae1acaf88"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js",
+      "bytes": 511,
+      "sha256": "780c98046cdc404585f7bf60c6c313d002f8103cad1b8cef881a282e7819075d"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js",
+      "bytes": 495,
+      "sha256": "2fd6fcd5df544fb0303a6de00845307e15703a38035b42cb3f2f9301fe06fb2e"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js",
+      "bytes": 515,
+      "sha256": "e66462012c71faef3bd409c29465d422279c018d3fed7360c7582da7f4473dd8"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js",
+      "bytes": 497,
+      "sha256": "877328f2987a5a479ba8d1749db48306ab6b5552e96030a2d58b55f00a0242f7"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js",
+      "bytes": 499,
+      "sha256": "46049145ff50be7aa30f247536b679ad1cfebf382063f784787e5e584b3f2398"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js",
+      "bytes": 481,
+      "sha256": "67918d0989eb7d98d3aa499dcfd56ce2f47bae6ad19c6d8cb6c9c63c6bc1dd4e"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_property_exists.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_property_exists.js",
+      "bytes": 389,
+      "sha256": "1db038aa023638a555b82474578f60c66f0d3e233f2efc0bcf3d770f93ea58c0"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_setter.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_setter.js",
+      "bytes": 403,
+      "sha256": "8619862c0d7d68cfa63e088672c53977c6bc1e80c73774641f5e2858b733d108"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js",
+      "bytes": 515,
+      "sha256": "611617e641518b102f9a1eb57296831713486a7538b9472156f8a3213c117bd1"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js",
+      "bytes": 499,
+      "sha256": "2fca307b30b06b241da25f8576bc92cff65530df4920d73476ffa204de74218b"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js",
+      "bytes": 497,
+      "sha256": "60fd450f1c8c7da313c6ac8e21566448bba29ae961f431ef6f65f54478355e6f"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js",
+      "bytes": 481,
+      "sha256": "bf8b7d9cb5f16e8189f39f640b3925b3b13ebb94cec9e709d7f9d2dd4081ee60"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js",
+      "bytes": 529,
+      "sha256": "9475b1c7d1b8aad5605fb189e036f427c99250da3840d70c59cedaa8541a6306"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js",
+      "bytes": 513,
+      "sha256": "643a8b3a1ca0a4e28517fac30981b7f7e19d11a7d3958b622b5deb7656c58e75"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js",
+      "bytes": 511,
+      "sha256": "1450c48c4ba067f600290ab2850bd611658c0bb7f92e6c424adc9b1932b370fa"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js",
+      "bytes": 495,
+      "sha256": "82d63e2e9a25a28ec0be4b05143fee17861601d0e0cbb4d4f4ac2ccae68cacb0"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/length.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/length.js",
+      "bytes": 926,
+      "sha256": "3582cce17fd9f3ff66ba903efebc6ccb7abf34cc4f306d8868fc5ed789f5f79e"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/name.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/name.js",
+      "bytes": 851,
+      "sha256": "07e0219ac2140775f9433d6dca98b936a4ec49346c3ed74dad51b6e7eb1485ee"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/not-a-constructor.js",
+      "bytes": 894,
+      "sha256": "f94f22cd217cd82973cb2774b734c02327b5d78be7e1632f24a0f2f82bf3ec8a"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/prototype.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/prototype.js",
+      "bytes": 394,
+      "sha256": "67c46a0decf243d7fde2c375b84a6f447b601447de257878091dfc416c60efe9"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/symbol_own_property.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/symbol_own_property.js",
+      "bytes": 657,
+      "sha256": "5069af0bf5a145a349e9a76e501c7e1f885eb321ef27a59004e7674754c7611e"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js",
+      "bytes": 764,
+      "sha256": "50b9d35fc52eb3cac90a32754b4f9d554d0dc555e48c506e63f870b76948ffc3"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/symbol_property_toString.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/symbol_property_toString.js",
+      "bytes": 809,
+      "sha256": "956f1903952d2143c50d9835acdee1098f7eec8d84fd7421a2f9cd7eecfb7105"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/symbol_property_valueOf.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/symbol_property_valueOf.js",
+      "bytes": 747,
+      "sha256": "d9e2bea4c022e73c172284fe8ceadfbe63f0b7335f09a9de262f872da75ab722"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js",
+      "bytes": 1135,
+      "sha256": "640b706f2a0e404526ccab96ab1d92521a44483863d3a235a9f70a1cb208678c"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/toobject_null.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/toobject_null.js",
+      "bytes": 381,
+      "sha256": "1b78af5069383a9d8793e5a321505cb6c9523ec2da3f942a41b94b30340259ad"
+    },
+    {
+      "path": "test/built-ins/Object/hasOwn/toobject_undefined.js",
+      "upstream_path": "test/built-ins/Object/hasOwn/toobject_undefined.js",
+      "bytes": 386,
+      "sha256": "abe0d5ae85bf79e51188635140f819db59211854c1a87fb957bc15c6a6c0adbd"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-root-linked-recursive-git-subtrees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "prefix": "test/built-ins",
+    "subtree_trees": {
+      "Object/hasOwn": "c415403752259885fd6cfda1999381beef67ee70"
+    },
+    "directory_trees": {
+      "Object/hasOwn": "c415403752259885fd6cfda1999381beef67ee70"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/recursive-c415403752259885fd6cfda1999381beef67ee70.json",
+        "bytes": 15391,
+        "sha256": "d12cf03ee0caf86e00bf64d53fe3c86525e1e8ea94a9fea9874315c7fcea2193",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/c415403752259885fd6cfda1999381beef67ee70?recursive=1"
+      },
+      {
+        "path": "inventory-proof/tree-0d01cdef5daae0a168799f8e263ba72ed0dd475f.json",
+        "bytes": 18712,
+        "sha256": "971407f49f2ae7670feaf0c0ba20e77a7a5d5c69b2187e1d6563766e91769ba9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/0d01cdef5daae0a168799f8e263ba72ed0dd475f"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      }
+    ]
+  }
+}

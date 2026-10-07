@@ -84,7 +84,9 @@ suites and the independent audit pass, with historical inventory failures retain
 [Checked cloning](node-clone.md) now stages complete selected graphs before
 publication, with fresh identities and exact stored payloads. It also adds the
 `Object.hasOwn` static API used by the browser witness. Full default/native suites
-and the new clone and ownership release cases pass. Full Document cloning, form
+and the new clone and ownership release cases pass. The complete pinned
+[Object.hasOwn directory](../tests/conformance/object-has-own.md) now passes all
+124 modes with 64 healthy controls and a dedicated CI gate. Full Document cloning, form
 dirty state and script cloning hooks remain ahead.
 Actual Attr ordering, ShadowRoot, independent document ownership and other Node
 members remain open.

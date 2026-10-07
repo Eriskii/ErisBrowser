@@ -1,0 +1,3694 @@
+{
+  "suite": "pinned-test262-object-has-own-selection",
+  "full_test262_conformance": false,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "ec06ac5c6d9df81904821234389ed31d6638d7e2421df43345818ca8a12f05b9",
+  "runner_policy": {
+    "format": 2,
+    "supported_features": [
+      "Object.hasOwn",
+      "Reflect.construct",
+      "Symbol",
+      "Symbol.toPrimitive",
+      "arrow-function"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": false,
+    "host_hooks": false,
+    "timeout_seconds": 3.0
+  },
+  "runner_policy_sha256": "ac943560e42343b05eebbefacd4cc77d1cb839ee060630fd5d4a1876a1fbcc7d",
+  "source_files": 62,
+  "source_tests": 62,
+  "negative_source_tests": 0,
+  "fixture_files": [],
+  "mode_cases": 124,
+  "counts": {
+    "passed": 124
+  },
+  "seconds": 0.711,
+  "binary": "/tmp/eris-node-clone-1/eris-js",
+  "binary_sha256": "e77a1efcd0b08a2ac570d65e0d0a4579aa55b51f02a4c99188b6bbbf19e7310d",
+  "harness_preflight": [
+    {
+      "name": "success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7fe7d94d9e84765c39e095ba88d5f54cb937df0d780785e185ff5dfd3bb74291",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:assert-false",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6470c0827c0de6472342233bbb189008df60df75393ac98843660e2729be2e41",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a4d7d481cb816dc706a6b8f84e7dbcea5f1d7c6393094ab35cb6d47ab0d39494",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:signed-zero",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8e329999cda16ae14b530d61dcc7794f2b572e0809370e4c6b8ee9faff63d074",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:not-same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "738a0dd64663125af510063f604bec8e8f914f340be2cd3f430eaf1e5cf2cc0c",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bdf648715c68784de062689b85db48546e44e14dc31df5644ff1e420e5623d1c",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d0f5b25203199d201f006e90e7bb6b78023d5bb7ea803581daf5caf2d52fcf9c",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-missing",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "29bc8742a93e811f9680ef2098bfcb4984e86673ea3da41c377e907067cde255",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:array-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a883850a23bc0f55e12bb5f3d09780b9935eb141e2af3892dabc5b5a35172096",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b35a36c10460a813dbcc5a40b356d1ae07c2d54c272b35a717dd6bddf667c51e",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-writable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6cbcbbbcae8167c890124971bd07ceb81f6daf8e286ad12025bb4a82a0672944",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-enumerable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2a651b1aefd71f4a017d564e91b842569e6cd78d0145d03b20b48d0836c3c56d",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-configurable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e18cf4dde2cd44993c84b43d6a01e68c021d56365f4e15673fe1fa2bdb774cd8",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3c5650218df0ef937e5a3ecd6f9c7460f960e61f0c9832515a63b77b832d78cd",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-assert-false",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "11fe2e709b0565e340d83176bc248895795e43c8d9eaa47619dcd939374937e7",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "03efed7bd86096fb67e4d8e0941b4768e61e8f7068c95f9b5ac63c86a95ee96f",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-signed-zero",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b4ce5d0baa51a09beb8d14cc65bf66e805a4f48e03ad306bd044f6bf0fba7631",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-not-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "615fa57db6e08e455e124d6f3eaf118f2e4eab20161f51aab723923c9a0f8d36",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bafcbdea8809ac7c1628fe502c6a060a0e2ad7ca9a8598faf3e902734673c4e4",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f83aeacb9dc37b65255ab7bfd51a0d8052e8da2915d8fb7fe06777292780b078",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-missing",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a6d552fcd92dddd52b6239ebe82177f95648349f2b07847a36307aada0579e35",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-array-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8f8086b6d6f7fc051eac7270c9ca4be3f85cbcb5ae935dabd4c6d264cc917338",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a46db4f2087865126ceac90ba93407c3877f00c0c698d8f4e604111f395780ba",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-writable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "412b91a8d1093f526f34b58ad29668225c387226712184ef8d79e36cd470bccd",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-enumerable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c571e812c4ddab362d7caabd07b4b3ed427f9962e91e728c61b272fe7f8004eb",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-configurable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "634b734df32d4d581162c58f74ddb831dc337fce988dd52d74f23fca1d93a126",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-receiver",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e721632d9643b3489c411eb2d5a3f87a08c3bea9f9cf9a673ebb102b24a5974",
+        "source_sha256": "d0e7bb44576a0bf890774b1736e79cd0166a2e32fe030a3ba86e5015f2c244bf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-unbound-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-unbound-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2916d638664aa431071561dff0ba0337d5f005f08424cfe8c67d07c93c0cf792",
+        "source_sha256": "150659db8ea36d09b80df3f046ab341af7b1f64b691051fa9c866e2da4c5314d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-readonly-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-readonly-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "937d5d1a945b824e6d6d60304aea3337db809214469240d437ba6081a9bec231",
+        "source_sha256": "a1cce38d2daa07cbcc33a2d2db74f0e720a5f0deee03767480c699db33b4882b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-delete",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-delete",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2c630739c1458f6444b889a03992a2be2de36b0e00dd56522bf0844fe2c54a2c",
+        "source_sha256": "cb997e967d015ba97c122c1ea746bdd0fbcb2659573645728918558d1349a965",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-arguments",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "54df002c837ca5ed70e5d5b49dc0375e40bbfb6b88580dfdc66b5ee7bec44171",
+        "source_sha256": "a77f7981af7c3910476440f16ac4c18b7ffaf381714ad33e70fa0d0d5c953887",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-tdz",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cf503031beb1832405ad98ea6ca81c8b6de9bb1f90143829dac8788b2affbbfd",
+        "source_sha256": "2e0d83e7123f5fa749a3f10484c95aa95eac4140438da59faa19edfb82d1061f",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-own-inherited-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-own-inherited-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "898343be8b64c6af816fe7f95d2cb6f437d2d139c51775e94e70ccb217d84b6f",
+        "source_sha256": "a87109eac3cc63b7fb553c5b0b9f8492c840ed55c40d59becce6a4e5384760c4",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-own-inherited-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-own-inherited-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bb0a9feeecae780ee7bb166b305a9477b10a16d4408b2d35acd6f69e15d7cf6b",
+        "source_sha256": "a87109eac3cc63b7fb553c5b0b9f8492c840ed55c40d59becce6a4e5384760c4",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-own-inherited-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-own-inherited-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a150201d70f2a2c6c15b29072cc04ed93a0eacf04784e0dd6fec593f5ee3f947",
+        "source_sha256": "47354b0f613fdf42983270571f47771da9ce5d7969b7cf7d668c55deac61c33c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-own-inherited-positive",
+        "mode": "sloppy",
+        "case_sha256": "898343be8b64c6af816fe7f95d2cb6f437d2d139c51775e94e70ccb217d84b6f",
+        "source_sha256": "a87109eac3cc63b7fb553c5b0b9f8492c840ed55c40d59becce6a4e5384760c4",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-own-inherited-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-own-inherited-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f047582e798f3372656d8c9111d8299bfafbf194715c6013fc46e38b768aaa5b",
+        "source_sha256": "47354b0f613fdf42983270571f47771da9ce5d7969b7cf7d668c55deac61c33c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-own-inherited-positive",
+        "mode": "strict",
+        "case_sha256": "bb0a9feeecae780ee7bb166b305a9477b10a16d4408b2d35acd6f69e15d7cf6b",
+        "source_sha256": "a87109eac3cc63b7fb553c5b0b9f8492c840ed55c40d59becce6a4e5384760c4",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-accessor-presence-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-accessor-presence-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "983c1f690d09d602ff26590fa2aaac5a7a89b4edb1ea03e93ebca3b6952af9ba",
+        "source_sha256": "8c7c530b474f8c2a990aa7ac566c6090c41118129b37b5d2673ea9ef48b8cb1c",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-accessor-presence-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-accessor-presence-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "e559e230220ee6adeb0d2db194a3d2ceb61ddbe2530c41a74194d25589754d7a",
+        "source_sha256": "8c7c530b474f8c2a990aa7ac566c6090c41118129b37b5d2673ea9ef48b8cb1c",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-accessor-presence-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-accessor-presence-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "c8f45392f126547a6e6faab7b19d9bb2da51c4dd92bc6d80dbf7d5f0b6fbd00c",
+        "source_sha256": "0aac710c8d506d9aeda024a63c731b9421876077cfadfd72cf4074873a3a9756",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-accessor-presence-positive",
+        "mode": "sloppy",
+        "case_sha256": "983c1f690d09d602ff26590fa2aaac5a7a89b4edb1ea03e93ebca3b6952af9ba",
+        "source_sha256": "8c7c530b474f8c2a990aa7ac566c6090c41118129b37b5d2673ea9ef48b8cb1c",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-accessor-presence-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-accessor-presence-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "fea207bf7cc23002c442ffa5103c9214cd896548f83ad118423d182c7ec62c50",
+        "source_sha256": "0aac710c8d506d9aeda024a63c731b9421876077cfadfd72cf4074873a3a9756",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-accessor-presence-positive",
+        "mode": "strict",
+        "case_sha256": "e559e230220ee6adeb0d2db194a3d2ceb61ddbe2530c41a74194d25589754d7a",
+        "source_sha256": "8c7c530b474f8c2a990aa7ac566c6090c41118129b37b5d2673ea9ef48b8cb1c",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-target-before-key-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-target-before-key-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a5d72076b896155c5b3cc30aeb212d6669ff54f757236d392ad765c3f11adba1",
+        "source_sha256": "267e4f788151c3ea5aaa4b22ab749a01870e3992e74e01c73004ac01a4768cc1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-target-before-key-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-target-before-key-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c48c2cb27b9e4968835b6a35b4c0968e083e33ab4472e10b7f423f0bd08daf0c",
+        "source_sha256": "267e4f788151c3ea5aaa4b22ab749a01870e3992e74e01c73004ac01a4768cc1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-target-before-key-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-target-before-key-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "80e58d2f73edd0a44ef5f23ce23bba28eb6a5352813544929457603d9d6cef9e",
+        "source_sha256": "e81a61e20cfb1816746ad26def447d57d2f46a5077de61cc8b855e59ad874ab1",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-target-before-key-positive",
+        "mode": "sloppy",
+        "case_sha256": "a5d72076b896155c5b3cc30aeb212d6669ff54f757236d392ad765c3f11adba1",
+        "source_sha256": "267e4f788151c3ea5aaa4b22ab749a01870e3992e74e01c73004ac01a4768cc1",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-target-before-key-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-target-before-key-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e2071ca1b239cb2a541e3a18ee57734e4fefdf63912b95a9ed71f0b4d563e8b",
+        "source_sha256": "e81a61e20cfb1816746ad26def447d57d2f46a5077de61cc8b855e59ad874ab1",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-target-before-key-positive",
+        "mode": "strict",
+        "case_sha256": "c48c2cb27b9e4968835b6a35b4c0968e083e33ab4472e10b7f423f0bd08daf0c",
+        "source_sha256": "267e4f788151c3ea5aaa4b22ab749a01870e3992e74e01c73004ac01a4768cc1",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-symbol-exotic-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-exotic-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "c9695c4964fc27e70c7db9e5ccd51d6ca990a005ba310df5439312a2b8e577de",
+        "source_sha256": "35cd70cd8c44f7694b21f12a7c8aafb6bd2223dbf44c71fef61cc3f9ffb2b9a6",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-symbol-exotic-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-exotic-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0b2e025edac2df4a50bfc96ff81583b08a6a8559679a6b025c56eff204c55c18",
+        "source_sha256": "35cd70cd8c44f7694b21f12a7c8aafb6bd2223dbf44c71fef61cc3f9ffb2b9a6",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-symbol-exotic-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-exotic-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "4b8f52f724ab0922582f331d76f13553ddd1e4a7a50e7e64e96ad55d4403c201",
+        "source_sha256": "4270e086ff0e2c6b17435f5c9827ead91dddf5fffa46677a168ff5c8d5e97723",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-symbol-exotic-positive",
+        "mode": "sloppy",
+        "case_sha256": "c9695c4964fc27e70c7db9e5ccd51d6ca990a005ba310df5439312a2b8e577de",
+        "source_sha256": "35cd70cd8c44f7694b21f12a7c8aafb6bd2223dbf44c71fef61cc3f9ffb2b9a6",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-symbol-exotic-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-exotic-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "60f1300b116c09cbd8a5e7faeb1d0f9505b37b8001f53a169a7fcef9a4e23487",
+        "source_sha256": "4270e086ff0e2c6b17435f5c9827ead91dddf5fffa46677a168ff5c8d5e97723",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-symbol-exotic-positive",
+        "mode": "strict",
+        "case_sha256": "0b2e025edac2df4a50bfc96ff81583b08a6a8559679a6b025c56eff204c55c18",
+        "source_sha256": "35cd70cd8c44f7694b21f12a7c8aafb6bd2223dbf44c71fef61cc3f9ffb2b9a6",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-symbol-to-string-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-to-string-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "546c57b1e8548a2e1220868da8535b7235fe5faf3949c0907b75aaa4f427dc5c",
+        "source_sha256": "b15716218d0152f8f29982bed0c350f49e70938d9fc4676e624e27d7523617a1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-symbol-to-string-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-to-string-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "227d419682224011989cc359247611cb35025dec7b221970aba8f5b7016aad4a",
+        "source_sha256": "b15716218d0152f8f29982bed0c350f49e70938d9fc4676e624e27d7523617a1",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-symbol-to-string-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-to-string-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2b39cc7d8a428bac62f3ec47fe2406e4c29a8015e7649d1bed8b93e5ef1415db",
+        "source_sha256": "985a56ed981017fde228ebd64a83ef0cf076fd7090022fad92da01d59292d7c6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-symbol-to-string-positive",
+        "mode": "sloppy",
+        "case_sha256": "546c57b1e8548a2e1220868da8535b7235fe5faf3949c0907b75aaa4f427dc5c",
+        "source_sha256": "b15716218d0152f8f29982bed0c350f49e70938d9fc4676e624e27d7523617a1",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-symbol-to-string-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-to-string-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "ffd18ef9a9735c2a60258b1e603a22b63b752c1724d063cce54994a529e976d7",
+        "source_sha256": "985a56ed981017fde228ebd64a83ef0cf076fd7090022fad92da01d59292d7c6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-symbol-to-string-positive",
+        "mode": "strict",
+        "case_sha256": "227d419682224011989cc359247611cb35025dec7b221970aba8f5b7016aad4a",
+        "source_sha256": "b15716218d0152f8f29982bed0c350f49e70938d9fc4676e624e27d7523617a1",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-symbol-value-of-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-value-of-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "038a6ec7c738d714969ae1f24fcce312700b527d933fab9f634e3aa01289264f",
+        "source_sha256": "c8ce58dad736df8037f508c8a57eddc9156aed1bc850f35ef91677f418f59b2b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-symbol-value-of-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-value-of-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "169f8b9cf8f5a2a9eeaa73aef4ac02c63bf1ea673436f84b001fb8146843ee6a",
+        "source_sha256": "c8ce58dad736df8037f508c8a57eddc9156aed1bc850f35ef91677f418f59b2b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-symbol-value-of-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-value-of-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8c888a47f5841d02b9e49bc0045dd1494357e551f49ddbb1bb6c2a4774322a5f",
+        "source_sha256": "16d5302083366edacab702fb778257bffb0f537c2d649eab792b3234362ee7d1",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-symbol-value-of-positive",
+        "mode": "sloppy",
+        "case_sha256": "038a6ec7c738d714969ae1f24fcce312700b527d933fab9f634e3aa01289264f",
+        "source_sha256": "c8ce58dad736df8037f508c8a57eddc9156aed1bc850f35ef91677f418f59b2b",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-symbol-value-of-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-symbol-value-of-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "164efcdcebef521c09bd09e1c4cea67e852665e9c58cd28d83d14025bcb1447d",
+        "source_sha256": "16d5302083366edacab702fb778257bffb0f537c2d649eab792b3234362ee7d1",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-symbol-value-of-positive",
+        "mode": "strict",
+        "case_sha256": "169f8b9cf8f5a2a9eeaa73aef4ac02c63bf1ea673436f84b001fb8146843ee6a",
+        "source_sha256": "c8ce58dad736df8037f508c8a57eddc9156aed1bc850f35ef91677f418f59b2b",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-property-metadata-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-property-metadata-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e220808235a0fa0a1fd4c150514b66b229850d975d3f2b83c0bd9b9b2ebd8006",
+        "source_sha256": "37c308409c9e9ac975fcb9cba1d1bf964fda45dff7efcc515c2e6fef063dc409",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-property-metadata-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-property-metadata-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "5430b09fa1d8c05a85a1034d8b9bd279e7daa06ae0d81ced23caf80f256fcf26",
+        "source_sha256": "37c308409c9e9ac975fcb9cba1d1bf964fda45dff7efcc515c2e6fef063dc409",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-property-metadata-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-property-metadata-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "460b20c699865decb9bccba32b51d17fe5d520e0d47fdf82fa19bf08244c3d40",
+        "source_sha256": "edf931a9b42d45f521ed957b2d312352a0b0a867bb10f25be330b526058ca50d",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-property-metadata-positive",
+        "mode": "sloppy",
+        "case_sha256": "e220808235a0fa0a1fd4c150514b66b229850d975d3f2b83c0bd9b9b2ebd8006",
+        "source_sha256": "37c308409c9e9ac975fcb9cba1d1bf964fda45dff7efcc515c2e6fef063dc409",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-property-metadata-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-property-metadata-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "e76dc967ba00f6fa188afa88e3c990010b616ff3dd4d64f424b5b8be5164a3c3",
+        "source_sha256": "edf931a9b42d45f521ed957b2d312352a0b0a867bb10f25be330b526058ca50d",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-property-metadata-positive",
+        "mode": "strict",
+        "case_sha256": "5430b09fa1d8c05a85a1034d8b9bd279e7daa06ae0d81ced23caf80f256fcf26",
+        "source_sha256": "37c308409c9e9ac975fcb9cba1d1bf964fda45dff7efcc515c2e6fef063dc409",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-nonconstructor-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-nonconstructor-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "f99d5aaede7094ac72051f9af957f124ec434d2b17b50f51b433f376805623c1",
+        "source_sha256": "77d0a4d4b6147c8cd617f01a852d6140415b0cbf5396d0f3b1e99f514d132290",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-nonconstructor-positive",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-nonconstructor-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "66aff48e2ebcd4af7d0f11afff13a28cd8a46da4f14cb99a4fbec77a72c2400f",
+        "source_sha256": "77d0a4d4b6147c8cd617f01a852d6140415b0cbf5396d0f3b1e99f514d132290",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "object-has-own-nonconstructor-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-nonconstructor-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2f415ca8c06429fd8b3fa17613fa2ca751818a40a9deed6d75cf17653903bd45",
+        "source_sha256": "681f627dd35f7a1df1b2535afa22547f677b11e256549992209e72bfbbb55984",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-nonconstructor-positive",
+        "mode": "sloppy",
+        "case_sha256": "f99d5aaede7094ac72051f9af957f124ec434d2b17b50f51b433f376805623c1",
+        "source_sha256": "77d0a4d4b6147c8cd617f01a852d6140415b0cbf5396d0f3b1e99f514d132290",
+        "expected": "passed",
+        "verified": true
+      }
+    },
+    {
+      "name": "object-has-own-nonconstructor-wrong",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:object-has-own-nonconstructor-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0c058881a4a6ad2090a3cba9c2c27aff2805015255e584823d9086bd255bb2c1",
+        "source_sha256": "681f627dd35f7a1df1b2535afa22547f677b11e256549992209e72bfbbb55984",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "object-has-own-nonconstructor-positive",
+        "mode": "strict",
+        "case_sha256": "66aff48e2ebcd4af7d0f11afff13a28cd8a46da4f14cb99a4fbec77a72c2400f",
+        "source_sha256": "77d0a4d4b6147c8cd617f01a852d6140415b0cbf5396d0f3b1e99f514d132290",
+        "expected": "passed",
+        "verified": true
+      }
+    }
+  ],
+  "harness_preflight_passed": true,
+  "regressions": [],
+  "improvements": [],
+  "cases": [
+    {
+      "id": "test/built-ins/Object/hasOwn/descriptor.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/descriptor.js",
+      "mode": "sloppy",
+      "case_sha256": "032d3f144281656c444f2742c761f0d4e79d74cf30e5127ead445463b438baea",
+      "source_sha256": "49aee990e8448161f2b2c6aff94263b2284d1bdec7f1290186d9e23f6d5257d0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/descriptor.js:strict",
+      "file": "test/built-ins/Object/hasOwn/descriptor.js",
+      "mode": "strict",
+      "case_sha256": "00b9cb7d8dcf37235b4488612798b978587bb063012dd1b1059f0ab8430261d0",
+      "source_sha256": "49aee990e8448161f2b2c6aff94263b2284d1bdec7f1290186d9e23f6d5257d0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown.js",
+      "mode": "sloppy",
+      "case_sha256": "578dc10b3e5d6e3c26e49c773923096cbb4ceacd9322f30bff860cecc5900ef8",
+      "source_sha256": "3884ec704c52d91e43422519f6aa21a4464e5d0d526e2e95f636502ed71ff351",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown.js",
+      "mode": "strict",
+      "case_sha256": "0bf105444d8d6380bea91d576187d08db634291b6fc3b32937d334c2a07f1403",
+      "source_sha256": "3884ec704c52d91e43422519f6aa21a4464e5d0d526e2e95f636502ed71ff351",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_exists.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_exists.js",
+      "mode": "sloppy",
+      "case_sha256": "32d62d824fab42b16434fe7cb31df255f6fc97b8b78abc1831ad236512fe2148",
+      "source_sha256": "8ab65e79da10f6c694f00fdf392b278cd7f2ce8262bafd5c403bbb9a3ea8140f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_exists.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_exists.js",
+      "mode": "strict",
+      "case_sha256": "69aba3c74a0d0c57f115c8e9f064959f19cc974e1c55bede0fe18c24ab68f3fb",
+      "source_sha256": "8ab65e79da10f6c694f00fdf392b278cd7f2ce8262bafd5c403bbb9a3ea8140f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter.js",
+      "mode": "sloppy",
+      "case_sha256": "331429c651796a91c0467bc1bbde6f3fe1b87533e4f46030d9b5059aa0ad35a5",
+      "source_sha256": "434c663b5df7ba9a1ea9c3a3358e0e0990f82776f4e9d6fbb5fb7a242a6acde6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter.js",
+      "mode": "strict",
+      "case_sha256": "02eaca2bd6f601e1869a979e7b397133ee4e57d67a436c031334d3f493c94928",
+      "source_sha256": "434c663b5df7ba9a1ea9c3a3358e0e0990f82776f4e9d6fbb5fb7a242a6acde6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js",
+      "mode": "sloppy",
+      "case_sha256": "f282ed8c7e7abda5cc553eba671f602f324dd0adef1226a0db6358cfc8600f6e",
+      "source_sha256": "f9a78f671909b0e605eafd13b67bae602ae925209bea29ed4c9541f19cfa4792",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter.js",
+      "mode": "strict",
+      "case_sha256": "3b883244e6027cadacfb57788d04b376958c37199635984f31202c95b774423a",
+      "source_sha256": "f9a78f671909b0e605eafd13b67bae602ae925209bea29ed4c9541f19cfa4792",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "cee2ab18d370779f52d8033faf6a8cf51d7c459c35b26a171370b34e41978d39",
+      "source_sha256": "9d90da908937ffcc92a6d5efc2469ee9c4ae7614193fd07b4b8a7fd5ce1608a3",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "0c6a20c03e8109efec24ef08c58c58530b6051b30a50a426d08bb2adcfed518f",
+      "source_sha256": "9d90da908937ffcc92a6d5efc2469ee9c4ae7614193fd07b4b8a7fd5ce1608a3",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "967b55eaee90f47ccce477fe52fffd10a4113eb0a6a639e76c54b8c2dcc05f3d",
+      "source_sha256": "003db4cc51f6b94fd66bed902aa898d4f3bea6e2e2b100b391eebc237309b91f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "89b971f606e38a307c00f8f8c712d99b96e653243fda515b5924a9ef34dd20da",
+      "source_sha256": "003db4cc51f6b94fd66bed902aa898d4f3bea6e2e2b100b391eebc237309b91f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "d5cc6312fbffedfc96c75945ccef1607742da099cd49081f21113e3c71260352",
+      "source_sha256": "2560a9e7caa9384799df021173136243dcb4301911630ce9fa0121a10918236f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "d0efc8c502fce483123b3e2d07fef1ef9c0dfa52b2b2dc1bb448c21ff448d259",
+      "source_sha256": "2560a9e7caa9384799df021173136243dcb4301911630ce9fa0121a10918236f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "c70e85f9a551e1af0379bf5a7960627aec1266fc368e788e53335b258f584867",
+      "source_sha256": "b0d6ed557d4bacec60fa3dcb69ad4ece71f6843afd0f2e6b77366d6a5adf501f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "a9c3ebec95f87f87a44c54134e48084c2322cda0b71482b9e100a77c36d215b8",
+      "source_sha256": "b0d6ed557d4bacec60fa3dcb69ad4ece71f6843afd0f2e6b77366d6a5adf501f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "0c6129de3b4d88f53193e89fa91b53e8d145c36b3cad64d1f65de088a692a0e9",
+      "source_sha256": "c8a0671ec65d3929b4c8bf51996ad3cbaf50fba263e518298e6948ffc4a5b47a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "af1c481a1243f2b5ef258b80e062d6bbc9cc1d6e712cc17072e3542ba2e45f70",
+      "source_sha256": "c8a0671ec65d3929b4c8bf51996ad3cbaf50fba263e518298e6948ffc4a5b47a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "9e0de642318b6fa9981225cf07d06d7a938219e18167c3a9c29a9d2beed1eb3f",
+      "source_sha256": "6bf42bfb04b84ff0ccb4be7a74517cc198526e95f213f532ed8060dd4322b2d5",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "f5befbb4d91b3476b40d679f54c039a6347abbe31a4b079ab11a6bd34f5655f0",
+      "source_sha256": "6bf42bfb04b84ff0ccb4be7a74517cc198526e95f213f532ed8060dd4322b2d5",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "1699135dac144e6b649ec0d64cd639c643a5b1ca36bda63a15acd1507a494c20",
+      "source_sha256": "7d4fd21c47cfc2026f630f4579c25c911327f8bc4f8b726efa33cdbccd827d71",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "cd6305e3ce37b5d197d8e22fdf0997f7a90c59f3ff639f2a4b14c00fb9139c2c",
+      "source_sha256": "7d4fd21c47cfc2026f630f4579c25c911327f8bc4f8b726efa33cdbccd827d71",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "0c8fece7aaac638a8834ad4459da0993fd45438327d4611910dc8ae0cccfedc6",
+      "source_sha256": "4c5794ec821999b27bbba57b75b2961968499d3e7c2c24470f80ed7512a7e99a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_getter_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "8b492dc5209eec981b02266624d25ffdf78cfe8e703fd9f3db1e10cebabdd589",
+      "source_sha256": "4c5794ec821999b27bbba57b75b2961968499d3e7c2c24470f80ed7512a7e99a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "92c3a6a869acf385b2efd7715e6c07f597944cacc6df9009892d2f69ce7c00d1",
+      "source_sha256": "038928ea2efb805515a63e8c4d204bbc0dd0dd877b9f251854463e61bcff3c2f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "f0a811071142916e56e8f4408a0141539b767effaa61432ccd5d0ee8e16a8bbf",
+      "source_sha256": "038928ea2efb805515a63e8c4d204bbc0dd0dd877b9f251854463e61bcff3c2f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "7b0e9b396537f8ea354904b6452b30a3f9bec816011bfeca4bb8c98463f71a43",
+      "source_sha256": "a4d6e7d15a53982566255c3003c9dd264e33de2967d292f954d3db56c577b0dd",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "ca661c351c561aa2ef9d097d5d8647b640218db81de8d452c4054d7e85c270ca",
+      "source_sha256": "a4d6e7d15a53982566255c3003c9dd264e33de2967d292f954d3db56c577b0dd",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "8e4c51795222ead8546ef898b718b6ff5d08e898fefa8e3bffa7409fec09b751",
+      "source_sha256": "71015042480136acea6eb8b49557a3e612e2fb3ba4eb286401ebcdda1cef2ec4",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "8274217e4bd0f6726644d3a8e8376a7aed4f8095fa33373b9c90ee4851e0aaa1",
+      "source_sha256": "71015042480136acea6eb8b49557a3e612e2fb3ba4eb286401ebcdda1cef2ec4",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "19c131eebb8380a4cdd44ac3ce63ed2064435c7c41b37e4b7a6537b155be1596",
+      "source_sha256": "5e65948e641a1c4741c066fd1ea176ca76f7be6c1c7fb2818298be3ec41e997c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_nonwritable_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "a1e040f3f61f3b06faa3617ad113aaffecda4a7e74f6e286b86f17b1668883bb",
+      "source_sha256": "5e65948e641a1c4741c066fd1ea176ca76f7be6c1c7fb2818298be3ec41e997c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter.js",
+      "mode": "sloppy",
+      "case_sha256": "b403c2df282b0da5b91db2126deedde376870d67eeb7b769f74a57ff659a5a3b",
+      "source_sha256": "0b8f503458b951aa82a145d76861d359e99f97e7521218a1a2cd671362560a3e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter.js",
+      "mode": "strict",
+      "case_sha256": "74ce6206f51c0ea00980f9a6a9905f31ec6162e386c84faceb26a9a8d4b9ac50",
+      "source_sha256": "0b8f503458b951aa82a145d76861d359e99f97e7521218a1a2cd671362560a3e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "ffa81ff24030ef477192d22fc40442f7827d19b5db2063f8992d8e0cbb09a44a",
+      "source_sha256": "0e43c7c7b3d6778f96a39aa2c5a6a1b3cd32191dbaa1c58b7bd4a6f837d51865",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "067f5970b5975ba6d580e639c9932341460302a98e64e9572daf74750513b91e",
+      "source_sha256": "0e43c7c7b3d6778f96a39aa2c5a6a1b3cd32191dbaa1c58b7bd4a6f837d51865",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "077d67df2b36b6f9e3ac654c2c1784cd413e6aaf1ec879ade100255ebe14fde0",
+      "source_sha256": "dc6d6f426f9b072230e22f80336003c7328ba46401cfb1f4281fbfa1235861c6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "c14053c6c345a859d6b2f9e05d379a396bf0d7d2bc03a74579d05da5b734ada0",
+      "source_sha256": "dc6d6f426f9b072230e22f80336003c7328ba46401cfb1f4281fbfa1235861c6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "b4aafa19dcce91685cc98d6e055eb7dba38c72b4fbcfb71a02bb63b90b693bdf",
+      "source_sha256": "1b23c1ac5928f458ba5175b891addb231a0b513cc49f8b6e43fa3bae6322c065",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "990842b86d733931035408834792e43ee40b010caccd00b2255552b7aee3770f",
+      "source_sha256": "1b23c1ac5928f458ba5175b891addb231a0b513cc49f8b6e43fa3bae6322c065",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "b7b44cf3e12aa6e1e6f57a496f6f305fe7fa2fa33e9c3e7e3690ac302cdb180d",
+      "source_sha256": "273a9f92ea740f46151776934a600a93957cd108fae92e5bfe68b34c85153f69",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_setter_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "2a2cd928c30076e12cc8bb77fe5637bfaceda21c3f41e4c711d004002f57d2f6",
+      "source_sha256": "273a9f92ea740f46151776934a600a93957cd108fae92e5bfe68b34c85153f69",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "4985927dfd0a310b71f5ec2b4c35ce2ed5f4ed5a08e18957bb063ca23b9b5def",
+      "source_sha256": "1cd027ff6c5337f8ca4fb3491cf6de6991416a5c1926de3d2eefff641ad29bf1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "7c6fc0c09a2eec1be3a27ba75a752905d862ecb80f83509373545ec52847cf89",
+      "source_sha256": "1cd027ff6c5337f8ca4fb3491cf6de6991416a5c1926de3d2eefff641ad29bf1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "63315434d7d328bbf902345525e879b109c62b9f4951af2e2b1ed45237e53491",
+      "source_sha256": "3633206a5d19bad34b2948d363a7b2f3f34616ceb34a8089b86e546b79ef97ab",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "996b0f6399dc6f2f94f68b356fbf03a192888fafb52bdcb2411b47e133f06eba",
+      "source_sha256": "3633206a5d19bad34b2948d363a7b2f3f34616ceb34a8089b86e546b79ef97ab",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "55938bfba99d3d897797845988547e12135f08956b2688349a383af9085e682b",
+      "source_sha256": "e02d1c28fd7612f976488fd6879cd6648e92e3624d4607f4eb6459a58c41c03b",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "6f5b06006c7e64438bac958d3154d979bc6c64fbe53e983e1e6fecb5249eefee",
+      "source_sha256": "e02d1c28fd7612f976488fd6879cd6648e92e3624d4607f4eb6459a58c41c03b",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "4546d3f58124f5947511c43231ec59d86a2be2cb8621eec5c83413c3a5b2980b",
+      "source_sha256": "770af2bbfec0964212f1e807ed16f311ad1b4bdc96cd6f63b1bffd12f3e449a9",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_inherited_writable_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "a08afb44c0a4438cb91c3aa54abf73d7967eb486554448c2c356702cc375e6f9",
+      "source_sha256": "770af2bbfec0964212f1e807ed16f311ad1b4bdc96cd6f63b1bffd12f3e449a9",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_nonexistent.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_nonexistent.js",
+      "mode": "sloppy",
+      "case_sha256": "7fea350e0247be7e74a447b75dfd31aeaf16a00afb11c9657720dbec86fd20bd",
+      "source_sha256": "2cf837b4e55061f0a80f346f64bcb4c67027842f73aecb61a04f0b4c1769c254",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_nonexistent.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_nonexistent.js",
+      "mode": "strict",
+      "case_sha256": "004409d1d38c8c79a4907110266fc20112a4d3b74c0b863e86c2a1c9a270282f",
+      "source_sha256": "2cf837b4e55061f0a80f346f64bcb4c67027842f73aecb61a04f0b4c1769c254",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter.js",
+      "mode": "sloppy",
+      "case_sha256": "6328074c4f2bd442c508429f982c2b02424623153a08745f563b87ae5f68652a",
+      "source_sha256": "4914d53bb00f747bb9e126aee0143ea9c9512020a8fbe80a9f44bb2898470d44",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter.js",
+      "mode": "strict",
+      "case_sha256": "867cb537c7defad7f3f42b605d6157c608828b4acebaf789930027831e0863f9",
+      "source_sha256": "4914d53bb00f747bb9e126aee0143ea9c9512020a8fbe80a9f44bb2898470d44",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js",
+      "mode": "sloppy",
+      "case_sha256": "e1b1850d8a68de7298c794c1a02ac06861da8ca18b7f96d632876e13fc4c7b30",
+      "source_sha256": "7b6b84153b94f77810e1897a77c32ee96ceb40a7d049111e6a2e43f4eaf33915",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter.js",
+      "mode": "strict",
+      "case_sha256": "01f4741a3b13ffd0c93194c2929cf2afdcadb1a66886b7a3df031916e78675b6",
+      "source_sha256": "7b6b84153b94f77810e1897a77c32ee96ceb40a7d049111e6a2e43f4eaf33915",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "67dfcb889a1dab9a8fd7d8ecc88a6e12bc81fe54950f94b7f2d9949ab0bca4c5",
+      "source_sha256": "28b5c0d0845ea2bb8195bdf1a9a81010d48870bd7c270139c9187b7b87a4fbed",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "15f37d8f970c444bd1157b74d66763e4b03d78389cf9f97bd7c769a221d4373c",
+      "source_sha256": "28b5c0d0845ea2bb8195bdf1a9a81010d48870bd7c270139c9187b7b87a4fbed",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "3b9482a62eb9334140ebe72cf452fba875ce2fd82a6942068dc330c45f763e5a",
+      "source_sha256": "a8ab0f903398108b277b7447ed23987ea7ab8f08864f7f0ba88f4c768616de2e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "55284e86bf7ac966a6ea45acc124ea0d70a8f2560acfa11c625742a3d3951cea",
+      "source_sha256": "a8ab0f903398108b277b7447ed23987ea7ab8f08864f7f0ba88f4c768616de2e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "f0a1f575e61cceab4febf1f088164bcccdb3e9f35c12597ca08d1c6eff093819",
+      "source_sha256": "97d247336326e9dc00484a8da812718705dd74d03e1ab43540ab81dbc183785c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "1fdd3aa8b346f7ea5654c1e665c9821631f71bf76d71bb332860649008464192",
+      "source_sha256": "97d247336326e9dc00484a8da812718705dd74d03e1ab43540ab81dbc183785c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "ee221073ac4a76ac4ea9512b6dd665db5f89520eb6466a11aedd170684f122b3",
+      "source_sha256": "ce1197cf2ed80348286fba3f9a18f378c2d8fa77286dd46f214aacff0bea61d4",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_and_setter_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "20a8963c3827238b9265c4df5173165cd597402fcdfb0f7090acea25646678f7",
+      "source_sha256": "ce1197cf2ed80348286fba3f9a18f378c2d8fa77286dd46f214aacff0bea61d4",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "438722d203981158815a3ddc7093c7d8fc3ba2752104d1d88ffd26db550854d7",
+      "source_sha256": "aa2101111fa83fa3f2afed222d4f4b8f798e8c2e76d427ba3ac53ed5136b36fd",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "af81e8fb976e7f2b6c3bba60cfd000745d4db16327a2f82e7ea797f05b6ce56f",
+      "source_sha256": "aa2101111fa83fa3f2afed222d4f4b8f798e8c2e76d427ba3ac53ed5136b36fd",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "281d00e5a79ad2162a55ffc2e83f7132b4ed95535220729c278e0871111d45e4",
+      "source_sha256": "4f91776718d86cd9b9cbb8f2a731b7df55fa0c48e9d54d9615b5d5bae1acaf88",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "d9e4dd5ba9f3eabcfc86b73dc1c23a4eda7dab4912df879f076c8a7265ad4e41",
+      "source_sha256": "4f91776718d86cd9b9cbb8f2a731b7df55fa0c48e9d54d9615b5d5bae1acaf88",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "317be7b1f65ce97197a1af1448039f3fcad14198fcd5764c1c6fb0d55a2ee50b",
+      "source_sha256": "780c98046cdc404585f7bf60c6c313d002f8103cad1b8cef881a282e7819075d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "8d503c24916b5edcea51dcb188b60a841b3e9b2d981065d29f616667877db8db",
+      "source_sha256": "780c98046cdc404585f7bf60c6c313d002f8103cad1b8cef881a282e7819075d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "ae1f2e2928b84f8bcf80c7289983d58216cb3fcd0b21389fb373b12c23f8723a",
+      "source_sha256": "2fd6fcd5df544fb0303a6de00845307e15703a38035b42cb3f2f9301fe06fb2e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_getter_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "a41320726d6486bdeee5784f34fc7d5f6931f9bff1ff68672c927c8b0cd791d6",
+      "source_sha256": "2fd6fcd5df544fb0303a6de00845307e15703a38035b42cb3f2f9301fe06fb2e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "caa17bbb43e8dda97961fff16d3ff1fa6a68a238a8abefd0ae1dd32a65eed813",
+      "source_sha256": "e66462012c71faef3bd409c29465d422279c018d3fed7360c7582da7f4473dd8",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "3c671627bd645a4e77fbe8d939748dfb9a55f7d7e10652c85488463f4339d67a",
+      "source_sha256": "e66462012c71faef3bd409c29465d422279c018d3fed7360c7582da7f4473dd8",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "03ff15da03e34200bddca5ae398b88ed8649bb2d5edaabe9d2573f166a0c591b",
+      "source_sha256": "877328f2987a5a479ba8d1749db48306ab6b5552e96030a2d58b55f00a0242f7",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwritable_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "ca6913d8d5ca20f1cf822b6f578ff997536eafed317cafdb68947ec1cdda0384",
+      "source_sha256": "877328f2987a5a479ba8d1749db48306ab6b5552e96030a2d58b55f00a0242f7",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "d5fa2ad0eb9dd73d0215483f4da78e6faff22acd8f9ca490033eaee93fc1e693",
+      "source_sha256": "46049145ff50be7aa30f247536b679ad1cfebf382063f784787e5e584b3f2398",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "215ead846a17d4ee738c88436a57f871a737f5f14576d891644fddaedd9a481a",
+      "source_sha256": "46049145ff50be7aa30f247536b679ad1cfebf382063f784787e5e584b3f2398",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "ab81cbfda8ac96ecc5b32cef23c96ad43014045ddf30a6898083a77e406a6282",
+      "source_sha256": "67918d0989eb7d98d3aa499dcfd56ce2f47bae6ad19c6d8cb6c9c63c6bc1dd4e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_nonwriteable_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "ade5c0aad6d6705c8e05e3d1ab61d9040fb8392238b43eaa8bc81566daa095f1",
+      "source_sha256": "67918d0989eb7d98d3aa499dcfd56ce2f47bae6ad19c6d8cb6c9c63c6bc1dd4e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_property_exists.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_property_exists.js",
+      "mode": "sloppy",
+      "case_sha256": "13022b957f2f545f09a0831c0d4846053f65d72b98bf9e793daac966d8654762",
+      "source_sha256": "1db038aa023638a555b82474578f60c66f0d3e233f2efc0bcf3d770f93ea58c0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_property_exists.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_property_exists.js",
+      "mode": "strict",
+      "case_sha256": "b2f41d8e2923d92fe11c7f19727d920d10be0fb30b1ba568ee8782556d7745e8",
+      "source_sha256": "1db038aa023638a555b82474578f60c66f0d3e233f2efc0bcf3d770f93ea58c0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter.js",
+      "mode": "sloppy",
+      "case_sha256": "971dd46df37ebfff9392fc375a9624aaff3cacee0bead82c0b61b94914fb0faa",
+      "source_sha256": "8619862c0d7d68cfa63e088672c53977c6bc1e80c73774641f5e2858b733d108",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter.js",
+      "mode": "strict",
+      "case_sha256": "73cf30b87d445fc2b11fa68cc746fcc8bd7ab94ccf2a824c66f9f1103fc3702e",
+      "source_sha256": "8619862c0d7d68cfa63e088672c53977c6bc1e80c73774641f5e2858b733d108",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "f8267a916c921fb16dc4ca11e6dec6133d1adbd47745a3ada92427423ef08f64",
+      "source_sha256": "611617e641518b102f9a1eb57296831713486a7538b9472156f8a3213c117bd1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "e7550e4d4b671a9f812f396098f7d2702376eb1c40150cebd16a41b450bdb6d4",
+      "source_sha256": "611617e641518b102f9a1eb57296831713486a7538b9472156f8a3213c117bd1",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "d75dc402d6c35c0e7251dfac4004a3e03ea4da09ec950699466cc20325fab132",
+      "source_sha256": "2fca307b30b06b241da25f8576bc92cff65530df4920d73476ffa204de74218b",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "232fb73ecc55aabcdef72c99fa3452d1e2179da09dd1b4659dbed61e087e5be5",
+      "source_sha256": "2fca307b30b06b241da25f8576bc92cff65530df4920d73476ffa204de74218b",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "ba0c713942d02a02ee9c74955106350e926c72e4be6dfd3a7492dbf0ef162d29",
+      "source_sha256": "60fd450f1c8c7da313c6ac8e21566448bba29ae961f431ef6f65f54478355e6f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "afcb4c4912394c566c5d937a2ce2511fe6a06374deb7ce6c51a59541f56b6f7e",
+      "source_sha256": "60fd450f1c8c7da313c6ac8e21566448bba29ae961f431ef6f65f54478355e6f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "6aa85830b5a7a54ffdca71a6c9712122ba3a567bf3c9d98bc7d13bcef72121c8",
+      "source_sha256": "bf8b7d9cb5f16e8189f39f640b3925b3b13ebb94cec9e709d7f9d2dd4081ee60",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_setter_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "dcaa43b2a1c8c43651ca1811e43017ebe16bc8ca517d9bf8a52ca5c028ff26d2",
+      "source_sha256": "bf8b7d9cb5f16e8189f39f640b3925b3b13ebb94cec9e709d7f9d2dd4081ee60",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "89de5d02fb42516aa06b128aa5d54c66bb035d7c1516d44dd9c769291acbe013",
+      "source_sha256": "9475b1c7d1b8aad5605fb189e036f427c99250da3840d70c59cedaa8541a6306",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "052ede6f78234a2b809d7c3d610f37ecb5635df92972095e0ce00e0560fe5c02",
+      "source_sha256": "9475b1c7d1b8aad5605fb189e036f427c99250da3840d70c59cedaa8541a6306",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "f2946d109c86a88884741b9fcbb3c8b7ffe3339acdf9036312ac7028e468ab0e",
+      "source_sha256": "643a8b3a1ca0a4e28517fac30981b7f7e19d11a7d3958b622b5deb7656c58e75",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_configurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "aebe12ca290d5aa414cacc20dfcb73b2c87898b68d49ea9c231bbc73266af7b8",
+      "source_sha256": "643a8b3a1ca0a4e28517fac30981b7f7e19d11a7d3958b622b5deb7656c58e75",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "f037b4928866b95780635a480779e76a74efc4d8af3664d5f2195d8d9471a90a",
+      "source_sha256": "1450c48c4ba067f600290ab2850bd611658c0bb7f92e6c424adc9b1932b370fa",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_enumerable.js",
+      "mode": "strict",
+      "case_sha256": "b540ffc898efe9913ec4771c4f5e1063bc285062824a59e599c21a6fdd88e5ce",
+      "source_sha256": "1450c48c4ba067f600290ab2850bd611658c0bb7f92e6c424adc9b1932b370fa",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js",
+      "mode": "sloppy",
+      "case_sha256": "7bd7c1b5c62dc4ca0dacf7c1f4850d45cf19d32daf95b4c031b69f2a845d2d2a",
+      "source_sha256": "82d63e2e9a25a28ec0be4b05143fee17861601d0e0cbb4d4f4ac2ccae68cacb0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js:strict",
+      "file": "test/built-ins/Object/hasOwn/hasown_own_writable_nonconfigurable_nonenumerable.js",
+      "mode": "strict",
+      "case_sha256": "26e268cefa4e61e504e14e3f2e7dfd1a46924cb1985134006076874fa624ad32",
+      "source_sha256": "82d63e2e9a25a28ec0be4b05143fee17861601d0e0cbb4d4f4ac2ccae68cacb0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/length.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/length.js",
+      "mode": "sloppy",
+      "case_sha256": "ae9c1d86ec879dbe8cf8acbfbf9a7af860f5057c606979ecc968e6d651e90157",
+      "source_sha256": "3582cce17fd9f3ff66ba903efebc6ccb7abf34cc4f306d8868fc5ed789f5f79e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/length.js:strict",
+      "file": "test/built-ins/Object/hasOwn/length.js",
+      "mode": "strict",
+      "case_sha256": "6642a4128d8fcc200838401fbad0202365bbcfd42648fb0ca7dbf834714ad787",
+      "source_sha256": "3582cce17fd9f3ff66ba903efebc6ccb7abf34cc4f306d8868fc5ed789f5f79e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/name.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/name.js",
+      "mode": "sloppy",
+      "case_sha256": "e85f0bce1d3596f04f1a1c7b1cecf958f40b7d937cf7c52f5bcfc3f0661cbf91",
+      "source_sha256": "07e0219ac2140775f9433d6dca98b936a4ec49346c3ed74dad51b6e7eb1485ee",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/name.js:strict",
+      "file": "test/built-ins/Object/hasOwn/name.js",
+      "mode": "strict",
+      "case_sha256": "39742af8bcf9925083835c2146ee257ca66ff780831412dfc1bb0053873aa311",
+      "source_sha256": "07e0219ac2140775f9433d6dca98b936a4ec49346c3ed74dad51b6e7eb1485ee",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/not-a-constructor.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/not-a-constructor.js",
+      "mode": "sloppy",
+      "case_sha256": "84982d5ab4474e8420a1dfd578bd0318f4338e939fdc3821df99df502498da25",
+      "source_sha256": "f94f22cd217cd82973cb2774b734c02327b5d78be7e1632f24a0f2f82bf3ec8a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/not-a-constructor.js:strict",
+      "file": "test/built-ins/Object/hasOwn/not-a-constructor.js",
+      "mode": "strict",
+      "case_sha256": "e2799638984f4c447b8924a6c199cee3a6d65897dd8ad956ea8dc6596b06be91",
+      "source_sha256": "f94f22cd217cd82973cb2774b734c02327b5d78be7e1632f24a0f2f82bf3ec8a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/prototype.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/prototype.js",
+      "mode": "sloppy",
+      "case_sha256": "614516704ef692612828102c8e699440dc144f1127d1fb469a620820b075301a",
+      "source_sha256": "67c46a0decf243d7fde2c375b84a6f447b601447de257878091dfc416c60efe9",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/prototype.js:strict",
+      "file": "test/built-ins/Object/hasOwn/prototype.js",
+      "mode": "strict",
+      "case_sha256": "8e30b30d55ed577d8cce553c4e4ef605aa43421a21fef636e484fcb95a887459",
+      "source_sha256": "67c46a0decf243d7fde2c375b84a6f447b601447de257878091dfc416c60efe9",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_own_property.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/symbol_own_property.js",
+      "mode": "sloppy",
+      "case_sha256": "8811eeba1ec0bcf75d5310d6b550a7d8e8668d2c53d12bbabcd75f6b145bdc2f",
+      "source_sha256": "5069af0bf5a145a349e9a76e501c7e1f885eb321ef27a59004e7674754c7611e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_own_property.js:strict",
+      "file": "test/built-ins/Object/hasOwn/symbol_own_property.js",
+      "mode": "strict",
+      "case_sha256": "07cb4c7a5111f11ee887063e2dc7c695a4a1025469eeb29554d4df7832d556e4",
+      "source_sha256": "5069af0bf5a145a349e9a76e501c7e1f885eb321ef27a59004e7674754c7611e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js",
+      "mode": "sloppy",
+      "case_sha256": "cf8210469c3b0a870fb0b84a932673e72307af7f7cfd1153c46995c508546a71",
+      "source_sha256": "50b9d35fc52eb3cac90a32754b4f9d554d0dc555e48c506e63f870b76948ffc3",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js:strict",
+      "file": "test/built-ins/Object/hasOwn/symbol_property_toPrimitive.js",
+      "mode": "strict",
+      "case_sha256": "d4335c4bec598f1d8480f08ebe46a51aa247d12e568d03f64c8a898c501ff1b4",
+      "source_sha256": "50b9d35fc52eb3cac90a32754b4f9d554d0dc555e48c506e63f870b76948ffc3",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_property_toString.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/symbol_property_toString.js",
+      "mode": "sloppy",
+      "case_sha256": "65d172b9bb58a9a1c651c0f67a496979c85d4c29aac5305d6d92564bc0198607",
+      "source_sha256": "956f1903952d2143c50d9835acdee1098f7eec8d84fd7421a2f9cd7eecfb7105",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_property_toString.js:strict",
+      "file": "test/built-ins/Object/hasOwn/symbol_property_toString.js",
+      "mode": "strict",
+      "case_sha256": "e8eef2a69a1ccf40e5e5f13be539d82bb41f71eb81f3b2421d81250606ba5119",
+      "source_sha256": "956f1903952d2143c50d9835acdee1098f7eec8d84fd7421a2f9cd7eecfb7105",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_property_valueOf.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/symbol_property_valueOf.js",
+      "mode": "sloppy",
+      "case_sha256": "6c6f42c22d0d26f807179bfce98501471ba43eb26bd62ea9b316da53d9511cd5",
+      "source_sha256": "d9e2bea4c022e73c172284fe8ceadfbe63f0b7335f09a9de262f872da75ab722",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/symbol_property_valueOf.js:strict",
+      "file": "test/built-ins/Object/hasOwn/symbol_property_valueOf.js",
+      "mode": "strict",
+      "case_sha256": "d733f42c3321ad056d985b66b179e651a98918923ef303090a9685654fbed611",
+      "source_sha256": "d9e2bea4c022e73c172284fe8ceadfbe63f0b7335f09a9de262f872da75ab722",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js",
+      "mode": "sloppy",
+      "case_sha256": "8ad134e0e7972f2cbe80b5cda921d9ffca40a0c2ff01075e7807802815583844",
+      "source_sha256": "640b706f2a0e404526ccab96ab1d92521a44483863d3a235a9f70a1cb208678c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js:strict",
+      "file": "test/built-ins/Object/hasOwn/toobject_before_topropertykey.js",
+      "mode": "strict",
+      "case_sha256": "da9723107d2c1b771c1e46861e96d9bb02b44ee717d6990be7316ceaf74b7ed6",
+      "source_sha256": "640b706f2a0e404526ccab96ab1d92521a44483863d3a235a9f70a1cb208678c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/toobject_null.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/toobject_null.js",
+      "mode": "sloppy",
+      "case_sha256": "84d5c2356dc96bb682de51643f25eb274f8bececb99eb76521ac341412b5bc3d",
+      "source_sha256": "1b78af5069383a9d8793e5a321505cb6c9523ec2da3f942a41b94b30340259ad",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/toobject_null.js:strict",
+      "file": "test/built-ins/Object/hasOwn/toobject_null.js",
+      "mode": "strict",
+      "case_sha256": "a2c86fe282157bb3b3a55b87fdd83e1b989ad28a94e985b3466b23bee5418037",
+      "source_sha256": "1b78af5069383a9d8793e5a321505cb6c9523ec2da3f942a41b94b30340259ad",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/toobject_undefined.js:sloppy",
+      "file": "test/built-ins/Object/hasOwn/toobject_undefined.js",
+      "mode": "sloppy",
+      "case_sha256": "5091b5d7d85cd893d435bc5cba2edb1c3e9988fcf22a9feb600cc72f7c7a4e7a",
+      "source_sha256": "abe0d5ae85bf79e51188635140f819db59211854c1a87fb957bc15c6a6c0adbd",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/Object/hasOwn/toobject_undefined.js:strict",
+      "file": "test/built-ins/Object/hasOwn/toobject_undefined.js",
+      "mode": "strict",
+      "case_sha256": "734dcd916a331250cd73857a59e782587010c97cf6c3f72a9018058db80c6c6c",
+      "source_sha256": "abe0d5ae85bf79e51188635140f819db59211854c1a87fb957bc15c6a6c0adbd",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    }
+  ]
+}
