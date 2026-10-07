@@ -1,11 +1,13 @@
 # Development docket
 
-[Native group opacity](vulkan-opacity.md) now has an exact integer Vulkan path
-for nested groups at `k/256` opacity, including [transparent sources](vulkan-transparent-opacity.md). Cropped RGBA16 scratch,
-clear/composite dispatches and retained reuse all share the existing limits.
-Both opaque and transparent sources pass three-adapter literal and changed-content checks.
-Arbitrary opacity values and larger scene admission remain on the docket.
-Native clip/fixed scope accounting now charges metadata work without reserving
+[Native group opacity](vulkan-full-opacity.md) now represents every finite
+binary32 opacity value in `0..=1`, including nested transparent sources, without
+quantizing values to `k/256`. Cropped RGBA16 scratch, clear/composite dispatches
+and retained reuse share the existing limits. The earlier
+[opaque](vulkan-opacity.md) and [transparent](vulkan-transparent-opacity.md)
+`k/256` checkpoints retain their separate three-adapter evidence.
+Larger scene admission remains on the docket.
+Native clip/fixed scope accounting charges metadata work without reserving
 full-frame pixel work, allowing sparsely painted nested-clipping scenes to fit
 the existing limits. Primitive and opacity pixel reserves remain unchanged.
 
@@ -132,7 +134,7 @@ limits. The [offscreen prerequisite](../tools/vulkan-raster-probe/NATIVE_PREREQU
 [worker-text](../tools/vulkan-raster-probe/WORKER_TEXT.md) checkpoints remain
 separate three-adapter evidence. Native page zoom now uses bounded command
 scaling within the existing preparation limits. Wider scene/viewport admission,
-transparent-backed group opacity, shaping, native GPU screenshots and driver isolation remain ahead.
+broader CSS compositing, shaping, native GPU screenshots and driver isolation remain ahead.
 Performance within 30% of Chromium has not been demonstrated.
 
 [Array concat](../tests/conformance/array-concat.md) now streams live

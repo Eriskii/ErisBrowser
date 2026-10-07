@@ -40,6 +40,61 @@ mod native_scene;
 const TOOLBAR: f32 = 76.0;
 const STATUS: f32 = 25.0;
 
+/// Format directly from the bounded plan without allocating a group list.
+#[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+struct NativeOpacityDiagnostic<'a> {
+    serial: u64,
+    plan: &'a eris_raster_core::Plan,
+}
+
+#[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+impl std::fmt::Display for NativeOpacityDiagnostic<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut groups = 0usize;
+        let mut sum = 0u32;
+        let mut all_grid = true;
+        for draw in self.plan.draws() {
+            if draw.opacity_bits().is_some() {
+                groups += 1;
+                match draw.opacity_numerator() {
+                    Some(k) => sum += k,
+                    None => all_grid = false,
+                }
+            }
+        }
+        // Two original commands are required per group; MAX_COMMANDS is 256.
+        if all_grid {
+            write!(
+                f,
+                "native opacity prepared: serial={} groups={} scratch_bytes={} opacity_sum={}",
+                self.serial,
+                groups,
+                self.plan.group_scratch_bytes(),
+                sum,
+            )
+        } else {
+            write!(
+                f,
+                "native opacity f32 prepared: serial={} groups={} scratch_bytes={} opacity_bits=",
+                self.serial,
+                groups,
+                self.plan.group_scratch_bytes(),
+            )?;
+            let mut separator = "";
+            for bits in self
+                .plan
+                .draws()
+                .iter()
+                .filter_map(|draw| draw.opacity_bits())
+            {
+                write!(f, "{separator}{bits:08x}")?;
+                separator = ",";
+            }
+            Ok(())
+        }
+    }
+}
+
 // The native editor still owns a UTF-8 buffer. Refuse data it cannot preserve;
 // presentation's replacement projection must never become an edit payload.
 fn control_value_for_editing(document: &eris::dom::Document, node: NodeId) -> Option<String> {
@@ -1504,17 +1559,12 @@ impl Browser {
                         );
                         let plan = prepared.plan.plan();
                         if plan.group_scratch_bytes() != 0 {
-                            let (groups, opacity_sum) = plan
-                                .draws()
-                                .iter()
-                                .filter_map(|draw| draw.opacity_numerator())
-                                .fold((0usize, 0u32), |(count, sum), k| (count + 1, sum + k));
                             eprintln!(
-                                "native opacity prepared: serial={} groups={} scratch_bytes={} opacity_sum={}",
-                                stamp.serial,
-                                groups,
-                                plan.group_scratch_bytes(),
-                                opacity_sum,
+                                "{}",
+                                NativeOpacityDiagnostic {
+                                    serial: stamp.serial,
+                                    plan,
+                                },
                             );
                         }
                         if self.zoom != 1.0 {
@@ -2196,6 +2246,58 @@ mod tests {
     use eris::{
         dom::Document, graphics::ImageStore, layout::LayoutResult, page::Page, worker::apply_edit,
     };
+
+    #[cfg(all(target_os = "linux", feature = "vulkan-raster"))]
+    #[test]
+    fn opacity_diagnostic_keeps_grid_line_and_counts_all_raw_composites() {
+        use eris_raster_core::{Command, Frame, Profile, plan_with_masks_for_profile, rect};
+        let make = |inner| {
+            plan_with_masks_for_profile(
+                Profile::Native,
+                Frame::new(1, 1, 0),
+                &[
+                    Command::PushOpacity(0.5),
+                    Command::PushOpacity(inner),
+                    rect(0., 0., 1., 1., 0xffffff),
+                    Command::PopOpacity,
+                    Command::PopOpacity,
+                ],
+                &[],
+                &[],
+                &[],
+            )
+            .unwrap()
+        };
+        let grid = make(0.75);
+        assert_eq!(
+            NativeOpacityDiagnostic {
+                serial: 7,
+                plan: &grid
+            }
+            .to_string(),
+            "native opacity prepared: serial=7 groups=2 scratch_bytes=16 opacity_sum=320"
+        );
+        for (bits, line) in [
+            (
+                0x3dcc_cccd,
+                "native opacity f32 prepared: serial=8 groups=2 scratch_bytes=16 opacity_bits=3dcccccd,3f000000",
+            ),
+            (
+                0x0000_0001,
+                "native opacity f32 prepared: serial=8 groups=2 scratch_bytes=16 opacity_bits=00000001,3f000000",
+            ),
+        ] {
+            let raw = make(f32::from_bits(bits));
+            assert_eq!(
+                NativeOpacityDiagnostic {
+                    serial: 8,
+                    plan: &raw
+                }
+                .to_string(),
+                line
+            );
+        }
+    }
 
     #[test]
     fn nonscalar_textarea_cannot_enter_or_retain_the_utf8_editor() {

@@ -195,3 +195,45 @@ fn group_uniform_window_matches_clear_primitive_and_composite_abi() {
         assert!(record[128..].iter().all(|byte| *byte == 0));
     }
 }
+
+#[test]
+fn raw_opacity_uses_reserved_words_without_changing_bindings_or_buffer_accounting() {
+    let grid = group(4., 2.);
+    for bits in [1, 0x3300_0000, 0x3dcc_cccd, 0x3f7f_ffff] {
+        let raw = plan_with_masks_for_profile(
+            Profile::Native,
+            Frame::new(16, 16, 0),
+            &[
+                Command::PushOpacity(f32::from_bits(bits)),
+                rect(0., 0., 4., 2., 0xff0000),
+                Command::PopOpacity,
+            ],
+            &[],
+            &[],
+            &[],
+        )
+        .unwrap();
+        assert_eq!(raw.group_scratch_bytes(), 64);
+        assert_eq!(raw.parameters().len(), 4 * PARAM_STRIDE);
+        let mut expected = grid.parameters().to_vec();
+        for (index, value) in [(29, 0), (30, 1), (31, bits)] {
+            let start = 3 * PARAM_STRIDE + index * 4;
+            expected[start..start + 4].copy_from_slice(&value.to_le_bytes());
+        }
+        assert_eq!(raw.parameters(), expected);
+        assert_eq!(
+            BufferAccounting::for_plan(&raw, 256, false, true).unwrap(),
+            BufferAccounting::for_plan(&grid, 256, false, true).unwrap()
+        );
+        assert_eq!(raw.invocations(), grid.invocations());
+        assert_eq!(raw.draws()[3].opacity_numerator(), None);
+        assert_eq!(raw.draws()[3].opacity_bits(), Some(bits));
+        let mut limits = wgpu::Limits {
+            max_uniform_buffer_binding_size: 128,
+            ..Default::default()
+        };
+        RasterRequirements::for_plan(&raw, &limits, false, true).unwrap();
+        limits.max_uniform_buffer_binding_size = 127;
+        assert!(RasterRequirements::for_plan(&raw, &limits, false, true).is_err());
+    }
+}

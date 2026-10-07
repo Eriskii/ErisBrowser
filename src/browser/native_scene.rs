@@ -934,17 +934,45 @@ mod tests {
             DrawCommand::PushOpacity { opacity: 0.5 },
             DrawCommand::PopOpacity,
         ];
-        // Empty grid-aligned groups are now legal and allocate no scratch.
-        assert!(prepare(&browser, size, false).is_ok());
+        // Empty partial groups allocate no scratch but keep both original
+        // scope commands and their full-area CPU preparation allowance.
+        let grid = prepare(&browser, size, false).unwrap();
+        assert_eq!(grid.plan.plan().group_scratch_bytes(), 0);
         browser.snapshot.as_mut().unwrap().layout.commands = vec![
             DrawCommand::PushOpacity { opacity: 0.3 },
             DrawCommand::PopOpacity,
         ];
-        assert!(
-            prepare(&browser, size, false)
-                .err()
+        let raw = prepare(&browser, size, false).unwrap();
+        assert_eq!(raw.plan.plan().group_scratch_bytes(), 0);
+        assert_eq!(raw.plan.plan().parameters(), grid.plan.plan().parameters());
+        assert_eq!(raw.plan.stats(), grid.plan.stats());
+        let scene = build(&browser, size).unwrap();
+        assert_eq!(
+            paint_scene(&browser, &scene).pixels,
+            browser.paint_canvas(size).unwrap().pixels
+        );
+        browser.snapshot.as_mut().unwrap().layout.commands.clear();
+        let bare = prepare(&browser, size, false).unwrap();
+        assert_eq!(
+            raw.plan.stats().bridge.original_commands,
+            bare.plan.stats().bridge.original_commands + 2
+        );
+        assert_eq!(
+            raw.plan.stats().bridge.lowered_commands,
+            bare.plan.stats().bridge.lowered_commands + 2
+        );
+        // Removing commands also changes the generated chrome status from
+        // "2 draw commands" to "0 draw commands", with different glyph areas.
+        // Isolate the nontext ledger rather than assuming those text fees match.
+        let nontext_pixels = |stats: &native::NativeSceneStats| {
+            stats
+                .cpu_pixel_upper_bound
+                .checked_sub(stats.text.paint_pixels_used)
                 .unwrap()
-                .contains("unsupported-opacity")
+        };
+        assert_eq!(
+            nontext_pixels(raw.plan.stats()),
+            nontext_pixels(bare.plan.stats()) + 2 * u64::from(size.width) * u64::from(size.height)
         );
         browser.snapshot.as_mut().unwrap().layout.commands = vec![DrawCommand::Rect {
             rect: Rect {

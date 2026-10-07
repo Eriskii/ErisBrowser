@@ -1,6 +1,6 @@
 //! Native-only cropped premultiplied intermediates. Every effective descendant
 //! contributes to the conservative region, including transparent source pixels.
-//! The compositor reproduces Canvas's staged rounding for k/256 opacity.
+//! The compositor reproduces Canvas's staged rounding for finite f32 opacity.
 use super::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -24,7 +24,7 @@ pub(super) struct Parameters {
     pub operation: Operation,
     pub destination: Option<Region>,
     pub source: Option<Region>,
-    pub opacity: u32,
+    pub opacity_bits: u32,
 }
 impl Parameters {
     pub fn write(self, frame: Frame, record: &mut [u8]) {
@@ -45,14 +45,19 @@ impl Parameters {
             u32::from(self.destination.is_some()),
         ]);
         if let Some(source) = self.source {
+            let numerator = grid_numerator(self.opacity_bits);
             fields[8..14].copy_from_slice(&[
                 source.word_base,
                 source.x,
                 source.y,
                 source.width,
                 source.height,
-                self.opacity,
+                numerator.unwrap_or(0),
             ]);
+            if numerator.is_none() {
+                fields[14] = 1;
+                fields[15] = self.opacity_bits;
+            }
         }
         for (field, slot) in fields
             .into_iter()
@@ -61,6 +66,18 @@ impl Parameters {
             slot.copy_from_slice(&field.to_le_bytes());
         }
     }
+}
+
+/// Exact partial k/256 values keep the original encoded record and shader path.
+/// Integer classification also preserves raw subnormal bits for the other path.
+pub(super) fn grid_numerator(bits: u32) -> Option<u32> {
+    let exponent = bits >> 23;
+    if !(119..=126).contains(&exponent) {
+        return None;
+    }
+    let significand = (bits & 0x7f_ffff) | (1 << 23);
+    let shift = 142 - exponent;
+    (significand & ((1 << shift) - 1) == 0).then_some(significand >> shift)
 }
 
 #[derive(Clone, Copy, Default)]
@@ -103,7 +120,7 @@ impl Bounds {
 
 struct Group {
     parent: Option<usize>,
-    opacity: u32,
+    opacity_bits: u32,
     bounds: Option<Bounds>,
     region: Option<Region>,
 }
@@ -146,10 +163,6 @@ impl State {
 
     pub fn push(&mut self, opacity: f32) -> Result<Option<PendingDraw>> {
         // CoordinateState separately checks profile, range and the mixed stack.
-        let scaled = opacity * 256.0;
-        if scaled != scaled.trunc() {
-            return Err("unsupported opacity value".into());
-        }
         if self.stack.len() == MAX_SCOPES {
             return Err("scope budget".into());
         }
@@ -168,7 +181,7 @@ impl State {
             let index = self.groups.len();
             self.groups.push(Group {
                 parent: self.destination,
-                opacity: scaled as u32,
+                opacity_bits: opacity.to_bits(),
                 bounds: None,
                 region: None,
             });
@@ -280,7 +293,7 @@ impl State {
                 operation,
                 destination,
                 source: (operation == Operation::Composite).then_some(region),
-                opacity: group.opacity,
+                opacity_bits: group.opacity_bits,
             });
             true
         });

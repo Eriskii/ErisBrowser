@@ -11,7 +11,7 @@ struct Params {
     destination: vec4<u32>, // even word base, absolute x, absolute y, width
     destination_info: vec4<u32>, // height, 0=root or 1=group, zero, zero
     group_source: vec4<u32>, // even word base, absolute x, absolute y, width
-    group_info: vec4<u32>, // height, opacity numerator k/256, zero, zero
+    group_info: vec4<u32>, // height, grid numerator, 0=grid/1=raw, raw f32 bits
 }
 @group(0) @binding(0) var<storage, read_write> pixels: array<u32>;
 @group(0) @binding(1) var<uniform> p: Params;
@@ -142,7 +142,7 @@ fn group_glyph(@builtin(global_invocation_id) id: vec3<u32>) {
 // No optional shader integer width, floating-point division, or FMA is used.
 fn opacity_round_even(value: u32, shift: u32) -> u32 {
     if (shift == 0u) { return value; }
-    // Caller bounds: 1 <= shift <= 23.
+    // Caller bounds: 1 <= shift <= 24.
     let quotient = value >> shift;
     let remainder = value & ((1u << shift) - 1u);
     let half = 1u << (shift - 1u);
@@ -223,9 +223,140 @@ fn opacity_root(value: vec2<u32>) -> u32 {
     return (divided + (1u << (shift - 1u))) >> shift;
 }
 
+// Full finite-f32 opacity uses the same two-word representation on a 2^-48
+// scale. Each shift has an explicit word boundary; no shader u64 is required.
+fn opacity_full_shl(value: vec2<u32>, shift: u32) -> vec2<u32> {
+    if (shift == 0u) { return value; }
+    if (shift >= 64u) { return vec2<u32>(0u); }
+    if (shift < 32u) {
+        return vec2<u32>(value.x << shift, (value.y << shift) | (value.x >> (32u - shift)));
+    }
+    return vec2<u32>(0u, value.x << (shift - 32u));
+}
+
+fn opacity_full_shr(value: vec2<u32>, shift: u32) -> vec2<u32> {
+    if (shift == 0u) { return value; }
+    if (shift >= 64u) { return vec2<u32>(0u); }
+    if (shift < 32u) {
+        return vec2<u32>((value.x >> shift) | (value.y << (32u - shift)), value.y >> shift);
+    }
+    return vec2<u32>(value.y >> (shift - 32u), 0u);
+}
+
+// The retained quotient has at most24 bits; shift is1..40. Guard, sticky and
+// parity implement nearest-even, including exactly32 discarded bits.
+fn opacity_full_round_shift(value: vec2<u32>, shift: u32) -> u32 {
+    let quotient = opacity_full_shr(value, shift).x;
+    var above: bool;
+    var tie: bool;
+    if (shift < 32u) {
+        let remainder = value.x & ((1u << shift) - 1u);
+        let half = 1u << (shift - 1u);
+        above = remainder > half;
+        tie = remainder == half;
+    } else if (shift == 32u) {
+        above = value.x > 2147483648u;
+        tie = value.x == 2147483648u;
+    } else {
+        let upper_shift = shift - 32u;
+        let remainder = value.y & ((1u << upper_shift) - 1u);
+        let half = 1u << (upper_shift - 1u);
+        above = remainder > half || (remainder == half && value.x != 0u);
+        tie = remainder == half && value.x == 0u;
+    }
+    return quotient + u32(above || (tie && (quotient & 1u) != 0u));
+}
+
+fn opacity_full_round24(value: vec2<u32>) -> vec2<u32> {
+    let bits = opacity_bits(value);
+    if (bits <= 24u) { return value; }
+    let shift = bits - 24u;
+    let rounded = opacity_full_round_shift(value, shift);
+    // Valid channel sums are <(65535+6/512)*2^48, so rounding cannot carry
+    // into bit64. The alpha-significand product has only48 input bits.
+    return opacity_full_shl(vec2<u32>(rounded, 0u), shift);
+}
+
+fn opacity_full_product24(a: u32, b: u32) -> vec2<u32> {
+    let low = (a & 65535u) * (b & 65535u);
+    let cross_a = (a & 65535u) * (b >> 16u);
+    let cross_b = (a >> 16u) * (b & 65535u);
+    let first = low + (cross_a << 16u);
+    let second = first + (cross_b << 16u);
+    let high = (a >> 16u) * (b >> 16u) + (cross_a >> 16u) + (cross_b >> 16u)
+        + u32(first < low) + u32(second < first);
+    return vec2<u32>(second, high);
+}
+
+fn opacity_full_inverse(alpha: u32, raw: u32) -> u32 {
+    // 2^-25 < opacity <1; exponent102..126, denominator shift24..48.
+    let r = 150u - (raw >> 23u);
+    let mantissa = (raw & 8388607u) | 8388608u;
+    var rounded = mantissa;
+    var denominator = r;
+    if (alpha != 65535u) {
+        let h = 31u - countLeadingZeros(alpha);
+        let x = alpha << (23u - h);
+        let alpha_mantissa = x + (x + 32767u) / 65535u;
+        let product = opacity_full_product24(alpha_mantissa, mantissa);
+        let shift = opacity_bits(product) - 24u; //23 or24
+        rounded = opacity_full_round_shift(product, shift);
+        denominator = 39u + r - h - shift;
+    }
+    let shift = denominator - 24u;
+    // rounded<=2^24. At shift25 its largest value is a half-way tie to0.
+    if (shift > 24u) { return 16777216u; }
+    return 16777216u - opacity_round_even(rounded, shift);
+}
+
+fn opacity_full_channel(source: u32, destination: u32, raw: u32, inverse: u32) -> vec2<u32> {
+    let r = 150u - (raw >> 23u);
+    let mantissa = (raw & 8388607u) | 8388608u;
+    // Unlike k/256, the source multiplication also requires rounding.
+    let weighted_source = opacity_round24(opacity_product(source, mantissa));
+    let weighted_destination = opacity_round24(opacity_product(destination, inverse));
+    let sum = opacity_add(opacity_full_shl(weighted_source, 48u - r),
+                          opacity_full_shl(weighted_destination, 24u));
+    return opacity_full_round24(sum);
+}
+
+fn opacity_full_parent(value: vec2<u32>) -> u32 {
+    return (value.y >> 16u) + u32((value.y & 65535u) >= 32768u);
+}
+
+fn opacity_full_root(value: vec2<u32>) -> u32 {
+    let bits = opacity_bits(value);
+    if (bits == 0u) { return 0u; }
+    var significand: u32;
+    if (bits > 24u) {
+        significand = opacity_full_shr(value, bits - 24u).x;
+    } else {
+        significand = value.x << (24u - bits);
+    }
+    var exponent_shift = 8u;
+    if (significand < 8421376u) {
+        significand *= 2u;
+        exponent_shift = 9u;
+    }
+    let divided = significand - (significand + 128u) / 257u;
+    let shift = 72u + exponent_shift - bits;
+    if (shift > 24u) { return 0u; }
+    return (divided + (1u << (shift - 1u))) >> shift;
+}
+
 @compute @workgroup_size(8, 8, 1)
 fn group_composite(@builtin(global_invocation_id) id: vec3<u32>) {
-    if (!dispatch_visible(id) || p.group_info.y == 0u || p.group_info.y >= 256u) { return; }
+    if (!dispatch_visible(id)) { return; }
+    let full = p.group_info.z == 1u;
+    let raw = p.group_info.w;
+    if (full) {
+        if (p.group_info.y != 0u || raw == 0u || raw >= 1065353216u) { return; }
+        // Exact identity of the final stored parent/root pixel, including all
+        // subnormal opacities. Planning, painting and dispatch charges remain.
+        if (raw <= 855638016u) { return; } //2^-25
+    } else if (p.group_info.z != 0u || raw != 0u || p.group_info.y == 0u || p.group_info.y >= 256u) {
+        return;
+    }
     let x = p.origin.x + id.x;
     let y = p.origin.y + id.y;
     let source_index = group_index(p.group_source, p.group_info.x, x, y);
@@ -234,12 +365,23 @@ fn group_composite(@builtin(global_invocation_id) id: vec3<u32>) {
     if (source.w == 0u) { return; }
     let k = p.group_info.y;
     var inverse = 0u;
-    if (source.w != 65535u) { inverse = opacity_inverse(source.w, k); }
+    if (full) {
+        inverse = opacity_full_inverse(source.w, raw);
+    } else if (source.w != 65535u) {
+        inverse = opacity_inverse(source.w, k);
+    }
     if (p.destination_info.y == 1u) {
         let destination_index = group_index(p.destination, p.destination_info.x, x, y);
         if (destination_index >= arrayLength(&layers)) { return; }
         let destination = load_group(destination_index);
-        if (source.w == 65535u) {
+        if (full) {
+            store_group(destination_index, vec4<u32>(
+                opacity_full_parent(opacity_full_channel(source.x, destination.x, raw, inverse)),
+                opacity_full_parent(opacity_full_channel(source.y, destination.y, raw, inverse)),
+                opacity_full_parent(opacity_full_channel(source.z, destination.z, raw, inverse)),
+                opacity_full_parent(opacity_full_channel(source.w, destination.w, raw, inverse))
+            ));
+        } else if (source.w == 65535u) {
             let numerator = source * k + destination * (256u - k);
             store_group(destination_index, (numerator + vec4<u32>(128u)) / 256u);
         } else {
@@ -257,7 +399,13 @@ fn group_composite(@builtin(global_invocation_id) id: vec3<u32>) {
         let packed = pixels[index];
         let destination = vec3<u32>((packed >> 16u) & 255u, (packed >> 8u) & 255u, packed & 255u) * 257u;
         var rgb: vec3<u32>;
-        if (source.w == 65535u) {
+        if (full) {
+            rgb = vec3<u32>(
+                opacity_full_root(opacity_full_channel(source.x, destination.x, raw, inverse)),
+                opacity_full_root(opacity_full_channel(source.y, destination.y, raw, inverse)),
+                opacity_full_root(opacity_full_channel(source.z, destination.z, raw, inverse))
+            );
+        } else if (source.w == 65535u) {
             let numerator = source.xyz * k + destination * (256u - k);
             rgb = (numerator + vec3<u32>(32896u)) / 65792u;
         } else {

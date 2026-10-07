@@ -10,7 +10,7 @@ fn run() -> Result<()> {
         _ => return Err("usage: eris-vulkan-opacity-check --list | --adapter INDEX".into()),
     };
     let cases = opacity_fixtures::fixtures()?;
-    if cases.len() != 17 {
+    if cases.len() != 29 {
         return Err("opacity literal inventory".into());
     }
     let plans = cases
@@ -29,15 +29,17 @@ fn run() -> Result<()> {
         Ok(())
     })?;
     if let Some(adapter) = selected {
-        if frames != 34 || compared != 512 {
+        if frames != 58 || compared != 608 {
             return Err("opacity literal completion count".into());
         }
         let reuse = opacity_fixtures::reuse_fixtures()?;
         let counts = reuse_gpu::run_opacity(Some(adapter), &reuse)?;
         let transparent = opacity_fixtures::transparent_reuse_fixtures()?;
         let transparent_counts = reuse_gpu::run_opacity(Some(adapter), &transparent)?;
+        let full = opacity_fixtures::full_reuse_fixtures()?;
+        let full_counts = reuse_gpu::run_opacity(Some(adapter), &full)?;
         println!(
-            "COMPLETE adapter={adapter} literal_frames={frames} literal_bytes={compared} refusals=1 reuse_frames={} reuse_bytes={} allocations={} reuses={} evictions={} transparent_reuse_frames={} transparent_reuse_bytes={} transparent_allocations={} transparent_reuses={} transparent_evictions={} offscreen=true acquired_surface=false exact=true",
+            "COMPLETE adapter={adapter} literal_frames={frames} literal_bytes={compared} refusals=0 reuse_frames={} reuse_bytes={} allocations={} reuses={} evictions={} transparent_reuse_frames={} transparent_reuse_bytes={} transparent_allocations={} transparent_reuses={} transparent_evictions={} full_reuse_frames={} full_reuse_bytes={} full_allocations={} full_reuses={} full_evictions={} offscreen=true acquired_surface=false exact=true",
             counts.frames,
             counts.compared_bytes,
             counts.allocations,
@@ -47,7 +49,12 @@ fn run() -> Result<()> {
             transparent_counts.compared_bytes,
             transparent_counts.allocations,
             transparent_counts.reuses,
-            transparent_counts.evictions
+            transparent_counts.evictions,
+            full_counts.frames,
+            full_counts.compared_bytes,
+            full_counts.allocations,
+            full_counts.reuses,
+            full_counts.evictions
         );
     }
     Ok(())

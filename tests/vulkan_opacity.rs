@@ -52,6 +52,7 @@ fn loaded_opacity_click_retains_ids_and_matches_native_canvas() {
         witness::Scene::Public,
         witness::Scene::Button,
         witness::Scene::Transparent,
+        witness::Scene::Full,
     ] {
         let fixture = Fixture::new(scene);
         let mut page = Page::load(&fixture.address, true).unwrap();
@@ -68,7 +69,7 @@ fn loaded_opacity_click_retains_ids_and_matches_native_canvas() {
                 "{:?}",
                 page.runtime.console
             );
-            assert_eq!(page.title(), witness::metadata(phase));
+            assert_eq!(page.title(), witness::metadata(scene, phase));
             let layout = page.layout(witness::WIDTH as f32, witness::HEIGHT as f32, &fonts);
             let (x, y) = scene.hit();
             clicked = Some(layout.hit_test(x, y).unwrap());
@@ -98,6 +99,7 @@ fn confined_opacity_click_retains_ids_and_matches_native_canvas() {
         witness::Scene::Public,
         witness::Scene::Button,
         witness::Scene::Transparent,
+        witness::Scene::Full,
     ] {
         let fixture = Fixture::new(scene);
         let navigation = Navigation::get(&fixture.address);
@@ -144,7 +146,7 @@ fn confined_opacity_click_retains_ids_and_matches_native_canvas() {
                 "{:?}",
                 snapshot.diagnostics
             );
-            assert_eq!(snapshot.title, witness::metadata(phase));
+            assert_eq!(snapshot.title, witness::metadata(scene, phase));
             let (x, y) = scene.hit();
             clicked = Some(snapshot.layout.hit_test(x, y).unwrap());
             previous = Some(witness::check(

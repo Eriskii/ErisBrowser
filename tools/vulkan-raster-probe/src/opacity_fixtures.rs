@@ -1,5 +1,5 @@
 //! Literal fixtures transcribed from opacity-fixtures/literal-fixtures.json
-//! and the additive opacity-fixtures/transparent-fixtures.json.
+//! and the additive transparent-fixtures.json and full-fixtures.json.
 //! Expectations were authored before candidate execution, not painted from it.
 use crate::reuse_fixtures::Fixture;
 use eris_raster_core::{
@@ -563,10 +563,10 @@ pub fn fixtures() -> Result<Vec<Fixture>> {
             viewport_offset: (0.0, 0.0),
         };
         let commands = [
-            Command::PushOpacity(0.1),
+            Command::PushOpacity(f32::from_bits(0x3dcccccd)),
             Command::Rect {
                 rect: Rect::new(0.0, 0.0, 1.0, 1.0),
-                rgba: [255, 0, 0, 255],
+                rgba: [255, 255, 255, 255],
                 radius: 0.0,
             },
             Command::PopOpacity,
@@ -576,13 +576,18 @@ pub fn fixtures() -> Result<Vec<Fixture>> {
         let rows: &[&[i32]] = &[];
         let plan =
             plan_with_masks_for_profile(Profile::Native, frame, &commands, &images, &masks, rows);
-        if plan.as_ref().err().map(String::as_str) != Some("unsupported opacity value") {
-            return Err(
-                "non-grid-opacity-remains-fallback-with-original-pixels: refusal mismatch".into(),
-            );
+        let plan = plan?;
+        if plan.group_scratch_bytes() != 8 {
+            return Err("non-grid literal scratch mismatch".into());
         }
+        cases.push(Fixture {
+            name: "non-grid-point-one-white-over-black",
+            plan,
+            expected: vec![0x1a1a1a],
+        });
     }
     transparent_literals(&mut cases)?;
+    full_literals(&mut cases)?;
     Ok(cases)
 }
 
@@ -810,6 +815,272 @@ pub fn transparent_reuse_fixtures() -> Result<Vec<Fixture>> {
             &[&[row]],
         )?;
         let expected_scratch = if name == "opacity-transparent-reuse-resized" {
+            48
+        } else {
+            32
+        };
+        if plan.group_scratch_bytes() != expected_scratch {
+            return Err("opacity reuse scratch extent mismatch".into());
+        }
+        cases.push(Fixture {
+            name,
+            plan,
+            expected: expected.to_vec(),
+        });
+    }
+    Ok(cases)
+}
+
+/// Exact raw binary32 literals, including positive subnormal groups.
+fn full_literals(cases: &mut Vec<Fixture>) -> Result<()> {
+    let rect = |rgba| Command::Rect {
+        rect: Rect::new(0.0, 0.0, 1.0, 1.0),
+        rgba,
+        radius: 0.0,
+    };
+    let descriptions = [
+        (
+            "decimal-point-one-is-not-nearest-grid",
+            Frame::new(1, 1, 0x000000),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x3dcccccd)),
+                rect([232, 232, 232, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x171717],
+            8,
+        ),
+        (
+            "decimal-point-seven-needs-source-product-rounding",
+            Frame::new(1, 1, 0x000000),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x3f333333)),
+                rect([5, 5, 5, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x040404],
+            8,
+        ),
+        (
+            "smallest-subnormal",
+            Frame::new(1, 1, 0x334455),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x00000001)),
+                rect([255, 255, 255, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x334455],
+            8,
+        ),
+        (
+            "largest-subnormal",
+            Frame::new(1, 1, 0x334455),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x007fffff)),
+                rect([255, 255, 255, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x334455],
+            8,
+        ),
+        (
+            "smallest-normal",
+            Frame::new(1, 1, 0x334455),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x00800000)),
+                rect([255, 255, 255, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x334455],
+            8,
+        ),
+        (
+            "tiny-identity-threshold",
+            Frame::new(1, 1, 0x334455),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x33000000)),
+                rect([255, 255, 255, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x334455],
+            8,
+        ),
+        (
+            "next-above-identity-threshold",
+            Frame::new(1, 1, 0x000000),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x33000001)),
+                rect([255, 255, 255, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x000000],
+            8,
+        ),
+        (
+            "largest-value-below-unit-retains-layer-semantics",
+            Frame::new(1, 1, 0x000000),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x3f7fffff)),
+                rect([5, 5, 5, 255]),
+                Command::PopOpacity,
+            ],
+            vec![0x050505],
+            8,
+        ),
+        (
+            "raw-nested-point-one-over-point-seven",
+            Frame::new(1, 1, 0xffffff),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x3dcccccd)),
+                Command::PushOpacity(f32::from_bits(0x3f333333)),
+                rect([0, 0, 0, 128]),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+            vec![0xf6f6f6],
+            16,
+        ),
+        (
+            "raw-inner-point-one-under-grid-half",
+            Frame::new(1, 1, 0x2c2c2c),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x3f000000)),
+                rect([151, 151, 151, 255]),
+                Command::PushOpacity(f32::from_bits(0x3dcccccd)),
+                rect([0, 0, 0, 38]),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+            vec![0x606060],
+            16,
+        ),
+        (
+            "grid-inner-half-under-raw-point-one",
+            Frame::new(1, 1, 0xffffff),
+            vec![
+                Command::PushOpacity(f32::from_bits(0x3dcccccd)),
+                Command::PushOpacity(f32::from_bits(0x3f000000)),
+                rect([0, 0, 0, 128]),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+            vec![0xf9f9f9],
+            16,
+        ),
+    ];
+    for (name, frame, commands, expected, scratch) in descriptions {
+        let plan = plan_with_masks_for_profile(Profile::Native, frame, &commands, &[], &[], &[])?;
+        if plan.group_scratch_bytes() != scratch {
+            return Err("full-opacity literal scratch mismatch".into());
+        }
+        cases.push(Fixture {
+            name,
+            plan,
+            expected,
+        });
+    }
+    Ok(())
+}
+
+/// Raw opacity changes retain the same geometry, inputs and reuse schedule.
+pub fn full_reuse_fixtures() -> Result<Vec<Fixture>> {
+    let descriptions = [
+        (
+            "opacity-full-reuse-a",
+            Rect::new(0.0, 0.0, 4.0, 1.0),
+            f32::from_bits(0x3dcccccd),
+            [65, 0, 0, 128],
+            Rect::new(1.0, 0.0, 1.0, 1.0),
+            [0, 65, 0, 255],
+            2,
+            0,
+            [0, 0, 65, 255],
+            [
+                0x030000, 0x000700, 0x000007, 0x030000, 0x000000, 0x000000, 0x000000, 0x000000,
+            ],
+        ),
+        (
+            "opacity-full-reuse-b",
+            Rect::new(0.0, 1.0, 4.0, 1.0),
+            f32::from_bits(0x3f333333),
+            [0, 0, 65, 128],
+            Rect::new(3.0, 1.0, 1.0, 1.0),
+            [0, 65, 0, 255],
+            2,
+            1,
+            [65, 0, 0, 255],
+            [
+                0x000000, 0x000000, 0x000000, 0x000000, 0x000017, 0x000017, 0x2e0000, 0x002e00,
+            ],
+        ),
+        (
+            "opacity-full-reuse-c",
+            Rect::new(1.0, 0.0, 2.0, 2.0),
+            f32::from_bits(0x3e99999a),
+            [65, 65, 65, 128],
+            Rect::new(1.0, 1.0, 1.0, 1.0),
+            [0, 0, 0, 255],
+            2,
+            0,
+            [65, 0, 0, 255],
+            [
+                0x000000, 0x0a0a0a, 0x140000, 0x000000, 0x000000, 0x000000, 0x0a0a0a, 0x000000,
+            ],
+        ),
+        (
+            "opacity-full-reuse-resized",
+            Rect::new(0.0, 0.0, 3.0, 2.0),
+            f32::from_bits(0x3f333333),
+            [65, 65, 65, 128],
+            Rect::new(0.0, 1.0, 1.0, 1.0),
+            [0, 0, 0, 255],
+            2,
+            0,
+            [65, 0, 0, 255],
+            [
+                0x171717, 0x171717, 0x2e0000, 0x000000, 0x000000, 0x171717, 0x171717, 0x000000,
+            ],
+        ),
+    ];
+    let mut cases = Vec::new();
+    for (name, backing, opacity, color, image_rect, image, row, y, glyph, expected) in descriptions
+    {
+        let commands = [
+            Command::PushOpacity(opacity),
+            Command::Rect {
+                rect: backing,
+                rgba: color,
+                radius: 0.0,
+            },
+            Command::Image {
+                rect: image_rect,
+                source: 0,
+            },
+            Command::Glyph {
+                source: 0,
+                rows: 0,
+                y,
+                rgba: glyph,
+            },
+            Command::PopOpacity,
+        ];
+        let plan = plan_with_masks_for_profile(
+            Profile::Native,
+            Frame::new(4, 2, 0),
+            &commands,
+            &[SourceImage {
+                width: 1,
+                height: 1,
+                rgba: &image,
+            }],
+            &[SourceMask {
+                width: 1,
+                height: 1,
+                coverage: &[255],
+            }],
+            &[&[row]],
+        )?;
+        let expected_scratch = if name == "opacity-full-reuse-resized" {
             48
         } else {
             32

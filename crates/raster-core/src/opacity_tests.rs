@@ -73,11 +73,21 @@ fn decode(plan: &Plan) -> Vec<u32> {
                     DrawKind::GroupComposite => {
                         let source = scratch[scratch_index(p, 24, x, y)];
                         assert!(source[..3].iter().all(|&channel| channel <= source[3]));
-                        let k = p(29);
-                        assert!((1..256).contains(&k));
                         // Deliberately use Canvas's separate f32 stages, not the
-                        // shader's integer emulation or its opaque fast path.
-                        let opacity = k as f32 / 256.0;
+                        // shader's integer emulation, opaque or tiny fast paths.
+                        let opacity = match p(30) {
+                            0 => {
+                                assert!((1..256).contains(&p(29)));
+                                assert_eq!(p(31), 0);
+                                p(29) as f32 / 256.0
+                            }
+                            1 => {
+                                assert_eq!(p(29), 0);
+                                assert!((1..0x3f80_0000).contains(&p(31)));
+                                f32::from_bits(p(31))
+                            }
+                            _ => panic!("unknown opacity parameter route"),
+                        };
                         let inverse = 1.0 - source[3] as f32 / 65535.0 * opacity;
                         if draw.target_is_group() {
                             assert_eq!(p(21), 1);
@@ -437,8 +447,17 @@ fn opacity_unit_zero_and_empty_scopes_preserve_existing_targets() {
 }
 
 #[test]
-fn opacity_values_are_exact_grid_members_even_when_empty_or_suppressed() {
-    for k in 1..256 {
+fn opacity_grid_records_stay_exact_and_all_finite_partial_values_admit() {
+    let baseline = native(
+        Frame::new(1, 1, 0),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 1., 1., 0xffffff),
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    for k in 1u32..256 {
         let p = native(
             Frame::new(1, 1, 0),
             &[
@@ -449,6 +468,16 @@ fn opacity_values_are_exact_grid_members_even_when_empty_or_suppressed() {
         )
         .unwrap();
         assert_eq!(p.group_scratch_bytes(), 8);
+        // Every old record byte remains exact; only the old numerator varies.
+        let mut expected = baseline.parameters().to_vec();
+        let numerator_offset = (p.draws().len() - 1) * PARAM_STRIDE + 29 * 4;
+        expected[numerator_offset..numerator_offset + 4].copy_from_slice(&k.to_le_bytes());
+        assert_eq!(p.parameters(), expected);
+        assert_eq!(p.draws().last().unwrap().opacity_numerator(), Some(k));
+        assert_eq!(
+            p.draws().last().unwrap().opacity_bits(),
+            Some((k as f32 / 256.).to_bits())
+        );
         assert_eq!(
             word(
                 p.parameters(),
@@ -457,7 +486,17 @@ fn opacity_values_are_exact_grid_members_even_when_empty_or_suppressed() {
             k
         );
     }
-    for opacity in [0.1, 1. / 512., f32::from_bits(0.5f32.to_bits() + 1)] {
+    for bits in [
+        1,
+        0x007f_ffff,
+        0x0080_0000,
+        0x3300_0000,
+        0x3300_0001,
+        0x3dcc_cccd,
+        0x3f00_0001,
+        0x3f7f_ffff,
+    ] {
+        let opacity = f32::from_bits(bits);
         for commands in [
             vec![Command::PushOpacity(opacity), Command::PopOpacity],
             vec![
@@ -467,21 +506,129 @@ fn opacity_values_are_exact_grid_members_even_when_empty_or_suppressed() {
                 Command::PopOpacity,
             ],
         ] {
-            assert_eq!(
-                native(Frame::new(1, 1, 0), &commands).unwrap_err(),
-                "unsupported opacity value"
-            );
+            let p = native(Frame::new(1, 1, 0), &commands).unwrap();
+            assert_eq!(p.group_scratch_bytes(), 0);
+            assert_eq!(p.draws().len(), 1);
         }
     }
     for opacity in [f32::NAN, f32::INFINITY, f32::NEG_INFINITY, -0.1, 1.01] {
-        assert!(
-            native(
-                Frame::new(1, 1, 0),
-                &[Command::PushOpacity(opacity), Command::PopOpacity]
-            )
-            .is_err()
+        for prefix in [vec![], vec![Command::PushOpacity(0.)]] {
+            let mut commands = prefix.clone();
+            commands.extend([Command::PushOpacity(opacity), Command::PopOpacity]);
+            if !prefix.is_empty() {
+                commands.push(Command::PopOpacity);
+            }
+            assert_eq!(
+                native(Frame::new(1, 1, 0), &commands).unwrap_err(),
+                "invalid opacity"
+            );
+        }
+    }
+}
+
+#[test]
+fn opacity_raw_values_keep_source_rounding_and_literal_root_pixels() {
+    for (bits, source, clear, expected) in [
+        (0x3dcc_cccd, 0xe8e8e8, 0, 0x171717),
+        (0x3f33_3333, 0x050505, 0, 0x040404),
+        (0x0000_0001, 0xffffff, 0x334455, 0x334455),
+        (0x007f_ffff, 0xffffff, 0x334455, 0x334455),
+        (0x0080_0000, 0xffffff, 0x334455, 0x334455),
+        (0x32ff_ffff, 0xffffff, 0x334455, 0x334455),
+        (0x3300_0000, 0xffffff, 0x334455, 0x334455),
+        (0x3300_0001, 0xffffff, 0, 0),
+        (0x3f7f_ffff, 0x050505, 0, 0x050505),
+    ] {
+        let p = native(
+            Frame::new(1, 1, clear),
+            &[
+                Command::PushOpacity(f32::from_bits(bits)),
+                rect(0., 0., 1., 1., source),
+                Command::PopOpacity,
+            ],
+        )
+        .unwrap();
+        assert_eq!(decode(&p), [expected], "bits={bits:08x}");
+        assert_eq!(p.group_scratch_bytes(), 8);
+        assert_eq!(p.draws().len(), 4);
+        for draw in &p.draws()[..3] {
+            assert_eq!(draw.opacity_bits(), None);
+            assert_eq!(draw.opacity_numerator(), None);
+        }
+        let composite = p.draws()[3];
+        assert_eq!(composite.opacity_bits(), Some(bits));
+        assert_eq!(composite.opacity_numerator(), None);
+        let record = &p.parameters()[3 * PARAM_STRIDE..4 * PARAM_STRIDE];
+        assert_eq!(
+            [
+                word(record, 28),
+                word(record, 29),
+                word(record, 30),
+                word(record, 31)
+            ],
+            [1, 0, 1, bits]
         );
     }
+}
+
+#[test]
+fn opacity_tiny_identity_keeps_nested_regions_draws_and_all_admission_charges() {
+    let make = |inner| {
+        native(
+            Frame::new(1, 1, 0xffffff),
+            &[
+                Command::PushOpacity(0.5),
+                rgba(Rect::new(0., 0., 1., 1.), [255, 0, 0, 128]),
+                Command::PushOpacity(inner),
+                rect(0., 0., 1., 1., 0xffffff),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+        )
+        .unwrap()
+    };
+    let visible = make(0.7);
+    for bits in [1, 0x007f_ffff, 0x0080_0000, 0x32ff_ffff, 0x3300_0000] {
+        let tiny = make(f32::from_bits(bits));
+        assert_eq!(decode(&tiny), [0xffbfbf]);
+        assert_eq!(tiny.group_scratch_bytes(), 16);
+        assert_eq!(tiny.group_scratch_bytes(), visible.group_scratch_bytes());
+        assert_eq!(tiny.invocations(), visible.invocations());
+        assert_eq!(tiny.gpu_buffer_bytes(), visible.gpu_buffer_bytes());
+        assert_eq!(tiny.input_bytes(), visible.input_bytes());
+        assert_eq!(tiny.parameters().len(), visible.parameters().len());
+        assert_eq!(
+            tiny.draws()
+                .iter()
+                .map(|d| (d.kind(), d.bounds()))
+                .collect::<Vec<_>>(),
+            visible
+                .draws()
+                .iter()
+                .map(|d| (d.kind(), d.bounds()))
+                .collect::<Vec<_>>()
+        );
+        assert_eq!(
+            tiny.draws()
+                .iter()
+                .filter_map(|d| d.opacity_bits())
+                .collect::<Vec<_>>(),
+            [bits, 0x3f00_0000]
+        );
+    }
+    // A non-grid inner source rounds to 900 in RGBA16 before the outer pop.
+    let nested = native(
+        Frame::new(1, 1, 0),
+        &[
+            Command::PushOpacity(0.5),
+            Command::PushOpacity(f32::from_bits(0x3f33_3333)),
+            rect(0., 0., 1., 1., 0x050505),
+            Command::PopOpacity,
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&nested), [0x020202]);
 }
 
 #[test]
@@ -830,13 +977,28 @@ fn opacity_group_clear_and_pop_use_the_global_exact_work_boundary() {
     let mut over = commands.to_vec();
     over.push(rect(0., 0., 1., 1., 0));
     assert_eq!(native(frame, &over).unwrap_err(), "GPU invocation budget");
+    for bits in [1, 0x3300_0000, 0x3dcc_cccd] {
+        let mut raw = commands;
+        raw[0] = Command::PushOpacity(f32::from_bits(bits));
+        raw[3] = Command::PushOpacity(f32::from_bits(bits));
+        let p = native(frame, &raw).unwrap();
+        assert_eq!(p.invocations(), 4_000_000);
+        assert_eq!(p.group_scratch_bytes(), 3_676_160);
+        assert_eq!(p.gpu_buffer_bytes(), 14_163_728);
+        let mut over = raw.to_vec();
+        over.push(rect(0., 0., 1., 1., 0));
+        assert_eq!(native(frame, &over).unwrap_err(), "GPU invocation budget");
+    }
 }
 
 #[test]
 fn opacity_keeps_probe_refusal_and_old_native_uniform_bytes() {
     let frame = Frame::new(3, 1, 0);
-    for value in [0., 0.5, 1.] {
-        assert!(plan(frame, &[Command::PushOpacity(value), Command::PopOpacity]).is_err());
+    for value in [0., -0., 0.5, 1., 0.1, f32::from_bits(1), f32::NAN] {
+        assert_eq!(
+            plan(frame, &[Command::PushOpacity(value), Command::PopOpacity]).unwrap_err(),
+            "unsupported opacity profile"
+        );
     }
     let commands = [rect(0., 0., 1., 1., 0xff0000)];
     let old = plan(frame, &commands).unwrap();

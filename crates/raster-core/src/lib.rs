@@ -192,11 +192,16 @@ impl Draw {
     pub fn target_is_group(self) -> bool {
         self.group.is_some_and(|group| group.destination.is_some())
     }
-    /// Exact k in k/256 for a materialized group's final composite operation.
+    /// Exact k in k/256 for a materialized grid group's final composite.
+    /// Other partial f32 values return None; use `opacity_bits` for every group.
     pub fn opacity_numerator(self) -> Option<u32> {
+        self.opacity_bits().and_then(opacity::grid_numerator)
+    }
+    /// Original f32 bits for any materialized group's final composite operation.
+    pub fn opacity_bits(self) -> Option<u32> {
         self.group
             .filter(|group| group.operation == opacity::Operation::Composite)
-            .map(|group| group.opacity)
+            .map(|group| group.opacity_bits)
     }
     pub fn bounds(self) -> (u32, u32, u32, u32) {
         (self.x, self.y, self.width, self.height)
@@ -1018,6 +1023,8 @@ pub fn validate_source_images(sources: &[SourceImage<'_>]) -> Result<usize> {
     source_pixels(sources)
 }
 
+#[cfg(test)]
+mod full_opacity_arithmetic_tests;
 #[cfg(feature = "gpu")]
 pub mod gpu;
 #[cfg(test)]

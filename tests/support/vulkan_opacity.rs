@@ -13,6 +13,7 @@ pub const HEIGHT: u32 = 200;
 pub const PNG: &[u8] = include_bytes!("../../examples/vulkan-opacity.png");
 pub const PUBLIC_HTML: &str = include_str!("../../examples/vulkan-opacity.html");
 pub const TRANSPARENT_HTML: &str = include_str!("../../examples/vulkan-transparent-opacity.html");
+pub const FULL_HTML: &str = include_str!("../../examples/vulkan-full-opacity.html");
 
 // The public scene leaves room for native browser chrome. This richer scene
 // independently exercises an actual button and two overlapping siblings in
@@ -46,6 +47,7 @@ pub enum Scene {
     Public,
     Button,
     Transparent,
+    Full,
 }
 impl Scene {
     pub fn html(self) -> &'static str {
@@ -53,25 +55,30 @@ impl Scene {
             Self::Public => PUBLIC_HTML,
             Self::Button => BUTTON_HTML,
             Self::Transparent => TRANSPARENT_HTML,
+            Self::Full => FULL_HTML,
         }
     }
     pub fn hit(self) -> (f32, f32) {
         match self {
             Self::Public => (20.0, 20.0),
-            Self::Button | Self::Transparent => (96.0, 174.0),
+            Self::Button | Self::Transparent | Self::Full => (96.0, 174.0),
         }
     }
     fn nontext(self) -> usize {
         match self {
             Self::Public => 9,
             Self::Button => 11,
-            Self::Transparent => 9,
+            Self::Transparent | Self::Full => 9,
         }
     }
 }
 
-pub fn metadata(phase: usize) -> &'static str {
-    ["Native opacity 0.50", "Native opacity 0.75"][phase]
+pub fn metadata(scene: Scene, phase: usize) -> &'static str {
+    if matches!(scene, Scene::Full) {
+        ["Native opacity 0.10", "Native opacity 0.70"][phase]
+    } else {
+        ["Native opacity 0.50", "Native opacity 0.75"][phase]
+    }
 }
 
 pub struct State {
@@ -103,7 +110,7 @@ pub fn check(
     let NodeKind::Text(data) = &doc.nodes[title_text].kind else {
         panic!("retained title Text");
     };
-    assert_eq!(data.scalar(), Some(metadata(phase)));
+    assert_eq!(data.scalar(), Some(metadata(scene, phase)));
     let mut ids = vec![doc.root, body, title, title_text];
     for selector in [
         "#change",
@@ -115,7 +122,7 @@ pub fn check(
     ] {
         ids.push(find(selector));
     }
-    if matches!(scene, Scene::Button | Scene::Transparent) {
+    if matches!(scene, Scene::Button | Scene::Transparent | Scene::Full) {
         ids.extend([find("#card"), find("#blue"), find("#green")]);
     }
     for (index, id) in ids.iter().enumerate() {
@@ -131,7 +138,7 @@ pub fn check(
     let hit = layout.hit_test(x, y).unwrap();
     match scene {
         Scene::Public => assert_eq!(hit, change),
-        Scene::Button | Scene::Transparent => {
+        Scene::Button | Scene::Transparent | Scene::Full => {
             // Buttons use ordinary child layout. Hit testing returns the Text
             // node; the real Click dispatched above bubbles to its button.
             assert_eq!(doc.nodes[change].children, [hit]);
@@ -172,7 +179,17 @@ pub fn check(
             _ => None,
         })
         .collect::<Vec<_>>();
-    assert_eq!(opacities, [[0.5, 0.5], [0.75, 0.5]][phase]);
+    if matches!(scene, Scene::Full) {
+        assert_eq!(
+            opacities
+                .iter()
+                .map(|value| value.to_bits())
+                .collect::<Vec<_>>(),
+            [[0x3dcccccd, 0x3f333333], [0x3f333333, 0x3f333333]][phase]
+        );
+    } else {
+        assert_eq!(opacities, [[0.5, 0.5], [0.75, 0.5]][phase]);
+    }
     assert!(layout.commands.iter().any(|command| matches!(command,
         DrawCommand::Rect { radius, .. } if *radius == 6.0)));
     assert!(layout.commands.iter().any(|command| matches!(command,
@@ -201,7 +218,7 @@ pub fn check(
     assert_eq!(plan.profile(), Profile::Native);
     assert_eq!(
         plan.group_scratch_bytes(),
-        if matches!(scene, Scene::Transparent) {
+        if matches!(scene, Scene::Transparent | Scene::Full) {
             139_904
         } else {
             262_144
@@ -221,14 +238,33 @@ pub fn check(
             .count(),
         2
     );
-    let weights = plan
+    let opacity_records = plan
         .draws()
         .iter()
         .enumerate()
         .filter(|(_, draw)| draw.kind() == DrawKind::GroupComposite)
-        .map(|(index, _)| parameter(plan, index, 29))
+        .map(|(index, _)| {
+            [
+                parameter(plan, index, 29),
+                parameter(plan, index, 30),
+                parameter(plan, index, 31),
+            ]
+        })
         .collect::<Vec<_>>();
-    assert_eq!(weights, [[128, 128], [128, 192]][phase]);
+    if matches!(scene, Scene::Full) {
+        assert_eq!(
+            opacity_records,
+            [
+                [[0, 1, 0x3f333333], [0, 1, 0x3dcccccd]],
+                [[0, 1, 0x3f333333], [0, 1, 0x3f333333]],
+            ][phase]
+        );
+    } else {
+        assert_eq!(
+            opacity_records,
+            [[[128, 0, 0], [128, 0, 0]], [[128, 0, 0], [192, 0, 0]]][phase]
+        );
+    }
     assert!(
         plan.draws()
             .iter()
@@ -254,7 +290,17 @@ pub fn check(
         "full viewport Canvas reference"
     );
     let sample = |x: usize, y: usize| canvas.pixels[y * WIDTH as usize + x];
-    let literals = if matches!(scene, Scene::Transparent) {
+    let literals = if matches!(scene, Scene::Full) {
+        [
+            (20, 20, [0xffffff, 0xffffff]),
+            (156, 36, [0xffffff, 0xffffff]),
+            (176, 56, [0xf6fff6, 0xc0ffc0]),
+            (114, 110, [0xffffff, 0xffffff]),
+            (124, 110, [0xe6e6ff, 0x4d4dff]),
+            (156, 118, [0xffffe6, 0xffff4d]),
+            (300, 190, [0xffffff, 0xffffff]),
+        ]
+    } else if matches!(scene, Scene::Transparent) {
         [
             (20, 20, [0xffffff, 0xffffff]),
             (156, 36, [0xffffff, 0xffffff]),
@@ -282,11 +328,14 @@ pub fn check(
             "literal pixel ({x},{y}), {scene:?}, phase {phase}"
         );
     }
-    if matches!(scene, Scene::Button | Scene::Transparent) {
+    if matches!(scene, Scene::Full) {
+        assert_eq!(sample(40, 40), [0xe6e6ff, 0x4d4dff][phase]);
+        assert_eq!(sample(72, 64), [0xe6ffe6, 0x4dff4d][phase]);
+    } else if matches!(scene, Scene::Button | Scene::Transparent) {
         assert_eq!(sample(40, 40), [0x8080ff, 0x4040ff][phase]);
         assert_eq!(sample(72, 64), [0x80ff80, 0x40ff40][phase]);
     }
-    if matches!(scene, Scene::Transparent) {
+    if matches!(scene, Scene::Transparent | Scene::Full) {
         // Both group containers lack a background. Rounded/glyph/image draws
         // and their transparent holes must survive the new admission path.
         assert!(layout.commands.iter().any(|command| matches!(command,
@@ -360,12 +409,24 @@ fn decode_opacity_pixels(plan: &Plan) -> Vec<u32> {
                         let source = scratch[index(24, x, y)];
                         assert!(source.iter().all(|&channel| channel <= 65535));
                         assert!(source[..3].iter().all(|&channel| channel <= source[3]));
-                        let k = p(29);
-                        assert!((1..256).contains(&k));
+                        let opacity = match p(30) {
+                            0 => {
+                                let k = p(29);
+                                assert!((1..256).contains(&k));
+                                assert_eq!(p(31), 0, "grid ABI keeps reserved bits zero");
+                                k as f32 / 256.0
+                            }
+                            1 => {
+                                assert_eq!(p(29), 0, "raw opacity has no grid numerator");
+                                let value = f32::from_bits(p(31));
+                                assert!(value.is_finite() && value > 0.0 && value < 1.0);
+                                value
+                            }
+                            flag => panic!("unknown opacity route {flag}"),
+                        };
                         // Independent oracle: preserve Canvas's separate f32
                         // division, multiplication, subtraction and pop stages.
                         // Do not reproduce the shader's integer emulation here.
-                        let opacity = k as f32 / 256.0;
                         let inverse = 1.0 - source[3] as f32 / 65535.0 * opacity;
                         let mut next = [0; 4];
                         for (channel, next) in next.iter_mut().enumerate() {

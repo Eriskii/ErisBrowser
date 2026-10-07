@@ -1,5 +1,9 @@
 # Transparent native opacity
 
+This records the earlier `k/256` milestone and its measurements. The
+[full-range extension](vulkan-full-opacity.md) subsequently removes the non-grid
+restriction; the historical results below retain their original scope.
+
 The optional Vulkan raster route supports transparent and nested opacity groups
 at `k/256`, for integer `1 <= k <= 255`. Image-only groups, glyph coverage,
 rounded shapes and holes between separate shapes no longer need an opaque

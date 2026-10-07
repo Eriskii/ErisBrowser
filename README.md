@@ -438,12 +438,12 @@ frames when built with `--features vulkan-presenter` and launched with
 `--presenter=vulkan --raster=gpu` for custom shaders in the actual window, with
 CPU-prepared font/rounded coverage and whole-frame fallback. One exact-size
 retired GPU buffer set can be reused; every frame still rewrites inputs and
-draws the complete scene. [Nested opacity](docs/vulkan-opacity.md) now uses
-cropped RGBA16 intermediates for nested groups at `k/256` opacity, including
-[transparent content](docs/vulkan-transparent-opacity.md).
+draws the complete scene. [Nested opacity](docs/vulkan-full-opacity.md) uses
+cropped RGBA16 intermediates for transparent or opaque groups at every finite
+binary32 opacity in `[0,1]`, preserving the software painter’s rounding stages.
 Software remains the default and headless path. The
 separate [raster probe](tools/vulkan-raster-probe/README.md) retains its original
-30 cases and 26 glyph cases on three adapters. Broader text, arbitrary opacity values
+30 cases and 26 glyph cases on three adapters. Broader text, compositing
 and scene coverage remain on the [development docket](docs/ROADMAP.md); the
 narrow timing comparisons do not establish Chromium parity.
 

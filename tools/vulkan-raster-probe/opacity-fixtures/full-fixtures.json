@@ -1,0 +1,738 @@
+{
+  "schema": 1,
+  "status": "Static source/algebra expectations; no candidate execution",
+  "coordinate_rules": "Integer geometry; full-frame caller clip; zero offsets; row-major RGB hexadecimal pixels.",
+  "arithmetic": "Canvas separate binary32 stages and final half-away rounding; no candidate or shader-derived expected pixels.",
+  "predecessors": [
+    {
+      "path": "/tmp/eris-vulkan-full-opacity-1/worktree/tools/vulkan-raster-probe/opacity-fixtures/literal-fixtures.json",
+      "sha256": "3e879cf28127f6bc1400b3c26c481bb5613fc1a4e75b024ea195faaaa6f0d764"
+    },
+    {
+      "path": "/tmp/eris-vulkan-full-opacity-1/worktree/tools/vulkan-raster-probe/opacity-fixtures/transparent-fixtures.json",
+      "sha256": "7e7f9a2cde6df607daf0b1f0bfd8a31ed8219c04fdddd27e52e503e77ad7ef03"
+    }
+  ],
+  "held_raw_literals": {
+    "path": "/tmp/eris-next-opacity-values-assessment-1/literal-candidates.json",
+    "sha256": "597ac0f6ea702c75ee7d7c7d0c6d0b980db467e595f76d0531f9ac4f52f5e4f3"
+  },
+  "cases": [
+    {
+      "name": "non-grid-point-one-white-over-black",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3dcccccd"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "1a1a1a"
+      ],
+      "scratch_bytes": 8
+    },
+    {
+      "name": "decimal-point-one-is-not-nearest-grid",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3dcccccd"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            232,
+            232,
+            232,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "171717"
+      ],
+      "incorrect_nearest_k256_pixels": [
+        "181818"
+      ],
+      "proof": "Stored 0.1 differs from26/256; Canvas final23 versus grid24. Neither input is reinterpreted as a decimal rational.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "decimal-point-seven-needs-source-product-rounding",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3f333333"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            5,
+            5,
+            5,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "040404"
+      ],
+      "incorrect_exact_stored_rational_pixels": [
+        "030303"
+      ],
+      "proof": "Exact source product15091105535/16777216 is257/16777216 below899.5, less than half an ULP. RN32 product899.5 then /257=3.5, final4; end-only rounding of5*stored-opacity gives3.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "smallest-subnormal",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "334455"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "00000001"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "334455"
+      ],
+      "proof": "Final-pop identity theorem; positive group still validates/allocates/charges normally.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "largest-subnormal",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "334455"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "007fffff"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "334455"
+      ],
+      "proof": "Final-pop identity theorem; positive group still validates/allocates/charges normally.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "smallest-normal",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "334455"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "00800000"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "334455"
+      ],
+      "proof": "Final-pop identity theorem; positive group still validates/allocates/charges normally.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "tiny-identity-threshold",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "334455"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "33000000"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "334455"
+      ],
+      "proof": "Final-pop identity theorem; positive group still validates/allocates/charges normally.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "next-above-identity-threshold",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "33000001"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "000000"
+      ],
+      "proof": "Must take general arithmetic branch; this particular output remains below half an RGB8 unit.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "largest-value-below-unit-retains-layer-semantics",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "000000"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3f7fffff"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            5,
+            5,
+            5,
+            255
+          ]
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "050505"
+      ],
+      "proof": "Stored value remains below1 and must retain its layer; the single primitive here rounds to5.",
+      "scratch_bytes": 8
+    },
+    {
+      "name": "raw-nested-point-one-over-point-seven",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "ffffff"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3dcccccd"
+        },
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3f333333"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            128
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "f6f6f6"
+      ],
+      "scratch_bytes": 16
+    },
+    {
+      "name": "raw-inner-point-one-under-grid-half",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "2c2c2c"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3f000000"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            151,
+            151,
+            151,
+            255
+          ],
+          "radius": 0
+        },
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3dcccccd"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            38
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "606060"
+      ],
+      "scratch_bytes": 16
+    },
+    {
+      "name": "grid-inner-half-under-raw-point-one",
+      "frame": {
+        "width": 1,
+        "height": 1,
+        "clear": "ffffff"
+      },
+      "commands": [
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3dcccccd"
+        },
+        {
+          "op": "push_opacity",
+          "f32_bits_hex": "3f000000"
+        },
+        {
+          "op": "rect",
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            128
+          ],
+          "radius": 0
+        },
+        {
+          "op": "pop_opacity"
+        },
+        {
+          "op": "pop_opacity"
+        }
+      ],
+      "expected_pixels": [
+        "f9f9f9"
+      ],
+      "scratch_bytes": 16
+    }
+  ],
+  "reuse_cases": [
+    {
+      "name": "opacity-full-reuse-a",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "opacity_bits_hex": "3dcccccd",
+      "rect": [
+        0,
+        0,
+        4,
+        1
+      ],
+      "rgba": [
+        65,
+        0,
+        0,
+        128
+      ],
+      "image_rect": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "image_rgba": [
+        0,
+        65,
+        0,
+        255
+      ],
+      "glyph_row": 2,
+      "glyph_y": 0,
+      "glyph_rgba": [
+        0,
+        0,
+        65,
+        255
+      ],
+      "glyph_coverage": 255,
+      "expected_pixels": [
+        "030000",
+        "000700",
+        "000007",
+        "030000",
+        "000000",
+        "000000",
+        "000000",
+        "000000"
+      ],
+      "scratch_bytes": 32
+    },
+    {
+      "name": "opacity-full-reuse-b",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "opacity_bits_hex": "3f333333",
+      "rect": [
+        0,
+        1,
+        4,
+        1
+      ],
+      "rgba": [
+        0,
+        0,
+        65,
+        128
+      ],
+      "image_rect": [
+        3,
+        1,
+        1,
+        1
+      ],
+      "image_rgba": [
+        0,
+        65,
+        0,
+        255
+      ],
+      "glyph_row": 2,
+      "glyph_y": 1,
+      "glyph_rgba": [
+        65,
+        0,
+        0,
+        255
+      ],
+      "glyph_coverage": 255,
+      "expected_pixels": [
+        "000000",
+        "000000",
+        "000000",
+        "000000",
+        "000017",
+        "000017",
+        "2e0000",
+        "002e00"
+      ],
+      "scratch_bytes": 32
+    },
+    {
+      "name": "opacity-full-reuse-c",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "opacity_bits_hex": "3e99999a",
+      "rect": [
+        1,
+        0,
+        2,
+        2
+      ],
+      "rgba": [
+        65,
+        65,
+        65,
+        128
+      ],
+      "image_rect": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "image_rgba": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "glyph_row": 2,
+      "glyph_y": 0,
+      "glyph_rgba": [
+        65,
+        0,
+        0,
+        255
+      ],
+      "glyph_coverage": 255,
+      "expected_pixels": [
+        "000000",
+        "0a0a0a",
+        "140000",
+        "000000",
+        "000000",
+        "000000",
+        "0a0a0a",
+        "000000"
+      ],
+      "scratch_bytes": 32
+    },
+    {
+      "name": "opacity-full-reuse-resized",
+      "frame": {
+        "width": 4,
+        "height": 2,
+        "clear": "000000"
+      },
+      "opacity_bits_hex": "3f333333",
+      "rect": [
+        0,
+        0,
+        3,
+        2
+      ],
+      "rgba": [
+        65,
+        65,
+        65,
+        128
+      ],
+      "image_rect": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "image_rgba": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "glyph_row": 2,
+      "glyph_y": 0,
+      "glyph_rgba": [
+        65,
+        0,
+        0,
+        255
+      ],
+      "glyph_coverage": 255,
+      "expected_pixels": [
+        "171717",
+        "171717",
+        "2e0000",
+        "000000",
+        "000000",
+        "171717",
+        "171717",
+        "000000"
+      ],
+      "scratch_bytes": 48
+    }
+  ],
+  "totals_per_adapter": {
+    "literal_cases": 29,
+    "literal_frames": 58,
+    "literal_bytes": 608,
+    "reuse_corpora": 3,
+    "reuse_frames_per_corpus": 14,
+    "reuse_bytes_per_corpus": 448,
+    "frames": 100,
+    "bytes": 1952,
+    "cancellations": 24,
+    "allocations": 21,
+    "reuses": 21,
+    "evictions": 21
+  },
+  "history": "The old two JSON sources remain exact historical records. Their non-grid refusal is superseded by the positive white-on-black case here; invalid-value coverage remains in core tests."
+}

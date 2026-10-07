@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "checkpoint": "Native Vulkan opacity across the finite binary32 range",
+  "base_commit": "d25c5d407eb398b4819450d719c4aef42377bed6",
+  "scope": "All finite binary32 opacity in [0,1], preserving stored bits and staged Canvas arithmetic. Existing k/256 path retained; positive tiny values retain allocation and charges with exact final-pop identity.",
+  "renderer_limits_raised": false,
+  "harness_inventory_changes": {
+    "surface_cases": [
+      17,
+      29
+    ],
+    "host_records": [
+      128,
+      192
+    ]
+  },
+  "package": {
+    "path": "native-full-opacity/index.json",
+    "sha256": "8fec7f74b772a342cf8b2ad1cdd32ca744e11dbe15e9adc9718ff98a5964f05e",
+    "archive": {
+      "path": "records.tar.gz",
+      "bytes": 712133,
+      "sha256": "3ff92a0b8fa6606f71b77b11efa5a10ec3c7950688fdae0982de79100463b5ba"
+    },
+    "files": 208,
+    "payload_bytes": 3243607
+  },
+  "record_paths": "records/ and source/ members inside the archive; absolute paths identify original local inputs",
+  "validation": {
+    "rust": "1.88.0",
+    "full_native_tests": 2153,
+    "ignored_confinement_tests_included": true,
+    "bridge_groups": 76,
+    "opacity_bridge_groups": 17,
+    "core_gpu_tests": 146,
+    "core_default_tests": 114,
+    "probe_tests": 7,
+    "probe_python_tests": 98,
+    "strict_clippy": [
+      "validation/native-clippy-188-1.json",
+      "validation/core-clippy-188-1.json",
+      "validation/probe-clippy-188-1.json"
+    ],
+    "formatting": "validation/fmt-2.json"
+  },
+  "arithmetic": {
+    "standalone": "arithmetic/standalone/run-1.json",
+    "inverse_pairs": 1966080,
+    "selected_opacity_patterns": 30,
+    "alpha_values_per_pattern": 65536,
+    "channel_checks": 4778616,
+    "root_checks": 2256815,
+    "root_boundary_checks": 1567,
+    "seeded_premultiplied_samples": 262144,
+    "held_literals": 8,
+    "six_new_core_groups": true,
+    "old_grid_suite_unchanged": true,
+    "all_opacity_channel_combinations_exhausted": false,
+    "domain_argument": "assessment/assessment.md",
+    "independent_proof_review": "assessment/proof-review.json",
+    "general_intermediate_bits_checked": true,
+    "tiny_final_storage_checked": true
+  },
+  "offscreen": {
+    "record": "offscreen-1/host-results.json",
+    "review": "offscreen-result-review.json",
+    "binary": {
+      "path": "/tmp/eris-vulkan-full-opacity-1/eris-vulkan-opacity-check-full-opacity-1",
+      "bytes": 6716624,
+      "sha256": "70c8dce17295f12a23f8550dd941c93ad78f8a179377457a338f520834e9a89c"
+    },
+    "adapters": [
+      "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+      "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+      "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\""
+    ],
+    "frames_per_adapter": 100,
+    "bytes_per_adapter": 1952,
+    "total_frames": 300,
+    "total_compared_bytes": 5856,
+    "per_adapter": {
+      "literal": [
+        58,
+        608
+      ],
+      "opaque_reuse": [
+        14,
+        448
+      ],
+      "transparent_reuse": [
+        14,
+        448
+      ],
+      "full_reuse": [
+        14,
+        448
+      ],
+      "formats": {
+        "BGRA8": 53,
+        "RGBA8": 47
+      },
+      "successful_allocations": 21,
+      "successful_reuses": 21,
+      "successful_evictions": 21,
+      "separate_cancellation_checks": 24
+    },
+    "unique_planner_refusals": 0,
+    "acquired_surface": false,
+    "all_owned_children_cleaned_up": true
+  },
+  "browser": {
+    "release_build": "validation/browser-build-1.json",
+    "binary": {
+      "path": "/tmp/eris-vulkan-full-opacity-1/eris-browser-full-opacity-1",
+      "bytes": 17510208,
+      "sha256": "b2fe88dfec5a2ab7810a87a90362c0ed872ab1152cdef5b836cfb33e08ad6f32"
+    },
+    "new_example": "examples/vulkan-full-opacity.html",
+    "Page_and_worker_each_test_four_scenes_before_and_after_real_click": true,
+    "new_window_execution": false
+  },
+  "retained_failures": [
+    {
+      "record": "validation/native-full-188-1.json",
+      "cause": "Test removed two opacity commands, also changing chrome status text and glyph debit.",
+      "correction": "layout/correction-1/receipt.json",
+      "scope": "Test isolates exact nontext two-frame-area opacity charge; no production change."
+    },
+    {
+      "record": "validation/fmt-final.json",
+      "cause": "Rustfmt requires new test module before gpu module.",
+      "correction": "formatting-correction/receipt.json"
+    }
+  ],
+  "preceding_checkpoint": {
+    "commit": "d25c5d407eb398b4819450d719c4aef42377bed6",
+    "all_nine_CI_jobs_successful": true,
+    "CI": "transparent-opacity-ci.json",
+    "publication_review": "transparent-opacity-publication-review.json"
+  },
+  "remaining": "Broader native scene admission, complete CSS compositing and web compatibility, production security and Chromium-relative performance remain unfinished.",
+  "security_or_performance_claim": false
+}

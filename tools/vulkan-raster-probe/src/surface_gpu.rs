@@ -11,7 +11,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-const MAX_CASES: usize = 17;
+const MAX_CASES: usize = 29;
 const ACTIVE_GPU_BYTES: u64 = 24 * 1024 * 1024;
 const RETAINED_REFERENCE_BYTES: usize = 32 * 1024 * 1024;
 
