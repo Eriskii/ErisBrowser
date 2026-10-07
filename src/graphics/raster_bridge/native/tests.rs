@@ -290,8 +290,9 @@ fn native_original_commands_and_cpu_allowance_are_global() {
         Some(1)
     );
     let target = Frame::new(250, 200, 0);
-    let a = vec![hidden(); 10];
-    let mut b = vec![hidden(); 10];
+    let full = fill(0.0, 0.0, 250.0, 200.0, Color::TRANSPARENT, 0.0);
+    let a = vec![full.clone(); 10];
+    let mut b = vec![full.clone(); 10];
     let accepted = plan_native_scene(
         target,
         &[
@@ -309,7 +310,7 @@ fn native_original_commands_and_cpu_allowance_are_global() {
     )
     .unwrap();
     assert_eq!(accepted.stats().cpu_pixel_upper_bound, 1_000_000);
-    b.push(hidden());
+    b.push(full);
     assert_eq!(
         plan_native_scene(
             target,
@@ -839,7 +840,7 @@ fn native_row_budget_is_global_even_for_narrow_coverage() {
 #[test]
 fn native_remaining_text_work_is_not_reset_after_earlier_phase() {
     let target = Frame::new(250, 200, 0);
-    let first = vec![hidden(); 20];
+    let first = vec![fill(0.0, 0.0, 250.0, 200.0, Color::TRANSPARENT, 0.0); 20];
     let second = [text("\u{200d}")];
     assert_eq!(
         plan_native_scene(
@@ -1014,10 +1015,7 @@ fn native_wide_address_bar_admits_real_and_maximum_viewport_without_extra_pixel_
         assert_eq!(stats.row_entries, 68);
         assert_eq!(stats.coverage_bytes, bar_width as usize * 34);
         assert_eq!(stats.rounded_loop_work, u64::from(bar_width) * 34);
-        assert_eq!(
-            stats.cpu_pixel_upper_bound,
-            u64::from(width) * u64::from(height)
-        );
+        assert_eq!(stats.cpu_pixel_upper_bound, u64::from(bar_width) * 34);
         let draws = result.plan().draws();
         assert_eq!(draws.len(), 3);
         assert_eq!(draws[1].bounds(), (181, 31, 1024, 34));
@@ -1267,5 +1265,7 @@ fn native_wide_group_preflight_is_atomic_at_each_global_cutpoint() {
     }
 }
 
+#[path = "rect_accounting_tests.rs"]
+mod rect_accounting_tests;
 #[path = "scope_accounting_tests.rs"]
 mod scope_accounting_tests;

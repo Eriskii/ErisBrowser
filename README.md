@@ -441,6 +441,8 @@ retired GPU buffer set can be reused; every frame still rewrites inputs and
 draws the complete scene. [Nested opacity](docs/vulkan-full-opacity.md) uses
 cropped RGBA16 intermediates for transparent or opaque groups at every finite
 binary32 opacity in `[0,1]`, preserving the software painter’s rounding stages.
+[Precise rectangle reservations](docs/native-rect-accounting.md) admit more
+small-shape scenes under the existing CPU work limits.
 Software remains the default and headless path. The
 separate [raster probe](tools/vulkan-raster-probe/README.md) retains its original
 30 cases and 26 glyph cases on three adapters. Broader text, compositing

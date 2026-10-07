@@ -148,7 +148,7 @@ fn validate_native_frame(frame: Frame, phase: Option<usize>) -> NativeResult<()>
 struct InputCounts {
     original: usize,
     nontext: usize,
-    pixel_work_commands: usize,
+    full_area_commands: usize,
     text_bytes: usize,
     scalars: usize,
     command_key_bytes: usize,
@@ -292,17 +292,18 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                 }
             }
             counts.nontext += 1;
-            // Clip and fixed scopes only update bounded coordinate metadata.
-            // Keep their operation/parameter slots, but reserve pixel work only
-            // for primitives and opacity (whose CPU layers can cover the frame).
+            // Preserve every operation/parameter slot. Rects get a separate
+            // pre-blend geometry reservation after this complete preflight;
+            // Image, Line and opacity retain their full-frame pixel allowance.
             if !matches!(
                 command,
-                DrawCommand::PushClip { .. }
+                DrawCommand::Rect { .. }
+                    | DrawCommand::PushClip { .. }
                     | DrawCommand::PopClip
                     | DrawCommand::PushFixed
                     | DrawCommand::PopFixed
             ) {
-                counts.pixel_work_commands += 1;
+                counts.full_area_commands += 1;
             }
         }
         if depth != 0 {
@@ -314,6 +315,73 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
         }
     }
     Ok(counts)
+}
+
+/// Called only after complete original-input validation. No coverage, glyphs,
+/// source payloads or per-command cache are allocated by this geometry pass.
+/// One bounded CoordinateState scope Vec is live at a time and is dropped
+/// before later preparation, within its existing structural peak allowance.
+fn rect_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<u64> {
+    let mut total = 0u64;
+    for (phase, input) in phases.iter().enumerate() {
+        if !input
+            .commands
+            .iter()
+            .any(|command| matches!(command, DrawCommand::Rect { .. }))
+        {
+            continue;
+        }
+        // Frame/range validation is already complete; the only remaining
+        // failure in this constructor is its fallible MAX_SCOPES reservation.
+        let mut state = CoordinateState::new_for_profile(Profile::Native, input.frame)
+            .map_err(|_| NativeFallback::new(FallbackKind::AllocationFailure, Some(phase), None))?;
+        for (index, command) in input.commands.iter().enumerate() {
+            let scope = match command {
+                DrawCommand::Rect { rect, .. } => {
+                    let offset = state.offset();
+                    let translated = Rect::new(
+                        rect.x + offset.0,
+                        rect.y + offset.1,
+                        rect.width,
+                        rect.height,
+                    );
+                    // Radius does not affect Canvas's earlier loop-work debit.
+                    // Literal zero obtains that bound without rounded-mask caps
+                    // or allocation. The real radius still controls lowering.
+                    let disposition =
+                        RoundedTiles::prepare_native(target, translated, state.clip(), 0.0)
+                            .map_err(|_| at(FallbackKind::InvalidGeometry, phase, index))?;
+                    let work = match disposition {
+                        RoundedTilesDisposition::Empty { loop_work }
+                        | RoundedTilesDisposition::ZeroRadius { loop_work } => loop_work,
+                        RoundedTilesDisposition::Tiles(shape) => shape.info().loop_work,
+                    };
+                    // Keep this conservative charge for transparent colors and
+                    // zero-opacity descendants; geometry alone determines it.
+                    total = total
+                        .checked_add(work)
+                        .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                    continue;
+                }
+                DrawCommand::PushClip { rect } => Command::PushClip(convert_rect(*rect)),
+                DrawCommand::PopClip => Command::PopClip,
+                DrawCommand::PushFixed => Command::PushFixed,
+                DrawCommand::PopFixed => Command::PopFixed,
+                DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
+                DrawCommand::PopOpacity => Command::PopOpacity,
+                DrawCommand::Text { .. } | DrawCommand::Image { .. } | DrawCommand::Line { .. } => {
+                    continue;
+                }
+            };
+            state
+                .apply(&scope)
+                .map_err(|_| at(FallbackKind::InvalidScope, phase, index))?;
+        }
+        state
+            .finish()
+            .map_err(|_| NativeFallback::new(FallbackKind::InvalidScope, Some(phase), None))?;
+    }
+    Ok(total)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -441,7 +509,7 @@ impl Ledger {
             .rounded_loop_work
             .checked_add(info.loop_work)
             .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, command))?;
-        // Its complete loop work is covered by the original nontext area debit.
+        // Its complete loop work was included in the earlier Rect reservation.
         for tile in shape.tiles() {
             next.mask(
                 tile.coverage_bytes,
@@ -479,6 +547,7 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
     let failure = || NativeFallback::new(FallbackKind::AllocationFailure, None, None);
     // A second copy of the complete core structural allowance safely covers
     // the adapter's additional live CoordinateState and its bounded scope Vec.
+    // Rect reservation and later lowering use that state at disjoint times.
     let core = eris_raster_core::native_planner_metadata_peak_bytes().map_err(|_| failure())?;
     let input_words = MAX_MASK_COVERAGE_BYTES
         .checked_add(MAX_ROW_ENTRIES)
@@ -579,7 +648,11 @@ pub fn plan_native_scene(
     .map_err(|error| NativeFallback::leaf(error, None))?;
     let area = u64::from(target.width) * u64::from(target.height);
     let cpu_limit = (area * 16).clamp(1_000_000, 32_000_000);
-    let cpu_nontext = area * counts.pixel_work_commands as u64;
+    let rect_work = rect_pixel_work(target, phases)?;
+    let cpu_nontext = area
+        .checked_mul(counts.full_area_commands as u64)
+        .and_then(|work| work.checked_add(rect_work))
+        .ok_or_else(|| NativeFallback::new(FallbackKind::CpuPaintBudget, None, None))?;
     if cpu_nontext > cpu_limit {
         return Err(NativeFallback::new(
             FallbackKind::CpuPaintBudget,

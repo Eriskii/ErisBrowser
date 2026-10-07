@@ -1,6 +1,19 @@
 # Validation record
 
+## Native rectangle accounting
+
+[Precise Rect reservations](native-rect-accounting.md) admit the fixed forty-box
+page with 9,600 CPU pixel-work units instead of 10,485,760 under the unchanged
+4,194,304 allowance. All 82 bridge groups and 2,161 native-feature tests pass on
+Rust 1.88, including direct Page and confined-worker click witnesses, strict
+Clippy and formatting. The release browser builds. No shader or GPU limits
+change; this is CPU preparation and pixel-reference evidence.
+
 ## Native coordinate-scope accounting
+
+This records the earlier scope-only checkpoint. The subsequent
+[rectangle accounting change](native-rect-accounting.md) further reduces Rect
+reservations; the historical figures below retain their original scope.
 
 Clip and fixed-position scope markers now retain command, nesting and parameter
 charges without a full-frame CPU pixel debit. Primitives and both opacity

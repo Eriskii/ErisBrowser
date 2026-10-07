@@ -337,7 +337,7 @@ fn native_opacity_literal_half_tie_and_nested_rounding() {
         &[0x210000, 0, 0],
     );
     assert_eq!(first.plan().group_scratch_bytes(), 8);
-    assert_eq!(first.stats().cpu_pixel_upper_bound, 9);
+    assert_eq!(first.stats().cpu_pixel_upper_bound, 7); // two full-area markers + one pixel
     assert_eq!(first.stats().bridge.original_commands, 3);
     assert_eq!(first.stats().bridge.lowered_commands, 3);
     assert_eq!(
@@ -421,7 +421,7 @@ fn native_opacity_unit_and_zero_keep_destination_and_following_pixels() {
             &[0xffffff, 0x00ff00],
         );
         assert_eq!(result.plan().group_scratch_bytes(), 0);
-        assert_eq!(result.stats().cpu_pixel_upper_bound, 8);
+        assert_eq!(result.stats().cpu_pixel_upper_bound, 7); // two full-area markers + 2 + 1 pixels
     }
 }
 

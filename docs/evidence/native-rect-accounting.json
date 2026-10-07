@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "checkpoint": "Native Rect preblend CPU work reservation",
+  "base_commit": "077b3840608569b1c44327b3456c3a7b2f1c7d78",
+  "scope": "Reserve clipped Rect loop area before glyph preparation; preserve full Image/Line/Opacity charges, complete input validation and all limits. Shared typed coordinates retain per-phase clip/fixed semantics.",
+  "renderer_limits_raised": false,
+  "package": {
+    "path": "native-rect-accounting/index.json",
+    "sha256": "ccacbf612fe0424e9bea188a601c87708e4408dad4a445b2be9dc4f71222dad6",
+    "archive": {
+      "path": "records.tar.gz",
+      "bytes": 411055,
+      "sha256": "ff99e55bc2fb30349bf47fbac11b812cbdb85a37c98330834ae782501746d76e"
+    },
+    "files": 95,
+    "payload_bytes": 1866947
+  },
+  "record_paths": "records/ and source/ archive members; absolute paths identify original local inputs",
+  "baseline": {
+    "receipt": "baseline/receipt.json",
+    "synthetic_run": "validation/predecessor-rect-188-1.json",
+    "Page_run": "validation/predecessor-page-188-1.json",
+    "actual_native_refusal": "CpuPaintBudget",
+    "old_rect_cpu": 10485760,
+    "unchanged_cpu_limit": 4194304,
+    "new_rect_cpu": 9600,
+    "viewport": [
+      512,
+      512
+    ],
+    "rectangles": 40,
+    "rectangle_size": [
+      20,
+      12
+    ],
+    "core_draws": 41,
+    "core_gpu_invocations": 539648,
+    "core_gpu_buffer_bytes": 2107664
+  },
+  "validation": {
+    "rust": "1.88.0",
+    "bridge_tests": 82,
+    "new_rect_groups": 6,
+    "full_native_tests": 2161,
+    "ignored_confinement_tests_included": true,
+    "new_Page_worker_groups": 2,
+    "loaded_Page_and_worker_each_test_both_click_phases": true,
+    "each_full_canvas_pixels": 262144,
+    "observed_ids_retained": 44,
+    "parent_child_graph_retained": true,
+    "changed_pixels_per_click": 240,
+    "strict_clippy": "validation/native-clippy-188-1.json",
+    "formatting": "validation/fmt-final.json",
+    "actual_test_identity_discovery": "validation/discovery.json"
+  },
+  "test_migrations": {
+    "receipt": "test-migration/receipt.json",
+    "independent_review": "test-migration/script-review.json",
+    "scope": "Existing exact-budget witnesses use full-frame transparent Rects. Genuine smaller/clipped Rect fees change; pixels and other primitive charges remain.",
+    "registration": "registration/receipt.json",
+    "formatting": "formatting/receipt.json"
+  },
+  "implementation_review": "layout/script-source-review.json",
+  "new_test_review": "bridge/layout-review.json",
+  "unchanged_core_shaders_and_presenter": "unchanged-core-and-presenter.json",
+  "browser": {
+    "release_build": "validation/browser-build-1.json",
+    "binary": {
+      "path": "/tmp/eris-native-rect-accounting-1/eris-browser-rect-accounting-1",
+      "bytes": 17510208,
+      "sha256": "ac9b040570fa31b59b485f1bb8c28a09736394140524b081cd7ac00d01155ffb"
+    },
+    "example": "examples/vulkan-small-boxes.html",
+    "new_gpu_execution": false,
+    "new_window_execution": false
+  },
+  "executed_unexpected_failures": [],
+  "preceding_checkpoint": {
+    "commit": "077b3840608569b1c44327b3456c3a7b2f1c7d78",
+    "all_nine_CI_jobs_successful": true,
+    "CI": "full-opacity-ci.json",
+    "publication_review": "full-opacity-publication-review.json"
+  },
+  "remaining": "Broader native scene admission, full web compatibility, production security and performance within30% of Chromium remain unfinished.",
+  "security_or_performance_claim": false
+}

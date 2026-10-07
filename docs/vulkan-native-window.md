@@ -94,11 +94,13 @@ fixtures retain their existing limits.
 
 Clip and fixed-position scope markers consume command, nesting and parameter
 allowances but no CPU pixel-work allowance: they only update coordinate state.
-Primitives and both opacity markers still reserve one full framebuffer area
-each before glyph preparation. This admits more sparsely painted, heavily clipped
-scenes without increasing the existing pixel-work limit. It also preserves the
-full-viewport reservation for CPU opacity layers; cropped GPU scratch does not
-replace that reservation.
+[Rectangles](native-rect-accounting.md) reserve their clipped pre-blend CPU loop
+area before glyph preparation. Image, Line and both opacity markers retain one
+full framebuffer area each, including empty groups. A bounded coordinate pass
+accounts for every phase before font work, preserving fixed-position escape and
+restoration. This admits more small-shape scenes without increasing pixel-work
+limits. Cropped GPU scratch does not replace the full-viewport CPU opacity
+reservation.
 
 Wide Native rounded rectangles now use at most two consecutive, nonoverlapping
 horizontal masks through `RoundedTiles::prepare_native`. Each mask retains the

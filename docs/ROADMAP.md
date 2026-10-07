@@ -1,5 +1,10 @@
 # Development docket
 
+[Native rectangle accounting](native-rect-accounting.md) reserves the actual
+clipped pre-blend loop area for each Rect instead of a complete viewport. Small
+shape pages can now fit the unchanged CPU allowance; Image, Line and opacity
+charges, mask limits and GPU admission remain unchanged.
+
 [Native group opacity](vulkan-full-opacity.md) now represents every finite
 binary32 opacity value in `0..=1`, including nested transparent sources, without
 quantizing values to `k/256`. Cropped RGBA16 scratch, clear/composite dispatches
@@ -297,8 +302,8 @@ Further measurements need more scenes and repeated environment observations.
 Acceptance work:
 
 - Expand the bounded native route to more browser scenes, preserving clipping,
-  fixed coordinates, text coverage and alpha while expanding nested opacity
-  beyond `k/256` values and the current scene limits.
+  fixed coordinates, text coverage, full-range nested opacity and alpha under
+  explicit resource limits.
 - Bound GPU allocations, command work, uploads and retained resources. Decide
   the GPU process/driver boundary explicitly; GPU access must not broaden the
   renderer's filesystem or network authority.

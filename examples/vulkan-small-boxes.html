@@ -1,0 +1,54 @@
+<!doctype html><meta charset=utf-8>
+<title id=heading>Small boxes ready</title>
+<style>
+body{margin:0;width:512px;height:512px}
+.box{position:absolute;width:20px;height:12px}
+</style><body data-phase=ready>
+<div id=box00 class=box style="left:16px;top:16px;background:#ff0000"></div>
+<div id=box01 class=box style="left:44px;top:16px;background:#00ff00"></div>
+<div id=box02 class=box style="left:72px;top:16px;background:#0000ff"></div>
+<div id=box03 class=box style="left:100px;top:16px;background:#ffff00"></div>
+<div id=box04 class=box style="left:128px;top:16px;background:#00ffff"></div>
+<div id=box05 class=box style="left:156px;top:16px;background:#ff00ff"></div>
+<div id=box06 class=box style="left:184px;top:16px;background:#804000"></div>
+<div id=box07 class=box style="left:212px;top:16px;background:#408080"></div>
+<div id=box08 class=box style="left:16px;top:36px;background:#ff0000"></div>
+<div id=box09 class=box style="left:44px;top:36px;background:#00ff00"></div>
+<div id=box10 class=box style="left:72px;top:36px;background:#0000ff"></div>
+<div id=box11 class=box style="left:100px;top:36px;background:#ffff00"></div>
+<div id=box12 class=box style="left:128px;top:36px;background:#00ffff"></div>
+<div id=box13 class=box style="left:156px;top:36px;background:#ff00ff"></div>
+<div id=box14 class=box style="left:184px;top:36px;background:#804000"></div>
+<div id=box15 class=box style="left:212px;top:36px;background:#408080"></div>
+<div id=box16 class=box style="left:16px;top:56px;background:#ff0000"></div>
+<div id=box17 class=box style="left:44px;top:56px;background:#00ff00"></div>
+<div id=box18 class=box style="left:72px;top:56px;background:#0000ff"></div>
+<div id=box19 class=box style="left:100px;top:56px;background:#ffff00"></div>
+<div id=box20 class=box style="left:128px;top:56px;background:#00ffff"></div>
+<div id=box21 class=box style="left:156px;top:56px;background:#ff00ff"></div>
+<div id=box22 class=box style="left:184px;top:56px;background:#804000"></div>
+<div id=box23 class=box style="left:212px;top:56px;background:#408080"></div>
+<div id=box24 class=box style="left:16px;top:76px;background:#ff0000"></div>
+<div id=box25 class=box style="left:44px;top:76px;background:#00ff00"></div>
+<div id=box26 class=box style="left:72px;top:76px;background:#0000ff"></div>
+<div id=box27 class=box style="left:100px;top:76px;background:#ffff00"></div>
+<div id=box28 class=box style="left:128px;top:76px;background:#00ffff"></div>
+<div id=box29 class=box style="left:156px;top:76px;background:#ff00ff"></div>
+<div id=box30 class=box style="left:184px;top:76px;background:#804000"></div>
+<div id=box31 class=box style="left:212px;top:76px;background:#408080"></div>
+<div id=box32 class=box style="left:16px;top:96px;background:#ff0000"></div>
+<div id=box33 class=box style="left:44px;top:96px;background:#00ff00"></div>
+<div id=box34 class=box style="left:72px;top:96px;background:#0000ff"></div>
+<div id=box35 class=box style="left:100px;top:96px;background:#ffff00"></div>
+<div id=box36 class=box style="left:128px;top:96px;background:#00ffff"></div>
+<div id=box37 class=box style="left:156px;top:96px;background:#ff00ff"></div>
+<div id=box38 class=box style="left:184px;top:96px;background:#804000"></div>
+<div id=box39 class=box style="left:212px;top:96px;background:#408080"></div>
+<script>
+var first=document.getElementById('box00');var phase=0;
+first.addEventListener('click',function(){
+phase=1-phase;first.style.backgroundColor=phase?'#0000ff':'#ff0000';
+document.body.setAttribute('data-phase',phase?'changed':'ready');
+document.getElementById('heading').firstChild.data=phase?'Small boxes changed':'Small boxes ready';
+});
+</script>

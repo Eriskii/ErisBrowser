@@ -73,7 +73,7 @@ fn native_scope_accounting_preserves_fixed_escape_restore_and_phase_pixels() {
     assert_eq!(scene.stats().bridge.original_commands, 10);
     // The clipped rectangle is omitted during existing lowering, not erased from input admission.
     assert_eq!(scene.stats().bridge.lowered_commands, 9);
-    assert_eq!(scene.stats().cpu_pixel_upper_bound, 128);
+    assert_eq!(scene.stats().cpu_pixel_upper_bound, 8); // 4 + 0 + 2 + 2 loop pixels
     assert_eq!(decode_pixels(scene.plan()), expected);
     assert_eq!(canvas_pixels(target, &phases, &images, &fonts), expected);
     let flat = [
@@ -141,10 +141,10 @@ fn native_scope_accounting_keeps_original_depth_and_validation_boundaries() {
 }
 
 #[test]
-fn native_scope_accounting_keeps_each_primitive_area_charge_across_phases() {
+fn native_scope_accounting_keeps_full_rect_image_line_charges_across_phases() {
     let target = Frame::new(250, 200, 0);
     let primitives = [
-        hidden(),
+        fill(0.0, 0.0, 250.0, 200.0, Color::TRANSPARENT, 0.0),
         image("missing", 0.0),
         DrawCommand::Line {
             x1: 0.0,
@@ -271,7 +271,8 @@ fn native_scope_accounting_retains_opacity_area_even_for_empty_zero_and_unit() {
 #[test]
 fn native_scope_accounting_preserves_shared_glyph_allowance_and_late_reserve() {
     let target = Frame::new(250, 200, 0xffffff);
-    let first = vec![hidden(); 19];
+    let full = fill(0.0, 0.0, 250.0, 200.0, Color::TRANSPARENT, 0.0);
+    let first = vec![full.clone(); 19];
     let plain = [text("AVAV")];
     let mut scoped = Vec::new();
     for _ in 0..9 {
@@ -323,7 +324,7 @@ fn native_scope_accounting_preserves_shared_glyph_allowance_and_late_reserve() {
     let pixels = decode_pixels(result.plan());
     assert!(pixels.iter().any(|&pixel| pixel != 0xffffff));
     assert_eq!(pixels, canvas_pixels(target, &phases, &images, &fonts));
-    let exhausted = vec![hidden(); 20];
+    let exhausted = vec![full; 20];
     for (phases, phase_index) in [
         (
             [
@@ -378,7 +379,7 @@ fn native_scope_accounting_loaded_page_keeps_clipped_red_and_escaping_fixed_blue
     assert_eq!(count(|c| matches!(c, DrawCommand::PushFixed)), 1);
     assert_eq!(count(|c| matches!(c, DrawCommand::PopFixed)), 1);
     assert_eq!(count(|c| matches!(c, DrawCommand::Rect { .. })), 2);
-    // Independently fixed old and new admission totals: only the 18 scopes change.
+    // Historical all-command reservation; scope and Rect refinements preserve these pixels.
     let old_bound = 262_144 * layout.commands.len() as u64;
     assert_eq!(old_bound, 5_242_880);
     assert!(old_bound > 4_194_304);
@@ -390,7 +391,7 @@ fn native_scope_accounting_loaded_page_keeps_clipped_red_and_escaping_fixed_blue
     let scene = plan_native_scene(target, &phases, &page.images, &fonts).unwrap();
     assert_eq!(scene.stats().bridge.original_commands, 20);
     assert_eq!(scene.stats().bridge.lowered_commands, 20);
-    assert_eq!(scene.stats().cpu_pixel_upper_bound, 524_288);
+    assert_eq!(scene.stats().cpu_pixel_upper_bound, 1_280); // 32*32 + 16*16
     assert_eq!(scene.plan().draws().len(), 3);
     assert_eq!(scene.plan().draws()[1].bounds(), (16, 16, 32, 32));
     assert_eq!(scene.plan().draws()[2].bounds(), (64, 16, 16, 16));
