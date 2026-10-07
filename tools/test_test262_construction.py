@@ -22,7 +22,7 @@ class ConstructionCorpusTests(unittest.TestCase):
                     'numeric-conversion': 4, 'numeric-parsing': 4, 'uri': 8}
         selected = {}
         for profile, features in runner.PROFILE_FEATURES.items():
-            if profile == 'object-has-own':
+            if profile in {'typedarray-foundation', 'object-has-own'}:
                 continue  # Added after this historical constructor-policy expansion.
             self.assertTrue(additions <= features, profile)
             if profile in {'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-find', 'object-integrity', 'array-predicates', 'array-descriptors', 'array-last-index-of', 'string-last-index-of', 'regexp-match-search', 'regexp-constructor', 'regexp-split', 'string-search', 'function-constructor', 'reflect-construction', 'new-target'}:

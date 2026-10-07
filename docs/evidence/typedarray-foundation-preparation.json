@@ -1,0 +1,665 @@
+{
+  "base": "0abcd4a19a1a8e20aa484b2df019ee75cc1fec02",
+  "scope": "Frozen validation preparation and pre-implementation observations for ten Number TypedArray kinds. No runtime implementation in this commit.",
+  "profile": {
+    "sources": 632,
+    "modes": 1238,
+    "directories": 67,
+    "source_bytes": 773126,
+    "harness_files": 10,
+    "proof_documents": 7,
+    "complete_root_sources": 2191,
+    "complete_root_directories": 160,
+    "scheduled": 766,
+    "policy_excluded": 472,
+    "manifest_sha256": "886b81f9c933ead09109c77d840398aca44cf8bc96397f1ccda88b49254b6744",
+    "counts": {
+      "harness-error": 582,
+      "unsupported": 488,
+      "failed": 168
+    },
+    "preflight_verified": 36,
+    "preflight_total": 64,
+    "parse_unsupported_beyond_policy": 16,
+    "report_sha256": "c6730c093397e7a8d848d13d984a17d170910649ecd2113d26b0335092951a10"
+  },
+  "local": {
+    "case_matches": 0,
+    "case_total": 54,
+    "control_matches": 4,
+    "controls_verified": 4,
+    "control_total": 32,
+    "runner_errors": 0,
+    "report_sha256": "91b14da48a82092d83a99269a86f1539f6c8aec3d2ff52907333eb4235395999",
+    "binding_failures": []
+  },
+  "binary": {
+    "commit": "0abcd4a19a1a8e20aa484b2df019ee75cc1fec02",
+    "binary": "eris-js-before",
+    "bytes": 150297400,
+    "sha256": "0aa0fbc72b6228d2b28b7bb299fe65b23aa111c61cc92fac311e505301ac05b9",
+    "reused_adapter_receipt": {
+      "path": "eris-js-final",
+      "bytes": 150297400,
+      "sha256": "0aa0fbc72b6228d2b28b7bb299fe65b23aa111c61cc92fac311e505301ac05b9",
+      "source_hold_sha256": "a1dcf4b3479842a5de1c42c7176604449d844727eb1f543f1d3186e56cf28f95",
+      "build": {
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "build",
+          "--locked",
+          "--offline",
+          "--manifest-path",
+          "Cargo.toml",
+          "--features",
+          "vulkan-raster",
+          "--bin",
+          "eris-js"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 0.1138674239628017,
+        "log": "adapter-final-188-1.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      }
+    },
+    "production_source_unchanged_from_published_commit": true,
+    "purpose": "Freeze executable before Number TypedArray implementation/exposure; importer and local runner preparation is separate."
+  },
+  "source_sha256": {
+    "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/README.md": "18cd80aa988ac5d943694a65aeab2fda2782d9058c57466f4c850a10f600745b",
+    "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/RUNNER.md": "63ca63b1ccf16af995cd15f33019cb8a606c9a3afad5bd3b01ccdd6aced7c919",
+    "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/cases.js": "5770d7a561735697f4446b360220b6a551ccfc82f104c81ca278a45de926ca90",
+    "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/controls.json": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888",
+    "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/inventory.json": "2d3ba8e92b67ca53ffb233ee96c93204a053fcf1f0921c2bd868169c1f8bebd5",
+    "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/manifest.json": "908c0348fa60073d9f8a7b5a359d960c44657dfcd2a469046dbdb5d5d3be9947",
+    "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/matrix.json": "c11cc9cf73d77c3fc54b1af83b29f0f25cbbc6d5e07425e7f88bc74f9d37e6c2",
+    "/tmp/eris-typedarray-foundation-1/worktree/tools/typedarray_foundation_local.py": "7841a34935ac66b952b85035929edda87e92b1ccc722ff0ebb3830507660d3f0",
+    "docs/typedarray-foundation-test262.md": "579014ee0c88517f19acf4c05f21f2d8f0355ca2f7d8b877c0304a4f4c01a8e2",
+    "tools/import_test262.py": "b88bc7c83d040ca48cda3cea77ffca14af8a9b39e645bfe86ea26cf18da8f433",
+    "tools/test262_conformance.py": "59c90b16678a734b7278a7e6fa1c5fbafd6878375255d6255fc0185dc5ab42d7",
+    "tools/test_test262_array_buffer.py": "e6b70a2671f8f1ca0e580768449e9aef80e4f228e63eab49f1a75da425c1a3bc",
+    "tools/test_test262_array_concat.py": "4fe290c45964e7b1a104a7ef8fb82aac1b019d2692cf407d66845d74bdc1d666",
+    "tools/test_test262_array_find.py": "769c3a537503be37df268139659cb882952e981fe5f7d79062dba50c74db67eb",
+    "tools/test_test262_array_from.py": "d95e5b01d0a361ba9ac67ad007ad8259c126dd9269eee09ee4da588c89875be8",
+    "tools/test_test262_array_predicates.py": "94589528876bdcb4b48c776d6e4b9d6ae17c782ccf3a2cf9f3c285dc347ca33e",
+    "tools/test_test262_array_splice.py": "98b98e999c40db791d9c9ca8a28676dc2939e71fdf1fc10b2446c8696e777515",
+    "tools/test_test262_conformance.py": "192b1ec665d2593743f0ebdae78069187371fe0d31af986fee8c093646f3b4c1",
+    "tools/test_test262_construction.py": "1a5dd0cd6202c2cb03b07e1dea82b2050942ee984988827480f1f98681613eda",
+    "tools/test_test262_data_view.py": "56c5379bfbd709051a4193ce2b63e3b2266d00c906158488c569c289eb4b5ee3",
+    "tools/test_test262_date.py": "e27d7e17ca4ad100e9fa60cfc8569dafbae7b82cd1ca33070d949e6ce506aa87",
+    "tools/test_test262_iteration.py": "fb64c9680f4c8cf3740ef66d1a2ab3d89e479f837957032ecf6ba3d73726b9f3",
+    "tools/test_test262_object_has_own.py": "a18bff413464dc5c7e07c7f29dd18b5b0582418a2f16845fa8cb792fb69b84ad",
+    "tools/test_test262_object_integrity.py": "98d13a8c06bb007cddcef07c16ac8f54a2df5e35408d74811a2941ca63337b90",
+    "tools/test_test262_object_is.py": "370fb70288bb48ef8c3471703c33f4c8bb2f867b585770441d9f254118a5f513",
+    "tools/test_test262_typedarray_foundation.py": "6f41f3dc8e8f2ad317b5e23cbc6bddcdf116b2524439830d962f64ba44de51f5",
+    "tools/typedarray-foundation-controls.json": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888"
+  },
+  "root_doc_addition": "After source reviews and execution, docs/typedarray-foundation-test262.md adds the literal before observations; no helper or fixture change.",
+  "validation": {
+    "local-verify-before-1": {
+      "command": [
+        "python3",
+        "tools/typedarray_foundation_local.py",
+        "--verify-only"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.09052156191319227,
+      "log": "local-verify-before-1.log",
+      "sha256": "72d19a4683c048adb24b8a69f8ee65421b18a249f83250cfd5bf3c941346485a"
+    },
+    "local-before-1": {
+      "command": [
+        "python3",
+        "tools/typedarray_foundation_local.py",
+        "--engine",
+        "/tmp/eris-typedarray-foundation-1/eris-js-before",
+        "--engine-sha256",
+        "0aa0fbc72b6228d2b28b7bb299fe65b23aa111c61cc92fac311e505301ac05b9",
+        "--output",
+        "/tmp/eris-typedarray-foundation-1/local-before.json"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 2.049025268992409,
+      "log": "local-before-1.log",
+      "sha256": "800f8ba7d754c5e899f88a67859f55fa9edfb1df9f5c43ec7482c593e415b5e6"
+    },
+    "import-frozen-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-typedarray-foundation-1/conformance/import-frozen.py"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.18354066088795662,
+      "log": "import-frozen-1.log",
+      "sha256": "7200dae868df22fce01fde8f243deceb03179e6b44acdccdb9aa850feb2de313"
+    },
+    "importer-tests-1": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "test_test262_typedarray_foundation.py",
+        "-v"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 3.2447303188964725,
+      "log": "importer-tests-1.log",
+      "sha256": "4bfe4fe2aec923b411527cf1276e11b7d2f83b221c70075a53f949b1028fce6a"
+    },
+    "upstream-before-1": {
+      "command": [
+        "python3",
+        "tools/test262_conformance.py",
+        "--profile",
+        "typedarray-foundation",
+        "--binary",
+        "/tmp/eris-typedarray-foundation-1/eris-js-before",
+        "--output",
+        "/tmp/eris-typedarray-foundation-1/upstream-before.json",
+        "--jobs",
+        "4"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 3.727619277080521,
+      "log": "upstream-before-1.log",
+      "sha256": "6800fa10111dfd5ac8d3b78abfe1be0d2db3e20e8c4dc8589969c481c94ab081"
+    },
+    "all-test262-tools-1": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "test_test262_*.py"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 65.18330540903844,
+      "log": "all-test262-tools-1.log",
+      "sha256": "bf9b3d2d13f977e3a697a98e0d61fd352c0acfd5d16001bf998f078a7a4bdc46"
+    }
+  },
+  "test_groups": {
+    "new": 8,
+    "all_test262_tools": 269
+  },
+  "formatter_ci": {
+    "run": 37701123661,
+    "all_nine_jobs": "success",
+    "sha256": "765811a9681cd9515a409885023820c5f1d44b00ab5981e3129b025717645b36"
+  },
+  "archive": {
+    "file": "typedarray-foundation-preparation.tar.gz",
+    "bytes": 426144,
+    "sha256": "66e1fa84b157ff14a442fef7210697cb9e96bb0cec936a0e115ebc5266232b71",
+    "files": [
+      {
+        "path": "baseline-adapter.json",
+        "bytes": 1110,
+        "sha256": "77ee7d1f16634c3f393ae7de6a8265c186c33689a11b175e5072af43600a4774"
+      },
+      {
+        "path": "conformance/before.json",
+        "bytes": 4318,
+        "sha256": "44afa0a68166616023aafceba185798cf4754456d7df9405ce03c4d27c3ca116"
+      },
+      {
+        "path": "conformance/before/tools/import_test262.py",
+        "bytes": 51748,
+        "sha256": "59e00f5fca2eb2d11bd23cfdbe79d5b5f95a73180a5d5de81960210fade2df79"
+      },
+      {
+        "path": "conformance/before/tools/test262_conformance.py",
+        "bytes": 232012,
+        "sha256": "7399f971d902f6ad732ac73aa540b22c537acfdd9b938703b545ab94abcd6f9e"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_array_buffer.py",
+        "bytes": 18453,
+        "sha256": "3e05cef379482ec613b48ada1a4d45aa28c7c15ff9c8f8eb18381679214ad861"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_array_concat.py",
+        "bytes": 17134,
+        "sha256": "f36c6362afa7e8b03dfd67ac63df0c04f9eec7d57ce2f14daa3283740bafe624"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_array_find.py",
+        "bytes": 9529,
+        "sha256": "6212c8562783c7693a3cb85eb91ecef4710c945f3d187ae4d5e5f16b26624c98"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_array_from.py",
+        "bytes": 16503,
+        "sha256": "495822519245392f76063396a1c8b106eb5a75e269d50784c2a37a344796a08a"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_array_last_index_of.py",
+        "bytes": 4721,
+        "sha256": "1c43723b652d0d5cedde00c14ec64b08a941d7f50524398ee47d3fb3d789ebbc"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_array_predicates.py",
+        "bytes": 9633,
+        "sha256": "47d9debad72904b5621f237c5f1063733a22c78ea52dd9f9d83163f5f2062185"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_array_splice.py",
+        "bytes": 17305,
+        "sha256": "6f897e018dfe440c553922bdb89636b7cf79cbe0ccf0708c356c5ab48f4652de"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_conformance.py",
+        "bytes": 183927,
+        "sha256": "a395d64c8b6e8d4bdcc1d89796e7450bdb844a7a387893af5def6937039e62d1"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_construction.py",
+        "bytes": 6972,
+        "sha256": "cd45be3e0d9809ab24a19dc9aaacb32f15a38aaf8bc063b897d4df439766650e"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_data_view.py",
+        "bytes": 19025,
+        "sha256": "adaa5dc9d678eca18c4b3d79059707d7433051f02290f447555ce6ae091c43be"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_date.py",
+        "bytes": 13074,
+        "sha256": "6b49177c30fc813b0495e23c4d1bf37d851e02df25c227117c1aaedc3eaba4df"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_function_constructor.py",
+        "bytes": 4463,
+        "sha256": "0bf6a8fcf63b4a907260cca1e8b6325038560bfbaf026223413aa015d802ec2a"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_iteration.py",
+        "bytes": 18916,
+        "sha256": "96df2ade19577c641a362d18733f47920841859797aa6505fb5c28071563166c"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_object_has_own.py",
+        "bytes": 18584,
+        "sha256": "d1da9f2daab39dd86e3b40a23e3886174046c5a2001f88ab84834933ff3421ad"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_object_integrity.py",
+        "bytes": 13734,
+        "sha256": "0fc260c390e2b8d13824c759fbf49d1e80bbf524202f985764733cf1973427f3"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_object_is.py",
+        "bytes": 15012,
+        "sha256": "bdf60c712c47ff9baf28d463acd8d3881a9881c5df6273a54b0e39b6a28882bd"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_regexp_constructor.py",
+        "bytes": 4684,
+        "sha256": "4b08a4f392d60ce8402b5a453993edb10e2f92eca7547984d9dc74fbe2c44174"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_regexp_match_search.py",
+        "bytes": 4845,
+        "sha256": "3279de5709b8ea3be57293acb64fa091197de6a4f4b7d044d6137ac170627c9e"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_regexp_split.py",
+        "bytes": 4713,
+        "sha256": "57f25f232872fa0c70f06844926e73bfb4c8e2fc1ac7c0c9351a0f650d5676b8"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_string_concat.py",
+        "bytes": 4184,
+        "sha256": "3f527c93d02c98892c8bb6446a0caaca73a2b3096848b62bb15547313c8602fe"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_string_last_index_of.py",
+        "bytes": 4705,
+        "sha256": "5c7b762a4e73a69b1389c8995d61ef227004e49cb01df8e700db62913a42fc9a"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_string_search.py",
+        "bytes": 4989,
+        "sha256": "d74b28246e7a83a43e71a2218b34fe7ebc386e63187483615484f78a23090730"
+      },
+      {
+        "path": "conformance/before/tools/test_test262_symbols.py",
+        "bytes": 5203,
+        "sha256": "c3d934743bb8c8a6a5d40e8170024b8249423f2f62c36394b7fe606eab7a15d1"
+      },
+      {
+        "path": "conformance/frozen-input-review.json",
+        "bytes": 349,
+        "sha256": "144a3764bc9d65d8b0e618f2d9f6c73f801e47049dd60923239ed944eea9c816"
+      },
+      {
+        "path": "conformance/handoff.md",
+        "bytes": 2161,
+        "sha256": "3e6b3cbc6ac609c6973d5acc8bfbdd0af299e48f4d89972c028a45cd9aec04ad"
+      },
+      {
+        "path": "conformance/held/docs/typedarray-foundation-test262.md",
+        "bytes": 3950,
+        "sha256": "7d9d9523e522ad8617c0cce4fb59a11b818245115f10b2d30b0283ff6924867a"
+      },
+      {
+        "path": "conformance/held/tools/import_test262.py",
+        "bytes": 65205,
+        "sha256": "b88bc7c83d040ca48cda3cea77ffca14af8a9b39e645bfe86ea26cf18da8f433"
+      },
+      {
+        "path": "conformance/held/tools/test262_conformance.py",
+        "bytes": 234830,
+        "sha256": "59c90b16678a734b7278a7e6fa1c5fbafd6878375255d6255fc0185dc5ab42d7"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_array_buffer.py",
+        "bytes": 18478,
+        "sha256": "e6b70a2671f8f1ca0e580768449e9aef80e4f228e63eab49f1a75da425c1a3bc"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_array_concat.py",
+        "bytes": 17159,
+        "sha256": "4fe290c45964e7b1a104a7ef8fb82aac1b019d2692cf407d66845d74bdc1d666"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_array_find.py",
+        "bytes": 9554,
+        "sha256": "769c3a537503be37df268139659cb882952e981fe5f7d79062dba50c74db67eb"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_array_from.py",
+        "bytes": 16528,
+        "sha256": "d95e5b01d0a361ba9ac67ad007ad8259c126dd9269eee09ee4da588c89875be8"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_array_predicates.py",
+        "bytes": 9658,
+        "sha256": "94589528876bdcb4b48c776d6e4b9d6ae17c782ccf3a2cf9f3c285dc347ca33e"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_array_splice.py",
+        "bytes": 17330,
+        "sha256": "98b98e999c40db791d9c9ca8a28676dc2939e71fdf1fc10b2446c8696e777515"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_conformance.py",
+        "bytes": 183952,
+        "sha256": "192b1ec665d2593743f0ebdae78069187371fe0d31af986fee8c093646f3b4c1"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_construction.py",
+        "bytes": 6999,
+        "sha256": "1a5dd0cd6202c2cb03b07e1dea82b2050942ee984988827480f1f98681613eda"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_data_view.py",
+        "bytes": 19050,
+        "sha256": "56c5379bfbd709051a4193ce2b63e3b2266d00c906158488c569c289eb4b5ee3"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_date.py",
+        "bytes": 13099,
+        "sha256": "e27d7e17ca4ad100e9fa60cfc8569dafbae7b82cd1ca33070d949e6ce506aa87"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_iteration.py",
+        "bytes": 18941,
+        "sha256": "fb64c9680f4c8cf3740ef66d1a2ab3d89e479f837957032ecf6ba3d73726b9f3"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_object_has_own.py",
+        "bytes": 18642,
+        "sha256": "a18bff413464dc5c7e07c7f29dd18b5b0582418a2f16845fa8cb792fb69b84ad"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_object_integrity.py",
+        "bytes": 13759,
+        "sha256": "98d13a8c06bb007cddcef07c16ac8f54a2df5e35408d74811a2941ca63337b90"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_object_is.py",
+        "bytes": 15037,
+        "sha256": "370fb70288bb48ef8c3471703c33f4c8bb2f867b585770441d9f254118a5f513"
+      },
+      {
+        "path": "conformance/held/tools/test_test262_typedarray_foundation.py",
+        "bytes": 12555,
+        "sha256": "6f41f3dc8e8f2ad317b5e23cbc6bddcdf116b2524439830d962f64ba44de51f5"
+      },
+      {
+        "path": "conformance/held/tools/typedarray-foundation-controls.json",
+        "bytes": 20297,
+        "sha256": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888"
+      },
+      {
+        "path": "conformance/historical-population-migrations-initial.json",
+        "bytes": 5409,
+        "sha256": "9f7e87c2e4d3d14f9733d371dbb3891cf8efe4191db9fcef0c195cc28a5eeee4"
+      },
+      {
+        "path": "conformance/historical-population-migrations.json",
+        "bytes": 5409,
+        "sha256": "0c3551511d89fc0a2d1ccc052bb89898f3425cc8ba9630e0ec7ca27074606b27"
+      },
+      {
+        "path": "conformance/import-frozen.py",
+        "bytes": 2301,
+        "sha256": "8578209f62ea44aebd89c3034a07910b6b3dec109817d78870c0d5459d66f2da"
+      },
+      {
+        "path": "conformance/layout-incremental-data.json",
+        "bytes": 7744,
+        "sha256": "b815c0595183eec71c6f5681a5a991947537464902b9ba3df1034dbb6f6c3e0f"
+      },
+      {
+        "path": "conformance/layout-source-review.json",
+        "bytes": 9419,
+        "sha256": "83d16b205e5a00944cba94133d74f634c0ecd742ba34d77c3d43966c337f4616"
+      },
+      {
+        "path": "conformance/pre-hold-corrections/object_integrity-before.py",
+        "bytes": 13784,
+        "sha256": "e83c59f317725e4290fd552afcf5e1b07039117f2cc00968687f22f7234fc2a2"
+      },
+      {
+        "path": "conformance/pre-hold-corrections/receipt.json",
+        "bytes": 350,
+        "sha256": "94aa77d2019ae6e664c3fedbcc6655cee08c5d6c83b8af9e896fbaa6bea58035"
+      },
+      {
+        "path": "conformance/source-ready.json",
+        "bytes": 8449,
+        "sha256": "0f73eeae35414576607df762b63b74d062a50a820f9276880085424598d4f1d1"
+      },
+      {
+        "path": "conformance/static-checks.json",
+        "bytes": 2739,
+        "sha256": "f38cc029b1e7f03a2c7145cac0cafd9b063e2c30cd81eaacea6cbecef732fd4e"
+      },
+      {
+        "path": "formatter-ci.json",
+        "bytes": 26207,
+        "sha256": "765811a9681cd9515a409885023820c5f1d44b00ab5981e3129b025717645b36"
+      },
+      {
+        "path": "formatter-integration.json",
+        "bytes": 2220,
+        "sha256": "58db0bc85ac08c2d7f93679ff179f42b179a66d040fe923814d1cf7127dc3548"
+      },
+      {
+        "path": "local-before.json",
+        "bytes": 83037,
+        "sha256": "91b14da48a82092d83a99269a86f1539f6c8aec3d2ff52907333eb4235395999"
+      },
+      {
+        "path": "local-runner/held/tests/conformance/typedarray-foundation-local/README.md",
+        "bytes": 2913,
+        "sha256": "18cd80aa988ac5d943694a65aeab2fda2782d9058c57466f4c850a10f600745b"
+      },
+      {
+        "path": "local-runner/held/tests/conformance/typedarray-foundation-local/RUNNER.md",
+        "bytes": 2657,
+        "sha256": "63ca63b1ccf16af995cd15f33019cb8a606c9a3afad5bd3b01ccdd6aced7c919"
+      },
+      {
+        "path": "local-runner/held/tests/conformance/typedarray-foundation-local/cases.js",
+        "bytes": 21910,
+        "sha256": "5770d7a561735697f4446b360220b6a551ccfc82f104c81ca278a45de926ca90"
+      },
+      {
+        "path": "local-runner/held/tests/conformance/typedarray-foundation-local/controls.json",
+        "bytes": 20297,
+        "sha256": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888"
+      },
+      {
+        "path": "local-runner/held/tests/conformance/typedarray-foundation-local/inventory.json",
+        "bytes": 2497,
+        "sha256": "2d3ba8e92b67ca53ffb233ee96c93204a053fcf1f0921c2bd868169c1f8bebd5"
+      },
+      {
+        "path": "local-runner/held/tests/conformance/typedarray-foundation-local/manifest.json",
+        "bytes": 983,
+        "sha256": "908c0348fa60073d9f8a7b5a359d960c44657dfcd2a469046dbdb5d5d3be9947"
+      },
+      {
+        "path": "local-runner/held/tests/conformance/typedarray-foundation-local/matrix.json",
+        "bytes": 41163,
+        "sha256": "c11cc9cf73d77c3fc54b1af83b29f0f25cbbc6d5e07425e7f88bc74f9d37e6c2"
+      },
+      {
+        "path": "local-runner/held/tools/typedarray_foundation_local.py",
+        "bytes": 12533,
+        "sha256": "7841a34935ac66b952b85035929edda87e92b1ccc722ff0ebb3830507660d3f0"
+      },
+      {
+        "path": "local-runner/helper-source-review.json",
+        "bytes": 2072,
+        "sha256": "45dae110cd4c8cad824c7264ddb082085a67b876f421cee6f56c9bcaf65b21c6"
+      },
+      {
+        "path": "local-runner/layout-source-review.json",
+        "bytes": 3574,
+        "sha256": "85e2a5ce8aa6862ec2778518ad38b21bd1d53b1d3b2813a922ca97ca94a6fab1"
+      },
+      {
+        "path": "local-runner/original/independent/README.md",
+        "bytes": 2913,
+        "sha256": "18cd80aa988ac5d943694a65aeab2fda2782d9058c57466f4c850a10f600745b"
+      },
+      {
+        "path": "local-runner/original/independent/cases.js",
+        "bytes": 21910,
+        "sha256": "5770d7a561735697f4446b360220b6a551ccfc82f104c81ca278a45de926ca90"
+      },
+      {
+        "path": "local-runner/original/independent/controls.json",
+        "bytes": 20297,
+        "sha256": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888"
+      },
+      {
+        "path": "local-runner/original/independent/inventory.json",
+        "bytes": 2497,
+        "sha256": "2d3ba8e92b67ca53ffb233ee96c93204a053fcf1f0921c2bd868169c1f8bebd5"
+      },
+      {
+        "path": "local-runner/original/inputs/worktree-context.json",
+        "bytes": 966,
+        "sha256": "8758597ff19cb4c3203163f2e369c1e3e8297e236eff083f8f3514121d7b261d"
+      },
+      {
+        "path": "local-runner/original/source-ready.json",
+        "bytes": 262458,
+        "sha256": "114a35e476e20ab0f5618ffcee536c52e801775eec0296907df1e2ca364e1bbc"
+      },
+      {
+        "path": "local-runner/source-ready.json",
+        "bytes": 6443,
+        "sha256": "fc673b0164d68cde60400740b4c791a3dd29af30df22ecaa5667aad300e4e8de"
+      },
+      {
+        "path": "run-tool.py",
+        "bytes": 726,
+        "sha256": "abea4ed0c4a338841442c6d7b4fc327f719dd3e5e57b7163cc92bc5517c8532b"
+      },
+      {
+        "path": "upstream-before.json",
+        "bytes": 885322,
+        "sha256": "c6730c093397e7a8d848d13d984a17d170910649ecd2113d26b0335092951a10"
+      },
+      {
+        "path": "validation/all-test262-tools-1.json",
+        "bytes": 306,
+        "sha256": "225ab7dc488bce797ec93031bb9d0a8c7fd3b7b1c22870f50141ba5c73884a60"
+      },
+      {
+        "path": "validation/all-test262-tools-1.log",
+        "bytes": 370,
+        "sha256": "bf9b3d2d13f977e3a697a98e0d61fd352c0acfd5d16001bf998f078a7a4bdc46"
+      },
+      {
+        "path": "validation/import-frozen-1.json",
+        "bytes": 274,
+        "sha256": "52b6f37be1f1425aa76dfe7aa3d7f5063052a85e11f229007f46842bc3335988"
+      },
+      {
+        "path": "validation/import-frozen-1.log",
+        "bytes": 92,
+        "sha256": "7200dae868df22fce01fde8f243deceb03179e6b44acdccdb9aa850feb2de313"
+      },
+      {
+        "path": "validation/importer-tests-1.json",
+        "bytes": 334,
+        "sha256": "ba464690362620139d82cd46a5b7549d7b4378465f93411fd62c68e42ddc04d5"
+      },
+      {
+        "path": "validation/importer-tests-1.log",
+        "bytes": 1706,
+        "sha256": "4bfe4fe2aec923b411527cf1276e11b7d2f83b221c70075a53f949b1028fce6a"
+      },
+      {
+        "path": "validation/local-before-1.json",
+        "bytes": 487,
+        "sha256": "26f6509ad5e35cdbdf6caffcfa0c3f1caee91d19be7208fed7bcf1e37e4a9e8c"
+      },
+      {
+        "path": "validation/local-before-1.log",
+        "bytes": 165,
+        "sha256": "800f8ba7d754c5e899f88a67859f55fa9edfb1df9f5c43ec7482c593e415b5e6"
+      },
+      {
+        "path": "validation/local-verify-before-1.json",
+        "bytes": 275,
+        "sha256": "88482def8745bb9b6f17cb7f79b364dfa624ea3732bdbd6d7b8142926b613379"
+      },
+      {
+        "path": "validation/local-verify-before-1.log",
+        "bytes": 2603,
+        "sha256": "72d19a4683c048adb24b8a69f8ee65421b18a249f83250cfd5bf3c941346485a"
+      },
+      {
+        "path": "validation/upstream-before-1.json",
+        "bytes": 459,
+        "sha256": "d7e13eb62d421a8c7db5a2dde35ae4f18dd0e4b80325175545fe02969258e98b"
+      },
+      {
+        "path": "validation/upstream-before-1.log",
+        "bytes": 191,
+        "sha256": "6800fa10111dfd5ac8d3b78abfe1be0d2db3e20e8c4dc8589969c481c94ab081"
+      }
+    ]
+  },
+  "limits": [
+    "Baseline is intentionally unhealthy and both execution exits remain1; it is not a passing conformance gate.",
+    "All historical profiles and literal contract counts/hashes remain unchanged; their tests exclude only the newly added profile.",
+    "No full Test262, full web compatibility, production security or Chromium performance claim."
+  ]
+}

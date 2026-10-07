@@ -1,0 +1,330 @@
+{
+  "schema": 1,
+  "status": "Frozen source-only positive/wrong proposal; not executed",
+  "pairs": 8,
+  "control_modes": 32,
+  "control_health": "A wrong partner is healthy only with exact runtime Error identity and a successful same-mode positive partner. TypeError prerequisite failures, parser errors, resource failures, missing output, timeout and crashes are unhealthy. Wrong predicates describe concrete alternative behavior; they are not unconditional throws.",
+  "baseline_prediction": "Only the common literal pair can be healthy before any TypedArray constructor exists: expected4/32 control modes, not measured.",
+  "controls": [
+    {
+      "name": "literal-units-positive",
+      "pair": "literal-units",
+      "positive": true,
+      "area": "common",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var s='A\\uD800',t='\\uDC00';if(s.length!==2||s.charCodeAt(1)!==55296||t.charCodeAt(0)!==56320)throw new TypeError('exact units prerequisite');var actual=s.length+','+s.charCodeAt(0)+','+s.charCodeAt(1)+','+t.charCodeAt(0);if(actual!==\"2,65,55296,56320\")throw new Error('literal expectation');",
+      "source_sha256": "1d0d0011410fefd5050c5b4e883e4ed373d54fd32c6db0feba1b808b49d25e9a",
+      "literal_observation": "2,65,55296,56320",
+      "asserted_observation": "2,65,55296,56320",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "literal-units-wrong",
+      "pair": "literal-units",
+      "positive": false,
+      "area": "common",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var s='A\\uD800',t='\\uDC00';if(s.length!==2||s.charCodeAt(1)!==55296||t.charCodeAt(0)!==56320)throw new TypeError('exact units prerequisite');var actual=s.length+','+s.charCodeAt(0)+','+s.charCodeAt(1)+','+t.charCodeAt(0);if(actual!==\"2,65,65533,56320\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "a871f65d33cfce035b448f0516b8c3e75123c94bd34785fc0e1dda194aad896c",
+      "literal_observation": "2,65,55296,56320",
+      "asserted_observation": "2,65,65533,56320",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "ten-number-conversions-positive",
+      "pair": "ten-number-conversions",
+      "positive": true,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var cs=[Int8Array,Uint8Array,Uint8ClampedArray,Int16Array,Uint16Array,Int32Array,Uint32Array,Float16Array,Float32Array,Float64Array],out=[];for(var i=0;i<10;i++){var C=cs[i],g=new C([7]);if(g[0]!==7||g.length!==1)throw new TypeError('each authentic constructor');var a=new C([257.75]);out.push(a[0]);}var actual=out.join(',');if(actual!==\"1,1,255,257,257,257,257,257.75,257.75,257.75\")throw new Error('literal expectation');",
+      "source_sha256": "e2d6c97419e9d555261817357fe75fd9aedad59da9616fa2f5b3e484ddf9369a",
+      "literal_observation": "1,1,255,257,257,257,257,257.75,257.75,257.75",
+      "asserted_observation": "1,1,255,257,257,257,257,257.75,257.75,257.75",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "ten-number-conversions-wrong",
+      "pair": "ten-number-conversions",
+      "positive": false,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var cs=[Int8Array,Uint8Array,Uint8ClampedArray,Int16Array,Uint16Array,Int32Array,Uint32Array,Float16Array,Float32Array,Float64Array],out=[];for(var i=0;i<10;i++){var C=cs[i],g=new C([7]);if(g[0]!==7||g.length!==1)throw new TypeError('each authentic constructor');var a=new C([257.75]);out.push(a[0]);}var actual=out.join(',');if(actual!==\"1,1,1,257,257,257,257,257.75,257.75,257.75\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "f6548114452168302ad498c210b0ac9ebd5f4c6a23fbd1b2706d0bbe9df787fa",
+      "literal_observation": "1,1,255,257,257,257,257,257.75,257.75,257.75",
+      "asserted_observation": "1,1,1,257,257,257,257,257.75,257.75,257.75",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "float16-direct-tie-positive",
+      "pair": "float16-direct-tie",
+      "positive": true,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var g=new Float16Array([1.5]);if(g[0]!==1.5)throw new TypeError('genuine Float16');var a=new Float16Array([1.00048828125,1.0004883110523224]),c=new Uint8ClampedArray([0.5,1.5,2.5,254.5]);var actual=a[0]+','+a[1]+','+c[0]+','+c[1]+','+c[2]+','+c[3];if(actual!==\"1,1.0009765625,0,2,2,254\")throw new Error('literal expectation');",
+      "source_sha256": "d084daa504f04e0abf0bc67a4754b370b616f79ada1fbe37082d880cbc9de45d",
+      "literal_observation": "1,1.0009765625,0,2,2,254",
+      "asserted_observation": "1,1.0009765625,0,2,2,254",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "float16-direct-tie-wrong",
+      "pair": "float16-direct-tie",
+      "positive": false,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var g=new Float16Array([1.5]);if(g[0]!==1.5)throw new TypeError('genuine Float16');var a=new Float16Array([1.00048828125,1.0004883110523224]),c=new Uint8ClampedArray([0.5,1.5,2.5,254.5]);var actual=a[0]+','+a[1]+','+c[0]+','+c[1]+','+c[2]+','+c[3];if(actual!==\"1,1,0,2,2,254\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "b9cf8a2ba8062f73b8824727bfe2f3b5bfef52ae4fdcdfa93eafec7932cd397a",
+      "literal_observation": "1,1.0009765625,0,2,2,254",
+      "asserted_observation": "1,1,0,2,2,254",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "iterable-before-conversion-positive",
+      "pair": "iterable-before-conversion",
+      "positive": true,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var known=[7][Symbol.iterator]();if(known.next().value!==7)throw new TypeError('iterator prerequisite');var log='',i=0,src={};src[Symbol.iterator]=function(){return {next:function(){log+='n';i++;return i===1?{done:false,value:{valueOf:function(){log+='v';return 9;}}}:{done:true};}};};var a=new Uint8Array(src);var actual=log+','+a[0];if(actual!==\"nnv,9\")throw new Error('literal expectation');",
+      "source_sha256": "b208cc673d82e37b16f98dc9452eeb0a993c79452f2bcec0757b9623e72f43ae",
+      "literal_observation": "nnv,9",
+      "asserted_observation": "nnv,9",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "iterable-before-conversion-wrong",
+      "pair": "iterable-before-conversion",
+      "positive": false,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var known=[7][Symbol.iterator]();if(known.next().value!==7)throw new TypeError('iterator prerequisite');var log='',i=0,src={};src[Symbol.iterator]=function(){return {next:function(){log+='n';i++;return i===1?{done:false,value:{valueOf:function(){log+='v';return 9;}}}:{done:true};}};};var a=new Uint8Array(src);var actual=log+','+a[0];if(actual!==\"nvn,9\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "113bc05cfae42c780d80fa69170e5e35dbab7880515b93f5db6dc65b303816b5",
+      "literal_observation": "nnv,9",
+      "asserted_observation": "nvn,9",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "resized-write-live-bounds-positive",
+      "pair": "resized-write-live-bounds",
+      "positive": true,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var b=new ArrayBuffer(2,{maxByteLength:4}),a=new Uint8Array(b);a[0]=7;b.resize(1);if(a.length!==1||a[0]!==7)throw new TypeError('resize prerequisite');b.resize(0);var calls=0;a[0]={valueOf:function(){calls++;b.resize(2);return 257;}};var actual=calls+','+a.length+','+a[0];if(actual!==\"1,2,1\")throw new Error('literal expectation');",
+      "source_sha256": "dfe7bf19bfa965de7252246ff10cb3a66a5ed1e306ae2a9b5a04ebcea864a479",
+      "literal_observation": "1,2,1",
+      "asserted_observation": "1,2,1",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "resized-write-live-bounds-wrong",
+      "pair": "resized-write-live-bounds",
+      "positive": false,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var b=new ArrayBuffer(2,{maxByteLength:4}),a=new Uint8Array(b);a[0]=7;b.resize(1);if(a.length!==1||a[0]!==7)throw new TypeError('resize prerequisite');b.resize(0);var calls=0;a[0]={valueOf:function(){calls++;b.resize(2);return 257;}};var actual=calls+','+a.length+','+a[0];if(actual!==\"1,2,0\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "94ee8c74e922b028a405f1ec13f25d21ca7a06ba0c84e3828b0392293fc50de7",
+      "literal_observation": "1,2,1",
+      "asserted_observation": "1,2,0",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "canonical-distinct-receiver-positive",
+      "pair": "canonical-distinct-receiver",
+      "positive": true,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var a=new Uint8Array([7]),child=Object.create(a),calls=0,v={valueOf:function(){calls++;return 9;}};if(child[0]!==7||Object.hasOwn(child,'0'))throw new TypeError('ordinary receiver prerequisite');child[0]=v;child[1]=v;child['-0']=v;var actual=calls+','+(child[0]===v)+','+a[0]+','+Object.hasOwn(child,'1')+','+Object.hasOwn(child,'-0');if(actual!==\"0,true,7,false,false\")throw new Error('literal expectation');",
+      "source_sha256": "08be1dda33e5c65b90b8544bcd5f3e4ec8ea418e2b4c57031525231c615a7073",
+      "literal_observation": "0,true,7,false,false",
+      "asserted_observation": "0,true,7,false,false",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "canonical-distinct-receiver-wrong",
+      "pair": "canonical-distinct-receiver",
+      "positive": false,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var a=new Uint8Array([7]),child=Object.create(a),calls=0,v={valueOf:function(){calls++;return 9;}};if(child[0]!==7||Object.hasOwn(child,'0'))throw new TypeError('ordinary receiver prerequisite');child[0]=v;child[1]=v;child['-0']=v;var actual=calls+','+(child[0]===v)+','+a[0]+','+Object.hasOwn(child,'1')+','+Object.hasOwn(child,'-0');if(actual!==\"0,true,7,true,false\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "f557eb52311ae3d7728c06c343a7659c16694d71bf11cd7b54cd7c430deb8af8",
+      "literal_observation": "0,true,7,false,false",
+      "asserted_observation": "0,true,7,true,false",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "metadata-and-index-flags-positive",
+      "pair": "metadata-and-index-flags",
+      "positive": true,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var p=Object.getPrototypeOf(Uint8Array.prototype),g=Object.getOwnPropertyDescriptor(p,'length');if(!g||typeof g.get!=='function'||g.get.call(guard)!==1)throw new TypeError('saved authentic getter');var d=Object.getOwnPropertyDescriptor(guard,'0'),tag=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag).get;if(tag.call(guard)!=='Uint8Array')throw new TypeError('genuine tag getter');var actual=d.writable+','+d.enumerable+','+d.configurable+','+g.enumerable+','+g.configurable+','+(p.values===p[Symbol.iterator]);if(actual!==\"true,true,true,false,true,true\")throw new Error('literal expectation');",
+      "source_sha256": "f32bc73b9e8d312f537a61a045b11d103278b25883ad1222cc5df265a0084fea",
+      "literal_observation": "true,true,true,false,true,true",
+      "asserted_observation": "true,true,true,false,true,true",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "metadata-and-index-flags-wrong",
+      "pair": "metadata-and-index-flags",
+      "positive": false,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var p=Object.getPrototypeOf(Uint8Array.prototype),g=Object.getOwnPropertyDescriptor(p,'length');if(!g||typeof g.get!=='function'||g.get.call(guard)!==1)throw new TypeError('saved authentic getter');var d=Object.getOwnPropertyDescriptor(guard,'0'),tag=Object.getOwnPropertyDescriptor(p,Symbol.toStringTag).get;if(tag.call(guard)!=='Uint8Array')throw new TypeError('genuine tag getter');var actual=d.writable+','+d.enumerable+','+d.configurable+','+g.enumerable+','+g.configurable+','+(p.values===p[Symbol.iterator]);if(actual!==\"true,true,false,false,true,true\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "3f9a19d7cb3d70bf39eb8dd8c13cfc37271e9355d5d7e47550fac0f8cb73be9d",
+      "literal_observation": "true,true,true,false,true,true",
+      "asserted_observation": "true,true,false,false,true,true",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "iterator-tracking-and-sticky-positive",
+      "pair": "iterator-tracking-and-sticky",
+      "positive": true,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var b=new ArrayBuffer(1,{maxByteLength:3}),a=new Uint8Array(b);a[0]=7;var it=a.values();if(it.next().value!==7)throw new TypeError('genuine iterator prerequisite');b.resize(2);a[1]=9;Object.defineProperty(a,'length',{value:100});var second=it.next(),done=it.next();b.resize(3);a[2]=11;var actual=second.value+','+second.done+','+done.done+','+it.next().done;if(actual!==\"9,false,true,true\")throw new Error('literal expectation');",
+      "source_sha256": "26c4cfd184c4ac2de47ac857ec3d9b5446dd8bc83e92c752fac934317ab5fed0",
+      "literal_observation": "9,false,true,true",
+      "asserted_observation": "9,false,true,true",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "iterator-tracking-and-sticky-wrong",
+      "pair": "iterator-tracking-and-sticky",
+      "positive": false,
+      "area": "feature",
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Uint8Array!=='function'||typeof Float16Array!=='function')throw new TypeError('Number TypedArray prerequisite');var guard=new Uint8Array([23]);if(guard[0]!==23||guard.length!==1||!ArrayBuffer.isView(guard))throw new TypeError('genuine indexed view');var b=new ArrayBuffer(1,{maxByteLength:3}),a=new Uint8Array(b);a[0]=7;var it=a.values();if(it.next().value!==7)throw new TypeError('genuine iterator prerequisite');b.resize(2);a[1]=9;Object.defineProperty(a,'length',{value:100});var second=it.next(),done=it.next();b.resize(3);a[2]=11;var actual=second.value+','+second.done+','+done.done+','+it.next().done;if(actual!==\"9,false,true,false\")throw new Error('deliberately wrong semantic expectation');",
+      "source_sha256": "be4f01b9c5b2deab31513acf3d77791455544623c9648e0e52743aa40c592037",
+      "literal_observation": "9,false,true,true",
+      "asserted_observation": "9,false,true,false",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    }
+  ]
+}

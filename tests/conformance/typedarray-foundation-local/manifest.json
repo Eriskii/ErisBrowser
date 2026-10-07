@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "origin": "Independent source-only TypedArray foundation fixtures",
+  "original_readiness_sha256": "114a35e476e20ab0f5618ffcee536c52e801775eec0296907df1e2ca364e1bbc",
+  "original_base": "56bbcdffce92417bcfdd52b89cbf67e777c00c16",
+  "collection": "typedArrayFoundationCases",
+  "case_count": 27,
+  "case_modes": 54,
+  "control_pairs": 8,
+  "control_modes": 32,
+  "files": [
+    {
+      "path": "cases.js",
+      "bytes": 21910,
+      "sha256": "5770d7a561735697f4446b360220b6a551ccfc82f104c81ca278a45de926ca90"
+    },
+    {
+      "path": "controls.json",
+      "bytes": 20297,
+      "sha256": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 2497,
+      "sha256": "2d3ba8e92b67ca53ffb233ee96c93204a053fcf1f0921c2bd868169c1f8bebd5"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2913,
+      "sha256": "18cd80aa988ac5d943694a65aeab2fda2782d9058c57466f4c850a10f600745b"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+# TypedArray foundation Test262 selection
+
+The `typedarray-foundation` profile retains 632 original Test262 bodies at
+`7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`: 1,238 modes (620 sloppy and 618
+strict), 773,126 source bytes, and ten unchanged harness helpers. This profile
+prepares validation for ten Number TypedArray kinds, including Float16Array.
+It does not implement those types or claim that scheduled tests pass.
+
+The [before report](../tests/conformance/test262-typedarray-foundation-before.json)
+uses the frozen adapter from formatter commit `0abcd4a`. It records 582 harness
+errors, 168 failed modes and 488 unsupported modes, with no passes. Of the
+unsupported modes, 472 are policy exclusions and 16 reach unimplemented
+destructuring syntax. Harness preflight verifies 36 of 64 observations: all 32
+common controls and four binary-data controls. Missing TypedArray constructors
+remain visible as failures, and both run exits are retained.
+
+The [separate local baseline](../tests/conformance/typedarray-foundation-local-before.json)
+records 0 of 54 case expectations and 4 of 32 controls verified, with no runner
+errors or input/binary drift. All eight new tool-test groups and all 269 Test262
+tool tests pass. The [evidence](evidence/typedarray-foundation-preparation.json)
+binds the inputs, tools, binary and complete reports. This is preparation for
+implementation, with no engine behavior change.
+
+The importer authenticates both complete `TypedArray` and
+`TypedArrayConstructors` recursive roots: 160 directory trees and 2,191 source
+entries. Only after reconstructing every Git tree does it select the frozen 67
+immediate directories and verify the exact 632-source path/blob/size digest.
+Seven original commit/tree responses bind the selection to the pinned repository
+root. Its dedicated reader permits at most eight proof documents, 4,096 rows per
+recursive root, 192 directories and depth eight, within the existing 2 MiB
+per-file and 16 MiB aggregate limits. Older readers retain their own limits.
+
+The selection includes Number constructors, constructor argument variants,
+integer-indexed internal operations, metadata/accessors, and values/keys/entries
+iteration. All 159 BigInt-tagged sources inside selected directories remain in
+the corpus and receive explicit policy exclusions. Dedicated BigInt constructor
+APIs and unrelated bulk/search/sort/copy/string/static methods are outside the
+selected API population. Float16 has no dedicated constructor directory at this
+pin; the original generic harness includes it when available. Iterations over
+multiple constructors within one body are not counted as extra modes.
+
+The existing DataView feature policy plus `TypedArray` and `Float16Array`
+schedules 766 modes and excludes 472. The unchanged conservative host-hook scan
+excludes 71 modes, including requested helpers that contain `$262`. BigInt,
+SharedArrayBuffer, Proxy, cross-realm, generators and `Reflect.set` retain their
+explicit unsupported policy. Some scheduled bodies can still reach missing
+syntax, APIs or resource limits; preserve those results. ArrayBuffer/isView and
+all other existing profiles retain their populations and policies.
+
+Each run keeps the common 32 harness controls and adds 32 observations from
+eight independently authored positive/wrong pairs in both modes. The exact
+control JSON and each source body are hash-bound. Wrong partners require an
+exception in the runtime phase with intrinsic Error type **and identity**, plus
+a successful positive partner in the same mode. Syntax errors, prerequisite
+TypeErrors, resource refusals, crashes, timeouts and missing observations cannot
+verify a wrong partner. The existing adapter does not serialize an authored
+Error object's `message` property; its diagnostic is not evidence of that
+payload. No message-match claim is made.
+
+Import and run using the existing tools:
+
+```sh
+python3 tools/import_test262.py --profile typedarray-foundation
+python3 -m unittest discover -s tools -p 'test_test262_*.py'
+python3 tools/test262_conformance.py --profile typedarray-foundation \
+  --binary /absolute/path/to/held-eris-js --output /new/path/to/report.json
+```
+
+Retain a complete published-binary report before any TypedArray implementation
+and replay the same frozen corpus against the candidate. An unhealthy report
+and its nonzero exit remain evidence; `--record-baseline` only writes healthy
+snapshots and is unsuitable for preserving a missing-feature baseline. Do not
+reuse an output path. The independent local 27-body/54-mode population and its
+32 controls are documented separately under
+[`tests/conformance/typedarray-foundation-local`](../tests/conformance/typedarray-foundation-local/README.md).
+
+Historical test contract snapshots explicitly exclude only this added profile;
+their original literal counts and digests remain unchanged. No upstream expected
+results or prior baseline reports are regenerated by this profile addition.

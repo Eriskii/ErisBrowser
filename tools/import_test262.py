@@ -13,6 +13,13 @@ ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = 'tc39/test262'
 REVISION = '7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd'
 REVISION_TREE = '91b2052adad1f066ae031e2ff3a1e9bd6d732886'
+TYPEDARRAY_DIRECTORIES = {'TypedArray': 9, 'TypedArray/Symbol.species': 4, 'TypedArray/prototype': 4, 'TypedArray/prototype/Symbol.iterator': 1, 'TypedArray/prototype/Symbol.toStringTag': 9, 'TypedArray/prototype/Symbol.toStringTag/BigInt': 9, 'TypedArray/prototype/buffer': 10, 'TypedArray/prototype/buffer/BigInt': 2, 'TypedArray/prototype/byteLength': 14, 'TypedArray/prototype/byteLength/BigInt': 4, 'TypedArray/prototype/byteOffset': 12, 'TypedArray/prototype/byteOffset/BigInt': 4, 'TypedArray/prototype/entries': 15, 'TypedArray/prototype/entries/BigInt': 4, 'TypedArray/prototype/keys': 15, 'TypedArray/prototype/keys/BigInt': 4, 'TypedArray/prototype/length': 14, 'TypedArray/prototype/length/BigInt': 4, 'TypedArray/prototype/values': 17, 'TypedArray/prototype/values/BigInt': 4, 'TypedArrayConstructors/Float32Array': 7, 'TypedArrayConstructors/Float32Array/prototype': 4, 'TypedArrayConstructors/Float64Array': 7, 'TypedArrayConstructors/Float64Array/prototype': 4, 'TypedArrayConstructors/Int16Array': 7, 'TypedArrayConstructors/Int16Array/prototype': 4, 'TypedArrayConstructors/Int32Array': 7, 'TypedArrayConstructors/Int32Array/prototype': 4, 'TypedArrayConstructors/Int8Array': 7, 'TypedArrayConstructors/Int8Array/prototype': 4, 'TypedArrayConstructors/Uint16Array': 7, 'TypedArrayConstructors/Uint16Array/prototype': 4, 'TypedArrayConstructors/Uint32Array': 7, 'TypedArrayConstructors/Uint32Array/prototype': 4, 'TypedArrayConstructors/Uint8Array': 7, 'TypedArrayConstructors/Uint8Array/prototype': 4, 'TypedArrayConstructors/Uint8ClampedArray': 7, 'TypedArrayConstructors/Uint8ClampedArray/prototype': 4, 'TypedArrayConstructors/ctors': 1, 'TypedArrayConstructors/ctors/buffer-arg': 54, 'TypedArrayConstructors/ctors/length-arg': 12, 'TypedArrayConstructors/ctors/no-args': 7, 'TypedArrayConstructors/ctors/object-arg': 28, 'TypedArrayConstructors/ctors/typedarray-arg': 14, 'TypedArrayConstructors/internals/DefineOwnProperty': 28, 'TypedArrayConstructors/internals/DefineOwnProperty/BigInt': 26, 'TypedArrayConstructors/internals/Delete': 20, 'TypedArrayConstructors/internals/Delete/BigInt': 19, 'TypedArrayConstructors/internals/Get': 14, 'TypedArrayConstructors/internals/Get/BigInt': 14, 'TypedArrayConstructors/internals/GetOwnProperty': 12, 'TypedArrayConstructors/internals/GetOwnProperty/BigInt': 12, 'TypedArrayConstructors/internals/HasProperty': 17, 'TypedArrayConstructors/internals/HasProperty/BigInt': 15, 'TypedArrayConstructors/internals/OwnPropertyKeys': 6, 'TypedArrayConstructors/internals/OwnPropertyKeys/BigInt': 4, 'TypedArrayConstructors/internals/Set': 26, 'TypedArrayConstructors/internals/Set/BigInt': 27, 'TypedArrayConstructors/prototype': 2, 'TypedArrayConstructors/prototype/Symbol.toStringTag': 2, 'TypedArrayConstructors/prototype/buffer': 2, 'TypedArrayConstructors/prototype/byteLength': 2, 'TypedArrayConstructors/prototype/byteOffset': 2, 'TypedArrayConstructors/prototype/entries': 2, 'TypedArrayConstructors/prototype/keys': 2, 'TypedArrayConstructors/prototype/length': 2, 'TypedArrayConstructors/prototype/values': 2}
+TYPEDARRAY_ROOTS = {'TypedArray': '6c5e7d4fb69b2d746936b8aec5be29d72132e81c',
+                    'TypedArrayConstructors': '9629e410c8b4bcc69ee57549591402e824aa4405'}
+TYPEDARRAY_HELPERS = {'assert.js', 'sta.js', 'byteConversionValues.js', 'compareArray.js',
+                      'detachArrayBuffer.js', 'isConstructor.js', 'nans.js', 'propertyHelper.js',
+                      'resizableArrayBufferUtils.js', 'testTypedArray.js'}
+TYPEDARRAY_SELECTION_SHA256 = 'cdc70bbb65c93629ee519af8344bf46552e41b1892677827e385535a49a637e5'
 ARRAY_DESCRIPTOR_DIRECTORIES = {'Object/defineProperty': 1131, 'Object/defineProperties': 632,
                                 'Array/length': 30}
 ARRAY_PREDICATE_DIRECTORIES = {'Array/prototype/every': 218, 'Array/prototype/some': 219}
@@ -83,7 +90,7 @@ ITERATION_HELPERS = {
                        'propertyHelper.js', 'resizableArrayBufferUtils.js',
                        'detachArrayBuffer.js', 'testTypedArray.js'},
 }
-TREE_PROFILES = {'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+TREE_PROFILES = {'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -161,7 +168,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -174,7 +181,7 @@ PROFILES = {'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -286,7 +293,7 @@ def fetch(url):
 def tree_proof_path(route):
     if route == f'commits/{REVISION}':
         return 'inventory-proof/commit.json'
-    recursive_trees = {DATE_TREE} | {sha for roots in ITERATION_SUBTREES.values() for sha in roots.values()}
+    recursive_trees = set(TYPEDARRAY_ROOTS.values()) | {DATE_TREE} | {sha for roots in ITERATION_SUBTREES.values() for sha in roots.values()}
     if route in {f'trees/{sha}?recursive=1' for sha in recursive_trees}:
         return 'inventory-proof/recursive-' + route[6:].removesuffix('?recursive=1') + '.json'
     if re.fullmatch(r'trees/[0-9a-f]{40}', route):
@@ -669,7 +676,173 @@ def iteration_tree_inventory(profile, read=None):
     return listings, proof, description
 
 
+def typedarray_tree_inventory(read=None):
+    """Authenticate both complete roots before the frozen 67-directory selection.
+
+    This reader has its own limits; older proof readers remain unchanged.
+    All subtree hashes and unselected entries are checked, including BigInt.
+    """
+    profile = 'typedarray-foundation'
+    if read is None:
+        read = lambda route: fetch(f'https://api.github.com/repos/{REPOSITORY}/git/{route}')
+    proof, trees, used_bytes = {}, {}, 0
+
+    def document(route):
+        nonlocal used_bytes
+        if len(proof) >= 8:
+            raise ValueError('TypedArray proof document limit')
+        data = read(route)
+        used_bytes += len(data)
+        if len(data) > MAX_FILE or used_bytes > MAX_TOTAL:
+            raise ValueError('TypedArray proof byte limit')
+        value = json.loads(data)
+        if not isinstance(value, dict):
+            raise ValueError('invalid TypedArray proof object')
+        proof[tree_proof_path(route)] = data
+        return value
+
+    def verify_tree(entries, expected):
+        if not isinstance(entries, list) or len(entries) > 16384:
+            raise ValueError('TypedArray tree entry limit')
+        names, encoded = {}, []
+        modes = {'040000': 'tree', '100644': 'blob', '100755': 'blob',
+                 '120000': 'blob', '160000': 'commit'}
+        for entry in entries:
+            if not isinstance(entry, dict):
+                raise ValueError('invalid TypedArray tree entry')
+            name, mode, kind, child = (entry.get(k) for k in ('path', 'mode', 'type', 'sha'))
+            if (not isinstance(name, str) or not name or name in {'.', '..'}
+                    or any(c in name for c in '/\\\0') or len(name.encode()) > 512
+                    or name in names or not isinstance(mode, str) or mode not in modes
+                    or modes[mode] != kind or not isinstance(child, str)
+                    or not re.fullmatch(r'[0-9a-f]{40}', child)):
+                raise ValueError('invalid TypedArray tree name, mode or hash')
+            names[name] = entry
+            raw = name.encode()
+            encoded.append((raw + (b'/' if kind == 'tree' else b''),
+                            mode.lstrip('0').encode() + b' ' + raw + b'\0' + bytes.fromhex(child)))
+        body = b''.join(part for _, part in sorted(encoded))
+        if hashlib.sha1(b'tree ' + str(len(body)).encode() + b'\0' + body).hexdigest() != expected:
+            raise ValueError('TypedArray Git tree hash mismatch; incomplete inventory')
+        return names
+
+    def tree(sha):
+        if sha not in trees:
+            value = document('trees/' + sha)
+            if value.get('sha') != sha or value.get('truncated') is not False:
+                raise ValueError('incomplete or mismatched TypedArray ancestor tree')
+            trees[sha] = verify_tree(value.get('tree'), sha)
+        return trees[sha]
+
+    commit = document(f'commits/{REVISION}')
+    if (commit.get('sha') != REVISION or not isinstance(commit.get('tree'), dict)
+            or commit['tree'].get('sha') != REVISION_TREE):
+        raise ValueError('TypedArray commit differs from pinned root')
+    root = tree(REVISION_TREE)
+    listings, mapped, total = {}, {}, 0
+    for selected_root, pinned_tree in TYPEDARRAY_ROOTS.items():
+        sha = REVISION_TREE
+        for part in (PROFILE_ROOTS[profile] + '/' + selected_root).split('/'):
+            entry = tree(sha).get(part)
+            if not entry or entry['type'] != 'tree':
+                raise ValueError('missing TypedArray ancestor')
+            sha = entry['sha']
+        if sha != pinned_tree:
+            raise ValueError('TypedArray subtree differs from pinned root')
+        value = document(f'trees/{sha}?recursive=1')
+        rows = value.get('tree')
+        if (value.get('sha') != sha or value.get('truncated') is not False
+                or not isinstance(rows, list) or len(rows) > 4096):
+            raise ValueError('incomplete or oversized recursive TypedArray proof')
+        by_path, directories, children = {}, {'': sha}, {'': []}
+        for entry in rows:
+            if not isinstance(entry, dict) or not isinstance(entry.get('path'), str):
+                raise ValueError('invalid recursive TypedArray entry')
+            path = entry['path']
+            parts = path.split('/')
+            if (len(parts) > 8 or len(path.encode()) > 1024 or path in by_path
+                    or any(not re.fullmatch(r'[A-Za-z0-9_.-]+', p) or p in {'.', '..'} for p in parts)):
+                raise ValueError('unsafe, duplicate or overdeep TypedArray path')
+            by_path[path] = entry
+            if entry.get('type') == 'tree':
+                directories[path] = entry.get('sha')
+                children[path] = []
+        if len(mapped) + len(directories) > 192:
+            raise ValueError('TypedArray directory limit')
+        for path, entry in by_path.items():
+            parent, _, name = path.rpartition('/')
+            if parent not in children:
+                raise ValueError('missing recursive TypedArray parent')
+            children[parent].append(dict(entry, path=name))
+        for path, child_sha in directories.items():
+            verify_tree(children[path], child_sha)
+            name = selected_root + ('/' + path if path else '')
+            if name in mapped:
+                raise ValueError('overlapping TypedArray subtree selection')
+            mapped[name] = child_sha
+            listings[name] = []
+        for path, entry in by_path.items():
+            if entry['type'] == 'tree':
+                continue
+            size = entry.get('size')
+            if (entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}
+                    or not path.endswith('.js') or type(size) is not int or not 0 <= size <= MAX_FILE):
+                raise ValueError('TypedArray source is nonregular, non-JavaScript or oversized')
+            total += size
+            if total > MAX_TOTAL:
+                raise ValueError('TypedArray source aggregate limit')
+            parent, _, name = path.rpartition('/')
+            directory = selected_root + ('/' + parent if parent else '')
+            listings[directory].append(dict(name=name, type='file', sha=entry['sha'], size=size))
+    # Preserve complete-root authentication, then select complete immediate
+    # .js populations from the frozen API directories. No feature/outcome filter.
+    complete_directories = len(mapped)
+    complete_sources = sum(len(entries) for entries in listings.values())
+    if (PROFILES[profile] != TYPEDARRAY_DIRECTORIES
+            or not PROFILES[profile].keys() <= mapped.keys()
+            or any(len(listings[name]) != count for name, count in PROFILES[profile].items())):
+        raise ValueError('TypedArray frozen directory/source inventory mismatch')
+    mapped = {name: mapped[name] for name in PROFILES[profile]}
+    listings = {name: listings[name] for name in PROFILES[profile]}
+    selected = sorted((dict(path=f'test/built-ins/{name}/{entry["name"]}',
+                            blob_sha1=entry['sha'], bytes=entry['size'])
+                       for name, entries in listings.items() for entry in entries),
+                      key=lambda entry: entry['path'])
+    selection_hash = hashlib.sha256(json.dumps(selected, sort_keys=True,
+                                              separators=(',', ':')).encode()).hexdigest()
+    if (complete_directories != 160 or complete_sources != 2191 or len(selected) != 632
+            or sum(entry['bytes'] for entry in selected) != 773126
+            or selection_hash != TYPEDARRAY_SELECTION_SHA256):
+        raise ValueError('TypedArray complete roots or selected 632-body inventory mismatch')
+    harness_entry = root.get('harness')
+    if not harness_entry or harness_entry['type'] != 'tree':
+        raise ValueError('missing root-linked TypedArray harness')
+    harness = tree(harness_entry['sha'])
+    auxiliary = {}
+    for name in sorted(TYPEDARRAY_HELPERS):
+        entry = harness.get(name)
+        if not entry or entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}:
+            raise ValueError('missing pinned TypedArray helper')
+        auxiliary['harness/' + name] = entry['sha']
+    for name in ('LICENSE', 'INTERPRETING.md'):
+        entry = root.get(name)
+        if not entry or entry['type'] != 'blob' or entry['mode'] not in {'100644', '100755'}:
+            raise ValueError('missing pinned TypedArray legal file')
+        auxiliary[name] = entry['sha']
+    description = dict(method='complete-root-linked-recursive-git-roots-frozen-directory-selection', revision=REVISION,
+                       root_tree=REVISION_TREE, prefix=PROFILE_ROOTS[profile],
+                       subtree_trees=TYPEDARRAY_ROOTS, directory_trees=mapped,
+                       auxiliary_blobs=auxiliary, complete_directories=complete_directories,
+                       complete_sources=complete_sources, selected_sources=len(selected),
+                       selection_sha256=selection_hash)
+    if len(proof) != 7:
+        raise ValueError('TypedArray proof must retain the exact seven required documents')
+    return listings, proof, description
+
+
 def profile_tree_inventory(profile, read=None):
+    if profile == 'typedarray-foundation':
+        return typedarray_tree_inventory(read)
     if profile == 'date':
         return date_tree_inventory(read)
     if profile in ITERATION_SUBTREES:
@@ -719,10 +892,12 @@ def import_corpus(output, profile='string-json'):
             harness.update(metadata['includes'])
             if 'async' in metadata['flags']:
                 harness.add('doneprintHandle.js')
+    if profile == 'typedarray-foundation' and harness != TYPEDARRAY_HELPERS:
+        raise ValueError('TypedArray requested harness differs from the frozen ten helpers')
     additional = ['LICENSE', 'INTERPRETING.md'] + [f'harness/{name}' for name in sorted(harness)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources.update(zip(additional, pool.map(lambda path: fetch(raw + path), additional)))
-    if profile == 'date' or profile in ITERATION_SUBTREES:
+    if profile in {'date', 'typedarray-foundation'} or profile in ITERATION_SUBTREES:
         for path, expected_blob in proof_description['auxiliary_blobs'].items():
             data = sources.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
@@ -731,6 +906,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'typedarray-foundation': 'all 632 original .js bodies in 67 frozen foundation directories, authenticated by complete TypedArray and TypedArrayConstructors roots; nested BigInt retained for explicit policy exclusion; no implementation',
         'object-has-own': 'all .js files in the complete recursive built-ins/Object/hasOwn subtree; original root-linked Git proofs; no implementation',
         'object-is': 'all .js files in the complete recursive built-ins/Object/is subtree; original root-linked Git proofs; no implementation',
         'data-view': 'all .js files in the complete recursive built-ins/DataView subtree; original root-linked Git proofs; no implementation',

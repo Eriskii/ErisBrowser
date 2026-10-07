@@ -97,11 +97,11 @@ class ObjectHasOwnCorpusTests(unittest.TestCase):
         self.assertEqual(runner.OBJECT_HAS_OWN_FEATURES, FEATURES)
         self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES)
         self.assertNotIn('Object.hasOwn', runner.SUPPORTED_FEATURES)
-        self.assertEqual(len(runner.PROFILES), 45)
+        self.assertEqual(len(set(runner.PROFILES) - {'typedarray-foundation'}), 45)
         for name, features in runner.PROFILE_FEATURES.items():
             if name != PROFILE:
                 self.assertNotIn('Object.hasOwn', features)
-        contract = capture_contracts(excluded={PROFILE})
+        contract = capture_contracts(excluded={'typedarray-foundation', PROFILE})
         self.assertEqual(contract['counts'], {'profiles': 44, 'cases': 19727, 'preflights': 4564})
         self.assertEqual(runner.digest(canonical(contract)), OLD_CONTRACTS)
 
