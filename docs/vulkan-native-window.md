@@ -55,7 +55,10 @@ inside the unchanged 16 MiB preparation reserve. The copy is released before the
 optional CPU reference is painted. Zoom changes invalidate queued frames at the
 old scale and request immediate redraw while relayout proceeds.
 
-Unsupported group opacity, process-error overlays, excessive
+[Bounded group opacity](vulkan-opacity.md) uses cropped RGBA16 intermediates
+when each materialized group has a proved opaque rectangular backing and
+`k/256` opacity. Scratch storage and all clear/composite work share the existing
+frame limits. Transparent-backed or non-grid groups, process-error overlays, excessive
 viewport dimensions, command/source limits, preparation limits or raster work
 refuse the entire native scene. The complete existing CPU painter then draws
 the page and chrome, and its pixels use the existing upload path. No accepted
@@ -76,7 +79,7 @@ The Native profile admits at most 1280×1024 physical pixels, 16 MiB of planned
 explicit GPU buffers, and 4,000,000 padded invocations including clear, raster
 passes and mandatory surface conversion. The buffer plan includes packed RGB
 output, 256-byte-aligned conversion rows, a 16-byte conversion uniform and
-raster metadata/input. Explicit verification additionally reserves readback;
+raster metadata/input and admitted opacity scratch. Explicit verification additionally reserves readback;
 planned native buffers plus readback must fit 24 MiB.
 
 Whole-scene ledgers cover at most four phases (the browser currently supplies

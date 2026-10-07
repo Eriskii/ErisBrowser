@@ -116,6 +116,9 @@ fn every_exact_shape_key_component_invalidates_reuse() {
     k.raster.input = 4;
     changes.push(k);
     let mut k = key;
+    k.raster.scratch = 8;
+    changes.push(k);
+    let mut k = key;
     k.raster.alignment = 16;
     changes.push(k);
     for changed in changes {
@@ -278,4 +281,84 @@ fn draw_uniform_and_input_arena_device_limits_are_independently_checked() {
         ..Default::default()
     };
     assert!(Preparation::checked(&image, wgpu::TextureFormat::Bgra8Unorm, &limits).is_err());
+}
+
+#[test]
+fn group_region_reshaping_and_opacity_rewrite_keep_only_exact_buffer_shape() {
+    let a = native(
+        Frame::new(16, 16, 0),
+        &[
+            Command::PushOpacity(0.5),
+            rect(1.0, 2.0, 8.0, 2.0, 0xff0000),
+            Command::PopOpacity,
+        ],
+    );
+    let b = native(
+        Frame::new(16, 16, 0x123456),
+        &[
+            Command::PushOpacity(0.25),
+            rect(3.0, 4.0, 4.0, 4.0, 0x00ff00),
+            Command::PopOpacity,
+        ],
+    );
+    let c = native(
+        Frame::new(16, 16, 0),
+        &[
+            Command::PushOpacity(0.5),
+            rect(1.0, 2.0, 8.0, 3.0, 0xff0000),
+            Command::PopOpacity,
+        ],
+    );
+    let ar = required(&a);
+    let br = required(&b);
+    let cr = required(&c);
+    assert_eq!(ar.key.raster.scratch, 128);
+    assert_eq!(br.key.raster.scratch, 128);
+    assert_eq!(cr.key.raster.scratch, 192);
+    assert_eq!(ar.key, br.key);
+    assert_ne!(ar.key, cr.key);
+    assert_ne!(a.parameters(), b.parameters());
+    assert_eq!(ar.bytes, 1024 + 1024 + 128 + 4096 + 16);
+    assert_eq!(ar.bytes, a.gpu_buffer_bytes());
+    assert_eq!(br.bytes, b.gpu_buffer_bytes());
+    let owner = Arc::new(());
+    assert!(same_requirements(&owner, ar.key, &owner, br.key));
+    assert!(!same_requirements(&owner, ar.key, &owner, cr.key));
+    for plan in [&a, &b, &c] {
+        assert_eq!(plan.draws()[1].kind(), crate::DrawKind::GroupClear);
+        assert_eq!(plan.draws()[3].kind(), crate::DrawKind::GroupComposite);
+    }
+}
+
+#[test]
+fn scratch_participates_in_surface_total_overflow_and_lease_refusal() {
+    let plan = native(
+        Frame::new(4, 2, 0),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0.0, 0.0, 4.0, 2.0, 0xff0000),
+            Command::PopOpacity,
+        ],
+    );
+    let mut key = required(&plan).key;
+    let cap = Profile::Native.max_gpu_buffer_bytes();
+    key.raster.scratch = cap
+        - key.raster.output
+        - key.raster.parameters
+        - key.raster.input
+        - key.converted
+        - UNIFORM_BYTES;
+    assert_eq!(key.bytes().unwrap(), cap);
+    key.raster.scratch += 1;
+    assert!(key.bytes().is_err());
+    key.raster.scratch = u64::MAX;
+    assert!(key.bytes().is_err());
+    // The optional resource has no alternative lifecycle: even a failure after
+    // a queued uniform write must not make its stale contents reusable.
+    let mut lifecycle = Lifecycle::Fresh;
+    lifecycle.begin().unwrap();
+    assert_eq!(lifecycle, Lifecycle::EncodingFailed);
+    assert!(lifecycle.reusable().is_err());
+    assert!(lifecycle.output().is_err());
+    assert!(!lifecycle.compatible());
 }

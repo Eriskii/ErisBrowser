@@ -58,6 +58,7 @@ impl SurfaceLayout {
         let core_owned_bytes = output_bytes
             .checked_add(plan.parameters().len() as u64)
             .and_then(|bytes| bytes.checked_add(plan.input_bytes().len() as u64))
+            .and_then(|bytes| bytes.checked_add(plan.group_scratch_bytes()))
             .ok_or("surface plan storage mismatch")?;
         Self::checked(
             Admission {

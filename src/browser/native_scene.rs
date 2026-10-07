@@ -932,6 +932,12 @@ mod tests {
             DrawCommand::PushOpacity { opacity: 0.5 },
             DrawCommand::PopOpacity,
         ];
+        // Empty grid-aligned groups are now legal and allocate no scratch.
+        assert!(prepare(&browser, size, false).is_ok());
+        browser.snapshot.as_mut().unwrap().layout.commands = vec![
+            DrawCommand::PushOpacity { opacity: 0.3 },
+            DrawCommand::PopOpacity,
+        ];
         assert!(
             prepare(&browser, size, false)
                 .err()

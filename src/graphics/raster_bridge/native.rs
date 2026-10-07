@@ -153,6 +153,14 @@ struct InputCounts {
     command_key_bytes: usize,
     image_commands: usize,
 }
+
+#[derive(Clone, Copy)]
+enum NativeScopeTag {
+    Clip,
+    Fixed,
+    Opacity,
+}
+
 fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCounts> {
     validate_native_frame(target, None)?;
     if target.caller_clip != Rect::new(0.0, 0.0, target.width as f32, target.height as f32)
@@ -188,7 +196,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
     }
     // Complete structural/input preflight precedes image table or mask allocation.
     for (phase, input) in phases.iter().enumerate() {
-        let mut stack = [ScopeTag::Clip; MAX_SCOPES];
+        let mut stack = [NativeScopeTag::Clip; MAX_SCOPES];
         let mut depth = 0;
         for (index, command) in input.commands.iter().enumerate() {
             let location = Some(index);
@@ -247,31 +255,39 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                     if depth == MAX_SCOPES {
                         return Err(at(FallbackKind::ScopeLimit, phase, index));
                     }
-                    stack[depth] = ScopeTag::Clip;
+                    stack[depth] = NativeScopeTag::Clip;
                     depth += 1;
                 }
                 DrawCommand::PushFixed => {
                     if depth == MAX_SCOPES {
                         return Err(at(FallbackKind::ScopeLimit, phase, index));
                     }
-                    stack[depth] = ScopeTag::Fixed;
+                    stack[depth] = NativeScopeTag::Fixed;
                     depth += 1;
                 }
-                DrawCommand::PopClip | DrawCommand::PopFixed => {
+                DrawCommand::PushOpacity { opacity } => {
+                    if !opacity.is_finite() || !(0.0..=1.0).contains(opacity) {
+                        return Err(at(FallbackKind::InvalidGeometry, phase, index));
+                    }
+                    if depth == MAX_SCOPES {
+                        return Err(at(FallbackKind::ScopeLimit, phase, index));
+                    }
+                    stack[depth] = NativeScopeTag::Opacity;
+                    depth += 1;
+                }
+                DrawCommand::PopClip | DrawCommand::PopFixed | DrawCommand::PopOpacity => {
                     if depth == 0 {
                         return Err(at(FallbackKind::InvalidScope, phase, index));
                     }
                     depth -= 1;
                     if !matches!(
                         (command, stack[depth]),
-                        (DrawCommand::PopClip, ScopeTag::Clip)
-                            | (DrawCommand::PopFixed, ScopeTag::Fixed)
+                        (DrawCommand::PopClip, NativeScopeTag::Clip)
+                            | (DrawCommand::PopFixed, NativeScopeTag::Fixed)
+                            | (DrawCommand::PopOpacity, NativeScopeTag::Opacity)
                     ) {
                         return Err(at(FallbackKind::InvalidScope, phase, index));
                     }
-                }
-                DrawCommand::PushOpacity { .. } | DrawCommand::PopOpacity => {
-                    return Err(at(FallbackKind::UnsupportedOpacity, phase, index));
                 }
             }
             counts.nontext += 1;
@@ -806,9 +822,8 @@ pub fn plan_native_scene(
                 DrawCommand::PopClip => Command::PopClip,
                 DrawCommand::PushFixed => Command::PushFixed,
                 DrawCommand::PopFixed => Command::PopFixed,
-                DrawCommand::PushOpacity { .. } | DrawCommand::PopOpacity => {
-                    unreachable!("preflight refused opacity")
-                }
+                DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
+                DrawCommand::PopOpacity => Command::PopOpacity,
             };
             state
                 .apply(&lowered_command)
@@ -865,7 +880,24 @@ pub fn plan_native_scene(
         });
     }
     let plan = eris_raster_core::plan_native_phases(target, &core_phases, &sources, &masks, &rows)
-        .map_err(|_| NativeFallback::new(FallbackKind::PlannerLimit, None, None))?;
+        .map_err(|error| {
+            let kind = if error.starts_with("unsupported opacity")
+                || error == "opacity group requires opaque rectangular backing"
+            {
+                FallbackKind::UnsupportedOpacity
+            } else {
+                FallbackKind::PlannerLimit
+            };
+            NativeFallback::new(kind, None, None)
+        })?;
+    // The planner admits cropped group regions without allocating their pixel
+    // surfaces on the CPU. Retain every earlier source/parameter/conversion
+    // allowance and add the complete GPU scratch arena before publishing stats.
+    ledger.gpu_upper = ledger
+        .gpu_upper
+        .checked_add(plan.group_scratch_bytes())
+        .filter(|&bytes| bytes <= Profile::Native.max_gpu_buffer_bytes())
+        .ok_or_else(|| NativeFallback::new(FallbackKind::PlannerLimit, None, None))?;
     if plan.gpu_buffer_bytes() > ledger.gpu_upper {
         return Err(NativeFallback::new(FallbackKind::PlannerLimit, None, None));
     }

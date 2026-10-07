@@ -202,7 +202,12 @@ pub fn run(
     let validation = device.push_error_scope(wgpu::ErrorFilter::Validation);
     let oom = device.push_error_scope(wgpu::ErrorFilter::OutOfMemory);
     let internal = device.push_error_scope(wgpu::ErrorFilter::Internal);
-    let rasterizer = Rasterizer::new(&device, plans.iter().any(|(_, _, p)| p.has_glyphs()));
+    let glyphs = plans.iter().any(|(_, _, p)| p.has_glyphs());
+    let rasterizer = if plans.iter().any(|(_, _, p)| p.group_scratch_bytes() != 0) {
+        Rasterizer::new_native(&device, glyphs)
+    } else {
+        Rasterizer::new(&device, glyphs)
+    };
     let converter = SurfaceConverter::new(&device);
     let result = (|| {
         for (name, expected, plan) in plans {

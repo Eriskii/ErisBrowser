@@ -1,5 +1,11 @@
 # Development docket
 
+[Native group opacity](vulkan-opacity.md) now has an exact integer Vulkan path
+for opaque-backed nested groups at `k/256` opacity. Cropped RGBA16 scratch,
+clear/composite dispatches and retained reuse all share the existing limits.
+Three-adapter literal and changed-content checks pass. Transparent backings,
+arbitrary opacity values and larger scene admission remain on the docket.
+
 The native owner now reuses one exact-size, fully retired GPU buffer set while
 rewriting every input and drawing each complete scene. Limits, queued-write
 failure retirement and positive-drop accounting remain unchanged. The
@@ -123,7 +129,7 @@ limits. The [offscreen prerequisite](../tools/vulkan-raster-probe/NATIVE_PREREQU
 [worker-text](../tools/vulkan-raster-probe/WORKER_TEXT.md) checkpoints remain
 separate three-adapter evidence. Native page zoom now uses bounded command
 scaling within the existing preparation limits. Wider scene/viewport admission,
-group opacity, shaping, native GPU screenshots and driver isolation remain ahead.
+transparent-backed group opacity, shaping, native GPU screenshots and driver isolation remain ahead.
 Performance within 30% of Chromium has not been demonstrated.
 
 [Array concat](../tests/conformance/array-concat.md) now streams live
@@ -286,7 +292,8 @@ Further measurements need more scenes and repeated environment observations.
 Acceptance work:
 
 - Expand the bounded native route to more browser scenes, preserving clipping,
-  fixed coordinates, text coverage and alpha while adding nested opacity.
+  fixed coordinates, text coverage and alpha while expanding nested opacity
+  beyond proved opaque backings and `k/256` values.
 - Bound GPU allocations, command work, uploads and retained resources. Decide
   the GPU process/driver boundary explicitly; GPU access must not broaden the
   renderer's filesystem or network authority.

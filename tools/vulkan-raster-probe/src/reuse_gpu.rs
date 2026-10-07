@@ -252,6 +252,53 @@ pub fn run(selected: Option<usize>, cases: &[Fixture]) -> Result<Counts> {
     if cases.len() != 9 || cases.iter().any(|case| case.expected.len() > 32) {
         return Err("reuse checker fixed fixture bounds".into());
     }
+    run_sequence(
+        selected,
+        cases,
+        &[
+            (0, false),
+            (1, true),
+            (2, true),
+            (0, true),
+            (1, true),
+            (2, true),
+            (3, false),
+            (4, true),
+            (5, false),
+            (6, true),
+            (7, false),
+            (8, false),
+        ],
+        8,
+        (28, 13, 15),
+    )
+}
+
+/// Same retirement/cancellation checks for a separately fixed opacity corpus.
+pub fn run_opacity(selected: Option<usize>, cases: &[Fixture]) -> Result<Counts> {
+    if cases.len() != 4
+        || cases
+            .iter()
+            .any(|case| case.expected.len() != 8 || case.plan.group_scratch_bytes() == 0)
+    {
+        return Err("opacity reuse fixed fixture bounds".into());
+    }
+    run_sequence(
+        selected,
+        cases,
+        &[(0, false), (1, true), (2, true), (0, true), (3, false)],
+        3,
+        (14, 7, 7),
+    )
+}
+
+fn run_sequence(
+    selected: Option<usize>,
+    cases: &[Fixture],
+    sequence: &[(usize, bool)],
+    final_case: usize,
+    expected: (usize, usize, usize),
+) -> Result<Counts> {
     let deadline = Deadline(Instant::now() + Duration::from_secs(20));
     let mut descriptor = wgpu::InstanceDescriptor::new_without_display_handle();
     descriptor.backends = wgpu::Backends::VULKAN;
@@ -308,20 +355,7 @@ pub fn run(selected: Option<usize>, cases: &[Fixture]) -> Result<Counts> {
         wgpu::TextureFormat::Rgba8Unorm,
     ] {
         // Equal-size input rewrites repeat A/B/C twice; no omitted warmup frames.
-        for (case, reuse) in [
-            (0, false),
-            (1, true),
-            (2, true),
-            (0, true),
-            (1, true),
-            (2, true),
-            (3, false),
-            (4, true),
-            (5, false),
-            (6, true),
-            (7, false),
-            (8, false),
-        ] {
+        for &(case, reuse) in sequence {
             frame(
                 &device,
                 &queue,
@@ -344,7 +378,7 @@ pub fn run(selected: Option<usize>, cases: &[Fixture]) -> Result<Counts> {
             &queue,
             &native,
             &mut cached,
-            &cases[8],
+            &cases[final_case],
             other,
             &deadline,
             &mut counts,
@@ -364,7 +398,7 @@ pub fn run(selected: Option<usize>, cases: &[Fixture]) -> Result<Counts> {
         &queue,
         &native,
         &mut cached,
-        &cases[8],
+        &cases[final_case],
         wgpu::TextureFormat::Bgra8Unorm,
         &deadline,
         &mut counts,
@@ -375,7 +409,7 @@ pub fn run(selected: Option<usize>, cases: &[Fixture]) -> Result<Counts> {
         &queue,
         &native,
         &mut cached,
-        &cases[8],
+        &cases[final_case],
         wgpu::TextureFormat::Bgra8Unorm,
         &deadline,
         &mut counts,
@@ -385,9 +419,9 @@ pub fn run(selected: Option<usize>, cases: &[Fixture]) -> Result<Counts> {
         lease.destroy_after_completion();
         counts.evictions += 1;
     }
-    if counts.frames != 28
-        || counts.allocations != 13
-        || counts.reuses != 15
+    if counts.frames != expected.0
+        || counts.allocations != expected.1
+        || counts.reuses != expected.2
         || counts.evictions != counts.allocations
     {
         return Err(format!("reuse checker lifecycle totals: {counts:?}"));

@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "checkpoint": "Bounded Vulkan nested opacity",
+  "base_commit": "ab92bcbbeabb342b4807132d1c42d29e81c8a17b",
+  "status": "Implemented and locally validated within the explicit admission domain; full browser requirements remain unfinished.",
+  "package": {
+    "path": "native-opacity/index.json",
+    "sha256": "16228a923d6f7534742b5327416901e17f828f5d9a2cc4ff419fd537cd17d3ec",
+    "archive": {
+      "path": "records.tar.gz",
+      "bytes": 705520,
+      "sha256": "abc972fb75b0c389338f06456368ea8436aca2bbe9c9c125f40f88c3450c941d"
+    },
+    "payload_files": 304,
+    "payload_bytes": 3144106
+  },
+  "record_paths": "Paths below refer to records/ members inside native-opacity/records.tar.gz, except preparation/ and final-source/ paths.",
+  "admission": {
+    "opacity": "k/256 for integer 1..255; 0 suppresses pixels after validation; 1 preserves the target",
+    "backing": "First effective direct opaque unrounded rectangle covers the full conservative descendant union in every materialized group.",
+    "scratch": "Disjoint cropped premultiplied RGBA16 regions, 8 bytes/pixel; no intraframe alias/reuse.",
+    "limits_raised": false,
+    "planned_gpu_bytes": 16777216,
+    "padded_invocations": 4000000,
+    "commands": 256,
+    "mixed_scopes": 32,
+    "maximum_phases": 4,
+    "legacy": "Probe APIs still reject opacity; original four shaders remain byte-exact."
+  },
+  "builds": {
+    "browser": {
+      "path": "/tmp/eris-vulkan-opacity-1/eris-browser-native-1",
+      "bytes": 17497920,
+      "sha256": "26a6e2d74d3908bbdf1c4f0419261629deaf4fc420a7ae59a0dbdb2b24314954",
+      "build_record": "validation/native-release-188-1.json",
+      "source_manifest": "native-release-source-1.json",
+      "postbuild_changed_paths": [
+        "src/browser/native_scene.rs",
+        "src/graphics/raster_bridge/native/opacity_tests.rs"
+      ],
+      "changed_path_scope": "Final publication comparison: cfg(test) zoom assertions and test interpreter parentheses only; no production source change.",
+      "original_build_receipt": "records/native-release-1.json retains the earlier one-path observation; records/final-build-source-check.json supplies the final comparison."
+    },
+    "opacity_checker": {
+      "path": "/tmp/eris-vulkan-opacity-1/eris-vulkan-opacity-check-2",
+      "bytes": 6682992,
+      "sha256": "9c91592e6de69c5c54cc0baf12425fae4618b354cc83ed1d87db87e1d58af725",
+      "build_record": "validation/opacity-check-build-188-2.json",
+      "source_manifest": "candidate-core-4.json"
+    },
+    "no_group_checker": {
+      "path": "/tmp/eris-vulkan-opacity-1/eris-vulkan-reuse-check-1",
+      "bytes": 6612776,
+      "sha256": "a1f7675ede9eb10436d0e96a2cfc96b2f2a4c567bad7d1119c27232682fd9b80",
+      "build_record": "validation/reuse-check-build-188-1.json",
+      "source_manifest": "candidate-core-4.json"
+    }
+  },
+  "build_binding_notes": {
+    "check": "final-build-source-check.json",
+    "production_unchanged_after_browser_build": true,
+    "later_changes": "Only cfg(test) assertions in native_scene.rs and test interpreter parentheses in native/opacity_tests.rs changed after browser build."
+  },
+  "validation": {
+    "rust_version": "1.88.0",
+    "rust_passed_by_command": {
+      "core-cpu-188-1": 97,
+      "core-gpu-188-2": 128,
+      "bridge-native-188-1": 63,
+      "browser-opacity-188-2": 2,
+      "probe-tests-188-1": 7,
+      "native-full-188-2": 2139
+    },
+    "python_passed_by_command": {
+      "root-python-final": 408,
+      "probe-python-1": 97
+    },
+    "strict_clippy": [
+      "validation/core-clippy-188-1.json",
+      "validation/probe-clippy-188-1.json",
+      "validation/native-clippy-188-final.json"
+    ],
+    "formatting": "validation/format-final.json",
+    "included_ignored_confinement_tests": true,
+    "CI_for_this_commit": "Not included in this local checkpoint; preceding publication CI is retained separately at preceding-ci.json."
+  },
+  "offscreen": {
+    "report": "offscreen-1/host-results.json",
+    "review": "offscreen-result-review.json",
+    "adapters": 3,
+    "names": [
+      "NVIDIA GeForce RTX 4070 SUPER",
+      "AMD RADV RAPHAEL_MENDOCINO",
+      "llvmpipe LLVM21.1.8"
+    ],
+    "literal_frames": 54,
+    "reuse_frames": 42,
+    "total_frames": 96,
+    "compared_bytes": 2472,
+    "cancellation_checkpoints": 24,
+    "successful_sequence_allocations": 21,
+    "successful_sequence_reuses": 21,
+    "successful_sequence_evictions": 21,
+    "planner_refusal_cases": 3,
+    "formats": [
+      "Bgra8Unorm",
+      "Rgba8Unorm"
+    ],
+    "reference": "Fixed independent literal arrays; 3 refusal assertions execute on every adapter run before Vulkan, not GPU frames.",
+    "acquired_surface": false
+  },
+  "no_group_regression": {
+    "report": "no-group-reuse-1/host-results.json",
+    "adapters": 3,
+    "frames": 84,
+    "compared_bytes": 4680,
+    "reference": "Unchanged preexisting literal fixture inventory and expected reuse sequence."
+  },
+  "window": {
+    "report": "window-run-2/host-results.json",
+    "surface": "NVIDIA RTX4070SUPER Bgra8Unorm Srgb Opaque Fifo",
+    "size": [
+      1280,
+      880
+    ],
+    "verified_serials": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "opacity_numerator_sums": [
+      256,
+      256,
+      320,
+      320
+    ],
+    "compared_bytes": 18022400,
+    "clicks": 1,
+    "escape_redraws": 1,
+    "group_scratch_bytes": 262144,
+    "distinct_dom_states": 2,
+    "separate_reference_free_window": true,
+    "all_owned_children_reaped": true,
+    "surviving_owned_descendants": 0,
+    "scope": "Acquired texture bytes before compositor; normal separate run establishes native route with no reference, not pixel comparison.",
+    "executed_host_hold": "window-host/source-ready-3.json",
+    "final_host_hold": "window-host/source-ready-4.json",
+    "posthoc_validation": "window-host/posthoc-run2-review.json",
+    "posthoc_note": "After run2, retained parser takes latest physical-size observation and reports accurate normal-run scope. Existing logs revalidated without another engine run. Only that descriptive scope field is normalized in memory; original raw receipts remain unchanged."
+  },
+  "retained_failures": [
+    {
+      "record": "validation/core-gpu-188-1.json",
+      "cause": "SurfaceLayout::for_plan omitted the new scratch reservation; one-line accounting fix."
+    },
+    {
+      "record": "validation/browser-opacity-188-1.json",
+      "cause": "New witness incorrectly expected Button element hit instead of its Text child. Corrected exact child/parent/literal contract and source-derived nontext count; pixel expectations unchanged."
+    },
+    {
+      "record": "validation/native-clippy-188-1.json",
+      "cause": "Three test-only precedence/filter-map lint findings corrected."
+    },
+    {
+      "record": "validation/native-full-188-1.json",
+      "cause": "Old zoom assertion expected empty grid-aligned opacity to refuse; original case retained as positive and non-grid refusal added."
+    },
+    {
+      "record": "window-run-1/host-results.json",
+      "cause": "New observer rejected legitimate pre-release startup sizes. Browser killed before document release; supervisor reaped two residual owned descendants, cleanup complete. Passing second attempt preserved separately."
+    }
+  ],
+  "additional_reviews": [
+    "documentation-review.json",
+    "host/offscreen-layout-review.json",
+    "window-host/script-source-review.json",
+    "browser/html-correction-followup.json"
+  ],
+  "proofs": [
+    "preparation/numerical-contract.md",
+    "preparation/literal-fixtures.json",
+    "preparation/additional-rounding-fixtures.json",
+    "preparation/gpu-interface.md"
+  ],
+  "not_established": [
+    "arbitrary non-grid opacity",
+    "transparent-backed groups",
+    "general CSS compositing",
+    "broader native scene/viewport admission",
+    "GPU font shaping or outline rasterization",
+    "compositor/scanout pixel equality",
+    "driver isolation",
+    "production security",
+    "full web compatibility",
+    "performance within 30% of Chromium"
+  ]
+}

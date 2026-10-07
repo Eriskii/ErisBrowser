@@ -105,6 +105,9 @@ fn decode_pixels(plan: &Plan) -> Vec<u32> {
                         assert!(coverage <= 255);
                         (p(6), (p(6) >> 24) * coverage / 255)
                     }
+                    DrawKind::GroupClear | DrawKind::GroupComposite => {
+                        panic!("legacy decoder only accepts plans without groups")
+                    }
                 };
                 let pixel = &mut pixels[(y * frame.width + x) as usize];
                 let mut blended = 0;
@@ -121,6 +124,9 @@ fn decode_pixels(plan: &Plan) -> Vec<u32> {
     }
     pixels
 }
+
+#[path = "opacity_tests.rs"]
+mod opacity_tests;
 fn canvas_pixels(
     target: Frame,
     phases: &[NativePhase<'_>],
@@ -430,7 +436,7 @@ fn native_late_structural_failure_has_original_location_and_no_font_effect() {
     let a = [text("AB")];
     let b = [
         image("missing", 0.0),
-        DrawCommand::PushOpacity { opacity: 0.0 },
+        DrawCommand::PushOpacity { opacity: f32::NAN },
     ];
     let error = plan_native_scene(
         target,
@@ -448,7 +454,7 @@ fn native_late_structural_failure_has_original_location_and_no_font_effect() {
         &fonts,
     )
     .unwrap_err();
-    assert_eq!(error, at(FallbackKind::UnsupportedOpacity, 1, 1));
+    assert_eq!(error, at(FallbackKind::InvalidGeometry, 1, 1));
     assert_eq!(fonts.cache.borrow().len(), 0);
     let open = [DrawCommand::PushFixed];
     let close = [DrawCommand::PopFixed];

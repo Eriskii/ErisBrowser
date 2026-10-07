@@ -1502,6 +1502,21 @@ impl Browser {
                             prepared.plan.plan().raster_invocations(),
                             prepared.plan.plan().invocations(),
                         );
+                        let plan = prepared.plan.plan();
+                        if plan.group_scratch_bytes() != 0 {
+                            let (groups, opacity_sum) = plan
+                                .draws()
+                                .iter()
+                                .filter_map(|draw| draw.opacity_numerator())
+                                .fold((0usize, 0u32), |(count, sum), k| (count + 1, sum + k));
+                            eprintln!(
+                                "native opacity prepared: serial={} groups={} scratch_bytes={} opacity_sum={}",
+                                stamp.serial,
+                                groups,
+                                plan.group_scratch_bytes(),
+                                opacity_sum,
+                            );
+                        }
                         if self.zoom != 1.0 {
                             eprintln!(
                                 "native zoom prepared: serial={} zoom_bits={}",

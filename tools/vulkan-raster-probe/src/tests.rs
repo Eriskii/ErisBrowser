@@ -31,7 +31,8 @@ fn fractional_rectangle_and_clip_left_edges_are_deliberately_different() {
             width: 1,
             height: 1,
             color: 0xff00_0001,
-            image: None
+            image: None,
+            group: None
         }
     );
     let p = plan(
@@ -51,7 +52,8 @@ fn fractional_rectangle_and_clip_left_edges_are_deliberately_different() {
             width: 1,
             height: 1,
             color: 0xff00_0001,
-            image: None
+            image: None,
+            group: None
         }
     );
 }
@@ -208,7 +210,8 @@ fn exact_edges_touching_clips_and_fixed_escape_empty_ancestors() {
             width: 1,
             height: 1,
             color: 0xff00_0001,
-            image: None
+            image: None,
+            group: None
         }
     );
     assert_eq!(
@@ -219,7 +222,8 @@ fn exact_edges_touching_clips_and_fixed_escape_empty_ancestors() {
             width: 1,
             height: 1,
             color: 0xff00_0002,
-            image: None
+            image: None,
+            group: None
         }
     );
     assert_eq!(
@@ -230,7 +234,8 @@ fn exact_edges_touching_clips_and_fixed_escape_empty_ancestors() {
             width: 2,
             height: 2,
             color: 0xff00_0003,
-            image: None
+            image: None,
+            group: None
         }
     );
     let p = plan(
@@ -258,7 +263,8 @@ fn exact_edges_touching_clips_and_fixed_escape_empty_ancestors() {
             width: 1,
             height: 1,
             color: 0xff00_0002,
-            image: None
+            image: None,
+            group: None
         }
     );
 }
@@ -291,6 +297,9 @@ fn interpret(p: &Plan) -> Vec<u32> {
         for dy in 0..height {
             for dx in 0..width {
                 let color = match draw.kind() {
+                    DrawKind::GroupClear | DrawKind::GroupComposite => {
+                        panic!("legacy Probe interpreter does not accept native groups")
+                    }
                     DrawKind::Glyph => {
                         panic!("legacy image interpreter does not accept glyph plans")
                     }

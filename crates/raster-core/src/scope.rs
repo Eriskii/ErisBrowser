@@ -5,9 +5,11 @@ use crate::{Command, Frame, MAX_COORDINATE, MAX_SCOPES, Profile, Rect, Result, r
 pub(crate) enum Scope {
     Clip(Rect),
     Fixed { clip: Rect, offset: (f32, f32) },
+    Opacity,
 }
 
 pub struct CoordinateState {
+    profile: Profile,
     viewport: Rect,
     caller: Rect,
     clip: Rect,
@@ -40,6 +42,7 @@ impl CoordinateState {
         let viewport = Rect::new(0.0, 0.0, frame.width as f32, frame.height as f32);
         let caller = frame.caller_clip.normalized_clip(viewport);
         Ok(Self {
+            profile,
             viewport,
             caller,
             clip: caller,
@@ -93,6 +96,22 @@ impl CoordinateState {
                     self.offset = offset;
                 }
                 _ => return Err("mismatched fixed scope".into()),
+            },
+            Command::PushOpacity(opacity) => {
+                if self.profile != Profile::Native {
+                    return Err("unsupported opacity profile".into());
+                }
+                if !opacity.is_finite() || !(0.0..=1.0).contains(&opacity) {
+                    return Err("invalid opacity".into());
+                }
+                if self.scopes.len() == MAX_SCOPES {
+                    return Err("scope budget".into());
+                }
+                self.scopes.push(Scope::Opacity);
+            }
+            Command::PopOpacity => match self.scopes.pop() {
+                Some(Scope::Opacity) => {}
+                _ => return Err("mismatched opacity scope".into()),
             },
             _ => return Ok(false),
         }

@@ -15,7 +15,9 @@
 use crate::{DrawKind, Frame, PARAM_STRIDE, Plan, Profile, Result};
 use std::sync::Arc;
 
+mod groups;
 mod reuse;
+use groups::{GroupBuffers, GroupKernels, group_dispatch};
 #[cfg(test)]
 pub(crate) use reuse::descriptor_matches;
 pub(crate) use reuse::{RasterBuffers, RasterRequirements, buffer_matches};
@@ -26,6 +28,7 @@ struct Kernels {
     image: wgpu::ComputePipeline,
     image_layout: wgpu::BindGroupLayout,
     glyph: Option<wgpu::ComputePipeline>,
+    groups: Option<GroupKernels>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -40,12 +43,14 @@ impl BufferAccounting {
         output: u64,
         parameters: u64,
         input: u64,
+        scratch: u64,
         reserved: u64,
         planned: u64,
     ) -> Result<Self> {
         let owned = output
             .checked_add(parameters)
-            .and_then(|bytes| bytes.checked_add(input));
+            .and_then(|bytes| bytes.checked_add(input))
+            .and_then(|bytes| bytes.checked_add(scratch));
         let total = owned.and_then(|bytes| bytes.checked_add(reserved));
         if total != Some(planned) || planned > profile.max_gpu_buffer_bytes() {
             return Err("explicit GPU allocation budget mismatch".into());
@@ -56,10 +61,20 @@ impl BufferAccounting {
             planned_buffer_bytes: planned,
         })
     }
-    fn for_plan(plan: &Plan, alignment: u32, glyphs: bool) -> Result<Self> {
+    fn for_plan(plan: &Plan, alignment: u32, glyphs: bool, groups: bool) -> Result<Self> {
         // Refuse unsupported dispatches before allocating any frame buffers.
         if plan.has_glyphs() && !glyphs {
             return Err("missing glyph pipeline".into());
+        }
+        let scratch = plan.group_scratch_bytes();
+        if scratch != 0 && !groups {
+            return Err("missing group pipelines".into());
+        }
+        if !scratch.is_multiple_of(8)
+            || (scratch != 0 && plan.profile() != Profile::Native)
+            || plan.draws().iter().copied().any(group_dispatch) != (scratch != 0)
+        {
+            return Err("invalid group scratch accounting".into());
         }
         let frame = plan.frame();
         let output_bytes = u64::from(frame.width) * u64::from(frame.height) * 4;
@@ -72,6 +87,7 @@ impl BufferAccounting {
             output_bytes,
             plan.parameters().len() as u64,
             plan.input_bytes().len() as u64,
+            scratch,
             reserved,
             plan.gpu_buffer_bytes(),
         )?;
@@ -93,6 +109,16 @@ pub struct Rasterizer {
 }
 impl Rasterizer {
     pub fn new(device: &wgpu::Device, glyphs: bool) -> Self {
+        Self::new_with_groups(device, glyphs, false)
+    }
+
+    /// Native-only group support is opt-in; old Probe constructors create no
+    /// extra pipelines. Caller error scopes/deadlines remain mandatory.
+    pub fn new_native(device: &wgpu::Device, glyphs: bool) -> Self {
+        Self::new_with_groups(device, glyphs, true)
+    }
+
+    fn new_with_groups(device: &wgpu::Device, glyphs: bool, groups: bool) -> Self {
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("bounded rectangle bindings"),
             entries: &[
@@ -214,6 +240,7 @@ impl Rasterizer {
             image: image_pipeline,
             image_layout,
             glyph: glyph_pipeline,
+            groups: groups.then(|| GroupKernels::new(device, glyphs)),
         };
         Self {
             kernels: Arc::new(kernels),
@@ -241,7 +268,16 @@ impl Rasterizer {
             p,
             device.limits().min_uniform_buffer_offset_alignment,
             self.kernels.glyph.is_some(),
+            self.kernels.groups.is_some(),
         )?;
+        if p.group_scratch_bytes() != 0 {
+            RasterRequirements::for_plan(
+                p,
+                &device.limits(),
+                self.kernels.glyph.is_some(),
+                self.kernels.groups.is_some(),
+            )?;
+        }
         let pixel_bytes = accounting.output_bytes;
         let metadata = p.parameters();
         let input = p.input_bytes();
@@ -313,6 +349,16 @@ impl Rasterizer {
         } else {
             None
         };
+        let group_buffers = (p.group_scratch_bytes() != 0).then(|| {
+            GroupBuffers::allocate(
+                device,
+                kernels.groups.as_ref().expect("group pipelines admitted"),
+                p.group_scratch_bytes(),
+                &output,
+                &parameters,
+                input_arena.as_ref().map(|(buffer, _)| buffer),
+            )
+        });
         queue.write_buffer(&parameters, 0, metadata);
         for (index, draw) in p.draws().iter().enumerate() {
             before_draw()?;
@@ -323,16 +369,29 @@ impl Rasterizer {
                 label: Some("one ordered source-over draw"),
                 timestamp_writes: None,
             });
-            let (pipeline, draw_group) = match draw.kind() {
-                DrawKind::Rectangle => (&kernels.rectangle, &group),
-                DrawKind::Image => (
-                    &kernels.image,
-                    &input_arena.as_ref().ok_or("missing image arena")?.1,
-                ),
-                DrawKind::Glyph => (
-                    kernels.glyph.as_ref().ok_or("missing glyph pipeline")?,
-                    &input_arena.as_ref().ok_or("missing glyph arena")?.1,
-                ),
+            let (pipeline, draw_group) = if group_dispatch(*draw) {
+                group_buffers
+                    .as_ref()
+                    .ok_or("missing group scratch")?
+                    .bindings(
+                        kernels.groups.as_ref().ok_or("missing group pipelines")?,
+                        draw.kind(),
+                    )?
+            } else {
+                match draw.kind() {
+                    DrawKind::Rectangle => (&kernels.rectangle, &group),
+                    DrawKind::Image => (
+                        &kernels.image,
+                        &input_arena.as_ref().ok_or("missing image arena")?.1,
+                    ),
+                    DrawKind::Glyph => (
+                        kernels.glyph.as_ref().ok_or("missing glyph pipeline")?,
+                        &input_arena.as_ref().ok_or("missing glyph arena")?.1,
+                    ),
+                    DrawKind::GroupClear | DrawKind::GroupComposite => {
+                        return Err("invalid group dispatch".into());
+                    }
+                }
             };
             pass.set_pipeline(pipeline);
             pass.set_bind_group(0, draw_group, &[(index * PARAM_STRIDE) as u32]);
@@ -350,6 +409,7 @@ impl Rasterizer {
             parameters,
             _rectangle_group: group,
             input_arena,
+            group_buffers,
             _kernels: Arc::clone(&self.kernels),
         })
     }
@@ -370,6 +430,7 @@ pub struct EncodedFrame {
     parameters: wgpu::Buffer,
     _rectangle_group: wgpu::BindGroup,
     input_arena: Option<(wgpu::Buffer, wgpu::BindGroup)>,
+    group_buffers: Option<GroupBuffers>,
     _kernels: Arc<Kernels>,
 }
 impl EncodedFrame {
@@ -394,7 +455,7 @@ impl EncodedFrame {
     pub fn output_bytes(&self) -> u64 {
         self.accounting.output_bytes
     }
-    /// Output + parameters + optional immutable inputs; excludes readback.
+    /// Output + parameters + optional immutable inputs/scratch; excludes readback.
     pub fn owned_buffer_bytes(&self) -> u64 {
         self.accounting.owned_buffer_bytes
     }
@@ -413,6 +474,9 @@ impl EncodedFrame {
         if let Some((buffer, _)) = self.input_arena {
             buffer.destroy();
         }
+        if let Some(groups) = self.group_buffers {
+            groups.destroy_after_completion();
+        }
     }
 }
 
@@ -428,7 +492,7 @@ mod tests {
     fn two_target_admission_accepts_exact_cap_and_rejects_overflow_or_mismatch() {
         let input = MAX_GPU_BUFFER_BYTES - 8 - 256;
         let exact =
-            BufferAccounting::checked(Profile::Probe, 4, 256, input, 4, MAX_GPU_BUFFER_BYTES)
+            BufferAccounting::checked(Profile::Probe, 4, 256, input, 0, 4, MAX_GPU_BUFFER_BYTES)
                 .unwrap();
         assert_eq!(exact.owned_buffer_bytes, MAX_GPU_BUFFER_BYTES - 4);
         assert_eq!(exact.output_bytes, 4);
@@ -438,26 +502,43 @@ mod tests {
                 4,
                 256,
                 input + 1,
+                0,
                 4,
                 MAX_GPU_BUFFER_BYTES + 1
             )
             .is_err()
         );
         assert!(
-            BufferAccounting::checked(Profile::Probe, 4, 256, input, 4, MAX_GPU_BUFFER_BYTES - 1)
-                .is_err()
+            BufferAccounting::checked(
+                Profile::Probe,
+                4,
+                256,
+                input,
+                0,
+                4,
+                MAX_GPU_BUFFER_BYTES - 1
+            )
+            .is_err()
         );
-        assert!(BufferAccounting::checked(Profile::Probe, u64::MAX, 256, 0, 0, 255).is_err());
+        assert!(BufferAccounting::checked(Profile::Probe, u64::MAX, 256, 0, 0, 0, 255).is_err());
         assert!(
-            BufferAccounting::checked(Profile::Probe, u64::MAX / 2 + 1, 0, 0, u64::MAX / 2 + 1, 0)
-                .is_err()
+            BufferAccounting::checked(
+                Profile::Probe,
+                u64::MAX / 2 + 1,
+                0,
+                0,
+                0,
+                u64::MAX / 2 + 1,
+                0
+            )
+            .is_err()
         );
     }
 
     #[test]
     fn clear_plan_keeps_second_target_charge_and_uniform_alignment_refusal() {
         let plan = plan(Frame::new(4, 2, 0), &[]).unwrap();
-        let bytes = BufferAccounting::for_plan(&plan, 256, false).unwrap();
+        let bytes = BufferAccounting::for_plan(&plan, 256, false, false).unwrap();
         assert_eq!(
             bytes,
             BufferAccounting {
@@ -466,10 +547,13 @@ mod tests {
                 planned_buffer_bytes: 320,
             }
         );
-        assert_eq!(BufferAccounting::for_plan(&plan, 16, false).unwrap(), bytes);
+        assert_eq!(
+            BufferAccounting::for_plan(&plan, 16, false, false).unwrap(),
+            bytes
+        );
         for alignment in [0, 3, 512] {
             assert_eq!(
-                BufferAccounting::for_plan(&plan, alignment, false).unwrap_err(),
+                BufferAccounting::for_plan(&plan, alignment, false, false).unwrap_err(),
                 "unexpected uniform alignment"
             );
         }
@@ -496,10 +580,10 @@ mod tests {
         )
         .unwrap();
         assert_eq!(
-            BufferAccounting::for_plan(&plan, 256, false).unwrap_err(),
+            BufferAccounting::for_plan(&plan, 256, false, false).unwrap_err(),
             "missing glyph pipeline"
         );
-        let bytes = BufferAccounting::for_plan(&plan, 256, true).unwrap();
+        let bytes = BufferAccounting::for_plan(&plan, 256, true, false).unwrap();
         assert_eq!(bytes.output_bytes, 4);
         assert_eq!(bytes.owned_buffer_bytes, 524);
         assert_eq!(bytes.planned_buffer_bytes, 528);
@@ -515,7 +599,7 @@ mod tests {
             &[],
         )
         .unwrap();
-        let bytes = BufferAccounting::for_plan(&plan, 256, false).unwrap();
+        let bytes = BufferAccounting::for_plan(&plan, 256, false, false).unwrap();
         assert_eq!(bytes.output_bytes, 4_153_600);
         assert_eq!(bytes.owned_buffer_bytes, 4_153_856);
         assert_eq!(plan.conversion_buffer_bytes(), 4_280_336);
@@ -526,6 +610,7 @@ mod tests {
                 bytes.output_bytes,
                 256,
                 0,
+                0,
                 plan.conversion_buffer_bytes(),
                 bytes.planned_buffer_bytes
             )
@@ -535,7 +620,7 @@ mod tests {
         // limits can reach every byte of this absolute allocation ceiling.
         let cap = Profile::Native.max_gpu_buffer_bytes();
         assert!(
-            BufferAccounting::checked(Profile::Native, 4, 256, cap - 4 - 256 - 272, 272, cap)
+            BufferAccounting::checked(Profile::Native, 4, 256, cap - 4 - 256 - 272, 0, 272, cap)
                 .is_ok()
         );
         assert!(
@@ -544,6 +629,7 @@ mod tests {
                 4,
                 256,
                 cap - 4 - 256 - 272 + 1,
+                0,
                 272,
                 cap + 1
             )
@@ -551,3 +637,7 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "gpu/group_tests.rs"]
+mod group_tests;

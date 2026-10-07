@@ -33,8 +33,11 @@ whole-scene planning on the existing graphics owner. Earlier
 [glyph](../tools/vulkan-raster-probe/GLYPHS.md) and
 [worker-text](../tools/vulkan-raster-probe/WORKER_TEXT.md) results remain separate
 offscreen checks on three adapters. Native page zoom now scales admitted scenes
-within the same resource limits. Broader viewport/scene admission, group opacity,
-shaping and native GPU screenshot capture remain unfinished.
+within the same resource limits. Broader viewport/scene admission, transparent
+group opacity, shaping and native GPU screenshot capture remain unfinished.
+The [bounded opacity route](vulkan-opacity.md) now admits nested groups with a
+proved opaque rectangular backing and `k/256` opacity. Transparent backings and
+arbitrary opacity values still use the complete CPU route.
 The [integration design](vulkan-native-plan.md) records the original seams and
 ownership requirements. Earlier experiments and failed compositor comparisons
 remain recorded below.

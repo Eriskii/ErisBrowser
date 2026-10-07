@@ -13,6 +13,10 @@ default = []
 browser-bridge = ["dep:eris", "eris/raster-bridge"]
 
 [[bin]]
+name = "eris-vulkan-opacity-check"
+path = "src/bin/opacity-check.rs"
+
+[[bin]]
 name = "eris-vulkan-reuse-check"
 path = "src/bin/reuse-check.rs"
 

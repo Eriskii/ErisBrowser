@@ -1,0 +1,714 @@
+//! Independent Native opacity planner checks. Literal pixels were authored and
+//! peer-reviewed before implementation in numerical-source-ready.json under
+//! /tmp/eris-next-rendering-assessment-1. This decoder checks public plan bytes;
+//! it is not shader execution or a replacement for GPU/readback comparisons.
+use super::*;
+
+fn native(frame: Frame, commands: &[Command]) -> Result<Plan> {
+    plan_with_masks_for_profile(Profile::Native, frame, commands, &[], &[], &[])
+}
+
+fn rgba(rect: Rect, color: [u8; 4]) -> Command {
+    Command::Rect {
+        rect,
+        rgba: color,
+        radius: 0.0,
+    }
+}
+
+fn word(bytes: &[u8], index: usize) -> u32 {
+    u32::from_le_bytes(bytes[index * 4..index * 4 + 4].try_into().unwrap())
+}
+
+fn scratch_index(p: impl Fn(usize) -> u32, field: usize, x: u32, y: u32) -> usize {
+    let (base, ox, oy, width, height) = (
+        p(field),
+        p(field + 1),
+        p(field + 2),
+        p(field + 3),
+        p(field + 4),
+    );
+    assert_eq!(base % 2, 0);
+    assert!(x >= ox && y >= oy && x - ox < width && y - oy < height);
+    (base / 2 + (y - oy) * width + x - ox) as usize
+}
+
+// Arithmetic uses u64 here to independently check the shader's u32 envelope.
+// Each record is logical R,G,B,A; storage packing is tested separately below.
+fn over(source: u32, coverage: u32, destination: [u32; 4]) -> [u32; 4] {
+    let a = u64::from((source >> 24) * coverage / 255) * 257;
+    let mut out = [0; 4];
+    for (index, shift) in [16, 8, 0, 24].into_iter().enumerate() {
+        let component = if index == 3 {
+            a
+        } else {
+            (u64::from((source >> shift) & 255) * a + 127) / 255
+        };
+        let numerator = u64::from(destination[index]) * (65535 - a) + 32767;
+        assert!(numerator <= u64::from(u32::MAX));
+        out[index] = (component + numerator / 65535).try_into().unwrap();
+        assert!(out[index] <= 65535);
+    }
+    out
+}
+
+fn decode(plan: &Plan) -> Vec<u32> {
+    let frame = plan.frame();
+    let mut pixels = vec![0xdeadbeef; frame.width as usize * frame.height as usize];
+    assert_eq!(plan.group_scratch_bytes() % 8, 0);
+    let mut scratch = vec![[0xdead; 4]; plan.group_scratch_bytes() as usize / 8];
+    for (draw_index, draw) in plan.draws().iter().enumerate() {
+        let record = &plan.parameters()[draw_index * PARAM_STRIDE..(draw_index + 1) * PARAM_STRIDE];
+        let p = |index| word(record, index);
+        let (x0, y0, width, height) = draw.bounds();
+        for y in y0..y0 + height {
+            for x in x0..x0 + width {
+                let root = (y * frame.width + x) as usize;
+                match draw.kind() {
+                    DrawKind::GroupClear => {
+                        assert!(draw.target_is_group());
+                        assert_eq!(p(21), 1);
+                        scratch[scratch_index(p, 16, x, y)] = [0; 4];
+                    }
+                    DrawKind::GroupComposite => {
+                        let source = scratch[scratch_index(p, 24, x, y)];
+                        assert_eq!(source[3], 65535, "backing certificate must hold");
+                        let k = u64::from(p(29));
+                        assert!((1..256).contains(&k));
+                        if draw.target_is_group() {
+                            assert_eq!(p(21), 1);
+                            let index = scratch_index(p, 16, x, y);
+                            assert_eq!(scratch[index][3], 65535);
+                            for (c, source_channel) in source.into_iter().enumerate() {
+                                let n = u64::from(source_channel) * k
+                                    + u64::from(scratch[index][c]) * (256 - k);
+                                scratch[index][c] = ((n + 128) / 256) as u32;
+                            }
+                        } else {
+                            assert_eq!(p(21), 0);
+                            let mut color = 0;
+                            for (c, shift) in [16, 8, 0].into_iter().enumerate() {
+                                let d = u64::from((pixels[root] >> shift) & 255) * 257;
+                                let n = u64::from(source[c]) * k + d * (256 - k);
+                                color |= (((n + 32896) / 65792) as u32) << shift;
+                            }
+                            pixels[root] = color;
+                        }
+                    }
+                    kind => {
+                        let (source, coverage) = match kind {
+                            DrawKind::Rectangle => (p(6), 255),
+                            DrawKind::Image => {
+                                let sx = word(plan.input_bytes(), (p(12) + x - x0) as usize);
+                                let sy = word(plan.input_bytes(), (p(13) + y - y0) as usize);
+                                (
+                                    word(plan.input_bytes(), (p(8) + sy * p(9) + sx) as usize),
+                                    255,
+                                )
+                            }
+                            DrawKind::Glyph => {
+                                let sy = i64::from(y) - i64::from(p(13) as i32);
+                                if sy < 0 || sy >= i64::from(p(10)) {
+                                    continue;
+                                }
+                                let ox =
+                                    word(plan.input_bytes(), p(12) as usize + sy as usize) as i32;
+                                let sx = i64::from(x) - i64::from(ox);
+                                if sx < 0 || sx >= i64::from(p(9)) {
+                                    continue;
+                                }
+                                (
+                                    p(6),
+                                    word(
+                                        plan.input_bytes(),
+                                        p(8) as usize + sy as usize * p(9) as usize + sx as usize,
+                                    ),
+                                )
+                            }
+                            _ => unreachable!(),
+                        };
+                        if draw.target_is_group() {
+                            assert_eq!(p(21), 1);
+                            let index = scratch_index(p, 16, x, y);
+                            scratch[index] = over(source, coverage, scratch[index]);
+                        } else {
+                            assert!(record[64..].iter().all(|&b| b == 0));
+                            let a = (source >> 24) * coverage / 255;
+                            let mut color = 0;
+                            for shift in [0, 8, 16] {
+                                let c = (((source >> shift) & 255) * a
+                                    + ((pixels[root] >> shift) & 255) * (255 - a)
+                                    + 127)
+                                    / 255;
+                                color |= c << shift;
+                            }
+                            pixels[root] = color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    pixels
+}
+
+#[test]
+fn opacity_tie_and_overlapping_children_match_frozen_pixels() {
+    let tie = native(
+        Frame::new(3, 1, 0),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 1., 1., 0x410000),
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&tie), [0x210000, 0, 0]);
+    assert_eq!(tie.group_scratch_bytes(), 8);
+    assert_eq!(tie.invocations(), 320);
+    assert_eq!(tie.gpu_buffer_bytes(), 1316);
+    assert_eq!(
+        tie.draws().iter().map(|d| d.kind()).collect::<Vec<_>>(),
+        [
+            DrawKind::Rectangle,
+            DrawKind::GroupClear,
+            DrawKind::Rectangle,
+            DrawKind::GroupComposite,
+        ]
+    );
+    let overlap = native(
+        Frame::new(8, 2, 0xffffff),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 6., 2., 0xff0000),
+            rect(2., 0., 4., 2., 0x0000ff),
+            Command::PopOpacity,
+            rect(7., 0., 1., 2., 0x00ff00),
+        ],
+    )
+    .unwrap();
+    assert_eq!(
+        decode(&overlap),
+        [
+            0xff8080, 0xff8080, 0x8080ff, 0x8080ff, 0x8080ff, 0x8080ff, 0xffffff, 0x00ff00,
+            0xff8080, 0xff8080, 0x8080ff, 0x8080ff, 0x8080ff, 0x8080ff, 0xffffff, 0x00ff00,
+        ]
+    );
+}
+
+#[test]
+fn opacity_nested_pop_keeps_rgba16_rounding_and_disjoint_regions() {
+    let plan = native(
+        Frame::new(4, 1, 0xffffff),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 3., 1., 0xff0000),
+            Command::PushOpacity(0.5),
+            rect(1., 0., 1., 1., 0x0000ff),
+            Command::PopOpacity,
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&plan), [0xff8080, 0xbf80bf, 0xff8080, 0xffffff]);
+    assert_eq!(plan.group_scratch_bytes(), 32);
+    let clears: Vec<_> = plan
+        .draws()
+        .iter()
+        .enumerate()
+        .filter(|(_, d)| d.kind() == DrawKind::GroupClear)
+        .collect();
+    assert_eq!(clears.len(), 2);
+    let mut ranges = Vec::new();
+    for (index, draw) in clears {
+        let record = &plan.parameters()[index * PARAM_STRIDE..];
+        let base = word(record, 16);
+        let (_, _, w, h) = draw.bounds();
+        ranges.push((base, base + w * h * 2));
+    }
+    ranges.sort();
+    assert!(ranges[0].1 <= ranges[1].0);
+    assert_eq!(ranges[1].1 as u64 * 4, plan.group_scratch_bytes());
+}
+
+#[test]
+fn opacity_near_half_grid_values_keep_root_and_nested_rounding() {
+    // Additive literals authored before the first candidate execution. No
+    // candidate plan or CPU painter supplied these expected channels.
+    for (k, root, nested) in [
+        (127, 0x200000, 0xc080bf),
+        (128, 0x210000, 0xbf80bf),
+        (129, 0x210000, 0xbf80c0),
+    ] {
+        let value = k as f32 / 256.;
+        let direct = native(
+            Frame::new(1, 1, 0),
+            &[
+                Command::PushOpacity(value),
+                rect(0., 0., 1., 1., 0x410000),
+                Command::PopOpacity,
+            ],
+        )
+        .unwrap();
+        assert_eq!(decode(&direct), [root]);
+        let paired = native(
+            Frame::new(1, 1, 0xffffff),
+            &[
+                Command::PushOpacity(0.5),
+                rect(0., 0., 1., 1., 0xff0000),
+                Command::PushOpacity(value),
+                rect(0., 0., 1., 1., 0x0000ff),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+        )
+        .unwrap();
+        assert_eq!(decode(&paired), [nested]);
+    }
+}
+
+#[test]
+fn opacity_image_and_mask_alpha_remain_primitive_inputs() {
+    let images = [SourceImage {
+        width: 1,
+        height: 1,
+        rgba: &[255, 0, 0, 128],
+    }];
+    let image = plan_with_masks_for_profile(
+        Profile::Native,
+        Frame::new(3, 1, 0),
+        &[
+            Command::PushOpacity(0.25),
+            rect(0., 0., 2., 1., 0xffffff),
+            Command::Image {
+                rect: Rect::new(1., 0., 1., 1.),
+                source: 0,
+            },
+            Command::PopOpacity,
+        ],
+        &images,
+        &[],
+        &[],
+    )
+    .unwrap();
+    assert_eq!(decode(&image), [0x404040, 0x402020, 0]);
+    let masks = [SourceMask {
+        width: 2,
+        height: 1,
+        coverage: &[0, 128],
+    }];
+    let mask = plan_with_masks_for_profile(
+        Profile::Native,
+        Frame::new(3, 1, 0),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 2., 1., 0xffffff),
+            Command::Glyph {
+                source: 0,
+                rows: 0,
+                y: 0,
+                rgba: [255, 0, 0, 128],
+            },
+            Command::PopOpacity,
+        ],
+        &[],
+        &masks,
+        &[&[0]],
+    )
+    .unwrap();
+    assert_eq!(decode(&mask), [0x808080, 0x806060, 0]);
+}
+
+#[test]
+fn opacity_fixed_escape_and_fractional_caller_clip_keep_absolute_bounds() {
+    let mut frame = Frame::new(6, 2, 0xffffff);
+    frame.document_offset = (0., -5.);
+    let plan = native(
+        frame,
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 5., 5., 2., 0xff0000),
+            Command::PushClip(Rect::new(0., 5., 1., 1.)),
+            Command::PushFixed,
+            rect(3., 0., 1., 1., 0x0000ff),
+            Command::PopFixed,
+            rect(0., 5., 1., 1., 0x00ff00),
+            Command::PopClip,
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(
+        decode(&plan),
+        [
+            0x80ff80, 0xff8080, 0xff8080, 0x8080ff, 0xff8080, 0xffffff, 0xff8080, 0xff8080,
+            0xff8080, 0xff8080, 0xff8080, 0xffffff,
+        ]
+    );
+    assert_eq!(plan.group_scratch_bytes(), 80);
+    let mut fractional = Frame::new(3, 1, 0xffffff);
+    fractional.caller_clip = Rect::new(0.5, 0., 1., 1.);
+    let plan = native(
+        fractional,
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 3., 1., 0xff0000),
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&plan), [0xffffff, 0xff8080, 0xffffff]);
+    assert_eq!(plan.group_scratch_bytes(), 8);
+    assert_eq!(plan.draws()[1].bounds(), (1, 0, 1, 1));
+}
+
+#[test]
+fn opacity_unit_zero_and_empty_scopes_preserve_existing_targets() {
+    let draws = [
+        rgba(Rect::new(0., 0., 1., 1.), [1, 0, 0, 128]),
+        rgba(Rect::new(0., 0., 1., 1.), [0, 0, 0, 1]),
+    ];
+    let bare = native(Frame::new(1, 1, 0), &draws).unwrap();
+    let unit = native(
+        Frame::new(1, 1, 0),
+        &[
+            Command::PushOpacity(1.),
+            draws[0],
+            draws[1],
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&unit), [0x010000]);
+    assert_eq!(unit.group_scratch_bytes(), 0);
+    assert_eq!(unit.parameters(), bare.parameters());
+    assert_eq!(unit.draws(), bare.draws());
+    let nested_unit = native(
+        Frame::new(1, 1, 0xffffff),
+        &[
+            Command::PushOpacity(0.5),
+            rect(0., 0., 1., 1., 0xff0000),
+            Command::PushOpacity(1.),
+            rect(0., 0., 1., 1., 0x0000ff),
+            Command::PopOpacity,
+            Command::PopOpacity,
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&nested_unit), [0x8080ff]);
+    assert_eq!(nested_unit.group_scratch_bytes(), 8);
+    assert_eq!(
+        nested_unit
+            .draws()
+            .iter()
+            .filter(|d| d.kind() == DrawKind::GroupClear)
+            .count(),
+        1
+    );
+    let zero = native(
+        Frame::new(2, 1, 0xffffff),
+        &[
+            Command::PushOpacity(0.),
+            rgba(Rect::new(0., 0., 2., 1.), [255, 0, 0, 128]),
+            Command::PopOpacity,
+            rect(1., 0., 1., 1., 0x00ff00),
+        ],
+    )
+    .unwrap();
+    assert_eq!(decode(&zero), [0xffffff, 0x00ff00]);
+    assert_eq!(zero.group_scratch_bytes(), 0);
+    for opacity in [0., -0., 0.5, 1.] {
+        let empty = native(
+            Frame::new(1, 1, 0),
+            &[Command::PushOpacity(opacity), Command::PopOpacity],
+        )
+        .unwrap();
+        assert_eq!(empty.group_scratch_bytes(), 0);
+        assert_eq!(empty.draws().len(), 1);
+    }
+}
+
+#[test]
+fn opacity_values_are_exact_grid_members_even_when_empty_or_suppressed() {
+    for k in 1..256 {
+        let p = native(
+            Frame::new(1, 1, 0),
+            &[
+                Command::PushOpacity(k as f32 / 256.),
+                rect(0., 0., 1., 1., 0xffffff),
+                Command::PopOpacity,
+            ],
+        )
+        .unwrap();
+        assert_eq!(p.group_scratch_bytes(), 8);
+        assert_eq!(
+            word(
+                p.parameters(),
+                (p.draws().len() - 1) * PARAM_STRIDE / 4 + 29
+            ),
+            k
+        );
+    }
+    for opacity in [0.1, 1. / 512., f32::from_bits(0.5f32.to_bits() + 1)] {
+        for commands in [
+            vec![Command::PushOpacity(opacity), Command::PopOpacity],
+            vec![
+                Command::PushOpacity(0.),
+                Command::PushOpacity(opacity),
+                Command::PopOpacity,
+                Command::PopOpacity,
+            ],
+        ] {
+            assert_eq!(
+                native(Frame::new(1, 1, 0), &commands).unwrap_err(),
+                "unsupported opacity value"
+            );
+        }
+    }
+    for opacity in [f32::NAN, f32::INFINITY, f32::NEG_INFINITY, -0.1, 1.01] {
+        assert!(
+            native(
+                Frame::new(1, 1, 0),
+                &[Command::PushOpacity(opacity), Command::PopOpacity]
+            )
+            .is_err()
+        );
+    }
+}
+
+#[test]
+fn opacity_requires_first_direct_rect_to_cover_the_final_descendant_union() {
+    let frame = Frame::new(4, 1, 0xffffff);
+    let error = "opacity group requires opaque rectangular backing";
+    let disjoint_backing = [
+        Command::PushOpacity(0.5),
+        rect(0., 0., 2., 1., 0xff0000),
+        rect(1., 0., 2., 1., 0x0000ff),
+        Command::PopOpacity,
+    ];
+    assert_eq!(native(frame, &disjoint_backing).unwrap_err(), error);
+    let partial_first = [
+        Command::PushOpacity(0.5),
+        rgba(Rect::new(0., 0., 1., 1.), [255, 0, 0, 128]),
+        rect(0., 0., 1., 1., 0xffffff),
+        Command::PopOpacity,
+    ];
+    assert_eq!(native(frame, &partial_first).unwrap_err(), error);
+    let child_first = [
+        Command::PushOpacity(0.5),
+        Command::PushOpacity(0.5),
+        rect(0., 0., 1., 1., 0xffffff),
+        Command::PopOpacity,
+        Command::PopOpacity,
+    ];
+    assert_eq!(native(frame, &child_first).unwrap_err(), error);
+    let escaped_backing = [
+        Command::PushClip(Rect::new(0., 0., 1., 1.)),
+        Command::PushOpacity(0.5),
+        rect(0., 0., 4., 1., 0xff0000),
+        Command::PushFixed,
+        rect(3., 0., 1., 1., 0x0000ff),
+        Command::PopFixed,
+        Command::PopOpacity,
+        Command::PopClip,
+    ];
+    assert_eq!(native(frame, &escaped_backing).unwrap_err(), error);
+    let image = [SourceImage {
+        width: 1,
+        height: 1,
+        rgba: &[255, 0, 0, 128],
+    }];
+    assert_eq!(
+        plan_with_masks_for_profile(
+            Profile::Native,
+            frame,
+            &[
+                Command::PushOpacity(0.5),
+                Command::Image {
+                    rect: Rect::new(0., 0., 1., 1.),
+                    source: 0
+                },
+                Command::PopOpacity,
+            ],
+            &image,
+            &[],
+            &[]
+        )
+        .unwrap_err(),
+        error
+    );
+}
+
+#[test]
+fn opacity_zero_cannot_hide_invalid_source_ids_geometry_or_tail_commands() {
+    for hidden in [
+        Command::Image {
+            rect: Rect::new(0., 0., 1., 1.),
+            source: 0,
+        },
+        Command::Glyph {
+            source: 0,
+            rows: 0,
+            y: 0,
+            rgba: [0, 0, 0, 255],
+        },
+        rect(f32::NAN, 0., 1., 1., 0),
+        Command::Unsupported("late unsupported"),
+    ] {
+        assert!(
+            native(
+                Frame::new(1, 1, 0),
+                &[Command::PushOpacity(0.), hidden, Command::PopOpacity,]
+            )
+            .is_err()
+        );
+    }
+    let malformed = [SourceImage {
+        width: 1,
+        height: 1,
+        rgba: &[],
+    }];
+    assert!(
+        plan_with_masks_for_profile(
+            Profile::Native,
+            Frame::new(1, 1, 0),
+            &[Command::PushOpacity(0.), Command::PopOpacity,],
+            &malformed,
+            &[],
+            &[]
+        )
+        .is_err()
+    );
+}
+
+#[test]
+fn opacity_combined_scope_depth_and_crossed_pops_are_rejected() {
+    let frame = Frame::new(2, 1, 0);
+    let mut pushes = Vec::new();
+    let mut pops = Vec::new();
+    for index in 0..MAX_SCOPES {
+        let (push, pop) = match index % 3 {
+            0 => (Command::PushOpacity(1.), Command::PopOpacity),
+            1 => (
+                Command::PushClip(Rect::new(0., 0., 2., 1.)),
+                Command::PopClip,
+            ),
+            _ => (Command::PushFixed, Command::PopFixed),
+        };
+        pushes.push(push);
+        pops.push(pop);
+    }
+    let mut exact = pushes.clone();
+    exact.push(rect(0., 0., 1., 1., 1));
+    exact.extend(pops.iter().rev().copied());
+    assert_eq!(decode(&native(frame, &exact).unwrap()), [1, 0]);
+    pushes.push(Command::PushOpacity(1.));
+    assert!(native(frame, &pushes).is_err());
+    for commands in [
+        vec![Command::PopOpacity],
+        vec![Command::PushOpacity(0.5)],
+        vec![Command::PushOpacity(0.), Command::PopFixed],
+        vec![
+            Command::PushFixed,
+            Command::PushOpacity(1.),
+            Command::PopFixed,
+            Command::PopOpacity,
+        ],
+    ] {
+        assert!(native(frame, &commands).is_err());
+    }
+}
+
+#[test]
+fn opacity_regions_are_retained_across_siblings_and_phases_without_ledger_reset() {
+    let first = [
+        Command::PushOpacity(0.5),
+        rect(0., 0., 1., 1., 0xff0000),
+        Command::PopOpacity,
+    ];
+    let second = [
+        Command::PushOpacity(0.25),
+        rect(2., 0., 2., 1., 0x0000ff),
+        Command::PopOpacity,
+    ];
+    let target = Frame::new(8, 1, 0);
+    let plan = plan_native_phases(
+        target,
+        &[
+            Phase {
+                frame: target,
+                commands: &first,
+            },
+            Phase {
+                frame: target,
+                commands: &second,
+            },
+        ],
+        &[],
+        &[],
+        &[],
+    )
+    .unwrap();
+    assert_eq!(plan.group_scratch_bytes(), 24);
+    assert_eq!(decode(&plan), [0x800000, 0, 0x000040, 0x000040, 0, 0, 0, 0]);
+    assert_eq!(plan.draws().len(), 7);
+    assert_eq!(plan.invocations(), 512);
+    assert_eq!(plan.gpu_buffer_bytes(), 2120);
+    assert!(
+        plan_native_phases(
+            target,
+            &[
+                Phase {
+                    frame: target,
+                    commands: &[Command::PushOpacity(0.5)]
+                },
+                Phase {
+                    frame: target,
+                    commands: &[Command::PopOpacity]
+                },
+            ],
+            &[],
+            &[],
+            &[]
+        )
+        .is_err()
+    );
+}
+
+#[test]
+fn opacity_group_clear_and_pop_use_the_global_exact_work_boundary() {
+    let frame = Frame::new(1280, 1024, 0);
+    let commands = [
+        Command::PushOpacity(0.5),
+        rect(0., 0., 640., 712., 0xff0000),
+        Command::PopOpacity,
+        Command::PushOpacity(0.5),
+        rect(0., 0., 160., 24., 0x0000ff),
+        Command::PopOpacity,
+    ];
+    let exact = native(frame, &commands).unwrap();
+    assert_eq!(exact.invocations(), 4_000_000);
+    assert_eq!(exact.group_scratch_bytes(), 3_676_160);
+    assert_eq!(exact.gpu_buffer_bytes(), 14_163_728);
+    let mut over = commands.to_vec();
+    over.push(rect(0., 0., 1., 1., 0));
+    assert_eq!(native(frame, &over).unwrap_err(), "GPU invocation budget");
+}
+
+#[test]
+fn opacity_keeps_probe_refusal_and_old_native_uniform_bytes() {
+    let frame = Frame::new(3, 1, 0);
+    for value in [0., 0.5, 1.] {
+        assert!(plan(frame, &[Command::PushOpacity(value), Command::PopOpacity]).is_err());
+    }
+    let commands = [rect(0., 0., 1., 1., 0xff0000)];
+    let old = plan(frame, &commands).unwrap();
+    let current = native(frame, &commands).unwrap();
+    assert_eq!(current.group_scratch_bytes(), 0);
+    assert_eq!(old.draws(), current.draws());
+    assert_eq!(old.parameters(), current.parameters());
+    assert_eq!(old.input_bytes(), current.input_bytes());
+    for bytes in current.parameters().chunks_exact(PARAM_STRIDE) {
+        assert!(bytes[64..].iter().all(|&b| b == 0));
+    }
+}

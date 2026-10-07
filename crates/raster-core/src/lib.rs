@@ -19,6 +19,7 @@ pub type Result<T> = std::result::Result<T, String>;
 
 pub mod profile;
 pub use profile::Profile;
+mod opacity;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Rect {
@@ -94,6 +95,8 @@ pub enum Command {
     PopClip,
     PushFixed,
     PopFixed,
+    PushOpacity(f32),
+    PopOpacity,
     Unsupported(&'static str),
 }
 pub fn rect(x: f32, y: f32, width: f32, height: f32, color: u32) -> Command {
@@ -147,6 +150,8 @@ pub enum DrawKind {
     Rectangle,
     Image,
     Glyph,
+    GroupClear,
+    GroupComposite,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct ImageParameters {
@@ -167,14 +172,31 @@ pub struct Draw {
     height: u32,
     color: u32, // source 0xAARRGGBB, including the opaque clear
     image: Option<ImageParameters>,
+    group: Option<opacity::Parameters>,
 }
 impl Draw {
     pub fn kind(self) -> DrawKind {
+        if let Some(group) = self.group {
+            match group.operation {
+                opacity::Operation::Clear => return DrawKind::GroupClear,
+                opacity::Operation::Composite => return DrawKind::GroupComposite,
+                opacity::Operation::Paint => {}
+            }
+        }
         match self.image {
             Some(input) if input.glyph_y.is_some() => DrawKind::Glyph,
             Some(_) => DrawKind::Image,
             None => DrawKind::Rectangle,
         }
+    }
+    pub fn target_is_group(self) -> bool {
+        self.group.is_some_and(|group| group.destination.is_some())
+    }
+    /// Exact k in k/256 for a materialized group's final composite operation.
+    pub fn opacity_numerator(self) -> Option<u32> {
+        self.group
+            .filter(|group| group.operation == opacity::Operation::Composite)
+            .map(|group| group.opacity)
     }
     pub fn bounds(self) -> (u32, u32, u32, u32) {
         (self.x, self.y, self.width, self.height)
@@ -196,6 +218,7 @@ pub struct Plan {
     draws: Vec<Draw>,
     invocations: u64,
     gpu_buffer_bytes: u64,
+    group_scratch_bytes: u64,
     parameters: Vec<u8>,
     input: Vec<u8>,
 }
@@ -226,6 +249,10 @@ impl Plan {
     }
     pub fn gpu_buffer_bytes(&self) -> u64 {
         self.gpu_buffer_bytes
+    }
+    /// Disjoint cropped RGBA16 intermediates retained for this entire frame.
+    pub fn group_scratch_bytes(&self) -> u64 {
+        self.group_scratch_bytes
     }
     pub fn parameters(&self) -> &[u8] {
         &self.parameters
@@ -275,6 +302,7 @@ struct PendingDraw {
     draw: Draw,
     image: Option<ImageDraft>,
     glyph: Option<GlyphDraft>,
+    group: opacity::Pending,
 }
 fn reserved<T>(count: usize) -> Result<Vec<T>> {
     let mut values = Vec::new();
@@ -463,6 +491,9 @@ fn parameter_bytes(frame: Frame, draws: &[Draw]) -> Result<Vec<u8>> {
         for (field, slot) in fields.into_iter().zip(record[..64].as_chunks_mut::<4>().0) {
             slot.copy_from_slice(&field.to_le_bytes());
         }
+        if let Some(group) = draw.group {
+            group.write(frame, record);
+        }
     }
     Ok(bytes)
 }
@@ -591,6 +622,7 @@ struct PlannerDraft<'a> {
     pending: Vec<PendingDraw>,
     lut_words: usize,
     has_input: bool,
+    opacity: opacity::State,
 }
 
 /// Conservative structural CPU peak for Native planning at the closed limits.
@@ -628,12 +660,14 @@ pub fn native_planner_metadata_peak_bytes() -> Result<usize> {
             std::mem::size_of::<u32>(),
         ),
     ];
-    counts.into_iter().try_fold(0usize, |total, (count, size)| {
-        count
-            .checked_mul(size)
-            .and_then(|bytes| total.checked_add(bytes))
-            .ok_or_else(|| "planner metadata overflow".into())
-    })
+    counts
+        .into_iter()
+        .try_fold(opacity::metadata_peak_bytes()?, |total, (count, size)| {
+            count
+                .checked_mul(size)
+                .and_then(|bytes| total.checked_add(bytes))
+                .ok_or_else(|| "planner metadata overflow".into())
+        })
 }
 impl<'a> PlannerDraft<'a> {
     fn new(
@@ -662,6 +696,7 @@ impl<'a> PlannerDraft<'a> {
             // Clear uses the rectangle shader but must always replace the target.
             color: 0xff00_0000 | frame.clear,
             image: None,
+            group: None,
         };
         let conversion_invocations = profile.conversion_invocations(frame.width, frame.height)?;
         let conversion_buffer_bytes = profile.conversion_buffer_bytes(frame.width, frame.height)?;
@@ -671,6 +706,7 @@ impl<'a> PlannerDraft<'a> {
             draw: clear,
             image: None,
             glyph: None,
+            group: opacity::Pending::Root,
         });
         let lut_words = 0usize;
         let has_input = false;
@@ -689,6 +725,7 @@ impl<'a> PlannerDraft<'a> {
             pending,
             lut_words,
             has_input,
+            opacity: opacity::State::new(command_count)?,
         })
     }
 
@@ -708,6 +745,14 @@ impl<'a> PlannerDraft<'a> {
         let pending = &mut self.pending;
         for command in commands {
             if coordinates.apply(command)? {
+                let operation = match *command {
+                    Command::PushOpacity(value) => self.opacity.push(value)?,
+                    Command::PopOpacity => self.opacity.pop()?,
+                    _ => None,
+                };
+                if let Some(operation) = operation {
+                    pending.push(operation);
+                }
                 continue;
             }
             let clip = coordinates.clip();
@@ -729,7 +774,7 @@ impl<'a> PlannerDraft<'a> {
                     return Err("glyph row count differs from mask height".into());
                 }
                 // Validate IDs and row geometry even when transparent or clipped.
-                if rgba[3] == 0 {
+                if rgba[3] == 0 || self.opacity.suppressed() {
                     continue;
                 }
                 let Some((x, dy, width, height)) = glyph_coverage(mask, origins, y, clip, frame)
@@ -743,6 +788,7 @@ impl<'a> PlannerDraft<'a> {
                     height,
                     color: packed_rgba(rgba),
                     image: None,
+                    group: None,
                 };
                 invocations = add_invocations(invocations, draw)?;
                 has_input = true;
@@ -750,6 +796,7 @@ impl<'a> PlannerDraft<'a> {
                     draw,
                     image: None,
                     glyph: Some(GlyphDraft { source, rows, y }),
+                    group: self.opacity.paint(draw, false),
                 });
                 continue;
             }
@@ -778,9 +825,16 @@ impl<'a> PlannerDraft<'a> {
                 | Command::PopClip
                 | Command::PushFixed
                 | Command::PopFixed
+                | Command::PushOpacity(_)
+                | Command::PopOpacity
                 | Command::Glyph { .. } => unreachable!("handled state or glyph command"),
             };
-            let blend = image.is_some() || color >> 24 != 255;
+            if self.opacity.suppressed() {
+                continue;
+            }
+            // CPU opaque rectangles inside an opacity layer use blend's
+            // half-open integer clip, not the opaque-root fill fast path.
+            let blend = image.is_some() || color >> 24 != 255 || self.opacity.in_group();
             let Some((x, y, width, height)) = coverage(rect, clip, frame, blend) else {
                 continue;
             };
@@ -791,6 +845,7 @@ impl<'a> PlannerDraft<'a> {
                 height,
                 color,
                 image: None,
+                group: None,
             };
             invocations = add_invocations(invocations, draw)?;
             if image.is_some() {
@@ -806,9 +861,13 @@ impl<'a> PlannerDraft<'a> {
                 draw,
                 image,
                 glyph: None,
+                group: self
+                    .opacity
+                    .paint(draw, image.is_none() && color >> 24 == 255),
             });
         }
         coordinates.finish()?;
+        self.opacity.finish_phase()?;
         self.invocations = invocations;
         self.lut_words = lut_words;
         self.has_input = has_input;
@@ -827,11 +886,13 @@ impl<'a> PlannerDraft<'a> {
             row_words,
             conversion_invocations,
             conversion_buffer_bytes,
-            invocations,
-            pending,
+            mut invocations,
+            mut pending,
             lut_words,
             has_input,
+            opacity,
         } = self;
+        let group_scratch_bytes = opacity.materialize(&mut pending, &mut invocations)?;
         let arena_bytes = if has_input {
             source_words
                 .checked_add(mask_words)
@@ -855,6 +916,7 @@ impl<'a> PlannerDraft<'a> {
             .checked_add(second_buffer_bytes)
             .and_then(|n| n.checked_add(parameter_size as u64))
             .and_then(|n| n.checked_add(arena_bytes as u64))
+            .and_then(|n| n.checked_add(group_scratch_bytes))
             .ok_or("GPU buffer overflow")?;
         profile.validate_buffer_bytes(gpu_buffer_bytes)?;
         // Allocation/scanning below has already been bounded by the complete plan.
@@ -942,6 +1004,7 @@ impl<'a> PlannerDraft<'a> {
             draws,
             invocations,
             gpu_buffer_bytes,
+            group_scratch_bytes,
             parameters,
             input,
         })
@@ -959,6 +1022,8 @@ pub fn validate_source_images(sources: &[SourceImage<'_>]) -> Result<usize> {
 
 #[cfg(feature = "gpu")]
 pub mod gpu;
+#[cfg(test)]
+mod opacity_tests;
 #[cfg(test)]
 mod phase_tests;
 #[cfg(test)]

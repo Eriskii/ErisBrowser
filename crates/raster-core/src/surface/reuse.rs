@@ -39,6 +39,7 @@ impl Key {
             .output
             .checked_add(self.raster.parameters)
             .and_then(|n| n.checked_add(self.raster.input))
+            .and_then(|n| n.checked_add(self.raster.scratch))
             .and_then(|n| n.checked_add(self.converted))
             .and_then(|n| n.checked_add(UNIFORM_BYTES))
             .filter(|n| *n <= Profile::Native.max_gpu_buffer_bytes())
@@ -60,7 +61,7 @@ impl Preparation {
     fn checked(plan: &Plan, format: wgpu::TextureFormat, limits: &wgpu::Limits) -> Result<Self> {
         let layout = SurfaceLayout::for_plan(plan, format)?;
         layout.check_device(limits)?;
-        let raster = RasterRequirements::for_plan(plan, limits, true)?;
+        let raster = RasterRequirements::for_plan(plan, limits, true, true)?;
         let key = Key {
             raster,
             width: plan.frame().width,
@@ -85,7 +86,7 @@ pub struct NativeRequirements {
     preparation: Preparation,
 }
 impl NativeRequirements {
-    /// Exact descriptor bytes of four buffers, or five when inputs are present.
+    /// Exact descriptor bytes of four buffers, plus optional inputs and scratch.
     /// Excludes readback, driver/bind-group overhead and queue staging storage.
     pub fn buffer_bytes(&self) -> u64 {
         self.preparation.bytes
@@ -220,7 +221,7 @@ impl NativeEncoder {
         mut check: impl FnMut() -> Result<()>,
     ) -> Result<Self> {
         check()?;
-        let rasterizer = Rasterizer::new(device, true);
+        let rasterizer = Rasterizer::new_native(device, true);
         check()?;
         let converter = SurfaceConverter::new(device);
         check()?;

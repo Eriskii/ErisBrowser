@@ -586,6 +586,9 @@ mod tests {
                     Command::PopFixed => assert_eq!(scopes.pop(), Some(true)),
                     Command::Unsupported(_) => panic!("unsupported command in positive fixture"),
                     Command::Glyph { .. } => panic!("glyph command in legacy alpha fixture"),
+                    Command::PushOpacity(_) | Command::PopOpacity => {
+                        panic!("native opacity command in legacy Probe fixture")
+                    }
                 }
                 assert!(scopes.len() <= MAX_SCOPES);
             }

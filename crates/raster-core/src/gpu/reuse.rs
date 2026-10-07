@@ -6,16 +6,27 @@ pub(crate) struct RasterRequirements {
     pub output: u64,
     pub parameters: u64,
     pub input: u64,
+    pub scratch: u64,
     pub alignment: u32,
 }
 impl RasterRequirements {
-    pub fn for_plan(plan: &Plan, limits: &wgpu::Limits, glyphs: bool) -> Result<Self> {
-        let accounting =
-            BufferAccounting::for_plan(plan, limits.min_uniform_buffer_offset_alignment, glyphs)?;
+    pub fn for_plan(
+        plan: &Plan,
+        limits: &wgpu::Limits,
+        glyphs: bool,
+        groups: bool,
+    ) -> Result<Self> {
+        let accounting = BufferAccounting::for_plan(
+            plan,
+            limits.min_uniform_buffer_offset_alignment,
+            glyphs,
+            groups,
+        )?;
         let required = Self {
             output: accounting.output_bytes,
             parameters: plan.parameters().len() as u64,
             input: plan.input_bytes().len() as u64,
+            scratch: plan.group_scratch_bytes(),
             alignment: limits.min_uniform_buffer_offset_alignment,
         };
         if plan.has_input() != (required.input != 0)
@@ -24,7 +35,23 @@ impl RasterRequirements {
             || required.parameters > limits.max_buffer_size
             || required.input > limits.max_buffer_size
             || required.input > limits.max_storage_buffer_binding_size
-            || limits.max_uniform_buffer_binding_size < if plan.has_input() { 64 } else { 32 }
+            || required.scratch > limits.max_buffer_size
+            || required.scratch > limits.max_storage_buffer_binding_size
+            || limits.max_uniform_buffer_binding_size
+                < if required.scratch != 0 {
+                    groups::GROUP_UNIFORM_BYTES
+                } else if plan.has_input() {
+                    64
+                } else {
+                    32
+                }
+            || (required.scratch != 0
+                && (limits.max_storage_buffers_per_shader_stage
+                    < if plan.has_input() { 3 } else { 2 }
+                    || limits.max_bindings_per_bind_group < if plan.has_input() { 4 } else { 3 }
+                    || limits.max_bind_groups < 1
+                    || limits.max_uniform_buffers_per_shader_stage < 1
+                    || limits.max_dynamic_uniform_buffers_per_pipeline_layout < 1))
             || plan.draws().iter().any(|draw| {
                 let (x, y) = draw.groups();
                 x > limits.max_compute_workgroups_per_dimension
@@ -42,6 +69,7 @@ pub(crate) struct RasterBuffers {
     parameters: wgpu::Buffer,
     rectangle_group: wgpu::BindGroup,
     input: Option<(wgpu::Buffer, wgpu::BindGroup)>,
+    groups: Option<GroupBuffers>,
 }
 impl RasterBuffers {
     /// All fallible admission and callbacks precede this bounded construction.
@@ -112,11 +140,26 @@ impl RasterBuffers {
             });
             (buffer, group)
         });
+        let groups = (required.scratch != 0).then(|| {
+            GroupBuffers::allocate(
+                device,
+                rasterizer
+                    .kernels
+                    .groups
+                    .as_ref()
+                    .expect("group pipelines admitted"),
+                required.scratch,
+                &output,
+                &parameters,
+                input.as_ref().map(|(buffer, _)| buffer),
+            )
+        });
         Self {
             output,
             parameters,
             rectangle_group,
             input,
+            groups,
         }
     }
 
@@ -129,7 +172,7 @@ impl RasterBuffers {
             &self.parameters,
             required.parameters,
             wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
-        ) && match &self.input {
+        ) && (match &self.input {
             Some((buffer, _)) => {
                 required.input != 0
                     && buffer_matches(
@@ -139,6 +182,9 @@ impl RasterBuffers {
                     )
             }
             None => required.input == 0,
+        }) && match &self.groups {
+            Some(groups) => groups.matches(required.scratch, required.input != 0),
+            None => required.scratch == 0,
         }
     }
 
@@ -166,20 +212,37 @@ impl RasterBuffers {
                 label: Some("one reusable-buffer ordered source-over draw"),
                 timestamp_writes: None,
             });
-            let (pipeline, group) = match draw.kind() {
-                DrawKind::Rectangle => (&rasterizer.kernels.rectangle, &self.rectangle_group),
-                DrawKind::Image => (
-                    &rasterizer.kernels.image,
-                    &self.input.as_ref().ok_or("missing image arena")?.1,
-                ),
-                DrawKind::Glyph => (
-                    rasterizer
-                        .kernels
-                        .glyph
-                        .as_ref()
-                        .ok_or("missing glyph pipeline")?,
-                    &self.input.as_ref().ok_or("missing glyph arena")?.1,
-                ),
+            let (pipeline, group) = if group_dispatch(*draw) {
+                self.groups
+                    .as_ref()
+                    .ok_or("missing group scratch")?
+                    .bindings(
+                        rasterizer
+                            .kernels
+                            .groups
+                            .as_ref()
+                            .ok_or("missing group pipelines")?,
+                        draw.kind(),
+                    )?
+            } else {
+                match draw.kind() {
+                    DrawKind::Rectangle => (&rasterizer.kernels.rectangle, &self.rectangle_group),
+                    DrawKind::Image => (
+                        &rasterizer.kernels.image,
+                        &self.input.as_ref().ok_or("missing image arena")?.1,
+                    ),
+                    DrawKind::Glyph => (
+                        rasterizer
+                            .kernels
+                            .glyph
+                            .as_ref()
+                            .ok_or("missing glyph pipeline")?,
+                        &self.input.as_ref().ok_or("missing glyph arena")?.1,
+                    ),
+                    DrawKind::GroupClear | DrawKind::GroupComposite => {
+                        return Err("invalid group dispatch".into());
+                    }
+                }
             };
             pass.set_pipeline(pipeline);
             pass.set_bind_group(0, group, &[(index * PARAM_STRIDE) as u32]);
@@ -194,6 +257,9 @@ impl RasterBuffers {
         self.parameters.destroy();
         if let Some((buffer, _)) = self.input {
             buffer.destroy();
+        }
+        if let Some(groups) = self.groups {
+            groups.destroy_after_completion();
         }
     }
 }

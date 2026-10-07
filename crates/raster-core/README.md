@@ -7,7 +7,7 @@ The default feature set has no external dependencies. The `gpu` feature adds
 the same pinned Vulkan/WGSL implementation used by the probe.
 
 The planner accepts unrounded rectangles, decoded images, glyph coverage and typed
-clip/fixed scopes. It validates the complete input before producing an owned,
+clip/fixed scopes. Native additionally accepts bounded opacity scopes. It validates the complete input before producing an owned,
 immutable `Plan`. Existing limits, validation order, integer blending and
 floating-point coordinate arithmetic are preserved from the standalone probe.
 `Plan` and `Draw` fields remain private. Browser-specific whole-frame fallback
@@ -68,6 +68,14 @@ counted once, and allocation failure returns no partial collection. Aggregate
 coverage, source, row, storage and dispatch limits remain unchanged. The legacy
 single-mask API and Probe admission rules retain their existing refusals.
 
+Native opacity groups require `k/256` values and a first effective direct opaque
+rectangle covering their conservative descendant bounds. Each materialized group
+gets a disjoint cropped RGBA16 scratch region; clears and composites count toward
+the same operation, buffer and dispatch ledgers. Zero scopes suppress pixels only
+after input validation, and unit scopes preserve the current target. Unproved
+backings and non-grid opacity return an error for whole-frame fallback. See the
+[admission and arithmetic contract](../../docs/vulkan-opacity.md).
+
 ## GPU ownership
 
 The optional GPU interface accepts a caller-owned device, queue and command
@@ -95,7 +103,7 @@ exact-size Native reuse. `requirements` preflights a fresh Plan and format;
 `allocate` returns one complete `NativeBufferLease` before any queue writes.
 `encode` borrows that lease and retains its handles on every error. Compatibility
 requires the same private context, dimensions/format/stride, parameter/input
-sizes and actual buffer descriptors. Every encode rewrites the full arenas and
+sizes, opacity scratch size and actual buffer descriptors. Every encode rewrites the full arenas and
 conversion uniform, clears the target and executes every ordered draw.
 
 Only the caller can prove submission retirement and its complete frame policy.
@@ -111,7 +119,7 @@ Probe `Plan::gpu_buffer_bytes()` retains the original allowance for **two**
 packed targets, parameters and input storage. The probe allocates its readback
 separately and checks this total. Native instead reserves one packed target,
 the conversion destination with 256-byte-aligned rows, its 16-byte uniform,
-raster parameters and input storage. Native `Plan::invocations()` also includes
+raster parameters, input storage and opacity scratch. Native `Plan::invocations()` also includes
 one mandatory padded 8×8 conversion dispatch. Optional Native readback is
 additional caller-owned storage. These counters exclude opaque driver,
 pipeline, bind-group, staging and allocator overhead.

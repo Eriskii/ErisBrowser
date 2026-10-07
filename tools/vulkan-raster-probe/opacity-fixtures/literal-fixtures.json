@@ -1,0 +1,159 @@
+{
+  "format": 1,
+  "status": "authored source-only expectations before implementation; no rendering execution",
+  "pixel_encoding": "row-major packed RGB hexadecimal strings; alpha output remains opaque",
+  "coordinate_rules": "Rect arrays are x,y,width,height. Document offset is added to ordinary shapes. PushFixed restores caller clip and fixed offset until PopFixed. A mask has absolute row origins and y, as in the existing core Glyph input. All radii are zero unless stated.",
+  "cases": [
+    {
+      "name": "halfway-red-65-over-black",
+      "frame": {"width": 3, "height": 1, "clear": "000000", "caller_clip": [0,0,3,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[0,0,1,1],"rgba":[65,0,0,255]},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "admit_in_certified_domain",
+      "expected_pixels": ["210000","000000","000000"]
+    },
+    {
+      "name": "opaque-backed-overlap-and-after-pop",
+      "frame": {"width": 8, "height": 2, "clear": "ffffff", "caller_clip": [0,0,8,2], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[0,0,6,2],"rgba":[255,0,0,255]},
+        {"op":"rect","rect":[2,0,4,2],"rgba":[0,0,255,255]},
+        {"op":"pop_opacity"},
+        {"op":"rect","rect":[7,0,1,2],"rgba":[0,255,0,255]}
+      ],
+      "native_expectation": "admit_in_certified_domain",
+      "expected_pixels": ["ff8080","ff8080","8080ff","8080ff","8080ff","8080ff","ffffff","00ff00","ff8080","ff8080","8080ff","8080ff","8080ff","8080ff","ffffff","00ff00"]
+    },
+    {
+      "name": "nested-opaque-blue-over-red",
+      "frame": {"width": 4, "height": 1, "clear": "ffffff", "caller_clip": [0,0,4,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[0,0,3,1],"rgba":[255,0,0,255]},
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[1,0,1,1],"rgba":[0,0,255,255]},
+        {"op":"pop_opacity"},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "admit_in_certified_domain",
+      "expected_pixels": ["ff8080","bf80bf","ff8080","ffffff"]
+    },
+    {
+      "name": "quarter-group-with-translucent-image-on-white",
+      "frame": {"width": 3, "height": 1, "clear": "000000", "caller_clip": [0,0,3,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "images": [{"id":"red-half","width":1,"height":1,"rgba":[255,0,0,128]}],
+      "commands": [
+        {"op":"push_opacity","value":0.25},
+        {"op":"rect","rect":[0,0,2,1],"rgba":[255,255,255,255]},
+        {"op":"image","rect":[1,0,1,1],"id":"red-half"},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "admit_in_certified_domain",
+      "expected_pixels": ["404040","402020","000000"]
+    },
+    {
+      "name": "coverage-times-alpha-truncates-before-group-pop",
+      "frame": {"width": 3, "height": 1, "clear": "000000", "caller_clip": [0,0,3,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "masks": [{"id":"two-coverage","width":2,"height":1,"coverage":[0,128],"row_origins":[0],"y":0}],
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[0,0,2,1],"rgba":[255,255,255,255]},
+        {"op":"mask","id":"two-coverage","rgba":[255,0,0,128]},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "admit_in_certified_domain",
+      "expected_pixels": ["808080","806060","000000"]
+    },
+    {
+      "name": "fixed-escape-stays-inside-opaque-backing",
+      "frame": {"width": 6, "height": 2, "clear": "ffffff", "caller_clip": [0,0,6,2], "document_offset": [0,-5], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[0,5,5,2],"rgba":[255,0,0,255]},
+        {"op":"push_clip","rect":[0,5,1,1]},
+        {"op":"push_fixed"},
+        {"op":"rect","rect":[3,0,1,1],"rgba":[0,0,255,255]},
+        {"op":"pop_fixed"},
+        {"op":"rect","rect":[0,5,1,1],"rgba":[0,255,0,255]},
+        {"op":"pop_clip"},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "admit_in_certified_domain",
+      "expected_pixels": ["80ff80","ff8080","ff8080","8080ff","ff8080","ffffff","ff8080","ff8080","ff8080","ff8080","ff8080","ffffff"]
+    },
+    {
+      "name": "unit-scope-preserves-current-direct-rgb8-target",
+      "frame": {"width": 1, "height": 1, "clear": "000000", "caller_clip": [0,0,1,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":1.0},
+        {"op":"rect","rect":[0,0,1,1],"rgba":[1,0,0,128]},
+        {"op":"rect","rect":[0,0,1,1],"rgba":[0,0,0,1]},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "admit_unit_scope_without_new_layer",
+      "expected_pixels": ["010000"]
+    },
+    {
+      "name": "fractional-caller-clip-integer-origin-containment",
+      "frame": {"width": 3, "height": 1, "clear": "ffffff", "caller_clip": [0.5,0,1,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[0,0,3,1],"rgba":[255,0,0,255]},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "admit_in_certified_domain",
+      "expected_pixels": ["ffffff","ff8080","ffffff"]
+    },
+    {
+      "name": "uncertified-multiple-rect-backing-remains-fallback",
+      "frame": {"width": 4, "height": 1, "clear": "ffffff", "caller_clip": [0,0,4,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"rect","rect":[0,0,2,1],"rgba":[255,0,0,255]},
+        {"op":"rect","rect":[1,0,2,1],"rgba":[0,0,255,255]},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "complete_cpu_fallback_no_backing_certificate",
+      "expected_pixels": ["ff8080","8080ff","8080ff","ffffff"]
+    },
+    {
+      "name": "translucent-image-only-group-remains-fallback",
+      "frame": {"width": 2, "height": 1, "clear": "ffffff", "caller_clip": [0,0,2,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "images": [{"id":"red-half","width":1,"height":1,"rgba":[255,0,0,128]}],
+      "commands": [
+        {"op":"push_opacity","value":0.5},
+        {"op":"image","rect":[0,0,1,1],"id":"red-half"},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "complete_cpu_fallback_no_backing_certificate",
+      "expected_pixels": ["ffbfbf","ffffff"]
+    },
+    {
+      "name": "zero-scope-suppresses-pixels-and-restores-root",
+      "frame": {"width": 2, "height": 1, "clear": "ffffff", "caller_clip": [0,0,2,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.0},
+        {"op":"rect","rect":[0,0,2,1],"rgba":[255,0,0,128]},
+        {"op":"pop_opacity"},
+        {"op":"rect","rect":[1,0,1,1],"rgba":[0,255,0,255]}
+      ],
+      "native_expectation": "admit_zero_scope_after_full_validation",
+      "expected_pixels": ["ffffff","00ff00"]
+    },
+    {
+      "name": "non-grid-opacity-remains-fallback-with-original-pixels",
+      "frame": {"width": 1, "height": 1, "clear": "000000", "caller_clip": [0,0,1,1], "document_offset": [0,0], "fixed_offset": [0,0]},
+      "commands": [
+        {"op":"push_opacity","value":0.1,"f32_bits":"3dcccccd"},
+        {"op":"rect","rect":[0,0,1,1],"rgba":[255,0,0,255]},
+        {"op":"pop_opacity"}
+      ],
+      "native_expectation": "complete_cpu_fallback_opacity_outside_exact_grid",
+      "expected_pixels": ["1a0000"]
+    }
+  ]
+}

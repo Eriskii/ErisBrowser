@@ -1,5 +1,32 @@
 # Validation record
 
+## Bounded native opacity
+
+The [Vulkan opacity route](vulkan-opacity.md) adds cropped RGBA16 intermediates
+for nested groups at `k/256` opacity with a proved opaque rectangular backing.
+All scratch, operations and clear/composite work share the existing frame
+limits. Unsupported groups still use complete CPU fallback.
+
+Rust 1.88 passes **2,139 native-feature tests**, including ignored confinement
+tests, and **128 GPU-feature / 97 default core tests**. The native bridge's
+**63 groups** and both Page/worker opacity witnesses pass. Strict Clippy passes.
+Three actual Vulkan adapters each pass 32 literal/reuse frames and eight
+cancellation checks, for **96 frames and 2,472 compared bytes** in total.
+The NVIDIA native window verifies **18,022,400 acquired bytes** over four
+frames spanning an actual opacity-changing click. A separate reference-free
+native window also passes; both exit with no surviving owned descendants.
+
+Retained failures include the first core scratch-accounting omission, a test
+fixture's incorrect button/Text hit expectation, test-only Clippy findings and
+an old zoom test that expected every opacity scope to refuse. The first window
+attempt stopped before document release because the new controller rejected
+ordinary startup sizes; its supervisor cleaned up the remaining owned children.
+The corrected controller also recognizes the existing confinement diagnostics.
+All literal pixel expectations and production CPU rendering remain unchanged.
+The [source-bound evidence](evidence/vulkan-native-opacity.json) separates these
+attempts from the passing results. Transparent-backed groups, arbitrary opacity,
+full compatibility, production security and Chromium-relative speed remain open.
+
 ## Doctypes and nonbreaking spaces in HTML serialization
 
 The serializer now follows the same HTML algorithm for doctype names and
