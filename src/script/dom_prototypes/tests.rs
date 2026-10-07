@@ -516,6 +516,63 @@ fn dom_native_metadata_slot_allocation_is_admitted_before_factory_return() {
 }
 
 #[test]
+fn dom_fixed_global_roster_plan_matches_full_scan_with_dynamic_old_names() {
+    let mut new: Vec<_> = INTERFACES
+        .iter()
+        .filter(|interface| interface.name != "EventTarget")
+        .map(|interface| {
+            (
+                interface.name.to_owned(),
+                interface_binding(Value::Undefined, 0),
+            )
+        })
+        .collect();
+    new.push((
+        HTML_DOCUMENT_ALIAS.to_owned(),
+        interface_binding(Value::Undefined, 0),
+    ));
+    new.sort_by(|a, b| a.0.cmp(&b.0));
+    validate_staged(&new).unwrap();
+    assert_eq!(new.len(), 154);
+    assert_eq!(new.iter().map(|(name, _)| name.len()).max(), Some(35));
+    assert_eq!(GLOBAL_NAME_MAX, 35);
+    assert_eq!(8 * new.len(), 1232);
+
+    for count in [0, 1, 11, 12, 46, 143, 144] {
+        for prefix in ["old".to_owned(), "x".repeat(80)] {
+            let old: BTreeMap<_, _> = (0..count)
+                .map(|index| {
+                    (
+                        format!("{prefix}-{index:03}"),
+                        interface_binding(Value::Undefined, index as u64),
+                    )
+                })
+                .collect();
+            let full = bulk_plan(&old, &new).unwrap();
+            let fixed = global_bulk_plan(&old, &new).unwrap();
+            assert_eq!((fixed.work, fixed.bytes), (full.work, full.bytes));
+            if count == 46 && prefix == "old" {
+                assert_eq!(fixed.work, 7566);
+            }
+        }
+    }
+}
+
+#[test]
+fn dom_generic_bulk_plan_still_scans_dynamic_new_names() {
+    let old = BTreeMap::<String, usize>::new();
+    let short = vec![("a".to_owned(), 1), ("b".to_owned(), 2)];
+    let long = vec![("a".to_owned(), 1), ("b".repeat(80), 2)];
+    validate_staged(&short).unwrap();
+    validate_staged(&long).unwrap();
+    let short = bulk_plan(&old, &short).unwrap();
+    let long = bulk_plan(&old, &long).unwrap();
+    // Four byte-key comparisons, with ten additional length chunks each.
+    assert_eq!(long.work - short.work, 40);
+    assert_eq!(long.bytes, short.bytes);
+}
+
+#[test]
 fn dom_metadata_sorted_merge_rejects_duplicates_and_preserves_values() {
     for count in [0, 1, 11, 12, 143, 144] {
         let old: BTreeMap<_, _> = (0..count)

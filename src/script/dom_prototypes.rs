@@ -176,17 +176,54 @@ struct BulkPlan {
     work: usize,
     bytes: usize,
 }
+const HTML_DOCUMENT_ALIAS: &str = "HTMLDocument";
+// The private global staging loop below emits only this alias and INTERFACES.
+// EventTarget is reused rather than emitted; including it remains a safe bound.
+const GLOBAL_NAME_MAX: usize = {
+    let mut max = HTML_DOCUMENT_ALIAS.len();
+    let mut index = 0;
+    while index < INTERFACES.len() {
+        let length = INTERFACES[index].name.len();
+        if length > max {
+            max = length;
+        }
+        index += 1;
+    }
+    max
+};
+
+// Retain the unrestricted planner for dynamic-input regression witnesses.
+#[cfg(test)]
 fn bulk_plan<K: Ord + AsRef<str>, V>(old: &BTreeMap<K, V>, new: &[(K, V)]) -> Result<BulkPlan> {
-    let total = old
-        .len()
-        .checked_add(new.len())
-        .ok_or_else(|| ScriptError::resource("DOM metadata map length overflow"))?;
     let max = old
         .keys()
         .map(|key| key.as_ref().len())
         .chain(new.iter().map(|(key, _)| key.as_ref().len()))
         .max()
         .unwrap_or(0);
+    bulk_plan_with_max(old, new, max)
+}
+
+// Only the closed bootstrap roster above may use the static new-name bound.
+// Dynamic old bindings are still scanned, including names longer than it.
+fn global_bulk_plan(
+    old: &BTreeMap<String, Binding>,
+    new: &[(String, Binding)],
+) -> Result<BulkPlan> {
+    let max = old
+        .keys()
+        .map(String::len)
+        .max()
+        .unwrap_or(0)
+        .max(GLOBAL_NAME_MAX);
+    bulk_plan_with_max(old, new, max)
+}
+
+fn bulk_plan_with_max<K, V>(old: &BTreeMap<K, V>, new: &[(K, V)], max: usize) -> Result<BulkPlan> {
+    let total = old
+        .len()
+        .checked_add(new.len())
+        .ok_or_else(|| ScriptError::resource("DOM metadata map length overflow"))?;
     let mut height = 0usize;
     let mut remaining = total;
     while remaining >= 12 {
@@ -571,8 +608,8 @@ impl Runtime {
                 continue;
             }
             let record = &records[index];
-            if alias_pending && interface.name > "HTMLDocument" {
-                let name = self.dom_proto_owned_name("HTMLDocument")?;
+            if alias_pending && interface.name > HTML_DOCUMENT_ALIAS {
+                let name = self.dom_proto_owned_name(HTML_DOCUMENT_ALIAS)?;
                 global_entries.push((name, interface_binding(document.clone(), alias_order)));
                 alias_pending = false;
             }
@@ -584,21 +621,21 @@ impl Runtime {
         }
         if alias_pending {
             global_entries.push((
-                self.dom_proto_owned_name("HTMLDocument")?,
+                self.dom_proto_owned_name(HTML_DOCUMENT_ALIAS)?,
                 interface_binding(document, alias_order),
             ));
         }
         // Only globals need a dynamic name map. The private record vector and
         // Native's direct bag handle avoid two redundant registry rebuilds.
+        // New names are fixed by the roster; only dynamic old keys need a scan.
         let scan_work = self.environments[0]
             .bindings
             .len()
-            .checked_add(global_entries.len())
-            .and_then(|count| count.checked_mul(8))
+            .checked_mul(8)
             .and_then(|work| work.checked_add(64))
             .ok_or_else(|| ScriptError::resource("DOM metadata length scan overflow"))?;
         self.work(scan_work)?;
-        let plan = bulk_plan(&self.environments[0].bindings, &global_entries)?;
+        let plan = global_bulk_plan(&self.environments[0].bindings, &global_entries)?;
         self.work(plan.work)?;
         self.charge(plan.bytes)?;
         self.charge((new_count + 1) * BINDING_BYTES)?;

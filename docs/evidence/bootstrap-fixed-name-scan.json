@@ -1,0 +1,199 @@
+{
+  "base": "71e52bf1732d6c0a629328287729de029fb4920a",
+  "change": "Derive the closed bootstrap global roster maximum name length at compile time; retain dynamic old-key scanning and unchanged bulk map planning/publication.",
+  "measurement": {
+    "previous_raw_remaining": 4709,
+    "measured_raw_remaining": 5941,
+    "saving": 1232,
+    "derivation": "154 fixed new-name length reads removed at eight work units each",
+    "allocated": 1782581,
+    "objects": 690,
+    "object_capacity": 690,
+    "native_properties": 320,
+    "prototypes": 25,
+    "unchanged": [
+      "allocation",
+      "object count/capacity",
+      "registry sizes",
+      "MAX_STEPS",
+      "MAX_HEAP",
+      "successful-bootstrap execution reset",
+      "direct native fees"
+    ],
+    "before_receipt": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "bootstrap",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 17.397389034973457,
+      "log": "bootstrap-baseline-188-1.log",
+      "sha256": "cd094a38b9c9e0c536c27338ca269bac30ce3964920e0797ce0c50e17bc2a923"
+    },
+    "after_receipt": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "script::dom_prototypes",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 20.572494025109336,
+      "log": "dom-metadata-188-1.log",
+      "sha256": "77dbdd70a6a04a549b52ddd456e08f9f647e7f72e903dacf570f442f3aa10b87"
+    },
+    "snapshot_migration": {
+      "path": "src/script/bootstrap_tests.rs",
+      "old": "assert_eq!(reference.steps, 4_709);",
+      "new": "assert_eq!(reference.steps, 5_941);"
+    }
+  },
+  "source_sha256": {
+    "src/script/dom_prototypes.rs": "37df08860851247e998f672e71c844967d0409bba3a2356f3d113c217eaa5f9d",
+    "src/script/dom_prototypes/tests.rs": "b2f0abe0a6a76ffb461557fa561b1868a3bcf39ba8003a6649a31cb8103a54ce",
+    "src/script/bootstrap_tests.rs": "e287874f40fcbd86cfb38b7297c339082ee433cec405d0c4d7fd5d2f6b3d33fe"
+  },
+  "validation": {
+    "dom-metadata-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "script::dom_prototypes",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 20.572494025109336,
+      "log": "dom-metadata-188-1.log",
+      "sha256": "77dbdd70a6a04a549b52ddd456e08f9f647e7f72e903dacf570f442f3aa10b87"
+    },
+    "all-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 44.65536993392743,
+      "log": "all-188-1.log",
+      "sha256": "cf4f2013d08e488ec3e25ee23f22f4389824174f54342687bb31e77ca079a29d"
+    },
+    "clippy-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 17.33034441503696,
+      "log": "clippy-188-1.log",
+      "sha256": "046693b2fd37ff3069a2bdd6277f0ed71ce2daa4e613cf86b72458e0a131da06"
+    },
+    "fmt-check-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.2487907730974257,
+      "log": "fmt-check-188-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "regression_passes": 2163,
+  "new_groups": [
+    "dom_fixed_global_roster_plan_matches_full_scan_with_dynamic_old_names",
+    "dom_generic_bulk_plan_still_scans_dynamic_new_names"
+  ],
+  "peer_review": {
+    "status": "clear: source-only bounded prerequisite review",
+    "created_utc": "2026-10-07T22:52:51.644953+00:00",
+    "hold": {
+      "path": "/tmp/eris-bootstrap-fixed-name-scan-1/runtime/source-ready.json",
+      "bytes": 1930,
+      "sha256": "b5973ea1914b6eb53fedf134ea3f922ca3f4d8c2b1b9f12a053e7ef58e9d8cbf"
+    },
+    "arithmetic_tail_identical": {
+      "bytes": 2236,
+      "sha256": "b77b53504b43aa2ab7ac6d39a91a9491f991b093324c261a1116d1287ae07d67"
+    },
+    "findings": [],
+    "checks": [
+      "The sole production global_bulk_plan caller receives only INTERFACES except reused EventTarget plus HTMLDocument. GLOBAL_NAME_MAX is const-derived from that closed table and alias; no runtime candidate scan remains.",
+      "Dynamic old binding names are still traversed and maxed against the fixed bound; long old keys retain their conservative comparison fee.",
+      "Generic test planner retains the old new+old scan and delegates to identical checked arithmetic. Its two-new-key long-name test has 4 comparisons and a10chunk fee increase, hence40work.",
+      "The literal current roster154 removes exactly154*8=1232 runtime scan work. Static const computation adds no runtime initialization traversal. No cap or map storage fee changes.",
+      "The two new tests cover unchanged complete work/storage plans across empty/nonempty old maps and BTree height boundaries, including80-unit dynamic old names; generic long new-name accounting remains independently exercised.",
+      "Checked total-length evaluation moved after the read-only maximum scan in the extracted generic helper, without allocation/mutation; production lengths are bounded closed-roster + admitted old bindings."
+    ],
+    "limits": [
+      "No compiler, test, source importer or reviewed Python execution.",
+      "This clears the isolated scan prerequisite; it does not clear or implement the later TypedArray installation plan.",
+      "Formatting and candidate measurements remain parent-owned."
+    ]
+  },
+  "extraction_proof": {
+    "whole_production_reversal_exact": true,
+    "arithmetic_tail_byte_exact": {
+      "bytes": 2235,
+      "sha256": "7ac3880938a2394a9693f4fdcebf4db9ab09412434d6fc8c03366a9ce0f0856b"
+    },
+    "generic_dynamic_length_scan_byte_exact": {
+      "bytes": 173,
+      "sha256": "4ee44c7021ba64cf5f5dada6bb4ad2fb19b34e7721d2c0c0eae2068eab2fa500"
+    },
+    "old_tests_unchanged_after_removing_two_added_groups": true,
+    "overflow_guard": "unchanged text; shared checked length guard now runs after the read-only maximum scan",
+    "source_base": "71e52bf1732d6c0a629328287729de029fb4920a"
+  },
+  "formatting_note": "Root cargo fmt changed only wrapping of the new helper signature; the held source and failed initial formatter-launch receipt remain in local evidence. Final cargo fmt --check passes.",
+  "limits": "This is an initialization efficiency prerequisite. It exposes no TypedArray constructors and makes no new web conformance or measured browser-speed claim."
+}
