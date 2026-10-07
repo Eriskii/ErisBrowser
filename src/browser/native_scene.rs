@@ -771,12 +771,14 @@ mod tests {
             let actual = paint_scene(&browser, &scene);
             let expected = browser.paint_canvas(size).unwrap();
             assert_eq!(actual.pixels, expected.pixels, "zoom={zoom}");
-            // The complete comparison deliberately exercises many overlapping
-            // operations. Its conservative CPU-work admission must still refuse
-            // the whole scene under the unchanged adapter budget.
-            assert_eq!(
-                prepare(&browser, size, true).err().unwrap(),
-                "cpu-paint-budget"
+            // Coordinate scopes no longer reserve full-frame pixel work, so
+            // this complete zoomed scene now fits the unchanged adapter budget.
+            let prepared = prepare(&browser, size, true).unwrap();
+            assert_eq!(prepared.plan.stats().phases, 3);
+            assert!(prepared.plan.plan().has_glyphs());
+            assert!(
+                prepared.plan.stats().cpu_pixel_upper_bound
+                    <= u64::from(size.width) * u64::from(size.height) * 16
             );
         }
     }

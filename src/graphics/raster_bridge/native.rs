@@ -148,6 +148,7 @@ fn validate_native_frame(frame: Frame, phase: Option<usize>) -> NativeResult<()>
 struct InputCounts {
     original: usize,
     nontext: usize,
+    pixel_work_commands: usize,
     text_bytes: usize,
     scalars: usize,
     command_key_bytes: usize,
@@ -291,6 +292,18 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                 }
             }
             counts.nontext += 1;
+            // Clip and fixed scopes only update bounded coordinate metadata.
+            // Keep their operation/parameter slots, but reserve pixel work only
+            // for primitives and opacity (whose CPU layers can cover the frame).
+            if !matches!(
+                command,
+                DrawCommand::PushClip { .. }
+                    | DrawCommand::PopClip
+                    | DrawCommand::PushFixed
+                    | DrawCommand::PopFixed
+            ) {
+                counts.pixel_work_commands += 1;
+            }
         }
         if depth != 0 {
             return Err(NativeFallback::new(
@@ -566,7 +579,7 @@ pub fn plan_native_scene(
     .map_err(|error| NativeFallback::leaf(error, None))?;
     let area = u64::from(target.width) * u64::from(target.height);
     let cpu_limit = (area * 16).clamp(1_000_000, 32_000_000);
-    let cpu_nontext = area * counts.nontext as u64;
+    let cpu_nontext = area * counts.pixel_work_commands as u64;
     if cpu_nontext > cpu_limit {
         return Err(NativeFallback::new(
             FallbackKind::CpuPaintBudget,

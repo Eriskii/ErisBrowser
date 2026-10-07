@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "checkpoint": "Native coordinate-scope pixel accounting",
+  "base_commit": "da2d75b618159bfa9d3e6ef95d5fb67424bd8c88",
+  "scope": "Only PushClip/PopClip/PushFixed/PopFixed stop reserving full-frame CPU pixel work. Original/lowered command slots, nesting and complete validation remain. Primitives and opacity markers retain full-frame reserves.",
+  "limits_raised": false,
+  "package": {
+    "path": "native-scope-accounting/index.json",
+    "sha256": "7f66ad34096bf0af1076afd65eaad779637c00c3c52bb961359f85c9f3d0dee4",
+    "archive": {
+      "path": "records.tar.gz",
+      "bytes": 279832,
+      "sha256": "0c67c5b005bb5640e393bec541535cf30b224975c8d58017a2480237dfb71c86"
+    },
+    "files": 40,
+    "payload_bytes": 1178946
+  },
+  "record_paths": "records/ and source/ members inside the archive",
+  "validation": {
+    "rust": "1.88.0",
+    "bridge_groups": 69,
+    "full_native_tests": 2145,
+    "ignored_confinement_tests_included": true,
+    "strict_clippy": "validation/native-clippy-188-final.json",
+    "formatting": "validation/fmt-final.json",
+    "discovery": "validation/discovery.json",
+    "full_suite": "validation/native-full-188-2.json"
+  },
+  "page_witness": {
+    "construction": "Page::from_html; no network load",
+    "size": [
+      512,
+      512
+    ],
+    "clip_pairs": 8,
+    "fixed_pairs": 1,
+    "rectangles": 2,
+    "original_commands": 20,
+    "old_pixel_reserve": 5242880,
+    "new_pixel_reserve": 524288,
+    "unchanged_pixel_limit": 4194304,
+    "comparison": "Complete native-plan CPU interpretation and Canvas both equal a literal white target with red32x32 at16,16 and blue16x16 at64,16."
+  },
+  "coverage": [
+    "fixed escape and caller clip restoration across phases",
+    "original256 commands and mixed32 scope exact/one-over limits",
+    "malformed and hidden invalid scopes",
+    "Rect/Image/Line full-area charges across phases",
+    "empty zero/unit/partial opacity reserves unchanged",
+    "shared glyph remainder and late-phase precharge",
+    "already admitted compact/scoped encoded plans remain identical"
+  ],
+  "retained_failure": {
+    "record": "validation/native-full-188-1.json",
+    "cause": "Existing zoom test expected CPU fallback for a scene that now admits. Updated only its expectation to successful three-phase native preparation, retaining complete CPU pixel comparison and the unchanged limit.",
+    "correction": "zoom-test-correction/receipt.json"
+  },
+  "production_changed_paths": [
+    "src/graphics/raster_bridge/native.rs"
+  ],
+  "gpu_changes": false,
+  "gpu_execution_this_increment": false,
+  "security_or_performance_claim": false,
+  "preceding_checkpoint": {
+    "commit": "da2d75b618159bfa9d3e6ef95d5fb67424bd8c88",
+    "all_nine_CI_jobs_successful": true,
+    "CI": "vulkan-native-opacity-ci.json",
+    "publication_review": "vulkan-native-opacity-publication-review.json"
+  },
+  "remaining": "General native admission, transparent group compositing, complete web compatibility, production security and Chromium-relative performance remain unfinished."
+}

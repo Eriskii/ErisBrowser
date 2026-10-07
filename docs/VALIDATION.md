@@ -1,5 +1,26 @@
 # Validation record
 
+## Native coordinate-scope accounting
+
+Clip and fixed-position scope markers now retain command, nesting and parameter
+charges without a full-frame CPU pixel debit. Primitives and both opacity
+markers retain that debit, including hidden and empty content. Glyph preparation
+still receives only the shared frame's remaining allowance.
+
+The HTML Page witness builds eight nested overflow clips and a fixed descendant.
+Its 20 original commands previously reserved 5,242,880 pixel-work units, beyond
+the unchanged 4,194,304 allowance. The corrected reserve is 524,288, and the
+complete 512×512 native-plan interpretation matches both Canvas and the fixed
+red/blue/white pixel reference. Six new groups also cover exact/over command,
+scope and pixel limits, malformed hidden scopes, every primitive family, opacity
+reserves and glyph allowance across phases. All **69 bridge groups**, **2,145
+native-feature tests** (including ignored confinement tests) and strict Clippy
+pass on Rust 1.88. The first full run retained an old zoom test's expected
+fallback; that case now requires successful native preparation and retains its
+full Canvas comparison. See the
+[validation record](evidence/native-scope-accounting.json). This is CPU planning
+and admission evidence; no new shader or GPU-performance claim is made.
+
 ## Bounded native opacity
 
 The [Vulkan opacity route](vulkan-opacity.md) adds cropped RGBA16 intermediates
@@ -26,6 +47,10 @@ All literal pixel expectations and production CPU rendering remain unchanged.
 The [source-bound evidence](evidence/vulkan-native-opacity.json) separates these
 attempts from the passing results. Transparent-backed groups, arbitrary opacity,
 full compatibility, production security and Chromium-relative speed remain open.
+All nine CI jobs for `da2d75b` passed; the
+[terminal CI receipt](evidence/vulkan-native-opacity-ci.json) and
+[publication review](evidence/vulkan-native-opacity-publication-review.json)
+are retained separately from that checkpoint's archive.
 
 ## Doctypes and nonbreaking spaces in HTML serialization
 

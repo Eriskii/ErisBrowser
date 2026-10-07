@@ -154,6 +154,7 @@ jobs:
               ('src/graphics/raster_bridge/text/tests.rs', 'graphics::raster_bridge::text::tests::', 7),
               ('src/graphics/raster_bridge/native/tests.rs', 'graphics::raster_bridge::native::tests::', 25),
               ('src/graphics/raster_bridge/native/opacity_tests.rs', 'graphics::raster_bridge::native::tests::opacity_tests::', 10),
+              ('src/graphics/raster_bridge/native/scope_accounting_tests.rs', 'graphics::raster_bridge::native::tests::scope_accounting_tests::', 6),
           )
           expected = set()
           for source, prefix, count in modules:
@@ -163,10 +164,10 @@ jobs:
               expected.update(prefix + name for name in names)
           found = [line.removesuffix(': test') for line in Path(sys.argv[1]).read_text().splitlines()
                    if line.endswith(': test')]
-          if len(found) != 63 or set(found) != expected:
+          if len(found) != 69 or set(found) != expected:
               raise SystemExit(f'bridge test discovery mismatch: found={len(found)}, '
                                f'missing={sorted(expected - set(found))}, extra={sorted(set(found) - expected)}')
-          print('Verified all 28 relocated, 25 native and 10 opacity bridge tests are discoverable.')
+          print('Verified all 28 relocated, 25 native, 10 opacity and 6 scope-accounting bridge tests are discoverable.')
           PY
             cargo test --locked --lib --features "$bridge_features" graphics::raster_bridge:: -- --include-ignored
           done

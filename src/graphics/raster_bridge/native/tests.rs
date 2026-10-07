@@ -1266,3 +1266,6 @@ fn native_wide_group_preflight_is_atomic_at_each_global_cutpoint() {
         assert_eq!(fails, before, "partial group ledger at boundary {field}");
     }
 }
+
+#[path = "scope_accounting_tests.rs"]
+mod scope_accounting_tests;

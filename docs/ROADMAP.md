@@ -5,6 +5,9 @@ for opaque-backed nested groups at `k/256` opacity. Cropped RGBA16 scratch,
 clear/composite dispatches and retained reuse all share the existing limits.
 Three-adapter literal and changed-content checks pass. Transparent backings,
 arbitrary opacity values and larger scene admission remain on the docket.
+Native clip/fixed scope accounting now charges metadata work without reserving
+full-frame pixel work, allowing sparsely painted nested-clipping scenes to fit
+the existing limits. Primitive and opacity pixel reserves remain unchanged.
 
 The native owner now reuses one exact-size, fully retired GPU buffer set while
 rewriting every input and drawing each complete scene. Limits, queued-write

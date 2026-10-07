@@ -91,6 +91,14 @@ cold-request and CPU preparation limits. A phase boundary resets its coordinate
 state, not these resource ledgers. The old Probe profile and frozen probe
 fixtures retain their existing limits.
 
+Clip and fixed-position scope markers consume command, nesting and parameter
+allowances but no CPU pixel-work allowance: they only update coordinate state.
+Primitives and both opacity markers still reserve one full framebuffer area
+each before glyph preparation. This admits more sparsely painted, heavily clipped
+scenes without increasing the existing pixel-work limit. It also preserves the
+full-viewport reservation for CPU opacity layers; cropped GPU scratch does not
+replace that reservation.
+
 Wide Native rounded rectangles now use at most two consecutive, nonoverlapping
 horizontal masks through `RoundedTiles::prepare_native`. Each mask retains the
 1024-pixel axis cap and samples the original rectangle's floating-point coverage

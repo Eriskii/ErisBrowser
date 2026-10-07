@@ -1,0 +1,309 @@
+{
+  "status": "clear final bounded publication review",
+  "sealed_utc": "2026-10-07T09:03:22.002823+00:00",
+  "reviewer_scope": "Data/source read only; no compiler, engine, GPU, test execution, extraction or tracked-file mutation. Receipt is outside closed artifact root.",
+  "public_files": [
+    {
+      "path": "/tmp/eris-vulkan-opacity-1/worktree/docs/evidence/native-opacity/index.json",
+      "bytes": 55612,
+      "sha256": "16228a923d6f7534742b5327416901e17f828f5d9a2cc4ff419fd537cd17d3ec"
+    },
+    {
+      "path": "/tmp/eris-vulkan-opacity-1/worktree/docs/evidence/native-opacity/records.tar.gz",
+      "bytes": 705520,
+      "sha256": "abc972fb75b0c389338f06456368ea8436aca2bbe9c9c125f40f88c3450c941d"
+    },
+    {
+      "path": "/tmp/eris-vulkan-opacity-1/worktree/docs/evidence/vulkan-native-opacity.json",
+      "bytes": 8041,
+      "sha256": "d253c08ccd5383dff4b40a3d0bf01023b38c7fc9e1af64079f5e2d8a3eacb110"
+    }
+  ],
+  "checks": {
+    "archive": "All304members are unique safe relative regular files; exact external index member set, bytes and SHA256 verified;3144106payloadbytes. No symlinks/hardlinks/path traversal.",
+    "current_sources": "All43 archived final-source paths match live checkout and source manifest. Exactly46 intended source/docs/asset/evidence paths are staged; all staged bytes equal live bytes.",
+    "retained_records": "Every archived records/ payload equals its retained original. Failures, original holds, additive corrections and posthoc host revalidation are included. Compiled executables intentionally omitted;3 retained local executable hashes and build/source record references verified.",
+    "summary": "Package index/archive digests and counts exact. Public build list now contains both test-only changed paths and explicitly qualifies the earlier one-path build receipt.",
+    "validation": "Rust command totals97/128/63/2/7/2139 andPython408/97 recomputed from archived successful hash-bound raw logs. StrictClippy receipts exit0.",
+    "GPU": "Archived host success/streamdigests/cleanup verified;3adapters96opacityframes2472bytes plus84unchanged-no-groupframes4680bytes. Window4serials show256/256/320/320 at262144scratch and18022400bytes,oneclick andoneEscape; separate normal run has no pixel comparisons.",
+    "host_version_honesty": "Actual run uses heldsource3; finalsource4/posthocdata review explicitly distinguished, including normal-run scope normalization. No claim of an extra engine rerun.",
+    "links": "All661relative Markdown file links in8reviewed docs now resolve, including previously pending public summary."
+  },
+  "corrected_finding": {
+    "description": "Initial public nested builds.browser list omitted later cfg(test) native_scene.rs change while finalbuildcheck and high-level notes named it. Root corrected public summary only and retained archived historical receipt/unchanged archive.",
+    "initial_summary_sha256": "01e3f787 (parent-provided prefix; exact initial bytes were read but not separately saved by reviewer)",
+    "corrected_summary_sha256": "d253c08ccd5383dff4b40a3d0bf01023b38c7fc9e1af64079f5e2d8a3eacb110",
+    "remaining_blocker": false
+  },
+  "final_source_files": [
+    {
+      "path": ".github/workflows/check.yml",
+      "bytes": 16938,
+      "sha256": "a75e65bfa854f55ac896c9045576b998697282e0dad172a8bac2664b6f2cf575"
+    },
+    {
+      "path": "README.md",
+      "bytes": 45463,
+      "sha256": "ae21921333671bf2b835f516fb1e00bbb17332c67e08c7d7811ec4f723706f08"
+    },
+    {
+      "path": "crates/raster-core/README.md",
+      "bytes": 10356,
+      "sha256": "173c44e8ba994afd103b1f8d5a75e70ef5b0b93596d4ada4542c195768a0c145"
+    },
+    {
+      "path": "crates/raster-core/src/gpu.rs",
+      "bytes": 24983,
+      "sha256": "17f5fab62a5dfdf79cef49c1a1c6e8c5fa8c554d9af18a7732757290c00c28f5"
+    },
+    {
+      "path": "crates/raster-core/src/gpu/group_tests.rs",
+      "bytes": 8034,
+      "sha256": "5ad31259b88ae2ff4b6df334483dd0c2c2a4107e54b4a309c98641358442ce0b"
+    },
+    {
+      "path": "crates/raster-core/src/gpu/groups.rs",
+      "bytes": 8322,
+      "sha256": "93704c3de657a481d3338239cc230bdfc29e41de17b471bbfa775fb63c8b5d0d"
+    },
+    {
+      "path": "crates/raster-core/src/gpu/reuse.rs",
+      "bytes": 10627,
+      "sha256": "625cc66738ac809924b22f876cf9c700d34dac9ecc3606f763c5d6a4df55cc55"
+    },
+    {
+      "path": "crates/raster-core/src/group.wgsl",
+      "bytes": 8074,
+      "sha256": "6ca03c7cec341eaf182bd4c07cbe8183e2a6db71af53ddad40653227261bfbb9"
+    },
+    {
+      "path": "crates/raster-core/src/lib.rs",
+      "bytes": 36839,
+      "sha256": "5ba2a2dc56bddd895608bb7f097ec8c2d93c1bfecc3f02cb5d348777dcb5bc16"
+    },
+    {
+      "path": "crates/raster-core/src/opacity.rs",
+      "bytes": 10294,
+      "sha256": "133f4d9afb7fed10adf7e4be4ac4555584cbf4b82202c90816d3f601d10826b5"
+    },
+    {
+      "path": "crates/raster-core/src/opacity_tests.rs",
+      "bytes": 23711,
+      "sha256": "c2694f1d16f4fd5a477ff6aac86f27c86ba6fcb085dcf1b0b9c533b31de948d2"
+    },
+    {
+      "path": "crates/raster-core/src/scope.rs",
+      "bytes": 4398,
+      "sha256": "c65b6c2c54178fc37e81bb093c567f922cc452f7065d7c52ac7a44bb3249f97b"
+    },
+    {
+      "path": "crates/raster-core/src/surface.rs",
+      "bytes": 16297,
+      "sha256": "11fcec3dbae9881a81baede7cee44218a8ca75a5e93b8face90e0173e980e3a5"
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse.rs",
+      "bytes": 13116,
+      "sha256": "b04965c5fd53e7ee7004c4daccf7b1c812e0a5b1aadc9260c1e37fd9e2e6f463"
+    },
+    {
+      "path": "crates/raster-core/src/surface/reuse_tests.rs",
+      "bytes": 11482,
+      "sha256": "fceceed7ff2f32b5b3981fc1334bf9f0c728637c5d146810962a3024cf4cf311"
+    },
+    {
+      "path": "docs/COMPATIBILITY.md",
+      "bytes": 59761,
+      "sha256": "2023f9c02b931ba686a31bf52e822dab7cabd58defdd7d7f2223a8d2febdec02"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "bytes": 25918,
+      "sha256": "571bd4fe18d44625e1a288ddc9ef2f37738260107046915c2e4dcfd2a47f46ab"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "bytes": 354000,
+      "sha256": "82edd8d9f96c2ba5aabf85cd6570390401bb481d8272087d32faa4d7fa600565"
+    },
+    {
+      "path": "docs/vulkan-native-window.md",
+      "bytes": 15830,
+      "sha256": "fbefce38c8896cf3c1afdf05ce7779f17ce44d531b782735df416239c80ca7e8"
+    },
+    {
+      "path": "docs/vulkan-opacity.md",
+      "bytes": 5901,
+      "sha256": "240781c5fbafa42db417ab1e2ac570e34dd4241de2ab1e613474fc29936f7ea4"
+    },
+    {
+      "path": "docs/vulkan-rendering.md",
+      "bytes": 37679,
+      "sha256": "e1aee8de90375ab310b9469c7105764d9bfbfec58a6a1090a73dc804330fed28"
+    },
+    {
+      "path": "examples/vulkan-opacity.html",
+      "bytes": 1452,
+      "sha256": "d5b271791afadb303aad1a991aad8665e48d6c06af3e2cc34a18c0680530eb81"
+    },
+    {
+      "path": "examples/vulkan-opacity.png",
+      "bytes": 74,
+      "sha256": "8b03918d7292e6ba4a06a7b8d852a39737fff6a83d6c891c43dc42dddb26fc1c"
+    },
+    {
+      "path": "src/browser.rs",
+      "bytes": 122561,
+      "sha256": "a2bad14d0d30b768afad73a86af9376f28554146de792c8ca63cdb9e69ce22eb"
+    },
+    {
+      "path": "src/browser/native_scene.rs",
+      "bytes": 34748,
+      "sha256": "581a9194633ebab5ff3eef07ec2986d7ad1b9ea536878c8de01aacaeaf49c232"
+    },
+    {
+      "path": "src/graphics/raster_bridge/native.rs",
+      "bytes": 36502,
+      "sha256": "70b431f1461cd2f41c69dafcee55a6fb50b3b27a0de0ba74e73823cb17255acd"
+    },
+    {
+      "path": "src/graphics/raster_bridge/native/opacity_tests.rs",
+      "bytes": 22362,
+      "sha256": "824fd7a2922772bda1c81c3cb9fc6f4181cf138f99055398b7ca2772bf9ab9ac"
+    },
+    {
+      "path": "src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 39594,
+      "sha256": "bbe429de2bdac9ef0583a4bbfd7be97d8127ff0b19be5e82c5e3f2d2f28c3e8c"
+    },
+    {
+      "path": "tests/support/vulkan_opacity.rs",
+      "bytes": 16137,
+      "sha256": "93ddc81188ef6f2381a0de812595b1c3e338b1f1e21515cfed4a61cb0513d94f"
+    },
+    {
+      "path": "tests/vulkan_opacity.rs",
+      "bytes": 5359,
+      "sha256": "6128c981597d546aec5107324a19c0bf6e039836a43c9c3a71d491548dd86a51"
+    },
+    {
+      "path": "tools/native_opacity_host.py",
+      "bytes": 29873,
+      "sha256": "d0c7652986dfbe8981d591af9aaa2904b31d3a5990c8ff7af48b3270ee7ae793"
+    },
+    {
+      "path": "tools/test_native_opacity_host.py",
+      "bytes": 10572,
+      "sha256": "8e73d3f1b8a9d12d3553d75aa9051d66624077d2e49cda40a6700a31edf43302"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/Cargo.toml",
+      "bytes": 1196,
+      "sha256": "21249ba11a7d71bc10a3e68e95761b0c91e60c7d2f4bb967624b1bd4c5d3bba2"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/opacity-fixtures/literal-fixtures.json",
+      "bytes": 7632,
+      "sha256": "3e879cf28127f6bc1400b3c26c481bb5613fc1a4e75b024ea195faaaa6f0d764"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/run_opacity_host.py",
+      "bytes": 10859,
+      "sha256": "9e648003a9d1155c6557c760de07942809855fcfe82ba34e50164baa19eaa438"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+      "bytes": 25955,
+      "sha256": "3b4801544feeaf36634162721ccd93ad9dc6ecc8168461d802cf41c90bc51e0f"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/bin/opacity-check.rs",
+      "bytes": 2069,
+      "sha256": "44e8499a8208f081b6c1cb292f204fa22b022393f984c0a16200c44ed0f378ae"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/lib.rs",
+      "bytes": 820,
+      "sha256": "3fc0d5b164f9b6372fe65211945bb66a7b5986fc9dd0cbbb99834a177595714a"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/opacity_fixtures.rs",
+      "bytes": 18618,
+      "sha256": "b32aeb7c4970bb8ecdc3d2bc712aec7da627e7a0b9fe74e3d1447e4acf38b649"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/reuse_gpu.rs",
+      "bytes": 14897,
+      "sha256": "562cc152d35127f67e0955f91c908553c3043f0744b44a34f0e8d3462db53bc7"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/surface_gpu.rs",
+      "bytes": 9808,
+      "sha256": "6a1e4c94c62047c882e0a3b5fd0fd6fa320637775151f3cc1aaec3c60feb9618"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/src/tests.rs",
+      "bytes": 39030,
+      "sha256": "cffac3874c8008af687542d5176923f24a133960158f271a29abede3f8540468"
+    },
+    {
+      "path": "tools/vulkan-raster-probe/test_opacity_host.py",
+      "bytes": 5980,
+      "sha256": "265076952848e52c84f418d2b13479d66a6991376bdc4f2fab8968b8e395ec1c"
+    }
+  ],
+  "staged_paths": [
+    ".github/workflows/check.yml",
+    "README.md",
+    "crates/raster-core/README.md",
+    "crates/raster-core/src/gpu.rs",
+    "crates/raster-core/src/gpu/group_tests.rs",
+    "crates/raster-core/src/gpu/groups.rs",
+    "crates/raster-core/src/gpu/reuse.rs",
+    "crates/raster-core/src/group.wgsl",
+    "crates/raster-core/src/lib.rs",
+    "crates/raster-core/src/opacity.rs",
+    "crates/raster-core/src/opacity_tests.rs",
+    "crates/raster-core/src/scope.rs",
+    "crates/raster-core/src/surface.rs",
+    "crates/raster-core/src/surface/reuse.rs",
+    "crates/raster-core/src/surface/reuse_tests.rs",
+    "docs/COMPATIBILITY.md",
+    "docs/ROADMAP.md",
+    "docs/VALIDATION.md",
+    "docs/evidence/native-opacity/index.json",
+    "docs/evidence/native-opacity/records.tar.gz",
+    "docs/evidence/vulkan-native-opacity.json",
+    "docs/vulkan-native-window.md",
+    "docs/vulkan-opacity.md",
+    "docs/vulkan-rendering.md",
+    "examples/vulkan-opacity.html",
+    "examples/vulkan-opacity.png",
+    "src/browser.rs",
+    "src/browser/native_scene.rs",
+    "src/graphics/raster_bridge/native.rs",
+    "src/graphics/raster_bridge/native/opacity_tests.rs",
+    "src/graphics/raster_bridge/native/tests.rs",
+    "tests/support/vulkan_opacity.rs",
+    "tests/vulkan_opacity.rs",
+    "tools/native_opacity_host.py",
+    "tools/test_native_opacity_host.py",
+    "tools/vulkan-raster-probe/Cargo.toml",
+    "tools/vulkan-raster-probe/opacity-fixtures/literal-fixtures.json",
+    "tools/vulkan-raster-probe/run_opacity_host.py",
+    "tools/vulkan-raster-probe/src/alpha_fixtures.rs",
+    "tools/vulkan-raster-probe/src/bin/opacity-check.rs",
+    "tools/vulkan-raster-probe/src/lib.rs",
+    "tools/vulkan-raster-probe/src/opacity_fixtures.rs",
+    "tools/vulkan-raster-probe/src/reuse_gpu.rs",
+    "tools/vulkan-raster-probe/src/surface_gpu.rs",
+    "tools/vulkan-raster-probe/src/tests.rs",
+    "tools/vulkan-raster-probe/test_opacity_host.py"
+  ],
+  "local_markdown_file_links": 661,
+  "limitations": [
+    "Existing browser-wide compatibility, production security, compositor/scanout equality and Chromium-relative performance remain unestablished.",
+    "Hash/source linkage is provenance, not an independent reproducible-build attestation.",
+    "Earlier unmodified historical evidence may bind original absolute artifact paths; reviewed public summary resolves its retained record references."
+  ]
+}

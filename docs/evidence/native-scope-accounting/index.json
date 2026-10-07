@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "base_commit": "da2d75b618159bfa9d3e6ef95d5fb67424bd8c88",
+  "archive": {
+    "path": "records.tar.gz",
+    "bytes": 279832,
+    "sha256": "0c67c5b005bb5640e393bec541535cf30b224975c8d58017a2480237dfb71c86"
+  },
+  "files": 40,
+  "payload_bytes": 1178946,
+  "members": [
+    {
+      "path": "records/base.json",
+      "bytes": 731,
+      "sha256": "f7d033cc352de2f105db740f226b6a94bd67b8cb3213f0e6baf7d8f5c6970ce6"
+    },
+    {
+      "path": "records/final-source.json",
+      "bytes": 1264,
+      "sha256": "967c4a65bd281df36ebc099266130314c895270da2db03a44389a61b28553176"
+    },
+    {
+      "path": "records/followup-review.json",
+      "bytes": 6179,
+      "sha256": "1fe109d4bae54c8965500f2f62d5792d4c53bf180bc1549eed6daea7b9cd4b4b"
+    },
+    {
+      "path": "records/independent/README.md",
+      "bytes": 704,
+      "sha256": "521247837990d3e5d33a9efb017d45d22f6152ee88b3b65b760666df2ea2d69a"
+    },
+    {
+      "path": "records/independent/held/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "bytes": 14029,
+      "sha256": "cecfaeb41bcf503c7b3548db79de3229780e156ba98f5ec82ea8c263623e2ad8"
+    },
+    {
+      "path": "records/independent/held/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 39661,
+      "sha256": "c6284d3f97e9eee47226607297ba9612334effc438c84f9fe74b3bffba4a1526"
+    },
+    {
+      "path": "records/independent/parent-before.rs",
+      "bytes": 39594,
+      "sha256": "bbe429de2bdac9ef0583a4bbfd7be97d8127ff0b19be5e82c5e3f2d2f28c3e8c"
+    },
+    {
+      "path": "records/independent/source-ready.json",
+      "bytes": 2233,
+      "sha256": "19e4ac17c04cc75f232748f05234a36392a46bd8980d2af586d1c40faf483bc4"
+    },
+    {
+      "path": "records/independent/test-inventory.json",
+      "bytes": 910,
+      "sha256": "88acba5e4a1505f5adaf81ac1089ad9644ede34fb53b65df9b9736766fb6a479"
+    },
+    {
+      "path": "records/opacity-ci.json",
+      "bytes": 26182,
+      "sha256": "229d31916177ccc266677539e54f09e39a5d847197da2c463424a850691ba5ee"
+    },
+    {
+      "path": "records/package.py",
+      "bytes": 4933,
+      "sha256": "f1a70f212c7b39e4eec1f5d37c368c7437016d9af0ce89c323bcf3a814fb04cf"
+    },
+    {
+      "path": "records/preceding-publication-review.json",
+      "bytes": 12885,
+      "sha256": "4d8ac5f2689abaeb1719ec08650f0d678bc4c5787caf4674d7bae08808046f0c"
+    },
+    {
+      "path": "records/review.json",
+      "bytes": 4463,
+      "sha256": "9629b8fee12fb31dfb33c22e561869e67b03b3f02867a56d52f6bdd1ac21ef54"
+    },
+    {
+      "path": "records/run-check.py",
+      "bytes": 1213,
+      "sha256": "156095f26ac055a587e8376bb37aa655294f09787aba819f3bdc9d5ed3f61628"
+    },
+    {
+      "path": "records/run-python.py",
+      "bytes": 705,
+      "sha256": "8138defee404612021cc36f6ad21131c63c5de2b0c13bf9c39f02c2c0e3a690d"
+    },
+    {
+      "path": "records/tested-source.json",
+      "bytes": 671,
+      "sha256": "5d49f0b5c7dff4e5175fd5692e898f89ff730a7d6e0863537328f290a2cebbc5"
+    },
+    {
+      "path": "records/validation/bridge-188-1.json",
+      "bytes": 418,
+      "sha256": "76e04e08ad02e9502f78c9bf0865c13915e334e236dd582fe87e77f81dbbd950"
+    },
+    {
+      "path": "records/validation/bridge-188-1.log",
+      "bytes": 8727,
+      "sha256": "5be59d4a6051b19059585dae292834371969afed89129f8eeb86c6d22e0cb7d6"
+    },
+    {
+      "path": "records/validation/discovery.json",
+      "bytes": 149,
+      "sha256": "c72edf96f4b47ca133fb8a72a70f538d91f3514b107bb9114a897b33a1d87a5a"
+    },
+    {
+      "path": "records/validation/fmt-final.json",
+      "bytes": 246,
+      "sha256": "d9e22cad8f7a56471603291f13b49572f80f0406690ccfe08b6c51e844b4b35b"
+    },
+    {
+      "path": "records/validation/fmt-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "records/validation/native-clippy-188-1.json",
+      "bytes": 403,
+      "sha256": "e40a9bbff0979b3121f276dbe06ecb5ae2b9d7fafd3cd4f9eb84295822994e65"
+    },
+    {
+      "path": "records/validation/native-clippy-188-1.log",
+      "bytes": 256,
+      "sha256": "3562ca303c63d7d15d4a22193d2f29bd680d1046c1160e5183a1d124f783c95e"
+    },
+    {
+      "path": "records/validation/native-clippy-188-final.json",
+      "bytes": 408,
+      "sha256": "5cf8f9482a12508850425326888fa19b39736682bdc892113c05ea8f43e754cb"
+    },
+    {
+      "path": "records/validation/native-clippy-188-final.log",
+      "bytes": 152,
+      "sha256": "bb006d56f04ba314d555f077ec4d292aa010315029af2acf442232adfd53a8ed"
+    },
+    {
+      "path": "records/validation/native-full-188-1.json",
+      "bytes": 402,
+      "sha256": "ae63593850f89adadf4ade463cce83cf1b356b5b5caaf89f355fbe1906381b17"
+    },
+    {
+      "path": "records/validation/native-full-188-1.log",
+      "bytes": 190850,
+      "sha256": "6e60722953cbd8fa899071b851a6ed84170597e79c63cd2b0df3428baada08ed"
+    },
+    {
+      "path": "records/validation/native-full-188-2.json",
+      "bytes": 401,
+      "sha256": "30d084522865a6e2c19d9ecc8c54a4bf6e8c978af78dbc738dc7d8429b7db169"
+    },
+    {
+      "path": "records/validation/native-full-188-2.log",
+      "bytes": 209189,
+      "sha256": "25cf8d5527787fbf17e8b8fb5326a30c50a46d7a00b4c3fc315ea2d94b205662"
+    },
+    {
+      "path": "records/zoom-test-correction/after.rs",
+      "bytes": 34894,
+      "sha256": "c12ed6d16a17cf28718fdcb01b11e10c52807c9789616f6f484afee3866eeec4"
+    },
+    {
+      "path": "records/zoom-test-correction/before.rs",
+      "bytes": 34748,
+      "sha256": "581a9194633ebab5ff3eef07ec2986d7ad1b9ea536878c8de01aacaeaf49c232"
+    },
+    {
+      "path": "records/zoom-test-correction/receipt.json",
+      "bytes": 529,
+      "sha256": "7faff103c1f44767907ea079c86de98490b17933545d72745d263f2b31665e53"
+    },
+    {
+      "path": "source/.github/workflows/check.yml",
+      "bytes": 17108,
+      "sha256": "ac5f62dfa77f3ce2676563bc39d611aa7eeaba7fea14aab29c860bf71b8826c2"
+    },
+    {
+      "path": "source/docs/ROADMAP.md",
+      "bytes": 26152,
+      "sha256": "8d1140a43fbaf22fd7810999ca623bf75cb0fcd89a22bbba6486d34bd493140b"
+    },
+    {
+      "path": "source/docs/VALIDATION.md",
+      "bytes": 355550,
+      "sha256": "129dd55c5352d1e1b60ead99a9c39c8e1804718c0b9f9b3eeb61f26602a391da"
+    },
+    {
+      "path": "source/docs/vulkan-native-window.md",
+      "bytes": 16329,
+      "sha256": "aae6ecbdb634f0480ca8aa5cbde243bcd74acd42034e4caf8c9303f356f45238"
+    },
+    {
+      "path": "source/src/browser/native_scene.rs",
+      "bytes": 34894,
+      "sha256": "c12ed6d16a17cf28718fdcb01b11e10c52807c9789616f6f484afee3866eeec4"
+    },
+    {
+      "path": "source/src/graphics/raster_bridge/native.rs",
+      "bytes": 37094,
+      "sha256": "f76c0ef66dcf7c9e26d9349f2b0333b48b03b4defb1ba197c391ed98c244c115"
+    },
+    {
+      "path": "source/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "bytes": 14029,
+      "sha256": "cecfaeb41bcf503c7b3548db79de3229780e156ba98f5ec82ea8c263623e2ad8"
+    },
+    {
+      "path": "source/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 39661,
+      "sha256": "c6284d3f97e9eee47226607297ba9612334effc438c84f9fe74b3bffba4a1526"
+    }
+  ]
+}
