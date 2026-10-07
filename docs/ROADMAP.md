@@ -1,5 +1,10 @@
 # Development docket
 
+[Decimal Number formatting](number-format.md) now handles exact shortest-decimal
+ties across runtime conversion and compiled property names. Number TypedArrays
+are the next binary-data step; their constructors, integer-indexed properties,
+resizable-buffer behavior and upstream baseline remain work in progress.
+
 [Native rectangle accounting](native-rect-accounting.md) reserves the actual
 clipped pre-blend loop area for each Rect instead of a complete viewport. Small
 shape pages can now fit the unchanged CPU allowance; Image, Line and opacity

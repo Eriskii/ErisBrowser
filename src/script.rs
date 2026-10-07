@@ -41,6 +41,7 @@ mod node_normalize;
 mod node_position;
 mod node_predicates;
 mod node_root;
+mod number_format;
 mod object_has_own;
 mod object_integrity;
 mod object_is;
@@ -187,14 +188,6 @@ impl Value {
             }
             Self::String(s) => s.number(),
             _ => f64::NAN,
-        }
-    }
-
-    fn js_string(&self) -> JsString {
-        match self {
-            Self::String(text) => text.clone(),
-            Self::Number(number) => JsString::from(json_number(*number)),
-            _ => JsString::from(self.to_string()),
         }
     }
 }
@@ -4132,12 +4125,12 @@ impl Runtime {
                 // selecting ECMAScript notation; cover its bounded scratch.
                 self.work(128)?;
                 self.charge(1024)?;
-                Ok(primitive.js_string())
+                self.primitive_js_string(&primitive)
             }
             Value::Undefined | Value::Null | Value::Bool(_) => {
                 self.work(4)?;
                 self.charge(128)?;
-                Ok(primitive.js_string())
+                self.primitive_js_string(&primitive)
             }
             Value::Symbol(_) => Err(ScriptError::type_error(
                 "cannot convert a symbol to a string",
@@ -5485,7 +5478,8 @@ impl Runtime {
             ));
         }
         if radix == 10.0 || !number.is_finite() || number == 0.0 {
-            return self.string(Value::Number(number).js_string());
+            let text = self.primitive_js_string(&Value::Number(number))?;
+            return self.string(text);
         }
         if number.fract() != 0.0 || number.abs() > 9_007_199_254_740_991.0 {
             return Err(ScriptError::unsupported(
@@ -6576,7 +6570,7 @@ impl Runtime {
         if !matches!(primitive, Value::String(_)) {
             self.charge(1024)?;
         }
-        Ok(primitive.js_string())
+        self.primitive_js_string(&primitive)
     }
     fn json_text(
         &mut self,
@@ -6597,7 +6591,7 @@ impl Runtime {
                     self.charge(text.byte_len())?;
                     Ok(text)
                 }
-                Value::Number(number) => Ok(json_number(number).into()),
+                Value::Number(number) => Ok(self.number_text(number)?.into()),
                 Value::Object(id) => {
                     for key in ["toString", "valueOf"] {
                         let convert = self.get(Value::Object(id), key, doc)?;
@@ -6646,7 +6640,7 @@ impl Runtime {
                     arrays.pop();
                     Ok(text.into())
                 }
-                _ => Ok(value.js_string()),
+                _ => self.primitive_js_string(&value),
             }
         })();
         self.json_depth -= 1;
@@ -6725,7 +6719,7 @@ impl Runtime {
                 let item = self.get(Value::Array(id), &index.to_string(), doc)?;
                 let key = match item {
                     Value::String(text) => Some(text),
-                    Value::Number(number) => Some(JsString::from(json_number(number))),
+                    Value::Number(number) => Some(JsString::from(self.number_text(number)?)),
                     Value::Object(id)
                         if matches!(
                             self.objects[id].boxed,
@@ -6895,14 +6889,14 @@ impl Runtime {
             Value::Bool(value) => {
                 self.json_append(writer, if *value { "true" } else { "false" })?
             }
-            Value::Number(number) => self.json_append(
-                writer,
-                &if number.is_finite() {
-                    json_number(*number)
+            Value::Number(number) => {
+                let text = if number.is_finite() {
+                    self.number_text(*number)?
                 } else {
                     "null".into()
-                },
-            )?,
+                };
+                self.json_append(writer, &text)?;
+            }
             Value::String(text) => self.json_quote(writer, text)?,
             Value::Array(_) | Value::Object(_) | Value::Json | Value::Math => {
                 if writer.stack.contains(&value) {
@@ -8672,7 +8666,8 @@ impl Runtime {
                 return if name.ends_with("valueOf") {
                     Ok(value)
                 } else {
-                    self.string(value.js_string())
+                    let text = self.primitive_js_string(&value)?;
+                    self.string(text)
                 };
             }
             _ => {}
@@ -9020,7 +9015,8 @@ impl Runtime {
                 if let Value::Number(number) = native.receiver {
                     return self.number_to_string(number, arg(0), doc);
                 }
-                return self.string(native.receiver.js_string());
+                let text = self.primitive_js_string(&native.receiver)?;
+                return self.string(text);
             }
             _ => {}
         }
@@ -9330,57 +9326,11 @@ fn json_array_index(key: &JsString) -> Option<u32> {
     }
     (index != u32::MAX).then_some(index)
 }
-// Rust supplies shortest round-trippable digits; ECMAScript chooses decimal
-// notation for exponents -6 through 20 and an explicit '+' for positive ones.
+// Private direct formatter assertions use an unlimited observer; every
+// author-reachable runtime/parser call admits the added correction operations.
+#[cfg(test)]
 fn json_number(number: f64) -> String {
-    if !number.is_finite() {
-        return Value::Number(number).to_string();
-    }
-    if number == 0.0 {
-        return "0".into();
-    }
-    let raw = number.abs().to_string();
-    let (mantissa, exponent) = raw
-        .split_once(['e', 'E'])
-        .map(|(m, e)| (m, e.parse::<i32>().unwrap_or(0)))
-        .unwrap_or((&raw, 0));
-    let decimal = mantissa.find('.').unwrap_or(mantissa.len()) as i32;
-    let digits: String = mantissa.chars().filter(|c| *c != '.').collect();
-    let leading = digits.bytes().take_while(|byte| *byte == b'0').count();
-    let digits = digits[leading..].trim_end_matches('0');
-    let position = decimal + exponent - leading as i32;
-    let power = position - 1;
-    let mut output = if number.is_sign_negative() {
-        "-".to_owned()
-    } else {
-        String::new()
-    };
-    if (-6..21).contains(&power) {
-        if position <= 0 {
-            output.push_str("0.");
-            output.push_str(&"0".repeat((-position) as usize));
-            output.push_str(digits);
-        } else if position as usize >= digits.len() {
-            output.push_str(digits);
-            output.push_str(&"0".repeat(position as usize - digits.len()));
-        } else {
-            output.push_str(&digits[..position as usize]);
-            output.push('.');
-            output.push_str(&digits[position as usize..]);
-        }
-    } else {
-        output.push_str(&digits[..1]);
-        if digits.len() > 1 {
-            output.push('.');
-            output.push_str(&digits[1..]);
-        }
-        output.push('e');
-        if power >= 0 {
-            output.push('+');
-        }
-        output.push_str(&power.to_string());
-    }
-    output
+    number_format::format(number, |_, _| Ok(())).unwrap()
 }
 
 fn to_i32(number: f64) -> i32 {

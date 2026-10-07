@@ -388,7 +388,14 @@ impl<'source> Parser<'source> {
                 let value = *value;
                 compile_allocate(&mut self.compile_budget, 160)?;
                 self.compile_budget.work(1).map_err(regexp_error)?;
-                (json_number(value).into(), false)
+                (
+                    number_format::format(value, |work, bytes| {
+                        self.compile_budget.work(work).map_err(regexp_error)?;
+                        compile_allocate(&mut self.compile_budget, bytes)
+                    })?
+                    .into(),
+                    false,
+                )
             }
             _ => return Err(self.error("expected object property")),
         };

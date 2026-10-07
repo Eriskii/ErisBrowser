@@ -1,5 +1,18 @@
 # Validation record
 
+## Decimal Number midpoint selection
+
+The [shared formatter](number-format.md) passes all 74 independent raw-bit
+spelling fixtures, 15 private groups on Rust 1.88 and 1.98, and two Page/worker
+click groups. The full Rust 1.88 native-feature suite passes 2,180 tests,
+including confinement tests. The first private run exposed a test that looked
+in the empty compilation-unit body instead of the dynamic function body; its
+replacement inspects the actual compiled key and executes the result. Strict
+Clippy also required three test-only cleanups. These failures remain recorded.
+The five unchanged upstream profiles preserve all 1,163 results, including four
+existing failures and 226 unsupported modes. See the source-bound
+[evidence and retained archive](evidence/number-format.json).
+
 ## Native rectangle accounting
 
 [Precise Rect reservations](native-rect-accounting.md) admit the fixed forty-box

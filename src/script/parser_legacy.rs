@@ -874,7 +874,14 @@ impl<'source> Parser<'source> {
         let (key, identifier) = match self.tokens[self.pos].kind.clone() {
             TokenKind::Word(word) => (self.identifier_key(&word.value)?, true),
             TokenKind::String(value) => (value, false),
-            TokenKind::Number(value) => (json_number(value).into(), false),
+            TokenKind::Number(value) => (
+                number_format::format(value, |work, bytes| {
+                    self.compile_budget.work(work).map_err(regexp_error)?;
+                    compile_allocate(&mut self.compile_budget, bytes)
+                })?
+                .into(),
+                false,
+            ),
             _ => return Err(self.error("expected object property")),
         };
         self.pos += 1;

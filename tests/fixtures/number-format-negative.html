@@ -1,0 +1,16 @@
+<!doctype html><meta charset=utf-8>
+<title id=title>Negative amount</title>
+<style>
+body{margin:0;color:#182030;font-size:20px;line-height:24px}
+h1{position:absolute;left:16px;top:12px;margin:0;font-size:24px;line-height:28px}
+.label{position:absolute;left:16px}.amount{position:absolute;left:208px}
+.first{top:56px}.second{top:96px}.third{top:136px}
+#change{position:absolute;left:16px;top:184px;width:160px;height:32px;padding:0;border:0;background:#204080;color:white;font-size:16px}
+#swatch{position:absolute;left:192px;top:192px;width:16px;height:16px;background:red}
+#state{position:absolute;left:224px;top:188px}
+</style><body data-phase=negative>
+<h1 id=heading>Number display</h1>
+<div class="label first">Displayed amount</div><div id=plain class="amount first">-1000000000000000.2</div>
+<div class="label second">Export</div><div id=export class="amount second">[-1000000000000000.2]</div>
+<div class="label third">Saved record</div><div id=saved class="amount third">-1000000000000000.2</div>
+<button id=change type=button>Change sign</button><div id=swatch style="background-color:#0000ff"></div><div id=state>Negative amount</div>

@@ -374,7 +374,7 @@ impl Runtime {
             Value::String(text) => Ok(PropertyKey::String(text)),
             primitive => {
                 self.charge(1024)?;
-                Ok(PropertyKey::String(primitive.js_string()))
+                Ok(PropertyKey::String(self.primitive_js_string(&primitive)?))
             }
         }
     }

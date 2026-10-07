@@ -1,0 +1,1350 @@
+{
+  "base": "e0be59bc6e734ef765510b86010030571c7b5556",
+  "change": "Select the even shortest-decimal significand only at proved exact adjacent midpoints; share paid runtime/compiler formatting.",
+  "sources": {
+    "examples/number-format.html": "826d9696389e69a8241f2065d101a8b9c839244b449bfb35794de49045e70164",
+    "src/script/number_format.rs": "25d37b3aa2314751fc4679bc9c607011f539ce32838adc50989d239d8376dddf",
+    "src/script/number_format/tests.rs": "90e0fb9004e9f08200febfeda2fcaa6a0e57b313e9883f64ec1178ccad11606e",
+    "tests/conformance/number-format-correct-control.js": "7fd469391469adb89aafc5367904acf8ea884dc7e1af72bc3be42e24328eede2",
+    "tests/conformance/number-format-literals.tsv": "4f0b9ab0c5fc4463a40421a400fb0085d95b871e49634c8943915ec45827504b",
+    "tests/conformance/number-format-wrong-control.js": "0f708af67405617fdaa0a0225ebd8498a665e2df755364b6e690315fa71f3e7d",
+    "tests/conformance/number-format.js": "a019fb1221d27789d00fadfc5a42e37ee7f18282aa2b09633205e875f4d9fea6",
+    "tests/fixtures/number-format-negative.html": "fa5c2a4fe52f2e8835579f1a276dbb6310e10eb3d3224479213469e4e7739d6e",
+    "tests/fixtures/number-format-positive.html": "6e15d0a2bcdbdabcb306f089ebef2ce4a54fc4a62cbb08f065e39cc5d9f4a026",
+    "tests/number_format_page.rs": "d94d31aefccb527285130335780b0f93402a0cb2129d30690a215174e6f29380",
+    "tools/verify_number_format.py": "9fcfd8f42892e5b9429b2bbb20976e0b0a5dd501a2322a0a8e3a5b015026650d",
+    "src/script.rs": "620da5ec71234253b96fad44ae70e006d2d8ca9b5a21aab5ba40308981cb8685",
+    "src/script/parser.rs": "7981506f159fa71ce7d3ffc5cb646670a48e8191dd792df639aca34b30285102",
+    "src/script/parser_legacy.rs": "8281630a2abf88049e99f81b3372e324197287897848d93d80873c8afab3148b",
+    "src/script/symbols.rs": "57365cda235bbb29cafb988378f56262d4698a8e17579cce4150d14bf204f369"
+  },
+  "validation": {
+    "formatter-private-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "script::number_format",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 7.793586801039055,
+      "log": "formatter-private-188-2.log",
+      "sha256": "72bd9119772ea6acb1d4046b6d82febb1465533ac869e6665dd468862e361aa3"
+    },
+    "formatter-private-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "script::number_format",
+        "--",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 15.635532125132158,
+      "log": "formatter-private-198-1.log",
+      "sha256": "bf541e58634350de48c8846136714859ec01a1143dfc84f52743c06d22cbcb6b"
+    },
+    "formatter-page-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--test",
+        "number_format_page",
+        "--",
+        "--include-ignored",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 18.38089207513258,
+      "log": "formatter-page-188-1.log",
+      "sha256": "f094b6bb907ae7fef1ca674130472966580ed0af0f7d0c85a901a8015aa0d77c"
+    },
+    "formatter-all-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 26.408912350889295,
+      "log": "formatter-all-188-1.log",
+      "sha256": "d2caf0a344a4255da718e5e4c414b94f6a8dc9ea702ba579e2f4e7e9390d14a6"
+    },
+    "formatter-targeted-188-3": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "--test",
+        "number_format_page",
+        "number_format",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.677514923037961,
+      "log": "formatter-targeted-188-3.log",
+      "sha256": "c0dc6a6f2fb6da56919b7da1118e69dbe41d48108a28c642f4ff9812be5d752e"
+    },
+    "formatter-clippy-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 12.665386203909293,
+      "log": "formatter-clippy-188-2.log",
+      "sha256": "c20ac233b5383734e411bc9549ee61101b182454dfbd02a6e6d346a0a829321b"
+    },
+    "fmt-188-final": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.9976670499891043,
+      "log": "fmt-188-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "portable-literal-proof-1": {
+      "command": [
+        "python3",
+        "tools/verify_number_format.py"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.06351179303601384,
+      "source_sha256": "9fcfd8f42892e5b9429b2bbb20976e0b0a5dd501a2322a0a8e3a5b015026650d",
+      "outputs": {
+        "stdout": "0ff862f7f7f2e0621bce1a8e11011f39a236a3ea7fa4cf296d6d5f9ea76ac0a4",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "full_native_tests_passed": 2180,
+  "new_groups": 17,
+  "literal_rows": 74,
+  "final_adapter": {
+    "path": "eris-js-final",
+    "bytes": 150297400,
+    "sha256": "0aa0fbc72b6228d2b28b7bb299fe65b23aa111c61cc92fac311e505301ac05b9",
+    "source_hold_sha256": "a1dcf4b3479842a5de1c42c7176604449d844727eb1f543f1d3186e56cf28f95",
+    "build": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.1138674239628017,
+      "log": "adapter-final-188-1.log",
+      "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+    }
+  },
+  "upstream_comparison": {
+    "mode_cases_per_phase": 1163,
+    "profiles": [
+      {
+        "profile": "string-json",
+        "mode_cases": 652,
+        "counts": {
+          "passed": 568,
+          "unsupported": 84
+        },
+        "identical_cases_except_seconds": true,
+        "before_sha256": "5a2d13741df491cf1a61095b3044eca56d822ca38a8113be9fa3e8d707bb2845",
+        "final_sha256": "beaa43a77df391d9408fe65e838c414626ddd7e6268fdd94d4eac1ec8b76dfd0"
+      },
+      {
+        "profile": "numeric-conversion",
+        "mode_cases": 60,
+        "counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "identical_cases_except_seconds": true,
+        "before_sha256": "1188ec0123d0d00da00e3ca076d62129ddf4f4d0959c9ca178fda9619018cbf7",
+        "final_sha256": "aa0dbcc6aa9fecbfb0abc2c88eca21a1403ef77e8a45850991944f30aa689d06"
+      },
+      {
+        "profile": "addition",
+        "mode_cases": 95,
+        "counts": {
+          "unsupported": 28,
+          "passed": 67
+        },
+        "identical_cases_except_seconds": true,
+        "before_sha256": "bb26fbdcecabc5d2863bc5076b7764212489400c828d54343b03c1f7f80cf93d",
+        "final_sha256": "d402b3204e41b1306dfa298379876d840cf46b3b46550ca5ac0b4fc6068184ce"
+      },
+      {
+        "profile": "symbols",
+        "mode_cases": 242,
+        "counts": {
+          "passed": 184,
+          "unsupported": 54,
+          "failed": 4
+        },
+        "identical_cases_except_seconds": true,
+        "before_sha256": "c8b6cff8bddc644d6655d603e6ad4956e39dbdcc4a219a1bc19ff9241aa3762e",
+        "final_sha256": "2a6523c450c872cf8862a83c147d827dfa6f978353593661fc80e5cb2d41a2b0"
+      },
+      {
+        "profile": "template-literal",
+        "mode_cases": 114,
+        "counts": {
+          "unsupported": 32,
+          "passed": 82
+        },
+        "identical_cases_except_seconds": true,
+        "before_sha256": "e225fbe4d15831a556de8b19a72f562ea65fe2740aba25ef19af3bf88e91ce54",
+        "final_sha256": "4560d6e5aba697f15fb374eb6e82930cd9359a8b67c813245090a1ae2fe89744"
+      }
+    ]
+  },
+  "retained_failures": [
+    "Initial 14/15 private test run inspected the wrong compilation body; correction inspects the real stored JsString key and executes it.",
+    "First strict Clippy run found two needless range loops and one exact midpoint literal marked excessive precision; equivalent raw bits and enumeration fix only tests.",
+    "Page author initial default-home formatting attempt failed before source formatting; installed formatter succeeded.",
+    "Four pre-existing Symbol upstream failures and 226 unsupported modes remain."
+  ],
+  "review_receipts": [
+    "eris-number-format-1/layout-core-review-1.json",
+    "eris-number-format-tests-1/layout-source-review-2.json",
+    "eris-number-format-tests-1/portable-verifier-docs-source-review.json",
+    "eris-number-format-page-1/script-review.json",
+    "eris-number-format-1/failures/clippy-tests-1/layout-review.json"
+  ],
+  "archive": {
+    "file": "number-format.tar.gz",
+    "bytes": 497507,
+    "sha256": "4cbba3e894dc0fd49feb801cb6add5a334d293dc9e25aa2e11143ab8364df7c0",
+    "files": [
+      {
+        "path": "eris-number-format-1/adapter-after.json",
+        "bytes": 651,
+        "sha256": "259c74d00ed0a03805449cbe1f316ceb6daecc6bbc7010a6738324ee4ce3473c"
+      },
+      {
+        "path": "eris-number-format-1/adapter-final.json",
+        "bytes": 646,
+        "sha256": "8561520a87089783c935d67dc50562426c944e1398afb4416d4dd4cab9c5d8c7"
+      },
+      {
+        "path": "eris-number-format-1/base.json",
+        "bytes": 212,
+        "sha256": "f716a3636ba7fe8d74ce20c4f22d6cb25e9278bcda826a1670090c0bdf803a03"
+      },
+      {
+        "path": "eris-number-format-1/bootstrap-ci.json",
+        "bytes": 26207,
+        "sha256": "e1da478c1def348a79896cf88af8541efe2abdb9a92eebbbdd9c0774338a6f4a"
+      },
+      {
+        "path": "eris-number-format-1/bootstrap-integration.json",
+        "bytes": 925,
+        "sha256": "bf055baf7ff60dd8d51a5df31970067d19b2e2434cd41261edcec39213dcb5b2"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/comparison.json",
+        "bytes": 1936,
+        "sha256": "fc22e8b0047c925a5d11718c1e5241fc66778f47c00967839aedb5a010ecda1f"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-addition-receipt.json",
+        "bytes": 828,
+        "sha256": "73179abf9bbe11883e00e664f75ffce95da601179e968dc30a4195bbe0caf82d"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-addition.json",
+        "bytes": 103621,
+        "sha256": "d402b3204e41b1306dfa298379876d840cf46b3b46550ca5ac0b4fc6068184ce"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-addition.log",
+        "bytes": 210,
+        "sha256": "6c0fa85d1cc93e44ece1260bfa68084481d6d6c53a85dba98f21163d632235ae"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-numeric-conversion-receipt.json",
+        "bytes": 867,
+        "sha256": "de022d71bd10ad950f80d034bfe779861ccb3cdb5109c2b0d81eef459058e286"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-numeric-conversion.json",
+        "bytes": 94318,
+        "sha256": "aa0dbcc6aa9fecbfb0abc2c88eca21a1403ef77e8a45850991944f30aa689d06"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-numeric-conversion.log",
+        "bytes": 220,
+        "sha256": "2b8bc788aaf3283ebf6afbc12dee79efd172010d6d3956c2a224f7e726c54de1"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-string-json-receipt.json",
+        "bytes": 829,
+        "sha256": "7180fb343c2dd5400d4e33f3db338738eac5be58618fde01127211b9037d2159"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-string-json.json",
+        "bytes": 417705,
+        "sha256": "beaa43a77df391d9408fe65e838c414626ddd7e6268fdd94d4eac1ec8b76dfd0"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-string-json.log",
+        "bytes": 216,
+        "sha256": "d6c5fbba0b6125c47cb09eea3fe4b589fd2add5ca7fa700726918dc626aaf495"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-symbols-receipt.json",
+        "bytes": 842,
+        "sha256": "f0232dcd13be2a016b54b93de218915b451a6d7a99ce2c6c6c848981ffa48431"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-symbols.json",
+        "bytes": 202295,
+        "sha256": "2a6523c450c872cf8862a83c147d827dfa6f978353593661fc80e5cb2d41a2b0"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-symbols.log",
+        "bytes": 225,
+        "sha256": "da2f17ce4fe3742d0d392714863d5142e468eec6be3f3a2450f4c069eb135015"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-template-literal-receipt.json",
+        "bytes": 860,
+        "sha256": "e65f249d62b2ab3473b7e4d7713abd6455e8b56e79ddc1e72b5e2947ac8bb756"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-template-literal.json",
+        "bytes": 113147,
+        "sha256": "4560d6e5aba697f15fb374eb6e82930cd9359a8b67c813245090a1ae2fe89744"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/final-template-literal.log",
+        "bytes": 219,
+        "sha256": "d3f97d28435a08d911a2109e64f22a4ef5b82bb7ba6264f17d663c70c2f84129"
+      },
+      {
+        "path": "eris-number-format-1/conformance-final/summary.json",
+        "bytes": 4526,
+        "sha256": "d46ae580836b1182a8c92be72696ce445dd0fba387d02ce6aa43cedc603f50e0"
+      },
+      {
+        "path": "eris-number-format-1/conformance-plan.json",
+        "bytes": 1188,
+        "sha256": "d77acec5cb094789091076b3a60ef41aa2dc679375f467a8265b70649f91e84d"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-addition-receipt.json",
+        "bytes": 821,
+        "sha256": "008148bb52262d6f8fdc0f970b0d56c1955c5efca01169d4b87a03cb49a4a73d"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-addition.json",
+        "bytes": 103621,
+        "sha256": "87993f97215c97e53f3bb518c66af84af0e52195d7e9c30b4ee4fcc861e7daa9"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-addition.log",
+        "bytes": 204,
+        "sha256": "bce94e302b0b8edfd308fd30a582c030394ecc7a6250703cfb3045888eb57089"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-numeric-conversion-receipt.json",
+        "bytes": 862,
+        "sha256": "a7f72bb0ff6e59b1f6a5828336c71c1d40168b1bea9648b01ca7289970873bc5"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-numeric-conversion.json",
+        "bytes": 94318,
+        "sha256": "ec60c2e0d736ecb74b62e9405c0db22043ca12026ffd5f17cc64cb458caac08d"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-numeric-conversion.log",
+        "bytes": 214,
+        "sha256": "02d69ec09cb84f4c440cc7a97ddc85002a88576ff835cdda822b9f71304d7bb0"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-string-json-receipt.json",
+        "bytes": 823,
+        "sha256": "cfeb4791c435926c558869ca6fa90052f4e5be5fcfc3fc6042a01216859d56d6"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-string-json.json",
+        "bytes": 417705,
+        "sha256": "b0cebfd6885f401c65d504022abea3ef893886ad15b287995506445ebc9382dc"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-string-json.log",
+        "bytes": 210,
+        "sha256": "384e8597cba77b9d9554af898d18966395686e0b2817bc44b9bd1074c657d27d"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-symbols-receipt.json",
+        "bytes": 836,
+        "sha256": "caa9aac44a0cc0c8e2c52f4bea82f345f5f6ec85161146d5a722f4249c7b6370"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-symbols.json",
+        "bytes": 202296,
+        "sha256": "1d866af0e24c5d93b25aabd80f68204ac9db08585e2811123847e7ab21ae359c"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-symbols.log",
+        "bytes": 219,
+        "sha256": "b48f7e24d115fc98ce2ea5b445ade5a7460ef0bb49f1c8b2708a74b1e84cdc9f"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-template-literal-receipt.json",
+        "bytes": 854,
+        "sha256": "25a8a6ef1dd48342844f9314657c929e2678f3e9d59e475d597f89422141ada8"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-template-literal.json",
+        "bytes": 113147,
+        "sha256": "3d8e4191151970989d14b760aaaafcbd11e0ace2018577ddfa4776e2e045751d"
+      },
+      {
+        "path": "eris-number-format-1/conformance/after-template-literal.log",
+        "bytes": 213,
+        "sha256": "305561c1f0a1c9a6a4e3e52da29da14943ac6bd4842d5a2ac9e25be8cd34cb91"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-addition-receipt.json",
+        "bytes": 836,
+        "sha256": "bb5457b1e255a879958ff2f821e6fdc026fa766d2ae49374ac7df18b1bdb8aef"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-addition.json",
+        "bytes": 103634,
+        "sha256": "bb26fbdcecabc5d2863bc5076b7764212489400c828d54343b03c1f7f80cf93d"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-addition.log",
+        "bytes": 205,
+        "sha256": "5ae478fb6b80691c03c2627b902bb7c37efd12cee2ce5e3d43458aeb4586350b"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-numeric-conversion-receipt.json",
+        "bytes": 876,
+        "sha256": "589639e7424b5e96bfa3f8e60de10aa33d3747c051b85287ad67cc41de99bb95"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-numeric-conversion.json",
+        "bytes": 94331,
+        "sha256": "1188ec0123d0d00da00e3ca076d62129ddf4f4d0959c9ca178fda9619018cbf7"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-numeric-conversion.log",
+        "bytes": 215,
+        "sha256": "cff3a5c0ff28e6a4774e2093652c9dc9e426b98221a2833755f2bb8e15eda01f"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-string-json-receipt.json",
+        "bytes": 838,
+        "sha256": "703af596eac5fc69718cbddf6dd92c920605e7c49cdd2f47d9d9a765f2f4eaa5"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-string-json.json",
+        "bytes": 417718,
+        "sha256": "5a2d13741df491cf1a61095b3044eca56d822ca38a8113be9fa3e8d707bb2845"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-string-json.log",
+        "bytes": 211,
+        "sha256": "7016871d327905a217e3ea72daeb1334e38ffa0eea810b7af571b78a9e52b985"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-symbols-receipt.json",
+        "bytes": 850,
+        "sha256": "57e46fa6b54796b43bb6bec5d7cf6e1c2e262341ce002e1946aae98582dab950"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-symbols.json",
+        "bytes": 202309,
+        "sha256": "c8b6cff8bddc644d6655d603e6ad4956e39dbdcc4a219a1bc19ff9241aa3762e"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-symbols.log",
+        "bytes": 220,
+        "sha256": "38144aae07b68c19309a16caedd922decec9b99a691f23008adaeb6afe8b5e2e"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-template-literal-receipt.json",
+        "bytes": 868,
+        "sha256": "320f47d37b39c24759c3823705b6bb7d1e46eaadea88ffafe6aae166b98180f7"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-template-literal.json",
+        "bytes": 113159,
+        "sha256": "e225fbe4d15831a556de8b19a72f562ea65fe2740aba25ef19af3bf88e91ce54"
+      },
+      {
+        "path": "eris-number-format-1/conformance/before-template-literal.log",
+        "bytes": 214,
+        "sha256": "6b8282f6e8fe794ba70366573cba961f8c0029bafb1fb2a3b5f5e51f14db1968"
+      },
+      {
+        "path": "eris-number-format-1/conformance/comparison.json",
+        "bytes": 1936,
+        "sha256": "7d09f1923c45a24c6495aad6467e5a491fab815ad8a27f668bf1d4477995af37"
+      },
+      {
+        "path": "eris-number-format-1/conformance/summary.json",
+        "bytes": 9061,
+        "sha256": "b3dae92821d1cd8c0a80e982a00c945ea1ba83e553ba7ae6b016a0c5ce4669c1"
+      },
+      {
+        "path": "eris-number-format-1/controls/after.json",
+        "bytes": 2570,
+        "sha256": "f1a5bc38cfa9a961008a1f2b7c2820a87225fd53bb619854b0e644682fef1c6c"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-correct-control-sloppy.request",
+        "bytes": 555,
+        "sha256": "b899173f4e8154aaae540add6e85a4007b29cf48f6be8b6687e5ff66b562c454"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-correct-control-sloppy.response",
+        "bytes": 44,
+        "sha256": "197e3306c36c616d87cf813b0a85c81386bc72ad6df7c2580542c73e4a33da3a"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-correct-control-sloppy.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-correct-control-strict.request",
+        "bytes": 555,
+        "sha256": "098896bfe69c37de59aed95e8f51b5f69ef1b7ab4421f04780177d1cfcc9aea6"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-correct-control-strict.response",
+        "bytes": 44,
+        "sha256": "197e3306c36c616d87cf813b0a85c81386bc72ad6df7c2580542c73e4a33da3a"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-correct-control-strict.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-observe-value-sloppy.request",
+        "bytes": 477,
+        "sha256": "be3600b775402fc750a4155eb73c3a471201e75fd50677424cb9b6480e401799"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-observe-value-sloppy.response",
+        "bytes": 94,
+        "sha256": "496433b2448f28ff64871aa5bcb3b8228980d71e4c4c528dad8a5e1e6d4e8e05"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-observe-value-sloppy.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-observe-value-strict.request",
+        "bytes": 477,
+        "sha256": "42cb22686d99ab96dcd863ffb806f3bc0a292eb17e892e309a2ba5460d509673"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-observe-value-strict.response",
+        "bytes": 94,
+        "sha256": "496433b2448f28ff64871aa5bcb3b8228980d71e4c4c528dad8a5e1e6d4e8e05"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-observe-value-strict.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-wrong-control-sloppy.request",
+        "bytes": 555,
+        "sha256": "d1bf227ebe2eb2451e74b9295191a89d3da1c9bbb4e50fdcf1f7ce0beb7cfe8b"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-wrong-control-sloppy.response",
+        "bytes": 90,
+        "sha256": "ae9e7b47f82d519a3ea88eed99a5819ab9726d78834c7f4ec87eade790736e74"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-wrong-control-sloppy.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-wrong-control-strict.request",
+        "bytes": 555,
+        "sha256": "252c2290f47499eef977530ece146e0a039181a269a94f1f741f4bfd3fe8ac57"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-wrong-control-strict.response",
+        "bytes": 90,
+        "sha256": "ae9e7b47f82d519a3ea88eed99a5819ab9726d78834c7f4ec87eade790736e74"
+      },
+      {
+        "path": "eris-number-format-1/controls/formatter-wrong-control-strict.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/core-source-ready-1.json",
+        "bytes": 1134,
+        "sha256": "8113dbceae7935c9ec1d657db648bd38cbbcc1040c692688c73fbbce69a7ce28"
+      },
+      {
+        "path": "eris-number-format-1/failures/clippy-tests-1/before.json",
+        "bytes": 433,
+        "sha256": "94287b33f56286df1cadcf8eff78018203aa365046e0d021c8386b74f7de8cd4"
+      },
+      {
+        "path": "eris-number-format-1/failures/clippy-tests-1/formatter-clippy-188-1.json",
+        "bytes": 409,
+        "sha256": "3f442b5c42a42bd0d48c84235b4ca410b3ff0336f034261f5b8639a8f645dada"
+      },
+      {
+        "path": "eris-number-format-1/failures/clippy-tests-1/formatter-clippy-188-1.log",
+        "bytes": 1919,
+        "sha256": "120a6384d56e4352cdb83c3df2b2e76d52c014d269dded1cc27f80d4ee94d3e8"
+      },
+      {
+        "path": "eris-number-format-1/failures/clippy-tests-1/layout-review.json",
+        "bytes": 1984,
+        "sha256": "2b929517961075a85b2eac262026c175e408535a91e28c4773b3d6b901f830c6"
+      },
+      {
+        "path": "eris-number-format-1/failures/clippy-tests-1/src/script/number_format/tests.rs",
+        "bytes": 16664,
+        "sha256": "bad93d8e4396d43ef1349f47e4267b3b4f3ef516f671b8e7ac594ee9745b6443"
+      },
+      {
+        "path": "eris-number-format-1/failures/clippy-tests-1/tests/number_format_page.rs",
+        "bytes": 9900,
+        "sha256": "b4474c2a6788f8e26bed5d9e57514ab0bf05c16d4814bc81064254bbe1450b48"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/after/src/script/number_format/tests.rs",
+        "bytes": 16664,
+        "sha256": "bad93d8e4396d43ef1349f47e4267b3b4f3ef516f671b8e7ac594ee9745b6443"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/before.json",
+        "bytes": 1097,
+        "sha256": "f5e1580bc4010ee9e5ef0c06ad93892cd0448b1e68ac48b4a55b05536147b4fa"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/before/src/script/number_format/tests.rs",
+        "bytes": 15717,
+        "sha256": "39eab233061fb9b7019d66dad0fd2696b838a2a25cc09afbbc8fa87e9749a85b"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/correction.diff",
+        "bytes": 2348,
+        "sha256": "4efe3d26dbfe0c9f9019aed79e33167a0bc908170755e9252b14b47df2a0ebfc"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/formatter-private-188-1.json",
+        "bytes": 422,
+        "sha256": "282538a5c4d62fa09061924c53148b1e169bc2132169022b84afb2e767dbf78f"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/formatter-private-188-1.log",
+        "bytes": 2181,
+        "sha256": "110d56a25bd935e3ad5c0e41d23789348574ffdd37f4c7f42003fbbdf4ca80d4"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/receipt.json",
+        "bytes": 2621,
+        "sha256": "d1e95251534424950dd94166fce59e18e641485070ec64461150d53631f38f76"
+      },
+      {
+        "path": "eris-number-format-1/failures/compiled-key-oracle-1/source-ready-original.json",
+        "bytes": 5201,
+        "sha256": "dc957e16faee170595129fa8b303bbdf201439fed4480dcac9a9df6fb2b6f68a"
+      },
+      {
+        "path": "eris-number-format-1/final-executable-source.json",
+        "bytes": 1698,
+        "sha256": "a1dcf4b3479842a5de1c42c7176604449d844727eb1f543f1d3186e56cf28f95"
+      },
+      {
+        "path": "eris-number-format-1/inputs/formatter-call-sites.md",
+        "bytes": 3992,
+        "sha256": "1da9eb469799b3ffb1ad19d50664811acad2f4367ac1127adb8ce59188ce0669"
+      },
+      {
+        "path": "eris-number-format-1/inputs/formatter-correction-proof.md",
+        "bytes": 6485,
+        "sha256": "086705c36fa88b867760ba6315ad71c5ed1383de23e8d972e1db1a063e7baf44"
+      },
+      {
+        "path": "eris-number-format-1/inputs/formatter-correction-ready.json",
+        "bytes": 4003,
+        "sha256": "d4ae939d7e468893bebe7b35f3c60cc31460955b1cde2585367496de049d20cb"
+      },
+      {
+        "path": "eris-number-format-1/inputs/formatter-literals.json",
+        "bytes": 15374,
+        "sha256": "df0eb3a706b50837b813c545f5e48c9fa254ca52ad75e679e80f1c058029a597"
+      },
+      {
+        "path": "eris-number-format-1/inputs/formatter-verifier-ready.json",
+        "bytes": 1006,
+        "sha256": "150bd32e86c1a49a31faac0504001c3f465d919c7e96e4cfa8e49011b9a72a28"
+      },
+      {
+        "path": "eris-number-format-1/inputs/verify-formatter-literals.py",
+        "bytes": 3548,
+        "sha256": "77070d0210061ab96a4b12cb97e29bdc332af072aa0ccf4dff0516cd690c9bbe"
+      },
+      {
+        "path": "eris-number-format-1/layout-core-review-1.json",
+        "bytes": 6305,
+        "sha256": "6f651648a38880945ccf522c4233271b233cce14d256ecf09f20bdd76fdf654d"
+      },
+      {
+        "path": "eris-number-format-1/run-check.py",
+        "bytes": 1213,
+        "sha256": "156095f26ac055a587e8376bb37aa655294f09787aba819f3bdc9d5ed3f61628"
+      },
+      {
+        "path": "eris-number-format-1/run-conformance.py",
+        "bytes": 1666,
+        "sha256": "81a16cd4bfcf9106b5e9d9c4f1617df3d0960fb6f5a6b9d7b99a26709163d451"
+      },
+      {
+        "path": "eris-number-format-1/run-final-conformance.py",
+        "bytes": 1600,
+        "sha256": "f59049333afef6aedc7890372e5ab8242fc0f5b9d78d6938d455404f4edaf9c8"
+      },
+      {
+        "path": "eris-number-format-1/scalar-codec-ci.json",
+        "bytes": 26182,
+        "sha256": "a85b9243e205256ec133bf0442ac211ff13fef39518c9252e28155ff63847eca"
+      },
+      {
+        "path": "eris-number-format-1/validation/adapter-debug-188-1.json",
+        "bytes": 374,
+        "sha256": "980314b5b17addbe6074e60de708755473bc5c1afac997657f6e4516fef7f8c7"
+      },
+      {
+        "path": "eris-number-format-1/validation/adapter-debug-188-1.log",
+        "bytes": 143,
+        "sha256": "62ae7b7f4c5fae2185288043918309179433d68bb209bf3d2569ac9f363d6e88"
+      },
+      {
+        "path": "eris-number-format-1/validation/adapter-final-188-1.json",
+        "bytes": 374,
+        "sha256": "adf8e128d9d96b42da2f1d748e7d7ac184013a4c318284696e1bd54b64e10ba6"
+      },
+      {
+        "path": "eris-number-format-1/validation/adapter-final-188-1.log",
+        "bytes": 72,
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-1.json",
+        "bytes": 221,
+        "sha256": "ea5a8eebc280280435b577142c9710d743f029cbd2642864558d9b9fe30bec52"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-1.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-2.json",
+        "bytes": 221,
+        "sha256": "3aa60e984df2493d69dd4fc1d84502b8018c63fb3b7f36259e304bf4ebcbb595"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-2.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-3.json",
+        "bytes": 209,
+        "sha256": "5cb4df5b3125902d096b0a8c2179e76458a16c428a172bebf1207f6d35c89b95"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-3.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-final.json",
+        "bytes": 240,
+        "sha256": "421a8275079112b57135d8a03b5d1cb9b23f58e1f88222174899f98abae90c5e"
+      },
+      {
+        "path": "eris-number-format-1/validation/fmt-188-final.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-all-188-1.json",
+        "bytes": 380,
+        "sha256": "f900243c7c71e13dd23c9ac09bcecb9a69b257738141a05c39f529379dc1197e"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-all-188-1.log",
+        "bytes": 213541,
+        "sha256": "d2caf0a344a4255da718e5e4c414b94f6a8dc9ea702ba579e2f4e7e9390d14a6"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-clippy-188-1.json",
+        "bytes": 409,
+        "sha256": "3f442b5c42a42bd0d48c84235b4ca410b3ff0336f034261f5b8639a8f645dada"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-clippy-188-1.log",
+        "bytes": 1919,
+        "sha256": "120a6384d56e4352cdb83c3df2b2e76d52c014d269dded1cc27f80d4ee94d3e8"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-clippy-188-2.json",
+        "bytes": 407,
+        "sha256": "5507d42a1ea2d6a630f79d974ddf70d260d8a1b0513f362fae1a726081c55e9c"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-clippy-188-2.log",
+        "bytes": 143,
+        "sha256": "c20ac233b5383734e411bc9549ee61101b182454dfbd02a6e6d346a0a829321b"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-page-188-1.json",
+        "bytes": 439,
+        "sha256": "6d27acd2f6eb5efb17a3950df575c44903b522ea2293c99f205926099fceb112"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-page-188-1.log",
+        "bytes": 561,
+        "sha256": "f094b6bb907ae7fef1ca674130472966580ed0af0f7d0c85a901a8015aa0d77c"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-private-188-1.json",
+        "bytes": 422,
+        "sha256": "282538a5c4d62fa09061924c53148b1e169bc2132169022b84afb2e767dbf78f"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-private-188-1.log",
+        "bytes": 2181,
+        "sha256": "110d56a25bd935e3ad5c0e41d23789348574ffdd37f4c7f42003fbbdf4ca80d4"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-private-188-2.json",
+        "bytes": 419,
+        "sha256": "a4f2f88e820e26eed27a27be378c863c261fd6978790942b53ef0086242ca8ad"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-private-188-2.log",
+        "bytes": 1742,
+        "sha256": "72bd9119772ea6acb1d4046b6d82febb1465533ac869e6665dd468862e361aa3"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-private-198-1.json",
+        "bytes": 420,
+        "sha256": "1fd909cdd42e20b2facee5cd716c8861d9d36f96834c3cb9d806210dfe61496d"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-private-198-1.log",
+        "bytes": 1835,
+        "sha256": "bf541e58634350de48c8846136714859ec01a1143dfc84f52743c06d22cbcb6b"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-targeted-188-3.json",
+        "bytes": 458,
+        "sha256": "5c5a1e6bf0947aa3f19f087540f7d199be547796a1e838b260df18a4e509a088"
+      },
+      {
+        "path": "eris-number-format-1/validation/formatter-targeted-188-3.log",
+        "bytes": 2159,
+        "sha256": "c0dc6a6f2fb6da56919b7da1118e69dbe41d48108a28c642f4ff9812be5d752e"
+      },
+      {
+        "path": "eris-number-format-1/validation/json-existing-188-1.json",
+        "bytes": 400,
+        "sha256": "087a21465be3412a0fc87cb51fac86dab6598fe8e6e3e5c19f0cf19900443ce9"
+      },
+      {
+        "path": "eris-number-format-1/validation/json-existing-188-1.log",
+        "bytes": 1813,
+        "sha256": "711ccc856b23e992fbf30d2ec0d9c1c6d504897ec5d0a79544370be95e5e9194"
+      },
+      {
+        "path": "eris-number-format-1/validation/literal-proof-1.json",
+        "bytes": 335,
+        "sha256": "e4176b822bb6613eaa816576a1f695462290a9caa4b45313c621a6ecd56dc99b"
+      },
+      {
+        "path": "eris-number-format-1/validation/literal-proof-1.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/validation/literal-proof-1.stdout",
+        "bytes": 11341,
+        "sha256": "0ff862f7f7f2e0621bce1a8e11011f39a236a3ea7fa4cf296d6d5f9ea76ac0a4"
+      },
+      {
+        "path": "eris-number-format-1/validation/portable-literal-proof-1.json",
+        "bytes": 399,
+        "sha256": "e12c0c7b8f682871e36ef2ccebf4a3faa7430e6f7cc24f0ffe6ff1a8449a9907"
+      },
+      {
+        "path": "eris-number-format-1/validation/portable-literal-proof-1.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-1/validation/portable-literal-proof-1.stdout",
+        "bytes": 11341,
+        "sha256": "0ff862f7f7f2e0621bce1a8e11011f39a236a3ea7fa4cf296d6d5f9ea76ac0a4"
+      },
+      {
+        "path": "eris-number-format-page-1/README.md",
+        "bytes": 1946,
+        "sha256": "22500ac58709c347ac94c2b704a6d921b95e4878452418cd3bed04133e35a4e6"
+      },
+      {
+        "path": "eris-number-format-page-1/before-format.rs",
+        "bytes": 8966,
+        "sha256": "ebc8d953a50f72d569657858bf377092eae9dd0b7fbcd4fe3cdda059cb66b68e"
+      },
+      {
+        "path": "eris-number-format-page-1/format-attempt-1.json",
+        "bytes": 611,
+        "sha256": "9d0e2e1f31e500493243ecb9616536c3b34caa816d6ceac72e8e7b032249a956"
+      },
+      {
+        "path": "eris-number-format-page-1/held/examples/number-format.html",
+        "bytes": 2088,
+        "sha256": "826d9696389e69a8241f2065d101a8b9c839244b449bfb35794de49045e70164"
+      },
+      {
+        "path": "eris-number-format-page-1/held/tests/fixtures/number-format-negative.html",
+        "bytes": 1145,
+        "sha256": "fa5c2a4fe52f2e8835579f1a276dbb6310e10eb3d3224479213469e4e7739d6e"
+      },
+      {
+        "path": "eris-number-format-page-1/held/tests/fixtures/number-format-positive.html",
+        "bytes": 1142,
+        "sha256": "6e15d0a2bcdbdabcb306f089ebef2ce4a54fc4a62cbb08f065e39cc5d9f4a026"
+      },
+      {
+        "path": "eris-number-format-page-1/held/tests/number_format_page.rs",
+        "bytes": 9900,
+        "sha256": "b4474c2a6788f8e26bed5d9e57514ab0bf05c16d4814bc81064254bbe1450b48"
+      },
+      {
+        "path": "eris-number-format-page-1/script-review.json",
+        "bytes": 5313,
+        "sha256": "c5ab1edb08f02d0a01b97ba7d52f192023d0faf1aa1db7eb9c23a4de18a0e00a"
+      },
+      {
+        "path": "eris-number-format-page-1/source-ready.json",
+        "bytes": 2738,
+        "sha256": "231c7fd192c197dc7828cb876a37ffdb3f7d56c74efbc52e0e7ed640a20a60de"
+      },
+      {
+        "path": "eris-number-format-preparation-1/before-observed-value.json",
+        "bytes": 773,
+        "sha256": "866dc2f9635d1e282346298decb09917bbd47216b9dec2460c27f00c35bfc1f5"
+      },
+      {
+        "path": "eris-number-format-preparation-1/before.json",
+        "bytes": 2955,
+        "sha256": "522fdba5fa88d90946ecb75b8af5419d36f8cf0d2d3ab75f67fcf4e72a7ba17f"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-correct-control-sloppy.request",
+        "bytes": 555,
+        "sha256": "b899173f4e8154aaae540add6e85a4007b29cf48f6be8b6687e5ff66b562c454"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-correct-control-sloppy.response",
+        "bytes": 90,
+        "sha256": "ae9e7b47f82d519a3ea88eed99a5819ab9726d78834c7f4ec87eade790736e74"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-correct-control-sloppy.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-correct-control-strict.request",
+        "bytes": 555,
+        "sha256": "098896bfe69c37de59aed95e8f51b5f69ef1b7ab4421f04780177d1cfcc9aea6"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-correct-control-strict.response",
+        "bytes": 90,
+        "sha256": "ae9e7b47f82d519a3ea88eed99a5819ab9726d78834c7f4ec87eade790736e74"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-correct-control-strict.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-sloppy.request",
+        "bytes": 488,
+        "sha256": "801640aa3d57260db89f8e4118cf0441dec995b47f77c84c812b9216032d6673"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-sloppy.response",
+        "bytes": 90,
+        "sha256": "ae9e7b47f82d519a3ea88eed99a5819ab9726d78834c7f4ec87eade790736e74"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-sloppy.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-strict.request",
+        "bytes": 488,
+        "sha256": "b94434bad9af63d6481e64fe327bec989ecd276d6c9ed6917bf6eef2b155116f"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-strict.response",
+        "bytes": 90,
+        "sha256": "ae9e7b47f82d519a3ea88eed99a5819ab9726d78834c7f4ec87eade790736e74"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-strict.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-value-sloppy.request",
+        "bytes": 477,
+        "sha256": "be3600b775402fc750a4155eb73c3a471201e75fd50677424cb9b6480e401799"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-value-sloppy.response",
+        "bytes": 94,
+        "sha256": "cc70bbc8903c58bdf9733b571cf5f50d9aa2e311c300a987b6699189e79f3625"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-value-sloppy.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-value-strict.request",
+        "bytes": 477,
+        "sha256": "42cb22686d99ab96dcd863ffb806f3bc0a292eb17e892e309a2ba5460d509673"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-value-strict.response",
+        "bytes": 94,
+        "sha256": "cc70bbc8903c58bdf9733b571cf5f50d9aa2e311c300a987b6699189e79f3625"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-observe-value-strict.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-wrong-control-sloppy.request",
+        "bytes": 555,
+        "sha256": "d1bf227ebe2eb2451e74b9295191a89d3da1c9bbb4e50fdcf1f7ce0beb7cfe8b"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-wrong-control-sloppy.response",
+        "bytes": 44,
+        "sha256": "197e3306c36c616d87cf813b0a85c81386bc72ad6df7c2580542c73e4a33da3a"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-wrong-control-sloppy.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-wrong-control-strict.request",
+        "bytes": 555,
+        "sha256": "252c2290f47499eef977530ece146e0a039181a269a94f1f741f4bfd3fe8ac57"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-wrong-control-strict.response",
+        "bytes": 44,
+        "sha256": "197e3306c36c616d87cf813b0a85c81386bc72ad6df7c2580542c73e4a33da3a"
+      },
+      {
+        "path": "eris-number-format-preparation-1/formatter-wrong-control-strict.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/formatter-correct-control.js",
+        "bytes": 540,
+        "sha256": "7fd469391469adb89aafc5367904acf8ea884dc7e1af72bc3be42e24328eede2"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/formatter-finding.md",
+        "bytes": 4155,
+        "sha256": "821dada9998643df614614cec3a79c1b6e1e55d845ee0a06c1aebb0f0eaa8866"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/formatter-observe-value.js",
+        "bytes": 462,
+        "sha256": "b40c0db799e4a125c68f5a90614e63aac1cb68983e7f4fbc676b1f5583f0576c"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/formatter-observe.js",
+        "bytes": 473,
+        "sha256": "46d47bdec94243fd172b434e672ebe702bad93a0d8b67988400abfc2fa2092ec"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/formatter-witness-ready.json",
+        "bytes": 1313,
+        "sha256": "e334216ab29074605293ddcee47a751df50de5028958d21157589dcf2a71ed6c"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/formatter-witness.js",
+        "bytes": 455,
+        "sha256": "4bde21658d7995db8c430e7b069757ca98da08e5cb81d5af2c1f52fd8526a85d"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/formatter-wrong-control.js",
+        "bytes": 540,
+        "sha256": "0f708af67405617fdaa0a0225ebd8498a665e2df755364b6e690315fa71f3e7d"
+      },
+      {
+        "path": "eris-number-format-preparation-1/inputs/rust-fetch.json",
+        "bytes": 804,
+        "sha256": "494b56f0670cd1ac419ecbf72a2c9ca877bcbdab639a79756d0312447976e1ec"
+      },
+      {
+        "path": "eris-number-format-tests-1/README.md",
+        "bytes": 1932,
+        "sha256": "819bb53a5b2fa786d8b7ea57ae76cb2c7ca4722da062c600c2dabaac1cddb127"
+      },
+      {
+        "path": "eris-number-format-tests-1/held-2/src/script/number_format/tests.rs",
+        "bytes": 16664,
+        "sha256": "bad93d8e4396d43ef1349f47e4267b3b4f3ef516f671b8e7ac594ee9745b6443"
+      },
+      {
+        "path": "eris-number-format-tests-1/held-2/tests/conformance/number-format-correct-control.js",
+        "bytes": 540,
+        "sha256": "7fd469391469adb89aafc5367904acf8ea884dc7e1af72bc3be42e24328eede2"
+      },
+      {
+        "path": "eris-number-format-tests-1/held-2/tests/conformance/number-format-literals.tsv",
+        "bytes": 4035,
+        "sha256": "4f0b9ab0c5fc4463a40421a400fb0085d95b871e49634c8943915ec45827504b"
+      },
+      {
+        "path": "eris-number-format-tests-1/held-2/tests/conformance/number-format-wrong-control.js",
+        "bytes": 540,
+        "sha256": "0f708af67405617fdaa0a0225ebd8498a665e2df755364b6e690315fa71f3e7d"
+      },
+      {
+        "path": "eris-number-format-tests-1/held-2/tests/conformance/number-format.js",
+        "bytes": 9778,
+        "sha256": "a019fb1221d27789d00fadfc5a42e37ee7f18282aa2b09633205e875f4d9fea6"
+      },
+      {
+        "path": "eris-number-format-tests-1/held/src/script/number_format/tests.rs",
+        "bytes": 15717,
+        "sha256": "39eab233061fb9b7019d66dad0fd2696b838a2a25cc09afbbc8fa87e9749a85b"
+      },
+      {
+        "path": "eris-number-format-tests-1/held/tests/conformance/number-format-correct-control.js",
+        "bytes": 540,
+        "sha256": "7fd469391469adb89aafc5367904acf8ea884dc7e1af72bc3be42e24328eede2"
+      },
+      {
+        "path": "eris-number-format-tests-1/held/tests/conformance/number-format-literals.tsv",
+        "bytes": 4035,
+        "sha256": "4f0b9ab0c5fc4463a40421a400fb0085d95b871e49634c8943915ec45827504b"
+      },
+      {
+        "path": "eris-number-format-tests-1/held/tests/conformance/number-format-wrong-control.js",
+        "bytes": 540,
+        "sha256": "0f708af67405617fdaa0a0225ebd8498a665e2df755364b6e690315fa71f3e7d"
+      },
+      {
+        "path": "eris-number-format-tests-1/held/tests/conformance/number-format.js",
+        "bytes": 9778,
+        "sha256": "a019fb1221d27789d00fadfc5a42e37ee7f18282aa2b09633205e875f4d9fea6"
+      },
+      {
+        "path": "eris-number-format-tests-1/inputs/formatter-correct-control.js",
+        "bytes": 540,
+        "sha256": "7fd469391469adb89aafc5367904acf8ea884dc7e1af72bc3be42e24328eede2"
+      },
+      {
+        "path": "eris-number-format-tests-1/inputs/formatter-correction-proof.md",
+        "bytes": 6485,
+        "sha256": "086705c36fa88b867760ba6315ad71c5ed1383de23e8d972e1db1a063e7baf44"
+      },
+      {
+        "path": "eris-number-format-tests-1/inputs/formatter-correction-ready.json",
+        "bytes": 4003,
+        "sha256": "d4ae939d7e468893bebe7b35f3c60cc31460955b1cde2585367496de049d20cb"
+      },
+      {
+        "path": "eris-number-format-tests-1/inputs/formatter-literals.json",
+        "bytes": 15374,
+        "sha256": "df0eb3a706b50837b813c545f5e48c9fa254ca52ad75e679e80f1c058029a597"
+      },
+      {
+        "path": "eris-number-format-tests-1/inputs/formatter-wrong-control.js",
+        "bytes": 540,
+        "sha256": "0f708af67405617fdaa0a0225ebd8498a665e2df755364b6e690315fa71f3e7d"
+      },
+      {
+        "path": "eris-number-format-tests-1/inventory.json",
+        "bytes": 2421,
+        "sha256": "e2cd2cc125013a19080056825a1bb317dbdbb996c1ff39f10e39d7bb98eecf1d"
+      },
+      {
+        "path": "eris-number-format-tests-1/layout-source-review-2.json",
+        "bytes": 6560,
+        "sha256": "10fb943ff406bfdef72b3106f2af42b26aeccaf8cef572c7e5a0b1dae4eaaaa5"
+      },
+      {
+        "path": "eris-number-format-tests-1/portable-verifier-docs-source-review.json",
+        "bytes": 6880,
+        "sha256": "e49da4c9cc51ad1a7622c60468a894b4eed4ca38fb30b08cac8a3858a87102fe"
+      },
+      {
+        "path": "eris-number-format-tests-1/pre-format/src/script/number_format/tests.rs",
+        "bytes": 13803,
+        "sha256": "fa9e70fe3411f7f606b64c7acd4d1952c73f1942fa97ac92a1012066579d95e7"
+      },
+      {
+        "path": "eris-number-format-tests-1/references/core-source-ready-1.json",
+        "bytes": 1134,
+        "sha256": "8113dbceae7935c9ec1d657db648bd38cbbcc1040c692688c73fbbce69a7ce28"
+      },
+      {
+        "path": "eris-number-format-tests-1/references/literal-proof-1.json",
+        "bytes": 335,
+        "sha256": "e4176b822bb6613eaa816576a1f695462290a9caa4b45313c621a6ecd56dc99b"
+      },
+      {
+        "path": "eris-number-format-tests-1/references/literal-proof-1.stdout",
+        "bytes": 11341,
+        "sha256": "0ff862f7f7f2e0621bce1a8e11011f39a236a3ea7fa4cf296d6d5f9ea76ac0a4"
+      },
+      {
+        "path": "eris-number-format-tests-1/source-ready-2.json",
+        "bytes": 2521,
+        "sha256": "a84e5944299168462129cc02fc8f7c5edea8cd1d041a33d689cb0ff7db64cb34"
+      },
+      {
+        "path": "eris-number-format-tests-1/source-ready.json",
+        "bytes": 5201,
+        "sha256": "dc957e16faee170595129fa8b303bbdf201439fed4480dcac9a9df6fb2b6f68a"
+      },
+      {
+        "path": "eris-typedarray-canonical-index-1/call-site-addendum.json",
+        "bytes": 905,
+        "sha256": "de30d71ac4b17d6d7f46e3c2dad4f642292eef401928ee7604b16150548a745b"
+      },
+      {
+        "path": "eris-typedarray-canonical-index-1/formatter-call-sites.md",
+        "bytes": 3992,
+        "sha256": "1da9eb469799b3ffb1ad19d50664811acad2f4367ac1127adb8ce59188ce0669"
+      },
+      {
+        "path": "eris-typedarray-canonical-index-1/formatter-correction-proof.md",
+        "bytes": 6485,
+        "sha256": "086705c36fa88b867760ba6315ad71c5ed1383de23e8d972e1db1a063e7baf44"
+      },
+      {
+        "path": "eris-typedarray-canonical-index-1/formatter-correction-ready.json",
+        "bytes": 4003,
+        "sha256": "d4ae939d7e468893bebe7b35f3c60cc31460955b1cde2585367496de049d20cb"
+      },
+      {
+        "path": "eris-typedarray-canonical-index-1/formatter-literals.json",
+        "bytes": 15374,
+        "sha256": "df0eb3a706b50837b813c545f5e48c9fa254ca52ad75e679e80f1c058029a597"
+      },
+      {
+        "path": "eris-typedarray-canonical-index-1/formatter-verifier-ready.json",
+        "bytes": 1006,
+        "sha256": "150bd32e86c1a49a31faac0504001c3f465d919c7e96e4cfa8e49011b9a72a28"
+      },
+      {
+        "path": "eris-typedarray-canonical-index-1/verify-formatter-literals.py",
+        "bytes": 3548,
+        "sha256": "77070d0210061ab96a4b12cb97e29bdc332af072aa0ccf4dff0516cd690c9bbe"
+      }
+    ],
+    "exclusions": "Worktree, binaries and external source snapshots above 3 MB are excluded; binaries are identified by source/build receipts and hashes."
+  },
+  "limits": [
+    "Relies on Rust shortest/minimal-nearest conversion contract; proves only added exact midpoint selection.",
+    "New stage tariffs are logical bounds; inherited formatter scratch fees and allocator overhead are not a new full memory proof.",
+    "No full web compatibility, production security or Chromium performance claim."
+  ]
+}

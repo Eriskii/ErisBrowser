@@ -1,0 +1,42 @@
+<!doctype html><meta charset=utf-8>
+<title id=title>Number display</title>
+<style>
+body{margin:0;color:#182030;font-size:20px;line-height:24px}
+h1{position:absolute;left:16px;top:12px;margin:0;font-size:24px;line-height:28px}
+.label{position:absolute;left:16px}.amount{position:absolute;left:208px}
+.first{top:56px}.second{top:96px}.third{top:136px}
+#change{position:absolute;left:16px;top:184px;width:160px;height:32px;padding:0;border:0;background:#204080;color:white;font-size:16px}
+#swatch{position:absolute;left:192px;top:192px;width:16px;height:16px;background:red}
+#state{position:absolute;left:224px;top:188px}
+</style><body data-phase=waiting>
+<h1 id=heading>Number display</h1>
+<div class="label first">Displayed amount</div><div id=plain class="amount first">Waiting</div>
+<div class="label second">Export</div><div id=export class="amount second">Waiting</div>
+<div class="label third">Saved record</div><div id=saved class="amount third">Waiting</div>
+<button id=change type=button>Change sign</button><div id=swatch></div><div id=state>Waiting</div>
+<script>
+var amount=1000000000000000.25;
+var plain=document.getElementById('plain').firstChild;
+var exported=document.getElementById('export').firstChild;
+var saved=document.getElementById('saved').firstChild;
+var state=document.getElementById('state').firstChild;
+var title=document.getElementById('title').firstChild;
+var swatch=document.getElementById('swatch');
+function showAmount(){
+  var record={ [amount]:'saved' };
+  if(record[amount]!=='saved')throw new Error('The saved amount is missing');
+  plain.data=String(amount);
+  exported.data=JSON.stringify([amount]);
+  saved.data=Object.keys(record)[0];
+  var negative=amount<0;
+  state.data=negative?'Negative amount':'Positive amount';
+  title.data=negative?'Negative amount':'Positive amount';
+  document.body.setAttribute('data-phase',negative?'negative':'positive');
+  swatch.style.backgroundColor=negative?'#0000ff':'#008000';
+}
+document.getElementById('change').addEventListener('click',function(){
+  amount=-amount;
+  showAmount();
+});
+showAmount();
+</script>
