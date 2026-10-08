@@ -26,6 +26,11 @@ Open the example with two views of one buffer:
 ./run.sh ./examples/typedarray-fill.html
 ```
 
+The later [encoding optimization](typedarray-fill-encoding.md) prepares one scalar
+per nonempty call while preserving these results and the checked writer. Its
+separate record includes complete before/after timing samples and remaining
+resource stops.
+
 ## Validation
 
 The [upstream report](../tests/conformance/test262-typedarray-fill-after.json)

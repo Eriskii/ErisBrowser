@@ -10,6 +10,9 @@ The [search follow-up](typedarray-search.md) adds `at`, `includes`, `indexOf`
 and `lastIndexOf`; full pinned populations and resource stops remain visible.
 [`fill`](typedarray-fill.md) now writes Number view ranges with ordered conversion
 and fresh buffer bounds, recovering the two search cases that needed it.
+The [fill encoding follow-up](typedarray-fill-encoding.md) removes repeated scalar
+preparation with checked writes and unchanged compatibility observations. Its
+local benchmark records larger-fill gains and small empty/single-element slowdowns.
 Remaining methods, BigInt views, shared memory and broader interpreter
 accounting remain open work.
 

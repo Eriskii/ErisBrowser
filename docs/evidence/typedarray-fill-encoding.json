@@ -1,0 +1,5493 @@
+{
+  "archive": "typedarray-fill-encoding.tar.gz",
+  "archive_bytes": 6362922,
+  "archive_sha256": "2579957b2daacbb9f1d1aba9ef007404e82f419472e58310dbb255bdd805bc04",
+  "base": "02c32143e2e130b783a4bb5db7551899d79b646b",
+  "baseline_recorded": false,
+  "candidate_adapter": {
+    "binary": "eris-js-candidate-2",
+    "build": "validation/adapter-2.json",
+    "bytes": 151927688,
+    "full_suite": "validation/full-native-1.json",
+    "full_suite_passed": 2328,
+    "sha256": "5a88f7f061bc7f64dc9b5003aa4e2a33715932502b5bb8ee51084f3d8104e234",
+    "source_binding": "compiled-source-1.json",
+    "source_binding_sha256": "eb6a7526dc9b8ed0f4f598b5593f0cfba69a8de9dda0f593549d4fb5f23f0e5e"
+  },
+  "checks": {
+    "benchmark-after-build-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "CARGO_TARGET_DIR=/tmp/eris-typedarray-fill-encoding-1/target-benchmark",
+        "CARGO_BUILD_JOBS=4",
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/after/Cargo.toml"
+      ],
+      "elapsed_seconds": 40.25360772293061,
+      "exit": 0,
+      "log": "benchmark-after-build-1.log",
+      "sha256": "7da3fe9d66283a5c14963df48ee6bd611ee62290ecd04d8b04a69ec324097823"
+    },
+    "benchmark-before-build-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "CARGO_TARGET_DIR=/tmp/eris-typedarray-fill-encoding-1/target-benchmark",
+        "CARGO_BUILD_JOBS=4",
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--offline",
+        "--release",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/before/Cargo.toml"
+      ],
+      "elapsed_seconds": 40.22528695780784,
+      "exit": 0,
+      "log": "benchmark-before-build-1.log",
+      "sha256": "3c6b3e2296ecc5fd8f7e90f91f8d2c9246faf799937f0025beb66aeaafe1540f"
+    },
+    "benchmark-before-locked-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "CARGO_TARGET_DIR=/tmp/eris-typedarray-fill-encoding-1/target-benchmark",
+        "CARGO_BUILD_JOBS=4",
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/before/Cargo.toml"
+      ],
+      "elapsed_seconds": 0.09384611179120839,
+      "exit": 0,
+      "log": "benchmark-before-locked-1.log",
+      "sha256": "7a7bb64a28cdda9b91e6e27f41be455104d929b5d7ad6dd5beca75fc5a47f1f4"
+    },
+    "benchmark-protocol-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/protocol-check.py"
+      ],
+      "elapsed_seconds": 0.041154126869514585,
+      "exit": 0,
+      "log": "benchmark-protocol-1.log",
+      "sha256": "ab29334461d40345233977649c2d753e699d09787d3446669051b37f16d6b34f"
+    },
+    "benchmark-run-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "python3",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/run.py",
+        "--before-binary",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-before-1",
+        "--after-binary",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-after-1",
+        "--wrapper",
+        "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+        "--output",
+        "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1"
+      ],
+      "elapsed_seconds": 18.430624968139455,
+      "exit": 0,
+      "log": "benchmark-run-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/worktree/Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "elapsed_seconds": 9.345624655950814,
+      "exit": 0,
+      "log": "clippy-198-1.log",
+      "sha256": "91a6a6d3904d07181c41cd317b948ee3366fdcb24900185e7270c7d6c94d558a"
+    },
+    "clippy-msrv-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/worktree/Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "elapsed_seconds": 14.588205219013616,
+      "exit": 0,
+      "log": "clippy-msrv-1.log",
+      "sha256": "b4af1120830383deb47590f7ec86fa5733f1295c5bee4853b2d05a3d30e28afc"
+    },
+    "comparison-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-typedarray-fill-encoding-1/compare.py"
+      ],
+      "elapsed_seconds": 0.550959489075467,
+      "exit": 0,
+      "log": "comparison-1.log",
+      "sha256": "62a45b2c8bf632d491d84c8d6791a7461813c1bb4f79a9573f20d1e961c83bf0"
+    },
+    "focused-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/worktree/Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "script::typed_array::fill::tests::",
+        "--",
+        "--include-ignored"
+      ],
+      "elapsed_seconds": 19.816353309201077,
+      "exit": 0,
+      "log": "focused-1.log",
+      "sha256": "dcfc311694b88ee95e3b334ca83bc07f1936a5d609e937bb63c59c4c205cb471"
+    },
+    "format-check-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/worktree/Cargo.toml",
+        "--check"
+      ],
+      "elapsed_seconds": 1.1643745051696897,
+      "exit": 0,
+      "log": "format-check-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "full-native-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/worktree/Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "elapsed_seconds": 48.48936255602166,
+      "exit": 0,
+      "log": "full-native-1.log",
+      "sha256": "4742e55fb882d44843d878a9ddedc0bcce812fa7fd884f0e8854c1b6871f27fd"
+    },
+    "regressions-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-typedarray-fill-encoding-1/run-regressions.py",
+        "candidate-1",
+        "/tmp/eris-typedarray-fill-encoding-1/eris-js-candidate-2"
+      ],
+      "elapsed_seconds": 42.94752664794214,
+      "exit": 0,
+      "log": "regressions-1.log",
+      "sha256": "e530dc5ae1da2eb0684d9bbc0ba56a2ec53ec50309017a53b9ff72d215045af3"
+    },
+    "script-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/tmp/eris-typedarray-fill-encoding-1/worktree/Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "script::",
+        "--",
+        "--include-ignored"
+      ],
+      "elapsed_seconds": 33.42291990714148,
+      "exit": 0,
+      "log": "script-198-1.log",
+      "sha256": "97d639964f0d91ca919097ec960df15997d4c5c5bdbad5c76b1cbfbffc49b8d9"
+    }
+  },
+  "comparison": {
+    "after_adapter_sha256": "5a88f7f061bc7f64dc9b5003aa4e2a33715932502b5bb8ee51084f3d8104e234",
+    "before_adapter_sha256": "bcc2d34a7a44fc2ad91b4690137435f286ca36f338a8c9cc70699581e4618b18",
+    "before_commit": "02c32143e2e130b783a4bb5db7551899d79b646b",
+    "comparisons": [
+      {
+        "after_controls_sha256": "6e643f78b6630b56b0d1ccce1d2947bac536e2e356dbe6d7aa6e88ba109c64d7",
+        "after_counts": {
+          "passed": 22,
+          "resource": 32,
+          "unsupported": 50
+        },
+        "after_rows_sha256": "7ae7b091648c21165a1c3c0ea833638ae68ab738e1d9fa488f1e25d29f13f440",
+        "before_controls_sha256": "6e643f78b6630b56b0d1ccce1d2947bac536e2e356dbe6d7aa6e88ba109c64d7",
+        "before_counts": {
+          "passed": 22,
+          "resource": 32,
+          "unsupported": 50
+        },
+        "before_rows_sha256": "7ae7b091648c21165a1c3c0ea833638ae68ab738e1d9fa488f1e25d29f13f440",
+        "case_rows": 104,
+        "changed_rows": [],
+        "control_rows": 52,
+        "exact_case_rows": 104,
+        "exact_control_rows": 52,
+        "prior_pass_losses": [],
+        "report": "upstream-1.json",
+        "transitions": {
+          "passed -> passed": 22,
+          "resource -> resource": 32,
+          "unsupported -> unsupported": 50
+        }
+      },
+      {
+        "after_controls_sha256": "cf26bdae387147f37f661f390227d381232feda2a85c9c54d68467f9bf39c746",
+        "after_counts": {
+          "passed": 80,
+          "resource": 78,
+          "unsupported": 132
+        },
+        "after_rows_sha256": "57b13796b933f5be257efe7c7cfb49603792981a45b2a64f9a425d997aa09f2f",
+        "before_controls_sha256": "cf26bdae387147f37f661f390227d381232feda2a85c9c54d68467f9bf39c746",
+        "before_counts": {
+          "passed": 80,
+          "resource": 78,
+          "unsupported": 132
+        },
+        "before_rows_sha256": "57b13796b933f5be257efe7c7cfb49603792981a45b2a64f9a425d997aa09f2f",
+        "case_rows": 290,
+        "changed_rows": [],
+        "control_rows": 56,
+        "exact_case_rows": 290,
+        "exact_control_rows": 56,
+        "prior_pass_losses": [],
+        "report": "search-1.json",
+        "transitions": {
+          "passed -> passed": 80,
+          "resource -> resource": 78,
+          "unsupported -> unsupported": 132
+        }
+      },
+      {
+        "after_controls_sha256": "2b98b690d9d1ad44aa668fbf2923e955e6beaf82f7877209dce998ab02c09356",
+        "after_counts": {
+          "failed": 34,
+          "passed": 590,
+          "resource": 126,
+          "unsupported": 488
+        },
+        "after_rows_sha256": "008568d1606262d662bcd8816df70e10cc2faeb44c47c5cd09aafd15658eadde",
+        "before_controls_sha256": "2b98b690d9d1ad44aa668fbf2923e955e6beaf82f7877209dce998ab02c09356",
+        "before_counts": {
+          "failed": 34,
+          "passed": 590,
+          "resource": 126,
+          "unsupported": 488
+        },
+        "before_rows_sha256": "008568d1606262d662bcd8816df70e10cc2faeb44c47c5cd09aafd15658eadde",
+        "case_rows": 1238,
+        "changed_rows": [],
+        "control_rows": 64,
+        "exact_case_rows": 1238,
+        "exact_control_rows": 64,
+        "prior_pass_losses": [],
+        "report": "foundation-1.json",
+        "transitions": {
+          "failed -> failed": 34,
+          "passed -> passed": 590,
+          "resource -> resource": 126,
+          "unsupported -> unsupported": 488
+        }
+      },
+      {
+        "after_controls_sha256": "960d7721fe97d77d4c794dececacfae269bfd6216664624f93b68a31dec0d652",
+        "after_counts": {
+          "passed": 46,
+          "resource": 64,
+          "unsupported": 96
+        },
+        "after_rows_sha256": "211074fc73d681ce1ca95142402b21c5895e974016004a99f2d05e4a209c2bb5",
+        "before_controls_sha256": "960d7721fe97d77d4c794dececacfae269bfd6216664624f93b68a31dec0d652",
+        "before_counts": {
+          "passed": 46,
+          "resource": 64,
+          "unsupported": 96
+        },
+        "before_rows_sha256": "211074fc73d681ce1ca95142402b21c5895e974016004a99f2d05e4a209c2bb5",
+        "case_rows": 206,
+        "changed_rows": [],
+        "control_rows": 56,
+        "exact_case_rows": 206,
+        "exact_control_rows": 56,
+        "prior_pass_losses": [],
+        "report": "views-1.json",
+        "transitions": {
+          "passed -> passed": 46,
+          "resource -> resource": 64,
+          "unsupported -> unsupported": 96
+        }
+      },
+      {
+        "after_controls_sha256": "0b04c55966c1b8f46ba453f6623e69fdbe4eadf42fc9e4ffe3df7558041c7b1e",
+        "after_counts": {
+          "passed": 46
+        },
+        "after_rows_sha256": "48ce12609a9c80ee289253dae61a475ce8c5b5bd7190f1e810047a0c2542a17b",
+        "before_controls_sha256": "0b04c55966c1b8f46ba453f6623e69fdbe4eadf42fc9e4ffe3df7558041c7b1e",
+        "before_counts": {
+          "passed": 46
+        },
+        "before_rows_sha256": "48ce12609a9c80ee289253dae61a475ce8c5b5bd7190f1e810047a0c2542a17b",
+        "case_rows": 46,
+        "changed_rows": [],
+        "control_rows": 24,
+        "exact_case_rows": 46,
+        "exact_control_rows": 24,
+        "prior_pass_losses": [],
+        "report": "local-1.json",
+        "transitions": {
+          "passed -> passed": 46
+        }
+      },
+      {
+        "after_controls_sha256": "82c2154bc36f1e499f8867ea3d30c39442b895c464a6de2e52a68279c71d30ef",
+        "after_counts": {
+          "failed": 20,
+          "passed": 416,
+          "unsupported": 38
+        },
+        "after_rows_sha256": "47fb4a36ccc176c0d40a5c86e71dd8a642d54c8d08be59d4e42c3ef4bbb18823",
+        "before_controls_sha256": "82c2154bc36f1e499f8867ea3d30c39442b895c464a6de2e52a68279c71d30ef",
+        "before_counts": {
+          "failed": 20,
+          "passed": 416,
+          "unsupported": 38
+        },
+        "before_rows_sha256": "47fb4a36ccc176c0d40a5c86e71dd8a642d54c8d08be59d4e42c3ef4bbb18823",
+        "case_rows": 474,
+        "changed_rows": [],
+        "control_rows": 224,
+        "exact_case_rows": 474,
+        "exact_control_rows": 224,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/object-integrity.json",
+        "transitions": {
+          "failed -> failed": 20,
+          "passed -> passed": 416,
+          "unsupported -> unsupported": 38
+        }
+      },
+      {
+        "after_controls_sha256": "4aaa827f61b4acd8ab6c16403e57025bce79f352ed1c0c7d1674416dc68c5f83",
+        "after_counts": {
+          "passed": 148,
+          "unsupported": 32
+        },
+        "after_rows_sha256": "01434316d87b5a105cd1f68a946708962895207b1464d61830a625adecfcffcd",
+        "before_controls_sha256": "4aaa827f61b4acd8ab6c16403e57025bce79f352ed1c0c7d1674416dc68c5f83",
+        "before_counts": {
+          "passed": 148,
+          "unsupported": 32
+        },
+        "before_rows_sha256": "01434316d87b5a105cd1f68a946708962895207b1464d61830a625adecfcffcd",
+        "case_rows": 180,
+        "changed_rows": [],
+        "control_rows": 288,
+        "exact_case_rows": 180,
+        "exact_control_rows": 288,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/array-find.json",
+        "transitions": {
+          "passed -> passed": 148,
+          "unsupported -> unsupported": 32
+        }
+      },
+      {
+        "after_controls_sha256": "e9c95c92111d65e854724de107567a6e1ac391aa341a49bc7dd5a0eb5d43fda4",
+        "after_counts": {
+          "passed": 1166,
+          "unsupported": 22
+        },
+        "after_rows_sha256": "67b1d1cd07d81a960903dba2e29fed83a346dd2eb5947e12b885601dcaff8658",
+        "before_controls_sha256": "e9c95c92111d65e854724de107567a6e1ac391aa341a49bc7dd5a0eb5d43fda4",
+        "before_counts": {
+          "passed": 1166,
+          "unsupported": 22
+        },
+        "before_rows_sha256": "67b1d1cd07d81a960903dba2e29fed83a346dd2eb5947e12b885601dcaff8658",
+        "case_rows": 1188,
+        "changed_rows": [],
+        "control_rows": 340,
+        "exact_case_rows": 1188,
+        "exact_control_rows": 340,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/date.json",
+        "transitions": {
+          "passed -> passed": 1166,
+          "unsupported -> unsupported": 22
+        }
+      },
+      {
+        "after_controls_sha256": "30d7412f564c24d467c478a0f217463cc34e779dbf328e6b48b38c60796fe8c1",
+        "after_counts": {
+          "failed": 2,
+          "passed": 137,
+          "unsupported": 1303
+        },
+        "after_rows_sha256": "d06446f119e333522acf3dd9397c30b697145272f1bc14b9617a2fe7b069daeb",
+        "before_controls_sha256": "30d7412f564c24d467c478a0f217463cc34e779dbf328e6b48b38c60796fe8c1",
+        "before_counts": {
+          "failed": 2,
+          "passed": 137,
+          "unsupported": 1303
+        },
+        "before_rows_sha256": "d06446f119e333522acf3dd9397c30b697145272f1bc14b9617a2fe7b069daeb",
+        "case_rows": 1442,
+        "changed_rows": [],
+        "control_rows": 80,
+        "exact_case_rows": 1442,
+        "exact_control_rows": 80,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/for-of.json",
+        "transitions": {
+          "failed -> failed": 2,
+          "passed -> passed": 137,
+          "unsupported -> unsupported": 1303
+        }
+      },
+      {
+        "after_controls_sha256": "41c4bb1d9936984d03a9fc784ae85b989b35597c07fff9178a5b843f74410647",
+        "after_counts": {
+          "passed": 106,
+          "unsupported": 38
+        },
+        "after_rows_sha256": "986268bcca4ba3934f08c28e54eec347a9a29f9c84647df6653d7635fb80c22a",
+        "before_controls_sha256": "41c4bb1d9936984d03a9fc784ae85b989b35597c07fff9178a5b843f74410647",
+        "before_counts": {
+          "passed": 106,
+          "unsupported": 38
+        },
+        "before_rows_sha256": "986268bcca4ba3934f08c28e54eec347a9a29f9c84647df6653d7635fb80c22a",
+        "case_rows": 144,
+        "changed_rows": [],
+        "control_rows": 132,
+        "exact_case_rows": 144,
+        "exact_control_rows": 132,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/core-iterators.json",
+        "transitions": {
+          "passed -> passed": 106,
+          "unsupported -> unsupported": 38
+        }
+      },
+      {
+        "after_controls_sha256": "8340b33df4d1c7cff51f0db8c86687cd38dc851f5f9a700687d6d01b931a3d8e",
+        "after_counts": {
+          "passed": 86,
+          "unsupported": 4
+        },
+        "after_rows_sha256": "79f305cb7d7ee862108c84c764ed13c33c9863ec8df183ab1b6bcedbe4fd3600",
+        "before_controls_sha256": "8340b33df4d1c7cff51f0db8c86687cd38dc851f5f9a700687d6d01b931a3d8e",
+        "before_counts": {
+          "passed": 86,
+          "unsupported": 4
+        },
+        "before_rows_sha256": "79f305cb7d7ee862108c84c764ed13c33c9863ec8df183ab1b6bcedbe4fd3600",
+        "case_rows": 90,
+        "changed_rows": [],
+        "control_rows": 96,
+        "exact_case_rows": 90,
+        "exact_control_rows": 96,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/array-from.json",
+        "transitions": {
+          "passed -> passed": 86,
+          "unsupported -> unsupported": 4
+        }
+      },
+      {
+        "after_controls_sha256": "8d1dad2e591bf62e1bacebe63ddbe0b75bbdc0b9134123e3ad0161b38d319c85",
+        "after_counts": {
+          "passed": 42
+        },
+        "after_rows_sha256": "cd0903a2587d4487f64130b9463a0746420bc8bfb1238906955b5852e8f40f00",
+        "before_controls_sha256": "8d1dad2e591bf62e1bacebe63ddbe0b75bbdc0b9134123e3ad0161b38d319c85",
+        "before_counts": {
+          "passed": 42
+        },
+        "before_rows_sha256": "cd0903a2587d4487f64130b9463a0746420bc8bfb1238906955b5852e8f40f00",
+        "case_rows": 42,
+        "changed_rows": [],
+        "control_rows": 80,
+        "exact_case_rows": 42,
+        "exact_control_rows": 80,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/object-is.json",
+        "transitions": {
+          "passed -> passed": 42
+        }
+      },
+      {
+        "after_controls_sha256": "9920a2f7b653336de5db1fe4a12d6e2c455886e6e728d3807415e6f0f5d1c869",
+        "after_counts": {
+          "passed": 124
+        },
+        "after_rows_sha256": "00d0efe30908b8b05b4e131d68d0ed62f7ccbb861e63da7d89d237ec68307a92",
+        "before_controls_sha256": "9920a2f7b653336de5db1fe4a12d6e2c455886e6e728d3807415e6f0f5d1c869",
+        "before_counts": {
+          "passed": 124
+        },
+        "before_rows_sha256": "00d0efe30908b8b05b4e131d68d0ed62f7ccbb861e63da7d89d237ec68307a92",
+        "case_rows": 124,
+        "changed_rows": [],
+        "control_rows": 64,
+        "exact_case_rows": 124,
+        "exact_control_rows": 64,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/object-has-own.json",
+        "transitions": {
+          "passed -> passed": 124
+        }
+      },
+      {
+        "after_controls_sha256": "9a38cc2e92d73c858dd442e79c5f304ecd355470c70044f20c8e323664460219",
+        "after_counts": {
+          "failed": 12,
+          "passed": 694,
+          "unsupported": 416
+        },
+        "after_rows_sha256": "a79f57dcbc617e15e75a0c9512c96b0cd2c2ce8f7d74c3da1f249dfa73546ac3",
+        "before_controls_sha256": "9a38cc2e92d73c858dd442e79c5f304ecd355470c70044f20c8e323664460219",
+        "before_counts": {
+          "failed": 12,
+          "passed": 694,
+          "unsupported": 416
+        },
+        "before_rows_sha256": "a79f57dcbc617e15e75a0c9512c96b0cd2c2ce8f7d74c3da1f249dfa73546ac3",
+        "case_rows": 1122,
+        "changed_rows": [],
+        "control_rows": 232,
+        "exact_case_rows": 1122,
+        "exact_control_rows": 232,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/data-view.json",
+        "transitions": {
+          "failed -> failed": 12,
+          "passed -> passed": 694,
+          "unsupported -> unsupported": 416
+        }
+      },
+      {
+        "after_controls_sha256": "7ae705d89dd5bc4aa4006a86126d17627fd11630a685455ef86eb45ce45ba826",
+        "after_counts": {
+          "failed": 2,
+          "passed": 310,
+          "unsupported": 130
+        },
+        "after_rows_sha256": "ba65de40ef591a349e3c4f9320b6daf982d0eca1666e08e5c7bb1983f76c3ab5",
+        "before_controls_sha256": "7ae705d89dd5bc4aa4006a86126d17627fd11630a685455ef86eb45ce45ba826",
+        "before_counts": {
+          "failed": 2,
+          "passed": 310,
+          "unsupported": 130
+        },
+        "before_rows_sha256": "ba65de40ef591a349e3c4f9320b6daf982d0eca1666e08e5c7bb1983f76c3ab5",
+        "case_rows": 442,
+        "changed_rows": [],
+        "control_rows": 160,
+        "exact_case_rows": 442,
+        "exact_control_rows": 160,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/array-buffer.json",
+        "transitions": {
+          "failed -> failed": 2,
+          "passed -> passed": 310,
+          "unsupported -> unsupported": 130
+        }
+      },
+      {
+        "after_controls_sha256": "15e7bdb8f6dbb02c032f3bd1cbcc9763d688b84e81942e17470eb4646a02f142",
+        "after_counts": {
+          "passed": 138,
+          "unsupported": 24
+        },
+        "after_rows_sha256": "caef14c044af1e90a10af9bf9ea9fdb51a040e801b50ef890296db7336de6155",
+        "before_controls_sha256": "15e7bdb8f6dbb02c032f3bd1cbcc9763d688b84e81942e17470eb4646a02f142",
+        "before_counts": {
+          "passed": 138,
+          "unsupported": 24
+        },
+        "before_rows_sha256": "caef14c044af1e90a10af9bf9ea9fdb51a040e801b50ef890296db7336de6155",
+        "case_rows": 162,
+        "changed_rows": [],
+        "control_rows": 96,
+        "exact_case_rows": 162,
+        "exact_control_rows": 96,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/array-splice.json",
+        "transitions": {
+          "passed -> passed": 138,
+          "unsupported -> unsupported": 24
+        }
+      },
+      {
+        "after_controls_sha256": "964277136b05c3fe3aebed2c00ff4f8b3439b11977edf42736bb6474f969708a",
+        "after_counts": {
+          "passed": 3556,
+          "unsupported": 18
+        },
+        "after_rows_sha256": "bba03caf18967070aa9138e4315de5e22a1d1c248e9c654303ac7d3cd802a3d2",
+        "before_controls_sha256": "964277136b05c3fe3aebed2c00ff4f8b3439b11977edf42736bb6474f969708a",
+        "before_counts": {
+          "passed": 3556,
+          "unsupported": 18
+        },
+        "before_rows_sha256": "bba03caf18967070aa9138e4315de5e22a1d1c248e9c654303ac7d3cd802a3d2",
+        "case_rows": 3574,
+        "changed_rows": [],
+        "control_rows": 84,
+        "exact_case_rows": 3574,
+        "exact_control_rows": 84,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/array-descriptors.json",
+        "transitions": {
+          "passed -> passed": 3556,
+          "unsupported -> unsupported": 18
+        }
+      },
+      {
+        "after_controls_sha256": "a35a16df3c234ac966269ddc022986ffd2c4f334df70424cacc4fd9556b68b95",
+        "after_counts": {
+          "passed": 568,
+          "unsupported": 84
+        },
+        "after_rows_sha256": "dbb3322e142b75409f1b9c0ece8a3f277a0f1e191c7c5f2ecb3c372d812040a6",
+        "before_controls_sha256": "a35a16df3c234ac966269ddc022986ffd2c4f334df70424cacc4fd9556b68b95",
+        "before_counts": {
+          "passed": 568,
+          "unsupported": 84
+        },
+        "before_rows_sha256": "dbb3322e142b75409f1b9c0ece8a3f277a0f1e191c7c5f2ecb3c372d812040a6",
+        "case_rows": 652,
+        "changed_rows": [],
+        "control_rows": 32,
+        "exact_case_rows": 652,
+        "exact_control_rows": 32,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/string-json.json",
+        "transitions": {
+          "passed -> passed": 568,
+          "unsupported -> unsupported": 84
+        }
+      },
+      {
+        "after_controls_sha256": "974debdc66e8c9222f05469f94f4ed0a20aa661cd870619621e33ee79747e217",
+        "after_counts": {
+          "passed": 38
+        },
+        "after_rows_sha256": "722ed98885eb3b543f4f7242b6bfb813931974a1f9ed28331dc9a2e26077770d",
+        "before_controls_sha256": "974debdc66e8c9222f05469f94f4ed0a20aa661cd870619621e33ee79747e217",
+        "before_counts": {
+          "passed": 38
+        },
+        "before_rows_sha256": "722ed98885eb3b543f4f7242b6bfb813931974a1f9ed28331dc9a2e26077770d",
+        "case_rows": 38,
+        "changed_rows": [],
+        "control_rows": 96,
+        "exact_case_rows": 38,
+        "exact_control_rows": 96,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/reflect-construction.json",
+        "transitions": {
+          "passed -> passed": 38
+        }
+      },
+      {
+        "after_controls_sha256": "de86fa8c926bb594b9054017f89b94096a1f61e6553e3d4c61d9acc96ea56662",
+        "after_counts": {
+          "passed": 90,
+          "unsupported": 6
+        },
+        "after_rows_sha256": "068cc2642c1e12cb3d00a412ccfa2400a1418160600fc83a1ebd5fab1899ab82",
+        "before_controls_sha256": "de86fa8c926bb594b9054017f89b94096a1f61e6553e3d4c61d9acc96ea56662",
+        "before_counts": {
+          "passed": 90,
+          "unsupported": 6
+        },
+        "before_rows_sha256": "068cc2642c1e12cb3d00a412ccfa2400a1418160600fc83a1ebd5fab1899ab82",
+        "case_rows": 96,
+        "changed_rows": [],
+        "control_rows": 72,
+        "exact_case_rows": 96,
+        "exact_control_rows": 72,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/regexp-split.json",
+        "transitions": {
+          "passed -> passed": 90,
+          "unsupported -> unsupported": 6
+        }
+      },
+      {
+        "after_controls_sha256": "99b81bbaaece299d09927675163b61c90627b0ff672567b761be5ec0bcdda8a0",
+        "after_counts": {
+          "failed": 4,
+          "passed": 316,
+          "unsupported": 20
+        },
+        "after_rows_sha256": "6fa6e276dfe39cb0e2325a03a4703c5f709d6b1d298424c93cc9779e9e5409ca",
+        "before_controls_sha256": "99b81bbaaece299d09927675163b61c90627b0ff672567b761be5ec0bcdda8a0",
+        "before_counts": {
+          "failed": 4,
+          "passed": 316,
+          "unsupported": 20
+        },
+        "before_rows_sha256": "6fa6e276dfe39cb0e2325a03a4703c5f709d6b1d298424c93cc9779e9e5409ca",
+        "case_rows": 340,
+        "changed_rows": [],
+        "control_rows": 80,
+        "exact_case_rows": 340,
+        "exact_control_rows": 80,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/regexp-match-search.json",
+        "transitions": {
+          "failed -> failed": 4,
+          "passed -> passed": 316,
+          "unsupported -> unsupported": 20
+        }
+      },
+      {
+        "after_controls_sha256": "afbfbf4089d5be9d9219167c5b316dbba279fdb2635d229baeae0761371ff3ae",
+        "after_counts": {
+          "passed": 50
+        },
+        "after_rows_sha256": "0c3e5eafb0e34532e42c8fa26c081f985a000b4f29dad4b8987634657d837255",
+        "before_controls_sha256": "afbfbf4089d5be9d9219167c5b316dbba279fdb2635d229baeae0761371ff3ae",
+        "before_counts": {
+          "passed": 50
+        },
+        "before_rows_sha256": "0c3e5eafb0e34532e42c8fa26c081f985a000b4f29dad4b8987634657d837255",
+        "case_rows": 50,
+        "changed_rows": [],
+        "control_rows": 80,
+        "exact_case_rows": 50,
+        "exact_control_rows": 80,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/string-last-index-of.json",
+        "transitions": {
+          "passed -> passed": 50
+        }
+      },
+      {
+        "after_controls_sha256": "55714c4ea8c3b98bb7d656363426f4f99d48ab455144ee188b3833e938deaf2d",
+        "after_counts": {
+          "failed": 2,
+          "passed": 470,
+          "unsupported": 12
+        },
+        "after_rows_sha256": "47d4960e762f75f4a056e2bc2a64d05812ca5b2a2a20734b2487ad8af8c0c397",
+        "before_controls_sha256": "55714c4ea8c3b98bb7d656363426f4f99d48ab455144ee188b3833e938deaf2d",
+        "before_counts": {
+          "failed": 2,
+          "passed": 470,
+          "unsupported": 12
+        },
+        "before_rows_sha256": "47d4960e762f75f4a056e2bc2a64d05812ca5b2a2a20734b2487ad8af8c0c397",
+        "case_rows": 484,
+        "changed_rows": [],
+        "control_rows": 72,
+        "exact_case_rows": 484,
+        "exact_control_rows": 72,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/string-search.json",
+        "transitions": {
+          "failed -> failed": 2,
+          "passed -> passed": 470,
+          "unsupported -> unsupported": 12
+        }
+      },
+      {
+        "after_controls_sha256": "2862c9cc2ef80021614d87049bcc85ef15f67dbd9b5973514a32f3dce272ddb1",
+        "after_counts": {
+          "passed": 241,
+          "unsupported": 50
+        },
+        "after_rows_sha256": "e3ed2a778ae6827caaaf07ef6d5327a1f609654a30c2cca5d55a6842632a2e96",
+        "before_controls_sha256": "2862c9cc2ef80021614d87049bcc85ef15f67dbd9b5973514a32f3dce272ddb1",
+        "before_counts": {
+          "passed": 241,
+          "unsupported": 50
+        },
+        "before_rows_sha256": "e3ed2a778ae6827caaaf07ef6d5327a1f609654a30c2cca5d55a6842632a2e96",
+        "case_rows": 291,
+        "changed_rows": [],
+        "control_rows": 64,
+        "exact_case_rows": 291,
+        "exact_control_rows": 64,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/function-constructor.json",
+        "transitions": {
+          "passed -> passed": 241,
+          "unsupported -> unsupported": 50
+        }
+      },
+      {
+        "after_controls_sha256": "974debdc66e8c9222f05469f94f4ed0a20aa661cd870619621e33ee79747e217",
+        "after_counts": {
+          "passed": 20,
+          "unsupported": 8
+        },
+        "after_rows_sha256": "533b033110e57f40d1cab43495c33913303035ffe10c0a3cc25251eceef4d087",
+        "before_controls_sha256": "974debdc66e8c9222f05469f94f4ed0a20aa661cd870619621e33ee79747e217",
+        "before_counts": {
+          "passed": 20,
+          "unsupported": 8
+        },
+        "before_rows_sha256": "533b033110e57f40d1cab43495c33913303035ffe10c0a3cc25251eceef4d087",
+        "case_rows": 28,
+        "changed_rows": [],
+        "control_rows": 96,
+        "exact_case_rows": 28,
+        "exact_control_rows": 96,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/new-target.json",
+        "transitions": {
+          "passed -> passed": 20,
+          "unsupported -> unsupported": 8
+        }
+      },
+      {
+        "after_controls_sha256": "55cb3d69d6b65f3a2bac886b9730e62899ddb901b7057e50f6d154b00ed6f428",
+        "after_counts": {
+          "passed": 262,
+          "unsupported": 28
+        },
+        "after_rows_sha256": "6f7ccb3ced9f2ecb13ae8bc98d7d9b4dfeff0df1435ee47ebe6f1e41afa0fd49",
+        "before_controls_sha256": "55cb3d69d6b65f3a2bac886b9730e62899ddb901b7057e50f6d154b00ed6f428",
+        "before_counts": {
+          "passed": 262,
+          "unsupported": 28
+        },
+        "before_rows_sha256": "6f7ccb3ced9f2ecb13ae8bc98d7d9b4dfeff0df1435ee47ebe6f1e41afa0fd49",
+        "case_rows": 290,
+        "changed_rows": [],
+        "control_rows": 44,
+        "exact_case_rows": 290,
+        "exact_control_rows": 44,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/regexp.json",
+        "transitions": {
+          "passed -> passed": 262,
+          "unsupported -> unsupported": 28
+        }
+      },
+      {
+        "after_controls_sha256": "b9d0cb8e3cb5f7fde29e7d521f90b6e6d434ec3eabd3ee24f326fb9aa0065946",
+        "after_counts": {
+          "passed": 82,
+          "unsupported": 32
+        },
+        "after_rows_sha256": "a45a0d00901484828f3d737bf56ac9bcd8d78e0fba4f5dadedbfb01cb562864e",
+        "before_controls_sha256": "b9d0cb8e3cb5f7fde29e7d521f90b6e6d434ec3eabd3ee24f326fb9aa0065946",
+        "before_counts": {
+          "passed": 82,
+          "unsupported": 32
+        },
+        "before_rows_sha256": "a45a0d00901484828f3d737bf56ac9bcd8d78e0fba4f5dadedbfb01cb562864e",
+        "case_rows": 114,
+        "changed_rows": [],
+        "control_rows": 44,
+        "exact_case_rows": 114,
+        "exact_control_rows": 44,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/template-literal.json",
+        "transitions": {
+          "passed -> passed": 82,
+          "unsupported -> unsupported": 32
+        }
+      },
+      {
+        "after_controls_sha256": "14ad3e78efa87adc38a44de9a09e41f9645787d4c58a14497ddffdda2fa689e2",
+        "after_counts": {
+          "passed": 546,
+          "unsupported": 585
+        },
+        "after_rows_sha256": "7ecaf3c87bde86c4ee3ce17000883058b477f50a8e6d87dea39ed2b86b70efba",
+        "before_controls_sha256": "14ad3e78efa87adc38a44de9a09e41f9645787d4c58a14497ddffdda2fa689e2",
+        "before_counts": {
+          "passed": 546,
+          "unsupported": 585
+        },
+        "before_rows_sha256": "7ecaf3c87bde86c4ee3ce17000883058b477f50a8e6d87dea39ed2b86b70efba",
+        "case_rows": 1131,
+        "changed_rows": [],
+        "control_rows": 48,
+        "exact_case_rows": 1131,
+        "exact_control_rows": 48,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/functions.json",
+        "transitions": {
+          "passed -> passed": 546,
+          "unsupported -> unsupported": 585
+        }
+      },
+      {
+        "after_controls_sha256": "918607f2103ba3418964d0c8c80c11cc2b41d49bddf71b0e403bcf2f46640c20",
+        "after_counts": {
+          "passed": 16,
+          "unsupported": 6
+        },
+        "after_rows_sha256": "3593fc48ac12c053d3b7587ffe3a10402903c241038151efa53d7eb35ea2a1b4",
+        "before_controls_sha256": "918607f2103ba3418964d0c8c80c11cc2b41d49bddf71b0e403bcf2f46640c20",
+        "before_counts": {
+          "passed": 16,
+          "unsupported": 6
+        },
+        "before_rows_sha256": "3593fc48ac12c053d3b7587ffe3a10402903c241038151efa53d7eb35ea2a1b4",
+        "case_rows": 22,
+        "changed_rows": [],
+        "control_rows": 64,
+        "exact_case_rows": 22,
+        "exact_control_rows": 64,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/rest-parameters.json",
+        "transitions": {
+          "passed -> passed": 16,
+          "unsupported -> unsupported": 6
+        }
+      },
+      {
+        "after_controls_sha256": "30cdb500dfe98ffaae97b391d8e0fc5578da413f7b9094f76a39563d65a1d018",
+        "after_counts": {
+          "passed": 14,
+          "unsupported": 6
+        },
+        "after_rows_sha256": "7467e117d9ba93a0e47c2f7d9b2b6bddf123156aee251c4174b676158fb18479",
+        "before_controls_sha256": "30cdb500dfe98ffaae97b391d8e0fc5578da413f7b9094f76a39563d65a1d018",
+        "before_counts": {
+          "passed": 14,
+          "unsupported": 6
+        },
+        "before_rows_sha256": "7467e117d9ba93a0e47c2f7d9b2b6bddf123156aee251c4174b676158fb18479",
+        "case_rows": 20,
+        "changed_rows": [],
+        "control_rows": 64,
+        "exact_case_rows": 20,
+        "exact_control_rows": 64,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/is-prototype-of.json",
+        "transitions": {
+          "passed -> passed": 14,
+          "unsupported -> unsupported": 6
+        }
+      },
+      {
+        "after_controls_sha256": "4a3b1ae9a9515f48a9625eeed40c7571fcc4e348b2f0dc8e40133eac8cfc7929",
+        "after_counts": {
+          "passed": 70,
+          "unsupported": 18
+        },
+        "after_rows_sha256": "b6a40f9c48ddaba1203600814f2e03ad9d84e7f4452eaf9b5c844cda38438161",
+        "before_controls_sha256": "4a3b1ae9a9515f48a9625eeed40c7571fcc4e348b2f0dc8e40133eac8cfc7929",
+        "before_counts": {
+          "passed": 70,
+          "unsupported": 18
+        },
+        "before_rows_sha256": "b6a40f9c48ddaba1203600814f2e03ad9d84e7f4452eaf9b5c844cda38438161",
+        "case_rows": 88,
+        "changed_rows": [],
+        "control_rows": 64,
+        "exact_case_rows": 88,
+        "exact_control_rows": 64,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/global-values.json",
+        "transitions": {
+          "passed -> passed": 70,
+          "unsupported -> unsupported": 18
+        }
+      },
+      {
+        "after_controls_sha256": "3b1164b71558a2a645f67b6e8ba97779fe55954a44f732c28f6da83bd41b2799",
+        "after_counts": {
+          "passed": 1018,
+          "unsupported": 16
+        },
+        "after_rows_sha256": "02124c89f4a9d011826309fa48985b8e059c9d28e6ca2909f8f36f359230ed76",
+        "before_controls_sha256": "3b1164b71558a2a645f67b6e8ba97779fe55954a44f732c28f6da83bd41b2799",
+        "before_counts": {
+          "passed": 1018,
+          "unsupported": 16
+        },
+        "before_rows_sha256": "02124c89f4a9d011826309fa48985b8e059c9d28e6ca2909f8f36f359230ed76",
+        "case_rows": 1034,
+        "changed_rows": [],
+        "control_rows": 128,
+        "exact_case_rows": 1034,
+        "exact_control_rows": 128,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/array-reduce.json",
+        "transitions": {
+          "passed -> passed": 1018,
+          "unsupported -> unsupported": 16
+        }
+      },
+      {
+        "after_controls_sha256": "45f096d7568799632cd46fd6898b7a2c913452dd5f47700d9f8a61599d9fbc71",
+        "after_counts": {
+          "passed": 260,
+          "unsupported": 80
+        },
+        "after_rows_sha256": "4ef0c440e0b639e982b92f5c5c679a8479b6468fb037839a8eadb75a88a8bb04",
+        "before_controls_sha256": "45f096d7568799632cd46fd6898b7a2c913452dd5f47700d9f8a61599d9fbc71",
+        "before_counts": {
+          "passed": 260,
+          "unsupported": 80
+        },
+        "before_rows_sha256": "4ef0c440e0b639e982b92f5c5c679a8479b6468fb037839a8eadb75a88a8bb04",
+        "case_rows": 340,
+        "changed_rows": [],
+        "control_rows": 104,
+        "exact_case_rows": 340,
+        "exact_control_rows": 104,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/number-statics.json",
+        "transitions": {
+          "passed -> passed": 260,
+          "unsupported -> unsupported": 80
+        }
+      },
+      {
+        "after_controls_sha256": "57c1f61b3d9206059b5a83007a7bfd202d61544ceabe6c2486f55c1201355413",
+        "after_counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "after_rows_sha256": "264ad56060c14f52b405fb13d9cfed4b19ed8cf47f508846e747589188fdcb82",
+        "before_controls_sha256": "57c1f61b3d9206059b5a83007a7bfd202d61544ceabe6c2486f55c1201355413",
+        "before_counts": {
+          "passed": 32,
+          "unsupported": 28
+        },
+        "before_rows_sha256": "264ad56060c14f52b405fb13d9cfed4b19ed8cf47f508846e747589188fdcb82",
+        "case_rows": 60,
+        "changed_rows": [],
+        "control_rows": 80,
+        "exact_case_rows": 60,
+        "exact_control_rows": 80,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/numeric-conversion.json",
+        "transitions": {
+          "passed -> passed": 32,
+          "unsupported -> unsupported": 28
+        }
+      },
+      {
+        "after_controls_sha256": "ca9c32395bd580d5fd661ba1d0d1b3b6aa78a553ef08684529f7359c331fbee5",
+        "after_counts": {
+          "passed": 617,
+          "unsupported": 169
+        },
+        "after_rows_sha256": "f4efac24d97bde74e2d0705503d828fd45a365869dba27dc395c22c2621d6882",
+        "before_controls_sha256": "ca9c32395bd580d5fd661ba1d0d1b3b6aa78a553ef08684529f7359c331fbee5",
+        "before_counts": {
+          "passed": 617,
+          "unsupported": 169
+        },
+        "before_rows_sha256": "f4efac24d97bde74e2d0705503d828fd45a365869dba27dc395c22c2621d6882",
+        "case_rows": 786,
+        "changed_rows": [],
+        "control_rows": 128,
+        "exact_case_rows": 786,
+        "exact_control_rows": 128,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/compound-assignment.json",
+        "transitions": {
+          "passed -> passed": 617,
+          "unsupported -> unsupported": 169
+        }
+      },
+      {
+        "after_controls_sha256": "e7a0515e60e66ca653ec2c434cd206be8199da623b7065b6801e457e59bc7a23",
+        "after_counts": {
+          "passed": 67,
+          "unsupported": 28
+        },
+        "after_rows_sha256": "39e9b4be0cda79f7332cba763dec5f3f4e154fb9ccac622ac2bf80dd714efd7e",
+        "before_controls_sha256": "e7a0515e60e66ca653ec2c434cd206be8199da623b7065b6801e457e59bc7a23",
+        "before_counts": {
+          "passed": 67,
+          "unsupported": 28
+        },
+        "before_rows_sha256": "39e9b4be0cda79f7332cba763dec5f3f4e154fb9ccac622ac2bf80dd714efd7e",
+        "case_rows": 95,
+        "changed_rows": [],
+        "control_rows": 64,
+        "exact_case_rows": 95,
+        "exact_control_rows": 64,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/addition.json",
+        "transitions": {
+          "passed -> passed": 67,
+          "unsupported -> unsupported": 28
+        }
+      },
+      {
+        "after_controls_sha256": "3b349279dfe7b281931322ba12604452b29f01ba4ca730ba014167af978beaa6",
+        "after_counts": {
+          "failed": 6,
+          "passed": 78,
+          "unsupported": 48
+        },
+        "after_rows_sha256": "8dadca8648e59ba4b9738df2a6602ccf11224a3c515a596482d49759bf32a0df",
+        "before_controls_sha256": "3b349279dfe7b281931322ba12604452b29f01ba4ca730ba014167af978beaa6",
+        "before_counts": {
+          "failed": 6,
+          "passed": 78,
+          "unsupported": 48
+        },
+        "before_rows_sha256": "8dadca8648e59ba4b9738df2a6602ccf11224a3c515a596482d49759bf32a0df",
+        "case_rows": 132,
+        "changed_rows": [],
+        "control_rows": 104,
+        "exact_case_rows": 132,
+        "exact_control_rows": 104,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/logical-assignment.json",
+        "transitions": {
+          "failed -> failed": 6,
+          "passed -> passed": 78,
+          "unsupported -> unsupported": 48
+        }
+      },
+      {
+        "after_controls_sha256": "6d2c4c7e8c445b842067ed837b282b0fe158d2e51530d4cc1f18c3b5d5eb9069",
+        "after_counts": {
+          "passed": 300,
+          "unsupported": 64
+        },
+        "after_rows_sha256": "5ce059e46664c0cf7d66339bf1d057bf6bd3b90df721a35875debd42113964db",
+        "before_controls_sha256": "6d2c4c7e8c445b842067ed837b282b0fe158d2e51530d4cc1f18c3b5d5eb9069",
+        "before_counts": {
+          "passed": 300,
+          "unsupported": 64
+        },
+        "before_rows_sha256": "5ce059e46664c0cf7d66339bf1d057bf6bd3b90df721a35875debd42113964db",
+        "case_rows": 364,
+        "changed_rows": [],
+        "control_rows": 128,
+        "exact_case_rows": 364,
+        "exact_control_rows": 128,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/relational.json",
+        "transitions": {
+          "passed -> passed": 300,
+          "unsupported -> unsupported": 64
+        }
+      },
+      {
+        "after_controls_sha256": "2ad1fa8d414d546cbb22b15e8777061f954e45757bdd930de4781931374cd3c4",
+        "after_counts": {
+          "passed": 190,
+          "unsupported": 96
+        },
+        "after_rows_sha256": "68c0319ae4fdd42343c7dc39d439b30e91e812d594eb361b5c100a0d2b24356e",
+        "before_controls_sha256": "2ad1fa8d414d546cbb22b15e8777061f954e45757bdd930de4781931374cd3c4",
+        "before_counts": {
+          "passed": 190,
+          "unsupported": 96
+        },
+        "before_rows_sha256": "68c0319ae4fdd42343c7dc39d439b30e91e812d594eb361b5c100a0d2b24356e",
+        "case_rows": 286,
+        "changed_rows": [],
+        "control_rows": 128,
+        "exact_case_rows": 286,
+        "exact_control_rows": 128,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/equality.json",
+        "transitions": {
+          "passed -> passed": 190,
+          "unsupported -> unsupported": 96
+        }
+      },
+      {
+        "after_controls_sha256": "d2708679d291b5652fbe19b52e4b90593342bf99b7f77c7c99ff5d27cf2f05a7",
+        "after_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "after_rows_sha256": "db428caa10520036daaf52c9f68b2cad524c02272a126beba2e354965a25e8b4",
+        "before_controls_sha256": "d2708679d291b5652fbe19b52e4b90593342bf99b7f77c7c99ff5d27cf2f05a7",
+        "before_counts": {
+          "passed": 100,
+          "unsupported": 25
+        },
+        "before_rows_sha256": "db428caa10520036daaf52c9f68b2cad524c02272a126beba2e354965a25e8b4",
+        "case_rows": 125,
+        "changed_rows": [],
+        "control_rows": 80,
+        "exact_case_rows": 125,
+        "exact_control_rows": 80,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/labels.json",
+        "transitions": {
+          "passed -> passed": 100,
+          "unsupported -> unsupported": 25
+        }
+      },
+      {
+        "after_controls_sha256": "b38a81dadb0d2d5be81d1f103a25de033e3b5e14f10c3ba02f1d6d28ab3504be",
+        "after_counts": {
+          "failed": 4,
+          "passed": 184,
+          "unsupported": 54
+        },
+        "after_rows_sha256": "cabe2c80895d3a425dd688297e480ac854e2c56da95b8c35b4263818e6439626",
+        "before_controls_sha256": "b38a81dadb0d2d5be81d1f103a25de033e3b5e14f10c3ba02f1d6d28ab3504be",
+        "before_counts": {
+          "failed": 4,
+          "passed": 184,
+          "unsupported": 54
+        },
+        "before_rows_sha256": "cabe2c80895d3a425dd688297e480ac854e2c56da95b8c35b4263818e6439626",
+        "case_rows": 242,
+        "changed_rows": [],
+        "control_rows": 80,
+        "exact_case_rows": 242,
+        "exact_control_rows": 80,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/symbols.json",
+        "transitions": {
+          "failed -> failed": 4,
+          "passed -> passed": 184,
+          "unsupported -> unsupported": 54
+        }
+      },
+      {
+        "after_controls_sha256": "2fe5f93dd85fff055409acd3deb21c68767bf190853f6fc6ea4cb99823db9f24",
+        "after_counts": {
+          "passed": 44
+        },
+        "after_rows_sha256": "1cb284c7af75d94740774c99d8dcf9ddf211426a720a904b5f8e9547b3cd7230",
+        "before_controls_sha256": "2fe5f93dd85fff055409acd3deb21c68767bf190853f6fc6ea4cb99823db9f24",
+        "before_counts": {
+          "passed": 44
+        },
+        "before_rows_sha256": "1cb284c7af75d94740774c99d8dcf9ddf211426a720a904b5f8e9547b3cd7230",
+        "case_rows": 44,
+        "changed_rows": [],
+        "control_rows": 56,
+        "exact_case_rows": 44,
+        "exact_control_rows": 56,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/string-concat.json",
+        "transitions": {
+          "passed -> passed": 44
+        }
+      },
+      {
+        "after_controls_sha256": "1db93be4798f81ac0361fb6ad24a17462b2292c01eaf6c85980e548177076f26",
+        "after_counts": {
+          "passed": 200,
+          "unsupported": 16
+        },
+        "after_rows_sha256": "3396f75b1d9456cd07b4bbc7f6e7a3b2cc7b89eb78c73e3109c97643fa144fc6",
+        "before_controls_sha256": "1db93be4798f81ac0361fb6ad24a17462b2292c01eaf6c85980e548177076f26",
+        "before_counts": {
+          "passed": 200,
+          "unsupported": 16
+        },
+        "before_rows_sha256": "3396f75b1d9456cd07b4bbc7f6e7a3b2cc7b89eb78c73e3109c97643fa144fc6",
+        "case_rows": 216,
+        "changed_rows": [],
+        "control_rows": 52,
+        "exact_case_rows": 216,
+        "exact_control_rows": 52,
+        "prior_pass_losses": [],
+        "report": "regressions-candidate-1/reflect-properties.json",
+        "transitions": {
+          "passed -> passed": 200,
+          "unsupported -> unsupported": 16
+        }
+      }
+    ],
+    "errors": [],
+    "inputs": [
+      {
+        "bytes": 399,
+        "path": "/tmp/eris-typedarray-fill-1/candidate-adapter-1.json",
+        "sha256": "21d7481e1ab8f22a34cb73f0bde43cdd92a66d76b21de36f4c99fe5c219c53be"
+      },
+      {
+        "bytes": 399,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/candidate-adapter-2.json",
+        "sha256": "40f7ab5b7f00dcb89c3306e356046b1e8d2079715efd2aede36e186f3ead81d1"
+      },
+      {
+        "bytes": 28779,
+        "path": "/tmp/eris-typedarray-fill-1/compiled-source-1.json",
+        "sha256": "698ab9f8a81b499f1c82302cde4f9359a6222e1952aca6bafcc14737de93d068"
+      },
+      {
+        "bytes": 28997,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/compiled-source-1.json",
+        "sha256": "eb6a7526dc9b8ed0f4f598b5593f0cfba69a8de9dda0f593549d4fb5f23f0e5e"
+      },
+      {
+        "bytes": 8938,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regression-plan.json",
+        "sha256": "4cc7e365b7f4bd6fa036bbe96530f440da7b887750f5a13d09913ebf2dd0d6fe"
+      },
+      {
+        "bytes": 106376,
+        "path": "/tmp/eris-typedarray-fill-1/upstream-1.json",
+        "sha256": "3d543de34f5bfeb32f1014a39ec23d8285c10d6721194d47d3934c738d2565c2"
+      },
+      {
+        "bytes": 106385,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/upstream-1.json",
+        "sha256": "03fceb4cc78f89996619bc95bd5f5c4d965904d898f9ba6ed4d43f341eae5f25"
+      },
+      {
+        "bytes": 228424,
+        "path": "/tmp/eris-typedarray-fill-1/search-1.json",
+        "sha256": "176b366c64ded2f7e162a49508601831b1b4e4de53903b7f0e2b5f07892b5253"
+      },
+      {
+        "bytes": 228433,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/search-1.json",
+        "sha256": "1bc1039bf2810ed6b44ebbdfa768c0b8dd510d78004de6cd0d74d5998edb2d5c"
+      },
+      {
+        "bytes": 832663,
+        "path": "/tmp/eris-typedarray-fill-1/foundation-1.json",
+        "sha256": "66c82e8169f3a1c1de77574def0681fbedc66b6ccf905172d4f488d4a74129fa"
+      },
+      {
+        "bytes": 832672,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/foundation-1.json",
+        "sha256": "eb345a8630b23c5e6f82c1f3280eec26a31985426d7465049c842acb87c7453b"
+      },
+      {
+        "bytes": 174804,
+        "path": "/tmp/eris-typedarray-fill-1/views-1.json",
+        "sha256": "8db06d719e3d351bea72f7c4c49e960de4fe70372fdd83c481520d6f453e3c63"
+      },
+      {
+        "bytes": 174814,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/views-1.json",
+        "sha256": "5dbb927c627873a5455d2719f053e670d589af92fe7bc52dbc2e6297eabd4935"
+      },
+      {
+        "bytes": 65871,
+        "path": "/tmp/eris-typedarray-fill-1/local-1.json",
+        "sha256": "80e782ea35d24b6672882a272356b374c52617813de7aa33fd0c497e98614fa1"
+      },
+      {
+        "bytes": 66159,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/local-1.json",
+        "sha256": "dd340fcb06329cd161d9b3d1e0d01cb5a867417e000a90947790bf07a98b6f80"
+      },
+      {
+        "bytes": 464135,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/object-integrity.json",
+        "sha256": "cb9a3b2905236e0de1851a578b266cebd39dce420da3f6defc392300fa72fbc6"
+      },
+      {
+        "bytes": 464144,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/object-integrity.json",
+        "sha256": "97ef286973c3eb4f0a8c9bd05995861ffabddc6b2fab29875d7cc5e1e1c1a611"
+      },
+      {
+        "bytes": 333305,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/array-find.json",
+        "sha256": "e0fad2be80fbd0b43443ddcedc70c2f871ded51a0f4fc61e196cf552f7702695"
+      },
+      {
+        "bytes": 333314,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-find.json",
+        "sha256": "147db180cbfd4d733a9ec363b9df80017c3c2006c9bce7013add70a48e81a9b8"
+      },
+      {
+        "bytes": 1039360,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/date.json",
+        "sha256": "8382579cda1b89cea482e83fbf5d1a0e74f3a7518fbdde123e355b9a4a40addc"
+      },
+      {
+        "bytes": 1039369,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/date.json",
+        "sha256": "c8157e408cd576d869742b2789d90d38b960d09b1034e85d8e21f484cc4229aa"
+      },
+      {
+        "bytes": 868132,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/for-of.json",
+        "sha256": "da462cdc7d7cc56b3652e3358004e5f7ee6d90d12ee8b84d446f9d6c4ba3510f"
+      },
+      {
+        "bytes": 868141,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/for-of.json",
+        "sha256": "3e397118145bb078f473fdc513f8611e983ae8c5a67fb639a4c9cc2b99368dc5"
+      },
+      {
+        "bytes": 204339,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/core-iterators.json",
+        "sha256": "0472b6b0f6cba2e2ebc383f303d9f77e8265db676b63a1075f4cb1272d5b7ba6"
+      },
+      {
+        "bytes": 204348,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/core-iterators.json",
+        "sha256": "d4c5b26e573797f6a4128d90dbd0fbaabb85bbaf746b0decb4af0f49468abf4c"
+      },
+      {
+        "bytes": 137770,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/array-from.json",
+        "sha256": "4ee9eb2677a3e2c5907251b9e2d66ae1c3cb6bce5518afdb233d0696ec1ec0fd"
+      },
+      {
+        "bytes": 137779,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-from.json",
+        "sha256": "c49f827c338bf10fe35b222c3229a077a84fb4c55f1a49c7857e288bbb2e305a"
+      },
+      {
+        "bytes": 94186,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/object-is.json",
+        "sha256": "77b8ea02e6ec58a6b4256a903613d9e9950a17004864c4c2326167dd2d4c9597"
+      },
+      {
+        "bytes": 94195,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/object-is.json",
+        "sha256": "7e6fafb58e902888a5729a258fd514ba11907ab5d744b031b33d15516c589132"
+      },
+      {
+        "bytes": 134800,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/object-has-own.json",
+        "sha256": "f91103cbdb89fa4b152c1b78f2f04305b1014b18beb6942453d2f9aee746f77f"
+      },
+      {
+        "bytes": 134809,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/object-has-own.json",
+        "sha256": "cf9d57c17b15c523869299c7edb01fe477f8dde675778ec676b9efe11c963503"
+      },
+      {
+        "bytes": 887317,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/data-view.json",
+        "sha256": "78d6d6ec667375beda8b8be2c73e7c14b85756a0574266c19cf5386f62eb1d82"
+      },
+      {
+        "bytes": 887326,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/data-view.json",
+        "sha256": "e6d687b3cdd74bc3835ae3b44ec3ae5376e812ca246bb4957b37ffa2a680db6e"
+      },
+      {
+        "bytes": 421843,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/array-buffer.json",
+        "sha256": "207315c83b42a43fecd07bee80c3b11b8f4c5738782badbcfb6238e4a9625719"
+      },
+      {
+        "bytes": 421852,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-buffer.json",
+        "sha256": "f84f39d405c68dffbdd9a3873d58516b03324edfc3f6af617e6958499ae28931"
+      },
+      {
+        "bytes": 183811,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/array-splice.json",
+        "sha256": "13bd08289c32e4238b9e46b2c83893a5b18d08090a5fad1bd333f192863ccbb7"
+      },
+      {
+        "bytes": 183819,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-splice.json",
+        "sha256": "eb6d1ee00bd6e68aaf552d9253505f648e1af081eed76f5ef21167133c136e52"
+      },
+      {
+        "bytes": 2271935,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/array-descriptors.json",
+        "sha256": "193dffb0b2af6704506ab76d4c82e6974f1b2eb2683297ddfafc2511e62a3416"
+      },
+      {
+        "bytes": 2271944,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-descriptors.json",
+        "sha256": "24ea125309f0175ca88c1425722be67f216115054606d0d36589ad02b739eea5"
+      },
+      {
+        "bytes": 417713,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/string-json.json",
+        "sha256": "f70aa50dfeba3778e0957bee6c6cb81c109822a777b849f637b1311242979321"
+      },
+      {
+        "bytes": 417722,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-json.json",
+        "sha256": "b881b9dc073bb548f8fed73771468fc8c091a86f0c2f6b3b4060467d19658488"
+      },
+      {
+        "bytes": 94505,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/reflect-construction.json",
+        "sha256": "a8a461f237997c300ffcdc652dce0e4822b258a5ce891e08c2b89981b1667942"
+      },
+      {
+        "bytes": 94514,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/reflect-construction.json",
+        "sha256": "62e7ec4336acf61d45d0326aa4a37adb1a7cfb04116eee7ae83c7fde56d0881c"
+      },
+      {
+        "bytes": 115677,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/regexp-split.json",
+        "sha256": "655af4ead174067281f8ace3393cdfc452b7c627e405b293c2361629b068b276"
+      },
+      {
+        "bytes": 115686,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/regexp-split.json",
+        "sha256": "cd4a0174529f10b456473efd934053ac10cde134438deccd60d307ef37c6276a"
+      },
+      {
+        "bytes": 277141,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/regexp-match-search.json",
+        "sha256": "3ab51dadf534fa2d7422cc4b8f3ef35b06fb8c9b5d6f529939f0100548f194ab"
+      },
+      {
+        "bytes": 277150,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/regexp-match-search.json",
+        "sha256": "c4a22f36e2a5409566f10ccd0b10f2ba5dfe4f5b27df7885a4caa135e0520e1f"
+      },
+      {
+        "bytes": 92354,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/string-last-index-of.json",
+        "sha256": "34dbe6b3849ee67b56178fdfb5fe65ba0afa60399322324cabc04b503239d287"
+      },
+      {
+        "bytes": 92363,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-last-index-of.json",
+        "sha256": "f41ff6d57e87e56f07e417426d4f459fb4985955145c3c888dcea237618f6f6f"
+      },
+      {
+        "bytes": 374018,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/string-search.json",
+        "sha256": "edf964694c850fccc185521a9d2d1626943a26c7f56ee055966e33268e169875"
+      },
+      {
+        "bytes": 374027,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-search.json",
+        "sha256": "a8faaa7c15e572c78326aec011ea54de28bf1dc279c64e7c26a6078b0933cd1a"
+      },
+      {
+        "bytes": 215494,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/function-constructor.json",
+        "sha256": "6e67d8288b2aad06b26be1a9b0b1622b147ad0fbc76fa0ffbd70f9cb12be1639"
+      },
+      {
+        "bytes": 215503,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/function-constructor.json",
+        "sha256": "a9de074fc93b317cb0a8a03c3a3ed426c36ae705548757025d8a4f4ed43a9586"
+      },
+      {
+        "bytes": 88261,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/new-target.json",
+        "sha256": "e4ca9a82c964d3babe56084b1e8e34a26728a16d5e7eb8c50409d682babea560"
+      },
+      {
+        "bytes": 88270,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/new-target.json",
+        "sha256": "af669803c29d17b49f742931030f29087060d130be1c215c1c69ba3558bdc5a9"
+      },
+      {
+        "bytes": 212797,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/regexp.json",
+        "sha256": "4bc6f92beceeb66b955b8a0316789418f497859b737957ad5b68ca3e244ea5c4"
+      },
+      {
+        "bytes": 212806,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/regexp.json",
+        "sha256": "ed2f4bac8e4b422819c4b677b3aab72e581e716061d0a6830789153bd1c63beb"
+      },
+      {
+        "bytes": 113155,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/template-literal.json",
+        "sha256": "eb3ebcef911322f92b5e9db813fd77089c7fc16c99819520e49c029775f13557"
+      },
+      {
+        "bytes": 113164,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/template-literal.json",
+        "sha256": "de062e8dc3daa07e40f820c549ae95f1207bdccd4f24ffa2ec319c658baf3197"
+      },
+      {
+        "bytes": 747558,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/functions.json",
+        "sha256": "ee0beb2f58882f45d3221330290ed83c217472887d20ca75fa2349f7bd581226"
+      },
+      {
+        "bytes": 747567,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/functions.json",
+        "sha256": "c0efc315395c62ef4307d2ae7754d2570b64c566dece46499ba043717fa27b61"
+      },
+      {
+        "bytes": 61508,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/rest-parameters.json",
+        "sha256": "ad45482cf843532b4beac91bf0b49c714060eec74795ca274efa63f9e8571e14"
+      },
+      {
+        "bytes": 61517,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/rest-parameters.json",
+        "sha256": "afdfe76f5170db0217c77490af897e20a35c792b8af70ceb78d9ad943d6c8e12"
+      },
+      {
+        "bytes": 60154,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/is-prototype-of.json",
+        "sha256": "c154e1f6c71d1abac64c7cc77b848b1b804e5a7847e68fcb5c11d055c26f9785"
+      },
+      {
+        "bytes": 60163,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/is-prototype-of.json",
+        "sha256": "30f0aea2ed1c8f45c8edcb5de63305fa6c80869384e77e77b96490a288da6d85"
+      },
+      {
+        "bytes": 100773,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/global-values.json",
+        "sha256": "edacd8d61ed102d9498980d3237735dde845f7ea19b9dcbc177d491136e55a70"
+      },
+      {
+        "bytes": 100782,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/global-values.json",
+        "sha256": "c72510698956edc9ad00bb8df4a17082cd741030317748c28541d580fc36a9a3"
+      },
+      {
+        "bytes": 743049,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/array-reduce.json",
+        "sha256": "c9979ea6b1cf25f052dfbec849e1ed1ff626f14ecd969fa80ceb041125a78205"
+      },
+      {
+        "bytes": 743059,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-reduce.json",
+        "sha256": "73f5bb9460235baf625e2c07d81a2caebb1d5ea8d5fab4e506a488775d07c95f"
+      },
+      {
+        "bytes": 274310,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/number-statics.json",
+        "sha256": "9248550d8c52422806f73121a5994c38d6de96057367ca776a99a795f5451264"
+      },
+      {
+        "bytes": 274319,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/number-statics.json",
+        "sha256": "32ec47ba173a711dccf04158a5622258401a01188ac84cb64d6e62f5ac82214b"
+      },
+      {
+        "bytes": 94326,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/numeric-conversion.json",
+        "sha256": "6d5df901d70b69651f9143413370ae3bc08935a10f43570d0e2869feab5d5446"
+      },
+      {
+        "bytes": 94335,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/numeric-conversion.json",
+        "sha256": "e2dd3e5d1c329ae5997bfcdcddeb8b4ff7381b8ef3041c2efdc7c3f8d95dd063"
+      },
+      {
+        "bytes": 607110,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/compound-assignment.json",
+        "sha256": "8d782e4fbca9ebeb59a50a257b7dc93e3811ef55cced7232452f121c6261603a"
+      },
+      {
+        "bytes": 607119,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/compound-assignment.json",
+        "sha256": "92e7e5d05adbc24c4e452280ecf16c0391121f1ba7bf198f567da330df8ea33e"
+      },
+      {
+        "bytes": 103628,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/addition.json",
+        "sha256": "eaa379c33c1a3e3e6e202e707c71d21524d3e134191d23a80aba353b85e258f7"
+      },
+      {
+        "bytes": 103638,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/addition.json",
+        "sha256": "e4fc80f24c9cac158ff172ab6ad8be19572e3185156d6738c6a2e8c17986fe4e"
+      },
+      {
+        "bytes": 167739,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/logical-assignment.json",
+        "sha256": "184d2d1b31679ac711894e57c9d2053eb3ddc9a6b24b9df54c80bfebfdc810d2"
+      },
+      {
+        "bytes": 167748,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/logical-assignment.json",
+        "sha256": "30076b1e20c1b39fa172974a24db99445a86a6992a3e0766d725a83463bc457f"
+      },
+      {
+        "bytes": 316322,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/relational.json",
+        "sha256": "1253f74d752955007368118ffced6ec468183b80b7e85c43bdfe28b21ace7610"
+      },
+      {
+        "bytes": 316331,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/relational.json",
+        "sha256": "2dc258094953e4ca545d0be9476ea6f35432d8e10b5e5aa5be42e7b97d303135"
+      },
+      {
+        "bytes": 264382,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/equality.json",
+        "sha256": "93e61b47deb69a0db68dc53ae26eeb73478e77adc079e196cf09f146094c015a"
+      },
+      {
+        "bytes": 264391,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/equality.json",
+        "sha256": "cefc42c82d0313ad20af4c6791f8357089626023ce475e75d094461de60f70e6"
+      },
+      {
+        "bytes": 140118,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/labels.json",
+        "sha256": "876266eea8dea92f66bb848fd379694f7898c29855c1446c19cea876e78f972c"
+      },
+      {
+        "bytes": 140126,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/labels.json",
+        "sha256": "85bbabdd46a1e5a49d92bca2b4fdb869b1f06e75a5d1be8498457f21190ac5ca"
+      },
+      {
+        "bytes": 202304,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/symbols.json",
+        "sha256": "60471639c6300e93d23a3b7e3d7cc6bb46af28f676b881b16d6ee93b64712341"
+      },
+      {
+        "bytes": 202313,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/symbols.json",
+        "sha256": "e3b629e0ca5b6fc65567e5f0cd43f9e0da8ba9e1a24b01574bc32f0c86749707"
+      },
+      {
+        "bytes": 68798,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/string-concat.json",
+        "sha256": "c4550b34584bc24cee98da66452db104747d1e69d40a48607d16cd809396ac12"
+      },
+      {
+        "bytes": 68806,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-concat.json",
+        "sha256": "e056d2d32b40ee634b6201be47c7df97bb9eeff955d9e2d8370f2a69cc769aba"
+      },
+      {
+        "bytes": 176034,
+        "path": "/tmp/eris-typedarray-fill-1/regressions-candidate-1/reflect-properties.json",
+        "sha256": "de2cd8188cdaf631cf07b418296ddbe976c23178f93bb781ad3082a2ca2a8812"
+      },
+      {
+        "bytes": 176043,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/reflect-properties.json",
+        "sha256": "5f1737afc39a87e31efbaf9850b571d259225b46ffca897ead86e927fc6998c2"
+      },
+      {
+        "bytes": 1043,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/object-integrity-receipt.json",
+        "sha256": "56880234ccc9be54c79fd3d7f9403493fd51a6a0be0c03cf650cbbde51aeffb0"
+      },
+      {
+        "bytes": 1000,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-find-receipt.json",
+        "sha256": "b0292d4ff430d03e6767bcffe2e427a87bc7b89c02ccb455a52601646ef722d4"
+      },
+      {
+        "bytes": 979,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/date-receipt.json",
+        "sha256": "cce63f353eb8516b84c4032bca1770c7b6e38ec535bdc79da45494e876c55ffd"
+      },
+      {
+        "bytes": 1004,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/for-of-receipt.json",
+        "sha256": "2b47cfbe84b6dc9d388875c310e9a523421977169e8d342a34ddb584b129f597"
+      },
+      {
+        "bytes": 1017,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/core-iterators-receipt.json",
+        "sha256": "3c06917e8a2d2979c3f7c29fce1e840ec72230649488c38e7f39ea938cc375a8"
+      },
+      {
+        "bytes": 998,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-from-receipt.json",
+        "sha256": "ba26372cdbbc3212f799219705a42d5453996049b75bdc57629f325096fcb4fb"
+      },
+      {
+        "bytes": 972,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/object-is-receipt.json",
+        "sha256": "bd55d555cace3869cd7e459526bf869513ccb6f457cfe90d90573a742281fbfc"
+      },
+      {
+        "bytes": 994,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/object-has-own-receipt.json",
+        "sha256": "097926d5901e5efb828096b61b85cc378da4f2c0acbd3aa6cfacee411c140de9"
+      },
+      {
+        "bytes": 1016,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/data-view-receipt.json",
+        "sha256": "684f3e321c44685fc6f374d46fe483c2c24dc4f43043a304634160ef4eb9c522"
+      },
+      {
+        "bytes": 1027,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-buffer-receipt.json",
+        "sha256": "b907fa605ea90636eebfad8e0670d74e0df3e5d4ac6a118330579de822f796fe"
+      },
+      {
+        "bytes": 1008,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-splice-receipt.json",
+        "sha256": "e8c2f045012f379028e9becdb1c5331835940acd6c62e30a9aecd4e494fa1b82"
+      },
+      {
+        "bytes": 1031,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-descriptors-receipt.json",
+        "sha256": "7536fa02215f4572558104e71c90fc013df8c1e9e5b0bb5e8ddc99595bcd02d9"
+      },
+      {
+        "bytes": 993,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-json-receipt.json",
+        "sha256": "cfc26d3e0f05b712f9b8cc201ed56af3e692d6702482aeffb18f4f79b561a13b"
+      },
+      {
+        "bytes": 1016,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/reflect-construction-receipt.json",
+        "sha256": "fe634a453eea80107a3e6cb95374d6c115dc84b43f4d09399ab92c9c16d92e82"
+      },
+      {
+        "bytes": 1005,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/regexp-split-receipt.json",
+        "sha256": "f8535c6a5f7a644e5d52ce40d9734c6daec9ede40b808557dc0169944bfe64bc"
+      },
+      {
+        "bytes": 1053,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/regexp-match-search-receipt.json",
+        "sha256": "15e6da060a47c20c8d0c7db9695b2c02d3b3e7ecc7010e359ebd0af4e3269fad"
+      },
+      {
+        "bytes": 1016,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-last-index-of-receipt.json",
+        "sha256": "81eba575e942ff67aa09c323e36941b5185f9429d9ed1cd6f1b08960b305a9d4"
+      },
+      {
+        "bytes": 1030,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-search-receipt.json",
+        "sha256": "b9fd154e795b387adebb845ae878e9c7fcb9ce3b402f056eb29550988b49aa73"
+      },
+      {
+        "bytes": 1041,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/function-constructor-receipt.json",
+        "sha256": "a4346ebbd48a223770418f111946f0a31bcd420b9e07b6d9fbde7b6058afbf6b"
+      },
+      {
+        "bytes": 998,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/new-target-receipt.json",
+        "sha256": "6286b9e9c12764a396614c2af9000394393cb9744a8df0ce098ce8299ad8ed12"
+      },
+      {
+        "bytes": 985,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/regexp-receipt.json",
+        "sha256": "ca8660feda14b370d8a10cbc0623261c51791834605f19d2ee27ddb5c3acf334"
+      },
+      {
+        "bytes": 1024,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/template-literal-receipt.json",
+        "sha256": "0fe3dbbd8db9b774d5c42f67a083e7f09b239db5bdb990bfbbed40b79ce1d318"
+      },
+      {
+        "bytes": 998,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/functions-receipt.json",
+        "sha256": "fe8e597e95d5083dcbef11f1761783b64e624ab013b773e4800e6567dc9602ba"
+      },
+      {
+        "bytes": 1018,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/rest-parameters-receipt.json",
+        "sha256": "cf8755ac0b097ec61ce0b01e24cea5e8ae638a162e684fe9558879454a9d12fd"
+      },
+      {
+        "bytes": 1018,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/is-prototype-of-receipt.json",
+        "sha256": "830666f6678808d6120407bc338268b089ac81180eaac8e77e0f2bb881f47217"
+      },
+      {
+        "bytes": 1010,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/global-values-receipt.json",
+        "sha256": "8af05cfc5caafd7353a3a08f711dce4f4fb0bc1c2fca7bd35475875557cc842d"
+      },
+      {
+        "bytes": 1010,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/array-reduce-receipt.json",
+        "sha256": "41d894489f77ff59f86418672271169d80c3de971dc02679e6122874e22bb3af"
+      },
+      {
+        "bytes": 1016,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/number-statics-receipt.json",
+        "sha256": "6962490cc5db6339ccfe4a8b06edf7c1100b4276fbb833d784aa2c567dacb6e3"
+      },
+      {
+        "bytes": 1031,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/numeric-conversion-receipt.json",
+        "sha256": "e161e3fef74ca53519f8fc51181c509fafac389d4d1ed633202d4ff2280655a1"
+      },
+      {
+        "bytes": 1035,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/compound-assignment-receipt.json",
+        "sha256": "490e2beafd232db6a4f25918204615cc7eeb0f7c01b2115b25b64068ebc698d7"
+      },
+      {
+        "bytes": 991,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/addition-receipt.json",
+        "sha256": "c75f8ad1ef712912695135b9686fbc66394f6dcc9943acc8c3bf444a1c1f30de"
+      },
+      {
+        "bytes": 1049,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/logical-assignment-receipt.json",
+        "sha256": "5ea0f21bd16f9bf0af6034de4b1fcf92da1b296978a11e6e2c99604372bcece1"
+      },
+      {
+        "bytes": 1001,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/relational-receipt.json",
+        "sha256": "e083bbbfec1080822a08c7db1128dff18a3754436cf8f39038e4d09c283f8632"
+      },
+      {
+        "bytes": 993,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/equality-receipt.json",
+        "sha256": "6460b167fbe866d88ba42bedbc50424e15597e1f96600953d17afa4bf9b54a1c"
+      },
+      {
+        "bytes": 985,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/labels-receipt.json",
+        "sha256": "9cc5ac7ab0248c09b7b5ddf30cfedc0e4e11eb97f65f541525a60e0d22c0348e"
+      },
+      {
+        "bytes": 1005,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/symbols-receipt.json",
+        "sha256": "76744bf32f98068ba11a499a57ab844b32f79228cd3181813df1e2515ebe38e0"
+      },
+      {
+        "bytes": 988,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/string-concat-receipt.json",
+        "sha256": "cff7fa507d5c87c03bf359ede73b67e07939edf5ee29bc6eae942dfd9d134a6e"
+      },
+      {
+        "bytes": 1033,
+        "path": "/tmp/eris-typedarray-fill-encoding-1/regressions-candidate-1/reflect-properties-receipt.json",
+        "sha256": "4d33e417b5e8150a4adb08ecf7e8e7f7945ab716d43af1b69f2ca1335434da38"
+      }
+    ],
+    "scope": "Full ordered decoded case/control rows, identity/policy bindings, preserved baseline hashes and receipts.",
+    "status": "clear",
+    "summary": {
+      "case_rows": 18236,
+      "control_rows": 4180,
+      "exact_case_rows": 18236,
+      "exact_control_rows": 4180,
+      "historical_profiles": 38,
+      "prior_pass_losses": 0,
+      "profiles": 43
+    }
+  },
+  "feature": "Encode a Number TypedArray fill scalar once",
+  "fill_control_count": 52,
+  "fill_counts": {
+    "passed": 22,
+    "resource": 32,
+    "unsupported": 50
+  },
+  "known_limits": [
+    "32 fill resource-limited modes remain",
+    "Small empty/single-element benchmark medians increased in this run",
+    "Uncontrolled local host; no statistical significance or Chromium parity claim",
+    "Full web compatibility and production security remain unfulfilled"
+  ],
+  "manifest_sha256": "0315c4023286dcb7806010fddceec9e79624fd2fb9a152aed01f20ff4e1dafae",
+  "published_bindings": {
+    "README.md": {
+      "bytes": 47419,
+      "sha256": "947dd1ce56fbbcfdbd28fb1a78b05be640dd46537d19cea9688333f96818d57a"
+    },
+    "docs/COMPATIBILITY.md": {
+      "bytes": 65180,
+      "sha256": "b7fe2ef2a63a2a02c42a7725f3ada679261097ad265bdaa436e92dc282c91837"
+    },
+    "docs/ROADMAP.md": {
+      "bytes": 27625,
+      "sha256": "c5e9ca8661948173ee6b12f6966e2c0892df8e6e6f6b12f858b83b7a5c206e0a"
+    },
+    "docs/typedarray-fill-encoding.md": {
+      "bytes": 5857,
+      "sha256": "9ef97b45b15aa782bbe50e3316c56d7427ece65af6057df3b0f70f2fe3ed0985"
+    },
+    "docs/typedarray-fill.md": {
+      "bytes": 4308,
+      "sha256": "c365a9901260e5efe229c31c23f019c954912bbae35fdb5ec78f8a5fc1bf8d4f"
+    },
+    "src/script/typed_array/fill.rs": {
+      "bytes": 3375,
+      "sha256": "baa6bf3dba7bd7c2ce7f1758272788689b11b568c6dc8c5e25e59850211ea525"
+    },
+    "src/script/typed_array/fill/tests.rs": {
+      "bytes": 39164,
+      "sha256": "031581d6db8447a6da02c7014af46f483a2e41d2387bc1e4e0b29f657d40661e"
+    },
+    "tests/conformance/test262-typedarray-fill-after-encoding.json": {
+      "bytes": 106385,
+      "sha256": "03fceb4cc78f89996619bc95bd5f5c4d965904d898f9ba6ed4d43f341eae5f25"
+    }
+  },
+  "records": 634,
+  "source_change_after_validation": null,
+  "timing": {
+    "limits": "Descriptive local timings only; no statistical significance, isolated native-kernel timing or Chromium claim.",
+    "p95_definition": "nearest rank ceil(0.95*N) in sorted sample means",
+    "rounds": 4,
+    "runs": [
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-before-1",
+          "0"
+        ],
+        "label": "before",
+        "position": 0,
+        "process_seconds": 2.2757776209618896,
+        "returncode": 0,
+        "round": 0,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5498.0,
+            "p95_ns_per_checked_execute": 6775.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9350.0,
+            "p95_ns_per_checked_execute": 9638.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9695.75,
+            "p95_ns_per_checked_execute": 10001.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16481.25,
+            "p95_ns_per_checked_execute": 19549.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5410.0,
+            "p95_ns_per_checked_execute": 5518.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9390.0,
+            "p95_ns_per_checked_execute": 10489.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9763.75,
+            "p95_ns_per_checked_execute": 10086.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16285.75,
+            "p95_ns_per_checked_execute": 20804.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5425.25,
+            "p95_ns_per_checked_execute": 5535.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9385.25,
+            "p95_ns_per_checked_execute": 9610.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 9846.25,
+            "p95_ns_per_checked_execute": 11414.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 17257.75,
+            "p95_ns_per_checked_execute": 18857.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5468.0,
+            "p95_ns_per_checked_execute": 5828.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9490.5,
+            "p95_ns_per_checked_execute": 10495.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9894.0,
+            "p95_ns_per_checked_execute": 10885.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17931.25,
+            "p95_ns_per_checked_execute": 21320.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5442.5,
+            "p95_ns_per_checked_execute": 7922.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9463.0,
+            "p95_ns_per_checked_execute": 9643.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9823.25,
+            "p95_ns_per_checked_execute": 10131.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18385.25,
+            "p95_ns_per_checked_execute": 19136.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5520.5,
+            "p95_ns_per_checked_execute": 6234.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9475.5,
+            "p95_ns_per_checked_execute": 10184.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 12546.5,
+            "p95_ns_per_checked_execute": 16583.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18557.75,
+            "p95_ns_per_checked_execute": 22768.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5460.5,
+            "p95_ns_per_checked_execute": 7206.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9357.5,
+            "p95_ns_per_checked_execute": 9735.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9796.25,
+            "p95_ns_per_checked_execute": 10056.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18387.25,
+            "p95_ns_per_checked_execute": 19567.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5470.5,
+            "p95_ns_per_checked_execute": 6765.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9393.0,
+            "p95_ns_per_checked_execute": 10695.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9748.5,
+            "p95_ns_per_checked_execute": 10274.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17200.0,
+            "p95_ns_per_checked_execute": 19376.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5440.5,
+            "p95_ns_per_checked_execute": 5811.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9445.5,
+            "p95_ns_per_checked_execute": 10311.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9721.25,
+            "p95_ns_per_checked_execute": 10712.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17185.0,
+            "p95_ns_per_checked_execute": 20929.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5407.5,
+            "p95_ns_per_checked_execute": 5573.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9380.25,
+            "p95_ns_per_checked_execute": 11008.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9753.75,
+            "p95_ns_per_checked_execute": 10575.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 15509.25,
+            "p95_ns_per_checked_execute": 17979.25,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-0-0-before.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24969,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-0-0-before.stdout",
+          "sha256": "b0a18fce7ee8dde74c282b5f7130a4209be963118032ba2dfab0847fa0160ba2"
+        },
+        "timed_out": false
+      },
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-after-1",
+          "0"
+        ],
+        "label": "after",
+        "position": 1,
+        "process_seconds": 2.303419962991029,
+        "returncode": 0,
+        "round": 0,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5397.75,
+            "p95_ns_per_checked_execute": 6970.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9297.75,
+            "p95_ns_per_checked_execute": 9568.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9505.75,
+            "p95_ns_per_checked_execute": 9881.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13568.5,
+            "p95_ns_per_checked_execute": 15211.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5432.75,
+            "p95_ns_per_checked_execute": 6823.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9375.5,
+            "p95_ns_per_checked_execute": 10735.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9613.0,
+            "p95_ns_per_checked_execute": 11198.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13418.25,
+            "p95_ns_per_checked_execute": 14029.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5473.0,
+            "p95_ns_per_checked_execute": 5630.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9315.25,
+            "p95_ns_per_checked_execute": 10560.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 9610.75,
+            "p95_ns_per_checked_execute": 9989.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 13382.75,
+            "p95_ns_per_checked_execute": 14484.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5437.75,
+            "p95_ns_per_checked_execute": 5708.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9412.75,
+            "p95_ns_per_checked_execute": 11383.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9530.75,
+            "p95_ns_per_checked_execute": 10066.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13260.25,
+            "p95_ns_per_checked_execute": 15409.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5457.75,
+            "p95_ns_per_checked_execute": 5603.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9350.25,
+            "p95_ns_per_checked_execute": 9548.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9595.25,
+            "p95_ns_per_checked_execute": 10405.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13443.0,
+            "p95_ns_per_checked_execute": 15271.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5490.25,
+            "p95_ns_per_checked_execute": 5710.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9358.25,
+            "p95_ns_per_checked_execute": 10312.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9598.25,
+            "p95_ns_per_checked_execute": 11304.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13410.0,
+            "p95_ns_per_checked_execute": 14542.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5435.25,
+            "p95_ns_per_checked_execute": 5608.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9232.25,
+            "p95_ns_per_checked_execute": 9813.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9517.75,
+            "p95_ns_per_checked_execute": 10690.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13099.75,
+            "p95_ns_per_checked_execute": 13515.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5433.0,
+            "p95_ns_per_checked_execute": 5507.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9247.5,
+            "p95_ns_per_checked_execute": 9380.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9477.75,
+            "p95_ns_per_checked_execute": 9573.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 12957.0,
+            "p95_ns_per_checked_execute": 13558.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5395.25,
+            "p95_ns_per_checked_execute": 5478.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9235.25,
+            "p95_ns_per_checked_execute": 9407.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9475.75,
+            "p95_ns_per_checked_execute": 9783.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13002.0,
+            "p95_ns_per_checked_execute": 13247.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5415.25,
+            "p95_ns_per_checked_execute": 5513.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9252.75,
+            "p95_ns_per_checked_execute": 9430.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9540.75,
+            "p95_ns_per_checked_execute": 10267.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13102.0,
+            "p95_ns_per_checked_execute": 13337.75,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-0-1-after.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24969,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-0-1-after.stdout",
+          "sha256": "8600f9850ebb65a3a4611c554c3e5ecb169a5caa29ce600a83c6ce7947ad1250"
+        },
+        "timed_out": false
+      },
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-after-1",
+          "1"
+        ],
+        "label": "after",
+        "position": 0,
+        "process_seconds": 2.305141792166978,
+        "returncode": 0,
+        "round": 1,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5473.0,
+            "p95_ns_per_checked_execute": 5678.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9338.0,
+            "p95_ns_per_checked_execute": 9670.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9653.25,
+            "p95_ns_per_checked_execute": 10678.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13593.25,
+            "p95_ns_per_checked_execute": 16160.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5475.0,
+            "p95_ns_per_checked_execute": 6985.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9390.25,
+            "p95_ns_per_checked_execute": 10389.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9635.75,
+            "p95_ns_per_checked_execute": 10502.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13134.75,
+            "p95_ns_per_checked_execute": 14029.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5490.5,
+            "p95_ns_per_checked_execute": 5635.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9280.0,
+            "p95_ns_per_checked_execute": 10249.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 9608.5,
+            "p95_ns_per_checked_execute": 10840.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 13144.75,
+            "p95_ns_per_checked_execute": 13498.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5563.25,
+            "p95_ns_per_checked_execute": 7041.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9483.0,
+            "p95_ns_per_checked_execute": 12799.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9708.75,
+            "p95_ns_per_checked_execute": 12541.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 14470.0,
+            "p95_ns_per_checked_execute": 19717.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5468.0,
+            "p95_ns_per_checked_execute": 5708.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9403.0,
+            "p95_ns_per_checked_execute": 9666.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9643.25,
+            "p95_ns_per_checked_execute": 9999.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 14092.0,
+            "p95_ns_per_checked_execute": 15321.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5480.5,
+            "p95_ns_per_checked_execute": 5595.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9405.0,
+            "p95_ns_per_checked_execute": 9731.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9588.0,
+            "p95_ns_per_checked_execute": 11178.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13300.5,
+            "p95_ns_per_checked_execute": 13836.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5457.75,
+            "p95_ns_per_checked_execute": 5575.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9282.75,
+            "p95_ns_per_checked_execute": 10700.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9643.5,
+            "p95_ns_per_checked_execute": 9968.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13463.0,
+            "p95_ns_per_checked_execute": 14842.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5523.0,
+            "p95_ns_per_checked_execute": 6482.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9337.75,
+            "p95_ns_per_checked_execute": 10767.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9588.0,
+            "p95_ns_per_checked_execute": 10349.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13272.75,
+            "p95_ns_per_checked_execute": 15058.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5460.25,
+            "p95_ns_per_checked_execute": 5568.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9330.25,
+            "p95_ns_per_checked_execute": 9523.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9648.75,
+            "p95_ns_per_checked_execute": 10404.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13290.0,
+            "p95_ns_per_checked_execute": 14627.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5470.25,
+            "p95_ns_per_checked_execute": 5615.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9295.0,
+            "p95_ns_per_checked_execute": 9508.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9598.0,
+            "p95_ns_per_checked_execute": 10376.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13257.75,
+            "p95_ns_per_checked_execute": 13956.5,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-1-0-after.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24969,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-1-0-after.stdout",
+          "sha256": "6096aa2cab083e37767322a24db9388b576bc9908ca9bf0840083be83aa44cf5"
+        },
+        "timed_out": false
+      },
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-before-1",
+          "1"
+        ],
+        "label": "before",
+        "position": 1,
+        "process_seconds": 2.2659959332086146,
+        "returncode": 0,
+        "round": 1,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5568.0,
+            "p95_ns_per_checked_execute": 7819.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9239.5,
+            "p95_ns_per_checked_execute": 9656.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9588.0,
+            "p95_ns_per_checked_execute": 10898.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17561.0,
+            "p95_ns_per_checked_execute": 21821.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5660.5,
+            "p95_ns_per_checked_execute": 5918.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9275.0,
+            "p95_ns_per_checked_execute": 9776.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9598.25,
+            "p95_ns_per_checked_execute": 10294.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16581.5,
+            "p95_ns_per_checked_execute": 18981.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5357.75,
+            "p95_ns_per_checked_execute": 5465.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9154.75,
+            "p95_ns_per_checked_execute": 9350.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 9615.5,
+            "p95_ns_per_checked_execute": 10006.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 17861.25,
+            "p95_ns_per_checked_execute": 19036.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5332.5,
+            "p95_ns_per_checked_execute": 5412.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9295.0,
+            "p95_ns_per_checked_execute": 9558.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9756.0,
+            "p95_ns_per_checked_execute": 10201.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18101.75,
+            "p95_ns_per_checked_execute": 20749.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5330.0,
+            "p95_ns_per_checked_execute": 5770.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9270.0,
+            "p95_ns_per_checked_execute": 9402.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9741.25,
+            "p95_ns_per_checked_execute": 9928.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17961.75,
+            "p95_ns_per_checked_execute": 18460.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5332.75,
+            "p95_ns_per_checked_execute": 5460.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9227.5,
+            "p95_ns_per_checked_execute": 9743.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9610.75,
+            "p95_ns_per_checked_execute": 10024.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18450.5,
+            "p95_ns_per_checked_execute": 18808.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5302.75,
+            "p95_ns_per_checked_execute": 5423.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9210.0,
+            "p95_ns_per_checked_execute": 10144.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9685.5,
+            "p95_ns_per_checked_execute": 9863.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18533.0,
+            "p95_ns_per_checked_execute": 19274.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5352.75,
+            "p95_ns_per_checked_execute": 5553.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9209.75,
+            "p95_ns_per_checked_execute": 9357.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9560.75,
+            "p95_ns_per_checked_execute": 9713.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17363.0,
+            "p95_ns_per_checked_execute": 18176.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5312.5,
+            "p95_ns_per_checked_execute": 5390.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9172.5,
+            "p95_ns_per_checked_execute": 9395.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9593.0,
+            "p95_ns_per_checked_execute": 9891.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16962.25,
+            "p95_ns_per_checked_execute": 17383.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5332.25,
+            "p95_ns_per_checked_execute": 5478.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9155.0,
+            "p95_ns_per_checked_execute": 10547.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9558.0,
+            "p95_ns_per_checked_execute": 9731.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 14880.75,
+            "p95_ns_per_checked_execute": 19028.75,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-1-1-before.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24971,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-1-1-before.stdout",
+          "sha256": "77184d50218f1b146365bc78e07e0a4fcea6ff8799812a12c7a48268573200be"
+        },
+        "timed_out": false
+      },
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-before-1",
+          "2"
+        ],
+        "label": "before",
+        "position": 0,
+        "process_seconds": 2.282437815098092,
+        "returncode": 0,
+        "round": 2,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5355.25,
+            "p95_ns_per_checked_execute": 6146.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9225.0,
+            "p95_ns_per_checked_execute": 9483.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9565.25,
+            "p95_ns_per_checked_execute": 9826.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16225.75,
+            "p95_ns_per_checked_execute": 19862.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5342.75,
+            "p95_ns_per_checked_execute": 5435.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9290.25,
+            "p95_ns_per_checked_execute": 9577.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9655.25,
+            "p95_ns_per_checked_execute": 9823.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16168.0,
+            "p95_ns_per_checked_execute": 17786.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5365.25,
+            "p95_ns_per_checked_execute": 5568.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9244.75,
+            "p95_ns_per_checked_execute": 10038.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 9698.25,
+            "p95_ns_per_checked_execute": 10805.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 17232.5,
+            "p95_ns_per_checked_execute": 18054.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5340.25,
+            "p95_ns_per_checked_execute": 5443.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9347.5,
+            "p95_ns_per_checked_execute": 11093.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9685.75,
+            "p95_ns_per_checked_execute": 10174.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18207.0,
+            "p95_ns_per_checked_execute": 18963.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5367.5,
+            "p95_ns_per_checked_execute": 5448.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9317.25,
+            "p95_ns_per_checked_execute": 9703.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9746.0,
+            "p95_ns_per_checked_execute": 10149.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18344.5,
+            "p95_ns_per_checked_execute": 19461.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5442.75,
+            "p95_ns_per_checked_execute": 7051.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9340.5,
+            "p95_ns_per_checked_execute": 9508.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9656.0,
+            "p95_ns_per_checked_execute": 9893.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18399.5,
+            "p95_ns_per_checked_execute": 18707.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5422.75,
+            "p95_ns_per_checked_execute": 5500.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9252.5,
+            "p95_ns_per_checked_execute": 11351.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9741.25,
+            "p95_ns_per_checked_execute": 9951.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18876.0,
+            "p95_ns_per_checked_execute": 19772.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5385.25,
+            "p95_ns_per_checked_execute": 5535.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9209.75,
+            "p95_ns_per_checked_execute": 9425.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9585.5,
+            "p95_ns_per_checked_execute": 9758.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16912.25,
+            "p95_ns_per_checked_execute": 17631.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5290.25,
+            "p95_ns_per_checked_execute": 5430.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9255.0,
+            "p95_ns_per_checked_execute": 10096.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9578.25,
+            "p95_ns_per_checked_execute": 9856.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17062.25,
+            "p95_ns_per_checked_execute": 17911.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5355.25,
+            "p95_ns_per_checked_execute": 5487.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9142.5,
+            "p95_ns_per_checked_execute": 9986.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9575.5,
+            "p95_ns_per_checked_execute": 9733.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 14910.75,
+            "p95_ns_per_checked_execute": 15774.75,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-2-0-before.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24969,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-2-0-before.stdout",
+          "sha256": "b916c9786e842895b61a58b195a1599d11ea5088396873aba17a1c7fa229aaf4"
+        },
+        "timed_out": false
+      },
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-after-1",
+          "2"
+        ],
+        "label": "after",
+        "position": 1,
+        "process_seconds": 2.2454453099053353,
+        "returncode": 0,
+        "round": 2,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5801.0,
+            "p95_ns_per_checked_execute": 6870.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 10009.0,
+            "p95_ns_per_checked_execute": 12210.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10206.75,
+            "p95_ns_per_checked_execute": 11236.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13946.5,
+            "p95_ns_per_checked_execute": 14314.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5796.0,
+            "p95_ns_per_checked_execute": 5871.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9978.75,
+            "p95_ns_per_checked_execute": 10460.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10196.75,
+            "p95_ns_per_checked_execute": 11076.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 14124.5,
+            "p95_ns_per_checked_execute": 15246.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5826.0,
+            "p95_ns_per_checked_execute": 5969.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9929.0,
+            "p95_ns_per_checked_execute": 10214.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 10234.0,
+            "p95_ns_per_checked_execute": 11063.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 14016.75,
+            "p95_ns_per_checked_execute": 14570.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5813.5,
+            "p95_ns_per_checked_execute": 6307.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9999.0,
+            "p95_ns_per_checked_execute": 11706.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10144.25,
+            "p95_ns_per_checked_execute": 11208.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13946.25,
+            "p95_ns_per_checked_execute": 14545.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5811.0,
+            "p95_ns_per_checked_execute": 6119.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 10016.25,
+            "p95_ns_per_checked_execute": 11870.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10272.25,
+            "p95_ns_per_checked_execute": 10715.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13986.5,
+            "p95_ns_per_checked_execute": 14379.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5808.75,
+            "p95_ns_per_checked_execute": 5963.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9996.0,
+            "p95_ns_per_checked_execute": 10695.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10096.75,
+            "p95_ns_per_checked_execute": 10885.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13931.5,
+            "p95_ns_per_checked_execute": 15266.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5771.0,
+            "p95_ns_per_checked_execute": 5901.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9889.0,
+            "p95_ns_per_checked_execute": 11263.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10246.75,
+            "p95_ns_per_checked_execute": 11830.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13964.25,
+            "p95_ns_per_checked_execute": 14555.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5833.5,
+            "p95_ns_per_checked_execute": 6066.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9994.0,
+            "p95_ns_per_checked_execute": 10191.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10112.0,
+            "p95_ns_per_checked_execute": 10349.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13620.75,
+            "p95_ns_per_checked_execute": 14790.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5758.5,
+            "p95_ns_per_checked_execute": 5871.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9919.0,
+            "p95_ns_per_checked_execute": 10309.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10141.75,
+            "p95_ns_per_checked_execute": 10347.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13753.5,
+            "p95_ns_per_checked_execute": 13991.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5768.5,
+            "p95_ns_per_checked_execute": 5988.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9893.5,
+            "p95_ns_per_checked_execute": 10061.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 10189.5,
+            "p95_ns_per_checked_execute": 10457.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13843.5,
+            "p95_ns_per_checked_execute": 14194.25,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-2-1-after.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24969,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-2-1-after.stdout",
+          "sha256": "fdfe72f889560711d340755dd31a959cfcb176e93d0639c4c3dcb43aaf4c83ab"
+        },
+        "timed_out": false
+      },
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-after-1",
+          "3"
+        ],
+        "label": "after",
+        "position": 0,
+        "process_seconds": 2.2983962539583445,
+        "returncode": 0,
+        "round": 3,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5502.5,
+            "p95_ns_per_checked_execute": 5773.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9450.25,
+            "p95_ns_per_checked_execute": 10572.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9675.5,
+            "p95_ns_per_checked_execute": 10028.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13127.5,
+            "p95_ns_per_checked_execute": 13846.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5475.5,
+            "p95_ns_per_checked_execute": 5595.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9463.0,
+            "p95_ns_per_checked_execute": 9858.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9693.25,
+            "p95_ns_per_checked_execute": 10134.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13205.0,
+            "p95_ns_per_checked_execute": 13826.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5535.5,
+            "p95_ns_per_checked_execute": 5811.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9405.25,
+            "p95_ns_per_checked_execute": 9658.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 9666.0,
+            "p95_ns_per_checked_execute": 10970.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 13262.5,
+            "p95_ns_per_checked_execute": 14615.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5495.5,
+            "p95_ns_per_checked_execute": 5638.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9520.5,
+            "p95_ns_per_checked_execute": 9683.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9693.5,
+            "p95_ns_per_checked_execute": 9826.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13172.5,
+            "p95_ns_per_checked_execute": 15707.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5528.0,
+            "p95_ns_per_checked_execute": 5633.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9468.0,
+            "p95_ns_per_checked_execute": 9859.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9640.75,
+            "p95_ns_per_checked_execute": 9923.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13147.25,
+            "p95_ns_per_checked_execute": 13826.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5495.5,
+            "p95_ns_per_checked_execute": 6975.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9318.0,
+            "p95_ns_per_checked_execute": 10577.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9600.75,
+            "p95_ns_per_checked_execute": 10555.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 12897.0,
+            "p95_ns_per_checked_execute": 13200.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5470.5,
+            "p95_ns_per_checked_execute": 5560.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9225.25,
+            "p95_ns_per_checked_execute": 9520.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9515.5,
+            "p95_ns_per_checked_execute": 10622.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 12896.75,
+            "p95_ns_per_checked_execute": 13423.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5435.25,
+            "p95_ns_per_checked_execute": 5598.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9212.25,
+            "p95_ns_per_checked_execute": 9413.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9425.25,
+            "p95_ns_per_checked_execute": 9658.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13069.75,
+            "p95_ns_per_checked_execute": 18186.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5385.25,
+            "p95_ns_per_checked_execute": 5532.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9270.25,
+            "p95_ns_per_checked_execute": 9655.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9530.5,
+            "p95_ns_per_checked_execute": 10329.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13024.75,
+            "p95_ns_per_checked_execute": 13969.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5445.25,
+            "p95_ns_per_checked_execute": 5593.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9320.25,
+            "p95_ns_per_checked_execute": 11083.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9620.75,
+            "p95_ns_per_checked_execute": 9949.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 13152.75,
+            "p95_ns_per_checked_execute": 14650.5,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-3-0-after.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24969,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-3-0-after.stdout",
+          "sha256": "ae08bb15111efce50c153a3f2356e1eb3b9c6225723f425dad72720f0b496c2a"
+        },
+        "timed_out": false
+      },
+      {
+        "command": [
+          "/run/current-system/sw/bin/python3",
+          "/tmp/eris-typedarray-fill-encoding-1/worktree/tools/ci_test_runner.py",
+          "/tmp/eris-typedarray-fill-encoding-1/benchmark/eris-fill-before-1",
+          "3"
+        ],
+        "label": "before",
+        "position": 1,
+        "process_seconds": 2.2618656950071454,
+        "returncode": 0,
+        "round": 3,
+        "statistics": [
+          {
+            "kind": "Int8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5342.75,
+            "p95_ns_per_checked_execute": 5588.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9175.25,
+            "p95_ns_per_checked_execute": 9543.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9590.25,
+            "p95_ns_per_checked_execute": 9893.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 16017.75,
+            "p95_ns_per_checked_execute": 16967.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5317.5,
+            "p95_ns_per_checked_execute": 5437.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9247.5,
+            "p95_ns_per_checked_execute": 9452.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9610.75,
+            "p95_ns_per_checked_execute": 10642.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 15950.75,
+            "p95_ns_per_checked_execute": 17525.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 0,
+            "median_ns_per_checked_execute": 5334.75,
+            "p95_ns_per_checked_execute": 5462.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 1,
+            "median_ns_per_checked_execute": 9212.5,
+            "p95_ns_per_checked_execute": 9427.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 16,
+            "median_ns_per_checked_execute": 9666.0,
+            "p95_ns_per_checked_execute": 10018.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint8ClampedArray",
+            "length": 512,
+            "median_ns_per_checked_execute": 16910.25,
+            "p95_ns_per_checked_execute": 18186.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5345.0,
+            "p95_ns_per_checked_execute": 6322.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9292.5,
+            "p95_ns_per_checked_execute": 9477.75,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9608.0,
+            "p95_ns_per_checked_execute": 10807.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18284.75,
+            "p95_ns_per_checked_execute": 19577.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5357.5,
+            "p95_ns_per_checked_execute": 5452.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9297.25,
+            "p95_ns_per_checked_execute": 9635.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9705.75,
+            "p95_ns_per_checked_execute": 10081.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18169.25,
+            "p95_ns_per_checked_execute": 21057.5,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5375.0,
+            "p95_ns_per_checked_execute": 5523.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9234.75,
+            "p95_ns_per_checked_execute": 9443.0,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9660.75,
+            "p95_ns_per_checked_execute": 11489.25,
+            "samples": 21
+          },
+          {
+            "kind": "Int32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18154.75,
+            "p95_ns_per_checked_execute": 19514.25,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5332.75,
+            "p95_ns_per_checked_execute": 5493.0,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9185.0,
+            "p95_ns_per_checked_execute": 9400.5,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9675.75,
+            "p95_ns_per_checked_execute": 9961.75,
+            "samples": 21
+          },
+          {
+            "kind": "Uint32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 18094.25,
+            "p95_ns_per_checked_execute": 19612.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5545.75,
+            "p95_ns_per_checked_execute": 5733.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9292.75,
+            "p95_ns_per_checked_execute": 10605.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9618.25,
+            "p95_ns_per_checked_execute": 10006.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float16Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17270.25,
+            "p95_ns_per_checked_execute": 19076.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5342.5,
+            "p95_ns_per_checked_execute": 5480.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9382.75,
+            "p95_ns_per_checked_execute": 10613.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9848.75,
+            "p95_ns_per_checked_execute": 10229.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float32Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 17508.5,
+            "p95_ns_per_checked_execute": 18895.75,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 0,
+            "median_ns_per_checked_execute": 5382.75,
+            "p95_ns_per_checked_execute": 5488.0,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 1,
+            "median_ns_per_checked_execute": 9257.75,
+            "p95_ns_per_checked_execute": 10437.25,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 16,
+            "median_ns_per_checked_execute": 9603.25,
+            "p95_ns_per_checked_execute": 9786.5,
+            "samples": 21
+          },
+          {
+            "kind": "Float64Array",
+            "length": 512,
+            "median_ns_per_checked_execute": 15053.5,
+            "p95_ns_per_checked_execute": 16586.25,
+            "samples": 21
+          }
+        ],
+        "stderr": {
+          "bytes": 0,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-3-1-before.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 24969,
+          "path": "/tmp/eris-typedarray-fill-encoding-1/benchmark/run-1/round-3-1-before.stdout",
+          "sha256": "c1da9509759653aec8798dde21f4275fd1f5f583b48fa109f1ef9f14084ed6cf"
+        },
+        "timed_out": false
+      }
+    ],
+    "scope": "Includes JS parse/interpreter/native and literal identity/endpoint checks. Excludes runtime/array setup, warmup, full-element verification, wrapper/process startup, I/O and rendering.",
+    "statistic_unit": "nanoseconds per checked execute, from four-call sample totals",
+    "statistics": {
+      "after": [
+        {
+          "kind": "Int8Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5526.75,
+          "p95_ns_per_checked_execute": 5953.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int8Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9451.625,
+          "p95_ns_per_checked_execute": 10870.5,
+          "samples": 84
+        },
+        {
+          "kind": "Int8Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9679.75,
+          "p95_ns_per_checked_execute": 10991.0,
+          "samples": 84
+        },
+        {
+          "kind": "Int8Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13588.25,
+          "p95_ns_per_checked_execute": 15236.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5492.75,
+          "p95_ns_per_checked_execute": 5878.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9466.875,
+          "p95_ns_per_checked_execute": 10620.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9692.125,
+          "p95_ns_per_checked_execute": 11076.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13420.5,
+          "p95_ns_per_checked_execute": 14675.25,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 0,
+          "median_ns_per_checked_execute": 5532.875,
+          "p95_ns_per_checked_execute": 5921.25,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 1,
+          "median_ns_per_checked_execute": 9411.5,
+          "p95_ns_per_checked_execute": 10249.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 16,
+          "median_ns_per_checked_execute": 9674.625,
+          "p95_ns_per_checked_execute": 10970.75,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 512,
+          "median_ns_per_checked_execute": 13379.0,
+          "p95_ns_per_checked_execute": 14615.25,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5533.0,
+          "p95_ns_per_checked_execute": 6810.25,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9523.125,
+          "p95_ns_per_checked_execute": 11706.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9707.375,
+          "p95_ns_per_checked_execute": 11293.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13607.0,
+          "p95_ns_per_checked_execute": 17573.25,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5521.75,
+          "p95_ns_per_checked_execute": 5956.25,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9508.0,
+          "p95_ns_per_checked_execute": 10129.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9730.875,
+          "p95_ns_per_checked_execute": 10635.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13638.375,
+          "p95_ns_per_checked_execute": 15238.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5544.375,
+          "p95_ns_per_checked_execute": 6833.25,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9426.5,
+          "p95_ns_per_checked_execute": 10577.5,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9670.75,
+          "p95_ns_per_checked_execute": 10993.0,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13318.125,
+          "p95_ns_per_checked_execute": 14465.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5479.125,
+          "p95_ns_per_checked_execute": 5841.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9318.75,
+          "p95_ns_per_checked_execute": 10700.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9664.5,
+          "p95_ns_per_checked_execute": 10690.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13325.375,
+          "p95_ns_per_checked_execute": 14555.0,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5494.25,
+          "p95_ns_per_checked_execute": 6066.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9337.875,
+          "p95_ns_per_checked_execute": 10187.0,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9546.875,
+          "p95_ns_per_checked_execute": 10349.5,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13270.25,
+          "p95_ns_per_checked_execute": 15023.25,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5450.25,
+          "p95_ns_per_checked_execute": 5838.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9332.75,
+          "p95_ns_per_checked_execute": 10081.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9615.875,
+          "p95_ns_per_checked_execute": 10347.25,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13201.125,
+          "p95_ns_per_checked_execute": 13991.5,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5480.5,
+          "p95_ns_per_checked_execute": 5898.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9335.375,
+          "p95_ns_per_checked_execute": 10061.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9663.25,
+          "p95_ns_per_checked_execute": 10399.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 13246.125,
+          "p95_ns_per_checked_execute": 14194.25,
+          "samples": 84
+        }
+      ],
+      "before": [
+        {
+          "kind": "Int8Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5442.75,
+          "p95_ns_per_checked_execute": 7218.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int8Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9270.25,
+          "p95_ns_per_checked_execute": 9656.0,
+          "samples": 84
+        },
+        {
+          "kind": "Int8Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9623.125,
+          "p95_ns_per_checked_execute": 10142.0,
+          "samples": 84
+        },
+        {
+          "kind": "Int8Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 16402.375,
+          "p95_ns_per_checked_execute": 19862.75,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5402.75,
+          "p95_ns_per_checked_execute": 5773.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9287.625,
+          "p95_ns_per_checked_execute": 9776.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9663.25,
+          "p95_ns_per_checked_execute": 10294.25,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 16171.875,
+          "p95_ns_per_checked_execute": 18981.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 0,
+          "median_ns_per_checked_execute": 5381.5,
+          "p95_ns_per_checked_execute": 5535.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 1,
+          "median_ns_per_checked_execute": 9222.5,
+          "p95_ns_per_checked_execute": 9593.25,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 16,
+          "median_ns_per_checked_execute": 9691.75,
+          "p95_ns_per_checked_execute": 10805.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint8ClampedArray",
+          "length": 512,
+          "median_ns_per_checked_execute": 17222.625,
+          "p95_ns_per_checked_execute": 19036.0,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5362.625,
+          "p95_ns_per_checked_execute": 5683.25,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9364.0,
+          "p95_ns_per_checked_execute": 10129.0,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9749.625,
+          "p95_ns_per_checked_execute": 10857.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int16Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 18115.5,
+          "p95_ns_per_checked_execute": 19587.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5377.625,
+          "p95_ns_per_checked_execute": 6590.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9341.125,
+          "p95_ns_per_checked_execute": 9643.25,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9767.25,
+          "p95_ns_per_checked_execute": 10142.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint16Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 18212.0,
+          "p95_ns_per_checked_execute": 19824.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5424.125,
+          "p95_ns_per_checked_execute": 6234.25,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9320.0,
+          "p95_ns_per_checked_execute": 9743.75,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9701.0,
+          "p95_ns_per_checked_execute": 14042.0,
+          "samples": 84
+        },
+        {
+          "kind": "Int32Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 18404.75,
+          "p95_ns_per_checked_execute": 20102.75,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5380.0,
+          "p95_ns_per_checked_execute": 5550.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9243.5,
+          "p95_ns_per_checked_execute": 10144.5,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9720.875,
+          "p95_ns_per_checked_execute": 10034.0,
+          "samples": 84
+        },
+        {
+          "kind": "Uint32Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 18507.375,
+          "p95_ns_per_checked_execute": 19757.25,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5427.75,
+          "p95_ns_per_checked_execute": 5733.5,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9276.625,
+          "p95_ns_per_checked_execute": 10202.0,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9619.5,
+          "p95_ns_per_checked_execute": 10016.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float16Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 17166.125,
+          "p95_ns_per_checked_execute": 19076.0,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5334.0,
+          "p95_ns_per_checked_execute": 5525.5,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9301.375,
+          "p95_ns_per_checked_execute": 10281.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9681.875,
+          "p95_ns_per_checked_execute": 10712.5,
+          "samples": 84
+        },
+        {
+          "kind": "Float32Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 17115.0,
+          "p95_ns_per_checked_execute": 18895.75,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 0,
+          "median_ns_per_checked_execute": 5364.0,
+          "p95_ns_per_checked_execute": 5528.0,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 1,
+          "median_ns_per_checked_execute": 9223.625,
+          "p95_ns_per_checked_execute": 10547.25,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 16,
+          "median_ns_per_checked_execute": 9602.0,
+          "p95_ns_per_checked_execute": 10530.0,
+          "samples": 84
+        },
+        {
+          "kind": "Float64Array",
+          "length": 512,
+          "median_ns_per_checked_execute": 15001.125,
+          "p95_ns_per_checked_execute": 18352.5,
+          "samples": 84
+        }
+      ]
+    },
+    "status": "complete"
+  },
+  "timing_rows": [
+    {
+      "after_median_us": 5.52675,
+      "after_p95_us": 5.95375,
+      "before_median_us": 5.44275,
+      "before_p95_us": 7.21875,
+      "kind": "Int8Array",
+      "length": 0,
+      "median_change_percent": 1.543337467272976,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.451625,
+      "after_p95_us": 10.8705,
+      "before_median_us": 9.27025,
+      "before_p95_us": 9.656,
+      "kind": "Int8Array",
+      "length": 1,
+      "median_change_percent": 1.9565276017367461,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.67975,
+      "after_p95_us": 10.991,
+      "before_median_us": 9.623125,
+      "before_p95_us": 10.142,
+      "kind": "Int8Array",
+      "length": 16,
+      "median_change_percent": 0.5884263168149717,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.58825,
+      "after_p95_us": 15.236,
+      "before_median_us": 16.402375,
+      "before_p95_us": 19.86275,
+      "kind": "Int8Array",
+      "length": 512,
+      "median_change_percent": -17.15681418087319,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.49275,
+      "after_p95_us": 5.8785,
+      "before_median_us": 5.40275,
+      "before_p95_us": 5.7735,
+      "kind": "Uint8Array",
+      "length": 0,
+      "median_change_percent": 1.6658183332562082,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.466875,
+      "after_p95_us": 10.62,
+      "before_median_us": 9.287625,
+      "before_p95_us": 9.776,
+      "kind": "Uint8Array",
+      "length": 1,
+      "median_change_percent": 1.9299874833447639,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.692125,
+      "after_p95_us": 11.076,
+      "before_median_us": 9.66325,
+      "before_p95_us": 10.29425,
+      "kind": "Uint8Array",
+      "length": 16,
+      "median_change_percent": 0.29881251131864683,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.4205,
+      "after_p95_us": 14.67525,
+      "before_median_us": 16.171875,
+      "before_p95_us": 18.981,
+      "kind": "Uint8Array",
+      "length": 512,
+      "median_change_percent": -17.013333333333335,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.532875,
+      "after_p95_us": 5.92125,
+      "before_median_us": 5.3815,
+      "before_p95_us": 5.5355,
+      "kind": "Uint8ClampedArray",
+      "length": 0,
+      "median_change_percent": 2.812877450524942,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.4115,
+      "after_p95_us": 10.2495,
+      "before_median_us": 9.2225,
+      "before_p95_us": 9.59325,
+      "kind": "Uint8ClampedArray",
+      "length": 1,
+      "median_change_percent": 2.0493358633776104,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.674625,
+      "after_p95_us": 10.97075,
+      "before_median_us": 9.69175,
+      "before_p95_us": 10.8055,
+      "kind": "Uint8ClampedArray",
+      "length": 16,
+      "median_change_percent": -0.17669667500709307,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.379,
+      "after_p95_us": 14.61525,
+      "before_median_us": 17.222625,
+      "before_p95_us": 19.036,
+      "kind": "Uint8ClampedArray",
+      "length": 512,
+      "median_change_percent": -22.317300643775262,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.533,
+      "after_p95_us": 6.81025,
+      "before_median_us": 5.362625,
+      "before_p95_us": 5.68325,
+      "kind": "Int16Array",
+      "length": 0,
+      "median_change_percent": 3.177082119297925,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.523125,
+      "after_p95_us": 11.70675,
+      "before_median_us": 9.364,
+      "before_p95_us": 10.129,
+      "kind": "Int16Array",
+      "length": 1,
+      "median_change_percent": 1.6993272105937596,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.707375,
+      "after_p95_us": 11.29375,
+      "before_median_us": 9.749625,
+      "before_p95_us": 10.85775,
+      "kind": "Int16Array",
+      "length": 16,
+      "median_change_percent": -0.4333500006410529,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.607,
+      "after_p95_us": 17.57325,
+      "before_median_us": 18.1155,
+      "before_p95_us": 19.587,
+      "kind": "Int16Array",
+      "length": 512,
+      "median_change_percent": -24.88752725566504,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.52175,
+      "after_p95_us": 5.95625,
+      "before_median_us": 5.377625,
+      "before_p95_us": 6.59,
+      "kind": "Uint16Array",
+      "length": 0,
+      "median_change_percent": 2.680086469398657,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.508,
+      "after_p95_us": 10.129,
+      "before_median_us": 9.341125,
+      "before_p95_us": 9.64325,
+      "kind": "Uint16Array",
+      "length": 1,
+      "median_change_percent": 1.7864550576081495,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.730875,
+      "after_p95_us": 10.635,
+      "before_median_us": 9.76725,
+      "before_p95_us": 10.142,
+      "kind": "Uint16Array",
+      "length": 16,
+      "median_change_percent": -0.3724180296398649,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.638375,
+      "after_p95_us": 15.23875,
+      "before_median_us": 18.212,
+      "before_p95_us": 19.82475,
+      "kind": "Uint16Array",
+      "length": 512,
+      "median_change_percent": -25.113249505820335,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.544375,
+      "after_p95_us": 6.83325,
+      "before_median_us": 5.424125,
+      "before_p95_us": 6.23425,
+      "kind": "Int32Array",
+      "length": 0,
+      "median_change_percent": 2.216947433917915,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.4265,
+      "after_p95_us": 10.5775,
+      "before_median_us": 9.32,
+      "before_p95_us": 9.74375,
+      "kind": "Int32Array",
+      "length": 1,
+      "median_change_percent": 1.1427038626609543,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.67075,
+      "after_p95_us": 10.993,
+      "before_median_us": 9.701,
+      "before_p95_us": 14.042,
+      "kind": "Int32Array",
+      "length": 16,
+      "median_change_percent": -0.31182352334810925,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.318125,
+      "after_p95_us": 14.465,
+      "before_median_us": 18.40475,
+      "before_p95_us": 20.10275,
+      "kind": "Int32Array",
+      "length": 512,
+      "median_change_percent": -27.637566389111512,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.479125,
+      "after_p95_us": 5.841,
+      "before_median_us": 5.38,
+      "before_p95_us": 5.5505,
+      "kind": "Uint32Array",
+      "length": 0,
+      "median_change_percent": 1.8424721189591153,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.31875,
+      "after_p95_us": 10.7005,
+      "before_median_us": 9.2435,
+      "before_p95_us": 10.1445,
+      "kind": "Uint32Array",
+      "length": 1,
+      "median_change_percent": 0.8140855736463504,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.6645,
+      "after_p95_us": 10.6905,
+      "before_median_us": 9.720875,
+      "before_p95_us": 10.034,
+      "kind": "Uint32Array",
+      "length": 16,
+      "median_change_percent": -0.5799375056257827,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.325375,
+      "after_p95_us": 14.555,
+      "before_median_us": 18.507375,
+      "before_p95_us": 19.75725,
+      "kind": "Uint32Array",
+      "length": 512,
+      "median_change_percent": -27.999648788658572,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.49425,
+      "after_p95_us": 6.06675,
+      "before_median_us": 5.42775,
+      "before_p95_us": 5.7335,
+      "kind": "Float16Array",
+      "length": 0,
+      "median_change_percent": 1.2251853898945342,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.337875,
+      "after_p95_us": 10.187,
+      "before_median_us": 9.276625,
+      "before_p95_us": 10.202,
+      "kind": "Float16Array",
+      "length": 1,
+      "median_change_percent": 0.6602616792206195,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.546875,
+      "after_p95_us": 10.3495,
+      "before_median_us": 9.6195,
+      "before_p95_us": 10.01675,
+      "kind": "Float16Array",
+      "length": 16,
+      "median_change_percent": -0.7549768698996817,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.27025,
+      "after_p95_us": 15.02325,
+      "before_median_us": 17.166125,
+      "before_p95_us": 19.076,
+      "kind": "Float16Array",
+      "length": 512,
+      "median_change_percent": -22.69513358431212,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.45025,
+      "after_p95_us": 5.83875,
+      "before_median_us": 5.334,
+      "before_p95_us": 5.5255,
+      "kind": "Float32Array",
+      "length": 0,
+      "median_change_percent": 2.1794150731158535,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.33275,
+      "after_p95_us": 10.08175,
+      "before_median_us": 9.301375,
+      "before_p95_us": 10.28175,
+      "kind": "Float32Array",
+      "length": 1,
+      "median_change_percent": 0.337315719450082,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.615875,
+      "after_p95_us": 10.34725,
+      "before_median_us": 9.681875,
+      "before_p95_us": 10.7125,
+      "kind": "Float32Array",
+      "length": 16,
+      "median_change_percent": -0.6816861403395547,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.201125,
+      "after_p95_us": 13.9915,
+      "before_median_us": 17.115,
+      "before_p95_us": 18.89575,
+      "kind": "Float32Array",
+      "length": 512,
+      "median_change_percent": -22.8680981595092,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 5.4805,
+      "after_p95_us": 5.89875,
+      "before_median_us": 5.364,
+      "before_p95_us": 5.528,
+      "kind": "Float64Array",
+      "length": 0,
+      "median_change_percent": 2.1718866517524305,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.335375,
+      "after_p95_us": 10.06175,
+      "before_median_us": 9.223625,
+      "before_p95_us": 10.54725,
+      "kind": "Float64Array",
+      "length": 1,
+      "median_change_percent": 1.211562699047275,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 9.66325,
+      "after_p95_us": 10.39975,
+      "before_median_us": 9.602,
+      "before_p95_us": 10.53,
+      "kind": "Float64Array",
+      "length": 16,
+      "median_change_percent": 0.6378879400124937,
+      "samples_per_variant": 84
+    },
+    {
+      "after_median_us": 13.246125,
+      "after_p95_us": 14.19425,
+      "before_median_us": 15.001125,
+      "before_p95_us": 18.3525,
+      "kind": "Float64Array",
+      "length": 512,
+      "median_change_percent": -11.699122565807563,
+      "samples_per_variant": 84
+    }
+  ],
+  "upstream_report_healthy": false
+}

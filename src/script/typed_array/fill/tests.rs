@@ -380,14 +380,24 @@ fn encoded(kind: Kind, nine: bool) -> &'static [u8] {
     }
 }
 
-fn element_work(kind: Kind) -> usize {
-    // Loop8, live13, offset4, codec48+2w, buffer tick1, complete byte copy w.
+fn preparation_work(kind: Kind) -> usize {
+    // Nonempty setup8 + codec48+2w, plus the independent clamp16 where needed.
     match kind {
-        Kind::Int8 | Kind::Uint8 => 77,
-        Kind::Uint8Clamped => 93,
-        Kind::Int16 | Kind::Uint16 | Kind::Float16 => 80,
-        Kind::Int32 | Kind::Uint32 | Kind::Float32 => 86,
-        Kind::Float64 => 98,
+        Kind::Int8 | Kind::Uint8 => 58,
+        Kind::Uint8Clamped => 74,
+        Kind::Int16 | Kind::Uint16 | Kind::Float16 => 60,
+        Kind::Int32 | Kind::Uint32 | Kind::Float32 => 64,
+        Kind::Float64 => 72,
+    }
+}
+
+fn element_work(kind: Kind) -> usize {
+    // Loop8, checked offset4, buffer tick1, complete scalar byte copy w.
+    match kind {
+        Kind::Int8 | Kind::Uint8 | Kind::Uint8Clamped => 14,
+        Kind::Int16 | Kind::Uint16 | Kind::Float16 => 15,
+        Kind::Int32 | Kind::Uint32 | Kind::Float32 => 17,
+        Kind::Float64 => 21,
     }
 }
 
@@ -405,17 +415,28 @@ fn literal_body_fees_prepay_complete_scalars_and_preserve_only_finished_prefixes
         for defined_end in [false, true] {
             let prelude = if defined_end { 62 } else { 58 };
             let per = element_work(kind);
-            for allowance in [
-                0,
-                prelude - 1,
-                prelude,
-                prelude + per - 1,
-                prelude + per,
-                prelude + 2 * per - 1,
-                prelude + 2 * per,
-                prelude + 3 * per - 1,
-                prelude + 3 * per,
-            ] {
+            let ready = prelude + preparation_work(kind);
+            let mut cuts = vec![0, prelude - 1, prelude, prelude + 7, prelude + 8];
+            if kind == Kind::Uint8Clamped {
+                cuts.extend([prelude + 8 + 15, prelude + 8 + 16]);
+            }
+            cuts.extend([ready - 1, ready]);
+            for completed in 0..3 {
+                let start = ready + completed * per;
+                // Reached loop, offset, writer tick and atomic byte-copy cuts.
+                cuts.extend([
+                    start + 7,
+                    start + 8,
+                    start + 11,
+                    start + 12,
+                    start + 13,
+                    start + per - 1,
+                    start + per,
+                ]);
+            }
+            cuts.sort_unstable();
+            cuts.dedup();
+            for allowance in cuts {
                 let (mut runtime, mut doc) = fresh();
                 let (source, record) = construct(&mut runtime, &mut doc, kind, &[1.0, 1.0, 1.0]);
                 assert_eq!(bytes(&mut runtime, record), prefix_bytes(kind, 0));
@@ -427,12 +448,12 @@ fn literal_body_fees_prepay_complete_scalars_and_preserve_only_finished_prefixes
                 runtime.steps = allowance;
                 runtime.allocated = MAX_HEAP; // The body requires no heap.
                 let result = runtime.typed_array_fill(source.clone(), record, &args, &mut doc);
-                if allowance == prelude + 3 * per {
+                if allowance == ready + 3 * per {
                     assert_eq!(result.unwrap(), source);
                 } else {
                     assert!(result.unwrap_err().is_resource_limit());
                 }
-                let completed = allowance.saturating_sub(prelude) / per;
+                let completed = (allowance.saturating_sub(ready) / per).min(3);
                 assert_eq!(bytes(&mut runtime, record), prefix_bytes(kind, completed));
                 assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
                 assert_eq!(
@@ -448,7 +469,7 @@ fn literal_body_fees_prepay_complete_scalars_and_preserve_only_finished_prefixes
             if defined_end {
                 args.extend([Value::Number(0.0), Value::Number(3.0)]);
             }
-            runtime.steps = prelude + 3 * per;
+            runtime.steps = ready + 3 * per;
             runtime.allocated = MAX_HEAP;
             assert_eq!(
                 runtime
@@ -499,7 +520,7 @@ fn saved_call_exact_and_one_short_admission_has_only_the_existing_name_allocatio
         assert_eq!(bytes(&mut measured, record), prefix_bytes(kind, 3));
         let work = before.0 - measured.steps;
         let heap = measured.allocated - before.1;
-        assert!(work > 58 + 3 * element_work(kind));
+        assert!(work > 58 + preparation_work(kind) + 3 * element_work(kind));
         assert_eq!(heap, 47); // 32 + fifteen bytes in TypedArray.fill.
         for (steps, room, succeeds) in [
             (work, heap, true),
@@ -613,6 +634,311 @@ fn callback_effects_survive_last_scalar_work_refusal_and_terminal_limits_clean_g
         } else {
             assert_eq!(runtime.steps, 0);
         }
+        clean(&runtime);
+    }
+}
+
+#[test]
+fn repeated_special_encodings_use_literal_bytes_without_body_heap() {
+    // IEEE encodings and integer/clamp results are literals, not codec output.
+    let cases: &[(Kind, f64, &[u8])] = &[
+        (Kind::Int8, -1.75, &[255]),
+        (Kind::Uint8, 257.75, &[1]),
+        (Kind::Uint8Clamped, 2.5, &[2]),
+        (Kind::Uint8Clamped, 3.5, &[4]),
+        (Kind::Uint8Clamped, f64::NAN, &[0]),
+        (Kind::Int16, -2.75, &[254, 255]),
+        (Kind::Uint16, 65537.75, &[1, 0]),
+        (Kind::Int32, -2.75, &[254, 255, 255, 255]),
+        (Kind::Uint32, 4294967297.75, &[1, 0, 0, 0]),
+        (Kind::Float16, -0.0, &[0, 128]),
+        (
+            Kind::Float16,
+            f64::from_bits(0xfff0_0000_0000_0001),
+            &[0, 126],
+        ),
+        (Kind::Float16, f64::INFINITY, &[0, 124]),
+        (Kind::Float16, 1.00048828125, &[0, 60]),
+        (Kind::Float16, 1.00146484375, &[2, 60]),
+        (
+            Kind::Float16,
+            f64::from_bits(0x3e70_0000_0000_0000),
+            &[1, 0],
+        ),
+        (
+            Kind::Float16,
+            f64::from_bits(0x3e60_0000_0000_0000),
+            &[0, 0],
+        ),
+        (
+            Kind::Float16,
+            f64::from_bits(0x3e78_0000_0000_0000),
+            &[2, 0],
+        ),
+        (Kind::Float32, -0.0, &[0, 0, 0, 128]),
+        (
+            Kind::Float32,
+            f64::from_bits(0xfff0_0000_0000_0001),
+            &[0, 0, 192, 127],
+        ),
+        (
+            Kind::Float32,
+            f64::from_bits(0x3ff0_0000_1000_0000),
+            &[0, 0, 128, 63],
+        ),
+        (
+            Kind::Float32,
+            f64::from_bits(0x3ff0_0000_3000_0000),
+            &[2, 0, 128, 63],
+        ),
+        (Kind::Float64, -0.0, &[0, 0, 0, 0, 0, 0, 0, 128]),
+        (
+            Kind::Float64,
+            f64::from_bits(0xfff0_0000_0000_0001),
+            &[0, 0, 0, 0, 0, 0, 248, 127],
+        ),
+        (
+            Kind::Float64,
+            f64::from_bits(0x3ff0_0000_0000_0001),
+            &[1, 0, 0, 0, 0, 0, 240, 63],
+        ),
+    ];
+    for &(kind, number, scalar) in cases {
+        let (mut runtime, mut doc) = fresh();
+        let (source, record) = construct(&mut runtime, &mut doc, kind, &[1.0, 1.0, 1.0]);
+        let counts = (runtime.objects.len(), runtime.typed_arrays.records.len());
+        runtime.steps = 58 + preparation_work(kind) + 3 * element_work(kind);
+        runtime.allocated = MAX_HEAP;
+        assert_eq!(
+            runtime
+                .typed_array_fill(source.clone(), record, &[Value::Number(number)], &mut doc)
+                .unwrap(),
+            source
+        );
+        assert_eq!(
+            bytes(&mut runtime, record),
+            scalar.repeat(3),
+            "{} {number:?}",
+            kind.name()
+        );
+        assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+        assert_eq!(
+            (runtime.objects.len(), runtime.typed_arrays.records.len()),
+            counts
+        );
+        clean(&runtime);
+    }
+}
+
+#[test]
+fn aligned_offsets_preserve_sentinels_and_never_write_a_partial_scalar() {
+    for kind in Kind::ALL {
+        // Width is independently fixed by the literal encoding table.
+        let width = encoded(kind, true).len();
+        let ready = 58 + preparation_work(kind);
+        let per = element_work(kind);
+        for (allowance, completed) in [
+            (ready, 0),
+            (ready + per, 1),
+            (ready + 3 * per - 1, 2),
+            (ready + 3 * per, 3),
+        ] {
+            let (mut runtime, mut doc) = fresh();
+            let setup = format!(
+                "var buffer=new ArrayBuffer({});var raw=new Uint8Array(buffer);for(var i=0;i<{};i++)raw[i]=165;var source=new {}(buffer,{},3);",
+                5 * width,
+                5 * width,
+                kind.name(),
+                width
+            );
+            runtime.execute(&setup, &mut doc).unwrap();
+            let source = runtime.lookup(1, "source").unwrap().1;
+            let raw = runtime.lookup(1, "raw").unwrap().1;
+            let record = runtime.typed_array_record(&source).unwrap().unwrap();
+            let raw_record = runtime.typed_array_record(&raw).unwrap().unwrap();
+            assert_eq!(bytes(&mut runtime, raw_record), vec![165; 5 * width]);
+            let counts = (runtime.objects.len(), runtime.typed_arrays.records.len());
+            runtime.steps = allowance;
+            runtime.allocated = MAX_HEAP;
+            let result =
+                runtime.typed_array_fill(source.clone(), record, &[Value::Number(9.0)], &mut doc);
+            if completed == 3 {
+                assert_eq!(result.unwrap(), source);
+            } else {
+                assert!(result.unwrap_err().is_resource_limit());
+            }
+            let mut expected = vec![165; 5 * width];
+            for index in 0..completed {
+                let begin = (index + 1) * width;
+                expected[begin..begin + width].copy_from_slice(encoded(kind, true));
+            }
+            assert_eq!(
+                bytes(&mut runtime, raw_record),
+                expected,
+                "{} cut={allowance}",
+                kind.name()
+            );
+            assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+            assert_eq!(
+                (runtime.objects.len(), runtime.typed_arrays.records.len()),
+                counts
+            );
+            clean(&runtime);
+        }
+    }
+}
+
+#[test]
+fn empty_ranges_have_exact_and_one_short_admission_without_clamp_or_codec_setup() {
+    for kind in [Kind::Uint8Clamped, Kind::Float16] {
+        for initially_empty in [false, true] {
+            for defined_end in [false, true] {
+                let prelude = if defined_end { 62 } else { 58 };
+                for allowance in [prelude - 1, prelude] {
+                    let (mut runtime, mut doc) = fresh();
+                    let initial: &[f64] = if initially_empty {
+                        &[]
+                    } else {
+                        &[1.0, 1.0, 1.0]
+                    };
+                    let (source, record) = construct(&mut runtime, &mut doc, kind, initial);
+                    let number = if kind == Kind::Uint8Clamped {
+                        2.5
+                    } else {
+                        f64::NAN
+                    };
+                    let args = if defined_end {
+                        vec![
+                            Value::Number(number),
+                            Value::Number(0.0),
+                            Value::Number(0.0),
+                        ]
+                    } else if initially_empty {
+                        vec![Value::Number(number)]
+                    } else {
+                        vec![Value::Number(number), Value::Number(3.0)]
+                    };
+                    let counts = (runtime.objects.len(), runtime.typed_arrays.records.len());
+                    runtime.steps = allowance;
+                    runtime.allocated = MAX_HEAP;
+                    let result = runtime.typed_array_fill(source.clone(), record, &args, &mut doc);
+                    if allowance == prelude {
+                        assert_eq!(result.unwrap(), source);
+                    } else {
+                        assert!(result.unwrap_err().is_resource_limit());
+                    }
+                    let expected = if initially_empty {
+                        Vec::new()
+                    } else {
+                        prefix_bytes(kind, 0)
+                    };
+                    assert_eq!(bytes(&mut runtime, record), expected);
+                    assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+                    assert_eq!(
+                        (runtime.objects.len(), runtime.typed_arrays.records.len()),
+                        counts
+                    );
+                    clean(&runtime);
+                }
+            }
+        }
+    }
+}
+
+fn growing_callbacks_fixture() -> (Runtime, Document, Value, Record, Value, Vec<Value>) {
+    let (mut runtime, mut doc) = fresh();
+    runtime.execute(
+        r#"var buffer=new ArrayBuffer(4,{maxByteLength:8});var source=new Uint8Array(buffer,0,4);
+        source[0]=1;source[1]=2;source[2]=3;source[3]=4;
+        var trace='',buffers=[],views=[];
+        function growRecords(){for(var i=0;i<4;i++){var b=new ArrayBuffer(2);buffers.push(b);views.push(new Uint8Array(b));}}
+        var value={valueOf:function(){trace+='v';growRecords();buffer.resize(2);return 9;}};
+        var start={valueOf:function(){trace+='s';growRecords();buffer.resize(8);return -2;}};
+        var end={valueOf:function(){trace+='e';growRecords();buffer.resize(4);return Infinity;}};"#,
+        &mut doc,
+    ).unwrap();
+    let source = runtime.lookup(1, "source").unwrap().1;
+    let record = runtime.typed_array_record(&source).unwrap().unwrap();
+    let function = saved(&runtime);
+    let args = ["value", "start", "end"]
+        .map(|key| runtime.lookup(1, key).unwrap().1)
+        .to_vec();
+    (runtime, doc, source, record, function, args)
+}
+
+fn assert_grown_records(runtime: &mut Runtime, doc: &mut Document, before: usize, source: Record) {
+    // Read-only test inspection after capturing the operation's budget endpoint.
+    // Authentic handles prove distinct buffers; no sibling-private table access.
+    let observed = (runtime.steps, runtime.allocated);
+    runtime.steps = MAX_STEPS;
+    assert_eq!(runtime.typed_arrays.records.len(), before + 12);
+    assert_eq!(
+        runtime.lookup(1, "trace").unwrap().1,
+        Value::String("vse".into())
+    );
+    let buffers = runtime.lookup(1, "buffers").unwrap().1;
+    let views = runtime.lookup(1, "views").unwrap().1;
+    assert_eq!(
+        runtime.get(buffers.clone(), "length", doc).unwrap(),
+        Value::Number(12.0)
+    );
+    assert_eq!(
+        runtime.get(views.clone(), "length", doc).unwrap(),
+        Value::Number(12.0)
+    );
+    let records = runtime.typed_arrays.records[before..].to_vec();
+    let mut handles = Vec::new();
+    for (index, record) in records.into_iter().enumerate() {
+        let live = runtime.typed_array_live(record).unwrap().unwrap();
+        assert_eq!(live.length, 2);
+        assert!(!handles.contains(&live.buffer));
+        assert_ne!(live.buffer, source.backing.unwrap().buffer);
+        handles.push(live.buffer);
+        let key = index.to_string();
+        let buffer = runtime.get(buffers.clone(), &key, doc).unwrap();
+        let view = runtime.get(views.clone(), &key, doc).unwrap();
+        assert_eq!(runtime.buffer_view_value(live.buffer).unwrap(), buffer);
+        assert_eq!(view, Value::Object(record.object_id));
+        assert_eq!(bytes(runtime, record), [0, 0]);
+    }
+    assert_eq!(runtime.allocated, observed.1);
+    runtime.steps = observed.0;
+}
+
+#[test]
+fn every_conversion_can_grow_both_record_tables_before_the_final_live_witness() {
+    let (mut measured, mut doc, source, record, function, args) = growing_callbacks_fixture();
+    let records = measured.typed_arrays.records.len();
+    let before = (measured.steps, measured.allocated);
+    assert_eq!(
+        measured
+            .call(function, args, source.clone(), &mut doc)
+            .unwrap(),
+        source
+    );
+    let work = before.0 - measured.steps;
+    let heap = measured.allocated - before.1;
+    assert_eq!(bytes(&mut measured, record), [1, 2, 9, 9]);
+    assert_grown_records(&mut measured, &mut doc, records, record);
+    clean(&measured);
+    for succeeds in [true, false] {
+        let (mut runtime, mut doc, source, record, function, args) = growing_callbacks_fixture();
+        let records = runtime.typed_arrays.records.len();
+        runtime.steps = work - usize::from(!succeeds);
+        runtime.allocated = MAX_HEAP - heap;
+        let result = runtime.call(function, args, source.clone(), &mut doc);
+        if succeeds {
+            assert_eq!(result.unwrap(), source);
+        } else {
+            assert!(result.unwrap_err().is_resource_limit());
+        }
+        assert_eq!(
+            bytes(&mut runtime, record),
+            if succeeds { [1, 2, 9, 9] } else { [1, 2, 9, 0] }
+        );
+        assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
+        assert_grown_records(&mut runtime, &mut doc, records, record);
+        assert_eq!((runtime.steps, runtime.allocated), (0, MAX_HEAP));
         clean(&runtime);
     }
 }

@@ -155,6 +155,9 @@ resource limits. Its full profile records **22 passes, 32 work-limit stops and
 pass; the search profile records **80 passes, 78 work-limit stops and 132 exclusions**.
 Neither complete report is eligible for an upstream baseline. Direct Page and
 confined-worker click tests verify the example's literal text and result pixels.
+The [encoding follow-up](typedarray-fill-encoding.md) prepares the scalar once
+per nonempty fill and retains every prior case and control result, including
+the remaining work-limit stops.
 
 The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,

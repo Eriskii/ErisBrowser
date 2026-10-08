@@ -22,7 +22,9 @@ The [TypedArray search follow-up](docs/typedarray-search.md) adds `at`,
 indices and fresh buffer checks after index conversion. `includes` matches
 NaN; the two index searches use strict equality.
 [`fill`](docs/typedarray-fill.md) writes ranges through the same shared storage
-and rechecks resized buffers after argument conversion. Remaining bulk methods,
+and rechecks resized buffers after argument conversion. Its
+[encoding optimization](docs/typedarray-fill-encoding.md) prepares one scalar
+per nonempty call while retaining checked writes and unchanged conformance results. Remaining bulk methods,
 BigInt codecs and shared memory remain unfinished.
 [Reflect property operations](docs/reflect-properties.md) add nine methods,
 including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean
