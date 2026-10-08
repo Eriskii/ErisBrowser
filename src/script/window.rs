@@ -1,6 +1,10 @@
 //! Reflection over the supported Window object-environment binding records.
 use super::*;
 
+#[cfg(test)]
+#[path = "window_bucket_tests.rs"]
+mod bucket_tests;
+
 pub(super) struct GlobalProperty {
     pub order: u64,
     pub property: Property,
@@ -237,6 +241,42 @@ impl Runtime {
             .global_non_scalar
             .keys()
             .fold(bytes, |n, key| n.saturating_add(key.byte_len()));
+        // A short, dense creation history can use direct ordinal placement.
+        // Keep the original sort for sparse histories and mostly numeric sets.
+        self.work(4)?;
+        if count >= 64
+            && let Ok(slots) = usize::try_from(self.next_global_order)
+            && count
+                .checked_add(count / 8)
+                .is_some_and(|bound| slots <= bound)
+        {
+            let scan = self.environments[0].bindings.len().saturating_add(1);
+            self.work(scan)?;
+            // Every array index is ASCII and begins with a digit. This is an
+            // upper bound, so names such as "01" only increase the allowance.
+            let numeric_bound = self.environments[0]
+                .bindings
+                .iter()
+                .filter(|(name, binding)| {
+                    binding.global_property
+                        && name.as_bytes().first().is_some_and(u8::is_ascii_digit)
+                })
+                .count();
+            let sort = numeric_bound
+                .checked_mul(2 + numeric_bound.checked_ilog2().unwrap_or(0) as usize)
+                .ok_or_else(window_key_overflow)?;
+            let dense = count
+                .checked_mul(3)
+                .and_then(|n| slots.checked_mul(2).and_then(|s| n.checked_add(s)))
+                .and_then(|n| n.checked_add(sort))
+                .ok_or_else(window_key_overflow)?;
+            let original = count
+                .checked_mul(2 + count.checked_ilog2().unwrap_or(0) as usize)
+                .ok_or_else(window_key_overflow)?;
+            if dense.checked_add(scan).is_some_and(|work| work < original) {
+                return self.window_bucket_keys(count, bytes, slots, dense);
+            }
+        }
         // The snapshot and output vectors coexist. Include UTF-16 key storage,
         // reference-counted headers, scans and comparison work before allocation.
         type Entry = (Option<u32>, u64, JsString);
@@ -269,6 +309,83 @@ impl Runtime {
         keys.extend(entries.into_iter().map(|(_, _, key)| key));
         Ok(keys)
     }
+
+    fn window_bucket_keys(
+        &mut self,
+        count: usize,
+        bytes: usize,
+        slots: usize,
+        ordering_work: usize,
+    ) -> Result<Vec<JsString>> {
+        type Entry = (Option<u32>, u64, JsString);
+        let per_key = std::mem::size_of::<Entry>() + std::mem::size_of::<JsString>() + 64;
+        let storage = bytes
+            .checked_mul(6)
+            .and_then(|n| {
+                count
+                    .checked_mul(per_key)
+                    .and_then(|keys| n.checked_add(keys))
+            })
+            .and_then(|n| {
+                slots
+                    .checked_mul(std::mem::size_of::<Option<JsString>>())
+                    .and_then(|buckets| n.checked_add(buckets))
+            })
+            .and_then(|n| n.checked_add(64))
+            .ok_or_else(window_key_overflow)?;
+        let work = bytes
+            .checked_mul(2)
+            .and_then(|n| n.checked_add(ordering_work))
+            .and_then(|n| n.checked_add(1))
+            .ok_or_else(window_key_overflow)?;
+        self.charge(storage)?;
+        self.work(work)?;
+        let mut buckets = Vec::new();
+        buckets
+            .try_reserve_exact(slots)
+            .map_err(|_| ScriptError::resource("global key bucket allocation failed"))?;
+        buckets.resize_with(slots, || None);
+        let mut numeric: Vec<Entry> = Vec::new();
+        numeric
+            .try_reserve_exact(count)
+            .map_err(|_| ScriptError::resource("global numeric key allocation failed"))?;
+        let mut keys = Vec::new();
+        keys.try_reserve_exact(count)
+            .map_err(|_| ScriptError::resource("global key result allocation failed"))?;
+        for (name, binding) in &self.environments[0].bindings {
+            if binding.global_property {
+                let key = JsString::from(name.as_str());
+                if let Some(index) = json_array_index(&key) {
+                    numeric.push((Some(index), binding.global_order, key));
+                } else {
+                    window_bucket_store(&mut buckets, binding.global_order, key)?;
+                }
+            }
+        }
+        for (key, record) in &self.global_non_scalar {
+            window_bucket_store(&mut buckets, record.order, key.clone())?;
+        }
+        numeric.sort_unstable_by_key(|(index, _, _)| *index);
+        keys.extend(numeric.into_iter().map(|(_, _, key)| key));
+        keys.extend(buckets.into_iter().flatten());
+        Ok(keys)
+    }
+}
+
+fn window_key_overflow() -> ScriptError {
+    ScriptError::resource("global key snapshot size overflow")
+}
+
+fn window_bucket_store(buckets: &mut [Option<JsString>], order: u64, key: JsString) -> Result<()> {
+    let index = usize::try_from(order).map_err(|_| window_key_overflow())?;
+    let slot = buckets.get_mut(index).ok_or_else(window_key_overflow)?;
+    if slot.is_some() {
+        return Err(ScriptError::resource(
+            "global key creation order is not unique",
+        ));
+    }
+    *slot = Some(key);
+    Ok(())
 }
 
 #[cfg(test)]
