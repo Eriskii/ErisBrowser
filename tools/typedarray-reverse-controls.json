@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "scope": "Number TypedArray.reverse independent paired source controls",
+  "controls": [
+    {
+      "name": "ten-number-kinds-positive",
+      "pair": "ten-number-kinds",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar even = 0, odd = 0, restored = 0, empty = 0, single = 0;\nfor (var i = 0; i < kinds.length; i++) {\n  var a = new kinds[i]([1, 2, 3, 4]);\n  if (reverse.call(a) === a && a[0] === 4 && a[1] === 3 && a[2] === 2 && a[3] === 1) even++;\n  reverse.call(a);\n  if (a[0] === 1 && a[1] === 2 && a[2] === 3 && a[3] === 4) restored++;\n  var b = new kinds[i]([1, 2, 3]);\n  if (reverse.call(b) === b && b[0] === 3 && b[1] === 2 && b[2] === 1) odd++;\n  var c = new kinds[i](0), d = new kinds[i]([7]);\n  if (reverse.call(c) === c && c.length === 0) empty++;\n  if (reverse.call(d) === d && d[0] === 7) single++;\n}\nvar actual = [even, odd, restored, empty, single].join(',');\nif (actual !== \"10,10,10,10,10\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "13aa9607e15ccd019d3ee139115f7b834a3ac1a425ebfc2d387a2212fc3ce834",
+      "common_prefix_sha256": "fc5956ce4ce59f70f35dada59d572ccd07c0e9a2ab675f9b4618f1f6a81b11d6",
+      "expected_literal": "10,10,10,10,10"
+    },
+    {
+      "name": "ten-number-kinds-wrong",
+      "pair": "ten-number-kinds",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar even = 0, odd = 0, restored = 0, empty = 0, single = 0;\nfor (var i = 0; i < kinds.length; i++) {\n  var a = new kinds[i]([1, 2, 3, 4]);\n  if (reverse.call(a) === a && a[0] === 4 && a[1] === 3 && a[2] === 2 && a[3] === 1) even++;\n  reverse.call(a);\n  if (a[0] === 1 && a[1] === 2 && a[2] === 3 && a[3] === 4) restored++;\n  var b = new kinds[i]([1, 2, 3]);\n  if (reverse.call(b) === b && b[0] === 3 && b[1] === 2 && b[2] === 1) odd++;\n  var c = new kinds[i](0), d = new kinds[i]([7]);\n  if (reverse.call(c) === c && c.length === 0) empty++;\n  if (reverse.call(d) === d && d[0] === 7) single++;\n}\nvar actual = [even, odd, restored, empty, single].join(',');\nif (actual !== \"10,10,10,10,0\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "7bae78fb6b29698e451acaa7c766926f79e6f42e605a5d44ab725e65c7c4940d",
+      "common_prefix_sha256": "fc5956ce4ce59f70f35dada59d572ccd07c0e9a2ab675f9b4618f1f6a81b11d6",
+      "expected_literal": "10,10,10,10,0"
+    },
+    {
+      "name": "offset-and-special-values-positive",
+      "pair": "offset-and-special-values",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar buffer = new ArrayBuffer(10), bytes = new Uint8Array(buffer);\nfor (var i = 0; i < 10; i++) bytes[i] = 165;\nvar a = new Uint16Array(buffer, 2, 3); a[0] = 4660; a[1] = 22136; a[2] = 39612;\nreverse.call(a);\nvar raw = [];\nfor (var j = 0; j < 10; j++) raw.push(bytes[j]);\nvar h = new Float16Array([-0, NaN, 3.5]); reverse.call(h);\nvar f = new Float32Array([-0, NaN]); reverse.call(f);\nvar d = new Float64Array([Infinity, -0, -Infinity]); reverse.call(d);\nvar actual = raw.join(',') + ';' + [h[0] === 3.5, h[1] !== h[1], Object.is(h[2], -0), f[0] !== f[0], Object.is(f[1], -0), d[0] === -Infinity, Object.is(d[1], -0), d[2] === Infinity].join(',');\nif (actual !== \"165,165,188,154,120,86,52,18,165,165;true,true,true,true,true,true,true,true\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "e395adf20bbe4642530ceb8dac268d2fc16d9b80004571eb45e080fc18621619",
+      "common_prefix_sha256": "8a67b71dd943d3e92c72b70b76ad0ce4da6743c0cbff36eba5c2d03bf1227676",
+      "expected_literal": "165,165,188,154,120,86,52,18,165,165;true,true,true,true,true,true,true,true"
+    },
+    {
+      "name": "offset-and-special-values-wrong",
+      "pair": "offset-and-special-values",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar buffer = new ArrayBuffer(10), bytes = new Uint8Array(buffer);\nfor (var i = 0; i < 10; i++) bytes[i] = 165;\nvar a = new Uint16Array(buffer, 2, 3); a[0] = 4660; a[1] = 22136; a[2] = 39612;\nreverse.call(a);\nvar raw = [];\nfor (var j = 0; j < 10; j++) raw.push(bytes[j]);\nvar h = new Float16Array([-0, NaN, 3.5]); reverse.call(h);\nvar f = new Float32Array([-0, NaN]); reverse.call(f);\nvar d = new Float64Array([Infinity, -0, -Infinity]); reverse.call(d);\nvar actual = raw.join(',') + ';' + [h[0] === 3.5, h[1] !== h[1], Object.is(h[2], -0), f[0] !== f[0], Object.is(f[1], -0), d[0] === -Infinity, Object.is(d[1], -0), d[2] === Infinity].join(',');\nif (actual !== \"165,165,52,18,120,86,188,154,165,165;true,true,true,true,true,true,true,true\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "0747125f9fd9afa0952519e6f0fe800923b286d30d0cc9f6e08f0c196dff584c",
+      "common_prefix_sha256": "8a67b71dd943d3e92c72b70b76ad0ce4da6743c0cbff36eba5c2d03bf1227676",
+      "expected_literal": "165,165,52,18,120,86,188,154,165,165;true,true,true,true,true,true,true,true"
+    },
+    {
+      "name": "initial-validation-and-resize-positive",
+      "pair": "initial-validation-and-resize",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar invalid = [null, undefined, {}, [], Object.create(Uint8Array.prototype), new DataView(new ArrayBuffer(0))];\nvar rejected = 0;\nfor (var i = 0; i < invalid.length; i++) {\n  try { reverse.call(invalid[i]); } catch (e) { if (e instanceof TypeError) rejected++; }\n}\nvar detachedBuffer = new ArrayBuffer(1), detached = new Uint8Array(detachedBuffer);\nif (typeof detachedBuffer.transfer !== 'function') throw new TypeError('transfer prerequisite');\nvar moved = detachedBuffer.transfer();\nif (moved.byteLength !== 1 || detachedBuffer.byteLength !== 0) throw new TypeError('working transfer prerequisite');\nvar detachedRejected = false;\ntry { reverse.call(detached); } catch (e) { detachedRejected = e instanceof TypeError; }\nvar buffer = new ArrayBuffer(6, {maxByteLength:8}), all = new Uint8Array(buffer);\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nfor (var j = 0; j < 6; j++) all[j] = j + 1;\nvar tracking = new Uint8Array(buffer, 2), fixed = new Uint8Array(buffer, 2, 3);\nreverse.call(tracking);\nvar first = [all[0], all[1], all[2], all[3], all[4], all[5]].join(',');\nbuffer.resize(4);\nif (buffer.byteLength !== 4) throw new TypeError('working resize prerequisite');\nvar fixedRejected = false;\ntry { reverse.call(fixed); } catch (e) { fixedRejected = e instanceof TypeError; }\nreverse.call(tracking);\nvar second = [all[0], all[1], all[2], all[3]].join(',');\nbuffer.resize(2);\nvar emptyReturned = reverse.call(tracking) === tracking;\nbuffer.resize(1);\nvar trackingRejected = false;\ntry { reverse.call(tracking); } catch (e) { trackingRejected = e instanceof TypeError; }\nbuffer.resize(6);\nvar finalBytes = [all[0], all[1], all[2], all[3], all[4], all[5]].join(',');\nvar actual = [rejected, detachedRejected, fixedRejected, emptyReturned, trackingRejected].join(',') + ';' + first + ';' + second + ';' + finalBytes;\nif (actual !== \"6,true,true,true,true;1,2,6,5,4,3;1,2,5,6;1,0,0,0,0,0\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "aa4160104722eb015b339ec2af98f61d53115afab4c317ff1a1c41332a0a4fd5",
+      "common_prefix_sha256": "0bedc360ce96b5197eb41094f935542fa972985f5b140b0a025dd0536651d239",
+      "expected_literal": "6,true,true,true,true;1,2,6,5,4,3;1,2,5,6;1,0,0,0,0,0"
+    },
+    {
+      "name": "initial-validation-and-resize-wrong",
+      "pair": "initial-validation-and-resize",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar invalid = [null, undefined, {}, [], Object.create(Uint8Array.prototype), new DataView(new ArrayBuffer(0))];\nvar rejected = 0;\nfor (var i = 0; i < invalid.length; i++) {\n  try { reverse.call(invalid[i]); } catch (e) { if (e instanceof TypeError) rejected++; }\n}\nvar detachedBuffer = new ArrayBuffer(1), detached = new Uint8Array(detachedBuffer);\nif (typeof detachedBuffer.transfer !== 'function') throw new TypeError('transfer prerequisite');\nvar moved = detachedBuffer.transfer();\nif (moved.byteLength !== 1 || detachedBuffer.byteLength !== 0) throw new TypeError('working transfer prerequisite');\nvar detachedRejected = false;\ntry { reverse.call(detached); } catch (e) { detachedRejected = e instanceof TypeError; }\nvar buffer = new ArrayBuffer(6, {maxByteLength:8}), all = new Uint8Array(buffer);\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nfor (var j = 0; j < 6; j++) all[j] = j + 1;\nvar tracking = new Uint8Array(buffer, 2), fixed = new Uint8Array(buffer, 2, 3);\nreverse.call(tracking);\nvar first = [all[0], all[1], all[2], all[3], all[4], all[5]].join(',');\nbuffer.resize(4);\nif (buffer.byteLength !== 4) throw new TypeError('working resize prerequisite');\nvar fixedRejected = false;\ntry { reverse.call(fixed); } catch (e) { fixedRejected = e instanceof TypeError; }\nreverse.call(tracking);\nvar second = [all[0], all[1], all[2], all[3]].join(',');\nbuffer.resize(2);\nvar emptyReturned = reverse.call(tracking) === tracking;\nbuffer.resize(1);\nvar trackingRejected = false;\ntry { reverse.call(tracking); } catch (e) { trackingRejected = e instanceof TypeError; }\nbuffer.resize(6);\nvar finalBytes = [all[0], all[1], all[2], all[3], all[4], all[5]].join(',');\nvar actual = [rejected, detachedRejected, fixedRejected, emptyReturned, trackingRejected].join(',') + ';' + first + ';' + second + ';' + finalBytes;\nif (actual !== \"6,true,false,true,true;1,2,6,5,4,3;1,2,5,6;1,0,0,0,0,0\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "49c24e7d42c918fff9a397c832af85f06561adf0c0802e57067e1e57a4f4ac05",
+      "common_prefix_sha256": "0bedc360ce96b5197eb41094f935542fa972985f5b140b0a025dd0536651d239",
+      "expected_literal": "6,true,false,true,true;1,2,6,5,4,3;1,2,5,6;1,0,0,0,0,0"
+    },
+    {
+      "name": "internal-length-and-ignored-hooks-positive",
+      "pair": "internal-length-and-ignored-hooks",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar a = new Uint8Array([1, 2, 3]), hooks = 0, effects = 0;\nfunction poison() { hooks++; throw new Error('unexpected reverse hook'); }\nObject.defineProperty(a, 'length', {get:poison});\nObject.defineProperty(a, 'constructor', {get:poison});\nvar ordinary = {};\nObject.defineProperty(ordinary, '0', {get:poison});\nObject.setPrototypeOf(a, ordinary);\nvar symbol = Symbol('marker'); a.marker = 17; a[symbol] = 23;\nvar extra = {valueOf:poison, toString:poison}; extra[Symbol.toPrimitive] = poison;\nvar returned = reverse.call(a, (effects++, extra), extra);\nvar actual = [returned === a, a[0], a[1], a[2], hooks, effects, a.marker, a[symbol]].join(',');\nif (actual !== \"true,3,2,1,0,1,17,23\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "18724156c89e2f8c31c854fa016af42a5b6b7c3e9c6cbc8f0d10334bee2e9dc2",
+      "common_prefix_sha256": "f12f0d333ce92990618752902a7bcc4ea28337618afe3e910b1a11a5743b5ef8",
+      "expected_literal": "true,3,2,1,0,1,17,23"
+    },
+    {
+      "name": "internal-length-and-ignored-hooks-wrong",
+      "pair": "internal-length-and-ignored-hooks",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar a = new Uint8Array([1, 2, 3]), hooks = 0, effects = 0;\nfunction poison() { hooks++; throw new Error('unexpected reverse hook'); }\nObject.defineProperty(a, 'length', {get:poison});\nObject.defineProperty(a, 'constructor', {get:poison});\nvar ordinary = {};\nObject.defineProperty(ordinary, '0', {get:poison});\nObject.setPrototypeOf(a, ordinary);\nvar symbol = Symbol('marker'); a.marker = 17; a[symbol] = 23;\nvar extra = {valueOf:poison, toString:poison}; extra[Symbol.toPrimitive] = poison;\nvar returned = reverse.call(a, (effects++, extra), extra);\nvar actual = [returned === a, a[0], a[1], a[2], hooks, effects, a.marker, a[symbol]].join(',');\nif (actual !== \"true,3,2,1,1,1,17,23\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "58367c239ad0d6f9bb338bc6b35543bf7e14319c75813bb20be33646e94aff21",
+      "common_prefix_sha256": "f12f0d333ce92990618752902a7bcc4ea28337618afe3e910b1a11a5743b5ef8",
+      "expected_literal": "true,3,2,1,1,1,17,23"
+    },
+    {
+      "name": "metadata-saved-identity-positive",
+      "pair": "metadata-saved-identity",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar descriptor = Object.getOwnPropertyDescriptor(owner, 'reverse');\nvar nd = Object.getOwnPropertyDescriptor(reverse, 'name');\nvar ld = Object.getOwnPropertyDescriptor(reverse, 'length');\nvar metadata = descriptor.value === reverse && descriptor.writable && !descriptor.enumerable && descriptor.configurable &&\n  nd.value === 'reverse' && !nd.writable && !nd.enumerable && nd.configurable &&\n  ld.value === 0 && !ld.writable && !ld.enumerable && ld.configurable &&\n  Object.getPrototypeOf(reverse) === Function.prototype && !Object.prototype.hasOwnProperty.call(reverse, 'prototype');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar shared = 0;\nfor (var i = 0; i < kinds.length; i++) if (kinds[i].prototype.reverse === reverse) shared++;\nif (typeof Reflect.construct !== 'function') throw new TypeError('construct prerequisite');\nfunction Constructor() { this.proof = 7; }\nif (Reflect.construct(Constructor, []).proof !== 7) throw new TypeError('working construct prerequisite');\nvar nonconstructor = false;\ntry { Reflect.construct(reverse, []); } catch (e) { nonconstructor = e instanceof TypeError; }\nvar deleted = delete owner.reverse;\nvar a = new Uint8Array([3, 4]), returned = reverse.call(a);\nvar actual = [metadata, shared, nonconstructor, deleted, owner.reverse === undefined, returned === a, a[0], a[1]].join(',');\nif (actual !== \"true,10,true,true,true,true,4,3\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "7c794005e76dc8bf34eeb728e0661649839b5ccbdd1a611bf97b5a54091c0863",
+      "common_prefix_sha256": "afa104a3dfbdd331cecfdeac7abd1ea23843ab3f79fc7e10deb47ba8f8a3da50",
+      "expected_literal": "true,10,true,true,true,true,4,3"
+    },
+    {
+      "name": "metadata-saved-identity-wrong",
+      "pair": "metadata-saved-identity",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar reverse = owner.reverse;\nif (typeof reverse !== 'function') throw new TypeError('reverse prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || reverse.call(guard) !== guard || guard[0] !== 4 || guard[1] !== 2) throw new TypeError('working reverse prerequisite');\nvar descriptor = Object.getOwnPropertyDescriptor(owner, 'reverse');\nvar nd = Object.getOwnPropertyDescriptor(reverse, 'name');\nvar ld = Object.getOwnPropertyDescriptor(reverse, 'length');\nvar metadata = descriptor.value === reverse && descriptor.writable && !descriptor.enumerable && descriptor.configurable &&\n  nd.value === 'reverse' && !nd.writable && !nd.enumerable && nd.configurable &&\n  ld.value === 0 && !ld.writable && !ld.enumerable && ld.configurable &&\n  Object.getPrototypeOf(reverse) === Function.prototype && !Object.prototype.hasOwnProperty.call(reverse, 'prototype');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar shared = 0;\nfor (var i = 0; i < kinds.length; i++) if (kinds[i].prototype.reverse === reverse) shared++;\nif (typeof Reflect.construct !== 'function') throw new TypeError('construct prerequisite');\nfunction Constructor() { this.proof = 7; }\nif (Reflect.construct(Constructor, []).proof !== 7) throw new TypeError('working construct prerequisite');\nvar nonconstructor = false;\ntry { Reflect.construct(reverse, []); } catch (e) { nonconstructor = e instanceof TypeError; }\nvar deleted = delete owner.reverse;\nvar a = new Uint8Array([3, 4]), returned = reverse.call(a);\nvar actual = [metadata, shared, nonconstructor, deleted, owner.reverse === undefined, returned === a, a[0], a[1]].join(',');\nif (actual !== \"true,10,true,true,true,false,4,3\") throw new Error('independent reverse literal mismatch');\n",
+      "source_sha256": "9e4c88ce1485c86ae4ac0a106753ca4bb046612281c60995cabf154cf7aaf374",
+      "common_prefix_sha256": "afa104a3dfbdd331cecfdeac7abd1ea23843ab3f79fc7e10deb47ba8f8a3da50",
+      "expected_literal": "true,10,true,true,true,false,4,3"
+    }
+  ]
+}

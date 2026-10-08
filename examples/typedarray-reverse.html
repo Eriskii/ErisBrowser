@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Buffer reverse</title>
+<style>
+body{margin:32px;background:#f5f7fa;color:#172033;font:18px sans-serif}
+h1{font-size:30px}button{padding:12px;background:#245bcc;color:white;border:0}
+pre{padding:20px;background:white;border:1px solid #cbd5e1;font:18px monospace;line-height:1.6}
+</style></head><body>
+<h1>Buffer reverse</h1><p>Reverse the selected words and keep the surrounding values.</p>
+<button id="change">Reverse selected words</button><pre id="result">Waiting for script</pre>
+<script>
+var words=new Uint16Array([99,11,22,33,44,88]);
+var selected=words.subarray(1,5);
+var reverse=selected.reverse;
+var same='ready';
+function show(){
+  document.getElementById('result').textContent='Buffer: '+words.join(' ')+'\n'
+    +'Selected: '+selected.join(' ')+'\n'
+    +'Byte length: '+words.byteLength+'\n'
+    +'Same view: '+same;
+}
+document.getElementById('change').onclick=function(){
+  same=reverse.call(selected)===selected;
+  show();document.title='Buffer reversed';
+};
+show();
+</script></body></html>

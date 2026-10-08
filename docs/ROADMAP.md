@@ -13,6 +13,9 @@ and fresh buffer bounds, recovering the two search cases that needed it.
 The [fill encoding follow-up](typedarray-fill-encoding.md) removes repeated scalar
 preparation with checked writes and unchanged compatibility observations. Its
 local benchmark records larger-fill gains and small empty/single-element slowdowns.
+[`reverse`](typedarray-reverse.md) now reverses Number views in place with
+ordered scalar writes and current resized bounds. Its complete profile retains
+four work-limit stops and 18 exclusions alongside 22 passes.
 Remaining methods, BigInt views, shared memory and broader interpreter
 accounting remain open work.
 

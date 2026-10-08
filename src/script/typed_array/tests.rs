@@ -106,23 +106,25 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // Later ArrayBuffer initialization saves3489work/5711bytes; the Reflect
     // extension consumes3278work and27648bytes (including9 arena slots).
     // DataView direct metadata then saves4675work/197266bytes; view metadata
-    // adds1970work/11514bytes including two arena slots. All independent
-    // endpoint tests and the raw diagnostic precede this snapshot update.
+    // adds1970work/11514bytes including two arena slots. Independent
+    // endpoint tests and the raw diagnostic check the snapshot expression.
     // The paired for-in reader enlarges eight initial frames by eight bytes.
     // Fill adds218work/2095bytes and one reserved bag.
+    // Reverse forecasts227work/2110bytes and one further bag from its ledger;
+    // the separately printed raw diagnostic must confirm these totals.
     // Four search methods add908work/8440bytes and four reserved bags; the
     // independent metadata endpoints and raw diagnostic verify that delta.
     assert_eq!(
         runtime.steps,
-        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218
+        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227
     );
     assert_eq!(
         runtime.allocated,
-        1_782_581 + added - 5711 + 27648 - 197266 + 11514 + 64 + 8440 + 2095
+        1_782_581 + added - 5711 + 27648 - 197266 + 11514 + 64 + 8440 + 2095 + 2110
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (737, 737)
+        (738, 738)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

@@ -159,6 +159,14 @@ The [encoding follow-up](typedarray-fill-encoding.md) prepares the scalar once
 per nonempty fill and retains every prior case and control result, including
 the remaining work-limit stops.
 
+[`reverse`](typedarray-reverse.md) now reverses all ten Number view kinds in
+place, validating current bounds and retaining only admitted complete scalar
+writes if interrupted. Its complete 44-mode profile records **22 passes, four
+work-limit stops and 18 exclusions**, with all 52 controls verified. The resource
+outcomes prevent an upstream baseline. Both the direct and confined-worker
+example tests verify two clicks and shared-buffer changes. All 43 earlier
+reports retain their case and control rows exactly.
+
 The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,
 20 failures and 38 exclusions. All other observations in the 37 replayed

@@ -9,6 +9,7 @@ mod constructors;
 mod fill;
 mod index;
 mod intrinsics;
+mod reverse;
 mod search;
 mod set_key;
 #[cfg(test)]
@@ -476,6 +477,7 @@ impl Runtime {
             "subarray" => self.typed_array_subarray(receiver, record, arguments, doc),
             "join" => self.typed_array_join(record, arguments, doc),
             "fill" => self.typed_array_fill(receiver, record, arguments, doc),
+            "reverse" => self.typed_array_reverse(receiver, record),
             "at" => self.typed_array_at(record, arguments, doc),
             "includes" => {
                 self.typed_array_search(search::SearchKind::Includes, record, arguments, doc)

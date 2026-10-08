@@ -24,8 +24,11 @@ NaN; the two index searches use strict equality.
 [`fill`](docs/typedarray-fill.md) writes ranges through the same shared storage
 and rechecks resized buffers after argument conversion. Its
 [encoding optimization](docs/typedarray-fill-encoding.md) prepares one scalar
-per nonempty call while retaining checked writes and unchanged conformance results. Remaining bulk methods,
-BigInt codecs and shared memory remain unfinished.
+per nonempty call while retaining checked writes and unchanged conformance results.
+[`reverse`](docs/typedarray-reverse.md) reverses a Number view in place, with
+checked scalar writes and shared-buffer visibility. Its complete upstream
+profile records 22 passes, four work-limit stops and 18 exclusions.
+Remaining bulk methods, BigInt codecs and shared memory remain unfinished.
 [Reflect property operations](docs/reflect-properties.md) add nine methods,
 including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean
 integrity checks. Their frozen upstream profile passes 200 modes and retains

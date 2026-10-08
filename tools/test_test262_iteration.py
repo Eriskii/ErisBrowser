@@ -272,7 +272,7 @@ class IterationCorpusTests(unittest.TestCase):
                 self.assertTrue(all(item['result']['status'] == status for item in outcomes[32:]))
 
     def test_all_36_historical_contracts_are_identical(self):
-        contract = capture_contracts(excluded=('typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', *PROFILES, 'object-is', 'data-view', 'array-from', 'array-splice', 'array-concat', 'array-buffer'))
+        contract = capture_contracts(excluded=('typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', *PROFILES, 'object-is', 'data-view', 'array-from', 'array-splice', 'array-concat', 'array-buffer'))
         self.assertEqual(contract['counts'], dict(profiles=36, cases=16146, preflights=3592))
         self.assertEqual(runner.digest(canonical(contract)),
                          'acd6602c8c218ebe36c9cc245cc0805fc9831598a64cfaaf3fdfb4319f9cce74')

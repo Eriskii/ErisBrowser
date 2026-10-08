@@ -71,7 +71,7 @@ class ObjectIsCorpusTests(unittest.TestCase):
         for name, features in runner.PROFILE_FEATURES.items():
             if name != PROFILE:
                 self.assertNotIn('Object.is', features)
-        contract = capture_contracts(excluded={'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', PROFILE})
+        contract = capture_contracts(excluded={'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', PROFILE})
         self.assertEqual(contract['counts'], dict(profiles=43, cases=19685, preflights=4484))
         self.assertEqual(runner.digest(canonical(contract)),
                          '2555833d1cd7a66a19d02ed295f404060b72472d7af8fbd008517285be5d6cd6')
