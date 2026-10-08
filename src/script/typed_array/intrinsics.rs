@@ -3,7 +3,10 @@
 use super::*;
 use std::collections::btree_map::Entry;
 
-pub(in crate::script) const METADATA_OBJECTS: usize = 31;
+#[cfg(test)]
+mod views_tests;
+
+pub(in crate::script) const METADATA_OBJECTS: usize = 33;
 pub(in crate::script) const GLOBAL_COUNT: usize = 10;
 pub(in crate::script) const GLOBAL_NAME_MAX: usize = {
     let mut maximum = 0;
@@ -20,7 +23,7 @@ pub(in crate::script) const GLOBAL_NAME_MAX: usize = {
 
 // The indices are the accepted Kind order, not the global staging order.
 // These are bounded stack arrays; there is no temporary sorting Vec.
-const LITERALS: [&str; 28] = [
+const LITERALS: [&str; 31] = [
     "length",
     "name",
     "prototype",
@@ -49,13 +52,20 @@ const LITERALS: [&str; 28] = [
     "get length",
     "get [Symbol.toStringTag]",
     "get [Symbol.species]",
+    "subarray",
+    "join",
+    "toString",
 ];
 
-// New-site logical accounting. The 31 maps start empty, contain <=10 entries,
-// and are filled in strictly increasing PropertyKey order. No split or suffix
-// movement occurs. 130 examined-prefix comparisons cost718 in total.
-const MAP_WORK: usize = 31 * 16 + 92 * 18 + 718;
+// The original ten-key shared owner (416 work) is replaced by the bulk-built
+// thirteen-key owner below. Thirty old small leaves retain their exact fees;
+// the two new length/name leaves each cost58. No old entry tariff is reduced.
+const MAP_WORK: usize = 31 * 16 + 92 * 18 + 718 - 416 + 2 * 58;
 const FIXED_WORK: usize = 192;
+// Includes twelve application-order, twelve stable-sort and twelve dedup
+// comparisons, each bounded by4+2*11. The shared tree has three nodes.
+const SHARED_OWNER_WORK: usize = 1370;
+const VIEW_FIXED_WORK: usize = 64;
 
 fn leaf_bytes() -> usize {
     16 * (std::mem::size_of::<PropertyKey>() + std::mem::size_of::<Property>())
@@ -81,8 +91,13 @@ impl Runtime {
         // All fixed-array assembly, map entry/order operations and eventual
         // local/map handle retirement are admitted before constructing them.
         // State storage itself is charged once by BootstrapBuilder, not here.
-        self.work(MAP_WORK + FIXED_WORK)?;
-        self.charge(METADATA_OBJECTS * leaf_bytes())?;
+        self.work(MAP_WORK + FIXED_WORK + SHARED_OWNER_WORK + VIEW_FIXED_WORK)?;
+        //32 fresh small leaves plus three nodes for the shared owner. Pay the
+        // complete13-pair staging Vec and conservative48-pair sort scratch.
+        self.charge(
+            (METADATA_OBJECTS + 2) * leaf_bytes()
+                + (13 + 48) * std::mem::size_of::<(PropertyKey, Property)>(),
+        )?;
         if self.typed_arrays.intrinsic.is_some() || self.typed_arrays.prototype.is_some() {
             return Err(ScriptError::resource(
                 "TypedArray intrinsics initialized twice",
@@ -128,8 +143,11 @@ impl Runtime {
             self.dom_proto_text(LITERALS[25])?,
             self.dom_proto_text(LITERALS[26])?,
             self.dom_proto_text(LITERALS[27])?,
+            self.dom_proto_text(LITERALS[28])?,
+            self.dom_proto_text(LITERALS[29])?,
+            self.dom_proto_text(LITERALS[30])?,
         ];
-        let shared_prototype = self.dom_proto_object(Some(Value::Object(object)), 10)?;
+        let shared_prototype = self.dom_proto_object(Some(Value::Object(object)), 13)?;
         let shared_bag =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 4)?;
         let shared = self.typed_array_intrinsic_native("TypedArray", shared_bag)?;
@@ -168,38 +186,6 @@ impl Runtime {
             ],
             [0, 1, 2, 3],
         )?;
-        // Sorted strings then symbols (iterator identity5 < toStringTag13).
-        // Creation order: constructor, buffer, byteLength, byteOffset, length,
-        // @@toStringTag, keys, values, entries, @@iterator.
-        self.typed_array_fill_intrinsic(
-            shared_prototype,
-            [
-                (pool[5].clone().into(), getter(buffer)),
-                (pool[6].clone().into(), getter(byte_length)),
-                (pool[7].clone().into(), getter(byte_offset)),
-                (
-                    pool[4].clone().into(),
-                    Property::data(shared.clone(), true, false, true),
-                ),
-                (
-                    pool[10].clone().into(),
-                    Property::data(entries, true, false, true),
-                ),
-                (
-                    pool[8].clone().into(),
-                    Property::data(keys, true, false, true),
-                ),
-                (pool[0].clone().into(), getter(length)),
-                (
-                    pool[9].clone().into(),
-                    Property::data(values.clone(), true, false, true),
-                ),
-                (iterator, Property::data(values, true, false, true)),
-                (tag, getter(tag_getter)),
-            ],
-            [3, 0, 1, 2, 6, 9, 5, 7, 4, 8],
-        )?;
-
         let mut constructors: [Option<Value>; 10] = Default::default();
         let mut prototypes = [None; 10];
         for kind in Kind::ALL {
@@ -247,6 +233,53 @@ impl Runtime {
             constructors[index] = Some(constructor);
             prototypes[index] = Some(prototype);
         }
+        // Append the two new bags after all31 historical bags; the old TypedArray
+        // constructor/prototype/getter IDs remain unchanged.
+        let subarray =
+            self.typed_array_intrinsic_method_length("TypedArray.subarray", &pool, 28, 2)?;
+        let join = self.typed_array_intrinsic_method_length("TypedArray.join", &pool, 29, 1)?;
+        let to_string = self.typed_array_to_string_alias(&pool[30])?;
+        // Preserve the old ten-key creation-order subsequence, then append
+        // subarray,join,toString. Storage order is strings then the two symbols.
+        self.typed_array_fill_shared(
+            shared_prototype,
+            [
+                (pool[5].clone().into(), getter(buffer)),
+                (pool[6].clone().into(), getter(byte_length)),
+                (pool[7].clone().into(), getter(byte_offset)),
+                (
+                    pool[4].clone().into(),
+                    Property::data(shared.clone(), true, false, true),
+                ),
+                (
+                    pool[10].clone().into(),
+                    Property::data(entries, true, false, true),
+                ),
+                (
+                    pool[29].clone().into(),
+                    Property::data(join, true, false, true),
+                ),
+                (
+                    pool[8].clone().into(),
+                    Property::data(keys, true, false, true),
+                ),
+                (pool[0].clone().into(), getter(length)),
+                (
+                    pool[28].clone().into(),
+                    Property::data(subarray, true, false, true),
+                ),
+                (
+                    pool[30].clone().into(),
+                    Property::data(to_string, true, false, true),
+                ),
+                (
+                    pool[9].clone().into(),
+                    Property::data(values.clone(), true, false, true),
+                ),
+                (iterator, Property::data(values, true, false, true)),
+                (tag, getter(tag_getter)),
+            ],
+        )?;
         // No fallible operation follows these private saved-handle writes.
         // Whole finish_bootstrap can still fail later and discard the realm.
         self.typed_arrays.intrinsic = Some(shared);
@@ -256,9 +289,9 @@ impl Runtime {
         Ok(())
     }
 
-    // Private to this closed installation. The caller prepays all31 leaves and
-    // all92 fixed entries; only fresh bags and literal order permutations reach
-    // this helper. The separate order Vec already has its exact capacity.
+    // Private to this closed installation. All32 small leaves and their86
+    // entries are prepaid. The thirteen-key shared owner uses its separate
+    // bulk builder. Each order Vec already has its exact final capacity.
     fn typed_array_fill_intrinsic<const N: usize>(
         &mut self,
         owner: usize,
@@ -283,8 +316,18 @@ impl Runtime {
     fn typed_array_intrinsic_method(
         &mut self,
         full: &str,
-        pool: &[JsString; 28],
+        pool: &[JsString; 31],
         display: usize,
+    ) -> Result<Value> {
+        self.typed_array_intrinsic_method_length(full, pool, display, 0)
+    }
+
+    fn typed_array_intrinsic_method_length(
+        &mut self,
+        full: &str,
+        pool: &[JsString; 31],
+        display: usize,
+        length: usize,
     ) -> Result<Value> {
         let bag = self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
         self.typed_array_fill_intrinsic(
@@ -292,7 +335,7 @@ impl Runtime {
             [
                 (
                     pool[0].clone().into(),
-                    Property::data(Value::Number(0.0), false, false, true),
+                    Property::data(Value::Number(length as f64), false, false, true),
                 ),
                 (
                     pool[1].clone().into(),
@@ -302,6 +345,72 @@ impl Runtime {
             [0, 1],
         )?;
         self.typed_array_intrinsic_native(full, bag)
+    }
+
+    fn typed_array_to_string_alias(&mut self, name: &JsString) -> Result<Value> {
+        // The saved Array prototype is an arena handle. This closed bootstrap
+        // lookup cannot invoke authors or follow a mutable global constructor.
+        // At most128 private keys imply at most33 B-tree comparisons; each
+        // compares at most eight UTF-16 units (4+2*8 work). The remaining44
+        // covers handle checks, native-name validation and Rc retirement.
+        self.work(16)?;
+        let failure = || ScriptError::resource("TypedArray Array.toString alias missing");
+        let array = self.array_prototype.ok_or_else(failure)?;
+        let owner = *self.array_properties.get(array).ok_or_else(failure)?;
+        if self
+            .objects
+            .get(owner)
+            .is_none_or(|bag| bag.values.len() > 128)
+        {
+            return Err(failure());
+        }
+        self.work(688)?;
+        let bag = &self.objects[owner];
+        let Some(Property {
+            value:
+                PropertyValue::Data {
+                    value: Value::Native(native),
+                    ..
+                },
+            ..
+        }) = bag.values.get(&PropertyKey::String(name.clone()))
+        else {
+            return Err(failure());
+        };
+        if native.name != "Array.toString" {
+            return Err(failure());
+        }
+        Ok(Value::Native(native.clone()))
+    }
+
+    fn typed_array_fill_shared(
+        &mut self,
+        owner: usize,
+        entries: [(PropertyKey, Property); 13],
+    ) -> Result<()> {
+        let bag = &mut self.objects[owner];
+        if !bag.values.is_empty()
+            || !bag.order.is_empty()
+            || bag.order.capacity() < 13
+            || entries.windows(2).any(|pair| pair[0].0 >= pair[1].0)
+        {
+            return Err(ScriptError::resource(
+                "unexpected TypedArray shared metadata shape",
+            ));
+        }
+        let mut staged = Vec::new();
+        staged
+            .try_reserve_exact(13)
+            .map_err(|_| ScriptError::resource("TypedArray shared map allocation failed"))?;
+        for index in [3, 0, 1, 2, 7, 12, 6, 10, 4, 11, 8, 5, 9] {
+            bag.order.push(entries[index].0.clone());
+        }
+        staged.extend(entries);
+        // Strictly ascending13-element input:12 sort comparisons and12 dedup
+        // checks; bulk construction allocates three nodes. Its right-border
+        // repair moves four pairs, covered by the separate64-work envelope.
+        bag.values = staged.into_iter().collect();
+        Ok(())
     }
 
     fn typed_array_intrinsic_native(&mut self, full: &str, bag: usize) -> Result<Value> {

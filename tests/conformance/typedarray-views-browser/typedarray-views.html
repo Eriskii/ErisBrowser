@@ -1,0 +1,45 @@
+<!doctype html><html><head><title>Typed views ready</title><style>
+body{margin:0;width:320px;height:160px;background:white;color:black;font:16px monospace}
+#change{position:absolute;left:16px;top:16px;width:64px;height:32px;background:green}
+#word{position:absolute;left:96px;top:16px}#status{position:absolute;left:16px;top:72px}
+</style></head><body><div id="change"></div><div id="word">Ready</div><div id="status">waiting</div><script>
+var marker=document.getElementById('change'),word=document.getElementById('word').firstChild;
+var status=document.getElementById('status').firstChild,title=document.getElementsByTagName('title')[0].firstChild;
+var prototype=Object.getPrototypeOf(Uint8Array.prototype);
+var subarray=prototype.subarray,join=prototype.join,string=prototype.toString;
+if(typeof subarray!=='function'||typeof join!=='function'||!Object.hasOwn(prototype,'toString')||string!==Array.prototype.toString)throw new Error('real methods and exact Array alias');
+var buffer=new ArrayBuffer(6,{maxByteLength:10}),source=new Uint8Array(buffer);
+var initial=[2,4,6,8,10,12];
+for(var i=0;i<initial.length;i++)source[i]=initial[i];
+if(source.length!==6||source[1]!==4||!ArrayBuffer.isView(source)||!buffer.resizable)throw new Error('authentic initial storage');
+var tracking=subarray.call(source,1),fixed=subarray.call(source,1,4);
+if(tracking===source||fixed===source||fixed===tracking||tracking.buffer!==buffer||fixed.buffer!==buffer)throw new Error('new views share original bytes');
+prototype.subarray=null;prototype.join=null;
+if(prototype.subarray!==null||prototype.join!==null)throw new Error('actual method replacement');
+fixed.join=join;
+var token={},genericCalls=0,generic={};
+generic.join=function(){
+  if(this!==generic||arguments.length!==0)throw new Error('generic alias join receiver and arity');
+  genericCalls++;return token;
+};
+function exercise(phase){
+  var expected=phase===0?4:9,expectedLength=phase===0?5:7;
+  if(source.buffer!==buffer||tracking.buffer!==buffer||fixed.buffer!==buffer||tracking.byteOffset!==1||fixed.byteOffset!==1)throw new Error('retained view identities and offsets');
+  if(source.length!==expectedLength+1||tracking.length!==expectedLength||fixed.length!==3)throw new Error('tracking versus fixed length');
+  if(source[1]!==expected||tracking[0]!==expected||fixed[0]!==expected||source[0]!==2||fixed[1]!==6||fixed[2]!==8)throw new Error('visible shared mutation');
+  var all=join.call(tracking,':');
+  if(all!==(phase===0?'4:6:8:10:12':'9:6:8:10:12:0:0'))throw new Error('saved join sees grown zero bytes');
+  var probe=subarray.call(tracking,0,2);
+  if(probe===tracking||probe.buffer!==buffer||probe.byteOffset!==1||probe.length!==2||probe[0]!==expected||probe[1]!==6)throw new Error('saved subarray remains callable');
+  if(string!==Array.prototype.toString||prototype.toString!==string||string.call(generic)!==token||genericCalls!==phase+1)throw new Error('genuine exact generic alias');
+  var joined=join.call(fixed,':'),aliased=string.call(fixed);
+  if(joined!==(phase===0?'4:6:8':'9:6:8')||aliased!==(phase===0?'4,6,8':'9,6,8'))throw new Error('literal joined text and receiver join');
+  status.data=tracking.length+'/'+fixed.length+' | '+joined+' | '+aliased;
+}
+exercise(0);document.body.setAttribute('data-phase','0');
+marker.onclick=function(){
+  buffer.resize(8);tracking[0]=9;exercise(1);
+  word.data='Changed';title.data='Typed views changed';marker.style.backgroundColor='blue';
+  document.body.setAttribute('data-phase','1');
+};
+</script></body></html>

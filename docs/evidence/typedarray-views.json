@@ -1,0 +1,313 @@
+{
+  "adapter": {
+    "binary": "eris-js-final",
+    "bytes": 151854712,
+    "sha256": "23ef852a16398e8d9a1ebcc15dbc9b847f1bc8aabc502b81953bb5cf9cbb49ad",
+    "source_binding_sha256": "2cf7eb3cc63571bcada2f3f4bb7dcebfd801bc27140b44f2c7b7276c46bf576e",
+    "source_files_verified": 232
+  },
+  "archive": {
+    "bytes": 23118444,
+    "manifest_sha256": "878a6fde27475723ec75c3c157962ecf052e3427fe5a88d774b52cdcdac08f82",
+    "path": "docs/evidence/typedarray-views.tar.gz",
+    "public_bindings": 43,
+    "records": 1538,
+    "sha256": "e467022f17aac5a0041218b5a5427d5874545f868dcdb98164b5a52b3b8eaa1e"
+  },
+  "comparison": {
+    "all_reports_healthy": false,
+    "path": "report-comparison/final-comparison-3.json",
+    "prior_pass_loss_populations": [],
+    "sha256": "faa0e489a83f721e7a7c6bc25110e0f162545cb12b21961aeeef5b0dcebb95b6",
+    "status": "comparison-clear",
+    "unhealthy_report_populations": [
+      "foundation",
+      "views"
+    ]
+  },
+  "format": 1,
+  "limitations": "Incomplete web/language compatibility, production security and Chromium-relative performance requirements remain unfulfilled.",
+  "policy": "Only the 70 frozen local modes form the new CI gate. Resource reports remain unhealthy; no upstream baseline is recorded.",
+  "preparation_commit": "7daef5af1c122fabe3d4d7571b6740fc452edee2",
+  "public_files": [
+    {
+      "bytes": 18564,
+      "path": ".github/workflows/check.yml",
+      "sha256": "c4e5bb78162c0a44d9f5e25e8a58fc790e50ff1afb19f2153845930d30fb8c8b"
+    },
+    {
+      "bytes": 1082,
+      "path": "LICENSE",
+      "sha256": "2de37b5789a09bd2311e1a4384808306de2a4ce9e7704e111cc6ab63770bed46"
+    },
+    {
+      "bytes": 46835,
+      "path": "README.md",
+      "sha256": "8802790dd49157f89d94bcbcb98bf7e3dafef9f1f199eb2019925d09de8bc209"
+    },
+    {
+      "bytes": 63504,
+      "path": "docs/COMPATIBILITY.md",
+      "sha256": "d55cc7a7af3158359484b099e1f504216ac39360459c2510377dbeabc70191cb"
+    },
+    {
+      "bytes": 8260,
+      "path": "docs/typedarray-views-test262.md",
+      "sha256": "97af6e6525c369dd884359faf2dacdb57c85469c37171c6b530f1547a930897d"
+    },
+    {
+      "bytes": 906018,
+      "path": "src/script.rs",
+      "sha256": "10c022435cf3916ff5c7a7e78928c172e4fc914fc3209362e5038a7f2138826a"
+    },
+    {
+      "bytes": 21695,
+      "path": "src/script/array_buffer/bootstrap/tests.rs",
+      "sha256": "508528f6a723d59b54a59705332a81263341067722e6954c982cd13531728476"
+    },
+    {
+      "bytes": 41334,
+      "path": "src/script/array_methods.rs",
+      "sha256": "e688e99b50f3aa9af18284429aa5d2af097e28e9d7f4f1d5efb83d434e2bcbff"
+    },
+    {
+      "bytes": 14434,
+      "path": "src/script/array_properties.rs",
+      "sha256": "997463f0ba37a19a2bd3f44706b5826d02b440adcf3891552fc1ded1b87edf18"
+    },
+    {
+      "bytes": 28328,
+      "path": "src/script/array_splice.rs",
+      "sha256": "fe523e0d3c6938ac91376fc42ed286368e9539116ae66d7f14d1dc46e57f753b"
+    },
+    {
+      "bytes": 5521,
+      "path": "src/script/array_splice/set_key_fee_capture.rs",
+      "sha256": "19de618b0339b033c3b598599bc6f355d61610b85c3f2677820b4b0ecbbd84f5"
+    },
+    {
+      "bytes": 9666,
+      "path": "src/script/array_splice/set_key_fee_tests.rs",
+      "sha256": "01a08bb4726b2059b647c53794f3fc5572f08c57c5a0b92f82dfa69225ba3d04"
+    },
+    {
+      "bytes": 15506,
+      "path": "src/script/bootstrap_tests.rs",
+      "sha256": "c5db5f14bad42aebd07d6ea1a49683000bad756c2a5d3bfbd09d29054cc25a78"
+    },
+    {
+      "bytes": 9149,
+      "path": "src/script/data_view.rs",
+      "sha256": "1e4325b41488ac93bac23f4435012e7dd8326f10307b987c05c054af5e95321d"
+    },
+    {
+      "bytes": 12405,
+      "path": "src/script/data_view/bootstrap.rs",
+      "sha256": "b2ed79224c12dbd2b673b4c053a4ff7f36aeb0c948e0b4d58c4c458445b2fd22"
+    },
+    {
+      "bytes": 21889,
+      "path": "src/script/data_view/bootstrap/tests.rs",
+      "sha256": "9a69faec9dbddd9eabc2eb01e3bfe247aed049e34ec01fa286cd9df81342417f"
+    },
+    {
+      "bytes": 30300,
+      "path": "src/script/data_view/tests.rs",
+      "sha256": "2194d0ba4f1aed70b685568ebdad9a59719251f5a6db4124c29a06d627740ece"
+    },
+    {
+      "bytes": 35697,
+      "path": "src/script/dom_bindings/identity_tests.rs",
+      "sha256": "caccdeff18e355e5002bcaf0415ddd1663742ff9e28c481af2a4d159fd103312"
+    },
+    {
+      "bytes": 45803,
+      "path": "src/script/machine/statements.rs",
+      "sha256": "18865961254bd703a76f22ae490802875319c47dc39e8c870cec435771b7f2f7"
+    },
+    {
+      "bytes": 23219,
+      "path": "src/script/node_clone/tests.rs",
+      "sha256": "7702a84f6f8395b2c895d05f72061e8c9ca72951d6b11e55e984086bf281fe3c"
+    },
+    {
+      "bytes": 20320,
+      "path": "src/script/own_keys.rs",
+      "sha256": "9fbb32af11d25c945f8f5bb96fae9e62370dd1070deff6083c6304945836cf45"
+    },
+    {
+      "bytes": 19273,
+      "path": "src/script/own_keys/for_in_tests.rs",
+      "sha256": "1302a9b433227cf21cacbe1b34adcad17acfb770a7aec7ba9a5ba316674d44d1"
+    },
+    {
+      "bytes": 16854,
+      "path": "src/script/own_keys/singleton_tests.rs",
+      "sha256": "7e3cddab52cf46663b9a20bb9501c3eaac29b32fa145ae794be3bfb80ac0337d"
+    },
+    {
+      "bytes": 39595,
+      "path": "src/script/own_keys/tests.rs",
+      "sha256": "8711ebf6bcd1fa38dc5bac202a1bfaed35bb78d148badd7aa26a9926f3f0d34e"
+    },
+    {
+      "bytes": 21515,
+      "path": "src/script/reflect_properties.rs",
+      "sha256": "e99e6ddd5689a5d9604af0b9617e13db4cf3c3291b48e775d4300cd3cec45e6e"
+    },
+    {
+      "bytes": 5478,
+      "path": "src/script/scalar_codec.rs",
+      "sha256": "8d11ba4324c3cbfbd68869aabaf944171df87ff7df47cc7c7dad5417fdc62266"
+    },
+    {
+      "bytes": 16140,
+      "path": "src/script/typed_array.rs",
+      "sha256": "7ddbe125ecd63948c65316c3f263c5ddeeebae2c60a4d4f7d071d49e4cdf0166"
+    },
+    {
+      "bytes": 17153,
+      "path": "src/script/typed_array/intrinsics.rs",
+      "sha256": "38560fcbabe26444bb13741684061d8a8497d15714a08936670e773b794e2efc"
+    },
+    {
+      "bytes": 26145,
+      "path": "src/script/typed_array/intrinsics/views_tests.rs",
+      "sha256": "1aba7aba045022013f8fbf3d98ad628be3ba4ae4f3e3fe85d28b021f30343f50"
+    },
+    {
+      "bytes": 4682,
+      "path": "src/script/typed_array/set_key.rs",
+      "sha256": "19d0bb66058443f9d8026d410cc8e4f2b175be944b037268f1b3f1f9347d3d78"
+    },
+    {
+      "bytes": 24186,
+      "path": "src/script/typed_array/set_key/tests.rs",
+      "sha256": "4297bbee5615d59b1c16a31c49e65e028c3c417819226eca724e95cad1bfd274"
+    },
+    {
+      "bytes": 20597,
+      "path": "src/script/typed_array/tests.rs",
+      "sha256": "39a611ffbd27d03871c1b529ee9b22686b9648ce52a8a6190559407829c1031e"
+    },
+    {
+      "bytes": 6614,
+      "path": "src/script/typed_array/views.rs",
+      "sha256": "9aaf2bfea71f37a5d7ddaefad91bf587d430b69318eadb15c16e017908617462"
+    },
+    {
+      "bytes": 21460,
+      "path": "src/script/typed_array/views/tests.rs",
+      "sha256": "3612816a93729bb5eb67dc538d34e9a15e211f9651d643f293ef120740185f70"
+    },
+    {
+      "bytes": 832658,
+      "path": "tests/conformance/test262-typedarray-after-views.json",
+      "sha256": "07e2f13a6f8df0a6cffb1198bed7e3205adbf1ab9f576a3f6c94fe1a58b38657"
+    },
+    {
+      "bytes": 174800,
+      "path": "tests/conformance/test262-typedarray-views-after.json",
+      "sha256": "c2190293a699b2fa60c71909ac702ca5576c80502664e7bddd1691a424c47f4a"
+    },
+    {
+      "bytes": 461,
+      "path": "tests/conformance/typedarray-views-browser/reference-after.html",
+      "sha256": "591d1638bb65a5ae0931f69c7e9fb276d72f3022421900d4f33488fcef436f7c"
+    },
+    {
+      "bytes": 458,
+      "path": "tests/conformance/typedarray-views-browser/reference-initial.html",
+      "sha256": "5d3aaaa38715c84adf72d98939b4e03e64a16dad524ceb5b6d35a56b364269d3"
+    },
+    {
+      "bytes": 3517,
+      "path": "tests/conformance/typedarray-views-browser/typedarray-views.html",
+      "sha256": "97623c51683a9534184a910b370cc9af69d9d208c9837aa1b6756c44a4bb61b9"
+    },
+    {
+      "bytes": 65891,
+      "path": "tests/conformance/typedarray-views-local-current.json",
+      "sha256": "084bf104c466f41ce6e12daf161e46fc56faeb38edc5be4fb6896191017b03b3"
+    },
+    {
+      "bytes": 10222,
+      "path": "tests/typedarray_views.rs",
+      "sha256": "55751ccb3ea6a525697b15d83451033a4fceda3b85e58c8c5c69596588b97af3"
+    },
+    {
+      "bytes": 18611,
+      "path": "tests/upstream/test262-typedarray-views/INTERPRETING.md",
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "bytes": 2213,
+      "path": "tests/upstream/test262-typedarray-views/LICENSE",
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    }
+  ],
+  "published_runtime_predecessor": "a3c0bb1d5167236cdf676247f17aea3720dcb866",
+  "results": {
+    "foundation": {
+      "exit": 1,
+      "failed": 34,
+      "passed": 590,
+      "resource": 126,
+      "unsupported": 488,
+      "verified_controls": 64
+    },
+    "historical": {
+      "all_full_rows_and_controls_unchanged": true,
+      "case_modes": 16352,
+      "control_modes": 3928,
+      "profiles": 38
+    },
+    "local": {
+      "case_passes": 46,
+      "exit": 0,
+      "verified_controls": 24
+    },
+    "views": {
+      "exit": 1,
+      "passed": 46,
+      "resource": 64,
+      "unsupported": 96,
+      "upstream_baseline_created": false,
+      "verified_controls": 56
+    }
+  },
+  "scope": [
+    "Number TypedArray subarray",
+    "Number TypedArray join",
+    "Exact Array.prototype.toString alias",
+    "Direct DataView method metadata",
+    "Per-Set immutable key classification",
+    "For-in negative brand proof",
+    "Inline singleton visited-name buckets"
+  ],
+  "validation": {
+    "comparison_protocols": {
+      "passed": 8,
+      "receipt": "views/validation/report-comparison-protocols-4.json"
+    },
+    "format": "views/validation/format-check-3.json",
+    "rust_1_88_affected_test_reruns": {
+      "classified_key_groups": 13,
+      "own_key_groups": 44
+    },
+    "rust_1_88_full_vulkan_suite": {
+      "passed": 2283,
+      "receipt": "views/validation/full-native-2.json",
+      "source_binding": "views/compiled-source-8.json"
+    },
+    "rust_1_98_script_suite": {
+      "passed": 1279,
+      "receipt": "views/validation/script-198-2.json"
+    },
+    "strict_clippy": [
+      "views/validation/clippy-msrv-2.json",
+      "views/validation/clippy-198-4.json"
+    ],
+    "subsequent_private_lint_changes": "views/test-lint-corrections/corrections.json"
+  }
+}

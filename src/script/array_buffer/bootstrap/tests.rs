@@ -516,7 +516,7 @@ fn array_buffer_bootstrap_reports_raw_combined_initialization() {
     );
     assert!(runtime.steps > 0);
     assert!(runtime.steps < MAX_STEPS);
-    assert_eq!(runtime.native_properties.len(), 320);
+    assert_eq!(runtime.native_properties.len(), 299);
     assert_eq!(runtime.prototypes.len(), 25);
     assert!(runtime.array_buffers.intrinsic.is_some());
 }

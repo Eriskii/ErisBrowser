@@ -387,7 +387,11 @@ impl Runtime {
         Ok(result)
     }
 
-    fn array_join_append(&mut self, output: &mut Vec<u16>, text: &JsString) -> Result<()> {
+    pub(super) fn array_join_append(
+        &mut self,
+        output: &mut Vec<u16>,
+        text: &JsString,
+    ) -> Result<()> {
         let length = output
             .len()
             .checked_add(text.len())

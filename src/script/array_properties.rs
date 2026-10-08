@@ -20,6 +20,31 @@ impl Runtime {
         {
             return Ok(result);
         }
+        self.define_property_key_ordinary(receiver, key, desc, doc)
+    }
+
+    pub(super) fn define_property_key_for_set(
+        &mut self,
+        receiver: &Value,
+        key: &mut typed_array::SetKey<'_>,
+        desc: PropertyDescriptor,
+        doc: &mut Document,
+    ) -> Result<bool> {
+        if let typed_array::Exotic::Handled(result) =
+            self.typed_array_define_for_set(receiver, key, &desc, doc)?
+        {
+            return Ok(result);
+        }
+        self.define_property_key_ordinary(receiver, key.property(), desc, doc)
+    }
+
+    fn define_property_key_ordinary(
+        &mut self,
+        receiver: &Value,
+        key: &PropertyKey,
+        desc: PropertyDescriptor,
+        doc: &mut Document,
+    ) -> Result<bool> {
         if let Value::Array(id) = receiver
             && key
                 .as_string()

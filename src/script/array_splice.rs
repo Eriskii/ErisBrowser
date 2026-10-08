@@ -2,6 +2,11 @@
 use super::*;
 
 #[cfg(test)]
+mod set_key_fee_capture;
+#[cfg(test)]
+mod set_key_fee_tests;
+
+#[cfg(test)]
 mod tests;
 
 const MAX_LENGTH: u64 = 9_007_199_254_740_991;
@@ -427,6 +432,32 @@ impl Runtime {
         create: bool,
         doc: &mut Document,
     ) -> Result<()> {
+        let property_key = PropertyKey::String(key);
+        self.splice_define_key(object, &property_key, None, value, create, doc)
+    }
+
+    fn splice_define_for_set(
+        &mut self,
+        object: &Value,
+        classified: &mut typed_array::SetKey<'_>,
+        value: Value,
+        create: bool,
+        doc: &mut Document,
+    ) -> Result<()> {
+        let key = classified.property();
+        self.splice_define_key(object, key, Some(classified), value, create, doc)
+    }
+
+    fn splice_define_key(
+        &mut self,
+        object: &Value,
+        property_key: &PropertyKey,
+        mut classified: Option<&mut typed_array::SetKey<'_>>,
+        value: Value,
+        create: bool,
+        doc: &mut Document,
+    ) -> Result<()> {
+        let key = property_key.as_string().expect("string splice definition");
         // Numeric TypedArray definitions may coerce the value and resize or
         // detach its backing. Dispatch before any ordinary insertion snapshot.
         if self.typed_array_is_view(object)? {
@@ -438,9 +469,12 @@ impl Runtime {
                     ..PropertyDescriptor::default()
                 }
             };
-            if let typed_array::Exotic::Handled(defined) =
-                self.typed_array_define(object, &key, &descriptor, doc)?
-            {
+            if let typed_array::Exotic::Handled(defined) = match classified.as_deref_mut() {
+                Some(classified) => {
+                    self.typed_array_define_for_set(object, classified, &descriptor, doc)?
+                }
+                None => self.typed_array_define(object, key, &descriptor, doc)?,
+            } {
                 return if defined {
                     Ok(())
                 } else {
@@ -450,7 +484,7 @@ impl Runtime {
         }
         // Eight values/mapping/hole searches cover the shared definition's
         // snapshot, dense-cache check, membership check and insertion.
-        let id = self.splice_own_budget(object, &key, 8)?;
+        let id = self.splice_own_budget(object, key, 8)?;
         self.work(32 + 4 * key.len())?;
         self.charge(256)?;
         let sidecar = self.objects[id]
@@ -463,7 +497,7 @@ impl Runtime {
                 if let Value::Number(length) = &value {
                     self.splice_shrink_budget(*array, *length)?;
                 }
-            } else if !sidecar && let Some(index) = json_array_index(&key) {
+            } else if !sidecar && let Some(index) = json_array_index(key) {
                 let index = index as usize;
                 let dense = &self.arrays[*array];
                 if index < dense.len() {
@@ -509,7 +543,11 @@ impl Runtime {
                 ..PropertyDescriptor::default()
             }
         };
-        if self.define_property_key(object, &PropertyKey::String(key), desc, doc)? {
+        let defined = match classified {
+            Some(classified) => self.define_property_key_for_set(object, classified, desc, doc)?,
+            None => self.define_property_key(object, property_key, desc, doc)?,
+        };
+        if defined {
             Ok(())
         } else {
             Err(ScriptError::type_error("splice property cannot be defined"))
@@ -523,6 +561,11 @@ impl Runtime {
         value: Value,
         doc: &mut Document,
     ) -> Result<()> {
+        // Move the caller-owned key once, before borrowing it for this Set.
+        // Previously splice_define made the same move at final definition.
+        let property_key = PropertyKey::String(key);
+        let key = property_key.as_string().unwrap();
+        let mut classified = typed_array::SetKey::from_property(&property_key).unwrap();
         let mut cursor = Some(object.clone());
         let mut finished = false;
         for _ in 0..MAX_DEPTH {
@@ -532,7 +575,7 @@ impl Runtime {
             };
             self.tick()?;
             if let typed_array::Exotic::Handled(assigned) =
-                self.typed_array_set(&target, &key, object, value.clone(), doc)?
+                self.typed_array_set_for_set(&target, &mut classified, object, value.clone(), doc)?
             {
                 return if assigned {
                     Ok(())
@@ -542,11 +585,12 @@ impl Runtime {
                     ))
                 };
             }
-            let property = match self.typed_array_own_property(&target, &key, false)? {
-                typed_array::Exotic::Handled(None) => return Ok(()),
-                typed_array::Exotic::Handled(property) => property,
-                typed_array::Exotic::Ordinary => self.splice_own(&target, &key)?,
-            };
+            let property =
+                match self.typed_array_own_property_for_set(&target, &mut classified, false)? {
+                    typed_array::Exotic::Handled(None) => return Ok(()),
+                    typed_array::Exotic::Handled(property) => property,
+                    typed_array::Exotic::Ordinary => self.splice_own(&target, key)?,
+                };
             if let Some(property) = property {
                 match property.value {
                     PropertyValue::Accessor {
@@ -579,8 +623,8 @@ impl Runtime {
         }
         // No author callback intervenes between the live walk and definition.
         // Shared definition preserves mapped arguments and ArraySetLength.
-        let create = self.splice_own(object, &key)?.is_none();
-        self.splice_define(object, key, value, create, doc)
+        let create = self.splice_own(object, key)?.is_none();
+        self.splice_define_for_set(object, &mut classified, value, create, doc)
     }
 
     pub(super) fn splice_length(

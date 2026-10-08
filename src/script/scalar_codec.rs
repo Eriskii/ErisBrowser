@@ -16,6 +16,7 @@ pub(super) enum Codec {
 }
 
 impl Codec {
+    #[cfg(test)]
     pub(super) const NAMES: [&'static str; 9] = [
         "Int8", "Uint8", "Int16", "Uint16", "Int32", "Uint32", "Float16", "Float32", "Float64",
     ];

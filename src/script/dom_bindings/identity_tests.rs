@@ -947,7 +947,7 @@ fn dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities() {
     );
     assert!(runtime.steps < MAX_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
-    assert_eq!(runtime.objects.len(), 730);
+    assert_eq!(runtime.objects.len(), 732);
     assert!(runtime.objects.capacity() >= BOOTSTRAP_OBJECT_CAPACITY);
     // Runtime::new additionally compares this capacity to its actual immediate
     // post-reserve capacity on every test build, detecting any later growth.

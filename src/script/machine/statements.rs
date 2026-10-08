@@ -3,7 +3,7 @@ use super::{Document, ExprFrame, Frame as Job, Output, Phase as ExprPhase, Resul
 use super::{enter_frame, push, reference, value};
 use crate::script::{
     BINDING_BYTES, DeclarationKind, Flow, JsString, MAX_DEPTH, ScriptError, Value, js_object,
-    own_keys::VisitedNames,
+    own_keys::{ForInObject, VisitedNames},
 };
 use std::rc::Rc;
 
@@ -104,7 +104,7 @@ enum Phase {
     ForOfClose(Result<Flow>),
 }
 struct ForInState {
-    object: Value,
+    object: ForInObject,
     keys: std::vec::IntoIter<JsString>,
     visited: VisitedNames,
     depth: usize,
@@ -839,10 +839,10 @@ fn for_in_start(
         return normal(Value::Undefined);
     }
     let object = runtime.coerce_object(value)?;
-    let keys = runtime.own_keys(&object)?.into_iter();
+    let (object, keys) = runtime.for_in_snapshot(object)?;
     let state = ForInState {
         object,
-        keys,
+        keys: keys.into_iter(),
         visited: VisitedNames::default(),
         depth: 1,
         last: Value::Undefined,
@@ -862,7 +862,8 @@ fn for_in_next(
     let env = frame.env;
     loop {
         for key in state.keys.by_ref() {
-            let Some(property) = runtime.for_in_visit(&mut state.visited, &state.object, &key)?
+            let Some(property) =
+                runtime.for_in_visit_snapshot(&mut state.visited, &state.object, &key)?
             else {
                 continue;
             };
@@ -899,15 +900,16 @@ fn for_in_next(
             };
             return for_in_body(runtime, frame, state, scope);
         }
-        let Some(next) = runtime.prototype_of_in(&state.object, doc)? else {
+        let Some(next) = runtime.prototype_of_in(state.object.value(), doc)? else {
             return normal(state.last);
         };
         if state.depth >= MAX_DEPTH {
             return Err(ScriptError::resource("for-in prototype depth exceeded"));
         }
         state.depth += 1;
-        state.keys = runtime.own_keys(&next)?.into_iter();
-        state.object = next;
+        let (object, keys) = runtime.for_in_snapshot(next)?;
+        state.keys = keys.into_iter();
+        state.object = object;
     }
 }
 fn for_in_body(
@@ -1334,3 +1336,16 @@ mod tests {
 
 #[cfg(test)]
 mod for_of_tests;
+
+#[cfg(test)]
+#[test]
+fn for_in_snapshot_reports_continuation_storage_sizes() {
+    println!(
+        "FOR_IN_STORAGE state={} phase={} statement_frame={} machine_frame={} initial_frame_bytes={}",
+        std::mem::size_of::<ForInState>(),
+        std::mem::size_of::<Phase>(),
+        std::mem::size_of::<Frame>(),
+        std::mem::size_of::<Job>(),
+        8 * std::mem::size_of::<Job>() + 32
+    );
+}

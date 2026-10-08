@@ -107,8 +107,8 @@ shared and immutable buffers, Proxy and foreign realms remain gaps.
 length/buffer/typed-array/iterable/array-like constructors, metadata getters,
 values/keys/entries, authentic isView and live indexed property operations.
 Fixed and tracking views observe resize and detachment. Generic Array and JSON
-operations use the same indexed property hooks. Static and bulk/search/sort/copy/
-string methods, BigInt views and shared buffers remain incomplete. The frozen
+operations use the same indexed property hooks. Static methods, most bulk/search/sort/copy methods, BigInt views and shared
+buffers remain incomplete. The frozen
 local matrix passes all 54 modes with 32 verified paired controls; the upstream
 profile retains its failures, exclusions and work-limit stops.
 The foundation checkpoint records 572 passes, 86 failures, 488 unsupported modes
@@ -117,6 +117,25 @@ records **588 passes, 44 failures, 488 unsupported modes and 118 work stops**
 over the same 1,238 modes. Sixteen former failures pass; 26 advance past an absent
 Reflect method and exhaust the unchanged instruction budget. No previous pass
 regresses. Both historical reports are retained.
+The [views and string conversion follow-up](typedarray-views-test262.md) adds
+`subarray`, `join`, and the exact `Array.prototype.toString` alias for Number
+TypedArrays. Default subarrays share storage; species callbacks and live buffer
+checks preserve their required order. Joined text preserves UTF-16 separators,
+and the shared `toString` function honors a replaced `join`.
+The [local report](../tests/conformance/typedarray-views-local-current.json)
+records **46 passing modes and 24 verified controls**. These 70 local modes form
+the new CI gate. The [206-mode upstream report](../tests/conformance/test262-typedarray-views-after.json)
+records **46 passed, 64 resource-limited and 96 unsupported modes**, with all
+56 controls verified. Resource outcomes make the complete report unhealthy for
+baseline recording, despite its healthy controls; it is not an upstream gate.
+The [foundation follow-through](../tests/conformance/test262-typedarray-after-views.json)
+records **590 passed, 34 failed, 488 unsupported and 126 resource-limited modes**,
+with all 64 controls verified. Both modes of the original
+`DefineOwnProperty/key-is-not-numeric-index.js` case pass again after a retained
+development resource regression. Direct DataView metadata, per-operation key
+classification reuse and smaller visited-name storage remove repeated work
+under the unchanged quotas. Other failures and resource stops remain recorded.
+
 The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,
 20 failures and 38 exclusions. All other observations in the 37 replayed

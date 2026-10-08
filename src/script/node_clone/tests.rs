@@ -118,7 +118,7 @@ fn clone_bootstrap_reports_actual_admission_and_legacy_removal() {
     assert_eq!(runtime.objects.len(), dom_prototypes::BOOTSTRAP_OBJECTS);
     assert!(!runtime.native_properties.contains_key("DOM.cloneNode"));
     assert!(!runtime.native_properties.contains_key("DOM.Node.cloneNode"));
-    assert_eq!(runtime.native_properties.len(), 320);
+    assert_eq!(runtime.native_properties.len(), 299);
     let prototype = runtime.dom_proto_id("Node").unwrap();
     let PropertyValue::Data {
         value: Value::Native(method),

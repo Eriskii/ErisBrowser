@@ -747,7 +747,7 @@ fn data_view_zero_length_metadata_reuses_backing_without_byte_storage() {
 }
 
 #[test]
-fn data_view_installed_order_descriptors_and_registry_identity() {
+fn data_view_installed_order_descriptors_and_direct_identity() {
     let (runtime, _) = fresh();
     let owner = runtime.prototypes["DataView"];
     let mut expected = vec![
@@ -770,7 +770,16 @@ fn data_view_installed_order_descriptors_and_registry_identity() {
         ("getFloat16", "DataView.getFloat16", "getFloat16", 1, false),
         ("setFloat64", "DataView.setFloat64", "setFloat64", 2, false),
     ] {
-        let id = runtime.native_properties[full];
+        let property = &runtime.objects[owner].values[&PropertyKey::from(key)];
+        let function = match &property.value {
+            PropertyValue::Data { value, .. } => value,
+            PropertyValue::Accessor { get, .. } => get,
+        };
+        let Value::Native(native) = function else {
+            panic!()
+        };
+        let id = native.properties.unwrap().get();
+        assert!(!runtime.native_properties.contains_key(full));
         let bag = &runtime.objects[id];
         assert_eq!(
             bag.prototype,
@@ -811,173 +820,8 @@ fn data_view_installed_order_descriptors_and_registry_identity() {
             panic!()
         };
         assert_eq!(native.name, full);
-        assert_eq!(runtime.native_properties[&native.name], id);
-    }
-}
-
-#[test]
-fn data_view_intrinsic_order_reserve_exact_and_one_short() {
-    fn setup() -> (Runtime, usize, usize) {
-        let (mut runtime, _) = fresh();
-        let Value::Object(owner) = runtime
-            .object_ordered([("kept".into(), Value::Number(7.0))])
-            .unwrap()
-        else {
-            panic!()
-        };
-        let target = runtime.objects[owner].order.capacity() + 5;
-        (runtime, owner, target)
-    }
-    let (mut measure, owner, target) = setup();
-    let before_work = measure.steps;
-    let before_heap = measure.allocated;
-    measure.data_view_reserve_order(owner, target).unwrap();
-    let work = before_work - measure.steps;
-    let storage = measure.allocated - before_heap;
-    assert_eq!(storage, target * std::mem::size_of::<PropertyKey>());
-    for (available_work, available_heap, succeeds) in [
-        (work - 1, storage, false),
-        (work, storage - 1, false),
-        (work, storage, true),
-    ] {
-        let (mut runtime, owner, target) = setup();
-        let capacity = runtime.objects[owner].order.capacity();
-        let order = runtime.objects[owner].order.clone();
-        runtime.steps = available_work;
-        runtime.allocated = MAX_HEAP - available_heap;
-        let result = runtime.data_view_reserve_order(owner, target);
-        assert_eq!(result.is_ok(), succeeds);
-        assert_eq!(runtime.objects[owner].order, order);
-        if succeeds {
-            assert!(runtime.objects[owner].order.capacity() >= target);
-        } else {
-            assert!(result.unwrap_err().is_resource_limit());
-            assert_eq!(runtime.objects[owner].order.capacity(), capacity);
-        }
-    }
-}
-
-fn installer_setup() -> (Runtime, usize) {
-    let (mut runtime, _) = fresh();
-    let Value::Object(owner) = runtime.object_ordered([]).unwrap() else {
-        panic!()
-    };
-    runtime.data_view_reserve_order(owner, 3).unwrap();
-    (runtime, owner)
-}
-
-#[test]
-fn data_view_intrinsic_function_admission_exact_and_one_short() {
-    let (mut measure, owner) = installer_setup();
-    let before_work = measure.steps;
-    let before_heap = measure.allocated;
-    measure
-        .data_view_install_function(owner, "DataView.testBudget", "budget", 3, "budget", false)
-        .unwrap();
-    let work = before_work - measure.steps;
-    let storage = measure.allocated - before_heap;
-    println!("DATAVIEW_INSTALL function_work={work} function_heap={storage}");
-    for (available_work, available_heap, succeeds) in [
-        (work - 1, storage, false),
-        (work, storage - 1, false),
-        (work, storage, true),
-    ] {
-        let (mut runtime, owner) = installer_setup();
-        let registry_count = runtime.native_properties.len();
-        runtime.steps = available_work;
-        runtime.allocated = MAX_HEAP - available_heap;
-        let result = runtime.data_view_install_function(
-            owner,
-            "DataView.testBudget",
-            "budget",
-            3,
-            "budget",
-            false,
-        );
-        assert_eq!(result.is_ok(), succeeds);
-        if succeeds {
-            assert_eq!(runtime.steps, 0);
-            assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.native_properties.len(), registry_count + 1);
-            assert_eq!(runtime.objects[owner].order, [PropertyKey::from("budget")]);
-        } else {
-            assert!(result.unwrap_err().is_resource_limit());
-            assert_eq!(runtime.native_properties.len(), registry_count);
-            assert!(
-                !runtime
-                    .native_properties
-                    .contains_key("DataView.testBudget")
-            );
-            assert!(runtime.objects[owner].values.is_empty());
-            assert!(runtime.objects[owner].order.is_empty());
-        }
-    }
-}
-
-#[test]
-fn data_view_intrinsic_duplicates_never_replace_or_partially_publish() {
-    let (mut runtime, owner) = installer_setup();
-    runtime
-        .data_view_install_function(owner, "DataView.testBudget", "budget", 3, "budget", false)
-        .unwrap();
-    let id = runtime.native_properties["DataView.testBudget"];
-    let registry_count = runtime.native_properties.len();
-    let value = runtime.objects[owner].get("budget").unwrap().clone();
-    for (full, key) in [
-        ("DataView.testBudget", "budget"),
-        ("DataView.testNew", "budget"),
-        ("DataView.testBudget", "new"),
-    ] {
-        assert!(
-            runtime
-                .data_view_install_function(owner, full, "changed", 99, key, true)
-                .is_err()
-        );
-        assert_eq!(runtime.native_properties["DataView.testBudget"], id);
-        assert_eq!(runtime.native_properties.len(), registry_count);
-        assert!(!runtime.native_properties.contains_key("DataView.testNew"));
-        assert_eq!(runtime.objects[owner].order, [PropertyKey::from("budget")]);
-        assert_eq!(runtime.objects[owner].get("budget"), Some(&value));
-        assert!(!runtime.objects[owner].contains_key("new"));
-    }
-}
-
-#[test]
-fn data_view_intrinsic_tag_admission_and_duplicate_keep_order() {
-    let (mut measure, owner) = installer_setup();
-    let before_work = measure.steps;
-    let before_heap = measure.allocated;
-    measure.data_view_install_tag(owner).unwrap();
-    let work = before_work - measure.steps;
-    let storage = measure.allocated - before_heap;
-    for (available_work, available_heap, succeeds) in [
-        (work - 1, storage, false),
-        (work, storage - 1, false),
-        (work, storage, true),
-    ] {
-        let (mut runtime, owner) = installer_setup();
-        runtime.steps = available_work;
-        runtime.allocated = MAX_HEAP - available_heap;
-        let result = runtime.data_view_install_tag(owner);
-        assert_eq!(result.is_ok(), succeeds);
-        if succeeds {
-            assert_eq!(
-                runtime.objects[owner].order,
-                [runtime.well_known_key("toStringTag")]
-            );
-            runtime.steps = MAX_STEPS;
-            runtime.allocated = 0;
-            assert!(runtime.data_view_install_tag(owner).is_err());
-            assert_eq!(runtime.objects[owner].order.len(), 1);
-            assert_eq!(
-                runtime.objects[owner].get(runtime.well_known_key("toStringTag")),
-                Some(&Value::String("DataView".into()))
-            );
-        } else {
-            assert!(result.unwrap_err().is_resource_limit());
-            assert!(runtime.objects[owner].order.is_empty());
-            assert!(runtime.objects[owner].values.is_empty());
-        }
+        assert_eq!(native.properties.unwrap().get(), id);
+        assert_eq!(native.receiver, Value::Undefined);
     }
 }
 
@@ -998,100 +842,4 @@ fn data_view_bootstrap_reports_actual_remaining_budget() {
     // verify usable work; this diagnostic does not reset or enlarge a budget.
     assert!(runtime.steps < MAX_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
-}
-
-#[test]
-fn data_view_function_metadata_does_not_need_an_object_prototype_anchor() {
-    let mut reference_costs = None;
-    for anchor in ["normal", "empty", "absent", "misdirected"] {
-        let (mut runtime, owner) = installer_setup();
-        match anchor {
-            "normal" => {}
-            "empty" => runtime.prototypes.clear(),
-            "absent" => {
-                runtime.prototypes.remove("Object");
-            }
-            "misdirected" => {
-                runtime.prototypes.insert("Object", usize::MAX);
-            }
-            _ => unreachable!(),
-        }
-        let mut costs = Vec::new();
-        let mut ids = Vec::new();
-        for (full, display, key, length, getter) in [
-            ("DataView.anchorFirst", "first", "first", 1, false),
-            ("DataView.anchorSecond", "get second", "second", 0, true),
-        ] {
-            let before_work = runtime.steps;
-            let before_heap = runtime.allocated;
-            let expected_id = runtime.objects.len();
-            runtime
-                .data_view_install_function(owner, full, display, length, key, getter)
-                .unwrap();
-            costs.push((before_work - runtime.steps, runtime.allocated - before_heap));
-            let id = runtime.native_properties[full];
-            assert_eq!(id, expected_id);
-            assert_eq!(runtime.objects.len(), expected_id + 1);
-            ids.push(id);
-            let bag = &runtime.objects[id];
-            assert_eq!(
-                bag.prototype,
-                Some(Value::Function(runtime.function_prototype))
-            );
-            assert_eq!(
-                bag.order,
-                [PropertyKey::from("name"), PropertyKey::from("length")]
-            );
-            assert_eq!(bag.values.len(), 2);
-            for (name, expected) in [
-                ("name", Value::String(display.into())),
-                ("length", Value::Number(length as f64)),
-            ] {
-                let property = &bag.values[&PropertyKey::from(name)];
-                assert!(!property.enumerable && property.configurable);
-                let PropertyValue::Data { value, writable } = &property.value else {
-                    panic!()
-                };
-                assert!(!writable);
-                assert_eq!(value, &expected);
-            }
-            let property = &runtime.objects[owner].values[&PropertyKey::from(key)];
-            assert!(!property.enumerable && property.configurable);
-            let function = if getter {
-                let PropertyValue::Accessor { get, set } = &property.value else {
-                    panic!()
-                };
-                assert_eq!(set, &Value::Undefined);
-                get
-            } else {
-                let PropertyValue::Data { value, writable } = &property.value else {
-                    panic!()
-                };
-                assert!(*writable);
-                value
-            };
-            let Value::Native(native) = function else {
-                panic!()
-            };
-            assert_eq!(native.name, full);
-        }
-        // Identical installs must cost the same regardless of an unrelated
-        // prototype table. The former empty-table path saved a lookup charge.
-        if let Some(reference) = &reference_costs {
-            assert_eq!(&costs, reference, "Object anchor: {anchor}");
-        } else {
-            reference_costs = Some(costs);
-        }
-        assert_ne!(ids[0], ids[1]);
-        runtime.objects[ids[0]].insert_hidden("name".into(), Value::String("changed".into()));
-        assert_eq!(
-            runtime.objects[ids[1]].get("name"),
-            Some(&Value::String("get second".into()))
-        );
-        assert_eq!(
-            runtime.objects[owner].order,
-            [PropertyKey::from("first"), PropertyKey::from("second")]
-        );
-        clean(&runtime);
-    }
 }

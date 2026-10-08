@@ -8,11 +8,14 @@ mod call_tests;
 mod constructors;
 mod index;
 mod intrinsics;
+mod set_key;
 #[cfg(test)]
 mod tests;
+mod views;
 
 use index::Index;
 pub(super) use intrinsics::{GLOBAL_COUNT, GLOBAL_NAME_MAX, METADATA_OBJECTS};
+pub(super) use set_key::SetKey;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(usize)]
@@ -309,6 +312,15 @@ impl Runtime {
         let Some((record, number)) = self.typed_array_key(value, key)? else {
             return Ok(Exotic::Ordinary);
         };
+        self.typed_array_own_index(record, number, read_value)
+    }
+
+    fn typed_array_own_index(
+        &mut self,
+        record: Record,
+        number: f64,
+        read_value: bool,
+    ) -> Result<Exotic<Option<Property>>> {
         let Some(index) = self.typed_array_valid_index(record, number)? else {
             return Ok(Exotic::Handled(None));
         };
@@ -322,17 +334,15 @@ impl Runtime {
         ))))
     }
 
-    pub(super) fn typed_array_set(
+    fn typed_array_set_index(
         &mut self,
         target: &Value,
-        key: &JsString,
         receiver: &Value,
         value: Value,
+        record: Record,
+        number: f64,
         doc: &mut Document,
     ) -> Result<Exotic<bool>> {
-        let Some((record, number)) = self.typed_array_key(target, key)? else {
-            return Ok(Exotic::Ordinary);
-        };
         if target != receiver {
             return Ok(if self.typed_array_valid_index(record, number)?.is_none() {
                 Exotic::Handled(true)
@@ -360,6 +370,16 @@ impl Runtime {
         let Some((record, number)) = self.typed_array_key(target, key)? else {
             return Ok(Exotic::Ordinary);
         };
+        self.typed_array_define_index(record, number, descriptor, doc)
+    }
+
+    fn typed_array_define_index(
+        &mut self,
+        record: Record,
+        number: f64,
+        descriptor: &PropertyDescriptor,
+        doc: &mut Document,
+    ) -> Result<Exotic<bool>> {
         if self.typed_array_valid_index(record, number)?.is_none()
             || descriptor.get.is_some()
             || descriptor.set.is_some()
@@ -398,6 +418,10 @@ impl Runtime {
         Ok(Some(
             self.typed_array_live(record)?.map_or(0, |live| live.length),
         ))
+    }
+
+    pub(super) fn typed_array_has_records(&self) -> bool {
+        !self.typed_arrays.records.is_empty()
     }
 
     pub(super) fn typed_array_is_view(&mut self, value: &Value) -> Result<bool> {
@@ -447,6 +471,8 @@ impl Runtime {
             return self.buffer_view_value(backing.buffer);
         }
         match method {
+            "subarray" => self.typed_array_subarray(receiver, record, arguments, doc),
+            "join" => self.typed_array_join(record, arguments, doc),
             "getLength" | "getByteLength" | "getByteOffset" => {
                 let live = self.typed_array_live(record)?;
                 let number = live.map_or(0, |live| match method {

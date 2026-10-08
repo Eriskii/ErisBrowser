@@ -11,8 +11,13 @@ views, nine Number codec pairs including Float16, and authentic `isView`.
 Its complete upstream profile records 694 passes, 12 failures and 416 exclusions.
 [Number TypedArray foundations](docs/typedarray-foundation.md) add all ten
 Number element types, constructors, live indexed properties and iterators over
-fixed or resizable buffers. Bulk methods, BigInt codecs and shared memory remain
-unfinished.
+fixed or resizable buffers. [TypedArray views and string conversion](docs/typedarray-views-test262.md)
+add `subarray`, `join`, and the exact `Array.prototype.toString` function alias.
+The local matrix records 46 passing case modes and 24 verified controls; it is
+this increment's 70-mode CI gate. The upstream report records 46 passes,
+64 work-limit stops and 96 exclusions, with all 56 controls verified. Its
+resource outcomes prevent an upstream baseline. Other bulk methods, BigInt
+codecs and shared memory remain unfinished.
 [Reflect property operations](docs/reflect-properties.md) add nine methods,
 including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean
 integrity checks. Their frozen upstream profile passes 200 modes and retains
@@ -604,11 +609,11 @@ all 160 controls verified. The local suite verifies **96 of 104 expectations**
 after the [for-in length-bucket follow-up](tests/conformance/for-in-length-buckets.md)
 closes two metadata work stops and [DataView](tests/conformance/data-view.md)
 closes two prerequisite modes. Eight prerequisite modes remain unmet.
-Typed arrays, BigInt codecs, shared memory and foreign realms remain unfinished. At the original ArrayBuffer checkpoint, four older Array.from/Object.seal
+Further TypedArray methods, BigInt codecs, shared memory and foreign realms remain unfinished. At the original ArrayBuffer checkpoint, four older Array.from/Object.seal
 modes gained passes, with every other historical observation unchanged.
 DataView adds 694 passes, 12 failures and 416 exclusions, with all 232 controls
 verified. Its local suite verifies 128 of 138 expectations, including four
-expected resource outcomes. The catalog now contains **43 profiles /
+expected resource outcomes. At that checkpoint the catalog contained **43 profiles /
 19,685 modes / 4,484 controls**, with **35 known-state regression gates**.
 Those gates preserve recorded gaps as well as passing cases.
 

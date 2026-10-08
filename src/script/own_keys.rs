@@ -3,9 +3,19 @@
 use super::*;
 
 #[cfg(test)]
+mod for_in_tests;
+#[cfg(test)]
+mod singleton_tests;
+#[cfg(test)]
 mod tests;
 
-type NameBucket = BTreeMap<JsString, ()>;
+// The first name of each length needs no separately allocated search tree.
+// A tree is published only after a second distinct, live name is admitted.
+#[cfg_attr(test, derive(Clone, Debug, PartialEq, Eq))]
+enum NameBucket {
+    Single(JsString),
+    Tree(BTreeMap<JsString, ()>),
+}
 
 // Equality requires equal UTF-16 lengths. The outer tree compares only fixed-
 // width lengths; full text comparisons occur within the reached length bucket.
@@ -14,6 +24,23 @@ type NameBucket = BTreeMap<JsString, ()>;
 #[cfg_attr(test, derive(Clone, Debug, PartialEq, Eq))]
 pub(super) struct VisitedNames {
     buckets: BTreeMap<usize, NameBucket>,
+}
+
+type ForInReader = fn(&mut Runtime, &Value, &JsString) -> Result<Option<Property>>;
+
+// A snapshot's object and its descriptor route cannot be replaced separately.
+// Only a successful no-record lookup can choose the ordinary route. Object IDs
+// are never reused, and TypedArray constructors brand a fresh shell before any
+// callback can expose it. This caches no descriptor, prototype or buffer state.
+pub(super) struct ForInObject {
+    value: Value,
+    reader: ForInReader,
+}
+
+impl ForInObject {
+    pub(super) fn value(&self) -> &Value {
+        &self.value
+    }
 }
 
 const VISITED_NAME_BYTES: usize =
@@ -98,6 +125,31 @@ impl Runtime {
         if let Some(length) = self.typed_array_own_length(receiver)? {
             return self.typed_array_own_strings(receiver, length);
         }
+        self.ordinary_own_keys(receiver)
+    }
+
+    pub(super) fn for_in_snapshot(&mut self, value: Value) -> Result<(ForInObject, Vec<JsString>)> {
+        let length = self.typed_array_own_length(&value)?;
+        // Select the route once, using the result of the original snapshot
+        // search. Some(0) is still a branded view and always uses live checks.
+        self.work(4)?;
+        let ordinary =
+            length.is_none() && matches!(value, Value::Object(_)) && self.typed_array_has_records();
+        let reader: ForInReader = if ordinary {
+            // Admit proof construction, moved identity and eventual retirement.
+            self.work(8)?;
+            Self::for_in_proven_ordinary_property
+        } else {
+            Self::for_in_own_property
+        };
+        let keys = match length {
+            Some(length) => self.typed_array_own_strings(&value, length)?,
+            None => self.ordinary_own_keys(&value)?,
+        };
+        Ok((ForInObject { value, reader }, keys))
+    }
+
+    fn ordinary_own_keys(&mut self, receiver: &Value) -> Result<Vec<JsString>> {
         if receiver == &Value::Window {
             return self.window_own_keys();
         }
@@ -335,11 +387,31 @@ impl Runtime {
         Ok(())
     }
 
+    #[cfg(test)]
     pub(super) fn for_in_visit(
         &mut self,
         visited: &mut VisitedNames,
         object: &Value,
         key: &JsString,
+    ) -> Result<Option<Property>> {
+        self.for_in_visit_using(visited, object, key, Self::for_in_own_property)
+    }
+
+    pub(super) fn for_in_visit_snapshot(
+        &mut self,
+        visited: &mut VisitedNames,
+        object: &ForInObject,
+        key: &JsString,
+    ) -> Result<Option<Property>> {
+        self.for_in_visit_using(visited, &object.value, key, object.reader)
+    }
+
+    fn for_in_visit_using(
+        &mut self,
+        visited: &mut VisitedNames,
+        object: &Value,
+        key: &JsString,
+        reader: ForInReader,
     ) -> Result<Option<Property>> {
         use std::collections::btree_map::Entry;
 
@@ -351,46 +423,72 @@ impl Runtime {
         // entry() does not allocate on pinned Rust 1.88/1.98, even for an empty
         // tree. Cached locations cross only a nontrapping own-descriptor read,
         // never author code. Missing descriptors must leave no empty bucket.
-        // Insertion's 24 units per level bound fixed-size key/value-entry moves
+        // Tree insertion's 24 units per level bound fixed-size key/value-entry moves
         // and edge/backlink updates, not individual machine-word copies. A map
         // header moves without traversing its contents. One node allowance per
-        // inserted name/bucket covers cumulative append-only splits; the outer
-        // allowance includes those headers. BTreeMap's infallible allocator
+        // tree insertion/bucket covers cumulative append-only splits; the first
+        // inline name is covered by its outer-node allowance. That allowance
+        // uses the full enum size. BTreeMap's infallible allocator
         // remains a prepaid boundary. Hidden properties are inserted too.
         match visited.buckets.entry(length) {
             Entry::Occupied(mut bucket) => {
-                let names = bucket.get_mut();
-                let (comparisons, nodes) = tree_bound(names.len());
-                self.work(
-                    1usize
-                        .saturating_add(nodes)
-                        .saturating_add(comparisons.saturating_mul(length.saturating_add(1))),
-                )?;
-                let Entry::Vacant(entry) = names.entry(key.clone()) else {
-                    return Ok(None);
-                };
-                let Some(property) = self.for_in_own_property(object, key)? else {
-                    return Ok(None);
-                };
-                self.work(1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)))?;
-                self.charge(VISITED_NAME_BYTES)?;
-                entry.insert(());
-                Ok(Some(property))
+                self.work(2)?;
+                match bucket.get_mut() {
+                    NameBucket::Single(first) => {
+                        self.work(length.saturating_add(1))?;
+                        if first == key {
+                            return Ok(None);
+                        }
+                        let Some(property) = reader(self, object, key)? else {
+                            return Ok(None);
+                        };
+                        // Build an empty root and insert into its one-key leaf:
+                        // 25 + 25 bounded entry moves, 3 + length for the second
+                        // search, and 4 for retained handles/publication. This
+                        // fresh two-key leaf cannot split or traverse a parent.
+                        // The general tree insertion schedule below is unchanged.
+                        self.work(length.saturating_add(57))?;
+                        self.charge(VISITED_NAME_BYTES)?;
+                        let mut names = BTreeMap::new();
+                        names.insert(first.clone(), ());
+                        names.insert(key.clone(), ());
+                        *bucket.get_mut() = NameBucket::Tree(names);
+                        Ok(Some(property))
+                    }
+                    NameBucket::Tree(names) => {
+                        let (comparisons, nodes) = tree_bound(names.len());
+                        self.work(
+                            1usize.saturating_add(nodes).saturating_add(
+                                comparisons.saturating_mul(length.saturating_add(1)),
+                            ),
+                        )?;
+                        let Entry::Vacant(entry) = names.entry(key.clone()) else {
+                            return Ok(None);
+                        };
+                        let Some(property) = reader(self, object, key)? else {
+                            return Ok(None);
+                        };
+                        self.work(
+                            1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)),
+                        )?;
+                        self.charge(VISITED_NAME_BYTES)?;
+                        entry.insert(());
+                        Ok(Some(property))
+                    }
+                }
             }
             Entry::Vacant(entry) => {
-                let Some(property) = self.for_in_own_property(object, key)? else {
+                let Some(property) = reader(self, object, key)? else {
                     return Ok(None);
                 };
-                // Pay both insertions before either tree changes: one new inner
-                // root and the cached outer insertion. These move fixed-size
-                // handles/headers and do not repeat a full text search.
-                self.work(25usize.saturating_add(
+                // Retain the name directly in the outer node. Pay the cached
+                // insertion and four fixed-size handle operations before any
+                // tree mutation; there is no inner root allocation/insertion.
+                self.work(4usize.saturating_add(
                     1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)),
                 ))?;
-                self.charge(VISITED_NAME_BYTES + VISITED_BUCKET_BYTES)?;
-                let mut names = NameBucket::new();
-                names.insert(key.clone(), ());
-                entry.insert(names);
+                self.charge(VISITED_BUCKET_BYTES)?;
+                entry.insert(NameBucket::Single(key.clone()));
                 Ok(Some(property))
             }
         }
@@ -401,5 +499,16 @@ impl Runtime {
             typed_array::Exotic::Handled(property) => Ok(property),
             typed_array::Exotic::Ordinary => self.read_ordinary_own_property(object, key),
         }
+    }
+
+    fn for_in_proven_ordinary_property(
+        &mut self,
+        object: &Value,
+        key: &JsString,
+    ) -> Result<Option<Property>> {
+        // Reached only after visited-name rejection; admit the proof use before
+        // the live descriptor read or any insertion into the visited set.
+        self.work(4)?;
+        self.read_ordinary_own_property(object, key)
     }
 }

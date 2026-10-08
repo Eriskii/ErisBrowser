@@ -1810,6 +1810,14 @@ impl Runtime {
     }
 
     fn initialize_intrinsics(&mut self) -> Result<()> {
+        self.initialize_intrinsics_before_typed_array()?;
+        self.initialize_typed_array_intrinsics()?;
+        self.initialize_dom_prototypes()?;
+        self.install_object_has_own_intrinsic()?;
+        self.initialize_reflect_property_intrinsics()
+    }
+
+    fn initialize_intrinsics_before_typed_array(&mut self) -> Result<()> {
         for name in [
             "Object",
             "Function",
@@ -2214,6 +2222,7 @@ impl Runtime {
                     value: Value::Native(native),
                     ..
                 } = &property.value
+                    && native.properties.is_none()
                     && native.name.contains('.')
                     && !self.native_properties.contains_key(&native.name)
                 {
@@ -2250,10 +2259,7 @@ impl Runtime {
                 ..PropertyDescriptor::default()
             },
         )?;
-        self.initialize_typed_array_intrinsics()?;
-        self.initialize_dom_prototypes()?;
-        self.install_object_has_own_intrinsic()?;
-        self.initialize_reflect_property_intrinsics()
+        Ok(())
     }
 
     fn initialize_number_statics(&mut self) -> Result<()> {
@@ -5755,6 +5761,7 @@ impl Runtime {
         strict: bool,
         doc: &mut Document,
     ) -> Result<(Option<Property>, bool)> {
+        let mut classified = typed_array::SetKey::new(key);
         let mut cursor = Some(receiver.clone());
         for _ in 0..MAX_DEPTH {
             let Some(target) = cursor else {
@@ -5764,18 +5771,25 @@ impl Runtime {
             if target == Value::Window {
                 self.window_lookup_budget(key)?;
             }
-            if let typed_array::Exotic::Handled(written) =
-                self.typed_array_set(&target, key, receiver, value.clone(), doc)?
-            {
+            if let typed_array::Exotic::Handled(written) = self.typed_array_set_for_set(
+                &target,
+                &mut classified,
+                receiver,
+                value.clone(),
+                doc,
+            )? {
                 if !written {
                     Self::failed_write(strict)?;
                 }
                 return Ok((None, true));
             }
-            let property = match self.typed_array_own_property(&target, key, false)? {
-                typed_array::Exotic::Handled(property) => property,
-                typed_array::Exotic::Ordinary => self.read_ordinary_own_property(&target, key)?,
-            };
+            let property =
+                match self.typed_array_own_property_for_set(&target, &mut classified, false)? {
+                    typed_array::Exotic::Handled(property) => property,
+                    typed_array::Exotic::Ordinary => {
+                        self.read_ordinary_own_property(&target, key)?
+                    }
+                };
             if property.is_some() {
                 return Ok((property, false));
             }

@@ -34,11 +34,14 @@ fn run(runtime: &mut Runtime, unit: &Rc<code::Unit>, doc: &mut Document) -> Resu
 fn visited_names(keys: impl IntoIterator<Item = JsString>) -> VisitedNames {
     let mut visited = VisitedNames::default();
     for key in keys {
-        visited
-            .buckets
-            .entry(key.len())
-            .or_default()
-            .insert(key, ());
+        match visited.buckets.entry(key.len()) {
+            std::collections::btree_map::Entry::Vacant(entry) => {
+                entry.insert(NameBucket::Single(key));
+            }
+            std::collections::btree_map::Entry::Occupied(mut entry) => {
+                entry.get_mut().test_insert(key);
+            }
+        }
     }
     visited
 }
@@ -714,11 +717,8 @@ fn own_keys_repeated_snapshots_and_visited_sets_share_cumulative_heap() {
         .for_in_visit(&mut visited, &target, &"a".into())
         .unwrap()
         .unwrap();
-    assert_eq!(
-        runtime.allocated - before,
-        VISITED_NAME_BYTES + VISITED_BUCKET_BYTES
-    );
-    // The next name reuses length bucket 1; only its inner insertion is new.
+    assert_eq!(runtime.allocated - before, VISITED_BUCKET_BYTES);
+    // The second distinct name promotes the inline singleton to one inner leaf.
     runtime.allocated = MAX_HEAP - VISITED_NAME_BYTES;
     runtime
         .for_in_visit(&mut visited, &target, &"b".into())
@@ -899,9 +899,16 @@ fn own_keys_length_buckets_preserve_arbitrary_utf16_and_payload_identity() {
 
 #[test]
 fn own_keys_new_and_existing_bucket_insertions_precharge_all_mutation() {
-    for new_bucket in [false, true] {
+    // Fresh length, inline promotion and an already-promoted tree are
+    // separately reached storage contracts. All semantic/cut assertions remain.
+    for branch in 0..3 {
+        let new_bucket = branch == 0;
         let key = JsString::from("zz");
-        let seed = visited_names(names(if new_bucket { &["a"] } else { &["bb"] }));
+        let seed = visited_names(names(match branch {
+            0 => &["a"],
+            1 => &["bb"],
+            _ => &["aa", "bb"],
+        }));
         let prepare = || {
             let (mut runtime, _) = fresh();
             let target = ordinary(&mut runtime, &["zz"]);
@@ -920,13 +927,15 @@ fn own_keys_new_and_existing_bucket_insertions_precharge_all_mutation() {
         let heap = runtime.allocated - before.1;
         assert_eq!(
             heap,
-            VISITED_NAME_BYTES + if new_bucket { VISITED_BUCKET_BYTES } else { 0 }
+            if new_bucket {
+                VISITED_BUCKET_BYTES
+            } else {
+                VISITED_NAME_BYTES
+            }
         );
-        let mut cuts = vec![(work - 1, heap), (work, heap - 1)];
-        if new_bucket {
-            // Enough for either isolated allowance must not publish half a set.
-            cuts.extend([(work, VISITED_NAME_BYTES), (work, VISITED_BUCKET_BYTES)]);
-        }
+        // Every new path has one reached allocation allowance. The old cuts
+        // for half of two allocations no longer describe a possible operation.
+        let cuts = [(work - 1, heap), (work, heap - 1), (work, 0)];
         for (steps, bytes) in cuts {
             let (mut runtime, target, mut visited) = prepare();
             runtime.steps = steps;

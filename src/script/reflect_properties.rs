@@ -140,15 +140,40 @@ impl Runtime {
         read_value: bool,
     ) -> Result<(Option<Property>, bool)> {
         self.work(8)?;
-        if let PropertyKey::String(text) = key {
-            if let typed_array::Exotic::Handled(property) =
+        if let PropertyKey::String(text) = key
+            && let typed_array::Exotic::Handled(property) =
                 self.typed_array_own_property(target, text, read_value)?
-            {
-                return Ok((property, true));
-            }
-            if target == &Value::Window {
-                return self.window_reflected_property(text).map(|p| (p, false));
-            }
+        {
+            return Ok((property, true));
+        }
+        self.reflect_own_ordinary(target, key, read_value)
+    }
+
+    fn reflect_own_for_set(
+        &mut self,
+        target: &Value,
+        key: &mut typed_array::SetKey<'_>,
+        read_value: bool,
+    ) -> Result<(Option<Property>, bool)> {
+        self.work(8)?;
+        if let typed_array::Exotic::Handled(property) =
+            self.typed_array_own_property_for_set(target, key, read_value)?
+        {
+            return Ok((property, true));
+        }
+        self.reflect_own_ordinary(target, key.property(), read_value)
+    }
+
+    fn reflect_own_ordinary(
+        &mut self,
+        target: &Value,
+        key: &PropertyKey,
+        read_value: bool,
+    ) -> Result<(Option<Property>, bool)> {
+        if let PropertyKey::String(text) = key
+            && target == &Value::Window
+        {
+            return self.window_reflected_property(text).map(|p| (p, false));
         }
         if dom_own_properties::host(target).is_some() {
             return self.read_own_property_key(target, key).map(|p| (p, false));
@@ -295,17 +320,27 @@ impl Runtime {
         receiver: Value,
         doc: &mut Document,
     ) -> Result<bool> {
+        let mut classified = typed_array::SetKey::from_property(key);
         let mut cursor = target.clone();
         let mut unresolved_dom_string = false;
         for depth in 0..MAX_DEPTH {
             self.work(4)?;
-            if let PropertyKey::String(text) = key
-                && let typed_array::Exotic::Handled(result) =
-                    self.typed_array_set(&cursor, text, &receiver, value.clone(), doc)?
+            if let Some(classified) = classified.as_mut()
+                && let typed_array::Exotic::Handled(result) = self.typed_array_set_for_set(
+                    &cursor,
+                    classified,
+                    &receiver,
+                    value.clone(),
+                    doc,
+                )?
             {
                 return Ok(result);
             }
-            let (property, terminal) = self.reflect_own(&cursor, key, false)?;
+            let (property, terminal) = if let Some(classified) = classified.as_mut() {
+                self.reflect_own_for_set(&cursor, classified, false)?
+            } else {
+                self.reflect_own(&cursor, key, false)?
+            };
             if terminal && property.is_none() {
                 // No callback lies between the two typed probes; normally the
                 // preceding [[Set]] already completed this invalid-index case.
@@ -352,7 +387,11 @@ impl Runtime {
             if !js_object(&receiver) {
                 return Ok(false);
             }
-            let (own, _) = self.reflect_own(&receiver, key, false)?;
+            let (own, _) = if let Some(classified) = classified.as_mut() {
+                self.reflect_own_for_set(&receiver, classified, false)?
+            } else {
+                self.reflect_own(&receiver, key, false)?
+            };
             let descriptor = match own {
                 Some(Property {
                     value: PropertyValue::Accessor { .. },
@@ -373,7 +412,11 @@ impl Runtime {
             };
             // The shared descriptor helper retains its Array length callbacks,
             // TypedArray fresh checks, mutation admissions and Boolean result.
-            return self.define_property_key(&receiver, key, descriptor, doc);
+            return if let Some(classified) = classified.as_mut() {
+                self.define_property_key_for_set(&receiver, classified, descriptor, doc)
+            } else {
+                self.define_property_key(&receiver, key, descriptor, doc)
+            };
         }
         Err(ScriptError::resource("prototype chain limit exceeded"))
     }
