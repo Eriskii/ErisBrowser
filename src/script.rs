@@ -54,6 +54,7 @@ mod scalar_codec;
 mod string_builtins;
 mod symbols;
 mod text_operations;
+mod typed_array;
 mod window;
 use symbols::PropertyKey;
 pub use symbols::Symbol;
@@ -1556,6 +1557,7 @@ pub struct Runtime {
     iterators: iterators::State,
     array_buffers: array_buffer::State,
     data_views: data_view::State,
+    typed_arrays: typed_array::State,
     dom_prototypes: dom_prototypes::State,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
@@ -1730,6 +1732,7 @@ impl Runtime {
             iterators: iterators::State::default(),
             array_buffers: array_buffer::State::default(),
             data_views: data_view::State::default(),
+            typed_arrays: typed_array::State::default(),
             dom_prototypes: dom_prototypes::State::default(),
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
@@ -1746,6 +1749,7 @@ impl Runtime {
                 + std::mem::size_of::<iterators::State>()
                 + std::mem::size_of::<array_buffer::State>()
                 + std::mem::size_of::<data_view::State>()
+                + std::mem::size_of::<typed_array::State>()
                 + std::mem::size_of::<dom_prototypes::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
@@ -2244,6 +2248,7 @@ impl Runtime {
                 ..PropertyDescriptor::default()
             },
         )?;
+        self.initialize_typed_array_intrinsics()?;
         self.initialize_dom_prototypes()?;
         self.install_object_has_own_intrinsic()
     }
@@ -4656,17 +4661,35 @@ impl Runtime {
         key: &JsString,
         doc: &Document,
     ) -> Result<Option<Property>> {
+        self.find_property_lookup(receiver, key, doc, false)
+            .map(|(property, _)| property)
+    }
+    // An invalid canonical numeric key on a TypedArray terminates [[Get]]
+    // and [[HasProperty]], even when a later prototype owns that name.
+    // Presence probes never decode an element's bytes.
+    fn find_property_lookup(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        doc: &Document,
+        read_value: bool,
+    ) -> Result<(Option<Property>, bool)> {
         let mut cursor = Some(receiver.clone());
         for _ in 0..MAX_DEPTH {
             let Some(value) = cursor else {
-                return Ok(None);
+                return Ok((None, false));
             };
             self.work(1 + key.len() / 16)?;
             if value == Value::Window {
                 self.window_lookup_budget(key)?;
             }
-            if let Some(property) = self.read_own_property(&value, key)? {
-                return Ok(Some(property));
+            if let typed_array::Exotic::Handled(property) =
+                self.typed_array_own_property(&value, key, read_value)?
+            {
+                return Ok((property, true));
+            }
+            if let Some(property) = self.read_ordinary_own_property(&value, key)? {
+                return Ok((Some(property), false));
             }
             cursor = self.prototype_of_in(&value, doc)?;
         }
@@ -4678,8 +4701,9 @@ impl Runtime {
         key: &JsString,
         doc: &mut Document,
     ) -> Result<Option<Value>> {
-        let Some(property) = self.find_property_in(receiver, key, doc)? else {
-            return Ok(None);
+        let (property, terminal) = self.find_property_lookup(receiver, key, doc, true)?;
+        let Some(property) = property else {
+            return Ok(terminal.then_some(Value::Undefined));
         };
         Ok(Some(match property.value {
             PropertyValue::Data { value, .. } => value,
@@ -4983,6 +5007,9 @@ impl Runtime {
         Ok(())
     }
     fn delete_property(&mut self, receiver: Value, key: &JsString) -> Result<bool> {
+        if let typed_array::Exotic::Handled(deleted) = self.typed_array_delete(&receiver, key)? {
+            return Ok(deleted);
+        }
         if dom_own_properties::host(&receiver).is_some() {
             return self.dom_delete_own(&receiver, &PropertyKey::String(key.clone()));
         }
@@ -5063,6 +5090,15 @@ impl Runtime {
         key: &JsString,
         doc: &Document,
     ) -> Result<Option<Property>> {
+        self.reduce_property_lookup(receiver, key, doc, false)
+    }
+    fn reduce_property_lookup(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        doc: &Document,
+        read_value: bool,
+    ) -> Result<Option<Property>> {
         // Bounded short-key comparisons still depend on the stored tree's
         // size. Empty trees need no comparison allowance. Ordinary key work
         // uses eight-unit chunks, as the existing per-edge charge does.
@@ -5076,6 +5112,11 @@ impl Runtime {
                 return Ok(None);
             };
             self.work(1 + key.len() / 8)?;
+            if let typed_array::Exotic::Handled(property) =
+                self.typed_array_own_property(&value, key, read_value)?
+            {
+                return Ok(property);
+            }
             let native_name = match &value {
                 Value::Native(native) if native.properties.is_none() => Some(native.name.as_str()),
                 Value::Json => Some("JSON"),
@@ -5132,7 +5173,7 @@ impl Runtime {
         key: &JsString,
         doc: &mut Document,
     ) -> Result<Value> {
-        let Some(property) = self.reduce_property_in(receiver, key, doc)? else {
+        let Some(property) = self.reduce_property_lookup(receiver, key, doc, true)? else {
             return Ok(Value::Undefined);
         };
         match property.value {
@@ -5613,7 +5654,12 @@ impl Runtime {
         {
             return Self::failed_write(strict);
         }
-        if let Some(property) = self.find_property_in(&receiver, key, doc)? {
+        let (property, completed) =
+            self.set_property_lookup(&receiver, key, &value, strict, doc)?;
+        if completed {
+            return Ok(());
+        }
+        if let Some(property) = property {
             match property.value {
                 PropertyValue::Accessor {
                     set: Value::Undefined,
@@ -5684,6 +5730,46 @@ impl Runtime {
         } else {
             Ok(())
         }
+    }
+    // Resolve [[Set]] against each actual target while retaining the original
+    // Receiver. A TypedArray prototype can complete an invalid-index write
+    // without creating a property on the Receiver or converting its value.
+    // The bool reports that an exotic target has already completed the write.
+    fn set_property_lookup(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+        value: &Value,
+        strict: bool,
+        doc: &mut Document,
+    ) -> Result<(Option<Property>, bool)> {
+        let mut cursor = Some(receiver.clone());
+        for _ in 0..MAX_DEPTH {
+            let Some(target) = cursor else {
+                return Ok((None, false));
+            };
+            self.work(1 + key.len() / 16)?;
+            if target == Value::Window {
+                self.window_lookup_budget(key)?;
+            }
+            if let typed_array::Exotic::Handled(written) =
+                self.typed_array_set(&target, key, receiver, value.clone(), doc)?
+            {
+                if !written {
+                    Self::failed_write(strict)?;
+                }
+                return Ok((None, true));
+            }
+            let property = match self.typed_array_own_property(&target, key, false)? {
+                typed_array::Exotic::Handled(property) => property,
+                typed_array::Exotic::Ordinary => self.read_ordinary_own_property(&target, key)?,
+            };
+            if property.is_some() {
+                return Ok((property, false));
+            }
+            cursor = self.prototype_of_in(&target, doc)?;
+        }
+        Err(ScriptError::resource("prototype chain limit exceeded"))
     }
     fn get(&mut self, receiver: Value, key: &str, doc: &mut Document) -> Result<Value> {
         if dom_own_properties::host(&receiver).is_some()
@@ -6472,6 +6558,34 @@ impl Runtime {
     }
 
     fn json_keys(&mut self, id: usize) -> Result<Vec<JsString>> {
+        let receiver = Value::Object(id);
+        if self.typed_array_is_view(&receiver)? {
+            let mut keys = self.own_keys(&receiver)?;
+            self.work(keys.len())?;
+            let mut retained = 0;
+            for index in 0..keys.len() {
+                let property =
+                    match self.typed_array_own_property(&receiver, &keys[index], false)? {
+                        typed_array::Exotic::Handled(property) => property,
+                        typed_array::Exotic::Ordinary => {
+                            // A real view has no parameter map or boxed-string
+                            // payload. Bound its ordinary descriptor tree by
+                            // binary height and 11 comparisons per B-tree node.
+                            let count = self.objects[id].values.len();
+                            let comparisons =
+                                count.min(11 * (1 + count.checked_ilog2().unwrap_or(0) as usize));
+                            self.work(8 + comparisons.saturating_mul(1 + keys[index].len()))?;
+                            self.read_ordinary_own_property(&receiver, &keys[index])?
+                        }
+                    };
+                if property.is_some_and(|property| property.enumerable) {
+                    keys.swap(retained, index);
+                    retained += 1;
+                }
+            }
+            keys.truncate(retained);
+            return Ok(keys);
+        }
         let object = &self.objects[id];
         let count = object.order.len();
         let bytes = object
@@ -7897,6 +8011,14 @@ impl Runtime {
         if native.name == "DataView" {
             return Err(ScriptError::type_error("DataView requires new"));
         }
+        if native.name == "TypedArray" || typed_array::Kind::named(&native.name).is_some() {
+            return Err(ScriptError::type_error(
+                "TypedArray constructor requires new",
+            ));
+        }
+        if let Some(method) = native.name.strip_prefix("TypedArray.") {
+            return self.typed_array_native(method, native.receiver.clone(), &args, doc);
+        }
         if let Some(method) = native.name.strip_prefix("DataView.") {
             return self.data_view_native(method, native.receiver.clone(), &args, doc);
         }
@@ -8519,6 +8641,11 @@ impl Runtime {
                 })?;
                 if name.ends_with("isExtensible") {
                     return Ok(Value::Bool(!self.objects[id].non_extensible));
+                }
+                if !self.typed_array_can_prevent_extensions(&object)? {
+                    return Err(ScriptError::type_error(
+                        "cannot prevent extensions on a resizable TypedArray",
+                    ));
                 }
                 self.objects[id].non_extensible = true;
                 return Ok(object);

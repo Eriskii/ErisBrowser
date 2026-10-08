@@ -4,7 +4,9 @@ The `typedarray-foundation` profile retains 632 original Test262 bodies at
 `7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`: 1,238 modes (620 sloppy and 618
 strict), 773,126 source bytes, and ten unchanged harness helpers. This profile
 prepares validation for ten Number TypedArray kinds, including Float16Array.
-It does not implement those types or claim that scheduled tests pass.
+The preparation commit changed no engine behavior. The subsequent
+[implementation](typedarray-foundation.md) is tracked separately; scheduling
+a test does not claim it passes.
 
 The [before report](../tests/conformance/test262-typedarray-foundation-before.json)
 uses the frozen adapter from formatter commit `0abcd4a`. It records 582 harness
@@ -18,8 +20,8 @@ The [separate local baseline](../tests/conformance/typedarray-foundation-local-b
 records 0 of 54 case expectations and 4 of 32 controls verified, with no runner
 errors or input/binary drift. All eight new tool-test groups and all 269 Test262
 tool tests pass. The [evidence](evidence/typedarray-foundation-preparation.json)
-binds the inputs, tools, binary and complete reports. This is preparation for
-implementation, with no engine behavior change.
+binds the inputs, tools, binary and complete reports. Those original preparation
+reports remain unchanged after implementation.
 
 The importer authenticates both complete `TypedArray` and
 `TypedArrayConstructors` recursive roots: 160 directory trees and 2,191 source

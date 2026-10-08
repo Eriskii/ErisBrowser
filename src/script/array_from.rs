@@ -284,6 +284,22 @@ impl Runtime {
         value: Value,
         doc: &mut Document,
     ) -> Result<()> {
+        // TypedArray value conversion can call author code; it must precede
+        // ordinary table-budget snapshots and use fresh post-callback bounds.
+        if self.typed_array_is_view(result)? {
+            let descriptor = PropertyDescriptor::data_property(value.clone(), true, true, true);
+            if let typed_array::Exotic::Handled(defined) =
+                self.typed_array_define(result, &key, &descriptor, doc)?
+            {
+                return if defined {
+                    Ok(())
+                } else {
+                    Err(ScriptError::type_error(
+                        "Array.from result property cannot be defined",
+                    ))
+                };
+            }
+        }
         // Eight bounds the existing definition path's property/mapping/hole
         // searches and insertion. No author code occurs between this charge
         // and the numeric own definition, including mapped arguments updates.

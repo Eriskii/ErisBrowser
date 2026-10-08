@@ -1,0 +1,30 @@
+<!doctype html><html><head><title>TypedArray ready</title><style>
+body{margin:0;width:320px;height:160px;background:white;color:black;font:16px monospace}
+#change{position:absolute;left:16px;top:16px;width:64px;height:32px;background:green}
+#word{position:absolute;left:96px;top:16px}#status{position:absolute;left:16px;top:72px}
+</style></head><body><div id="change"></div><div id="word">Ready</div><div id="status">waiting</div><script>
+var button=document.getElementById('change'),word=document.getElementById('word').firstChild;
+var status=document.getElementById('status').firstChild,title=document.getElementsByTagName('title')[0].firstChild;
+var backing=new ArrayBuffer(8,{maxByteLength:16}),tracking=new Uint16Array(backing,2);
+var fixed=new Uint16Array(backing,2,2),bytes=new Uint8Array(backing),view=new DataView(backing);
+var shared=Object.getPrototypeOf(Uint16Array.prototype),savedLength=Object.getOwnPropertyDescriptor(shared,'length').get;
+view.setUint16(2,258,true);fixed[1]=772;
+if(tracking[0]!==258||bytes[2]!==2||bytes[3]!==1||fixed[1]!==772||!ArrayBuffer.isView(tracking))throw new Error('initial alias');
+backing.resize(4);
+if(fixed.length!==0||fixed.byteOffset!==0||tracking.length!==1||tracking[0]!==258)throw new Error('initial shrink');
+backing.resize(10);
+if(fixed.length!==2||fixed[1]!==0||tracking.length!==4)throw new Error('initial regrowth');
+var moved=backing.transfer(12),movedView=new Uint16Array(moved,2),movedBytes=new Uint8Array(moved);
+if(!backing.detached||tracking.length!==0||fixed.length!==0||savedLength.call(tracking)!==0||movedView.length!==5||movedView[0]!==258||movedView[1]!==0)throw new Error('initial transfer');
+status.data='2,1 | 5,258,0 | detached';
+document.body.setAttribute('data-phase','0');
+button.onclick=function(){
+  if(tracking.buffer!==backing||fixed.buffer!==backing||!ArrayBuffer.isView(fixed)||!backing.detached)throw new Error('retained detached views');
+  moved.resize(4);
+  if(movedView.length!==1||movedView[0]!==258)throw new Error('click shrink');
+  movedView[1]={valueOf:function(){moved.resize(8);return 513;}};
+  if(movedView.length!==3||movedView[1]!==513||movedBytes[4]!==1||movedBytes[5]!==2||movedView[2]!==0)throw new Error('click live write');
+  status.data='1,2 | 3,258,513 | detached';word.data='Changed';title.data='TypedArray changed';
+  button.style.backgroundColor='blue';document.body.setAttribute('data-phase','1');
+};
+</script></body></html>

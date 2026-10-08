@@ -211,6 +211,20 @@ fn invoke_native(
                 doc,
             )
         })
+    } else if native.name.starts_with("TypedArray.") {
+        runtime
+            .typed_array_call_preflight(&native.name)
+            .and_then(|()| {
+                runtime.native_call(
+                    &Native {
+                        properties: native.properties,
+                        name: native.name.clone(),
+                        receiver,
+                    },
+                    arguments,
+                    doc,
+                )
+            })
     } else if native.name.contains('.') {
         runtime.native_call(
             &Native {

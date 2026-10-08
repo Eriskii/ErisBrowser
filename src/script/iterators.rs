@@ -287,14 +287,21 @@ impl Runtime {
         let Some(object) = object else {
             return self.iterator_result(Value::Undefined, true);
         };
-        let key = self
-            .iterators
-            .length_key
-            .clone()
-            .ok_or_else(|| ScriptError::resource("iterator intrinsics unavailable"))?;
-        let length = self.reduce_get(&object, &key, doc)?;
-        let length = integer_or_infinity(self.number_value(length, doc)?)
-            .clamp(0.0, MAX_LENGTH as f64) as u64;
+        // This also applies to borrowed Array.prototype iterator methods.
+        // A branded view ignores an own poisoned length. Detached/OOB errors
+        // precede any iterator-state write; an already-done iterator stays done.
+        let length = if let Some(length) = self.typed_array_iterator_length(&object)? {
+            length as u64
+        } else {
+            let key = self
+                .iterators
+                .length_key
+                .clone()
+                .ok_or_else(|| ScriptError::resource("iterator intrinsics unavailable"))?;
+            let length = self.reduce_get(&object, &key, doc)?;
+            integer_or_infinity(self.number_value(length, doc)?).clamp(0.0, MAX_LENGTH as f64)
+                as u64
+        };
         // Author length getters/conversion can reenter this same iterator. Only
         // write the named slot below; never restore our saved object/kind/state.
         self.iterator_lookup_work()?;

@@ -59,6 +59,12 @@ impl Runtime {
         receiver: &Value,
         key: &PropertyKey,
     ) -> Result<Option<Property>> {
+        if let PropertyKey::String(key) = key
+            && let typed_array::Exotic::Handled(property) =
+                self.typed_array_own_property(receiver, key, true)?
+        {
+            return Ok(property);
+        }
         if host(receiver).is_none() {
             return Ok(self.own_property_key(receiver, key));
         }
@@ -71,6 +77,19 @@ impl Runtime {
     }
 
     pub(super) fn read_own_property(
+        &mut self,
+        receiver: &Value,
+        key: &JsString,
+    ) -> Result<Option<Property>> {
+        if let typed_array::Exotic::Handled(property) =
+            self.typed_array_own_property(receiver, key, true)?
+        {
+            return Ok(property);
+        }
+        self.read_ordinary_own_property(receiver, key)
+    }
+
+    pub(super) fn read_ordinary_own_property(
         &mut self,
         receiver: &Value,
         key: &JsString,
@@ -387,7 +406,14 @@ impl Runtime {
         }
         let property = match own {
             Some(property) => Some(property),
-            None => self.find_property_in(receiver, key, doc)?,
+            None => {
+                let (property, completed) =
+                    self.set_property_lookup(receiver, key, value, strict, doc)?;
+                if completed {
+                    return Ok(true);
+                }
+                property
+            }
         };
         if let Some(property) = property {
             match property.value {

@@ -14,6 +14,12 @@ impl Runtime {
         desc: PropertyDescriptor,
         doc: &mut Document,
     ) -> Result<bool> {
+        if let PropertyKey::String(key) = key
+            && let typed_array::Exotic::Handled(result) =
+                self.typed_array_define(receiver, key, &desc, doc)?
+        {
+            return Ok(result);
+        }
         if let Value::Array(id) = receiver
             && key
                 .as_string()

@@ -95,6 +95,9 @@ impl Runtime {
     }
 
     pub(super) fn own_keys(&mut self, receiver: &Value) -> Result<Vec<JsString>> {
+        if let Some(length) = self.typed_array_own_length(receiver)? {
+            return self.typed_array_own_strings(receiver, length);
+        }
         if receiver == &Value::Window {
             return self.window_own_keys();
         }
@@ -215,6 +218,71 @@ impl Runtime {
         Ok(result)
     }
 
+    fn typed_array_own_strings(
+        &mut self,
+        receiver: &Value,
+        length: usize,
+    ) -> Result<Vec<JsString>> {
+        // A real view's live dense keys precede its ordinary creation-order
+        // strings. Keep usize indices throughout: this is not Array's u32
+        // index classifier, and no virtual length property is synthesized.
+        self.work(8)?;
+        let Value::Object(id) = receiver else {
+            unreachable!("TypedArray brand belongs to an ordinary object")
+        };
+        let order_len = self.objects[*id].order.len();
+        self.work(order_len.checked_add(1).ok_or_else(overflow)?)?;
+        let stored = self.objects[*id]
+            .order
+            .iter()
+            .filter(|key| matches!(key, PropertyKey::String(_)))
+            .count();
+        let bound = length.checked_add(stored).ok_or_else(overflow)?;
+        let digits = length
+            .saturating_sub(1)
+            .checked_ilog10()
+            .map_or(1, |n| n as usize + 1);
+        // Retain the established virtual decimal/String/UTF-16/Rc envelope.
+        // Stored keys clone handles; each reached canonical classification is
+        // additionally paid by the core helper below. No sort or second key
+        // vector is required for this separate dense/ordinary order.
+        let work = length
+            .checked_mul(4 * (digits + 1))
+            .and_then(|work| work.checked_add(order_len.checked_mul(4)?))
+            .and_then(|work| work.checked_add(bound.checked_mul(2)?))
+            .ok_or_else(overflow)?;
+        self.work(work)?;
+        let bytes = length
+            .checked_mul(64 + digits * 6)
+            .and_then(|bytes| {
+                bytes.checked_add(bound.checked_mul(std::mem::size_of::<JsString>())?)
+            })
+            .ok_or_else(overflow)?;
+        self.charge(bytes)?;
+        let mut result = Vec::new();
+        result
+            .try_reserve_exact(bound)
+            .map_err(|_| ScriptError::resource("TypedArray own-key allocation failed"))?;
+        for index in 0..length {
+            result.push(JsString::from(index.to_string()));
+        }
+        for ordinal in 0..order_len {
+            let Some(key) = self.objects[*id].order[ordinal].as_string().cloned() else {
+                continue;
+            };
+            // Canonical numeric keys never belong to the ordinary stored-key
+            // suffix, even after resize/detachment or in a malformed private
+            // fixture. This also prevents a virtual/stored duplicate index.
+            if matches!(
+                self.typed_array_own_property(receiver, &key, false)?,
+                typed_array::Exotic::Ordinary
+            ) {
+                result.push(key);
+            }
+        }
+        Ok(result)
+    }
+
     fn own_key_less(&mut self, left: &OwnKey, right: &OwnKey) -> Result<bool> {
         self.work(3)?;
         Ok(left.rank() < right.rank())
@@ -301,7 +369,7 @@ impl Runtime {
                 let Entry::Vacant(entry) = names.entry(key.clone()) else {
                     return Ok(None);
                 };
-                let Some(property) = self.read_own_property(object, key)? else {
+                let Some(property) = self.for_in_own_property(object, key)? else {
                     return Ok(None);
                 };
                 self.work(1usize.saturating_add(nodes.saturating_add(1).saturating_mul(24)))?;
@@ -310,7 +378,7 @@ impl Runtime {
                 Ok(Some(property))
             }
             Entry::Vacant(entry) => {
-                let Some(property) = self.read_own_property(object, key)? else {
+                let Some(property) = self.for_in_own_property(object, key)? else {
                     return Ok(None);
                 };
                 // Pay both insertions before either tree changes: one new inner
@@ -325,6 +393,13 @@ impl Runtime {
                 entry.insert(names);
                 Ok(Some(property))
             }
+        }
+    }
+
+    fn for_in_own_property(&mut self, object: &Value, key: &JsString) -> Result<Option<Property>> {
+        match self.typed_array_own_property(object, key, false)? {
+            typed_array::Exotic::Handled(property) => Ok(property),
+            typed_array::Exotic::Ordinary => self.read_ordinary_own_property(object, key),
         }
     }
 }

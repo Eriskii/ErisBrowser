@@ -1,0 +1,2482 @@
+{
+  "schema": 1,
+  "scope": "local TypedArray foundation, separate from upstream profile",
+  "binary": "/tmp/eris-typedarray-foundation-1/eris-js-final",
+  "binary_sha256": "da8e5280b2cb16bd87ed31bf073a29c3da58791ca43ae518e7d22def345a14f6",
+  "binary_bytes": 151118608,
+  "inputs": [
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/typedarray_foundation_local.py",
+      "bytes": 12533,
+      "sha256": "7841a34935ac66b952b85035929edda87e92b1ccc722ff0ebb3830507660d3f0"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/test262_conformance.py",
+      "bytes": 234830,
+      "sha256": "59c90b16678a734b7278a7e6fa1c5fbafd6878375255d6255fc0185dc5ab42d7"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/html_conformance.py",
+      "bytes": 13920,
+      "sha256": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/import_test262.py",
+      "bytes": 65205,
+      "sha256": "b88bc7c83d040ca48cda3cea77ffca14af8a9b39e645bfe86ea26cf18da8f433"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/cases.js",
+      "bytes": 21910,
+      "sha256": "5770d7a561735697f4446b360220b6a551ccfc82f104c81ca278a45de926ca90"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/controls.json",
+      "bytes": 20297,
+      "sha256": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/inventory.json",
+      "bytes": 2497,
+      "sha256": "2d3ba8e92b67ca53ffb233ee96c93204a053fcf1f0921c2bd868169c1f8bebd5"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/README.md",
+      "bytes": 2913,
+      "sha256": "18cd80aa988ac5d943694a65aeab2fda2782d9058c57466f4c850a10f600745b"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/manifest.json",
+      "bytes": 983,
+      "sha256": "908c0348fa60073d9f8a7b5a359d960c44657dfcd2a469046dbdb5d5d3be9947"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/matrix.json",
+      "bytes": 41163,
+      "sha256": "c11cc9cf73d77c3fc54b1af83b29f0f25cbbc6d5e07425e7f88bc74f9d37e6c2"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/RUNNER.md",
+      "bytes": 2657,
+      "sha256": "63ca63b1ccf16af995cd15f33019cb8a606c9a3afad5bd3b01ccdd6aced7c919"
+    }
+  ],
+  "observed_after": [
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/typedarray_foundation_local.py",
+      "bytes": 12533,
+      "sha256": "7841a34935ac66b952b85035929edda87e92b1ccc722ff0ebb3830507660d3f0"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/test262_conformance.py",
+      "bytes": 234830,
+      "sha256": "59c90b16678a734b7278a7e6fa1c5fbafd6878375255d6255fc0185dc5ab42d7"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/html_conformance.py",
+      "bytes": 13920,
+      "sha256": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tools/import_test262.py",
+      "bytes": 65205,
+      "sha256": "b88bc7c83d040ca48cda3cea77ffca14af8a9b39e645bfe86ea26cf18da8f433"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/cases.js",
+      "bytes": 21910,
+      "sha256": "5770d7a561735697f4446b360220b6a551ccfc82f104c81ca278a45de926ca90"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/controls.json",
+      "bytes": 20297,
+      "sha256": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/inventory.json",
+      "bytes": 2497,
+      "sha256": "2d3ba8e92b67ca53ffb233ee96c93204a053fcf1f0921c2bd868169c1f8bebd5"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/README.md",
+      "bytes": 2913,
+      "sha256": "18cd80aa988ac5d943694a65aeab2fda2782d9058c57466f4c850a10f600745b"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/manifest.json",
+      "bytes": 983,
+      "sha256": "908c0348fa60073d9f8a7b5a359d960c44657dfcd2a469046dbdb5d5d3be9947"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/matrix.json",
+      "bytes": 41163,
+      "sha256": "c11cc9cf73d77c3fc54b1af83b29f0f25cbbc6d5e07425e7f88bc74f9d37e6c2"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/worktree/tests/conformance/typedarray-foundation-local/RUNNER.md",
+      "bytes": 2657,
+      "sha256": "63ca63b1ccf16af995cd15f33019cb8a606c9a3afad5bd3b01ccdd6aced7c919"
+    },
+    {
+      "path": "/tmp/eris-typedarray-foundation-1/eris-js-final",
+      "bytes": 151118608,
+      "sha256": "da8e5280b2cb16bd87ed31bf073a29c3da58791ca43ae518e7d22def345a14f6"
+    }
+  ],
+  "binding_failures": [],
+  "matrix_sha256": "c11cc9cf73d77c3fc54b1af83b29f0f25cbbc6d5e07425e7f88bc74f9d37e6c2",
+  "summary": {
+    "case_matches": 54,
+    "case_total": 54,
+    "control_matches": 32,
+    "controls_verified": 32,
+    "control_total": 32,
+    "runner_errors": 0
+  },
+  "cases": [
+    {
+      "id": "all_ten_number_kinds#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "0f4561d8bc2ccf48b1946aa30abfbe20225dd505c3ea4ff0342dedd9ee81c68e",
+      "source_sha256": "457d6c7ee2e13bb20ce5da1af89cc63395c01a937e6ff2bf681029b0a83f6401",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "all_ten_number_kinds#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "4bf3656c694a566624f388311bcdd5e7eb256928e7740856e0002aab81055672",
+      "source_sha256": "3e82f27a3f2a1fd42e8ecb460617a5f49503619af08dc8c6f9784f781f27eeb8",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "clamp_and_float16_ties#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "bf265e7219ab38c981afa6227653ba220e078e729564ed39c0519c52e9231538",
+      "source_sha256": "e2456c34e9b3fb14458d89f8fd1cc552006cbc843c68d85bd2a2ad707df37a34",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "clamp_and_float16_ties#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "04e6ca1b9b0c9ec61efb069c331e3b5805996ab69fd3881ace10d18da3b58cba",
+      "source_sha256": "19612627d9df84da1311208d1e0ef950fa1730071dffe9f84cdc0a2d029f6090",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "same_kind_preserves_nan_payload#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "2bc6126630760a3156128e1e84dea8850b25acff1ff46ddf5f233ff85573f3a3",
+      "source_sha256": "81f1e3e32b8f8b63cb3eb59d7fe7203c7292b145600fe76badc109aa003ac8a0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "same_kind_preserves_nan_payload#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "ef30f8b5613eaee9f677f1075497279dd23d47c0b619a04412752c50eedfda56",
+      "source_sha256": "39a7d6af53216468a9d1830b689faf68da3d24ba6bdb18af9e794663f9002dc6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "primitive_lengths_and_call_refusal#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "ee68e83dbaef3475c595a6e1c93bd63fd09c5c91511ec17691dee625f1ccef9b",
+      "source_sha256": "f6b634b922588d6215762b2ada9366875531cf79bc17723772a36dbbcdafe5a0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "primitive_lengths_and_call_refusal#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "79864dbeefcd5889f9b40472f8d680b6edcca980902367a1f7c95a50cbd0cd71",
+      "source_sha256": "47e4e0aa050251e11b8c0342df6d8c4f01ef60af6c78256286994d2ad3e563de",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "iterable_collected_before_conversion#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "64a2b1194716ce8fbb3dc2928f2cb28a7fac72d71bb9c64f0e346c69fe295f16",
+      "source_sha256": "48638fe80d5b585949c30bdee6833dbe8b3f83047cec10caf72261edcbc33b9f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "iterable_collected_before_conversion#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "c48cddcb888a7209f272d1a3bdeb9fd605d928953d6e67e5c93014e0d6e6fc56",
+      "source_sha256": "3c10e97dc8f9866fecee5eb08b8e5f807fdc8ca67eb529e6da599cd4fba4310d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "arraylike_interleaves_get_and_convert#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "74fc4059dfc8c0cb91d2720f964e6aad04a96c37b2e756acceea402a96ddd5f4",
+      "source_sha256": "190e2f8b33013f3229494dee89b505569e70760357884f3adac8e3e1c3d52ce5",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "arraylike_interleaves_get_and_convert#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "b877578045491f25c6c27e00528568b8b2f198407c448a76aa0465c0c4aca8cf",
+      "source_sha256": "28bf6863af10493a4faffb6459e9e16a054768e58afd1c41128bde461bbb0d24",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "typed_source_ignores_authored_lookups#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "6f608fe7d5678422792c0984b1b0f0bda2e3d49a3c739f70e0db691a6ce2ee40",
+      "source_sha256": "dca3458a03092f04b26c4d4d4be7f40aa907e1fefca5136a60d56e68ccda0c52",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "typed_source_ignores_authored_lookups#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "d63faabbbdf4e58916bf834986451767a8d579261b539ac08902697fcf3a5459",
+      "source_sha256": "b8925fee820ba8d4d0c7f302cf17fcebdc4646b1e271ad2baff49137e9f04fc8",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "buffer_offsets_fixed_and_tracking#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "a10b19edc75e6b5c27873092457d0549223c62e852cfefee8fdee2f03917c55c",
+      "source_sha256": "e672a593c3f08fc71d525a90edc9694cc0da32daeedee2bb97aeaf076fa1038c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "buffer_offsets_fixed_and_tracking#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "d5e71ceac86b9496307c65363aac0b6e0061c55b2f31500adc5e91a1d2aa7fcf",
+      "source_sha256": "5ccea94bd04501fda8807eb4598acf199cedae76783eb7a1a0511acc73d2903e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "shrink_oob_regrowth#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "ca76ac95b557ca267da2e2acfb634c1ec084f175ef340a5c1cd2fc7fe4212941",
+      "source_sha256": "16440a47d95f5888d25ddc0957176280ada76e22b6c4f676a558c571cdc7b74b",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "shrink_oob_regrowth#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "631d71780ac50cffcce8a18069be3b558e8a93b115cbd639567b1f7d4f1b5bb3",
+      "source_sha256": "09e841ffdc2ec6af3722a1ca56652ee30379fb538fa76e38be678792b55fe17e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "transfer_detaches_retained_views#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "1cc1463e6737b50a5e3b42f25fe37aec6e4d5fc45ec2669c90d9ebb4ff337948",
+      "source_sha256": "f398159f26140ec6e8be911566bb4a9e05cee3f4abb139b2147e7809cb963123",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "transfer_detaches_retained_views#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "0f52f9f61b47fa0f4d04c59ea0bbf20160bc9b22e716189c722aef8fcfcf4258",
+      "source_sha256": "a0188d3d497cd594fcf393578e604561679bfb1d833dfb3509583ecae7eb273b",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "alternative_prototype_and_conversion_order#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "209e21ceba965e12b647d45e3aa123ccfa33d69df4846b2c867a0aeca6c5b2d2",
+      "source_sha256": "4ecd2e64cf516fc8358047291f029c043e4e80b9f80a8959d7e371728b080376",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "alternative_prototype_and_conversion_order#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "0b643f8d61d5647901ce7fb558c99b782ac3cbfc2b53d0376e3db06a1f5b2a7f",
+      "source_sha256": "303920ff43779009c19825cae9f014bee64286f8164ed0cb3372ef36b1882e0e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "recursive_collection_keeps_records_searchable#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "a1b824e1ce53314fbc718156252a514f8aa33a7d1a2582313467c1ee6467d360",
+      "source_sha256": "15b205659bc2dde001ed73cc42b4ce665be7acdba4e26c929bf15294dd949bb0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "recursive_collection_keeps_records_searchable#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "63bc8c57f5f9bab38b29c138414c452e06a1119c4cdefc9901f90e00b580e4c8",
+      "source_sha256": "9b62031ac2b88ce168394423e44fb54b32a7679599da990ee30b6c8d1d4ae847",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "canonical_numeric_keys_stop_prototype#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "b7ab5bfd891b07a4e37a54780c39d85150ab25dcf50701ab13962ff7864d24cc",
+      "source_sha256": "06dfce6a62c391d276e240ef26dc412e657817251d6f3d3e06629eaeaf0e99a7",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "canonical_numeric_keys_stop_prototype#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "1c56853ed9716ae8fd51839a810f21ba925564e8adab129766c2fe376e91f38c",
+      "source_sha256": "354c579025a3fee47144da039836d0e6fe87a9d6a8f84a518ce53a2ca4670c27",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "indexed_set_converts_before_live_bounds#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "7a3f4d0c1ece653396cf18ed3ac1bcb02018ee380800bef98e6e3765c0ac0cf5",
+      "source_sha256": "04d5efe300193620d035506ea42122fb32252d583e987cce41f8c180be2c2fa0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "indexed_set_converts_before_live_bounds#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "7e19d39016fec692343fdb91759d3d79367ab4409658103a5d83e6af3928d255",
+      "source_sha256": "d3643c7470ff5b87af9c7dcbaf69087a8bfc7bf2558744f444a3afd5ddd91f69",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "distinct_receiver_no_numeric_conversion#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "2f8e67b4f31dbfc474b33170b2c63bc5c10861049b6b5e2f05620c32a3ca2c9b",
+      "source_sha256": "b8e0982376ec872d95c5e9f65202ebd4bda39ac26e55ebe3f315016d435f290e",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "distinct_receiver_no_numeric_conversion#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "1bfc44215c20b65b0ea0d4d430b34d5a145182441bb3c592b3da4b32f91472e8",
+      "source_sha256": "a7bf8f44f28c60f9b860d58367a13236dc879a7df8b4f6d07a010ea44729f82b",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "indexed_descriptor_and_delete#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "dfe30810cb5d93bd71c1d9fff9860f186299aa89ae050c42ddb60047a7397969",
+      "source_sha256": "dad88ff7d52fcf9a33e888e442c047a5b67570470d4b83808b12b306e7a5a001",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "indexed_descriptor_and_delete#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "25b592568fef584553b3729f6fa1523609b8c4c6ee60b64f01ad725d4e0b3bdc",
+      "source_sha256": "3d9458239823a98b585323c544e9f92cf79dd506cc267df8842fae21e7558e58",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "define_property_rejections_do_not_convert#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "1ec3e999aae68f8b126fb7b158484f2d1a0bdd3979d4c06b15ac4105d2d3a299",
+      "source_sha256": "99b35884674319ebe12adecff22a68112668fe2b49c6a704e1cc95233bf0e514",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "define_property_rejections_do_not_convert#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "44a2084c38913b72ef0def031f86b3faca7a1c38fc907cc3a164e574e34a5864",
+      "source_sha256": "749cfe04c67d7c50cedd5e4f496df5f3674c0f919536914dd550f34d4454a4b9",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "own_keys_enumeration_and_generic_consumers#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "468562a97438a921765cb3ff6f1cef11bd5959e9d6095f07807f7a1b805f2190",
+      "source_sha256": "bb51bbb02e8b29654c944c217105a47af5d4f4cb0dfc1144c38e2f299978ea9c",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "own_keys_enumeration_and_generic_consumers#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "de3d86dd03e1e9eee8e662408da792fb1a79f0748312c2d2ac6e657e501aebe5",
+      "source_sha256": "3716c3b6cb9356211bc6fa5fcdc0da77c07436a8a04a53d80881d5dd81ee48e2",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "integrity_resizable_and_fixed#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "d2c496b26b8c7c572659f772966a8c3ab5d657e64b0e45c6d2ce77f3f3c3d2d8",
+      "source_sha256": "41b54e1712b21e02073424a87b6cc08b57815825ca3d1b6a881218a23432f96d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "integrity_resizable_and_fixed#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "03b81657c70cfaa39407b6fe634ed5c41788598b55b8ebd8eb4b680e62469e1e",
+      "source_sha256": "f9fdab00263854051e08c1482b241301d49df0acb37d7dcf59ec2a82c6436a20",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "getter_brand_tag_and_isview#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "cf72324de27c3a1e569af9ae434152a33c599a7c813aab9126f6e113b655130c",
+      "source_sha256": "08004b407b40089bdf94e52e3824cd184f5167e4b332b61557f2ec62754cecf6",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "getter_brand_tag_and_isview#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "631058ebc3a1ba9dd2224cd275dffe52bb166826a531b44e01d5354e5aaa33be",
+      "source_sha256": "c56a15fb11b8edc7fafe9ac8ae200bed8ff6e6256df7f28edb1989fe4d1a6efb",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "constructor_metadata_and_saved_global#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "d171220a4854d4f0595c7f76cf4599c137b868f3427522090cc62c0aca07e601",
+      "source_sha256": "92e4d1b14c960e33bdd7c2eee73b1f546f972b12f158c27d4c2ae4af1d0a2d86",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "constructor_metadata_and_saved_global#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "d52e0bfa1ec267cfee858be26ce198a6868ff98837959eb3ed12df299fb28904",
+      "source_sha256": "141d1720d6cb048c9cc43d3f41144e3b5df910d676a180d18c4ab4e46c4eace9",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "iterators_alias_live_length_and_sticky_done#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "0cee4ef517c7a11fbcbb3ce2261d3538f5e4fa68d0ad41b22b10589704ac975c",
+      "source_sha256": "6c0e173d2771a2798481af6c13457c33eb53a4af87a14cfb9dab37c056119990",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "iterators_alias_live_length_and_sticky_done#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "d6e68782508e03de4d11596fcdd9e96e4cf7ddb51c384f1302449983d7250059",
+      "source_sha256": "2a52087687165797ea7c73b0c1743c92671bd8ed79788d64321e68e3a7529bad",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "iterator_oob_detached_and_array_borrow#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "378c02686febe95fe5c223afdf37ab395c4a0cd74c4cf3d384f981e024389545",
+      "source_sha256": "6570b8951e722111ebcd3f70ccfbb20a6ad3d7d8f5b33078a832338a43bcc5a0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "iterator_oob_detached_and_array_borrow#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "12c169e799f9afacb1f5f56aa32cb64cf93cbc440bb437ae977b2515ca7e5090",
+      "source_sha256": "309d497d16ca166f79b29a5b8e3c8af543b7f113551e163fa8e91218839f0a84",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "exhausted_iterable_conversion_abrupt_no_close#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "0ed7ea0b5563330c096655bb68cf8793d08e13e03a6e91df336717658ac9d91c",
+      "source_sha256": "1f399f3ac826c247c35be948d98cfe3a874b908a9fcbd2b3a8ca9a9870465086",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "exhausted_iterable_conversion_abrupt_no_close#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "d7852ade8a98b0a83b578bf39ef285b13302bd27f89e9fbb2d9016799892b6d0",
+      "source_sha256": "c3b420b07244e2269d35972755b171f6a20c5a348eeb98811c06920a55d66365",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "canonical_decimal_roundtrip_and_key_conversion#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "b9667d19c5c340510d4d4527b6c16ad5e5a686410b41aa6de16bb1b7cdd7022d",
+      "source_sha256": "9c0a79a7268c5715cc2911ee6dd036f7befc10be91f069ca5dc06bc5aa212989",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "canonical_decimal_roundtrip_and_key_conversion#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "743dc4ac7184c9ccc0276c212af10c3a52fe1a82c918ae1c18c1cd3e8dbe1248",
+      "source_sha256": "f22bad19a4141a3bce74f9c618f049982c35957fb23f38cfe486954bec6708ec",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "newtarget_getter_and_final_buffer_witness#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "38487a8cd2002cf37bebec4a9cdc606bb7c8edf1725f0f15ea78fb3502fa5fee",
+      "source_sha256": "7bcff2f3ce2c5c2374cc47e00a3888e50c164d81da5a8912a9d2a10cab5b41a5",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "newtarget_getter_and_final_buffer_witness#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "6fd721787ae3060ca9eb7c14b23f1b5daa2c2a7cc70f2b989e54a58c455cbde4",
+      "source_sha256": "0edf7e8d0feea8d273d296b23ccc4b0f2525b3b5bc69b24cd23456b5203ee26a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "floating_alias_bytes_and_signed_zero#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "879c3e760203fd48449d22866dd8e7ed98707c456c076a2983f8a4fbbb6e12ea",
+      "source_sha256": "64fc6416213c709152751b7faa80ad1f9194b95a7d589c3bb60e2adfbbe2ea0f",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    },
+    {
+      "id": "floating_alias_bytes_and_signed_zero#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "1061565834bd21c60e9fd2f01d1fdb5b7f4a571d4644ab6d6539f75f088083da",
+      "source_sha256": "f0cfbb366c5e4b67c36a2b1d050da5526f0ff14557a7f03af2849d61b48389c8",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": true
+    }
+  ],
+  "controls": [
+    {
+      "id": "literal-units-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "1342ab67c30040a8f5bb06f467f9eafba01fbe845dff51421678c13099711f37",
+      "source_sha256": "1d0d0011410fefd5050c5b4e883e4ed373d54fd32c6db0feba1b808b49d25e9a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "literal-units",
+      "positive": true,
+      "area": "common",
+      "partner": "literal-units-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "literal-units-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "cb495a7ce700932cdb94a24936f9fa840f63e6ac2185b5bb82e8671f81d5f793",
+      "source_sha256": "1d0d0011410fefd5050c5b4e883e4ed373d54fd32c6db0feba1b808b49d25e9a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "literal-units",
+      "positive": true,
+      "area": "common",
+      "partner": "literal-units-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "literal-units-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "2e4696beca923bc1b5d1703f7608322db2cf7d04b5a796e82ece3a29707749e6",
+      "source_sha256": "a871f65d33cfce035b448f0516b8c3e75123c94bd34785fc0e1dda194aad896c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "literal-units",
+      "positive": false,
+      "area": "common",
+      "partner": "literal-units-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "literal-units-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "e410032b3bcb0097993d32a936a764adf2425696506758148c3eee7ca25bfad6",
+      "source_sha256": "a871f65d33cfce035b448f0516b8c3e75123c94bd34785fc0e1dda194aad896c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "literal-units",
+      "positive": false,
+      "area": "common",
+      "partner": "literal-units-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "ten-number-conversions-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "6a9dfecb955b29183ed62b63ae826b730a80e11728192f4cb77ffd073ebbd524",
+      "source_sha256": "e2d6c97419e9d555261817357fe75fd9aedad59da9616fa2f5b3e484ddf9369a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "ten-number-conversions",
+      "positive": true,
+      "area": "feature",
+      "partner": "ten-number-conversions-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "ten-number-conversions-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "82919aff8b544cba5ee0f1349b6c333f38f634a673b8d45f7216435f2972fe02",
+      "source_sha256": "e2d6c97419e9d555261817357fe75fd9aedad59da9616fa2f5b3e484ddf9369a",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "ten-number-conversions",
+      "positive": true,
+      "area": "feature",
+      "partner": "ten-number-conversions-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "ten-number-conversions-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "1925d7924cac5cfe95bddad80810874243a50fe7e687ad84278087d484e635a1",
+      "source_sha256": "f6548114452168302ad498c210b0ac9ebd5f4c6a23fbd1b2706d0bbe9df787fa",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "ten-number-conversions",
+      "positive": false,
+      "area": "feature",
+      "partner": "ten-number-conversions-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "ten-number-conversions-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "74282f0983988fe6d8a3bdf5ce9d2234ebf7925509a3f95376bc52e8cf6fa004",
+      "source_sha256": "f6548114452168302ad498c210b0ac9ebd5f4c6a23fbd1b2706d0bbe9df787fa",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "ten-number-conversions",
+      "positive": false,
+      "area": "feature",
+      "partner": "ten-number-conversions-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "float16-direct-tie-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "ca561c1179c30691a09d25d9bab0ce892f7afb88895860c931e972a3e8c6916c",
+      "source_sha256": "d084daa504f04e0abf0bc67a4754b370b616f79ada1fbe37082d880cbc9de45d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "float16-direct-tie",
+      "positive": true,
+      "area": "feature",
+      "partner": "float16-direct-tie-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "float16-direct-tie-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "2f1714982c71abb2c367adea3a9cce3f16a2360b3963215cad0ce4836125369f",
+      "source_sha256": "d084daa504f04e0abf0bc67a4754b370b616f79ada1fbe37082d880cbc9de45d",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "float16-direct-tie",
+      "positive": true,
+      "area": "feature",
+      "partner": "float16-direct-tie-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "float16-direct-tie-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "261e5c0c4ff36c232953575c3f79d0dc111c086925ff8e9e3b7642ed5c8cf4d5",
+      "source_sha256": "b9cf8a2ba8062f73b8824727bfe2f3b5bfef52ae4fdcdfa93eafec7932cd397a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "float16-direct-tie",
+      "positive": false,
+      "area": "feature",
+      "partner": "float16-direct-tie-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "float16-direct-tie-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "c66451c6d1157f5d91a78971bec399dbf772696ba15420fa900d921482995d5a",
+      "source_sha256": "b9cf8a2ba8062f73b8824727bfe2f3b5bfef52ae4fdcdfa93eafec7932cd397a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "float16-direct-tie",
+      "positive": false,
+      "area": "feature",
+      "partner": "float16-direct-tie-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterable-before-conversion-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "bd2786f2601f36d90c46b1e5f2ebb30205876772e055163edb92bae0fd888fb6",
+      "source_sha256": "b208cc673d82e37b16f98dc9452eeb0a993c79452f2bcec0757b9623e72f43ae",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "iterable-before-conversion",
+      "positive": true,
+      "area": "feature",
+      "partner": "iterable-before-conversion-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterable-before-conversion-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "7961b5463fe10f890eb2c2384e60f78444734a9202ebab3380edcc28aaea905b",
+      "source_sha256": "b208cc673d82e37b16f98dc9452eeb0a993c79452f2bcec0757b9623e72f43ae",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "iterable-before-conversion",
+      "positive": true,
+      "area": "feature",
+      "partner": "iterable-before-conversion-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterable-before-conversion-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "725377eaf3314be8a58e3513ad6340a75474215a0f08fe156875c30a7b9549ea",
+      "source_sha256": "113bc05cfae42c780d80fa69170e5e35dbab7880515b93f5db6dc65b303816b5",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "iterable-before-conversion",
+      "positive": false,
+      "area": "feature",
+      "partner": "iterable-before-conversion-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterable-before-conversion-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "3a0138478635484786469b7f174822bbcdf253abb89c657f95580abcb32c47bf",
+      "source_sha256": "113bc05cfae42c780d80fa69170e5e35dbab7880515b93f5db6dc65b303816b5",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "iterable-before-conversion",
+      "positive": false,
+      "area": "feature",
+      "partner": "iterable-before-conversion-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "resized-write-live-bounds-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "55f0b5f47ec38f28317ed5e6e83401ffbde3301fe8e1c61993bb978ab2e87d04",
+      "source_sha256": "dfe7bf19bfa965de7252246ff10cb3a66a5ed1e306ae2a9b5a04ebcea864a479",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "resized-write-live-bounds",
+      "positive": true,
+      "area": "feature",
+      "partner": "resized-write-live-bounds-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "resized-write-live-bounds-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "8ffb49be0aff4a656dbb6e07f6f05232023e50e9a6382dac31724da581785461",
+      "source_sha256": "dfe7bf19bfa965de7252246ff10cb3a66a5ed1e306ae2a9b5a04ebcea864a479",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "resized-write-live-bounds",
+      "positive": true,
+      "area": "feature",
+      "partner": "resized-write-live-bounds-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "resized-write-live-bounds-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "ae1bbabaac45c222ab4ba0a774bc6bc7a9443adec186f676618312ea89dd6c97",
+      "source_sha256": "94ee8c74e922b028a405f1ec13f25d21ca7a06ba0c84e3828b0392293fc50de7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "resized-write-live-bounds",
+      "positive": false,
+      "area": "feature",
+      "partner": "resized-write-live-bounds-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "resized-write-live-bounds-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "0db1e24b8e5421f2cfe4e2a92cdcc28a6ad52e1967b59542f71d87a511a5560a",
+      "source_sha256": "94ee8c74e922b028a405f1ec13f25d21ca7a06ba0c84e3828b0392293fc50de7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "resized-write-live-bounds",
+      "positive": false,
+      "area": "feature",
+      "partner": "resized-write-live-bounds-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "canonical-distinct-receiver-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "66e800f20fefe92ef88b611e9da84495ea8fa7016eb70317b038c85f8ca1d799",
+      "source_sha256": "08be1dda33e5c65b90b8544bcd5f3e4ec8ea418e2b4c57031525231c615a7073",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "canonical-distinct-receiver",
+      "positive": true,
+      "area": "feature",
+      "partner": "canonical-distinct-receiver-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "canonical-distinct-receiver-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "88ef8ec2f2ddb5e05d4ece2cbacc4e9563b18f678fa01e98a642e5920e713ef0",
+      "source_sha256": "08be1dda33e5c65b90b8544bcd5f3e4ec8ea418e2b4c57031525231c615a7073",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "canonical-distinct-receiver",
+      "positive": true,
+      "area": "feature",
+      "partner": "canonical-distinct-receiver-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "canonical-distinct-receiver-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "52c471d3917b4fce39c02b0ff540b0abda61815de509f127274631c3e4ada553",
+      "source_sha256": "f557eb52311ae3d7728c06c343a7659c16694d71bf11cd7b54cd7c430deb8af8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "canonical-distinct-receiver",
+      "positive": false,
+      "area": "feature",
+      "partner": "canonical-distinct-receiver-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "canonical-distinct-receiver-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "a6c7465ccaf41bb1bc5ef638d9fe7f00e955539742649c9522b347b3c60c1bdf",
+      "source_sha256": "f557eb52311ae3d7728c06c343a7659c16694d71bf11cd7b54cd7c430deb8af8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "canonical-distinct-receiver",
+      "positive": false,
+      "area": "feature",
+      "partner": "canonical-distinct-receiver-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "metadata-and-index-flags-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "625b499e5cb831b11ac65258809b669658192d7793f656aa903f1f259d1dd22d",
+      "source_sha256": "f32bc73b9e8d312f537a61a045b11d103278b25883ad1222cc5df265a0084fea",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "metadata-and-index-flags",
+      "positive": true,
+      "area": "feature",
+      "partner": "metadata-and-index-flags-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "metadata-and-index-flags-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "0dcfcc52ac75ce9ce0b7c2db99197a0ad2b17305b8007999e8d7b298d0d06129",
+      "source_sha256": "f32bc73b9e8d312f537a61a045b11d103278b25883ad1222cc5df265a0084fea",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "metadata-and-index-flags",
+      "positive": true,
+      "area": "feature",
+      "partner": "metadata-and-index-flags-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "metadata-and-index-flags-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "4c5e1e5bb865544248be7a5f95b08b21e6beec3836b277a96836f4e249b11967",
+      "source_sha256": "3f9a19d7cb3d70bf39eb8dd8c13cfc37271e9355d5d7e47550fac0f8cb73be9d",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "metadata-and-index-flags",
+      "positive": false,
+      "area": "feature",
+      "partner": "metadata-and-index-flags-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "metadata-and-index-flags-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "be49c545e0c0475dbd69bec2cdc26e93e479c1eaf735beb63b12df1ee823e5ac",
+      "source_sha256": "3f9a19d7cb3d70bf39eb8dd8c13cfc37271e9355d5d7e47550fac0f8cb73be9d",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "metadata-and-index-flags",
+      "positive": false,
+      "area": "feature",
+      "partner": "metadata-and-index-flags-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterator-tracking-and-sticky-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "5d2352bfecb24c7e12b5b86075a3c59360ce207803c733b3434acc9d14154be4",
+      "source_sha256": "26c4cfd184c4ac2de47ac857ec3d9b5446dd8bc83e92c752fac934317ab5fed0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "iterator-tracking-and-sticky",
+      "positive": true,
+      "area": "feature",
+      "partner": "iterator-tracking-and-sticky-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterator-tracking-and-sticky-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "6260e7b4be8230a22ba180faa7eb46853d0875fe29a79f1c9e4a0382efafc4dc",
+      "source_sha256": "26c4cfd184c4ac2de47ac857ec3d9b5446dd8bc83e92c752fac934317ab5fed0",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "iterator-tracking-and-sticky",
+      "positive": true,
+      "area": "feature",
+      "partner": "iterator-tracking-and-sticky-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterator-tracking-and-sticky-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "84adc805c06f92acd9a3ab056bbab0b15b7d8e62acd02ac1dc3a309c823ca34e",
+      "source_sha256": "be4f01b9c5b2deab31513acf3d77791455544623c9648e0e52743aa40c592037",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "iterator-tracking-and-sticky",
+      "positive": false,
+      "area": "feature",
+      "partner": "iterator-tracking-and-sticky-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "iterator-tracking-and-sticky-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "e16a0de308a25d4eaa1b0823161c08d1fa74ac82f5bc3bddff62d406ef56febc",
+      "source_sha256": "be4f01b9c5b2deab31513acf3d77791455544623c9648e0e52743aa40c592037",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "iterator-tracking-and-sticky",
+      "positive": false,
+      "area": "feature",
+      "partner": "iterator-tracking-and-sticky-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    }
+  ]
+}

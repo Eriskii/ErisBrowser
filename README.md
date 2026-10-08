@@ -9,7 +9,10 @@ resizable buffers, resizing, same-realm species-aware slicing, transfers and
 detachment. [DataView](tests/conformance/data-view.md) now adds fixed and tracking
 views, nine Number codec pairs including Float16, and authentic `isView`.
 Its complete upstream profile records 694 passes, 12 failures and 416 exclusions.
-Typed arrays, BigInt codecs and shared memory remain unfinished.
+[Number TypedArray foundations](docs/typedarray-foundation.md) add all ten
+Number element types, constructors, live indexed properties and iterators over
+fixed or resizable buffers. Bulk methods, BigInt codecs and shared memory remain
+unfinished.
 [Decimal Number formatting](docs/number-format.md) now selects the even decimal
 significand at exact shortest-format ties, including JSON and property names.
 [Object.is](tests/conformance/object-is.md) now passes its complete 42-case

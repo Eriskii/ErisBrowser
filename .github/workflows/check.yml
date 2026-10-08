@@ -52,6 +52,10 @@ jobs:
         run: python3 tools/test262_conformance.py --profile object-has-own --baseline tests/conformance/test262-object-has-own-current.json --output artifacts/test262-object-has-own-gate.json
       - name: Preserve pinned non-shared DataView behavior
         run: python3 tools/test262_conformance.py --profile data-view --baseline tests/conformance/test262-data-view-current.json --output artifacts/test262-data-view-gate.json
+      - name: Verify frozen Number TypedArray cases and paired controls
+        run: |
+          engine_sha256="$(sha256sum target/release/eris-js | cut -d ' ' -f1)"
+          python3 tools/typedarray_foundation_local.py --engine target/release/eris-js --engine-sha256 "$engine_sha256" --output artifacts/typedarray-foundation-local-gate.json
       - name: Preserve pinned non-shared ArrayBuffer behavior
         run: python3 tools/test262_conformance.py --profile array-buffer --baseline tests/conformance/test262-array-buffer-current.json --output artifacts/test262-array-buffer-gate.json
       - name: Preserve pinned Array.prototype.splice behavior

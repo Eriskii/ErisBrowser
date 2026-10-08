@@ -585,7 +585,7 @@ impl Runtime {
     }
 
     fn array_buffer_is_view(&mut self, value: &Value) -> Result<bool> {
-        self.data_view_is_view(value)
+        Ok(self.data_view_is_view(value)? || self.typed_array_is_view(value)?)
     }
 
     pub(super) fn array_buffer_native(
@@ -631,5 +631,83 @@ impl Runtime {
                 "ArrayBuffer operation is not implemented",
             )),
         }
+    }
+}
+
+// Draft addition within the existing array_buffer.rs module. Existing public
+// ArrayBuffer/DataView operations and their fees are not changed by this text.
+impl Runtime {
+    pub(super) fn buffer_probe(&mut self, value: &Value) -> Result<Option<BufferId>> {
+        self.tick()?;
+        let Value::Object(id) = value else {
+            return Ok(None);
+        };
+        let mut first = 0;
+        let mut last = self.array_buffers.records.len();
+        while first < last {
+            self.tick()?;
+            let middle = first + (last - first) / 2;
+            match self.array_buffers.records[middle].object_id.cmp(id) {
+                Ordering::Less => first = middle + 1,
+                Ordering::Greater => last = middle,
+                Ordering::Equal => return Ok(Some(BufferId(middle))),
+            }
+        }
+        Ok(None)
+    }
+
+    pub(super) fn buffer_allocate_intrinsic(&mut self, length: u64) -> Result<BufferId> {
+        self.tick()?;
+        let prototype = self
+            .array_buffers
+            .prototype
+            .expect("ArrayBuffer initialized");
+        // object_ordered creates an ordinary bag using the fixed Object
+        // prototype. Retain the existing buffer allocator's lookup allowance.
+        self.work(search_work(self.prototypes.len(), 6))?;
+        let object = self.object_ordered([])?;
+        let Value::Object(object_id) = object else {
+            unreachable!()
+        };
+        self.objects[object_id].prototype = Some(Value::Object(prototype));
+        // The existing helper pays zeroing, cumulative bytes, and applies the
+        // same absolute host-capacity RangeError policy before host allocation.
+        let bytes = self.buffer_empty_block(length)?;
+        self.buffer_reserve_record()?;
+        self.work(4)?;
+        let index = self.array_buffers.records.len();
+        debug_assert!(
+            self.array_buffers
+                .records
+                .last()
+                .is_none_or(|r| r.object_id < object_id)
+        );
+        self.array_buffers.records.push(Record {
+            object_id,
+            bytes: Some(bytes),
+            max_byte_length: None,
+        });
+        Ok(BufferId(index))
+    }
+
+    pub(super) fn buffer_clone_range_intrinsic(
+        &mut self,
+        source: BufferId,
+        offset: usize,
+        length: usize,
+    ) -> Result<BufferId> {
+        self.work(4)?;
+        let available = self.buffer_attached_length(source.0)?;
+        if offset.checked_add(length).is_none_or(|end| end > available) {
+            return Err(ScriptError::range_error(
+                "TypedArray clone range exceeds buffer",
+            ));
+        }
+        let target = self.buffer_allocate_intrinsic(length as u64)?;
+        // Both sides of the raw copy are paid after intrinsic allocation and
+        // before touching a byte. No callbacks or fallible steps follow debit.
+        self.work(1 + byte_work(length).saturating_mul(2))?;
+        self.buffer_copy(source.0, target.0, offset, length);
+        Ok(target)
     }
 }

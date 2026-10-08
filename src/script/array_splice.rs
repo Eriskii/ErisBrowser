@@ -203,15 +203,33 @@ impl Runtime {
         Ok(self.own_property(object, key))
     }
 
+    // Presence callers do not read TypedArray payload bytes. Ordinary
+    // descriptors retain their existing snapshots and charges.
     pub(super) fn splice_property(
         &mut self,
         object: &Value,
         key: &JsString,
     ) -> Result<Option<Property>> {
+        self.splice_property_value(object, key, false)
+    }
+
+    fn splice_property_value(
+        &mut self,
+        object: &Value,
+        key: &JsString,
+        read_value: bool,
+    ) -> Result<Option<Property>> {
         let mut cursor = Some(object.clone());
         for _ in 0..MAX_DEPTH {
             let Some(value) = cursor else { return Ok(None) };
             self.tick()?;
+            if let typed_array::Exotic::Handled(property) =
+                self.typed_array_own_property(&value, key, read_value)?
+            {
+                // Canonical numeric absence is terminal, including at a
+                // TypedArray reached through an ordinary prototype chain.
+                return Ok(property);
+            }
             if let Some(property) = self.splice_own(&value, key)? {
                 return Ok(Some(property));
             }
@@ -226,7 +244,7 @@ impl Runtime {
         key: &JsString,
         doc: &mut Document,
     ) -> Result<Value> {
-        let Some(property) = self.splice_property(object, key)? else {
+        let Some(property) = self.splice_property_value(object, key, true)? else {
             return Ok(Value::Undefined);
         };
         self.splice_read_value(object, property, doc)
@@ -409,6 +427,27 @@ impl Runtime {
         create: bool,
         doc: &mut Document,
     ) -> Result<()> {
+        // Numeric TypedArray definitions may coerce the value and resize or
+        // detach its backing. Dispatch before any ordinary insertion snapshot.
+        if self.typed_array_is_view(object)? {
+            let descriptor = if create {
+                PropertyDescriptor::data_property(value.clone(), true, true, true)
+            } else {
+                PropertyDescriptor {
+                    value: Some(value.clone()),
+                    ..PropertyDescriptor::default()
+                }
+            };
+            if let typed_array::Exotic::Handled(defined) =
+                self.typed_array_define(object, &key, &descriptor, doc)?
+            {
+                return if defined {
+                    Ok(())
+                } else {
+                    Err(ScriptError::type_error("splice property cannot be defined"))
+                };
+            }
+        }
         // Eight values/mapping/hole searches cover the shared definition's
         // snapshot, dense-cache check, membership check and insertion.
         let id = self.splice_own_budget(object, &key, 8)?;
@@ -484,26 +523,59 @@ impl Runtime {
         value: Value,
         doc: &mut Document,
     ) -> Result<()> {
-        if let Some(property) = self.splice_property(object, &key)? {
-            match property.value {
-                PropertyValue::Accessor {
-                    set: Value::Undefined,
-                    ..
-                }
-                | PropertyValue::Data {
-                    writable: false, ..
-                } => {
-                    return Err(ScriptError::type_error(
+        let mut cursor = Some(object.clone());
+        let mut finished = false;
+        for _ in 0..MAX_DEPTH {
+            let Some(target) = cursor else {
+                finished = true;
+                break;
+            };
+            self.tick()?;
+            if let typed_array::Exotic::Handled(assigned) =
+                self.typed_array_set(&target, &key, object, value.clone(), doc)?
+            {
+                return if assigned {
+                    Ok(())
+                } else {
+                    Err(ScriptError::type_error(
                         "splice property cannot be assigned",
-                    ));
-                }
-                PropertyValue::Accessor { set, .. } => {
-                    let arguments = self.splice_argument(value)?;
-                    self.call(set, arguments, object.clone(), doc)?;
-                    return Ok(());
-                }
-                _ => {}
+                    ))
+                };
             }
+            let property = match self.typed_array_own_property(&target, &key, false)? {
+                typed_array::Exotic::Handled(None) => return Ok(()),
+                typed_array::Exotic::Handled(property) => property,
+                typed_array::Exotic::Ordinary => self.splice_own(&target, &key)?,
+            };
+            if let Some(property) = property {
+                match property.value {
+                    PropertyValue::Accessor {
+                        set: Value::Undefined,
+                        ..
+                    }
+                    | PropertyValue::Data {
+                        writable: false, ..
+                    } => {
+                        return Err(ScriptError::type_error(
+                            "splice property cannot be assigned",
+                        ));
+                    }
+                    PropertyValue::Accessor { set, .. } => {
+                        let arguments = self.splice_argument(value)?;
+                        self.call(set, arguments, object.clone(), doc)?;
+                        return Ok(());
+                    }
+                    _ => {}
+                }
+                // A valid distinct-Receiver TypedArray index supplied its own
+                // writable descriptor above. Define on the original receiver.
+                finished = true;
+                break;
+            }
+            cursor = self.prototype_of(&target);
+        }
+        if !finished {
+            return Err(ScriptError::resource("prototype chain limit exceeded"));
         }
         // No author callback intervenes between the live walk and definition.
         // Shared definition preserves mapped arguments and ArraySetLength.
@@ -522,6 +594,13 @@ impl Runtime {
     }
 
     fn splice_delete(&mut self, object: &Value, key: &JsString) -> Result<()> {
+        if let typed_array::Exotic::Handled(deleted) = self.typed_array_delete(object, key)? {
+            return if deleted {
+                Ok(())
+            } else {
+                Err(ScriptError::type_error("splice property cannot be deleted"))
+            };
+        }
         let Some(property) = self.splice_own(object, key)? else {
             return Ok(());
         };

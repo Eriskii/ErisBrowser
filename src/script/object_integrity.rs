@@ -1,4 +1,4 @@
-//! Integrity levels on supported ordinary objects and array/string exotics.
+//! Integrity levels on supported ordinary objects and indexed exotics.
 use super::*;
 
 #[cfg(test)]
@@ -37,6 +37,7 @@ fn push_key(keys: &mut Vec<IntegrityKey>, key: PropertyKey) {
 
 impl Runtime {
     fn integrity_keys(&mut self, receiver: &Value, object: usize) -> Result<Vec<IntegrityKey>> {
+        let typed_length = self.typed_array_own_length(receiver)?;
         let dense = match receiver {
             Value::Array(id) => self.arrays[*id].len(),
             _ => 0,
@@ -46,7 +47,9 @@ impl Runtime {
             _ => None,
         };
         let virtual_length = matches!(receiver, Value::Array(_)) || text.is_some();
-        let virtual_indices = dense.saturating_add(text.unwrap_or(0));
+        let virtual_indices = dense
+            .saturating_add(text.unwrap_or(0))
+            .saturating_add(typed_length.unwrap_or(0));
         let bound = virtual_indices
             .saturating_add(usize::from(virtual_length))
             .saturating_add(self.objects[object].order.len());
@@ -70,7 +73,9 @@ impl Runtime {
             }
             let key = PropertyKey::String(JsString::from(index.to_string()));
             // Stored overrides will be appended once from the creation order.
-            if !self.objects[object].values.contains_key(&key) {
+            // TypedArray canonical numeric keys cannot have sidecar overrides.
+            // Their backing cap also keeps every materialized index below 2^32.
+            if typed_length.is_some() || !self.objects[object].values.contains_key(&key) {
                 push_key(&mut keys, key);
             }
         }
@@ -99,6 +104,20 @@ impl Runtime {
         object: usize,
         key: &PropertyKey,
     ) -> Result<Option<(bool, Option<bool>)>> {
+        if let Some(string) = key.as_string()
+            && let typed_array::Exotic::Handled(property) =
+                self.typed_array_own_property(receiver, string, false)?
+        {
+            return Ok(property.map(|property| {
+                (
+                    property.configurable,
+                    match property.value {
+                        PropertyValue::Data { writable, .. } => Some(writable),
+                        PropertyValue::Accessor { .. } => None,
+                    },
+                )
+            }));
+        }
         let logarithm = 1 + self.objects[object]
             .values
             .len()
@@ -159,6 +178,9 @@ impl Runtime {
                 return Ok(Value::Bool(false));
             }
         } else {
+            if !self.typed_array_can_prevent_extensions(&receiver)? {
+                return Err(ScriptError::type_error("cannot set object integrity level"));
+            }
             // This effect precedes the key snapshot and persists if a later
             // resource/definition failure interrupts progress.
             self.objects[object].non_extensible = true;
@@ -204,6 +226,21 @@ impl Runtime {
         readonly: bool,
         doc: &mut Document,
     ) -> Result<()> {
+        let descriptor = PropertyDescriptor {
+            configurable: Some(false),
+            writable: readonly.then_some(false),
+            ..PropertyDescriptor::default()
+        };
+        if let Some(string) = key.as_string()
+            && let typed_array::Exotic::Handled(defined) =
+                self.typed_array_define(receiver, string, &descriptor, doc)?
+        {
+            return if defined {
+                Ok(())
+            } else {
+                Err(ScriptError::type_error("cannot set object integrity level"))
+            };
+        }
         if let Some((env, name)) = key
             .as_string()
             .and_then(|key| self.objects[object].parameter_map.get(key))
@@ -220,11 +257,6 @@ impl Runtime {
         // Array length definition creates constant key scratch. Ordinary
         // new descriptor records retain their existing separate charge.
         self.charge(128)?;
-        let descriptor = PropertyDescriptor {
-            configurable: Some(false),
-            writable: readonly.then_some(false),
-            ..PropertyDescriptor::default()
-        };
         if !self.define_property_key(receiver, key, descriptor, doc)? {
             return Err(ScriptError::type_error("cannot set object integrity level"));
         }

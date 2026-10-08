@@ -97,6 +97,13 @@ impl Runtime {
                     }
                 }
                 Value::Native(native) => {
+                    if native.properties.is_some()
+                        && native.receiver == Value::Undefined
+                        && (native.name == "TypedArray"
+                            || typed_array::Kind::named(&native.name).is_some())
+                    {
+                        return Ok(true);
+                    }
                     return Ok(native.receiver == Value::Window
                         && (self.dom_interface_exists(&native.name)?
                             || matches!(
@@ -262,6 +269,24 @@ impl Runtime {
                     doc,
                 )?;
                 Ok(if js_object(&result) { result } else { instance })
+            }
+            Value::Native(native)
+                if native.properties.is_some()
+                    && native.receiver == Value::Undefined
+                    && (native.name == "TypedArray"
+                        || typed_array::Kind::named(&native.name).is_some()) =>
+            {
+                if native.name == "TypedArray" {
+                    return Err(ScriptError::type_error(
+                        "abstract TypedArray cannot be constructed",
+                    ));
+                }
+                self.typed_array_constructor(
+                    typed_array::Kind::named(&native.name).expect("concrete TypedArray"),
+                    &arguments,
+                    new_target,
+                    doc,
+                )
             }
             Value::Native(native) if native.receiver == Value::Window => {
                 let name = native.name.as_str();

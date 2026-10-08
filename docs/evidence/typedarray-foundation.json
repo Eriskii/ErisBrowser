@@ -1,0 +1,240 @@
+{
+  "format": 1,
+  "status": "Number TypedArray foundation implemented; full web compatibility and production security/performance goals not achieved",
+  "base": "4990c3cbd89903d41d7cd1dfd6903c8e58844d61",
+  "before_adapter": {
+    "commit": "0abcd4a19a1a8e20aa484b2df019ee75cc1fec02",
+    "binary": "eris-js-before",
+    "bytes": 150297400,
+    "sha256": "0aa0fbc72b6228d2b28b7bb299fe65b23aa111c61cc92fac311e505301ac05b9",
+    "reused_adapter_receipt": {
+      "path": "eris-js-final",
+      "bytes": 150297400,
+      "sha256": "0aa0fbc72b6228d2b28b7bb299fe65b23aa111c61cc92fac311e505301ac05b9",
+      "source_hold_sha256": "a1dcf4b3479842a5de1c42c7176604449d844727eb1f543f1d3186e56cf28f95",
+      "build": {
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "build",
+          "--locked",
+          "--offline",
+          "--manifest-path",
+          "Cargo.toml",
+          "--features",
+          "vulkan-raster",
+          "--bin",
+          "eris-js"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 0.1138674239628017,
+        "log": "adapter-final-188-1.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      }
+    },
+    "production_source_unchanged_from_published_commit": true,
+    "purpose": "Freeze executable before Number TypedArray implementation/exposure; importer and local runner preparation is separate."
+  },
+  "final_adapter": {
+    "base": "4990c3cbd89903d41d7cd1dfd6903c8e58844d61",
+    "binary": "eris-js-final",
+    "bytes": 151118608,
+    "sha256": "da8e5280b2cb16bd87ed31bf073a29c3da58791ca43ae518e7d22def345a14f6",
+    "build": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-js"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.22247493895702064,
+      "log": "adapter-build-final.log",
+      "sha256": "d7dae192715495fa89ccbe279af3efb9792c1dae1768228e369035e68a1df673"
+    },
+    "fresh_rebuild_suite": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 51.17443068209104,
+      "log": "full-native-final.log",
+      "sha256": "e3fc81ceea587f5bb2b42afa7503ab4d103941109e4ac44e436996b6878d6e9f"
+    },
+    "actual_native_tests": 2203
+  },
+  "final_source_binding": {
+    "path": "final-adapter.json",
+    "sha256": "d7ef1ee1a06b4f7a586220e547c772bce2a60dfc19e7e6d1c1d82df02b1cf6c5"
+  },
+  "public_file_sha256": {
+    "docs/typedarray-foundation.md": "f2b0a8e1e55308bbb8b148479cdf4a11afdc97bbb49af235fee110824699be76",
+    "src/script/typed_array.rs": "9e4e49bdf6b6c79e8df0dce9d2f75cca28576d99428d2ba599bb511a7f002a6c",
+    "src/script/typed_array/call_tests.rs": "61df63d07caf93402fef7507652d4a804e5fcb72bfd3920351b9411bd9e4fccb",
+    "src/script/typed_array/constructors.rs": "9283598e9daa6b551d9f2432ae8faff3d4eaa6e24fdc5a8066c12fbfd2509e35",
+    "src/script/typed_array/index.rs": "63290d8eaa74bc37feb0cc7a98a384f2960de3bbacb7388bdaf3fe667c91c6c7",
+    "src/script/typed_array/index/tests.rs": "a621fa6a855f19609bbf2385df254669bd57d910d4f2166603ea1a901b3f4e9a",
+    "src/script/typed_array/intrinsics.rs": "81500bf6f210a8d3783f225ade35512fc06752f66bea68d8e1609ad19e78850d",
+    "src/script/typed_array/tests.rs": "9eee5c275d102bc3bb4dc4915ab4a47c9aed34dda4989eff4d46ac576e83a7b7",
+    "tests/conformance/test262-typedarray-foundation-current.json": "6116f9ce089bfa3db878768d88ab6b0de5e7e67af29776d1c95a10062a58e156",
+    "tests/conformance/typedarray-foundation-browser/reference-after.html": "c87ab37d835a03ccda228af4429a7e8ec6e92b59a5d9cda4f334c748a84b26b9",
+    "tests/conformance/typedarray-foundation-browser/reference-initial.html": "2e5d9514669a1acf08caaa0de993ae8cd9f12a61e2cb5ff627a4b66ad4b6ba77",
+    "tests/conformance/typedarray-foundation-browser/typedarray-foundation.html": "db7b0c7b335ecf5864df5385c4e5812c6c57eba093b84bf442d6875589fae7e7",
+    "tests/conformance/typedarray-foundation-local-current.json": "cbf220fec6a8a0666b733dc97dc6097718a0a839643b85a89866454f9c820d70",
+    "tests/typedarray_foundation.rs": "890879d8a94a9bc545b008c8b0316b3339dc2cd1602b347bae1bfc520d9a1d82",
+    ".github/workflows/check.yml": "305e42d96a701318c6f3963268f27b5d23e88656f946a56c01c21482dd02d2bb",
+    "README.md": "e398c89333dd09646e22f54d80958c238237345951a8f141dcd2db8a55d04932",
+    "docs/COMPATIBILITY.md": "6af919145317f0bb3248c2be5291e1f2606c76fd1b6f96b867c8e673d87f9c4b",
+    "docs/typedarray-foundation-test262.md": "ba3192b2c9711d3ede977c107a1e43330049fff52e6422fb29c6c48f8226b5fd",
+    "src/script.rs": "1ca146572d54a4e0e67f9dcea76a843cea618a24ffce46c13167bcf9bd3774e1",
+    "src/script/array_buffer.rs": "e3c2c31ddec73929aa0cbedc075ebfe9df4662616cfae668af820d7cdb85d03d",
+    "src/script/array_from.rs": "ff4f2c4a442e011f4f2c56c7a4181cd36b13f497023bb108c9307c2461d312fa",
+    "src/script/array_properties.rs": "1701e617e87e56fa770556281bcb723df3efded1970948f68bd8166a0a0dadae",
+    "src/script/array_splice.rs": "c13e8bee624185f84aead77e966a7ee2d4f0abb3502dc5d8696332d9c720d10b",
+    "src/script/bootstrap_tests.rs": "891e5a4f6d90ece062add76758af60f2c226066cb721c86bfe2170a7b8cdd4a2",
+    "src/script/construction.rs": "ad52881cc316ebd9e4242c5688d019211bd5cc388a6ec8028b98aff52e9bc9a8",
+    "src/script/dom_bindings/identity_tests.rs": "6058f7be12d53710d907a8d98f40f6f323a8c25cac477624b687ce10df382b53",
+    "src/script/dom_own_properties.rs": "7ed6541132b47dc2c1e2cd0fa6cbd380589da4ef6b6d4232d50772aee9f12ca2",
+    "src/script/dom_prototypes.rs": "40ccf5b5fb742c4d6d5f127af7c3e5db7d4c7943c88d0ad236e3dff3244ec877",
+    "src/script/iterators.rs": "8bf1a68beaee149c80c935260f4fc6058985dfcc66632cad6417084bfe3f2377",
+    "src/script/machine/calls.rs": "1e20bdcb8a714ef7736a77aab9706ed9c4210094ff406bc642fb2157cd3e8d58",
+    "src/script/object_has_own.rs": "5b35763c75224a0760d8cb0f00d90d12800b43184fb7bd41341fcbb5c6270166",
+    "src/script/object_integrity.rs": "b46d834d774251e613cfa668ab3cfe04fa686e83c5098b85d4dd68665a0699ec",
+    "src/script/own_keys.rs": "a9020e7bfa30fd9208495166b1d068dea984b839bc03359fabe70037d1dbbac0",
+    "src/script/window.rs": "cb485aaa9a79da25a1a0e17671516f9241953c3c3ebcabdc0450b70cd0e064e7",
+    "src/script/window_bucket_tests.rs": "3a095b145d35537c78d9b82852b9d36d396340b26cedcf4f5e1855ae6ee3903c"
+  },
+  "archive": {
+    "path": "typedarray-foundation.tar.gz",
+    "bytes": 6428620,
+    "sha256": "6d5e827ee448512ee56f61270d6239b9c8bbd296f2c1f44668670559e781e40f",
+    "records": 615,
+    "manifest_sha256": "5f29784661ce9a2c1c13a7d671eca76519d60af4c8120d32ad6849420b8a5a14"
+  },
+  "validation": {
+    "native_feature_tests": 2203,
+    "typedarray_private_groups": 18,
+    "rust_versions": [
+      "1.88.0",
+      "1.98.0"
+    ],
+    "minimum_rust_private_groups": "Included and individually passing within the fresh full-native-final suite",
+    "current_rust_private_groups": "typed-private-198-final",
+    "strict_clippy": [
+      "clippy-188-final",
+      "clippy-198-2"
+    ],
+    "format": "fmt-final",
+    "local": {
+      "cases": [
+        54,
+        54
+      ],
+      "controls": [
+        32,
+        32
+      ],
+      "runner_errors": 0,
+      "report": "local-final.json",
+      "sha256": "cbf220fec6a8a0666b733dc97dc6097718a0a839643b85a89866454f9c820d70"
+    },
+    "upstream": {
+      "modes": 1238,
+      "counts": {
+        "passed": 572,
+        "failed": 86,
+        "unsupported": 488,
+        "resource": 92
+      },
+      "verified_controls": [
+        64,
+        64
+      ],
+      "runner_exit": 1,
+      "healthy_baseline": false,
+      "report": "upstream-final.json",
+      "sha256": "6116f9ce089bfa3db878768d88ab6b0de5e7e67af29776d1c95a10062a58e156"
+    },
+    "page_and_confined_worker": {
+      "groups": 2,
+      "fixture_unchanged": true,
+      "checks": "Real hit/click, exact text, complete Canvas against literal references, seven retained NodeIds and full parent/child graph; worker console is not exposed by snapshots"
+    },
+    "old_profiles": {
+      "profiles": 37,
+      "modes": 16136,
+      "before_counts": {
+        "passed": 12530,
+        "unsupported": 3488,
+        "failed": 118
+      },
+      "after_counts": {
+        "passed": 12596,
+        "unsupported": 3488,
+        "failed": 52
+      },
+      "regressions": 0,
+      "pass_gains": 66,
+      "changed_observations": 66
+    },
+    "old_profiles_report": "regression-comparison.json"
+  },
+  "bootstrap": {
+    "steps_remaining": 285,
+    "charged_bytes": 1850331,
+    "added_charged_bytes": 67750,
+    "objects": 721,
+    "capacity": 721,
+    "native_registry": 320,
+    "prototype_registry": 25,
+    "globals": 210,
+    "types": {
+      "ScriptObject": 216,
+      "OptionAbortSlot": 16,
+      "OptionF64": 16,
+      "PropertyKey": 16,
+      "Native": 56,
+      "StringBindingPair": 72,
+      "TypedArrayState": 464,
+      "Binding": 48,
+      "BINDING_BYTES": 144,
+      "property_tree_block": 1472,
+      "binding_tree_block": 1472
+    },
+    "quotas_unchanged": true
+  },
+  "retained_findings": [
+    "Constructor ToLength work admission corrected before integration",
+    "Type-tag getter allocation admitted before string allocation",
+    "Ordinary index classifier alphabet rejection avoids needless parsing/formatting; first entries endpoint78 corrected to88 after observed private failure",
+    "Native receiver-binding name copy admitted inside guard cleanup",
+    "New JSON ordinary-expando descriptor lookup comparison allowance added",
+    "Existing Window snapshot regression fixed by real bounded ordinal buckets, published separately as4990c3c; original test and sort fallback unchanged",
+    "Three equivalent Clippy source corrections plus one new Boolean assertion lint correction",
+    "Cross-checkout Cargo artifact reuse caused an invalid zero-test filtered run; retained and excluded, package artifacts cleared, fresh full2203 suite passed"
+  ],
+  "limits": [
+    "All632 upstream bodies/1238 modes and policies remain unchanged;472 policy exclusions and16 parse-syntax unsupported modes are retained",
+    "All86 failures are retained and source-triaged; class-helper exact stop points are source inferences",
+    "All92 resource stops retained; six files have source-proved work lower bounds above unchanged quota; no healthy upstream baseline recorded",
+    "Bulk/static/search/sort/copy/string TypedArray APIs, BigInt, shared memory and foreign realms remain incomplete",
+    "No new GPU execution, production-security certification or Chromium performance claim for this increment"
+  ]
+}

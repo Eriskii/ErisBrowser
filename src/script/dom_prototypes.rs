@@ -57,6 +57,7 @@ pub(super) const PREFIX: &str = "DOM.Interface.";
 // CharacterData and DocumentType's ChildNode lists (Element combines both).
 pub(super) const BOOTSTRAP_OBJECTS: usize = 351
     + object_has_own::METADATA_OBJECTS
+    + typed_array::METADATA_OBJECTS
     + 2 * (INTERFACES.len() - 1)
     + 5
     + processing_instruction::METADATA_OBJECTS
@@ -188,6 +189,9 @@ const GLOBAL_NAME_MAX: usize = {
             max = length;
         }
         index += 1;
+    }
+    if typed_array::GLOBAL_NAME_MAX > max {
+        max = typed_array::GLOBAL_NAME_MAX;
     }
     max
 };
@@ -592,17 +596,49 @@ impl Runtime {
         let alias_order = first_order
             .checked_add(new_count as u64)
             .ok_or_else(|| ScriptError::resource("DOM alias order overflow"))?;
-        let next_order = alias_order
+        // The original DOM ordinals remain unchanged. New globals follow the alias
+        // in Kind order, independently of their lexicographic staging order.
+        self.work(2 * count + 8 * typed_array::GLOBAL_COUNT + 30)?;
+        let typed_array_first = alias_order
             .checked_add(1)
-            .ok_or_else(|| ScriptError::resource("DOM interface order overflow"))?;
+            .ok_or_else(|| ScriptError::resource("TypedArray global order overflow"))?;
+        let next_order = typed_array_first
+            .checked_add(typed_array::GLOBAL_COUNT as u64)
+            .ok_or_else(|| ScriptError::resource("TypedArray global order overflow"))?;
         self.work(interfaces::interface_lookup_work(8))?;
         let document = records[interfaces::interface_index("Document").unwrap()]
             .constructor
             .clone();
-        let mut global_entries = self.dom_proto_vector::<(String, Binding)>(new_count + 1)?;
+        let global_count = new_count
+            .checked_add(1 + typed_array::GLOBAL_COUNT)
+            .ok_or_else(|| ScriptError::resource("TypedArray global count overflow"))?;
+        let mut global_entries = self.dom_proto_vector::<(String, Binding)>(global_count)?;
         let mut alias_pending = true;
         self.work(4 * count)?;
         for index in interfaces::interface_order() {
+            // Static interleaving only; validate_staged still checks strict order.
+            // These interface indices are independently bound by the fixed roster.
+            match index {
+                9 => self.typed_array_stage_globals(
+                    &mut global_entries,
+                    typed_array_first,
+                    &[
+                        typed_array::Kind::Float16,
+                        typed_array::Kind::Float32,
+                        typed_array::Kind::Float64,
+                    ],
+                )?,
+                80 => self.typed_array_stage_globals(
+                    &mut global_entries,
+                    typed_array_first,
+                    &[
+                        typed_array::Kind::Int16,
+                        typed_array::Kind::Int32,
+                        typed_array::Kind::Int8,
+                    ],
+                )?,
+                _ => {}
+            }
             let interface = &INTERFACES[index];
             if interface.name == "EventTarget" {
                 continue;
@@ -625,6 +661,16 @@ impl Runtime {
                 interface_binding(document, alias_order),
             ));
         }
+        self.typed_array_stage_globals(
+            &mut global_entries,
+            typed_array_first,
+            &[
+                typed_array::Kind::Uint16,
+                typed_array::Kind::Uint32,
+                typed_array::Kind::Uint8,
+                typed_array::Kind::Uint8Clamped,
+            ],
+        )?;
         // Only globals need a dynamic name map. The private record vector and
         // Native's direct bag handle avoid two redundant registry rebuilds.
         // New names are fixed by the roster; only dynamic old keys need a scan.
@@ -638,7 +684,11 @@ impl Runtime {
         let plan = global_bulk_plan(&self.environments[0].bindings, &global_entries)?;
         self.work(plan.work)?;
         self.charge(plan.bytes)?;
-        self.charge((new_count + 1) * BINDING_BYTES)?;
+        self.charge(
+            global_count
+                .checked_mul(BINDING_BYTES)
+                .ok_or_else(|| ScriptError::resource("TypedArray global storage overflow"))?,
+        )?;
         validate_staged(&global_entries)?;
         let global_buffer =
             self.dom_proto_vector(self.environments[0].bindings.len() + global_entries.len())?;
@@ -652,6 +702,27 @@ impl Runtime {
         self.environments[0].bindings = globals;
         self.dom_prototypes.records = records;
         self.next_global_order = next_order;
+        Ok(())
+    }
+    // All new loop/handle/order work is prepaid in the joined418 row above.
+    // Existing owned-name charges still apply separately (ten names124 work).
+    fn typed_array_stage_globals(
+        &mut self,
+        entries: &mut Vec<(String, Binding)>,
+        first_order: u64,
+        kinds: &[typed_array::Kind],
+    ) -> Result<()> {
+        for kind in kinds {
+            let value = self.typed_arrays.constructors[kind.index()]
+                .as_ref()
+                .ok_or_else(|| ScriptError::resource("TypedArray constructor missing"))?
+                .clone();
+            let order = first_order
+                .checked_add(kind.index() as u64)
+                .ok_or_else(|| ScriptError::resource("TypedArray global order overflow"))?;
+            let name = self.dom_proto_owned_name(kind.name())?;
+            entries.push((name, interface_binding(value, order)));
+        }
         Ok(())
     }
     fn dom_proto_vector<T>(&mut self, count: usize) -> Result<Vec<T>> {

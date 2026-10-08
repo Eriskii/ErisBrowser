@@ -99,6 +99,12 @@ impl Runtime {
     }
 
     fn object_has_own_present(&mut self, receiver: &Value, key: &PropertyKey) -> Result<bool> {
+        if let PropertyKey::String(name) = key
+            && let typed_array::Exotic::Handled(property) =
+                self.typed_array_own_property(receiver, name, false)?
+        {
+            return Ok(property.is_some());
+        }
         let registry_name = match receiver {
             Value::Native(native) if native.properties.is_none() => Some(native.name.as_str()),
             Value::Math => Some("Math"),
