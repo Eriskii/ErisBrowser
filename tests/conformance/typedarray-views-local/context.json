@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "published_base": "a3c0bb1d5167236cdf676247f17aea3720dcb866",
+  "before_adapter_sha256": "c21074ad37ed121547e6386dd529c67c6c438a6a0b2a6583d453118c49ef78e8",
+  "status": "Independent expectations only. No local baseline or candidate execution by this author.",
+  "selected_scope": "Additive join-expansion supersedes only the smaller scope prediction, preserving the original proposal and hold.",
+  "existing_populations": "Original foundation and Reflect local case/control/manifest bytes retained without modification. New local population is separate from 103 upstream source bodies / 206 modes.",
+  "inputs": [
+    {
+      "path": "/tmp/eris-typedarray-views-1/published-base.json",
+      "bytes": 21767,
+      "sha256": "8ebea9863247913a6b93a4e18305748373f1f0c9dab9d46b02395cf4a86ca7c1",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/00-published-base.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/source-ready.json",
+      "bytes": 22704,
+      "sha256": "2429e42a61e4094b79d023101d6bef05776096d84abffd20dd2b200b60fcc23f",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/01-source-ready.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/proposal.md",
+      "bytes": 11948,
+      "sha256": "d712bb4b266f64f0e9497d03f6124b6c77c8963c849de067a7517470b101be51",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/02-proposal.md"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/primary-sources.json",
+      "bytes": 985,
+      "sha256": "3616ac16806079d3da30d66290f5705a0ea51854c8718ded046fc15e3f8bbc52",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/03-primary-sources.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/join-expansion/source-ready.json",
+      "bytes": 13293,
+      "sha256": "20132aeb4788d2a4274577efb92f65ef4034301a2d0424b090e53d6897a83449",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/04-source-ready.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/join-expansion/proposal.md",
+      "bytes": 11688,
+      "sha256": "b7e3cc34450bbe4586cd2702218240dbb7fc3465fb469658dd6b021ef67aff55",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/05-proposal.md"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/worktree/tests/conformance/typedarray-foundation-local/cases.js",
+      "bytes": 21910,
+      "sha256": "5770d7a561735697f4446b360220b6a551ccfc82f104c81ca278a45de926ca90",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/06-cases.js"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/worktree/tests/conformance/typedarray-foundation-local/controls.json",
+      "bytes": 20297,
+      "sha256": "3abcef539581ee96beae6314a287408a6d90780da055263ee6447b87b2cbb888",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/07-controls.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/worktree/tests/conformance/typedarray-foundation-local/manifest.json",
+      "bytes": 983,
+      "sha256": "908c0348fa60073d9f8a7b5a359d960c44657dfcd2a469046dbdb5d5d3be9947",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/08-manifest.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/worktree/tests/conformance/reflect-properties-local/cases.js",
+      "bytes": 15572,
+      "sha256": "21bf80108bf972504a8587409878597f08a01b298b6a812aeb59fee65f95c1aa",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/09-cases.js"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/worktree/tests/conformance/reflect-properties-local/controls.json",
+      "bytes": 9911,
+      "sha256": "c29babfc2d1f8db802e2cbdde1dfbd95038023cbe1a1704a34caaab4914dcf13",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/10-controls.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/worktree/tests/conformance/reflect-properties-local/manifest.json",
+      "bytes": 1599,
+      "sha256": "0602ef0997989e9ea99a6a3567dc6414aa16586fd5d2e1472a330e5bce129f1e",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/11-manifest.json"
+    },
+    {
+      "path": "/tmp/eris-typedarray-views-1/worktree/tools/test262_conformance.py",
+      "bytes": 237437,
+      "sha256": "472bad5bd8e4b03ed9fde25cfae58c0cc0af55be64bc6462f9ea041f5209cd62",
+      "held_copy": "/tmp/eris-typedarray-views-1/local-fixtures/inputs/12-test262_conformance.py"
+    }
+  ]
+}

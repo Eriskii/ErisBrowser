@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "collection": "typedArrayViewCases",
+  "case_count": 23,
+  "case_modes": 46,
+  "control_pairs": 6,
+  "control_modes": 24,
+  "case_invocation_arguments": [],
+  "ordinary_observation": {
+    "status": "complete",
+    "phase": "runtime",
+    "error_type": "",
+    "error_identity": "",
+    "return_value": true
+  },
+  "files": [
+    {
+      "path": "cases.js",
+      "bytes": 19952,
+      "sha256": "bcc0bc2523e5cb6151bc963b59927b4e4a638daa3118d0c8f2d0a9d26838fb58"
+    },
+    {
+      "path": "controls.json",
+      "bytes": 13515,
+      "sha256": "2839a99c14e8c58d8356ed2249ca4bf0e2f2ea9568e05c636d716a9470eb3d2e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3295,
+      "sha256": "337fd1b707828f6bd685f919da70913585c34540423f3789de27781b9255db36"
+    },
+    {
+      "path": "design.md",
+      "bytes": 5414,
+      "sha256": "f92fb6689cf1dae3435617e1b1030e0a294c086b70ccf5b7bb6f768ca4be6d23"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 2348,
+      "sha256": "9a70f98d92fb73549bd73769dc703c3d946c67ec2556aaa68ee6330c0728e9b6"
+    },
+    {
+      "path": "spec-notes.json",
+      "bytes": 1868,
+      "sha256": "f40199719ace25192ef331a3aa33875656e25152b04ce12fbb4af549202ded53"
+    },
+    {
+      "path": "context.json",
+      "bytes": 4515,
+      "sha256": "ac6f61c045cc638cd1819e5f90ad4e978611e5cd0436d775ad63ef213caa8b0d"
+    },
+    {
+      "path": "matrix.json",
+      "bytes": 32565,
+      "sha256": "f0e2f9bedbb0a11daf3f4752ff23d76a9bdd7df7784d95183d4b62d52e8338a8"
+    },
+    {
+      "path": "freeze.py",
+      "bytes": 9636,
+      "sha256": "60ed7d21914581eac41858a8123f74c0480b2b706f5688ed0976db90f77ad363"
+    }
+  ]
+}

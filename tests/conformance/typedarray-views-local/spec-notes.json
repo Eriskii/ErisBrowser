@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "sources": {
+    "subarray": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-%typedarray%.prototype.subarray",
+    "join": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-%typedarray%.prototype.join",
+    "alias": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-%typedarray%.prototype.tostring",
+    "species": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-typedarrayspeciescreate",
+    "result": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-typedarraycreatefromconstructor",
+    "array_to_string": "https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype.tostring"
+  },
+  "review": "Primary algorithm page read directly with browser tool during source-only authoring. No text is copied into the JS fixture.",
+  "oracle_rules": [
+    "Subarray records initial extent and stored offset. Initially invalid source extent is zero; index coercion and species still occur.",
+    "Tracking source plus undefined end supplies two constructor arguments; other cases supply three. End objects are coerced even when they yield undefined.",
+    "Species resolution follows index coercion. Constructed result must be a currently valid Number typed view; a shorter/different-kind result is allowed.",
+    "Join validates initially, then converts separator once. Its iteration count is captured, but elements reflect later resize/detach.",
+    "Empty valid join still converts separator; absent elements contribute empty fields. Output preserves UTF-16 units.",
+    "The toString property stores the existing Array function; its callable-join path is generic and returns the direct call result."
+  ],
+  "limitations": "Examples are bounded independent witnesses, not a full conformance claim. Parent executes unchanged sources only after source review."
+}

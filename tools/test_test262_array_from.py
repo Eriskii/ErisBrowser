@@ -174,7 +174,7 @@ class ArrayFromCorpusTests(unittest.TestCase):
                 with self.assertRaises(ValueError): runner.load_corpus(dest, PROFILE)
 
     def test_all_38_previous_profile_contracts_are_byte_identical(self):
-        contract = capture_contracts(excluded={'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', PROFILE, 'array-buffer', 'array-concat', 'array-splice'})
+        contract = capture_contracts(excluded={'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', PROFILE, 'array-buffer', 'array-concat', 'array-splice'})
         self.assertEqual(contract['counts'], dict(profiles=38, cases=17732, preflights=3804))
         self.assertEqual(runner.digest(canonical(contract)),
                          '6a8b84416da50a0d0210cef1c4f182c83fddbfc9fd02f37f69ff4f19958485df')

@@ -72,6 +72,9 @@ DATA_VIEW_FEATURES = ARRAY_BUFFER_FEATURES | {
     'DataView.prototype.getInt8', 'DataView.prototype.getUint16',
     'DataView.prototype.getUint32', 'DataView.prototype.setUint8', 'Float16Array',
 }
+TYPEDARRAY_VIEW_FEATURES = {'TypedArray', 'ArrayBuffer', 'Symbol', 'Symbol.species',
+                           'Reflect.construct', 'arrow-function', 'resizable-arraybuffer',
+                           'align-detached-buffer-semantics-with-web-reality'}
 REFLECT_PROPERTY_FEATURES = {'Reflect', 'Reflect.set', 'Reflect.setPrototypeOf',
                              'Reflect.construct', 'Symbol', 'Symbol.toStringTag', 'arrow-function'}
 TYPEDARRAY_FEATURES = DATA_VIEW_FEATURES | {'TypedArray', 'Float16Array'}
@@ -80,7 +83,7 @@ ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'reflect-properties': REFLECT_PROPERTY_FEATURES, 'typedarray-foundation': TYPEDARRAY_FEATURES, 'object-has-own': OBJECT_HAS_OWN_FEATURES, 'object-is': OBJECT_IS_FEATURES, 'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'typedarray-views': TYPEDARRAY_VIEW_FEATURES, 'reflect-properties': REFLECT_PROPERTY_FEATURES, 'typedarray-foundation': TYPEDARRAY_FEATURES, 'object-has-own': OBJECT_HAS_OWN_FEATURES, 'object-is': OBJECT_IS_FEATURES, 'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -207,13 +210,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -256,7 +259,7 @@ def case_fingerprint(case):
     return digest(json.dumps(identity, sort_keys=True, ensure_ascii=True).encode())
 
 
-def unsupported_reason(case, supported_features=SUPPORTED_FEATURES):
+def unsupported_reason(case, supported_features=SUPPORTED_FEATURES, profile=None):
     metadata = case['metadata']
     flags = set(metadata['flags'])
     if case['mode'] == 'module' or (metadata['negative'] or {}).get('phase') == 'resolution':
@@ -276,6 +279,9 @@ def unsupported_reason(case, supported_features=SUPPORTED_FEATURES):
     unavailable = set(metadata['features']) - supported_features
     if unavailable:
         return 'unimplemented declared features: ' + ', '.join(sorted(unavailable))
+    if (profile == 'typedarray-views'
+            and 'resizableArrayBufferUtils.js' in metadata['includes']):
+        return 'TypedArray views policy excludes the complete resizableArrayBufferUtils helper'
     sources = [case['source']] + [source for _, source in case['harness']]
     if any(re.search(rb'\$262\b|\$DONE\b|\bprint\s*\(', source) for source in sources):
         return 'Test262 host hooks are not implemented (conservative source check)'
@@ -340,11 +346,11 @@ def classify(case, observation):
             and observation['error_identity'] == expected['type'] else 'failed')
 
 
-def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES):
+def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES, profile=None):
     result = {key: case[key] for key in ('id', 'file', 'mode', 'case_sha256')}
     result['source_sha256'] = digest(case['source'])
     result['expected_negative'] = case['metadata']['negative']
-    reason = unsupported_reason(case, supported_features)
+    reason = unsupported_reason(case, supported_features, profile)
     if reason:
         return dict(result, status='unsupported', reason=reason)
     try:
@@ -524,6 +530,28 @@ def core_iterator_preflight_variants():
     return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def typedarray_view_preflight_variants():
+    """Exact independently frozen sources; wrong partners throw intrinsic Error."""
+    path = Path(__file__).with_name('typedarray-views-controls.json')
+    if path.is_symlink():
+        raise ValueError('TypedArray views controls must not be a symlink')
+    with path.open('rb') as handle:
+        data = handle.read(65537)
+    if (len(data) > 65536 or digest(data) !=
+            '2839a99c14e8c58d8356ed2249ca4bf0e2f2ea9568e05c636d716a9470eb3d2e'):
+        raise ValueError('TypedArray views frozen control file integrity mismatch')
+    controls = json.loads(data)['controls']
+    variants = []
+    for control in controls:
+        source = control['source']
+        if digest(source.encode()) != control['source_sha256']:
+            raise ValueError('TypedArray views frozen control source integrity mismatch')
+        for mode in control['modes']:
+            variants.append(('typedarray-views-' + control['name'], source,
+                             'passed' if control['positive'] else 'failed', mode))
+    return variants
 
 
 def reflect_property_preflight_variants():
@@ -2374,6 +2402,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         variants += array_buffer_preflight_variants()
     if profile == 'data-view':
         variants += data_view_preflight_variants()
+    if profile == 'typedarray-views':
+        variants += typedarray_view_preflight_variants()
     if profile == 'reflect-properties':
         variants += reflect_property_preflight_variants()
     if profile == 'typedarray-foundation':
@@ -2398,7 +2428,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         correct = result['status'] == expected
         if expected == 'failed':
             observation = result.get('observation', {})
-            if ((profile == 'reflect-properties' and name.startswith('reflect-properties-'))
+            if ((profile == 'typedarray-views' and name.startswith('typedarray-views-'))
+                    or (profile == 'reflect-properties' and name.startswith('reflect-properties-'))
                     or (profile == 'typedarray-foundation' and name.startswith('typedarray-foundation-'))):
                 correct = correct and all(observation.get(key) == value for key, value in {
                     'status': 'exception', 'phase': 'runtime',
@@ -2433,6 +2464,20 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                      if item['name'].startswith('object-is-') and item['expected'] == 'passed'}
         for item in outcomes:
             if item['name'].startswith('object-is-') and item['name'].endswith('-wrong'):
+                partner = positives[(item['name'].removesuffix('-wrong') + '-positive',
+                                     item['result']['mode'])]
+                result = partner['result']
+                item['prerequisite'] = dict(name=partner['name'], mode=result['mode'],
+                    case_sha256=result['case_sha256'], source_sha256=result['source_sha256'],
+                    expected=partner['expected'], verified=partner['verified'])
+                item['verified'] = item['verified'] and partner['verified']
+    if profile == 'typedarray-views':
+        # Preserve the independently authored positive/wrong names and require
+        # the positive source to succeed in the same mode before verifying it.
+        positives = {(item['name'], item['result']['mode']): item for item in outcomes
+                     if item['name'].startswith('typedarray-views-') and item['expected'] == 'passed'}
+        for item in outcomes:
+            if item['name'].startswith('typedarray-views-') and item['name'].endswith('-wrong'):
                 partner = positives[(item['name'].removesuffix('-wrong') + '-positive',
                                      item['result']['mode'])]
                 result = partner['result']
@@ -2564,12 +2609,14 @@ def main():
         preflight_ok = all(item['verified'] for item in preflight)
         supported_features = PROFILE_FEATURES[args.profile]
         with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            results = list(pool.map(lambda case: run_case(case, binary, args.timeout, supported_features), cases))
+            results = list(pool.map(lambda case: run_case(case, binary, args.timeout, supported_features, args.profile), cases))
         counts = dict(Counter(result['status'] for result in results))
         policy = dict(format=2, supported_features=sorted(supported_features),
                       negative_intrinsic_errors=sorted(INTRINSIC_ERRORS), strict=True,
                       modules=False, async_completion=False, host_hooks=False,
                       timeout_seconds=args.timeout)
+        if args.profile == 'typedarray-views':
+            policy['excluded_harness'] = ['resizableArrayBufferUtils.js']
         policy_hash = digest(json.dumps(policy, sort_keys=True).encode())
         if digest(binary.read_bytes()) != binary_hash:
             raise ValueError('adapter binary changed during the run; repeat with a stable build')

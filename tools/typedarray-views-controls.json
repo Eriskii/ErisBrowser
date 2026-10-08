@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "status": "independently authored source-only fixture; unexecuted",
+  "pairs": 6,
+  "control_modes": 24,
+  "health": "Wrong partners require runtime intrinsic Error identity plus successful same-mode positive. Missing APIs or prerequisites (TypeError), unsupported syntax, resource stops, timeout, crash or missing output are unhealthy. The adapter does not expose authored Error.message; do not use it as a matcher.",
+  "controls": [
+    {
+      "name": "literal-units-positive",
+      "pair": "literal-units",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var s='A\\uD800';if(s.length!==2||s.charCodeAt(1)!==55296)throw new TypeError('literal prerequisite');var actual=s.length+','+s.charCodeAt(0)+','+s.charCodeAt(1);if(actual!==\"2,65,55296\")throw new Error(\"literal-units expectation\");",
+      "source_sha256": "be6d9e3b7fc2740234c98d7cf7949a2ab94304d69c3f39ecac2d8d7be519a152",
+      "literal_observation": "2,65,55296",
+      "asserted_observation": "2,65,55296",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "literal-units-wrong",
+      "pair": "literal-units",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var s='A\\uD800';if(s.length!==2||s.charCodeAt(1)!==55296)throw new TypeError('literal prerequisite');var actual=s.length+','+s.charCodeAt(0)+','+s.charCodeAt(1);if(actual!==\"2,65,65533\")throw new Error(\"literal-units expectation\");",
+      "source_sha256": "488f634061ef3356b291189c515ee8eb60709687ae8e9116bd42df8f05113483",
+      "literal_observation": "2,65,55296",
+      "asserted_observation": "2,65,65533",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "shared-subarray-positive",
+      "pair": "shared-subarray",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.subarray!=='function')throw new TypeError('subarray prerequisite');var guard=new Uint8Array([3,5]),g=p.subarray.call(guard,1);if(g.buffer!==guard.buffer||g.length!==1||g[0]!==5)throw new TypeError('working subarray prerequisite');var a=new Uint8Array([7,11,13]),b=p.subarray.call(a,1,3);b[0]=19;var actual=(b.buffer===a.buffer)+','+b.byteOffset+','+b.length+','+a[1];if(actual!==\"true,1,2,19\")throw new Error(\"shared-subarray expectation\");",
+      "source_sha256": "7a28773bda2a17a94a992c2ba039b2d9f1e35d505a6696617903415d2df56cd8",
+      "literal_observation": "true,1,2,19",
+      "asserted_observation": "true,1,2,19",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "shared-subarray-wrong",
+      "pair": "shared-subarray",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.subarray!=='function')throw new TypeError('subarray prerequisite');var guard=new Uint8Array([3,5]),g=p.subarray.call(guard,1);if(g.buffer!==guard.buffer||g.length!==1||g[0]!==5)throw new TypeError('working subarray prerequisite');var a=new Uint8Array([7,11,13]),b=p.subarray.call(a,1,3);b[0]=19;var actual=(b.buffer===a.buffer)+','+b.byteOffset+','+b.length+','+a[1];if(actual!==\"false,1,2,11\")throw new Error(\"shared-subarray expectation\");",
+      "source_sha256": "f3111ab9a40c774d95fd8b7b5fe41cbb0e97469b2e2898b79ff2e8581736c829",
+      "literal_observation": "true,1,2,19",
+      "asserted_observation": "false,1,2,11",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "tracking-arity-positive",
+      "pair": "tracking-arity",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.subarray!=='function')throw new TypeError('subarray prerequisite');var guard=new Uint8Array([3,5]),g=p.subarray.call(guard,1);if(g.buffer!==guard.buffer||g.length!==1||g[0]!==5)throw new TypeError('working subarray prerequisite');var buffer=new ArrayBuffer(6,{maxByteLength:8}),a=new Uint8Array(buffer,2),arity=-1,offset=-1;a.constructor={};a.constructor[Symbol.species]=function(b,o,n){if(b!==buffer)throw new TypeError('original buffer prerequisite');arity=arguments.length;offset=o;return new Uint8Array(0);};if(a.length!==4||!buffer.resizable)throw new TypeError('tracking prerequisite');a.subarray(1,undefined);var actual=arity+','+offset;if(actual!==\"2,3\")throw new Error(\"tracking-arity expectation\");",
+      "source_sha256": "6ec54daead2be77c065e39a8256168cb2d889cb4a47976e9bcd7686e5c1864a0",
+      "literal_observation": "2,3",
+      "asserted_observation": "2,3",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "tracking-arity-wrong",
+      "pair": "tracking-arity",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.subarray!=='function')throw new TypeError('subarray prerequisite');var guard=new Uint8Array([3,5]),g=p.subarray.call(guard,1);if(g.buffer!==guard.buffer||g.length!==1||g[0]!==5)throw new TypeError('working subarray prerequisite');var buffer=new ArrayBuffer(6,{maxByteLength:8}),a=new Uint8Array(buffer,2),arity=-1,offset=-1;a.constructor={};a.constructor[Symbol.species]=function(b,o,n){if(b!==buffer)throw new TypeError('original buffer prerequisite');arity=arguments.length;offset=o;return new Uint8Array(0);};if(a.length!==4||!buffer.resizable)throw new TypeError('tracking prerequisite');a.subarray(1,undefined);var actual=arity+','+offset;if(actual!==\"3,3\")throw new Error(\"tracking-arity expectation\");",
+      "source_sha256": "55acb6652b90032d6d8de45e712f03c901128ffb42669b1227d9a34d030f46ee",
+      "literal_observation": "2,3",
+      "asserted_observation": "3,3",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "fresh-species-result-positive",
+      "pair": "fresh-species-result",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.subarray!=='function')throw new TypeError('subarray prerequisite');var guard=new Uint8Array([3,5]),g=p.subarray.call(guard,1);if(g.buffer!==guard.buffer||g.length!==1||g[0]!==5)throw new TypeError('working subarray prerequisite');var buffer=new ArrayBuffer(4,{maxByteLength:8}),result=new Uint8Array(buffer,2,2),a=new Uint8Array(1);if(result.length!==2||!buffer.resizable)throw new TypeError('live result prerequisite');a.constructor={};a.constructor[Symbol.species]=function(){buffer.resize(1);return result;};var rejected=false;try{a.subarray(0);}catch(e){if(!(e instanceof TypeError))throw e;rejected=true;}var actual=rejected+','+(result.length===0);if(actual!==\"true,true\")throw new Error(\"fresh-species-result expectation\");",
+      "source_sha256": "504e0ad7c560d9e4d07e983298949fa238913f0e436b8706e203129c9490dbef",
+      "literal_observation": "true,true",
+      "asserted_observation": "true,true",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "fresh-species-result-wrong",
+      "pair": "fresh-species-result",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.subarray!=='function')throw new TypeError('subarray prerequisite');var guard=new Uint8Array([3,5]),g=p.subarray.call(guard,1);if(g.buffer!==guard.buffer||g.length!==1||g[0]!==5)throw new TypeError('working subarray prerequisite');var buffer=new ArrayBuffer(4,{maxByteLength:8}),result=new Uint8Array(buffer,2,2),a=new Uint8Array(1);if(result.length!==2||!buffer.resizable)throw new TypeError('live result prerequisite');a.constructor={};a.constructor[Symbol.species]=function(){buffer.resize(1);return result;};var rejected=false;try{a.subarray(0);}catch(e){if(!(e instanceof TypeError))throw e;rejected=true;}var actual=rejected+','+(result.length===0);if(actual!==\"false,true\")throw new Error(\"fresh-species-result expectation\");",
+      "source_sha256": "c6b887652951787667e71fe2ae35854a3bc6e59c2bd94ce111dc1d3fae34b113",
+      "literal_observation": "true,true",
+      "asserted_observation": "false,true",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "join-captured-length-positive",
+      "pair": "join-captured-length",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.join!=='function')throw new TypeError('join prerequisite');if(p.join.call(new Uint8Array([3,5]),':')!=='3:5')throw new TypeError('working join prerequisite');var buffer=new ArrayBuffer(4,{maxByteLength:8}),a=new Uint8Array(buffer);a[0]=7;a[1]=8;a[2]=9;a[3]=10;if(a.length!==4||!buffer.resizable)throw new TypeError('tracking prerequisite');var calls=0;var text=a.join({toString:function(){calls++;buffer.resize(2);return '|';}});var actual=text+';'+calls;if(actual!==\"7|8||;1\")throw new Error(\"join-captured-length expectation\");",
+      "source_sha256": "b194f1a493362e16a169b96f28fcdfb9c2abc3e2121d6317cb84b99c22b65e6b",
+      "literal_observation": "7|8||;1",
+      "asserted_observation": "7|8||;1",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "join-captured-length-wrong",
+      "pair": "join-captured-length",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.join!=='function')throw new TypeError('join prerequisite');if(p.join.call(new Uint8Array([3,5]),':')!=='3:5')throw new TypeError('working join prerequisite');var buffer=new ArrayBuffer(4,{maxByteLength:8}),a=new Uint8Array(buffer);a[0]=7;a[1]=8;a[2]=9;a[3]=10;if(a.length!==4||!buffer.resizable)throw new TypeError('tracking prerequisite');var calls=0;var text=a.join({toString:function(){calls++;buffer.resize(2);return '|';}});var actual=text+';'+calls;if(actual!==\"7|8;1\")throw new Error(\"join-captured-length expectation\");",
+      "source_sha256": "2a13de712fc6fd2ec0accd2b6167ee602000893988d44b1a4c34c04fc7561745",
+      "literal_observation": "7|8||;1",
+      "asserted_observation": "7|8;1",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "generic-alias-positive",
+      "pair": "generic-alias",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(!Object.hasOwn(p,'toString')||p.toString!==Array.prototype.toString)throw new TypeError('exact alias prerequisite');var object={},token={},receiver=false,argc=-1;object.join=function(){receiver=this===object;argc=arguments.length;return token;};var value=p.toString.call(object);var actual=receiver+','+argc+','+(value===token);if(actual!==\"true,0,true\")throw new Error(\"generic-alias expectation\");",
+      "source_sha256": "c249cc5052449899d73cbf9c6550ec0eb3942cbae0970a2c755fd4fb65c51e61",
+      "literal_observation": "true,0,true",
+      "asserted_observation": "true,0,true",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "generic-alias-wrong",
+      "pair": "generic-alias",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(!Object.hasOwn(p,'toString')||p.toString!==Array.prototype.toString)throw new TypeError('exact alias prerequisite');var object={},token={},receiver=false,argc=-1;object.join=function(){receiver=this===object;argc=arguments.length;return token;};var value=p.toString.call(object);var actual=receiver+','+argc+','+(value===token);if(actual!==\"false,1,false\")throw new Error(\"generic-alias expectation\");",
+      "source_sha256": "096b4b12e6732861bbf62d17c6eeef8e28f130ff2d744c1b0b6fc9a778653f9b",
+      "literal_observation": "true,0,true",
+      "asserted_observation": "false,1,false",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    }
+  ]
+}

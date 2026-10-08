@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "collection": "typedArrayViewCases",
+  "status": "source-only frozen expectations; execution pending",
+  "cases": [
+    "metadata_alias_and_saved_identity",
+    "all_ten_kinds_share_bytes_and_preserve_kind",
+    "literal_clamped_indices_and_empty_offsets",
+    "invalid_receiver_precedes_argument_hooks",
+    "callback_order_and_species_argument_values",
+    "abrupt_conversion_and_species_identity",
+    "intrinsic_default_survives_global_replacement",
+    "species_accepts_short_different_kind_and_same_object",
+    "species_result_bounds_are_refreshed_after_constructor",
+    "tracking_and_fixed_species_arity",
+    "tracking_subviews_follow_growth_and_fixed_subviews_do_not",
+    "initially_out_of_bounds_sources_keep_stored_offset",
+    "captured_source_length_and_fresh_default_bounds",
+    "detached_source_can_reach_custom_species",
+    "bound_species_is_constructed_with_original_target",
+    "join_all_kinds_and_literal_number_strings",
+    "join_validates_receiver_before_separator",
+    "join_separator_coercion_once_even_when_empty",
+    "join_captures_length_but_refreshes_each_element",
+    "join_ignores_shadow_length_and_invalid_index_prototypes",
+    "join_retains_exact_utf16_separator_units",
+    "to_string_alias_is_generic_and_returns_join_result",
+    "to_string_fallback_and_detached_custom_join"
+  ],
+  "named_bodies": 23,
+  "modes": [
+    "sloppy",
+    "strict"
+  ],
+  "mode_cases": 46,
+  "case_invocation_arguments": [],
+  "case_suffix_template": "\nif (typedArrayViewCases.CASE_NAME() !== true) throw new Error(\"case did not return true\");\n",
+  "ordinary_observation": {
+    "status": "complete",
+    "phase": "runtime",
+    "error_type": "",
+    "error_identity": "",
+    "return_value": true
+  },
+  "controls": {
+    "pairs": 6,
+    "modes": 24
+  },
+  "total_mode_observations": 70,
+  "number_kinds": [
+    "Int8Array",
+    "Uint8Array",
+    "Uint8ClampedArray",
+    "Int16Array",
+    "Uint16Array",
+    "Int32Array",
+    "Uint32Array",
+    "Float16Array",
+    "Float32Array",
+    "Float64Array"
+  ],
+  "excluded_scope": [
+    "BigInt views",
+    "shared or immutable buffers",
+    "Proxy",
+    "foreign realms",
+    "class-based subclasses",
+    "unrelated TypedArray methods",
+    "implementation-specific resource tariffs"
+  ],
+  "published_base": "a3c0bb1d5167236cdf676247f17aea3720dcb866"
+}

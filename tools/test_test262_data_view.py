@@ -119,7 +119,7 @@ class DataViewCorpusTests(unittest.TestCase):
         self.assertTrue(any('$262' in c['source'].decode() for c in cases))
 
     def test_all_42_previous_profile_contracts_are_byte_identical(self):
-        contract = capture_contracts(excluded={'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', PROFILE})
+        contract = capture_contracts(excluded={'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', PROFILE})
         self.assertEqual(contract['counts'], dict(profiles=42, cases=18563, preflights=4252))
         self.assertEqual(runner.digest(canonical(contract)),
                          'a30b99cc99f9c001b52cbcccf3ea522a4a290cac4938f6f9f6a9cd3718f415a6')

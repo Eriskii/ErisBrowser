@@ -127,7 +127,7 @@ class ArrayPredicateCorpusTests(unittest.TestCase):
         retained = {}
         for name in runner.PROFILES:
             # Iteration profiles postdate this unchanged historical snapshot.
-            if name in {'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', PROFILE, 'object-integrity', 'array-find', 'date'}:
+            if name in {'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', PROFILE, 'object-integrity', 'array-find', 'date'}:
                 continue
             _, files, cases, fixtures, manifest_hash = runner.load_corpus(
                 runner.ROOT / 'tests/upstream' / runner.corpus_name(name), name)
