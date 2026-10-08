@@ -1,0 +1,22 @@
+{
+  "authority": "ECMA-262 current official tc39.es, read2026-10-08UTC",
+  "sources": [
+    {
+      "url": "https://tc39.es/ecma262/multipage/reflection.html#sec-reflect-object",
+      "sections": [
+        "28.1.4",
+        "28.1.5",
+        "28.1.6",
+        "28.1.7",
+        "28.1.8",
+        "28.1.9",
+        "28.1.11",
+        "28.1.12",
+        "28.1.13"
+      ]
+    }
+  ],
+  "bounded_notes": "All nine require an Object target. Property methods then convert their key once. Get/Set distinguish absent Receiver from explicit undefined. Delete/Set/PreventExtensions/SetPrototypeOf return internal Boolean results; descriptor reflection creates a descriptor object. SetPrototypeOf separately validates object-or-null prototype. These wrapper algorithms delegate ordinary and TypedArray behavior; they do not waive missing target capabilities.",
+  "typed_array_source_context": "The selected foundation and independent property-seam review already cover terminal canonical indices, target versus Receiver, fresh bounds, DefineOwnProperty refusal and resizable PreventExtensions. The new fixtures exercise those distinctions through actual Reflect entrypoints.",
+  "execution": "Read-only web/source inspection; no JS or runtime execution."
+}

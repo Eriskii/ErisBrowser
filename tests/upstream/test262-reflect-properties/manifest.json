@@ -1,0 +1,941 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all 108 original .js files in nine complete Reflect property method trees plus three direct Reflect object tests; full pinned Git-tree inventories; Proxy originals retained for explicit policy exclusion; no implementation",
+  "directories": {
+    "Reflect": [
+      "Symbol.toStringTag.js",
+      "object-prototype.js",
+      "prop-desc.js"
+    ],
+    "Reflect/deleteProperty": [
+      "delete-properties.js",
+      "delete-symbol-properties.js",
+      "deleteProperty.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "return-abrupt-from-property-key.js",
+      "return-abrupt-from-result.js",
+      "return-boolean.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Reflect/get": [
+      "get.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "return-abrupt-from-property-key.js",
+      "return-abrupt-from-result.js",
+      "return-value-from-receiver.js",
+      "return-value-from-symbol-key.js",
+      "return-value.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Reflect/getOwnPropertyDescriptor": [
+      "getOwnPropertyDescriptor.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "return-abrupt-from-property-key.js",
+      "return-abrupt-from-result.js",
+      "return-from-accessor-descriptor.js",
+      "return-from-data-descriptor.js",
+      "symbol-property.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js",
+      "undefined-own-property.js",
+      "undefined-property.js"
+    ],
+    "Reflect/getPrototypeOf": [
+      "getPrototypeOf.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "null-prototype.js",
+      "return-abrupt-from-result.js",
+      "return-prototype.js",
+      "skip-own-properties.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Reflect/has": [
+      "has.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "return-abrupt-from-property-key.js",
+      "return-abrupt-from-result.js",
+      "return-boolean.js",
+      "symbol-property.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Reflect/isExtensible": [
+      "isExtensible.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "return-abrupt-from-result.js",
+      "return-boolean.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Reflect/preventExtensions": [
+      "always-return-true-from-ordinary-object.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prevent-extensions.js",
+      "preventExtensions.js",
+      "return-abrupt-from-result.js",
+      "return-boolean-from-proxy-object.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Reflect/set": [
+      "call-prototype-property-set.js",
+      "creates-a-data-descriptor.js",
+      "different-property-descriptors.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "receiver-is-not-object.js",
+      "return-abrupt-from-property-key.js",
+      "return-abrupt-from-result.js",
+      "return-false-if-receiver-is-not-writable.js",
+      "return-false-if-target-is-not-writable.js",
+      "set-value-on-accessor-descriptor-with-receiver.js",
+      "set-value-on-accessor-descriptor.js",
+      "set-value-on-data-descriptor.js",
+      "set.js",
+      "symbol-property.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ],
+    "Reflect/setPrototypeOf": [
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "proto-is-not-object-and-not-null-throws.js",
+      "proto-is-symbol-throws.js",
+      "return-abrupt-from-result.js",
+      "return-false-if-target-and-proto-are-the-same.js",
+      "return-false-if-target-is-not-extensible.js",
+      "return-false-if-target-is-prototype-of-proto.js",
+      "return-true-if-new-prototype-is-set.js",
+      "return-true-if-proto-is-current.js",
+      "setPrototypeOf.js",
+      "target-is-not-object-throws.js",
+      "target-is-symbol-throws.js"
+    ]
+  },
+  "test_files": 108,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Reflect/Symbol.toStringTag.js",
+      "upstream_path": "test/built-ins/Reflect/Symbol.toStringTag.js",
+      "bytes": 614,
+      "sha256": "950b2cc3082e69ab97513b41535d4bbb9ac50f181eb7ae6617d472257a66d19f"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/delete-properties.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/delete-properties.js",
+      "bytes": 438,
+      "sha256": "72b5abad40698d0ad8069d4e71830e39fa75cedd047cce4216d4fe5c75918162"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/delete-symbol-properties.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/delete-symbol-properties.js",
+      "bytes": 617,
+      "sha256": "466bbbca019088c31b499f8db10186c20cd12e57a4cedcea3d3f4e84ffa98d28"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/deleteProperty.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/deleteProperty.js",
+      "bytes": 517,
+      "sha256": "9412a125f2faa855cfc555f1972e08cd2e216c815c5311c75618b5ce2de0a323"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/length.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/length.js",
+      "bytes": 420,
+      "sha256": "5e45de033203ad24980cdd4e1675813e15c531b1b9679cc3ab49fe8cf3891e0f"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/name.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/name.js",
+      "bytes": 539,
+      "sha256": "89f6ab6589e2b79718fb13a3043d74e8d504906312020915c0c849370b89d34f"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/not-a-constructor.js",
+      "bytes": 911,
+      "sha256": "d4c21a3f1e136e862fccfe62ae2a036d3ae40a204fedc88bfba73ca36e04a8ea"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/return-abrupt-from-property-key.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/return-abrupt-from-property-key.js",
+      "bytes": 546,
+      "sha256": "442bf121a355571979f99def048ed0e6a74877eeb651b2512bb7f8ba605b7ae2"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/return-abrupt-from-result.js",
+      "bytes": 571,
+      "sha256": "d0ef5879668f0b04de53cece0f85b4ebf3e1d339a018b2166ea9000c17ad901a"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/return-boolean.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/return-boolean.js",
+      "bytes": 604,
+      "sha256": "ebd0f91a656118978eb5f96aba23c5ce4c213030b4fdd3554a703ca32251b067"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/target-is-not-object-throws.js",
+      "bytes": 704,
+      "sha256": "837e920af224776c66bb3cd98323f329da1af3f05e91e5674eac68be5c373573"
+    },
+    {
+      "path": "test/built-ins/Reflect/deleteProperty/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/deleteProperty/target-is-symbol-throws.js",
+      "bytes": 471,
+      "sha256": "03efb5f523fec0cf66053a260a3cabd3a089af29eaccb942e831bca2a4dd2b49"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/get.js",
+      "upstream_path": "test/built-ins/Reflect/get/get.js",
+      "bytes": 498,
+      "sha256": "0768d34d784874dc4de42b44179256c4f53e8496ebf3add8e29da0d925d09edc"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/length.js",
+      "upstream_path": "test/built-ins/Reflect/get/length.js",
+      "bytes": 514,
+      "sha256": "cf5ef3fc3722244b62fd1503117e8d0f4ef043c06491162129802920b1dfc814"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/name.js",
+      "upstream_path": "test/built-ins/Reflect/get/name.js",
+      "bytes": 509,
+      "sha256": "39442d99634cd4748acd8dbeca808d67b0aca237824daf6cbf3ea9857da08f25"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/get/not-a-constructor.js",
+      "bytes": 859,
+      "sha256": "740130e2a2a358d1c6463a7998bff705e67da03f32fcddd335408486cbef109a"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/return-abrupt-from-property-key.js",
+      "upstream_path": "test/built-ins/Reflect/get/return-abrupt-from-property-key.js",
+      "bytes": 538,
+      "sha256": "fd5e5277a72ee4bba4783ff236ec3a323408adc0c2a749f961cfa44c2861d1e5"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/get/return-abrupt-from-result.js",
+      "bytes": 680,
+      "sha256": "5cbcb42d16413dd77a33b48d4cda890a9bb9d9374c34bc038a1843e30e5ff771"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/return-value-from-receiver.js",
+      "upstream_path": "test/built-ins/Reflect/get/return-value-from-receiver.js",
+      "bytes": 1325,
+      "sha256": "f57f9ed41001c092b77a22ecd182da9f86af3bc60939351e2ac0c5e096c647ab"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/return-value-from-symbol-key.js",
+      "upstream_path": "test/built-ins/Reflect/get/return-value-from-symbol-key.js",
+      "bytes": 568,
+      "sha256": "843f15df352aace3985729d9391c10213c913c213f207363ff3a9b95f663cb86"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/return-value.js",
+      "upstream_path": "test/built-ins/Reflect/get/return-value.js",
+      "bytes": 1654,
+      "sha256": "130e3475441af78a87f9f8902ff566bc23818249efd46ea801fe9a27b7cc0f53"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/get/target-is-not-object-throws.js",
+      "bytes": 663,
+      "sha256": "b974475ac96123249f87e0feb5085dad80e0ce610c96a67747b4144653c38510"
+    },
+    {
+      "path": "test/built-ins/Reflect/get/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/get/target-is-symbol-throws.js",
+      "bytes": 463,
+      "sha256": "3d01d4dc5e5141fe25021c15e265e280905f1a2a916739838be416f2d6e5401b"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/getOwnPropertyDescriptor.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/getOwnPropertyDescriptor.js",
+      "bytes": 547,
+      "sha256": "235ab3f5c4bf267f8ccc1c3c2159375b864837f40a379f92b9442284f096d548"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/length.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/length.js",
+      "bytes": 440,
+      "sha256": "b9401e083764f0f129eeffd5c7b1410f384b8bc7b5ccd3ef7ce931833e03c698"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/name.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/name.js",
+      "bytes": 579,
+      "sha256": "dd742075dfb9b4f629407f357b42a2d3a25b41ecc8120cbe103cdffd0a891a37"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/not-a-constructor.js",
+      "bytes": 951,
+      "sha256": "005c21e0ebb3e043d3d7fd05087c69aaffbe08b58a274d5789ea11c7a7dc5c0b"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-abrupt-from-property-key.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-abrupt-from-property-key.js",
+      "bytes": 566,
+      "sha256": "80ee88ce5a9b44e8613f1cf5b9fa95fb8880f8b8f3c521f5ce90154059f9a875"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-abrupt-from-result.js",
+      "bytes": 638,
+      "sha256": "5a76288077443b05350ca04fc2ce8e94b4f6e2a40572e401e7f48f3086f874fe"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-from-accessor-descriptor.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-from-accessor-descriptor.js",
+      "bytes": 1729,
+      "sha256": "8ee44904563f79dac6950cb2b8251160e390977949fe7958a240ace530b18667"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-from-data-descriptor.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/return-from-data-descriptor.js",
+      "bytes": 854,
+      "sha256": "fb75c4695d56b4f6ef53af68fda2a19adfb3a0857be8f8fbcaf77319519a7c25"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/symbol-property.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/symbol-property.js",
+      "bytes": 889,
+      "sha256": "5f5b5ab3d20c2241765d2544663361f50eb3a779ab2a8bd11169f74e498132c3"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/target-is-not-object-throws.js",
+      "bytes": 754,
+      "sha256": "aa5d5121b759c5d4a74c13bbf99b8f4b20647ee58db1ea523533a8cd6fca7408"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/target-is-symbol-throws.js",
+      "bytes": 491,
+      "sha256": "4e85695e10e2dff23e0ee2594d74b730c0d416c5fc95e82c2acbf5234be7cf72"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/undefined-own-property.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/undefined-own-property.js",
+      "bytes": 662,
+      "sha256": "11a92e67c247a3de9602fbb4c666a7efb37d5d8b6c5e55607c666654f1b1af9c"
+    },
+    {
+      "path": "test/built-ins/Reflect/getOwnPropertyDescriptor/undefined-property.js",
+      "upstream_path": "test/built-ins/Reflect/getOwnPropertyDescriptor/undefined-property.js",
+      "bytes": 633,
+      "sha256": "00fbb7dc69ec82426e9c8f388bc744d7c855703ff925c963c3590e1cadfdcdb0"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/getPrototypeOf.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/getPrototypeOf.js",
+      "bytes": 504,
+      "sha256": "15a381b59a97c08d45a348ac5b05ac2622f3eac531f0973f8b762bb99a3bfe1a"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/length.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/length.js",
+      "bytes": 420,
+      "sha256": "f97a46def7cbf83a0c2cc96723e1250d90aae243973c136aaaa3968147af1a39"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/name.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/name.js",
+      "bytes": 526,
+      "sha256": "6aa708ebbb70e334ea91ed64fbca385a0686e087245c3881b24c5c345c87f874"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/not-a-constructor.js",
+      "bytes": 907,
+      "sha256": "f43c756c87697e6c7d160fc9e573f32dc65eeac8f9b574e296944f310458f5df"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/null-prototype.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/null-prototype.js",
+      "bytes": 404,
+      "sha256": "b4686e76947c9caa1f201ec63b6464523cdd48b0cced947bccb1bd5608452aac"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/return-abrupt-from-result.js",
+      "bytes": 544,
+      "sha256": "105415348e0b7fbbc1a275d107eac5072b3592378b9e946a5046e8962fa45a55"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/return-prototype.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/return-prototype.js",
+      "bytes": 454,
+      "sha256": "7172fd29acdf4b683d8fa06f8ac83706a786673382197333656f71cfd9242774"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/skip-own-properties.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/skip-own-properties.js",
+      "bytes": 561,
+      "sha256": "d999cf31a71686777293c4dc8b22e467d46cfc55a92b92a93014cfbbda009452"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/target-is-not-object-throws.js",
+      "bytes": 671,
+      "sha256": "6c704ea1a8f1129abb197d045df257399e1d368bd6c4d3cd98957c52743d677c"
+    },
+    {
+      "path": "test/built-ins/Reflect/getPrototypeOf/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/getPrototypeOf/target-is-symbol-throws.js",
+      "bytes": 453,
+      "sha256": "697f5b413daace7d1ffa0a95087c852ee36e54cf6660dfefe993ea3682379e46"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/has.js",
+      "upstream_path": "test/built-ins/Reflect/has/has.js",
+      "bytes": 484,
+      "sha256": "4c54ccac44cf1b3fe8c8e1d400f481cdde176fb12a25813eeaffabe41e8a3495"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/length.js",
+      "upstream_path": "test/built-ins/Reflect/has/length.js",
+      "bytes": 398,
+      "sha256": "579304ac24522bf801cdbeb237082cda2f7fbc5379f87ffe6c9b69e344a8d5c6"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/name.js",
+      "upstream_path": "test/built-ins/Reflect/has/name.js",
+      "bytes": 495,
+      "sha256": "d135d2b7b5e5e12ebb7381efc81bbc00fdf3efeb28bf66e642f9eafeb7433a94"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/has/not-a-constructor.js",
+      "bytes": 853,
+      "sha256": "18c2686415a673b043d1abe7c37b524c97ce2c53fcf70f07d86330e48ca3a9a8"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/return-abrupt-from-property-key.js",
+      "upstream_path": "test/built-ins/Reflect/has/return-abrupt-from-property-key.js",
+      "bytes": 524,
+      "sha256": "3afd8a9ae90f2d7a13ef45076d10bab096b8c345a24bab2fa0ca1774ffcc4f86"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/has/return-abrupt-from-result.js",
+      "bytes": 495,
+      "sha256": "5c35bb274bdebde8c0a661996ff5bbcb6be1e7ba7a202dcc2d34ea8ef0bd026a"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/return-boolean.js",
+      "upstream_path": "test/built-ins/Reflect/has/return-boolean.js",
+      "bytes": 935,
+      "sha256": "02aaba01391081c5d44f77cd0020c5453e1b08623d9dfdd6631979d3a0b649f9"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/symbol-property.js",
+      "upstream_path": "test/built-ins/Reflect/has/symbol-property.js",
+      "bytes": 704,
+      "sha256": "263109468a6e548d78f219878af416434bbbfe62ccbdf40c8f345c48de48a1b3"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/has/target-is-not-object-throws.js",
+      "bytes": 649,
+      "sha256": "e69751175935b2b05c666630c52f0fe8c83c9289c88510515b736731c4c28b96"
+    },
+    {
+      "path": "test/built-ins/Reflect/has/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/has/target-is-symbol-throws.js",
+      "bytes": 449,
+      "sha256": "0b82bedf17122a400424b8e0e59932b30217fda1045b1a9a6087b6379040f1f5"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/isExtensible.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/isExtensible.js",
+      "bytes": 498,
+      "sha256": "d23748922e43a78d985ce53c4d852c6a85efdbb6528fd250ba679ecd756cf655"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/length.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/length.js",
+      "bytes": 417,
+      "sha256": "5be3d4b6db0c8e32a89a10ac169f5f03d704f6668d6511f38800eecdbdd95770"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/name.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/name.js",
+      "bytes": 518,
+      "sha256": "b35b7d4714c326208fd52654e66223625e2fe44b8d5c6f34b6463b4cfdb1c661"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/not-a-constructor.js",
+      "bytes": 891,
+      "sha256": "df9a12860f655e3fbca119514024b447204ab0997921bc0dac910dde612388e3"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/return-abrupt-from-result.js",
+      "bytes": 503,
+      "sha256": "c0a94abf9fd8ca73462f3271ae71a774d487833426f7333bda7a84880b65adec"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/return-boolean.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/return-boolean.js",
+      "bytes": 466,
+      "sha256": "16302ae50322e96c33d744091db42cabb37a758be7ba8c475e7e51a4802d6101"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/target-is-not-object-throws.js",
+      "bytes": 661,
+      "sha256": "8e0046127f4d29938ae7e856528c6698bfc336a699a8ec47e1fdbed28a0b8181"
+    },
+    {
+      "path": "test/built-ins/Reflect/isExtensible/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/isExtensible/target-is-symbol-throws.js",
+      "bytes": 449,
+      "sha256": "6616516ddaea59598917b735d0187fcbbc4da27d0895c49c1d8667d06449de9c"
+    },
+    {
+      "path": "test/built-ins/Reflect/object-prototype.js",
+      "upstream_path": "test/built-ins/Reflect/object-prototype.js",
+      "bytes": 460,
+      "sha256": "686a068ed4882e96650369fd7045fbe476e3cf72f1de4285e5676d916849ce07"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/always-return-true-from-ordinary-object.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/always-return-true-from-ordinary-object.js",
+      "bytes": 740,
+      "sha256": "dad470d0019f07c00878fa8bbf855dd9f6f06f4adb7de0f1e1c36b3ff273e4ad"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/length.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/length.js",
+      "bytes": 427,
+      "sha256": "e498b197a410970f7623e22fb46e8eb0b558f7cc59d24da508ba324c75492a1c"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/name.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/name.js",
+      "bytes": 540,
+      "sha256": "67d55893f2f1ae8fa2fb96d3eb7d1bfa18dd7198d28a4aa250c227ec56637ace"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/not-a-constructor.js",
+      "bytes": 919,
+      "sha256": "47a116e2fd1770892991781cf06cd68584fbb4c49f7c99aa02119297741a55e7"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/prevent-extensions.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/prevent-extensions.js",
+      "bytes": 876,
+      "sha256": "560f48d310ec83ffb6e3b2e968bebb442295ae0c33e1e83444560b08d5412730"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/preventExtensions.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/preventExtensions.js",
+      "bytes": 515,
+      "sha256": "7f9f201d66741bd68e3635cf08ce22263ad75b6244bdd5905ab5fe644845f01b"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/return-abrupt-from-result.js",
+      "bytes": 525,
+      "sha256": "36107db9a8a5851068683e5ffa72507a39fd0c05267658a3a80ff8c09e8fb31f"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/return-boolean-from-proxy-object.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/return-boolean-from-proxy-object.js",
+      "bytes": 1154,
+      "sha256": "39e8d79e9a52a4a8067346f834486f5fdc36923f1b33241557360d52c29ad1cb"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/target-is-not-object-throws.js",
+      "bytes": 688,
+      "sha256": "ce1cc546d6035ce56d341eb506987bddec64f4db9e26ec5a10ad0dc513ec1c03"
+    },
+    {
+      "path": "test/built-ins/Reflect/preventExtensions/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/preventExtensions/target-is-symbol-throws.js",
+      "bytes": 449,
+      "sha256": "6616516ddaea59598917b735d0187fcbbc4da27d0895c49c1d8667d06449de9c"
+    },
+    {
+      "path": "test/built-ins/Reflect/prop-desc.js",
+      "upstream_path": "test/built-ins/Reflect/prop-desc.js",
+      "bytes": 1135,
+      "sha256": "e5456ed16f2f5ceb981c6f8f2cbef226ebc93fb4dc5054439f398af5cd61544e"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/call-prototype-property-set.js",
+      "upstream_path": "test/built-ins/Reflect/set/call-prototype-property-set.js",
+      "bytes": 1293,
+      "sha256": "92537d0d9ba4742cae1f9638c5c642786a7321c8da0430abe5bb966065bc06b2"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/creates-a-data-descriptor.js",
+      "upstream_path": "test/built-ins/Reflect/set/creates-a-data-descriptor.js",
+      "bytes": 2670,
+      "sha256": "6f6470d331d803a007ad5a34413047141539994e960f755df6ed84a91d448114"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/different-property-descriptors.js",
+      "upstream_path": "test/built-ins/Reflect/set/different-property-descriptors.js",
+      "bytes": 2104,
+      "sha256": "936213fce6a526d4cd6966a500f16a6ecef4261979b0572bd9c5c86c0971c471"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/length.js",
+      "upstream_path": "test/built-ins/Reflect/set/length.js",
+      "bytes": 533,
+      "sha256": "b6780d7ffb5e8874aa488c76e008b51139bb780655fedef451f475702e3dcf58"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/name.js",
+      "upstream_path": "test/built-ins/Reflect/set/name.js",
+      "bytes": 528,
+      "sha256": "c754f0fcc71d8c3d5dbd344905362c32fc3b43510f6fa19d2f1134ea35191f93"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/set/not-a-constructor.js",
+      "bytes": 868,
+      "sha256": "6dcff2482ad7bbabdcf85ee3620e7d989897f50cf19e52e68572f6ed4758b31f"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/receiver-is-not-object.js",
+      "upstream_path": "test/built-ins/Reflect/set/receiver-is-not-object.js",
+      "bytes": 1348,
+      "sha256": "1567aa1f689d028b31de6bae8b3d0f99c629eb31a7736f6e7af89a149bfac778"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/return-abrupt-from-property-key.js",
+      "upstream_path": "test/built-ins/Reflect/set/return-abrupt-from-property-key.js",
+      "bytes": 557,
+      "sha256": "498bf885425791b80886da59b88b7323b0d3f422a905169a17e0831f0a7a267f"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/set/return-abrupt-from-result.js",
+      "bytes": 710,
+      "sha256": "bfd8b58205ad280ddb7915887aa3e44f09f20ac5a0fa4d65b5ca59807bc64ca5"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/return-false-if-receiver-is-not-writable.js",
+      "upstream_path": "test/built-ins/Reflect/set/return-false-if-receiver-is-not-writable.js",
+      "bytes": 830,
+      "sha256": "9d75b986d2bcd7a388402899dd7f857a9ab66dc0c5713f8baffc75b649528e18"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/return-false-if-target-is-not-writable.js",
+      "upstream_path": "test/built-ins/Reflect/set/return-false-if-target-is-not-writable.js",
+      "bytes": 1332,
+      "sha256": "e948e9551981cab62ee4a9425408ae821c3c4aaae5ccd63193c742fbe00862c1"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/set-value-on-accessor-descriptor-with-receiver.js",
+      "upstream_path": "test/built-ins/Reflect/set/set-value-on-accessor-descriptor-with-receiver.js",
+      "bytes": 1409,
+      "sha256": "2cbdbadc50b76f147d1d3f247256253dcb1c3fb0e2f7d8dbb80ff6f0487f24bc"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/set-value-on-accessor-descriptor.js",
+      "upstream_path": "test/built-ins/Reflect/set/set-value-on-accessor-descriptor.js",
+      "bytes": 1224,
+      "sha256": "7a4fc4bf2dff3c3aefd3ce268e345b3cd6d9376d4b188b7c144cbb9fb7474806"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/set-value-on-data-descriptor.js",
+      "upstream_path": "test/built-ins/Reflect/set/set-value-on-data-descriptor.js",
+      "bytes": 1692,
+      "sha256": "c59fa69577aebbffdf9dc9685ae29ad8d287bfec195d1864c23de658f4159b2e"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/set.js",
+      "upstream_path": "test/built-ins/Reflect/set/set.js",
+      "bytes": 504,
+      "sha256": "acc70fb2d0399fdcd831d889a1a406066f9d14ae7a1b7055bc7bf8b8ee03ca2a"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/symbol-property.js",
+      "upstream_path": "test/built-ins/Reflect/set/symbol-property.js",
+      "bytes": 1005,
+      "sha256": "10053bbb1a0f6e0da4e5b33bf16b41109eb218b5ae55b8c5f58b50f98c4c8f19"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/set/target-is-not-object-throws.js",
+      "bytes": 698,
+      "sha256": "ec333e272de397c567dd459d62a78eae87b3d30f6c2f4f07aef1c9f36c65f7cf"
+    },
+    {
+      "path": "test/built-ins/Reflect/set/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/set/target-is-symbol-throws.js",
+      "bytes": 486,
+      "sha256": "37f2d4ff9417f110b86294fa9732161a2e3dc0ecb41ac5ee819a60a65b97f16e"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/length.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/length.js",
+      "bytes": 445,
+      "sha256": "34468f01ec1081fa74dcf421d29ebf46694b150e039dff7c22fb579868affebf"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/name.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/name.js",
+      "bytes": 558,
+      "sha256": "e713d7eac7d931e51980e29262ade22c09b4433ff0cdbad66786a457921060c1"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/not-a-constructor.js",
+      "bytes": 935,
+      "sha256": "b7a83a54cfef6536e159bbaa444958986bf6c8fbce718243bdf0557d578cd849"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/proto-is-not-object-and-not-null-throws.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/proto-is-not-object-and-not-null-throws.js",
+      "bytes": 771,
+      "sha256": "fac281ea0f770d678e5ff8832b32000e72cde93c4f4e1a954dd151f05f963466"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/proto-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/proto-is-symbol-throws.js",
+      "bytes": 528,
+      "sha256": "ab3014ffc472091b854d1591c730233ce8ae75fb791bc90271c6e2b71cc109c1"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/return-abrupt-from-result.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/return-abrupt-from-result.js",
+      "bytes": 561,
+      "sha256": "1cf4ee391a67bd1fef45d5caf342352404f3bfbd27a27a7f231b60f44a2371d3"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/return-false-if-target-and-proto-are-the-same.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/return-false-if-target-and-proto-are-the-same.js",
+      "bytes": 724,
+      "sha256": "04eca0eed0dedaabab712dd937f34083310b34142d13aca96f7b0bf22bb37280"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/return-false-if-target-is-not-extensible.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/return-false-if-target-is-not-extensible.js",
+      "bytes": 999,
+      "sha256": "fef5f641977ae95c3b44b287432c38c4e437e0858efb3bca3204be8ee947517a"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/return-false-if-target-is-prototype-of-proto.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/return-false-if-target-is-prototype-of-proto.js",
+      "bytes": 995,
+      "sha256": "95637301a5baf9c7a4fcbff586c057ac2705d351ac02796b3e2c202603edc2f9"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/return-true-if-new-prototype-is-set.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/return-true-if-new-prototype-is-set.js",
+      "bytes": 936,
+      "sha256": "8c673eab65090a458821b7c6b052aeb8ea1b320f414c514a8900e7f38b2c1ce4"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/return-true-if-proto-is-current.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/return-true-if-proto-is-current.js",
+      "bytes": 868,
+      "sha256": "45b1f2de9aed6b792fc3ac9a8c05a1ad070b29115deb8faf0d51cec884d45050"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/setPrototypeOf.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/setPrototypeOf.js",
+      "bytes": 513,
+      "sha256": "61d5c949ff58af03907515783df9552cbf14b5f95cc693e1745d61d60deb9758"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/target-is-not-object-throws.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/target-is-not-object-throws.js",
+      "bytes": 720,
+      "sha256": "7dfc9d9e94348596e5a540732bb8b138e0c57fcc89e71300f5ecb5abc1c811e0"
+    },
+    {
+      "path": "test/built-ins/Reflect/setPrototypeOf/target-is-symbol-throws.js",
+      "upstream_path": "test/built-ins/Reflect/setPrototypeOf/target-is-symbol-throws.js",
+      "bytes": 490,
+      "sha256": "b3e8412b16629036edc8e81f3ba3b09fc545211d4a9977fe46f86e6e2db08d87"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-nonrecursive-git-trees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "directory_trees": {
+      "Reflect": "5d5470292e7554935e8064857935e9296c32707c",
+      "Reflect/deleteProperty": "a8301d0dd0b9df623fb8ecd54f7936dd6f15cc1a",
+      "Reflect/get": "5c1e40342009679cf02da4ed33fca4db55360e30",
+      "Reflect/getOwnPropertyDescriptor": "efcf488d9cc07b75de8860421f7c33d9fac22fa1",
+      "Reflect/getPrototypeOf": "74a0a2175af79846a627021fb1ea26b3b7d0f58e",
+      "Reflect/has": "0868aa4f56f6b97c8c383c4095025d6be35193a9",
+      "Reflect/isExtensible": "bdece1ccca79ac746f76d66b2d8156353dd2329d",
+      "Reflect/preventExtensions": "dd7701666bbf9be96a70907c8278eeb271b9590b",
+      "Reflect/set": "230a5e213afd211c2afe22fe03490277d409fd34",
+      "Reflect/setPrototypeOf": "77f76f640462502347684182a7791474da82ef98"
+    },
+    "auxiliary_blobs": {
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5",
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/tree-0868aa4f56f6b97c8c383c4095025d6be35193a9.json",
+        "bytes": 2403,
+        "sha256": "0e976f7cf2f64325411ced573c4e2fa6300c0f9b5106502733b4e061bd2680fd",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/0868aa4f56f6b97c8c383c4095025d6be35193a9"
+      },
+      {
+        "path": "inventory-proof/tree-230a5e213afd211c2afe22fe03490277d409fd34.json",
+        "bytes": 4334,
+        "sha256": "cedc29df8462fbe1d71d4562390608a192ab3dcfe1d823d1d60926a0cd5950a9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/230a5e213afd211c2afe22fe03490277d409fd34"
+      },
+      {
+        "path": "inventory-proof/tree-5c1e40342009679cf02da4ed33fca4db55360e30.json",
+        "bytes": 2648,
+        "sha256": "75f78e44fc01db25997130ff2fa6a2dabcc6e795ed293be8cb42cf4674273c4e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/5c1e40342009679cf02da4ed33fca4db55360e30"
+      },
+      {
+        "path": "inventory-proof/tree-5d5470292e7554935e8064857935e9296c32707c.json",
+        "bytes": 3676,
+        "sha256": "070b200861eefd8e3497f2d754520d8d7c7c53f1d8b416849805461d43d94b66",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/5d5470292e7554935e8064857935e9296c32707c"
+      },
+      {
+        "path": "inventory-proof/tree-74a0a2175af79846a627021fb1ea26b3b7d0f58e.json",
+        "bytes": 2403,
+        "sha256": "99318538a00bc67dc5810e1f047f0025de48aa86b8362294e459de2315dc9750",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/74a0a2175af79846a627021fb1ea26b3b7d0f58e"
+      },
+      {
+        "path": "inventory-proof/tree-77f76f640462502347684182a7791474da82ef98.json",
+        "bytes": 3434,
+        "sha256": "54bdeeef3b09de968992194f9d0c4eec85a9310cddcf8f8246fbd2d24b7614e7",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/77f76f640462502347684182a7791474da82ef98"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-a8301d0dd0b9df623fb8ecd54f7936dd6f15cc1a.json",
+        "bytes": 2646,
+        "sha256": "2b3aee2e37d89854f14fe6f2eeba9f076895c2a10cf052e90fe44c33ec57665b",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a8301d0dd0b9df623fb8ecd54f7936dd6f15cc1a"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-bdece1ccca79ac746f76d66b2d8156353dd2329d.json",
+        "bytes": 1954,
+        "sha256": "8c643b96a099b212c84c13afd39ba273324e13bfc522d239b3f5cc4bc03883d9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/bdece1ccca79ac746f76d66b2d8156353dd2329d"
+      },
+      {
+        "path": "inventory-proof/tree-dd7701666bbf9be96a70907c8278eeb271b9590b.json",
+        "bytes": 2447,
+        "sha256": "8850fb2cadf2b0373c4c7f06a96a8a67d7a536dce0807a07b6190754eb0e399d",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/dd7701666bbf9be96a70907c8278eeb271b9590b"
+      },
+      {
+        "path": "inventory-proof/tree-efcf488d9cc07b75de8860421f7c33d9fac22fa1.json",
+        "bytes": 3127,
+        "sha256": "5d97942ab337f5ebf66cdc93c0cfd76c7880552214827b7cc92b2e952c7b8f8b",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/efcf488d9cc07b75de8860421f7c33d9fac22fa1"
+      }
+    ]
+  }
+}

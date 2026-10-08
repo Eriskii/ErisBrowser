@@ -1,0 +1,1470 @@
+{
+  "schema": 1,
+  "scope": "local Reflect property methods, separate from upstream profile",
+  "binary": "/tmp/eris-reflect-properties-1/eris-js-before",
+  "binary_sha256": "da8e5280b2cb16bd87ed31bf073a29c3da58791ca43ae518e7d22def345a14f6",
+  "binary_bytes": 151118608,
+  "inputs": [
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/reflect_properties_local.py",
+      "bytes": 12733,
+      "sha256": "49c2c00ffca7d859d07347642113346bf4d0dfbac4a74740414360273e5359f4"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/test262_conformance.py",
+      "bytes": 234830,
+      "sha256": "59c90b16678a734b7278a7e6fa1c5fbafd6878375255d6255fc0185dc5ab42d7"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/html_conformance.py",
+      "bytes": 13920,
+      "sha256": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/import_test262.py",
+      "bytes": 65205,
+      "sha256": "b88bc7c83d040ca48cda3cea77ffca14af8a9b39e645bfe86ea26cf18da8f433"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/cases.js",
+      "bytes": 15572,
+      "sha256": "21bf80108bf972504a8587409878597f08a01b298b6a812aeb59fee65f95c1aa"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/controls.json",
+      "bytes": 9911,
+      "sha256": "c29babfc2d1f8db802e2cbdde1dfbd95038023cbe1a1704a34caaab4914dcf13"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/inventory.json",
+      "bytes": 1950,
+      "sha256": "ba088b2341e32c1c44eb2e6acdca5ca4a3d8a5a367670703c4244d0aec11c747"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/README.md",
+      "bytes": 3047,
+      "sha256": "a978cb96eb43f41219fa12c1c93210acdd27be900018e84395d844c8f45eb2f9"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/design.md",
+      "bytes": 2556,
+      "sha256": "8ff3972e84bf7e72272562eae075b675caaed5672c098d90b535c8bed3024b84"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/spec-notes.json",
+      "bytes": 1247,
+      "sha256": "a4392db3ac740f87fc42c981c40eb691ed3bbf401b3ccdf2fbcbc438692dfa9d"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/context.json",
+      "bytes": 374,
+      "sha256": "01ac16704e3b524a76bd5cac80b994fc6c45f18cea65655496f3996746966241"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/manifest.json",
+      "bytes": 1599,
+      "sha256": "0602ef0997989e9ea99a6a3567dc6414aa16586fd5d2e1472a330e5bce129f1e"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/matrix.json",
+      "bytes": 22771,
+      "sha256": "cfdeb2b2a554afde790c5a97d8f81cda30512c203605871f6ff7c86c6ea9712a"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/RUNNER.md",
+      "bytes": 2836,
+      "sha256": "ebc9dbff30ad5572dee8aee87521bf52abe3fbd1a7234331f457ee06d82efd8f"
+    }
+  ],
+  "observed_after": [
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/reflect_properties_local.py",
+      "bytes": 12733,
+      "sha256": "49c2c00ffca7d859d07347642113346bf4d0dfbac4a74740414360273e5359f4"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/test262_conformance.py",
+      "bytes": 234830,
+      "sha256": "59c90b16678a734b7278a7e6fa1c5fbafd6878375255d6255fc0185dc5ab42d7"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/html_conformance.py",
+      "bytes": 13920,
+      "sha256": "53e594f8ad73d0eb86cf1c656c9468a6e473c7ec3d588c7d75de3dd630bbeaac"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tools/import_test262.py",
+      "bytes": 65205,
+      "sha256": "b88bc7c83d040ca48cda3cea77ffca14af8a9b39e645bfe86ea26cf18da8f433"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/cases.js",
+      "bytes": 15572,
+      "sha256": "21bf80108bf972504a8587409878597f08a01b298b6a812aeb59fee65f95c1aa"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/controls.json",
+      "bytes": 9911,
+      "sha256": "c29babfc2d1f8db802e2cbdde1dfbd95038023cbe1a1704a34caaab4914dcf13"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/inventory.json",
+      "bytes": 1950,
+      "sha256": "ba088b2341e32c1c44eb2e6acdca5ca4a3d8a5a367670703c4244d0aec11c747"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/README.md",
+      "bytes": 3047,
+      "sha256": "a978cb96eb43f41219fa12c1c93210acdd27be900018e84395d844c8f45eb2f9"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/design.md",
+      "bytes": 2556,
+      "sha256": "8ff3972e84bf7e72272562eae075b675caaed5672c098d90b535c8bed3024b84"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/spec-notes.json",
+      "bytes": 1247,
+      "sha256": "a4392db3ac740f87fc42c981c40eb691ed3bbf401b3ccdf2fbcbc438692dfa9d"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/context.json",
+      "bytes": 374,
+      "sha256": "01ac16704e3b524a76bd5cac80b994fc6c45f18cea65655496f3996746966241"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/manifest.json",
+      "bytes": 1599,
+      "sha256": "0602ef0997989e9ea99a6a3567dc6414aa16586fd5d2e1472a330e5bce129f1e"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/matrix.json",
+      "bytes": 22771,
+      "sha256": "cfdeb2b2a554afde790c5a97d8f81cda30512c203605871f6ff7c86c6ea9712a"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/local-runner/draft/tests/conformance/reflect-properties-local/RUNNER.md",
+      "bytes": 2836,
+      "sha256": "ebc9dbff30ad5572dee8aee87521bf52abe3fbd1a7234331f457ee06d82efd8f"
+    },
+    {
+      "path": "/tmp/eris-reflect-properties-1/eris-js-before",
+      "bytes": 151118608,
+      "sha256": "da8e5280b2cb16bd87ed31bf073a29c3da58791ca43ae518e7d22def345a14f6"
+    }
+  ],
+  "binding_failures": [],
+  "matrix_sha256": "cfdeb2b2a554afde790c5a97d8f81cda30512c203605871f6ff7c86c6ea9712a",
+  "summary": {
+    "case_matches": 0,
+    "case_total": 28,
+    "control_matches": 4,
+    "controls_verified": 4,
+    "control_total": 20,
+    "runner_errors": 0
+  },
+  "cases": [
+    {
+      "id": "metadata_and_nonconstruction#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "6fff9ba186519ed8460da3a25e4c6a87db44951b60da8685f70f3fa12cf0614b",
+      "source_sha256": "188caa934c0105d8b7a77291572fe53ab60609536d69cb97081b4590ed4fab3f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "metadata_and_nonconstruction#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "51b432b1353868ec22ffc86bdaf5456dcde364be4aa1e32146f77e07bdd1a79e",
+      "source_sha256": "188caa934c0105d8b7a77291572fe53ab60609536d69cb97081b4590ed4fab3f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "target_validation_precedes_key_conversion#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "cc22a5e92d7817b249c07505f17a8df25f5fbb76c126a21425801140b16a7d07",
+      "source_sha256": "ed1598d5c2a5a96e6a7bab71cc1d3b7afdd4a617f88ca8d07c665e6d8d85314f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "target_validation_precedes_key_conversion#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "2a61ef19f585747972378f1b42a944e2b5fda2f54df6e401a2fecc3feb2e5836",
+      "source_sha256": "ed1598d5c2a5a96e6a7bab71cc1d3b7afdd4a617f88ca8d07c665e6d8d85314f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "get_uses_original_receiver_and_preserves_abrupt_identity#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "dae8b8dd7a79c97390e4859726050427082d550a338c6bb9f12a0516e5279e50",
+      "source_sha256": "cd31e0cf9a870396b52e696400f1135d7ff2d3fa75a204c2dc01502fb31555e9",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "get_uses_original_receiver_and_preserves_abrupt_identity#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "fd1fbb1e9ac63bdc4121757b9be6acfb2ef61fbdb4ad57542286c8f9da1dfb08",
+      "source_sha256": "cd31e0cf9a870396b52e696400f1135d7ff2d3fa75a204c2dc01502fb31555e9",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "key_conversion_once_precedes_fresh_property_walk#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "297dbf638366620de496c57b8c860bce014cf683ac0d11c3b9d760d27cfc2f33",
+      "source_sha256": "e3af32c12e2feb26e9e19dade4d11a6aa0aa827ef74a4d0ea696925452853ed7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "key_conversion_once_precedes_fresh_property_walk#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "00f134a312251a3a13f5dfbd1892c17c4e0ac0a96635cfa1265060894d4ebbf0",
+      "source_sha256": "e3af32c12e2feb26e9e19dade4d11a6aa0aa827ef74a4d0ea696925452853ed7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "presence_and_descriptors_do_not_call_getters#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "3bfa15b30a4b38fe32301ea6b77c8cb421fb7d385f2aa8a220da81cb37df9b5c",
+      "source_sha256": "6ed3e07649422f4fc271192e43ec4d9a9c7c772fdc1db100a947eaf407353507",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "presence_and_descriptors_do_not_call_getters#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "4cda2fef883e5676251e126ebcfa5f13b6e0e542a5da4a1bc9a960c16c36ea07",
+      "source_sha256": "6ed3e07649422f4fc271192e43ec4d9a9c7c772fdc1db100a947eaf407353507",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "deletion_returns_boolean_and_preserves_array_length#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "1d493a51a4f3816079c4f35572d35494a97f096ebb23525a652abfbe8084feb8",
+      "source_sha256": "97c9c18ee95a69c88155775414079b6c8ddda88af7066d88581c707c45532b6c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "deletion_returns_boolean_and_preserves_array_length#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "38a899bbbf82d310465b73a5dcbd13f2ed5a874d331a877ea564ce7c02f00de6",
+      "source_sha256": "97c9c18ee95a69c88155775414079b6c8ddda88af7066d88581c707c45532b6c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "ordinary_set_receiver_descriptor_distinctions#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "9b5e13e2f38d7595ac0d405e27d10fd06c2b6ed4a423eb374c79aef6aed946ba",
+      "source_sha256": "1a8bfb1ea8e6bfabaf28c2bcb98afd9550591404b8c93b29a1624edcf74ab4a2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "ordinary_set_receiver_descriptor_distinctions#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "562a9af55019e3238f778096ae623ce47d29848957350187cfb0f6106b8b756e",
+      "source_sha256": "1a8bfb1ea8e6bfabaf28c2bcb98afd9550591404b8c93b29a1624edcf74ab4a2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "set_expression_key_and_callback_order#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "aeafd4232b82f295f3e66f6720cf1cde60112c765761792ef72d0118ef209742",
+      "source_sha256": "ecbd56e191bf7fba6a8a22ec66f81224e64004168d6f73dcb9679224758d31ab",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "set_expression_key_and_callback_order#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "536625d590b8ff4d33756e2d21810115495d7071638971ada64e6bb7adb15725",
+      "source_sha256": "ecbd56e191bf7fba6a8a22ec66f81224e64004168d6f73dcb9679224758d31ab",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "typed_array_target_and_receiver_are_distinct_algorithms#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "b073a92ca24ce5f039c558391181c08e89267369ba8bf2c10dc692cebed71d44",
+      "source_sha256": "4d2f0e642fcea64ce07d0e6051e6a95e4cdf6e08cba1e297a3c56f1875b946c3",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "typed_array_target_and_receiver_are_distinct_algorithms#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "d2568849ef483ff15172e09510df07c52bc68fe95baf925a3a063fd0645adbd8",
+      "source_sha256": "4d2f0e642fcea64ce07d0e6051e6a95e4cdf6e08cba1e297a3c56f1875b946c3",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "typed_array_callbacks_refresh_bounds#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "9a08672d6373fe98e53255ea8a9e3f6382fc77d009cc70d052532e5bdfc6d597",
+      "source_sha256": "9c5263ee49801412e0ee16ec4dc872c3304b50abe6883b4965e2b8e92e02b715",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "typed_array_callbacks_refresh_bounds#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "8e4c06cc2f3d2b5fbb9e843a9fd26915ac12784d734dc1cf2b2c523b5ba160f3",
+      "source_sha256": "9c5263ee49801412e0ee16ec4dc872c3304b50abe6883b4965e2b8e92e02b715",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "typed_array_descriptors_and_prototype_poison#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "d91163bbcd8f89b97c0e508bfa0794b9e10edbfc32c2034329f727bd6e53b13b",
+      "source_sha256": "85c01c2bd3b0b76c03ac785c663cabb0d8ee91b72a6fc213b32bb9664aa260d4",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "typed_array_descriptors_and_prototype_poison#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "d03096467f7db10944afacefc5daf0e527cb1ae905d0f682ed40e3cda51adc61",
+      "source_sha256": "85c01c2bd3b0b76c03ac785c663cabb0d8ee91b72a6fc213b32bb9664aa260d4",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "extensibility_boolean_results_and_resizable_views#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "783f46bdc7274c4c8b3eccf136dcde2e934d9ff04148d66d22366dcf27a3c388",
+      "source_sha256": "af44faa45613b175c765c38f3d0af18f12ae47f7007647e6594cc92dc78c3296",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "extensibility_boolean_results_and_resizable_views#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "7f0f120ae83938a46c3effe0a8748ea1bdf06e1fab684b0bb17721ac84d173fc",
+      "source_sha256": "af44faa45613b175c765c38f3d0af18f12ae47f7007647e6594cc92dc78c3296",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "prototypes_validate_and_return_boolean_refusals#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "4e482df0863aac7df272a88ed9e69f775add9d6ad80fcae207a7533548d3a74d",
+      "source_sha256": "e63415160b64b6deb447a23db1016880fe774ed5c42e7b5f644581868c12f0d6",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "prototypes_validate_and_return_boolean_refusals#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "c01b879f35db114a8792f6d2fa6ebbf126041b0d176f664f0bd054e2c5b85c0b",
+      "source_sha256": "e63415160b64b6deb447a23db1016880fe774ed5c42e7b5f644581868c12f0d6",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "saved_methods_survive_own_replacement_and_deletion#sloppy",
+      "file": "cases.js",
+      "mode": "sloppy",
+      "case_sha256": "48e808509f9a318ec74bbfe393a92ece9e4f62ff4a5a09b1c469cee9f7277447",
+      "source_sha256": "46bd5f106078f9d006a73aec1031859e020b2d6d3493c6ef74ba18b6de496b14",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    },
+    {
+      "id": "saved_methods_survive_own_replacement_and_deletion#strict",
+      "file": "cases.js",
+      "mode": "strict",
+      "case_sha256": "e4dd61f32858dd3c030de186cb766db5b661ef2e96e2939c87c7d8eaefd99495",
+      "source_sha256": "46bd5f106078f9d006a73aec1031859e020b2d6d3493c6ef74ba18b6de496b14",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "case",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "matches_expectation": false
+    }
+  ],
+  "controls": [
+    {
+      "id": "literal-units-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "53e37e07866c6e7935378ff0f36da3d8c1e9ee9e5b8f28226f83b02d9dfbc671",
+      "source_sha256": "be6d9e3b7fc2740234c98d7cf7949a2ab94304d69c3f39ecac2d8d7be519a152",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "literal-units",
+      "positive": true,
+      "partner": "literal-units-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "literal-units-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "ad926e85a54375e4db7aea4becdfeb9ec0ec44198616230325a5419463789379",
+      "source_sha256": "be6d9e3b7fc2740234c98d7cf7949a2ab94304d69c3f39ecac2d8d7be519a152",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "literal-units",
+      "positive": true,
+      "partner": "literal-units-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "literal-units-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "e16d3872e8de59937f8d979f4fa865557c8b0b5b8e915dabd64f29e31eec1260",
+      "source_sha256": "488f634061ef3356b291189c515ee8eb60709687ae8e9116bd42df8f05113483",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "literal-units",
+      "positive": false,
+      "partner": "literal-units-positive#sloppy",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "literal-units-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "2415f6ea1eb33639e7e800f76a4f9aa2350276cfda8fed9ff4fa6ce4fec798d8",
+      "source_sha256": "488f634061ef3356b291189c515ee8eb60709687ae8e9116bd42df8f05113483",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "literal-units",
+      "positive": false,
+      "partner": "literal-units-positive#strict",
+      "matches_expectation": true,
+      "positive_partner_matches": true,
+      "verified": true
+    },
+    {
+      "id": "get-receiver-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "a352c3b6777d99955ab9de2209af249603cbafb5cbabf9b87101a3b26138b26c",
+      "source_sha256": "84dd523f041c1b52f3134fe16e5c562419efd4ef15aef74795f0b87f45991145",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "get-receiver",
+      "positive": true,
+      "partner": "get-receiver-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "get-receiver-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "5761009f220c71299f0798f060586be52d369fc8b146b17b23ecab781229b948",
+      "source_sha256": "84dd523f041c1b52f3134fe16e5c562419efd4ef15aef74795f0b87f45991145",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "get-receiver",
+      "positive": true,
+      "partner": "get-receiver-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "get-receiver-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "41a66723c695cad4e79b3e3a3c9303834bfce3121721995d4f0c9ebb0b32e464",
+      "source_sha256": "0b04c8c9f97ccd7a3f9c32919f85bda64bd4ef8ff2c77f4f6bf58b93e5452eeb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "get-receiver",
+      "positive": false,
+      "partner": "get-receiver-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "get-receiver-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "cb57108c77eb41fb15f00fffb1c97b78f8072c64164d0bf384582143cc865e90",
+      "source_sha256": "0b04c8c9f97ccd7a3f9c32919f85bda64bd4ef8ff2c77f4f6bf58b93e5452eeb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "get-receiver",
+      "positive": false,
+      "partner": "get-receiver-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "set-receiver-accessor-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "1421270a9cbf000959bef544340be34dd536a558f01537ba7cbe16f22b58afa1",
+      "source_sha256": "fe2b2db62f86a3ee94ed2736e9f653c7cba78c2ba4251e009f9566fe04b2a465",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "set-receiver-accessor",
+      "positive": true,
+      "partner": "set-receiver-accessor-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "set-receiver-accessor-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "0ac0b3ccfbee892391c100d820601953e8411e8d7c48ef2c41af2efbc5c0cfe7",
+      "source_sha256": "fe2b2db62f86a3ee94ed2736e9f653c7cba78c2ba4251e009f9566fe04b2a465",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "set-receiver-accessor",
+      "positive": true,
+      "partner": "set-receiver-accessor-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "set-receiver-accessor-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "4214b4b2a981f660decd356c57272092381c1988634f9d7886ebe1f7d351aafd",
+      "source_sha256": "1df1fc0142996ed42304c29b7856100774ce0a1a07b97ef4038cce72523a6e0f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "set-receiver-accessor",
+      "positive": false,
+      "partner": "set-receiver-accessor-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "set-receiver-accessor-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "2ce01f46bb1a71473db49af6d3c481315819e89665a5468a5ed45be031a277be",
+      "source_sha256": "1df1fc0142996ed42304c29b7856100774ce0a1a07b97ef4038cce72523a6e0f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "set-receiver-accessor",
+      "positive": false,
+      "partner": "set-receiver-accessor-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "typed-target-receiver-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "e73ab4a144a687de5e195841b1ac7e04f632357220561463f0196098de2e6c34",
+      "source_sha256": "ebda863570d1734e9e3e2dc8dd535bd2d0cdbb3fcaa6b64520a67f23ae73514c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "typed-target-receiver",
+      "positive": true,
+      "partner": "typed-target-receiver-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "typed-target-receiver-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "fe2c5289cf50a2a978f0a61448ee326461f4e06aa34725deb62a23000b5a69c6",
+      "source_sha256": "ebda863570d1734e9e3e2dc8dd535bd2d0cdbb3fcaa6b64520a67f23ae73514c",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "typed-target-receiver",
+      "positive": true,
+      "partner": "typed-target-receiver-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "typed-target-receiver-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "626ccdd4d1c9464477f801c14d204a5d081cb0117d48b5642feff88122f094f1",
+      "source_sha256": "673bdfda424981b984bc9262a50884893255e5bd2c526ee758f0cbc5140e8368",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "typed-target-receiver",
+      "positive": false,
+      "partner": "typed-target-receiver-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "typed-target-receiver-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "723cc370d7b4b7508f28acddf2b7cf983dc560e91eae32cbf005342cf2a87771",
+      "source_sha256": "673bdfda424981b984bc9262a50884893255e5bd2c526ee758f0cbc5140e8368",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "typed-target-receiver",
+      "positive": false,
+      "partner": "typed-target-receiver-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "resizable-prevention-positive#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "4a4f7c057d59b9a445f8bff3992363f413e8a420a1e52912284d0580aa53c864",
+      "source_sha256": "f6c25be030c619ac6fe145b261dc48950f39398bda1e1168bc1080eb4a38fbd8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "resizable-prevention",
+      "positive": true,
+      "partner": "resizable-prevention-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "resizable-prevention-positive#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "3859bf90d890910e48d53fc136409f43fe6c30c75bf30f7acf9f7776b7d24894",
+      "source_sha256": "f6c25be030c619ac6fe145b261dc48950f39398bda1e1168bc1080eb4a38fbd8",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      },
+      "pair": "resizable-prevention",
+      "positive": true,
+      "partner": "resizable-prevention-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "resizable-prevention-wrong#sloppy",
+      "file": "controls.json",
+      "mode": "sloppy",
+      "case_sha256": "e158155cee4513d6b577a2fc0287d17966a50c0d924226b32e2ffb772ee959da",
+      "source_sha256": "a867d6b894337b29052a50de57262c6bc51c84b6e4220c2cb0bdb52dc92bba19",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "resizable-prevention",
+      "positive": false,
+      "partner": "resizable-prevention-positive#sloppy",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    },
+    {
+      "id": "resizable-prevention-wrong#strict",
+      "file": "controls.json",
+      "mode": "strict",
+      "case_sha256": "41904f7ecdbbb7356c5a0ca8c9fb47977ad8c19c697f11fbe21658fa1939659a",
+      "source_sha256": "a867d6b894337b29052a50de57262c6bc51c84b6e4220c2cb0bdb52dc92bba19",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      },
+      "kind": "control",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      },
+      "pair": "resizable-prevention",
+      "positive": false,
+      "partner": "resizable-prevention-positive#strict",
+      "matches_expectation": false,
+      "positive_partner_matches": false,
+      "verified": false
+    }
+  ]
+}

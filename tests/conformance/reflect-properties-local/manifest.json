@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "origin": "Independent frozen Reflect property fixtures",
+  "original_readiness_sha256": "f0d3f32c0b42651f6ed601933bc9fa01dd6e4c4a8e628a90704acf9d71f72ce9",
+  "published_base": "b4ce6570f42ab4f45862cc29445a4181d5dafec5",
+  "collection": "reflectPropertyCases",
+  "case_count": 14,
+  "case_modes": 28,
+  "control_pairs": 5,
+  "control_modes": 20,
+  "case_invocation_arguments": [],
+  "ordinary_observation": {
+    "status": "complete",
+    "phase": "runtime",
+    "error_type": "",
+    "error_identity": "",
+    "return_value": true
+  },
+  "files": [
+    {
+      "path": "cases.js",
+      "bytes": 15572,
+      "sha256": "21bf80108bf972504a8587409878597f08a01b298b6a812aeb59fee65f95c1aa"
+    },
+    {
+      "path": "controls.json",
+      "bytes": 9911,
+      "sha256": "c29babfc2d1f8db802e2cbdde1dfbd95038023cbe1a1704a34caaab4914dcf13"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 1950,
+      "sha256": "ba088b2341e32c1c44eb2e6acdca5ca4a3d8a5a367670703c4244d0aec11c747"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3047,
+      "sha256": "a978cb96eb43f41219fa12c1c93210acdd27be900018e84395d844c8f45eb2f9"
+    },
+    {
+      "path": "design.md",
+      "bytes": 2556,
+      "sha256": "8ff3972e84bf7e72272562eae075b675caaed5672c098d90b535c8bed3024b84"
+    },
+    {
+      "path": "spec-notes.json",
+      "bytes": 1247,
+      "sha256": "a4392db3ac740f87fc42c981c40eb691ed3bbf401b3ccdf2fbcbc438692dfa9d"
+    },
+    {
+      "path": "context.json",
+      "bytes": 374,
+      "sha256": "01ac16704e3b524a76bd5cac80b994fc6c45f18cea65655496f3996746966241"
+    }
+  ]
+}

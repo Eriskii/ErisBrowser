@@ -1,0 +1,199 @@
+{
+  "schema": 1,
+  "status": "independent source proposal, unexecuted",
+  "pairs": 5,
+  "control_modes": 20,
+  "health": "Wrong partners need runtime intrinsic Error identity and successful same-mode positive. Missing feature/prerequisite TypeError, syntax error, quota refusal, crash, timeout or missing result is unhealthy. Do not match authored Error.message because current adapter only has diagnostic object text.",
+  "controls": [
+    {
+      "name": "literal-units-positive",
+      "pair": "literal-units",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var s='A\\uD800';if(s.length!==2||s.charCodeAt(1)!==55296)throw new TypeError('literal prerequisite');var actual=s.length+','+s.charCodeAt(0)+','+s.charCodeAt(1);if(actual!==\"2,65,55296\")throw new Error(\"literal-units expectation\");",
+      "source_sha256": "be6d9e3b7fc2740234c98d7cf7949a2ab94304d69c3f39ecac2d8d7be519a152",
+      "literal_observation": "2,65,55296",
+      "asserted_observation": "2,65,55296",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "literal-units-wrong",
+      "pair": "literal-units",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var s='A\\uD800';if(s.length!==2||s.charCodeAt(1)!==55296)throw new TypeError('literal prerequisite');var actual=s.length+','+s.charCodeAt(0)+','+s.charCodeAt(1);if(actual!==\"2,65,65533\")throw new Error(\"literal-units expectation\");",
+      "source_sha256": "488f634061ef3356b291189c515ee8eb60709687ae8e9116bd42df8f05113483",
+      "literal_observation": "2,65,55296",
+      "asserted_observation": "2,65,65533",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "get-receiver-positive",
+      "pair": "get-receiver",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.get!=='function'||Reflect.get({x:7},'x')!==7)throw new TypeError('get prerequisite');var o={},r={};Object.defineProperty(o,'x',{get:function(){'use strict';return this;}});var actual=(Reflect.get(o,'x')===o)+','+(Reflect.get(o,'x',r)===r)+','+(Reflect.get(o,'x',undefined)===undefined);if(actual!==\"true,true,true\")throw new Error(\"get-receiver expectation\");",
+      "source_sha256": "84dd523f041c1b52f3134fe16e5c562419efd4ef15aef74795f0b87f45991145",
+      "literal_observation": "true,true,true",
+      "asserted_observation": "true,true,true",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "get-receiver-wrong",
+      "pair": "get-receiver",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.get!=='function'||Reflect.get({x:7},'x')!==7)throw new TypeError('get prerequisite');var o={},r={};Object.defineProperty(o,'x',{get:function(){'use strict';return this;}});var actual=(Reflect.get(o,'x')===o)+','+(Reflect.get(o,'x',r)===r)+','+(Reflect.get(o,'x',undefined)===undefined);if(actual!==\"true,false,false\")throw new Error(\"get-receiver expectation\");",
+      "source_sha256": "0b04c8c9f97ccd7a3f9c32919f85bda64bd4ef8ff2c77f4f6bf58b93e5452eeb",
+      "literal_observation": "true,true,true",
+      "asserted_observation": "true,false,false",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "set-receiver-accessor-positive",
+      "pair": "set-receiver-accessor",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.set!=='function')throw new TypeError('set prerequisite');var g={};if(!Reflect.set(g,'x',7)||g.x!==7)throw new TypeError('working set prerequisite');var t={x:1},r={},calls=0;Object.defineProperty(r,'x',{set:function(){calls++;},configurable:true});var actual=Reflect.set(t,'x',9,r)+','+calls+','+t.x;if(actual!==\"false,0,1\")throw new Error(\"set-receiver-accessor expectation\");",
+      "source_sha256": "fe2b2db62f86a3ee94ed2736e9f653c7cba78c2ba4251e009f9566fe04b2a465",
+      "literal_observation": "false,0,1",
+      "asserted_observation": "false,0,1",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "set-receiver-accessor-wrong",
+      "pair": "set-receiver-accessor",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.set!=='function')throw new TypeError('set prerequisite');var g={};if(!Reflect.set(g,'x',7)||g.x!==7)throw new TypeError('working set prerequisite');var t={x:1},r={},calls=0;Object.defineProperty(r,'x',{set:function(){calls++;},configurable:true});var actual=Reflect.set(t,'x',9,r)+','+calls+','+t.x;if(actual!==\"true,1,1\")throw new Error(\"set-receiver-accessor expectation\");",
+      "source_sha256": "1df1fc0142996ed42304c29b7856100774ce0a1a07b97ef4038cce72523a6e0f",
+      "literal_observation": "false,0,1",
+      "asserted_observation": "true,1,1",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "typed-target-receiver-positive",
+      "pair": "typed-target-receiver",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.set!=='function'||typeof Uint8Array!=='function')throw new TypeError('typed set prerequisite');var a=new Uint8Array(1);if(!Reflect.set(a,'0',17)||a[0]!==17)throw new TypeError('authentic typed set prerequisite');var empty=new Uint8Array(0),calls=0,v={valueOf:function(){calls++;return 9;}};var actual=Reflect.set(a,'1',v,{})+','+Reflect.set({'0':1},'0',v,empty)+','+calls;if(actual!==\"true,false,0\")throw new Error(\"typed-target-receiver expectation\");",
+      "source_sha256": "ebda863570d1734e9e3e2dc8dd535bd2d0cdbb3fcaa6b64520a67f23ae73514c",
+      "literal_observation": "true,false,0",
+      "asserted_observation": "true,false,0",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "typed-target-receiver-wrong",
+      "pair": "typed-target-receiver",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.set!=='function'||typeof Uint8Array!=='function')throw new TypeError('typed set prerequisite');var a=new Uint8Array(1);if(!Reflect.set(a,'0',17)||a[0]!==17)throw new TypeError('authentic typed set prerequisite');var empty=new Uint8Array(0),calls=0,v={valueOf:function(){calls++;return 9;}};var actual=Reflect.set(a,'1',v,{})+','+Reflect.set({'0':1},'0',v,empty)+','+calls;if(actual!==\"false,true,1\")throw new Error(\"typed-target-receiver expectation\");",
+      "source_sha256": "673bdfda424981b984bc9262a50884893255e5bd2c526ee758f0cbc5140e8368",
+      "literal_observation": "true,false,0",
+      "asserted_observation": "false,true,1",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    },
+    {
+      "name": "resizable-prevention-positive",
+      "pair": "resizable-prevention",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.preventExtensions!=='function'||typeof Reflect.isExtensible!=='function')throw new TypeError('extensibility prerequisite');var o={};if(!Reflect.preventExtensions(o)||Reflect.isExtensible(o))throw new TypeError('working prevention prerequisite');var b=new ArrayBuffer(0,{maxByteLength:2}),v=new Uint8Array(b);b.resize(1);v[0]=23;if(v[0]!==23||v.length!==1)throw new TypeError('live view prerequisite');var actual=Reflect.preventExtensions(v)+','+Reflect.isExtensible(v);if(actual!==\"false,true\")throw new Error(\"resizable-prevention expectation\");",
+      "source_sha256": "f6c25be030c619ac6fe145b261dc48950f39398bda1e1168bc1080eb4a38fbd8",
+      "literal_observation": "false,true",
+      "asserted_observation": "false,true",
+      "expected_observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": ""
+      }
+    },
+    {
+      "name": "resizable-prevention-wrong",
+      "pair": "resizable-prevention",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "if(typeof Reflect.preventExtensions!=='function'||typeof Reflect.isExtensible!=='function')throw new TypeError('extensibility prerequisite');var o={};if(!Reflect.preventExtensions(o)||Reflect.isExtensible(o))throw new TypeError('working prevention prerequisite');var b=new ArrayBuffer(0,{maxByteLength:2}),v=new Uint8Array(b);b.resize(1);v[0]=23;if(v[0]!==23||v.length!==1)throw new TypeError('live view prerequisite');var actual=Reflect.preventExtensions(v)+','+Reflect.isExtensible(v);if(actual!==\"true,false\")throw new Error(\"resizable-prevention expectation\");",
+      "source_sha256": "a867d6b894337b29052a50de57262c6bc51c84b6e4220c2cb0bdb52dc92bba19",
+      "literal_observation": "false,true",
+      "asserted_observation": "true,false",
+      "expected_observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Error",
+        "error_identity": "Error"
+      }
+    }
+  ]
+}

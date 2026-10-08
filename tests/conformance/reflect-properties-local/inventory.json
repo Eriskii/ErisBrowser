@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "collection": "reflectPropertyCases",
+  "status": "source-only proposed population; no baseline or candidate observations",
+  "cases": [
+    "metadata_and_nonconstruction",
+    "target_validation_precedes_key_conversion",
+    "get_uses_original_receiver_and_preserves_abrupt_identity",
+    "key_conversion_once_precedes_fresh_property_walk",
+    "presence_and_descriptors_do_not_call_getters",
+    "deletion_returns_boolean_and_preserves_array_length",
+    "ordinary_set_receiver_descriptor_distinctions",
+    "set_expression_key_and_callback_order",
+    "typed_array_target_and_receiver_are_distinct_algorithms",
+    "typed_array_callbacks_refresh_bounds",
+    "typed_array_descriptors_and_prototype_poison",
+    "extensibility_boolean_results_and_resizable_views",
+    "prototypes_validate_and_return_boolean_refusals",
+    "saved_methods_survive_own_replacement_and_deletion"
+  ],
+  "named_bodies": 14,
+  "modes": [
+    "sloppy",
+    "strict"
+  ],
+  "mode_cases": 28,
+  "invocation": "One complete source file and exactly one reflectPropertyCases[case_name]() invocation in a fresh realm. Prefix strict directive to whole source in strict mode. No post-hoc body editing.",
+  "required_methods": [
+    "deleteProperty",
+    "get",
+    "getOwnPropertyDescriptor",
+    "getPrototypeOf",
+    "has",
+    "isExtensible",
+    "preventExtensions",
+    "set",
+    "setPrototypeOf"
+  ],
+  "existing_methods_retained": [
+    "apply",
+    "construct",
+    "defineProperty",
+    "ownKeys"
+  ],
+  "controls": {
+    "pairs": 5,
+    "modes": 20
+  },
+  "excluded_scope": [
+    "Proxy",
+    "class syntax",
+    "cross-realm",
+    "BigInt",
+    "SharedArrayBuffer",
+    "immutable buffers",
+    "new DOM or Window reflection behavior"
+  ],
+  "base_context": "TypedArray foundation locally validated by parent but public predecessor not yet bound here. A future root published-base receipt may bind context additively without changing fixtures."
+}

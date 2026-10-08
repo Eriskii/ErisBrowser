@@ -195,7 +195,7 @@ class DateCorpusTests(unittest.TestCase):
 
     def test_all_35_prior_source_policy_case_and_control_contracts_unchanged(self):
         # Iteration profiles postdate this unchanged historical snapshot.
-        contract = capture_contracts(excluded={'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', PROFILE})
+        contract = capture_contracts(excluded={'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', PROFILE})
         self.assertEqual(contract['counts'], dict(profiles=35, cases=14958, preflights=3252))
         self.assertEqual(runner.digest(canonical(contract)),
                          'e6a81c9fa4863df4f9797833c184f6ef212a547340ba758af160de44902f2574')

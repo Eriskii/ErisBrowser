@@ -20,6 +20,10 @@ TYPEDARRAY_HELPERS = {'assert.js', 'sta.js', 'byteConversionValues.js', 'compare
                       'detachArrayBuffer.js', 'isConstructor.js', 'nans.js', 'propertyHelper.js',
                       'resizableArrayBufferUtils.js', 'testTypedArray.js'}
 TYPEDARRAY_SELECTION_SHA256 = 'cdc70bbb65c93629ee519af8344bf46552e41b1892677827e385535a49a637e5'
+REFLECT_PROPERTY_DIRECTORIES = {'Reflect': 3, 'Reflect/deleteProperty': 11, 'Reflect/get': 11, 'Reflect/getOwnPropertyDescriptor': 13, 'Reflect/getPrototypeOf': 10, 'Reflect/has': 10, 'Reflect/isExtensible': 8, 'Reflect/preventExtensions': 10, 'Reflect/set': 18, 'Reflect/setPrototypeOf': 14}
+REFLECT_PROPERTY_HELPERS = {'propertyHelper.js', 'sta.js', 'assert.js', 'isConstructor.js', 'compareArray.js'}
+# Original auxiliary blobs authenticated independently against the pinned root/harness trees.
+REFLECT_PROPERTY_AUXILIARY_BLOBS = {'LICENSE': 'a56b038f0e01b05b004d92097d4601ba629afdf3', 'INTERPRETING.md': 'ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5', 'harness/assert.js': '55a0e2a32f2e6259a1b445a9d924f61261e2ca5f', 'harness/sta.js': 'd291a94f46234908009a7ee909cf9d66034c73fe', 'harness/propertyHelper.js': '0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52', 'harness/compareArray.js': 'fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3', 'harness/isConstructor.js': '387c664e14fdf7563769fb71ae4c122c7e503172'}
 ARRAY_DESCRIPTOR_DIRECTORIES = {'Object/defineProperty': 1131, 'Object/defineProperties': 632,
                                 'Array/length': 30}
 ARRAY_PREDICATE_DIRECTORIES = {'Array/prototype/every': 218, 'Array/prototype/some': 219}
@@ -90,7 +94,7 @@ ITERATION_HELPERS = {
                        'propertyHelper.js', 'resizableArrayBufferUtils.js',
                        'detachArrayBuffer.js', 'testTypedArray.js'},
 }
-TREE_PROFILES = {'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+TREE_PROFILES = {'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -168,7 +172,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'reflect-properties': REFLECT_PROPERTY_DIRECTORIES, 'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -181,7 +185,7 @@ PROFILES = {'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': O
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'reflect-properties': 'test/built-ins', 'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -841,6 +845,11 @@ def typedarray_tree_inventory(read=None):
 
 
 def profile_tree_inventory(profile, read=None):
+    if profile == 'reflect-properties':
+        listings, proof, description = git_tree_inventory(
+            REFLECT_PROPERTY_DIRECTORIES, 'test/built-ins', read)
+        description['auxiliary_blobs'] = REFLECT_PROPERTY_AUXILIARY_BLOBS.copy()
+        return listings, proof, description
     if profile == 'typedarray-foundation':
         return typedarray_tree_inventory(read)
     if profile == 'date':
@@ -892,12 +901,14 @@ def import_corpus(output, profile='string-json'):
             harness.update(metadata['includes'])
             if 'async' in metadata['flags']:
                 harness.add('doneprintHandle.js')
+    if profile == 'reflect-properties' and harness != REFLECT_PROPERTY_HELPERS:
+        raise ValueError('Reflect property requested harness differs from the frozen five helpers')
     if profile == 'typedarray-foundation' and harness != TYPEDARRAY_HELPERS:
         raise ValueError('TypedArray requested harness differs from the frozen ten helpers')
     additional = ['LICENSE', 'INTERPRETING.md'] + [f'harness/{name}' for name in sorted(harness)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources.update(zip(additional, pool.map(lambda path: fetch(raw + path), additional)))
-    if profile in {'date', 'typedarray-foundation'} or profile in ITERATION_SUBTREES:
+    if profile in {'reflect-properties', 'date', 'typedarray-foundation'} or profile in ITERATION_SUBTREES:
         for path, expected_blob in proof_description['auxiliary_blobs'].items():
             data = sources.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
@@ -906,6 +917,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'reflect-properties': 'all 108 original .js files in nine complete Reflect property method trees plus three direct Reflect object tests; full pinned Git-tree inventories; Proxy originals retained for explicit policy exclusion; no implementation',
         'typedarray-foundation': 'all 632 original .js bodies in 67 frozen foundation directories, authenticated by complete TypedArray and TypedArrayConstructors roots; nested BigInt retained for explicit policy exclusion; no implementation',
         'object-has-own': 'all .js files in the complete recursive built-ins/Object/hasOwn subtree; original root-linked Git proofs; no implementation',
         'object-is': 'all .js files in the complete recursive built-ins/Object/is subtree; original root-linked Git proofs; no implementation',
