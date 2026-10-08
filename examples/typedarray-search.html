@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Packet search</title>
+<style>
+body{margin:32px;background:#f5f7fa;color:#172033;font:18px sans-serif}
+h1{font-size:30px}button{padding:12px;background:#245bcc;color:white;border:0}
+pre{padding:20px;background:white;border:1px solid #cbd5e1;font:18px monospace;line-height:1.6}
+</style></head><body>
+<h1>Packet search</h1><p>Inspect bytes through Number TypedArray methods.</p>
+<button id="change">Change packet</button><pre id="result">Waiting for script</pre>
+<script>
+var packet=new Uint8Array([16,126,32,48,126,64,90]);
+var result=document.getElementById('result');
+function show(){
+  result.textContent='Bytes: '+packet.join(' ')+'\n'
+    +'Last byte: '+packet.at(-1)+'\n'
+    +'Contains marker 126: '+packet.includes(126)+'\n'
+    +'First marker: '+packet.indexOf(126)+'\n'
+    +'Last marker: '+packet.lastIndexOf(126);
+}
+document.getElementById('change').onclick=function(){
+  packet[1]=8;packet[2]=126;packet[6]=99;show();
+  document.title='Packet changed';
+};
+show();
+</script></body></html>

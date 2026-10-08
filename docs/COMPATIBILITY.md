@@ -85,9 +85,9 @@ resizable buffers, byteLength/maxByteLength/resizable/detached getters, resize,
 same-realm species-aware slice, transfer and transferToFixedLength. Ordinary
 properties and object freezing do not alter private backing storage. `isView`
 recognizes authentic DataView instances, including detached or out-of-bounds
-views. Typed arrays, shared buffers, Proxy and foreign realms remain incomplete.
-The complete 221-source profile records **262 passed, 50 failed and 130 excluded
-modes**, with all 160 controls verified. The failures retain 48 missing-Uint8Array
+views. Shared buffers, Proxy and foreign realms remain incomplete.
+At the original ArrayBuffer checkpoint, the complete 221-source profile recorded
+**262 passed, 50 failed and 130 excluded modes**, with all 160 controls verified. The failures retain 48 missing-Uint8Array
 observations and two untagged BigInt syntax failures. The independent local
 matrix verifies **96 of 104 expectations** after the
 [for-in length-bucket follow-up](../tests/conformance/for-in-length-buckets.md)
@@ -107,8 +107,8 @@ shared and immutable buffers, Proxy and foreign realms remain gaps.
 length/buffer/typed-array/iterable/array-like constructors, metadata getters,
 values/keys/entries, authentic isView and live indexed property operations.
 Fixed and tracking views observe resize and detachment. Generic Array and JSON
-operations use the same indexed property hooks. Static methods, most bulk/search/sort/copy methods, BigInt views and shared
-buffers remain incomplete. The frozen
+operations use the same indexed property hooks. Static methods, remaining bulk
+operations, sorting/copying, BigInt views and shared buffers remain incomplete. The frozen
 local matrix passes all 54 modes with 32 verified paired controls; the upstream
 profile retains its failures, exclusions and work-limit stops.
 The foundation checkpoint records 572 passes, 86 failures, 488 unsupported modes
@@ -124,7 +124,7 @@ checks preserve their required order. Joined text preserves UTF-16 separators,
 and the shared `toString` function honors a replaced `join`.
 The [local report](../tests/conformance/typedarray-views-local-current.json)
 records **46 passing modes and 24 verified controls**. These 70 local modes form
-the new CI gate. The [206-mode upstream report](../tests/conformance/test262-typedarray-views-after.json)
+the views CI gate. The [206-mode upstream report](../tests/conformance/test262-typedarray-views-after.json)
 records **46 passed, 64 resource-limited and 96 unsupported modes**, with all
 56 controls verified. Resource outcomes make the complete report unhealthy for
 baseline recording, despite its healthy controls; it is not an upstream gate.
@@ -135,6 +135,18 @@ with all 64 controls verified. Both modes of the original
 development resource regression. Direct DataView metadata, per-operation key
 classification reuse and smaller visited-name storage remove repeated work
 under the unchanged quotas. Other failures and resource stops remain recorded.
+
+The [TypedArray search follow-up](typedarray-search.md) adds `at`, `includes`,
+`indexOf` and `lastIndexOf` to all ten Number kinds. It validates the initial
+receiver and captures its length before index coercion, then checks live buffer
+bounds for each reached element. `includes` uses SameValueZero, including NaN;
+`indexOf` and `lastIndexOf` use strict equality and skip indices made absent by
+resize. Omitted and explicit `undefined` reverse-search indices remain distinct.
+The pinned profile retains all 145 original sources and 290 modes; its policy
+schedules 158 modes and explicitly excludes 88 BigInt, 26 complete-helper and
+18 host-hook modes. The report records **78 passes, 78 work-limit stops and two
+failures**, with all 56 controls verified. Both failures call the missing `fill`
+method before the search. Resource outcomes prevent an upstream baseline.
 
 The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,

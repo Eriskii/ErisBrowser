@@ -14,10 +14,14 @@ Number element types, constructors, live indexed properties and iterators over
 fixed or resizable buffers. [TypedArray views and string conversion](docs/typedarray-views-test262.md)
 add `subarray`, `join`, and the exact `Array.prototype.toString` function alias.
 The local matrix records 46 passing case modes and 24 verified controls; it is
-this increment's 70-mode CI gate. The upstream report records 46 passes,
+the views increment's 70-mode CI gate. The upstream report records 46 passes,
 64 work-limit stops and 96 exclusions, with all 56 controls verified. Its
-resource outcomes prevent an upstream baseline. Other bulk methods, BigInt
-codecs and shared memory remain unfinished.
+resource outcomes prevent an upstream baseline.
+The [TypedArray search follow-up](docs/typedarray-search.md) adds `at`,
+`includes`, `indexOf` and `lastIndexOf` for Number views, including relative
+indices and fresh buffer checks after index conversion. `includes` matches
+NaN; the two index searches use strict equality. Remaining bulk methods,
+BigInt codecs and shared memory remain unfinished.
 [Reflect property operations](docs/reflect-properties.md) add nine methods,
 including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean
 integrity checks. Their frozen upstream profile passes 200 modes and retains

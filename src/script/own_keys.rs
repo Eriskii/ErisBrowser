@@ -5,6 +5,8 @@ use super::*;
 #[cfg(test)]
 mod for_in_tests;
 #[cfg(test)]
+mod ordinary_snapshot_tests;
+#[cfg(test)]
 mod singleton_tests;
 #[cfg(test)]
 mod tests;
@@ -183,6 +185,19 @@ impl Runtime {
         };
         let virtual_length = matches!(receiver, Value::Array(_)) || text.is_some();
         let order_len = object.map_or(0, |id| self.objects[id].order.len());
+        // A snapshot with no virtual keys and no possible Array-index strings
+        // already has its final order. Prove this afresh from the retained
+        // creation-order keys, never from cached descriptors or prototypes.
+        // Small orders retain the generic builder: the extra proof/copy setup
+        // is worthwhile only beyond a fixed, source-derived minimum size.
+        self.work(4)?;
+        if !virtual_length
+            && order_len >= 8
+            && let Some(id) = object
+            && let Some(keys) = self.own_key_stored_strings(id)?
+        {
+            return Ok(keys);
+        }
         // Counting retained strings reads only tags, never string contents.
         self.work(order_len.saturating_add(1))?;
         let stored = object.map_or(0, |id| {
@@ -268,6 +283,51 @@ impl Runtime {
             result.push(key.text);
         }
         Ok(result)
+    }
+
+    fn own_key_stored_strings(&mut self, object: usize) -> Result<Option<Vec<JsString>>> {
+        self.work(4)?;
+        let order_len = self.objects[object].order.len();
+        let mut stored = 0usize;
+        for ordinal in 0..order_len {
+            // Tag/count, first-unit access, digit bounds and loop control.
+            // Empty, non-ASCII and nonscalar strings cannot be Array indices.
+            self.work(6)?;
+            let Some(key) = self.objects[object].order[ordinal].as_string() else {
+                continue;
+            };
+            if key
+                .units()
+                .first()
+                .is_some_and(|unit| (48..=57).contains(unit))
+            {
+                return Ok(None);
+            }
+            stored = stored.checked_add(1).ok_or_else(overflow)?;
+        }
+        // Pay the checked size/reserve, second tag/iteration pass and retained
+        // handle copy/move/retirement before allocating the sole result vector.
+        let work = order_len
+            .checked_mul(4)
+            .and_then(|work| work.checked_add(stored.checked_mul(2)?))
+            .and_then(|work| work.checked_add(8))
+            .ok_or_else(overflow)?;
+        self.work(work)?;
+        self.charge(
+            stored
+                .checked_mul(std::mem::size_of::<JsString>())
+                .ok_or_else(overflow)?,
+        )?;
+        let mut result = Vec::new();
+        result
+            .try_reserve_exact(stored)
+            .map_err(|_| ScriptError::resource("own-key string allocation failed"))?;
+        for key in &self.objects[object].order {
+            if let Some(key) = key.as_string() {
+                result.push(key.clone());
+            }
+        }
+        Ok(Some(result))
     }
 
     fn typed_array_own_strings(

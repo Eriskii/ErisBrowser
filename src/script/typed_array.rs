@@ -8,6 +8,7 @@ mod call_tests;
 mod constructors;
 mod index;
 mod intrinsics;
+mod search;
 mod set_key;
 #[cfg(test)]
 mod tests;
@@ -473,6 +474,16 @@ impl Runtime {
         match method {
             "subarray" => self.typed_array_subarray(receiver, record, arguments, doc),
             "join" => self.typed_array_join(record, arguments, doc),
+            "at" => self.typed_array_at(record, arguments, doc),
+            "includes" => {
+                self.typed_array_search(search::SearchKind::Includes, record, arguments, doc)
+            }
+            "indexOf" => {
+                self.typed_array_search(search::SearchKind::IndexOf, record, arguments, doc)
+            }
+            "lastIndexOf" => {
+                self.typed_array_search(search::SearchKind::LastIndexOf, record, arguments, doc)
+            }
             "getLength" | "getByteLength" | "getByteOffset" => {
                 let live = self.typed_array_live(record)?;
                 let number = live.map_or(0, |live| match method {

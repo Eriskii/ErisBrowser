@@ -175,9 +175,37 @@ const BEFORE: &[(usize, usize, usize, usize, usize, usize, usize)] = &[
 ];
 
 fn expected(row: &(usize, usize, usize, usize, usize, usize, usize)) -> (usize, usize) {
-    let (_, route, scenario, work, heap, c, h) = *row;
+    let (key_id, route, scenario, work, heap, c, h) = *row;
     let removed = if route == 1 || scenario == 2 { 1 } else { 3 };
-    (work - removed * c + 8 + removed * 4, heap - removed * h)
+    // Preserve the retained predecessor rows and original SetKey derivation.
+    // Exactly one full classification remains after immutable-key reuse.
+    let reused_work = work - removed * c + 8 + removed * 4;
+    let reused_heap = heap - removed * h;
+    let (next_c, next_h) = [
+        (274, 1062),
+        (16, 0),
+        (788, 1100),
+        (330, 1074),
+        (16, 0),
+        (8, 0),
+    ][key_id];
+    // The four search metadata members change the shared owner13->17.
+    // Only absent-own scenario0 reaches it. The existing Reflect/splice
+    // lookup tariffs each traverse that owner once; assignment has no fee
+    // dependent on its size. All KEYS are ASCII, so byte length is UTF16 length.
+    let owner_growth = if scenario == 0 {
+        match route {
+            0 => 4 * (1 + KEYS[key_id].len()),
+            2 => 4 * (1 + KEYS[key_id].len() / 8),
+            _ => 0,
+        }
+    } else {
+        0
+    };
+    (
+        reused_work - c + next_c + owner_growth,
+        reused_heap - h + next_h,
+    )
 }
 
 #[test]

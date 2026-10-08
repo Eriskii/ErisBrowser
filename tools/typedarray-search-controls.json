@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "scope": "Independent Number TypedArray at/includes/indexOf/lastIndexOf semantic pairs; wrong requires intrinsic Error and successful same-mode positive.",
+  "controls": [
+    {
+      "name": "at-relative-positive",
+      "pair": "at-relative",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([10,20,30]);var actual=[p.at.call(a,-1),p.at.call(a,-1.9),p.at.call(a,-0),p.at.call(a,-0.5),p.at.call(a,NaN),p.at.call(a,undefined),p.at.call(a,3)===undefined,p.at.call(a,-4)===undefined,p.at.call(a,Infinity)===undefined].join(',');if(actual!==\"30,30,10,10,10,10,true,true,true\")throw new Error(\"at-relative expectation\");",
+      "source_sha256": "de35ef7aae505715ae4465e627d8d126fea9967efd4fe089c1360401e5874ccb",
+      "common_prefix_sha256": "8bfcf9f4ba0fc7c23784e18305d68c81c0b78a4539fd233b0dbeb80fae796727",
+      "expected_literal": "30,30,10,10,10,10,true,true,true"
+    },
+    {
+      "name": "at-relative-wrong",
+      "pair": "at-relative",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([10,20,30]);var actual=[p.at.call(a,-1),p.at.call(a,-1.9),p.at.call(a,-0),p.at.call(a,-0.5),p.at.call(a,NaN),p.at.call(a,undefined),p.at.call(a,3)===undefined,p.at.call(a,-4)===undefined,p.at.call(a,Infinity)===undefined].join(',');if(actual!==\"10,30,10,10,10,10,true,true,true\")throw new Error(\"at-relative expectation\");",
+      "source_sha256": "5b341e92109901d9af105123ee8f9a902fecf1e129bfdfbc4022f53d40793bf9",
+      "common_prefix_sha256": "8bfcf9f4ba0fc7c23784e18305d68c81c0b78a4539fd233b0dbeb80fae796727",
+      "expected_literal": "10,30,10,10,10,10,true,true,true"
+    },
+    {
+      "name": "includes-same-value-zero-positive",
+      "pair": "includes-same-value-zero",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([NaN,-0,7]),calls=0,search={valueOf:function(){calls++;throw 19;}};if(!Object.is(a[1],-0))throw new TypeError('negative zero prerequisite');var actual=[p.includes.call(a,NaN),p.includes.call(a,0),p.includes.call(a,'7'),p.includes.call(a,search),p.includes.call(a,7,2),p.includes.call(a,7,Infinity),calls].join(',');if(actual!==\"true,true,false,false,true,false,0\")throw new Error(\"includes-same-value-zero expectation\");",
+      "source_sha256": "a9635a70b04f887fa100253832b7512a71643206653cf80a99a7bbec3aad9286",
+      "common_prefix_sha256": "ffff6f6da2b884f25f1f5d2e1b64d2cfaedfec4c6133d0004b13c4ac6244f3c8",
+      "expected_literal": "true,true,false,false,true,false,0"
+    },
+    {
+      "name": "includes-same-value-zero-wrong",
+      "pair": "includes-same-value-zero",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([NaN,-0,7]),calls=0,search={valueOf:function(){calls++;throw 19;}};if(!Object.is(a[1],-0))throw new TypeError('negative zero prerequisite');var actual=[p.includes.call(a,NaN),p.includes.call(a,0),p.includes.call(a,'7'),p.includes.call(a,search),p.includes.call(a,7,2),p.includes.call(a,7,Infinity),calls].join(',');if(actual!==\"false,true,false,false,true,false,0\")throw new Error(\"includes-same-value-zero expectation\");",
+      "source_sha256": "125c7c4c481e2820fe1e9e842340fbe66cf318a89439c5c63ff1d528e8a46872",
+      "common_prefix_sha256": "ffff6f6da2b884f25f1f5d2e1b64d2cfaedfec4c6133d0004b13c4ac6244f3c8",
+      "expected_literal": "false,true,false,false,true,false,0"
+    },
+    {
+      "name": "index-of-strict-positive",
+      "pair": "index-of-strict",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([NaN,-0,7,7]),calls=0,search={valueOf:function(){calls++;throw 19;}};var actual=[p.indexOf.call(a,NaN),p.indexOf.call(a,0),p.indexOf.call(a,'7'),p.indexOf.call(a,7),p.indexOf.call(a,7,3.9),p.indexOf.call(a,7,-1),p.indexOf.call(a,search),calls].join(',');if(actual!==\"-1,1,-1,2,3,3,-1,0\")throw new Error(\"index-of-strict expectation\");",
+      "source_sha256": "4164b0b7738bd603233a59019a5340e67aec0b8239ec4618776bdf4d7d9e37c2",
+      "common_prefix_sha256": "2da8dc8b566f2809acbed7334b2d56aa55e2dc629f54b00cc1866f050c7ead4f",
+      "expected_literal": "-1,1,-1,2,3,3,-1,0"
+    },
+    {
+      "name": "index-of-strict-wrong",
+      "pair": "index-of-strict",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([NaN,-0,7,7]),calls=0,search={valueOf:function(){calls++;throw 19;}};var actual=[p.indexOf.call(a,NaN),p.indexOf.call(a,0),p.indexOf.call(a,'7'),p.indexOf.call(a,7),p.indexOf.call(a,7,3.9),p.indexOf.call(a,7,-1),p.indexOf.call(a,search),calls].join(',');if(actual!==\"0,1,-1,2,3,3,-1,0\")throw new Error(\"index-of-strict expectation\");",
+      "source_sha256": "ee54348c297328a7fd6558c00d075909c68819043d5bde00d41eaa4150c50b15",
+      "common_prefix_sha256": "2da8dc8b566f2809acbed7334b2d56aa55e2dc629f54b00cc1866f050c7ead4f",
+      "expected_literal": "0,1,-1,2,3,3,-1,0"
+    },
+    {
+      "name": "last-index-of-direction-positive",
+      "pair": "last-index-of-direction",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([7,2,7]);var actual=[p.lastIndexOf.call(a,7),p.lastIndexOf.call(a,7,undefined),p.lastIndexOf.call(a,7,NaN),p.lastIndexOf.call(a,7,-1),p.lastIndexOf.call(a,7,-Infinity),p.lastIndexOf.call(a,7,1.9),p.lastIndexOf.call(a,NaN),p.lastIndexOf.call(a,7,Infinity)].join(',');if(actual!==\"2,0,0,2,-1,0,-1,2\")throw new Error(\"last-index-of-direction expectation\");",
+      "source_sha256": "d7f7fe9e7ef0148935a672f2afb033868b4990e0696f35066dd383bdf6169513",
+      "common_prefix_sha256": "b4794a0985662eaeb01398490b253addfb7883335583992a7d9ba312e743ef9d",
+      "expected_literal": "2,0,0,2,-1,0,-1,2"
+    },
+    {
+      "name": "last-index-of-direction-wrong",
+      "pair": "last-index-of-direction",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var a=new Float64Array([7,2,7]);var actual=[p.lastIndexOf.call(a,7),p.lastIndexOf.call(a,7,undefined),p.lastIndexOf.call(a,7,NaN),p.lastIndexOf.call(a,7,-1),p.lastIndexOf.call(a,7,-Infinity),p.lastIndexOf.call(a,7,1.9),p.lastIndexOf.call(a,NaN),p.lastIndexOf.call(a,7,Infinity)].join(',');if(actual!==\"0,0,0,2,-1,0,-1,2\")throw new Error(\"last-index-of-direction expectation\");",
+      "source_sha256": "92b6f48a960a0a2c4cbcd7fef85f6496dfdad5d261050a850ce6124bd746d61a",
+      "common_prefix_sha256": "b4794a0985662eaeb01398490b253addfb7883335583992a7d9ba312e743ef9d",
+      "expected_literal": "0,0,0,2,-1,0,-1,2"
+    },
+    {
+      "name": "resize-fresh-bounds-positive",
+      "pair": "resize-fresh-bounds",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var reads=0,trace='';Object.defineProperty(p,'3',{configurable:true,get:function(){reads++;return 99;}});function run(name,label,index){var b=new ArrayBuffer(4,{maxByteLength:8}),a=new Uint8Array(b);a[0]=3;a[1]=5;a[2]=7;a[3]=9;var from={valueOf:function(){trace+=label;b.resize(2);return index;}};return name==='at'?p.at.call(a,from):p[name].call(a,undefined,from);}var a=run('at','A',3),b=run('includes','I',0),c=run('indexOf','F',0),d=run('lastIndexOf','L',3);if(!delete p['3'])throw new Error('poison cleanup');var actual=[a===undefined,b,c,d,reads,trace].join(',');if(actual!==\"true,true,-1,-1,0,AIFL\")throw new Error(\"resize-fresh-bounds expectation\");",
+      "source_sha256": "e8bb3d2361fc851b1e23fcf0c734f111e05d648a7d81c1c33aa0b57bd49cb226",
+      "common_prefix_sha256": "5b8906f685dae4525bfeeae933c884485f0dc1c1b25fa11fdc37d5cfd08fabfe",
+      "expected_literal": "true,true,-1,-1,0,AIFL"
+    },
+    {
+      "name": "resize-fresh-bounds-wrong",
+      "pair": "resize-fresh-bounds",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var reads=0,trace='';Object.defineProperty(p,'3',{configurable:true,get:function(){reads++;return 99;}});function run(name,label,index){var b=new ArrayBuffer(4,{maxByteLength:8}),a=new Uint8Array(b);a[0]=3;a[1]=5;a[2]=7;a[3]=9;var from={valueOf:function(){trace+=label;b.resize(2);return index;}};return name==='at'?p.at.call(a,from):p[name].call(a,undefined,from);}var a=run('at','A',3),b=run('includes','I',0),c=run('indexOf','F',0),d=run('lastIndexOf','L',3);if(!delete p['3'])throw new Error('poison cleanup');var actual=[a===undefined,b,c,d,reads,trace].join(',');if(actual!==\"true,false,-1,-1,0,AIFL\")throw new Error(\"resize-fresh-bounds expectation\");",
+      "source_sha256": "667e2403755c968ec08a2b55dcf355f6b0da0da3678a380f61cbf7a7057562b5",
+      "common_prefix_sha256": "5b8906f685dae4525bfeeae933c884485f0dc1c1b25fa11fdc37d5cfd08fabfe",
+      "expected_literal": "true,false,-1,-1,0,AIFL"
+    },
+    {
+      "name": "metadata-saved-identity-positive",
+      "pair": "metadata-saved-identity",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var names=['at','includes','indexOf','lastIndexOf'],saved=[],rejects=0;function C(){this.marker=17;}if(Reflect.construct(C,[]).marker!==17)throw new TypeError('real construction prerequisite');for(var i=0;i<names.length;i++){var n=names[i],f=p[n],d=Object.getOwnPropertyDescriptor(p,n),l=Object.getOwnPropertyDescriptor(f,'length'),q=Object.getOwnPropertyDescriptor(f,'name');if(d.value!==f||!d.writable||d.enumerable||!d.configurable||l.value!==1||l.writable||l.enumerable||!l.configurable||q.value!==n||q.writable||q.enumerable||!q.configurable||Object.getPrototypeOf(f)!==Function.prototype||Object.hasOwn(f,'prototype'))throw new Error('method metadata');try{Reflect.construct(f,[]);}catch(e){if(!(e instanceof TypeError))throw e;rejects++;}saved.push(f);if(!delete p[n]||Object.hasOwn(p,n))throw new Error('actual deletion');}var a=new Uint8Array([4,6,4]);var actual=[saved[0].call(a,-1),saved[1].call(a,6),saved[2].call(a,4),saved[3].call(a,4),rejects].join(',');if(actual!==\"4,true,0,2,4\")throw new Error(\"metadata-saved-identity expectation\");",
+      "source_sha256": "2b8f4b9bd3da6ef1a38ca87dc978e0646bcd0bbd98dd1b445c2fd2f2110013a3",
+      "common_prefix_sha256": "3c0925629960306ed5c69d42ce45b3eae0759e8ffb4db8e74b9fa95dcbc61e5d",
+      "expected_literal": "4,true,0,2,4"
+    },
+    {
+      "name": "metadata-saved-identity-wrong",
+      "pair": "metadata-saved-identity",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var p=Object.getPrototypeOf(Uint8Array.prototype);if(typeof p.at!=='function'||typeof p.includes!=='function'||typeof p.indexOf!=='function'||typeof p.lastIndexOf!=='function')throw new TypeError('TypedArray search prerequisite');var g=new Uint8Array([3,5,3]);if(!ArrayBuffer.isView(g)||p.at.call(g,-1)!==3||p.includes.call(g,5)!==true||p.indexOf.call(g,3)!==0||p.lastIndexOf.call(g,3)!==2)throw new TypeError('working search prerequisite');var names=['at','includes','indexOf','lastIndexOf'],saved=[],rejects=0;function C(){this.marker=17;}if(Reflect.construct(C,[]).marker!==17)throw new TypeError('real construction prerequisite');for(var i=0;i<names.length;i++){var n=names[i],f=p[n],d=Object.getOwnPropertyDescriptor(p,n),l=Object.getOwnPropertyDescriptor(f,'length'),q=Object.getOwnPropertyDescriptor(f,'name');if(d.value!==f||!d.writable||d.enumerable||!d.configurable||l.value!==1||l.writable||l.enumerable||!l.configurable||q.value!==n||q.writable||q.enumerable||!q.configurable||Object.getPrototypeOf(f)!==Function.prototype||Object.hasOwn(f,'prototype'))throw new Error('method metadata');try{Reflect.construct(f,[]);}catch(e){if(!(e instanceof TypeError))throw e;rejects++;}saved.push(f);if(!delete p[n]||Object.hasOwn(p,n))throw new Error('actual deletion');}var a=new Uint8Array([4,6,4]);var actual=[saved[0].call(a,-1),saved[1].call(a,6),saved[2].call(a,4),saved[3].call(a,4),rejects].join(',');if(actual!==\"4,true,0,3,4\")throw new Error(\"metadata-saved-identity expectation\");",
+      "source_sha256": "07e388b39cdb9f6e9ed679e37eb5600d8346b76bd9245d56937c899239dd3224",
+      "common_prefix_sha256": "3c0925629960306ed5c69d42ce45b3eae0759e8ffb4db8e74b9fa95dcbc61e5d",
+      "expected_literal": "4,true,0,3,4"
+    }
+  ]
+}

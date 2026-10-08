@@ -1,0 +1,1197 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all 145 original .js files in four complete TypedArray prototype at/includes/indexOf/lastIndexOf trees, including all BigInt originals; full root-linked Git proof; no implementation",
+  "directories": {
+    "TypedArray/prototype/at": [
+      "coerced-index-resize.js",
+      "index-argument-tointeger.js",
+      "index-non-numeric-argument-tointeger-invalid.js",
+      "index-non-numeric-argument-tointeger.js",
+      "length.js",
+      "name.js",
+      "prop-desc.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-this-out-of-bounds.js",
+      "return-abrupt-from-this.js",
+      "returns-item-relative-index.js",
+      "returns-item.js",
+      "returns-undefined-for-holes-in-sparse-arrays.js",
+      "returns-undefined-for-out-of-range-index.js"
+    ],
+    "TypedArray/prototype/at/BigInt": [
+      "return-abrupt-from-this-out-of-bounds.js"
+    ],
+    "TypedArray/prototype/includes": [
+      "coerced-searchelement-fromindex-resize.js",
+      "detached-buffer-during-fromIndex-returns-false-for-zero.js",
+      "detached-buffer-during-fromIndex-returns-true-for-undefined.js",
+      "detached-buffer.js",
+      "fromIndex-equal-or-greater-length-returns-false.js",
+      "fromIndex-infinity.js",
+      "fromIndex-minus-zero.js",
+      "get-length-uses-internal-arraylength.js",
+      "index-compared-against-initial-length-out-of-bounds.js",
+      "index-compared-against-initial-length.js",
+      "invoked-as-func.js",
+      "invoked-as-method.js",
+      "length-zero-returns-false.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "resizable-buffer-special-float-values.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-this-out-of-bounds.js",
+      "return-abrupt-tointeger-fromindex-symbol.js",
+      "return-abrupt-tointeger-fromindex.js",
+      "samevaluezero.js",
+      "search-found-returns-true.js",
+      "search-not-found-returns-false.js",
+      "search-undefined-after-shrinking-buffer-index-is-oob.js",
+      "search-undefined-after-shrinking-buffer.js",
+      "searchelement-not-integer.js",
+      "this-is-not-object.js",
+      "this-is-not-typedarray-instance.js",
+      "tointeger-fromindex.js"
+    ],
+    "TypedArray/prototype/includes/BigInt": [
+      "detached-buffer-during-fromIndex-returns-false-for-zero.js",
+      "detached-buffer-during-fromIndex-returns-true-for-undefined.js",
+      "detached-buffer.js",
+      "fromIndex-equal-or-greater-length-returns-false.js",
+      "fromIndex-infinity.js",
+      "fromIndex-minus-zero.js",
+      "get-length-uses-internal-arraylength.js",
+      "length-zero-returns-false.js",
+      "return-abrupt-from-this-out-of-bounds.js",
+      "return-abrupt-tointeger-fromindex-symbol.js",
+      "return-abrupt-tointeger-fromindex.js",
+      "search-found-returns-true.js",
+      "search-not-found-returns-false.js",
+      "tointeger-fromindex.js"
+    ],
+    "TypedArray/prototype/indexOf": [
+      "coerced-searchelement-fromindex-grow.js",
+      "coerced-searchelement-fromindex-shrink.js",
+      "detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "detached-buffer.js",
+      "fromIndex-equal-or-greater-length-returns-minus-one.js",
+      "fromIndex-infinity.js",
+      "fromIndex-minus-zero.js",
+      "get-length-uses-internal-arraylength.js",
+      "invoked-as-func.js",
+      "invoked-as-method.js",
+      "length-zero-returns-minus-one.js",
+      "length.js",
+      "name.js",
+      "no-arg.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "resizable-buffer-special-float-values.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-this-out-of-bounds.js",
+      "return-abrupt-tointeger-fromindex-symbol.js",
+      "return-abrupt-tointeger-fromindex.js",
+      "search-found-returns-index.js",
+      "search-not-found-returns-minus-one.js",
+      "strict-comparison.js",
+      "this-is-not-object.js",
+      "this-is-not-typedarray-instance.js",
+      "tointeger-fromindex.js"
+    ],
+    "TypedArray/prototype/indexOf/BigInt": [
+      "detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "detached-buffer.js",
+      "fromIndex-equal-or-greater-length-returns-minus-one.js",
+      "fromIndex-infinity.js",
+      "fromIndex-minus-zero.js",
+      "get-length-uses-internal-arraylength.js",
+      "length-zero-returns-minus-one.js",
+      "no-arg.js",
+      "return-abrupt-from-this-out-of-bounds.js",
+      "return-abrupt-tointeger-fromindex-symbol.js",
+      "return-abrupt-tointeger-fromindex.js",
+      "search-found-returns-index.js",
+      "search-not-found-returns-minus-one.js",
+      "tointeger-fromindex.js"
+    ],
+    "TypedArray/prototype/lastIndexOf": [
+      "coerced-position-grow.js",
+      "coerced-position-shrink.js",
+      "detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "detached-buffer.js",
+      "fromIndex-infinity.js",
+      "fromIndex-minus-zero.js",
+      "get-length-uses-internal-arraylength.js",
+      "invoked-as-func.js",
+      "invoked-as-method.js",
+      "length-zero-returns-minus-one.js",
+      "length.js",
+      "name.js",
+      "negative-index-and-resize-to-smaller.js",
+      "no-arg.js",
+      "not-a-constructor.js",
+      "prop-desc.js",
+      "resizable-buffer-special-float-values.js",
+      "resizable-buffer.js",
+      "return-abrupt-from-this-out-of-bounds.js",
+      "return-abrupt-tointeger-fromindex-symbol.js",
+      "return-abrupt-tointeger-fromindex.js",
+      "search-found-returns-index.js",
+      "search-not-found-returns-minus-one.js",
+      "strict-comparison.js",
+      "this-is-not-object.js",
+      "this-is-not-typedarray-instance.js",
+      "tointeger-fromindex.js"
+    ],
+    "TypedArray/prototype/lastIndexOf/BigInt": [
+      "detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "detached-buffer.js",
+      "fromIndex-infinity.js",
+      "fromIndex-minus-zero.js",
+      "get-length-uses-internal-arraylength.js",
+      "length-zero-returns-minus-one.js",
+      "no-arg.js",
+      "return-abrupt-from-this-out-of-bounds.js",
+      "return-abrupt-tointeger-fromindex-symbol.js",
+      "return-abrupt-tointeger-fromindex.js",
+      "search-found-returns-index.js",
+      "search-not-found-returns-minus-one.js",
+      "tointeger-fromindex.js"
+    ]
+  },
+  "test_files": 145,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/detachArrayBuffer.js",
+      "upstream_path": "harness/detachArrayBuffer.js",
+      "bytes": 537,
+      "sha256": "d487a9c3c7d51b7e9d66c5fce89929ab3d09a6341d21a833e38f9caba6bf2e0e"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/resizableArrayBufferUtils.js",
+      "upstream_path": "harness/resizableArrayBufferUtils.js",
+      "bytes": 3829,
+      "sha256": "029aa552050861eb85fe9d848a52716dfd24747dcaf06f2a8937cb510ab31f50"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "harness/testTypedArray.js",
+      "upstream_path": "harness/testTypedArray.js",
+      "bytes": 16526,
+      "sha256": "51eb50e53e6215f31f14d64d249bea2d08ad943c77835f63ba52ec694de2189a"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1684,
+      "sha256": "a448157ecac54418be3c78ddf829ed36f3ed38b2903d976e89d43f9b57c17b29"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/coerced-index-resize.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/coerced-index-resize.js",
+      "bytes": 1234,
+      "sha256": "c0818e833b7e674741d161186b1140a481cebb915252962b3fc220e1179b7dcd"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/index-argument-tointeger.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/index-argument-tointeger.js",
+      "bytes": 1035,
+      "sha256": "c691c6afad5acdfcecdccc47c448cded6fd82b750834cc3b39c563d38b4f3822"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/index-non-numeric-argument-tointeger-invalid.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/index-non-numeric-argument-tointeger-invalid.js",
+      "bytes": 798,
+      "sha256": "14c004135ac9405af8bf0ff58fb6a439c566aa61d58deb8a798fe018c4ac27c0"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/index-non-numeric-argument-tointeger.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/index-non-numeric-argument-tointeger.js",
+      "bytes": 1263,
+      "sha256": "eb21749449bda10c41e7539142ecd13a9ee22a832ebd5ff9bbd52e45eefc5bdc"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/length.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/length.js",
+      "bytes": 683,
+      "sha256": "8a7ee0b88611ecd83e39738dde24443006052b496694dfdca71673d051cf61be"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/name.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/name.js",
+      "bytes": 783,
+      "sha256": "bbf291aa646c633f9b4acec7063e7b3d4268c1b7eabffed4ac6f44ea32fa509d"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/prop-desc.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/prop-desc.js",
+      "bytes": 639,
+      "sha256": "bfac691e6f2d1099aef65e537a202ad6c73163a1129c65bff5bc4554cdbbcbd9"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/resizable-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/resizable-buffer.js",
+      "bytes": 2458,
+      "sha256": "d2bd65959967a8e30fbcea100a7ada111eecaefcbca3b4f4eda175f930b6e60c"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1641,
+      "sha256": "6b577fde4e94c63e168ee970267bf076413902d819f91a0aa474c8f89c37da57"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/return-abrupt-from-this.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/return-abrupt-from-this.js",
+      "bytes": 1041,
+      "sha256": "857e08be3efca32533ade86864d9f4d045b090ae0717155493b5bce5c35a6d3f"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/returns-item-relative-index.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/returns-item-relative-index.js",
+      "bytes": 1225,
+      "sha256": "9c6f1ecbb53efe06a02e6ef719da9a143dd09730ad172f41b2040197f3b51ede"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/returns-item.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/returns-item.js",
+      "bytes": 1260,
+      "sha256": "a38b17ad66fcc9dfc010d9af9c390d0061d8b873ebd4007f4ef4263ac7c0f34e"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/returns-undefined-for-holes-in-sparse-arrays.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/returns-undefined-for-holes-in-sparse-arrays.js",
+      "bytes": 1945,
+      "sha256": "ba6a3467779016276c1c79891d8e89f0b9bc82158aa7cca627b7c43ec6e82169"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/at/returns-undefined-for-out-of-range-index.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/at/returns-undefined-for-out-of-range-index.js",
+      "bytes": 1042,
+      "sha256": "4d58a89becf65dbc0ddb4cd83d9e45f55dcd8b95a05322a184ecda469f269752"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/detached-buffer-during-fromIndex-returns-false-for-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/detached-buffer-during-fromIndex-returns-false-for-zero.js",
+      "bytes": 1574,
+      "sha256": "00ced4b1271b0fb5f9d58c3c9fc10232e5866fd2345d6c739f7e0d2aeaec2f27"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/detached-buffer-during-fromIndex-returns-true-for-undefined.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/detached-buffer-during-fromIndex-returns-true-for-undefined.js",
+      "bytes": 1617,
+      "sha256": "036032da8bbe157d0ffa4e20c0a141ad62efebc690ddfdd01ae7c7938bd69d5e"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/detached-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/detached-buffer.js",
+      "bytes": 1024,
+      "sha256": "8aafea6056036a67da8bfe5ab0fd2650b1224bc2990c8c617dc2fadb82be30f4"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/fromIndex-equal-or-greater-length-returns-false.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/fromIndex-equal-or-greater-length-returns-false.js",
+      "bytes": 1169,
+      "sha256": "2e99953639c90d107c6f4ad258a9e11da10fd7f45d11aa04f7702bc5472df851"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/fromIndex-infinity.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/fromIndex-infinity.js",
+      "bytes": 1334,
+      "sha256": "4ce89c7ad444a30cc5d2bac14bd417b1d59cd0dc292d72f1a7411e973bd907d7"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/fromIndex-minus-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/fromIndex-minus-zero.js",
+      "bytes": 1120,
+      "sha256": "588835ae76bdb27ba96f4500619aae02a386b0a70ff8ff52ad8b16e1df45c2ed"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/get-length-uses-internal-arraylength.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/get-length-uses-internal-arraylength.js",
+      "bytes": 1162,
+      "sha256": "9b8766a9d9fda4113bb10e0c32da6a3b3fc4b22bdabddeaaeba9b7d14c860631"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/length-zero-returns-false.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/length-zero-returns-false.js",
+      "bytes": 1261,
+      "sha256": "09ff82d263bfe417fc24202d6b56f092ec62bc1dfb672b8e5e0517bd1a9d0ee3"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1710,
+      "sha256": "7292d11210725abcaaf489fc575d6c73ed615acc7ea3af61a4ae3c42d543ad31"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/return-abrupt-tointeger-fromindex-symbol.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/return-abrupt-tointeger-fromindex-symbol.js",
+      "bytes": 1096,
+      "sha256": "27138851005f384f20aa101b6cc23c4932fbb80e1702f461d73755bf32d0002b"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/return-abrupt-tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/return-abrupt-tointeger-fromindex.js",
+      "bytes": 1126,
+      "sha256": "3b1572eac4acf296b917ed53e41705ff24aeedd7a65abdd297955fe5d49cd4db"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/search-found-returns-true.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/search-found-returns-true.js",
+      "bytes": 1787,
+      "sha256": "001a20d860fe0e01fe499f943f933c3ec79cc76caa85d3a26180906bd0bce936"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/search-not-found-returns-false.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/search-not-found-returns-false.js",
+      "bytes": 1625,
+      "sha256": "3f47dae7e4379b37ad2d0c638c1f315128b85c616c8ee7844277687e4f488d88"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/BigInt/tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/BigInt/tointeger-fromindex.js",
+      "bytes": 2366,
+      "sha256": "50e929509da564a6dea0e724b34ef89177cce293f81581f01a481310d30079c3"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/coerced-searchelement-fromindex-resize.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/coerced-searchelement-fromindex-resize.js",
+      "bytes": 2887,
+      "sha256": "464d357e2a6640359c1392b3969d5dbf9758a0eade7ea94fce25d5a919f11311"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/detached-buffer-during-fromIndex-returns-false-for-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/detached-buffer-during-fromIndex-returns-false-for-zero.js",
+      "bytes": 1601,
+      "sha256": "047841114beba4931061260483d7cfc784486ec845b6c346f5eae4015fe4bc3d"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/detached-buffer-during-fromIndex-returns-true-for-undefined.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/detached-buffer-during-fromIndex-returns-true-for-undefined.js",
+      "bytes": 1603,
+      "sha256": "4794f9e156a199afb68eb9a9e94975754db0af610558d810011b49e9f648a2fd"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/detached-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/detached-buffer.js",
+      "bytes": 1009,
+      "sha256": "020836bf732dcc4e47eb6053bb4cf2ae261f6d73c6484fdccd5e1919c2451583"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/fromIndex-equal-or-greater-length-returns-false.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/fromIndex-equal-or-greater-length-returns-false.js",
+      "bytes": 1153,
+      "sha256": "b8841410345856df14b6f709757c2c144ce6fc2abc364485ddd1a36e2237ee91"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/fromIndex-infinity.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/fromIndex-infinity.js",
+      "bytes": 1314,
+      "sha256": "91f3c03e3719b85ac28b52d7d2c4895a3243811930f69ca235554e880704cc8b"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/fromIndex-minus-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/fromIndex-minus-zero.js",
+      "bytes": 1101,
+      "sha256": "5c931349f1972666f6a9ed950fd8adcfa1c544b0f8be53441f1cef5415d3a68f"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/get-length-uses-internal-arraylength.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/get-length-uses-internal-arraylength.js",
+      "bytes": 1146,
+      "sha256": "8959e351af124fe365eca0c04af5aa26e0d454c7294cc4b4f3105d6ee2d5e100"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/index-compared-against-initial-length-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/index-compared-against-initial-length-out-of-bounds.js",
+      "bytes": 1213,
+      "sha256": "10b8fb94d86aa7c38fd68b6a8fe6e4db55f406eb65b920bb64f91c21b2c22d1f"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/index-compared-against-initial-length.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/index-compared-against-initial-length.js",
+      "bytes": 1074,
+      "sha256": "133a7d38a30fe1ebeecaa18d7f0e8ad38a228872c37cbc71ceb1bcb09a55b5a0"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/invoked-as-func.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/invoked-as-func.js",
+      "bytes": 988,
+      "sha256": "43a879bc3abb19fc22f121c0365168e96dc0f58de61e2e4c511a14625454d2f9"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/invoked-as-method.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/invoked-as-method.js",
+      "bytes": 1019,
+      "sha256": "e1bff79a58429b925257c3a61dc109316d6831014feb12b86a73e1b132efb59f"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/length-zero-returns-false.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/length-zero-returns-false.js",
+      "bytes": 1246,
+      "sha256": "1a721f52ccfbd81707193a12d15490f910f8ebcf517eaef1bbb31e9961893fee"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/length.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/length.js",
+      "bytes": 1184,
+      "sha256": "a912fa56d884d5c30ffcce920b09d70806e9e90c41d06fd47186425157c9184c"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/name.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/name.js",
+      "bytes": 952,
+      "sha256": "c2daef1dacedf2c5feacb759829abcfd2368cc6cf991a34f2e1cbb5a5a95f1ad"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/not-a-constructor.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/not-a-constructor.js",
+      "bytes": 966,
+      "sha256": "d0b735170d7d36ec8f6eac228eb2a41257c7f4a97518d49dc8fa87ef3baeff43"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/prop-desc.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/prop-desc.js",
+      "bytes": 713,
+      "sha256": "e222383ad60530f0bd4ccf7ae6c1f14b35c2a5e0587a27ba16e62401cb30d569"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/resizable-buffer-special-float-values.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/resizable-buffer-special-float-values.js",
+      "bytes": 835,
+      "sha256": "d603b750af93e1adb8b57c968dffc1146cd9e1a1c81c7cefb167f8291945d702"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/resizable-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/resizable-buffer.js",
+      "bytes": 5000,
+      "sha256": "8a86e78b82da5a7d867a5cd47292cbdae60a9d2bb08cdd6bba51f17d41851917"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1664,
+      "sha256": "7f007ee46917a9586ad3a6037454f0f3e44106cee85bb7370c67f6a5a1d5f8bc"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/return-abrupt-tointeger-fromindex-symbol.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/return-abrupt-tointeger-fromindex-symbol.js",
+      "bytes": 1080,
+      "sha256": "41ab4b94e33b0388063438c3ed4ec7236b36454442b13afae419e976fb0da3fb"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/return-abrupt-tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/return-abrupt-tointeger-fromindex.js",
+      "bytes": 1110,
+      "sha256": "a97b30a48bb78057a18428a9ab4048fd1d6dd65b2b3c2764817aa75f6b37181b"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/samevaluezero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/samevaluezero.js",
+      "bytes": 1866,
+      "sha256": "e0b8993a333893cac0f0b9a8c11a6e423336098d83d691b0a0bf388d15805fbe"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/search-found-returns-true.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/search-found-returns-true.js",
+      "bytes": 1760,
+      "sha256": "e747366e7d590c31eb04138f11d96b8ac913740febb7e9b4b20540e8ee9c51fe"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/search-not-found-returns-false.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/search-not-found-returns-false.js",
+      "bytes": 1601,
+      "sha256": "f28866bcfa5960feafd3d3ff4e4e8a727b21659f8f07b7b3ef84578c832c455d"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/search-undefined-after-shrinking-buffer-index-is-oob.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/search-undefined-after-shrinking-buffer-index-is-oob.js",
+      "bytes": 1105,
+      "sha256": "95239d3979f294d14744dea7774117f6bd785963bb0bda159cf8df4a4f101e67"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/search-undefined-after-shrinking-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/search-undefined-after-shrinking-buffer.js",
+      "bytes": 1221,
+      "sha256": "4d7e4e531c47fb0f5a83a96b51a7b1b39fa41cb912ae29cdeb42da2f9b6ebb22"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/searchelement-not-integer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/searchelement-not-integer.js",
+      "bytes": 952,
+      "sha256": "9afeb545f1ab03813f72723c7dac7591698075982f1f12927e1f189f6e2fbcd4"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/this-is-not-object.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/this-is-not-object.js",
+      "bytes": 1434,
+      "sha256": "63337181cb13e8c27d6506bce38a418276dc0539b55a9242dae64692363a1cd5"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/this-is-not-typedarray-instance.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/this-is-not-typedarray-instance.js",
+      "bytes": 1358,
+      "sha256": "1092ba52b2461b4e6131c91c699c0f239ff1d7a199be660039c2204ac47dcf04"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/includes/tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/includes/tointeger-fromindex.js",
+      "bytes": 2334,
+      "sha256": "a5040066ebe989d07063dbc6306cf5bbd4a22513435b38bd34655011b6c9f3bf"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "bytes": 1704,
+      "sha256": "316d1dd0b729669b7c57ba3f58e0010917875c7008b8263467fc741f15a96da6"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "bytes": 1697,
+      "sha256": "66f3437186b47fbd71426593c323216f329eb9c96c560c6a7ea41e2183e02948"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/detached-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/detached-buffer.js",
+      "bytes": 1020,
+      "sha256": "3ba20290ccdab9c940843143e5e709630c2699830502c1e572446cb4f1a0e8df"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/fromIndex-equal-or-greater-length-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/fromIndex-equal-or-greater-length-returns-minus-one.js",
+      "bytes": 1056,
+      "sha256": "042b6f47a796e34e64298ec8caa1bb1c28e78067cb37a03412af8a5add5bb043"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/fromIndex-infinity.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/fromIndex-infinity.js",
+      "bytes": 1481,
+      "sha256": "488b01511c70dedb5682b0fc37fcfb04c394337a4f53b6dc0b4988a0353470de"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/fromIndex-minus-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/fromIndex-minus-zero.js",
+      "bytes": 1039,
+      "sha256": "06dae4a45cd41f63ef8710195cc83c7cecda1f50dffcb546588bd879eeb4614a"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/get-length-uses-internal-arraylength.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/get-length-uses-internal-arraylength.js",
+      "bytes": 1151,
+      "sha256": "0ca4968f2ed3ef3252ff15b22a084a0a607ef38377668d2ae955663b92c244d6"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/length-zero-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/length-zero-returns-minus-one.js",
+      "bytes": 1166,
+      "sha256": "d503c36b31093574e0f8424511608ec528856d2fb954446699594d7db6648f3c"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/no-arg.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/no-arg.js",
+      "bytes": 959,
+      "sha256": "56b14ab9d7c8064a7e93e1745d505e308f79344cd4eaca084a194a6b4680ba31"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1702,
+      "sha256": "5867e28b6451404595eaedda1d6f9a59b994280647911e396c8a25059b467a2e"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/return-abrupt-tointeger-fromindex-symbol.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/return-abrupt-tointeger-fromindex-symbol.js",
+      "bytes": 1085,
+      "sha256": "768df239f1c9e0b02e3d3f3d0375f71b3e513007eab99417d45972d134130b03"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/return-abrupt-tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/return-abrupt-tointeger-fromindex.js",
+      "bytes": 1115,
+      "sha256": "4577c0325feb13a69daca348229793e95f69ff08669a042e36c1947bd0e592d2"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/search-found-returns-index.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/search-found-returns-index.js",
+      "bytes": 1906,
+      "sha256": "4d79512e337a487964126e204eda374ca63aff0c1f019446a3524f53caaac2bf"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/search-not-found-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/search-not-found-returns-minus-one.js",
+      "bytes": 1432,
+      "sha256": "ceeb849a14b40b930f3a7d4b188e2d96d82806ffecc72b915f3edf50d2506946"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/BigInt/tointeger-fromindex.js",
+      "bytes": 2071,
+      "sha256": "545cb89ecbff03eb8e6f66f7ac3c2a740dccbc9d6e753d382e79e3c647571cdd"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/coerced-searchelement-fromindex-grow.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/coerced-searchelement-fromindex-grow.js",
+      "bytes": 1653,
+      "sha256": "5ad5cc7eb462b36007d07c7158125e3d1367f1809dfcee2b969563e814e7b6df"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/coerced-searchelement-fromindex-shrink.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/coerced-searchelement-fromindex-shrink.js",
+      "bytes": 1944,
+      "sha256": "b7a59d8dc85f3dcee02ebf7e420b585e97acc37b57d83891f336812072c7a51e"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "bytes": 1690,
+      "sha256": "b68ac685e8844aa76ab8cfa6384e208d48a395e658a4e635a8102ca5853e7d51"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "bytes": 1682,
+      "sha256": "702bb794f2413de7d1397a2f9b088213201923fc78e0bc8ac982bc7b5516706b"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/detached-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/detached-buffer.js",
+      "bytes": 1005,
+      "sha256": "1fe502830d6976c51d7516847cb48e6e3d4fad1d1144abd7d9cabc778eac46cf"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/fromIndex-equal-or-greater-length-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/fromIndex-equal-or-greater-length-returns-minus-one.js",
+      "bytes": 1040,
+      "sha256": "001db8ccb00d8425a89b490a54cac50aed35cbd39cc4774c4c6f7c2d2e3c4fb8"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/fromIndex-infinity.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/fromIndex-infinity.js",
+      "bytes": 1461,
+      "sha256": "5b21dd71834cc56b6c540388c41de9d136622beebb7ff5172a45c47a037316e2"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/fromIndex-minus-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/fromIndex-minus-zero.js",
+      "bytes": 1021,
+      "sha256": "517b7584057d0a62ef4f28ccd1c2fe2b3ffff9a1fafe84080ca37593649b81fa"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/get-length-uses-internal-arraylength.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/get-length-uses-internal-arraylength.js",
+      "bytes": 1135,
+      "sha256": "54e8370e8f4ca9620777f252afb3a2b2baa0ce7d70fb13990f784f85e60b2f1b"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/invoked-as-func.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/invoked-as-func.js",
+      "bytes": 981,
+      "sha256": "eadf238edc5708e4b720f766b41bfb4d90765dcd494b0497f63b12c7cc0de080"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/invoked-as-method.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/invoked-as-method.js",
+      "bytes": 1014,
+      "sha256": "87b306de4d12dd21d7c80ce3883f4c4ed1fcaba53e14c8fd6081464467892ed1"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/length-zero-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/length-zero-returns-minus-one.js",
+      "bytes": 1150,
+      "sha256": "acf1fe8c2e07737cbb22dd7e3fb9447803bf40df986d402841dff911a5a5259d"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/length.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/length.js",
+      "bytes": 1171,
+      "sha256": "cc0419f96c9d13080485bf18c5c1b04d9f8f0cc23b05c735bd79dbf0b82726ed"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/name.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/name.js",
+      "bytes": 938,
+      "sha256": "4482c2c137833f38d71e262b4ceb1a1f2e6618a471f0624b7e57582d07e4cf38"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/no-arg.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/no-arg.js",
+      "bytes": 942,
+      "sha256": "3d34df83a99c4363c8fa3dfd6cbc427fe258035476c761e565a877f9d5e65ebe"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/not-a-constructor.js",
+      "bytes": 961,
+      "sha256": "e08fe2e46b1e92a4d5c3fa48f1f5b7080c690adc7b8ac9d51a2ff54de2c83083"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/prop-desc.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/prop-desc.js",
+      "bytes": 710,
+      "sha256": "b6b7587a44b77a814db3cd16b2141cf0074ad5872e2eab8940657f319b1ed918"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/resizable-buffer-special-float-values.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/resizable-buffer-special-float-values.js",
+      "bytes": 971,
+      "sha256": "91125e1e7adf71a7f584ea7f9222d1107129305c6c868cc78b832eddc2b56913"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/resizable-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/resizable-buffer.js",
+      "bytes": 5392,
+      "sha256": "71f0f6014acffeb1347f36c876a9cd98e9c6b65c4763c28780128368dff47abe"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1656,
+      "sha256": "8853671f8053d3b7f0908d4316443c5223cb590ec85127684541f53418e0660a"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/return-abrupt-tointeger-fromindex-symbol.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/return-abrupt-tointeger-fromindex-symbol.js",
+      "bytes": 1070,
+      "sha256": "200fa1a65ff0572f474a102bb57480c0cedba48f105cb2441a9fe578447c60ce"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/return-abrupt-tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/return-abrupt-tointeger-fromindex.js",
+      "bytes": 1100,
+      "sha256": "8611b66c3505672a089c48a1c4b195b4c8dac2cfa262822e218afe0a9c518bc7"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/search-found-returns-index.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/search-found-returns-index.js",
+      "bytes": 1879,
+      "sha256": "c9033290ff3dbb6d7103a7485945f624854f4aec0b48148760d10c3d0b6835c9"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/search-not-found-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/search-not-found-returns-minus-one.js",
+      "bytes": 1408,
+      "sha256": "d4eea562744d04ecdacadc07906faf8955c6c3d95b4c137c9708ade55f963549"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/strict-comparison.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/strict-comparison.js",
+      "bytes": 1707,
+      "sha256": "78ef4075ee050d31e49d1f8e5e7b64fe03d836fe8c7c695be8cad4bc7461ad15"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/this-is-not-object.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/this-is-not-object.js",
+      "bytes": 1422,
+      "sha256": "aa66968b0af7412a0dca2312959e9260b0a2c76dfe2c1c0dd1341dbb40da86e5"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/this-is-not-typedarray-instance.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/this-is-not-typedarray-instance.js",
+      "bytes": 1349,
+      "sha256": "5a210b8ef29d8fc9b19c545075ad5740b86c443f0c806fa38cc03d3a873d1589"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/indexOf/tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/indexOf/tointeger-fromindex.js",
+      "bytes": 2039,
+      "sha256": "254aca7c81189b5e86e0134f60e2cd5eaa5712abf5c4d0d8775dca50a14a3ebb"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "bytes": 1683,
+      "sha256": "a8bfd7c344edb10399aca295dc03e7774b6f909dcf48874266f988a4ad41bc6d"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "bytes": 1676,
+      "sha256": "92a2a1704c006ccb91766811842b546901dbf3d2a4edbe2e72b19879b2a246ed"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/detached-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/detached-buffer.js",
+      "bytes": 1033,
+      "sha256": "bc80e3ecae240f53fdef095ffa45eee61e604da4cee98080ac4bdb632658a8f4"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/fromIndex-infinity.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/fromIndex-infinity.js",
+      "bytes": 1218,
+      "sha256": "e61c826434816df5ec8ecdceec2bd8f830a5d038abcd8afca56e1a2805a6635d"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/fromIndex-minus-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/fromIndex-minus-zero.js",
+      "bytes": 1083,
+      "sha256": "e0c71d65ff7e1b47ed7a7dc62d05a7e64639ee1b64d28e8694f3d1e6177c0a50"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/get-length-uses-internal-arraylength.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/get-length-uses-internal-arraylength.js",
+      "bytes": 1176,
+      "sha256": "888594a1a6e0f131f9f57f9a35c5ec67925c13c23b78dd1feaf0fcaf7b2d25d9"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/length-zero-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/length-zero-returns-minus-one.js",
+      "bytes": 1194,
+      "sha256": "b829998e0aede5dbc9d302f46f055f343b4bb7ec75e64f5427afe3731a956394"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/no-arg.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/no-arg.js",
+      "bytes": 986,
+      "sha256": "cfee50bab86cb9354ba0c5db7938bd7551ae037e514de0dc56e86d2e8b57223e"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1734,
+      "sha256": "160969a1eba0fd91e1414688d0815799f629e8a7c4d056faf72bef094722e431"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/return-abrupt-tointeger-fromindex-symbol.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/return-abrupt-tointeger-fromindex-symbol.js",
+      "bytes": 1104,
+      "sha256": "e2a9b443f183a24b7af87b5483f5e78dbaddfe9cd8dc3f29ef2fd98527feccb5"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/return-abrupt-tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/return-abrupt-tointeger-fromindex.js",
+      "bytes": 1134,
+      "sha256": "69e3f6d49a65f7f7ef81b0d519dd50a76f218fcd7f3da835f24eac2a8ae38553"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/search-found-returns-index.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/search-found-returns-index.js",
+      "bytes": 2934,
+      "sha256": "94f65b36903633ba36c3f90262bf2c8685ecd3d23274ba24d9dcfbfa576ebb44"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/search-not-found-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/search-not-found-returns-minus-one.js",
+      "bytes": 1815,
+      "sha256": "6d6732b81421c3e76b0e44a262650f7fcd8fb484aa02783f1a68aca5082f48ad"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/BigInt/tointeger-fromindex.js",
+      "bytes": 2152,
+      "sha256": "071e433822f7b80c331885c3a3a070e36f8880f28932eb57c39ae00e1a1055a1"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/coerced-position-grow.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/coerced-position-grow.js",
+      "bytes": 1808,
+      "sha256": "f498ced8d224022897b0ade6269d264b82406beee350f39de8df40609734a681"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/coerced-position-shrink.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/coerced-position-shrink.js",
+      "bytes": 2016,
+      "sha256": "8c74d9bfe30c449fe0e8f555655bac406bf3060ad39ce0ec4eb4ca49e811364b"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/detached-buffer-during-fromIndex-returns-minus-one-for-undefined.js",
+      "bytes": 1669,
+      "sha256": "b86c336e70f52e1b735ede483cf0d2ce1a6d6d5598c9e594dbd2df0d329a1743"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/detached-buffer-during-fromIndex-returns-minus-one-for-zero.js",
+      "bytes": 1661,
+      "sha256": "29dc8a99317f7e436303d8fd21006d77bce5f9d0b4d3f3fc235ed88f1444d93f"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/detached-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/detached-buffer.js",
+      "bytes": 1018,
+      "sha256": "c2245e98206b3e25a082d79f053a7f7bc57ccdb994863ae6b148001f9d6f4651"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/fromIndex-infinity.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/fromIndex-infinity.js",
+      "bytes": 1198,
+      "sha256": "f8527a6f86e16fc698a5fe56fb7772af679fee6849eb3980fffbec24e16efeeb"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/fromIndex-minus-zero.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/fromIndex-minus-zero.js",
+      "bytes": 1065,
+      "sha256": "7098c8b70301a8e30c0dd223ebd25349628665d4018abb155e37d67081bceb6f"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/get-length-uses-internal-arraylength.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/get-length-uses-internal-arraylength.js",
+      "bytes": 1160,
+      "sha256": "150bab62216566f0adcf004095c35e4842f36701fe54b7a60a02e1e734176da5"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/invoked-as-func.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/invoked-as-func.js",
+      "bytes": 1006,
+      "sha256": "46e87699cd36d97e0e12a1485c2551a25dde770f5768a06eb921515913eefd20"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/invoked-as-method.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/invoked-as-method.js",
+      "bytes": 1031,
+      "sha256": "3f1b2c4803b75105462d1156c4f964ef89d965e0b1b703f6eed7a7a8b0aa3cc2"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/length-zero-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/length-zero-returns-minus-one.js",
+      "bytes": 1179,
+      "sha256": "673f5b66beb59f3832cced7503e9643ff81b9a3929a30ccc2d2e2b31749e71bc"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/length.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/length.js",
+      "bytes": 1188,
+      "sha256": "fb15e05c0f63f7a661c9fc5c7f382c1d003238367b2426f0ae845d4801865693"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/name.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/name.js",
+      "bytes": 963,
+      "sha256": "1d40ec108f82658a60516dfc728cbb8f20869b6665746ba85c60295b3a8493de"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/negative-index-and-resize-to-smaller.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/negative-index-and-resize-to-smaller.js",
+      "bytes": 1398,
+      "sha256": "7792e6dd3e47b171cd08fc481b400b1d0b7784ff37595f0eff073cb943af38e5"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/no-arg.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/no-arg.js",
+      "bytes": 969,
+      "sha256": "ad4e012773788261dc16c29aef82518413f5b28c1ef1c60b619c8f6950c336bc"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/not-a-constructor.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/not-a-constructor.js",
+      "bytes": 977,
+      "sha256": "7720988bc66146f5f96fe0a99ecacc28f6907575884bdad545310ff4a78149a9"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/prop-desc.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/prop-desc.js",
+      "bytes": 722,
+      "sha256": "4e366a8e5d24569a0f702c7b6cbd64d1b5d60aa5bb7c949526f02bc9cad87fc7"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/resizable-buffer-special-float-values.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/resizable-buffer-special-float-values.js",
+      "bytes": 991,
+      "sha256": "33b71d4e2b22810601e38f8af9e28fc0536cfa529a3c26cc266e21f996e3bb34"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/resizable-buffer.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/resizable-buffer.js",
+      "bytes": 5857,
+      "sha256": "8089fe0dd3afa16d16bcd49cbe5885060b5a2f483ba9e11e7a9dc50e7cbc4882"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/return-abrupt-from-this-out-of-bounds.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/return-abrupt-from-this-out-of-bounds.js",
+      "bytes": 1717,
+      "sha256": "410e79abd9a7fcbf6d3ef9747ba3d4474ce1e5dcdaaa10ea15ce1319d2aa61bb"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/return-abrupt-tointeger-fromindex-symbol.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/return-abrupt-tointeger-fromindex-symbol.js",
+      "bytes": 1089,
+      "sha256": "22598f077b26e4474f9cb91a373d6c7c11661a176f2336bf79eb5907fcaba26b"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/return-abrupt-tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/return-abrupt-tointeger-fromindex.js",
+      "bytes": 1119,
+      "sha256": "0b6059d5bdf6b64a6946e103bf6296cae62464b448bfe6040abe6644c2ec7230"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/search-found-returns-index.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/search-found-returns-index.js",
+      "bytes": 2894,
+      "sha256": "5d5b97ba1cfaaa9320edacb6c3f45d9a223401f19746491fa5f4b27947d871d0"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/search-not-found-returns-minus-one.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/search-not-found-returns-minus-one.js",
+      "bytes": 1787,
+      "sha256": "0e2a6e07dc3293357e05f7c3d7711f2981fbb2b591491b82a9fc1571f6808a83"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/strict-comparison.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/strict-comparison.js",
+      "bytes": 1768,
+      "sha256": "f44f67783e0412f4090e354da203df9b07cb0368a5922a6aa8de1394df8bc7d0"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/this-is-not-object.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/this-is-not-object.js",
+      "bytes": 1467,
+      "sha256": "1ed77b6d824675f9308353b35d7624352df9bded75cfac418e47d638f8459970"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/this-is-not-typedarray-instance.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/this-is-not-typedarray-instance.js",
+      "bytes": 1382,
+      "sha256": "4ffb93bf6da925a6a69540f226766216ad00a3ffe2c62ea93f7db8517c47ae30"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/lastIndexOf/tointeger-fromindex.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/lastIndexOf/tointeger-fromindex.js",
+      "bytes": 2120,
+      "sha256": "dacbde68c100fdc8a403b2159fd9e686f719aee73f71418803ed2df382197ec8"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-root-linked-recursive-git-subtrees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "prefix": "test/built-ins",
+    "subtree_trees": {
+      "TypedArray/prototype/at": "c1f0eae9a0485de57814aeb7e8f45fc0f87f420a",
+      "TypedArray/prototype/includes": "16d1253435098c7ca5278234db6baa1e1675f3dc",
+      "TypedArray/prototype/indexOf": "9be33464f6f7515879f69dbf73cb8d397d9dca42",
+      "TypedArray/prototype/lastIndexOf": "9cb18b7262c326fd41c564ffec8551492344b7f0"
+    },
+    "directory_trees": {
+      "TypedArray/prototype/at": "c1f0eae9a0485de57814aeb7e8f45fc0f87f420a",
+      "TypedArray/prototype/at/BigInt": "f4c2dfa560d48ef4e87ac4b468df74d18d7dfaaf",
+      "TypedArray/prototype/includes": "16d1253435098c7ca5278234db6baa1e1675f3dc",
+      "TypedArray/prototype/includes/BigInt": "e7741fac2601219e648a00a7a9089cce2baad8b0",
+      "TypedArray/prototype/indexOf": "9be33464f6f7515879f69dbf73cb8d397d9dca42",
+      "TypedArray/prototype/indexOf/BigInt": "409dd97b87e0303320ea4f6b0112457112748af3",
+      "TypedArray/prototype/lastIndexOf": "9cb18b7262c326fd41c564ffec8551492344b7f0",
+      "TypedArray/prototype/lastIndexOf/BigInt": "ffcb6c6d38577a1f2e13042909e12a857143ab87"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/detachArrayBuffer.js": "81af99f3b04af9f698185665c036ad34b91eaea4",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/resizableArrayBufferUtils.js": "9dad8ccb83f4c8a2d96d9ef333f16aedc02255a2",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "harness/testTypedArray.js": "a6418c2f70bf62cb39d95d3640ac9e41153cceb7",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/recursive-16d1253435098c7ca5278234db6baa1e1675f3dc.json",
+        "bytes": 11126,
+        "sha256": "8dc5fc43bf0dbd04296eb51bb414e2d84afb3f50272d1e52dead781d2cd4fb26",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/16d1253435098c7ca5278234db6baa1e1675f3dc?recursive=1"
+      },
+      {
+        "path": "inventory-proof/recursive-9be33464f6f7515879f69dbf73cb8d397d9dca42.json",
+        "bytes": 10610,
+        "sha256": "228e65704f5026de96d46fae13b84e14f673239580b77fc3b8bcf5aded95312b",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/9be33464f6f7515879f69dbf73cb8d397d9dca42?recursive=1"
+      },
+      {
+        "path": "inventory-proof/recursive-9cb18b7262c326fd41c564ffec8551492344b7f0.json",
+        "bytes": 10301,
+        "sha256": "8f57a993ec5490376f287294c4e2bb1070e7d93f07e029cf159e659a6d940f34",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/9cb18b7262c326fd41c564ffec8551492344b7f0?recursive=1"
+      },
+      {
+        "path": "inventory-proof/recursive-c1f0eae9a0485de57814aeb7e8f45fc0f87f420a.json",
+        "bytes": 3863,
+        "sha256": "38bde6be6b909f8bb5961294b19778a6c3032d7a76ec9ab06db57375c5a29692",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/c1f0eae9a0485de57814aeb7e8f45fc0f87f420a?recursive=1"
+      },
+      {
+        "path": "inventory-proof/tree-37185873f6a6ea631208a82eb48c6c007216dcdd.json",
+        "bytes": 8455,
+        "sha256": "50bc09c2f550bda448827a8cad99f54f6d180b8ff4675c79c0ace25c58312da9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/37185873f6a6ea631208a82eb48c6c007216dcdd"
+      },
+      {
+        "path": "inventory-proof/tree-6c5e7d4fb69b2d746936b8aec5be29d72132e81c.json",
+        "bytes": 3005,
+        "sha256": "bb44d4e31102839643ae41629c75eaf9d3521bc949908722497a809974624f53",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/6c5e7d4fb69b2d746936b8aec5be29d72132e81c"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      }
+    ]
+  }
+}

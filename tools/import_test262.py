@@ -20,6 +20,8 @@ TYPEDARRAY_HELPERS = {'assert.js', 'sta.js', 'byteConversionValues.js', 'compare
                       'detachArrayBuffer.js', 'isConstructor.js', 'nans.js', 'propertyHelper.js',
                       'resizableArrayBufferUtils.js', 'testTypedArray.js'}
 TYPEDARRAY_SELECTION_SHA256 = 'cdc70bbb65c93629ee519af8344bf46552e41b1892677827e385535a49a637e5'
+TYPEDARRAY_SEARCH_DIRECTORIES = {'TypedArray/prototype/at': 14, 'TypedArray/prototype/at/BigInt': 1, 'TypedArray/prototype/includes': 31, 'TypedArray/prototype/includes/BigInt': 14, 'TypedArray/prototype/indexOf': 28, 'TypedArray/prototype/indexOf/BigInt': 15, 'TypedArray/prototype/lastIndexOf': 28, 'TypedArray/prototype/lastIndexOf/BigInt': 14}
+TYPEDARRAY_SEARCH_HELPERS = {'propertyHelper.js', 'sta.js', 'assert.js', 'resizableArrayBufferUtils.js', 'detachArrayBuffer.js', 'testTypedArray.js', 'isConstructor.js'}
 TYPEDARRAY_VIEW_DIRECTORIES = {'TypedArray/prototype': 1, 'TypedArray/prototype/join': 23, 'TypedArray/prototype/join/BigInt': 9, 'TypedArray/prototype/subarray': 40, 'TypedArray/prototype/subarray/BigInt': 27, 'TypedArray/prototype/toString': 2, 'TypedArray/prototype/toString/BigInt': 1}
 TYPEDARRAY_VIEW_HELPERS = {'testTypedArray.js', 'isConstructor.js', 'compareArray.js', 'detachArrayBuffer.js', 'resizableArrayBufferUtils.js', 'sta.js', 'assert.js', 'propertyHelper.js'}
 TYPEDARRAY_VIEW_AUXILIARY_BLOBS = {'LICENSE': 'a56b038f0e01b05b004d92097d4601ba629afdf3', 'INTERPRETING.md': 'ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5', 'harness/assert.js': '55a0e2a32f2e6259a1b445a9d924f61261e2ca5f', 'harness/sta.js': 'd291a94f46234908009a7ee909cf9d66034c73fe', 'harness/testTypedArray.js': 'a6418c2f70bf62cb39d95d3640ac9e41153cceb7', 'harness/detachArrayBuffer.js': '81af99f3b04af9f698185665c036ad34b91eaea4', 'harness/propertyHelper.js': '0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52', 'harness/compareArray.js': 'fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3', 'harness/isConstructor.js': '387c664e14fdf7563769fb71ae4c122c7e503172', 'harness/resizableArrayBufferUtils.js': '9dad8ccb83f4c8a2d96d9ef333f16aedc02255a2'}
@@ -66,6 +68,7 @@ CORE_ITERATOR_DIRECTORIES = {
     'StringIteratorPrototype': 2, 'StringIteratorPrototype/next': 5,
 }
 ITERATION_SUBTREES = {
+    'typedarray-search': {'TypedArray/prototype/at': 'c1f0eae9a0485de57814aeb7e8f45fc0f87f420a', 'TypedArray/prototype/includes': '16d1253435098c7ca5278234db6baa1e1675f3dc', 'TypedArray/prototype/indexOf': '9be33464f6f7515879f69dbf73cb8d397d9dca42', 'TypedArray/prototype/lastIndexOf': '9cb18b7262c326fd41c564ffec8551492344b7f0'},
     'object-has-own': {'Object/hasOwn': 'c415403752259885fd6cfda1999381beef67ee70'},
     'object-is': {'Object/is': '04a0f3e25947dbc1100ba4b4138765366d9704b4'},
     'data-view': {'DataView': 'ee1337a290051a188aacccb7cfbcaa16609efe64'},
@@ -84,6 +87,7 @@ ITERATION_SUBTREES = {
     },
 }
 ITERATION_HELPERS = {
+    'typedarray-search': TYPEDARRAY_SEARCH_HELPERS,
     'object-has-own': {'assert.js', 'sta.js', 'propertyHelper.js', 'isConstructor.js'},
     'object-is': {'assert.js', 'sta.js', 'propertyHelper.js', 'isConstructor.js'},
     'data-view': {'assert.js', 'sta.js', 'byteConversionValues.js', 'compareArray.js',
@@ -98,7 +102,7 @@ ITERATION_HELPERS = {
                        'propertyHelper.js', 'resizableArrayBufferUtils.js',
                        'detachArrayBuffer.js', 'testTypedArray.js'},
 }
-TREE_PROFILES = {'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+TREE_PROFILES = {'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -176,7 +180,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'typedarray-views': TYPEDARRAY_VIEW_DIRECTORIES, 'reflect-properties': REFLECT_PROPERTY_DIRECTORIES, 'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'typedarray-search': TYPEDARRAY_SEARCH_DIRECTORIES, 'typedarray-views': TYPEDARRAY_VIEW_DIRECTORIES, 'reflect-properties': REFLECT_PROPERTY_DIRECTORIES, 'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -189,7 +193,7 @@ PROFILES = {'typedarray-views': TYPEDARRAY_VIEW_DIRECTORIES, 'reflect-properties
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'typedarray-views': 'test/built-ins', 'reflect-properties': 'test/built-ins', 'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'typedarray-search': 'test/built-ins', 'typedarray-views': 'test/built-ins', 'reflect-properties': 'test/built-ins', 'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -936,6 +940,8 @@ def import_corpus(output, profile='string-json'):
             harness.update(metadata['includes'])
             if 'async' in metadata['flags']:
                 harness.add('doneprintHandle.js')
+    if profile == 'typedarray-search' and harness != TYPEDARRAY_SEARCH_HELPERS:
+        raise ValueError('TypedArray search requested harness differs from the frozen seven helpers')
     if profile == 'typedarray-views' and harness != TYPEDARRAY_VIEW_HELPERS:
         raise ValueError('TypedArray views requested harness differs from the frozen eight helpers')
     if profile == 'reflect-properties' and harness != REFLECT_PROPERTY_HELPERS:
@@ -954,6 +960,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'typedarray-search': 'all 145 original .js files in four complete TypedArray prototype at/includes/indexOf/lastIndexOf trees, including all BigInt originals; full root-linked Git proof; no implementation',
         'typedarray-views': 'all 102 original .js files in complete TypedArray prototype subarray/join/toString trees plus the explicit sibling toString.js alias descriptor test; full pinned Git proof, BigInt/host originals retained for explicit policy exclusion; no implementation',
         'reflect-properties': 'all 108 original .js files in nine complete Reflect property method trees plus three direct Reflect object tests; full pinned Git-tree inventories; Proxy originals retained for explicit policy exclusion; no implementation',
         'typedarray-foundation': 'all 632 original .js bodies in 67 frozen foundation directories, authenticated by complete TypedArray and TypedArrayConstructors roots; nested BigInt retained for explicit policy exclusion; no implementation',

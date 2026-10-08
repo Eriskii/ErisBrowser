@@ -4,6 +4,8 @@
 use crate::script::{JsString, Result, Runtime, Value};
 
 #[cfg(test)]
+mod prefix_tests;
+#[cfg(test)]
 mod tests;
 
 #[derive(Clone, Copy, Debug)]
@@ -19,6 +21,14 @@ impl Runtime {
         self.work(8)?;
         let length = key.len();
         if length == 0 || length > 25 {
+            return Ok(Index::Ordinary);
+        }
+        // Every decimal Number spelling begins with a digit or minus; the
+        // only other canonical prefixes are NaN and Infinity. Reject other
+        // first units before scanning the remaining immutable UTF-16 key.
+        // Pay the load, digit bounds, three literals and branch/control.
+        self.work(8)?;
+        if !matches!(key.units()[0], 0x30..=0x39 | 0x2d | 0x4e | 0x49) {
             return Ok(Index::Ordinary);
         }
         let units = key.units();

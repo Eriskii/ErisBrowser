@@ -1,9 +1,15 @@
 # Development docket
 
-[Decimal Number formatting](number-format.md) now handles exact shortest-decimal
-ties across runtime conversion and compiled property names. Number TypedArrays
-are the next binary-data step; their constructors, integer-indexed properties,
-resizable-buffer behavior and upstream baseline remain work in progress.
+[Decimal Number formatting](number-format.md) handles exact shortest-decimal
+ties across runtime conversion and compiled property names.
+[Number TypedArray foundations](typedarray-foundation.md) provide ten Number
+kinds, constructors, live integer-indexed properties and fixed/tracking views
+over resizable buffers. [Views and string conversion](typedarray-views-test262.md)
+add shared `subarray`, `join` and the exact Array `toString` alias.
+The [search follow-up](typedarray-search.md) adds `at`, `includes`, `indexOf`
+and `lastIndexOf`; full pinned populations and resource stops remain visible.
+Remaining methods, BigInt views, shared memory and broader interpreter
+accounting remain open work.
 
 [Native rectangle accounting](native-rect-accounting.md) reserves the actual
 clipped pre-blend loop area for each Rect instead of a complete viewport. Small
@@ -42,7 +48,7 @@ exclusions. [DataView](../tests/conformance/data-view.md) adds fixed and trackin
 views and nine Number codec pairs. Its complete upstream profile records 694
 passes, 12 BigInt prerequisite failures and 416 exclusions; the local suite
 verifies 128/138 expectations, including four expected resource outcomes.
-Typed arrays, BigInt codecs, shared memory, Proxy and foreign realms remain ahead. The [length-bucketed for-in follow-up](../tests/conformance/for-in-length-buckets.md)
+Further TypedArray methods, BigInt codecs, shared memory, Proxy and foreign realms remain ahead. The [length-bucketed for-in follow-up](../tests/conformance/for-in-length-buckets.md)
 closes two metadata-heavy local work stops without raising quotas;
 broader interpreter performance and accounting remain open work.
 

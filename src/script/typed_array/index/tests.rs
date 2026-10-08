@@ -307,16 +307,16 @@ fn frozen_utf16_classifications_and_exact_numeric_values() {
 fn allocation_free_paths_have_literal_exact_work_boundaries() {
     for (text, work, bits) in [
         ("", 8, None),
-        ("0", 44, Some(0)),
-        ("7", 44, Some(0x401c_0000_0000_0000)),
-        ("12", 70, Some(0x4028_0000_0000_0000)),
-        ("-1", 60, Some(0xbff0_0000_0000_0000)),
-        ("-0", 34, Some(0x8000_0000_0000_0000)),
-        ("NaN", 44, Some(0x7ff8_0000_0000_0000)),
-        ("Infinity", 94, Some(0x7ff0_0000_0000_0000)),
-        ("-Infinity", 104, Some(0xfff0_0000_0000_0000)),
-        ("4294967295", 224, Some(0x41ef_ffff_ffe0_0000)),
-        ("9007199254740991", 344, Some(0x433f_ffff_ffff_ffff)),
+        ("0", 52, Some(0)),
+        ("7", 52, Some(0x401c_0000_0000_0000)),
+        ("12", 78, Some(0x4028_0000_0000_0000)),
+        ("-1", 68, Some(0xbff0_0000_0000_0000)),
+        ("-0", 42, Some(0x8000_0000_0000_0000)),
+        ("NaN", 52, Some(0x7ff8_0000_0000_0000)),
+        ("Infinity", 102, Some(0x7ff0_0000_0000_0000)),
+        ("-Infinity", 112, Some(0xfff0_0000_0000_0000)),
+        ("4294967295", 232, Some(0x41ef_ffff_ffe0_0000)),
+        ("9007199254740991", 352, Some(0x433f_ffff_ffff_ffff)),
     ] {
         let key = JsString::from(text);
         for allowance in [work, work - 1] {
@@ -341,18 +341,18 @@ fn allocation_free_paths_have_literal_exact_work_boundaries() {
 #[test]
 fn slow_parse_format_and_correction_have_literal_work_and_heap_endpoints() {
     for (text, work, heap, bits) in [
-        ("1.25", 301, 1064, Some(0x3ff4_0000_0000_0000)),
-        ("1.0", 266, 1062, None),
-        ("9007199254740992", 758, 1088, Some(0x4340_0000_0000_0000)),
-        ("1000000000000000.2", 982, 1124, Some(0x430c_6bf5_2634_0002)),
-        ("1000000000000000.3", 980, 1124, None),
+        ("1.25", 309, 1064, Some(0x3ff4_0000_0000_0000)),
+        ("1.0", 274, 1062, None),
+        ("9007199254740992", 766, 1088, Some(0x4340_0000_0000_0000)),
+        ("1000000000000000.2", 990, 1124, Some(0x430c_6bf5_2634_0002)),
+        ("1000000000000000.3", 988, 1124, None),
         (
             "-1000000000000000.2",
-            1003,
+            1011,
             1126,
             Some(0xc30c_6bf5_2634_0002),
         ),
-        ("-1000000000000000.3", 1001, 1126, None),
+        ("-1000000000000000.3", 1009, 1126, None),
     ] {
         let key = JsString::from(text);
         for (work_limit, heap_limit, succeeds) in [
@@ -384,9 +384,9 @@ fn long_and_nonscalar_names_stop_without_heap_or_lossy_projection() {
     for (units, work) in [
         (vec![u16::from(b'0'); 26], 8),
         (vec![0xd800; 256 * 1024], 8),
-        (vec![0xd800], 12),
-        (vec![u16::from(b'1'), 0xdfff], 16),
-        (vec![0xff11], 12),
+        (vec![0xd800], 16),
+        (vec![u16::from(b'1'), 0xdfff], 24),
+        (vec![0xff11], 16),
     ] {
         let key = JsString::from(units.as_slice());
         for allowance in [work, work - 1] {
@@ -414,13 +414,13 @@ fn parse_base_format_and_correction_storage_are_separately_admitted() {
     // actual even-tie correction 32. Existing charge() records a refused
     // admission before returning Resource, but publishes no runtime object.
     for (available, work, charged, succeeds) in [
-        (0, 566, 68, false),
-        (67, 566, 68, false),
-        (68, 694, 1092, false),
-        (1091, 694, 1092, false),
-        (1092, 868, 1124, false),
-        (1123, 868, 1124, false),
-        (1124, 982, 1124, true),
+        (0, 574, 68, false),
+        (67, 574, 68, false),
+        (68, 702, 1092, false),
+        (1091, 702, 1092, false),
+        (1092, 876, 1124, false),
+        (1123, 876, 1124, false),
+        (1124, 990, 1124, true),
     ] {
         let mut runtime = fresh();
         let original = counts(&runtime);
@@ -442,20 +442,20 @@ fn parse_base_format_and_correction_storage_are_separately_admitted() {
 
 #[test]
 fn ordinary_metadata_and_alphabet_mismatches_need_no_heap() {
-    // Literal tariffs include the reached special/integer prefix and stop at
-    // the first disallowed alphabet unit. These are not runtime-derived fees.
+    // First-unit rejection pays16; allowed digit prefixes retain the whole
+    // old tail plus8. These are source-derived, not measured endpoint fees.
     for (text, work) in [
-        ("length", 74),
-        ("buffer", 74),
-        ("constructor", 94),
-        ("x", 54),
-        ("byteLength", 90),
-        ("byteOffset", 90),
-        ("values", 74),
-        ("entries", 88),
-        ("keys", 66),
-        ("eX", 74),
-        ("1eX", 104),
+        ("length", 16),
+        ("buffer", 16),
+        ("constructor", 16),
+        ("x", 16),
+        ("byteLength", 16),
+        ("byteOffset", 16),
+        ("values", 16),
+        ("entries", 16),
+        ("keys", 16),
+        ("eX", 16),
+        ("1eX", 112),
     ] {
         let key = JsString::from(text);
         for allowance in [work, work - 1] {

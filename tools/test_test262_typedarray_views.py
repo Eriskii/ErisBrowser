@@ -87,7 +87,7 @@ class TypedArrayViewTests(unittest.TestCase):
         self.assertEqual(reasons.count('TypedArray views policy excludes the complete resizableArrayBufferUtils helper'), 12)
         self.assertEqual(sum(runner.unsupported_reason(c, FEATURES) is None for c in cases), 122)
         self.assertEqual(sum('/BigInt/' in c['file'] for c in cases), 74)
-        self.assertEqual(len(runner.PROFILES), 48)
+        self.assertEqual(len(set(runner.PROFILES) - {'typedarray-search'}), 48)
 
     def test_controls_retain_frozen_bytes_modes_and_same_mode_positive_links(self):
         raw = CONTROLS.read_bytes()

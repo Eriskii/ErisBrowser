@@ -109,14 +109,16 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // adds1970work/11514bytes including two arena slots. All independent
     // endpoint tests and the raw diagnostic precede this snapshot update.
     // The paired for-in reader enlarges eight initial frames by eight bytes.
-    assert_eq!(runtime.steps, 5941 - 5656 + 3489 - 3278 + 4675 - 1970);
+    // Four search methods add908work/8440bytes and four reserved bags; the
+    // independent metadata endpoints and raw diagnostic verify that delta.
+    assert_eq!(runtime.steps, 5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908);
     assert_eq!(
         runtime.allocated,
-        1_782_581 + added - 5711 + 27648 - 197266 + 11514 + 64
+        1_782_581 + added - 5711 + 27648 - 197266 + 11514 + 64 + 8440
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (732, 732)
+        (736, 736)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),
