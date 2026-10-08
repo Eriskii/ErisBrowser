@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "scope": "Number TypedArray.fill independent paired source controls",
+  "controls": [
+    {
+      "name": "ordered-clamped-range-positive",
+      "pair": "ordered-clamped-range",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar a = new Uint8ClampedArray([10, 20, 30, 40]);\nvar trace = '', calls = 0;\nvar result = fill.call(a,\n  {valueOf:function(){trace += 'V'; calls++; return 2.5;}},\n  {valueOf:function(){trace += 'S'; return -3.8;}},\n  {valueOf:function(){trace += 'E'; return -1.2;}});\nvar actual = [result === a, trace, calls, a[0], a[1], a[2], a[3]].join(',');\nif (actual !== \"true,VSE,1,10,2,2,40\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "303bbb6b5d4dfc79ac10ef3819a8d14beb703ad785e1614768190ee1431d8a95",
+      "common_prefix_sha256": "0dc8de18353f2e5ebbf4aea752f60911caf1fb5402dad56fdb482c4d2f3d974c",
+      "expected_literal": "true,VSE,1,10,2,2,40"
+    },
+    {
+      "name": "ordered-clamped-range-wrong",
+      "pair": "ordered-clamped-range",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar a = new Uint8ClampedArray([10, 20, 30, 40]);\nvar trace = '', calls = 0;\nvar result = fill.call(a,\n  {valueOf:function(){trace += 'V'; calls++; return 2.5;}},\n  {valueOf:function(){trace += 'S'; return -3.8;}},\n  {valueOf:function(){trace += 'E'; return -1.2;}});\nvar actual = [result === a, trace, calls, a[0], a[1], a[2], a[3]].join(',');\nif (actual !== \"true,VSE,1,10,3,3,40\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "a782b03616a3a78f3bd4348b0a36563eb816a36a2fdecad8702aaa2e2ff598d1",
+      "common_prefix_sha256": "0dc8de18353f2e5ebbf4aea752f60911caf1fb5402dad56fdb482c4d2f3d974c",
+      "expected_literal": "true,VSE,1,10,3,3,40"
+    },
+    {
+      "name": "ten-number-kinds-positive",
+      "pair": "ten-number-kinds",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar values = [], identities = 0;\nfor (var i = 0; i < kinds.length; i++) {\n  var a = new kinds[i](2);\n  if (fill.call(a, 1.5) === a) identities++;\n  values.push(a[0] + ':' + a[1]);\n}\nvar z = new Float64Array(2); fill.call(z, -0);\nvar n = new Float32Array(2); fill.call(n, NaN);\nvar actual = values.join(',') + ';' + identities + ';' + Object.is(z[0], -0) + ';' + Object.is(z[1], -0) + ';' + (n[0] !== n[0] && n[1] !== n[1]);\nif (actual !== \"1:1,1:1,2:2,1:1,1:1,1:1,1:1,1.5:1.5,1.5:1.5,1.5:1.5;10;true;true;true\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "3b0888df368f0bfaf9e271510a38ab8a6b9e1bb3b77e0df8f5791ac2902c9b86",
+      "common_prefix_sha256": "bdd29cc0a56096791cc53ee13377e89bdae1ed8e4cbbe5e5903ae15e31dd742f",
+      "expected_literal": "1:1,1:1,2:2,1:1,1:1,1:1,1:1,1.5:1.5,1.5:1.5,1.5:1.5;10;true;true;true"
+    },
+    {
+      "name": "ten-number-kinds-wrong",
+      "pair": "ten-number-kinds",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar values = [], identities = 0;\nfor (var i = 0; i < kinds.length; i++) {\n  var a = new kinds[i](2);\n  if (fill.call(a, 1.5) === a) identities++;\n  values.push(a[0] + ':' + a[1]);\n}\nvar z = new Float64Array(2); fill.call(z, -0);\nvar n = new Float32Array(2); fill.call(n, NaN);\nvar actual = values.join(',') + ';' + identities + ';' + Object.is(z[0], -0) + ';' + Object.is(z[1], -0) + ';' + (n[0] !== n[0] && n[1] !== n[1]);\nif (actual !== \"1:1,1:1,1:1,1:1,1:1,1:1,1:1,1.5:1.5,1.5:1.5,1.5:1.5;10;true;true;true\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "bce6ca88e09ee9bd12a34668c93cca27292e91402147e0c16835af4b079aedc0",
+      "common_prefix_sha256": "bdd29cc0a56096791cc53ee13377e89bdae1ed8e4cbbe5e5903ae15e31dd742f",
+      "expected_literal": "1:1,1:1,1:1,1:1,1:1,1:1,1:1,1.5:1.5,1.5:1.5,1.5:1.5;10;true;true;true"
+    },
+    {
+      "name": "tracking-captured-bounds-positive",
+      "pair": "tracking-captured-bounds",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar buffer = new ArrayBuffer(4, {maxByteLength:6});\nvar a = new Uint8Array(buffer); a[0]=10; a[1]=20; a[2]=30; a[3]=40;\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nvar trace = '';\nvar result = fill.call(a,\n  {valueOf:function(){trace += 'V'; buffer.resize(6); return 9;}},\n  {valueOf:function(){trace += 'S'; return -3;}},\n  {valueOf:function(){trace += 'E'; buffer.resize(2); return 4;}});\nbuffer.resize(5);\nvar first = [result === a, trace, a[0], a[1], a[2], a[3], a[4]].join(',');\nvar growth = new ArrayBuffer(2, {maxByteLength:4});\nvar b = new Uint8Array(growth); b[0]=1; b[1]=2;\nvar returned = fill.call(b, {valueOf:function(){growth.resize(4); return 6;}});\nvar actual = first + ';' + [returned === b, b[0], b[1], b[2], b[3]].join(',');\nif (actual !== \"true,VSE,10,9,0,0,0;true,6,6,0,0\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "e2bc30c5b1178979505ba50fe48556b9295579506fa77a5a1fce99c4f36de6b9",
+      "common_prefix_sha256": "b9bed341055b1a6149672b147a0c120780091aa1414ba75e4ed99b186ccaf8ef",
+      "expected_literal": "true,VSE,10,9,0,0,0;true,6,6,0,0"
+    },
+    {
+      "name": "tracking-captured-bounds-wrong",
+      "pair": "tracking-captured-bounds",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar buffer = new ArrayBuffer(4, {maxByteLength:6});\nvar a = new Uint8Array(buffer); a[0]=10; a[1]=20; a[2]=30; a[3]=40;\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nvar trace = '';\nvar result = fill.call(a,\n  {valueOf:function(){trace += 'V'; buffer.resize(6); return 9;}},\n  {valueOf:function(){trace += 'S'; return -3;}},\n  {valueOf:function(){trace += 'E'; buffer.resize(2); return 4;}});\nbuffer.resize(5);\nvar first = [result === a, trace, a[0], a[1], a[2], a[3], a[4]].join(',');\nvar growth = new ArrayBuffer(2, {maxByteLength:4});\nvar b = new Uint8Array(growth); b[0]=1; b[1]=2;\nvar returned = fill.call(b, {valueOf:function(){growth.resize(4); return 6;}});\nvar actual = first + ';' + [returned === b, b[0], b[1], b[2], b[3]].join(',');\nif (actual !== \"true,VSE,9,9,0,0,0;true,6,6,6,6\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "cef09623e51aa6479424f3fb0873f8e91e1ef74b2d4f0ed38044e6a062471300",
+      "common_prefix_sha256": "b9bed341055b1a6149672b147a0c120780091aa1414ba75e4ed99b186ccaf8ef",
+      "expected_literal": "true,VSE,9,9,0,0,0;true,6,6,6,6"
+    },
+    {
+      "name": "invalid-and-abrupt-order-positive",
+      "pair": "invalid-and-abrupt-order",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar buffer = new ArrayBuffer(4, {maxByteLength:4});\nvar a = new Uint8Array(buffer, 0, 4); a[0]=1; a[1]=2; a[2]=3; a[3]=4;\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nvar trace = '', late = false;\ntry {\n  fill.call(a,\n    {valueOf:function(){trace += 'V'; buffer.resize(2); return 9;}},\n    {valueOf:function(){trace += 'S'; return 0;}},\n    {valueOf:function(){trace += 'E'; return 0;}});\n} catch (e) { late = e instanceof TypeError; }\nvar calls = 0, initial = false;\ntry { fill.call(a, {valueOf:function(){calls++; return 8;}}); }\ncatch (e) { initial = e instanceof TypeError; }\nbuffer.resize(4);\nvar sentinel = {}, abrupt = false, order = '';\ntry { fill.call(a,\n  {valueOf:function(){order += 'V'; throw sentinel;}},\n  {valueOf:function(){order += 'S'; return 0;}},\n  {valueOf:function(){order += 'E'; return 4;}}); }\ncatch (e) { abrupt = e === sentinel; }\nvar actual = [late, trace, initial, calls, abrupt, order, a[0], a[1], a[2], a[3]].join(',');\nif (actual !== \"true,VSE,true,0,true,V,1,2,0,0\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "2af238242dac9fc2ea11cce82bf2941addf9004c3fbdd7032699d6dfdf69669d",
+      "common_prefix_sha256": "b18c58f044e04fceadac4327e37738823f36a5fbdf33da75d09b3a2816f98328",
+      "expected_literal": "true,VSE,true,0,true,V,1,2,0,0"
+    },
+    {
+      "name": "invalid-and-abrupt-order-wrong",
+      "pair": "invalid-and-abrupt-order",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar buffer = new ArrayBuffer(4, {maxByteLength:4});\nvar a = new Uint8Array(buffer, 0, 4); a[0]=1; a[1]=2; a[2]=3; a[3]=4;\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nvar trace = '', late = false;\ntry {\n  fill.call(a,\n    {valueOf:function(){trace += 'V'; buffer.resize(2); return 9;}},\n    {valueOf:function(){trace += 'S'; return 0;}},\n    {valueOf:function(){trace += 'E'; return 0;}});\n} catch (e) { late = e instanceof TypeError; }\nvar calls = 0, initial = false;\ntry { fill.call(a, {valueOf:function(){calls++; return 8;}}); }\ncatch (e) { initial = e instanceof TypeError; }\nbuffer.resize(4);\nvar sentinel = {}, abrupt = false, order = '';\ntry { fill.call(a,\n  {valueOf:function(){order += 'V'; throw sentinel;}},\n  {valueOf:function(){order += 'S'; return 0;}},\n  {valueOf:function(){order += 'E'; return 4;}}); }\ncatch (e) { abrupt = e === sentinel; }\nvar actual = [late, trace, initial, calls, abrupt, order, a[0], a[1], a[2], a[3]].join(',');\nif (actual !== \"false,VSE,true,0,true,V,1,2,0,0\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "2181adc8a408ecf7616cf76feed42454057e9679696b2c724f2b331d1a68d10d",
+      "common_prefix_sha256": "b18c58f044e04fceadac4327e37738823f36a5fbdf33da75d09b3a2816f98328",
+      "expected_literal": "false,VSE,true,0,true,V,1,2,0,0"
+    },
+    {
+      "name": "metadata-saved-identity-positive",
+      "pair": "metadata-saved-identity",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar descriptor = Object.getOwnPropertyDescriptor(owner, 'fill');\nvar nd = Object.getOwnPropertyDescriptor(fill, 'name');\nvar ld = Object.getOwnPropertyDescriptor(fill, 'length');\nvar metadata = descriptor.value === fill && descriptor.writable && !descriptor.enumerable && descriptor.configurable &&\n  nd.value === 'fill' && !nd.writable && !nd.enumerable && nd.configurable &&\n  ld.value === 1 && !ld.writable && !ld.enumerable && ld.configurable &&\n  Object.getPrototypeOf(fill) === Function.prototype && !Object.prototype.hasOwnProperty.call(fill, 'prototype');\nif (typeof Reflect.construct !== 'function') throw new TypeError('construct prerequisite');\nfunction Constructor() { this.proof = 7; }\nif (Reflect.construct(Constructor, []).proof !== 7) throw new TypeError('working construct prerequisite');\nvar nonconstructor = false;\ntry { Reflect.construct(fill, []); } catch (e) { nonconstructor = e instanceof TypeError; }\nvar deleted = delete owner.fill;\nvar a = new Uint8Array([3,4]);\nvar returned = fill.call(a, 5);\nvar actual = [metadata, nonconstructor, deleted, owner.fill === undefined, returned === a, a[0], a[1]].join(',');\nif (actual !== \"true,true,true,true,true,5,5\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "2d90c810013bc22c636b78c2f2a5c32b0dc3f283737dc11eeef9e28626e59f89",
+      "common_prefix_sha256": "5e37c6c6789e6b33479662b249b527be46d6a9e2433c9acfd50854396131af2f",
+      "expected_literal": "true,true,true,true,true,5,5"
+    },
+    {
+      "name": "metadata-saved-identity-wrong",
+      "pair": "metadata-saved-identity",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar fill = owner.fill;\nif (typeof fill !== 'function') throw new TypeError('fill prerequisite');\nvar guard = new Uint8Array([2, 4]);\nif (!ArrayBuffer.isView(guard) || fill.call(guard, 7, 1) !== guard || guard[0] !== 2 || guard[1] !== 7) throw new TypeError('working fill prerequisite');\nvar descriptor = Object.getOwnPropertyDescriptor(owner, 'fill');\nvar nd = Object.getOwnPropertyDescriptor(fill, 'name');\nvar ld = Object.getOwnPropertyDescriptor(fill, 'length');\nvar metadata = descriptor.value === fill && descriptor.writable && !descriptor.enumerable && descriptor.configurable &&\n  nd.value === 'fill' && !nd.writable && !nd.enumerable && nd.configurable &&\n  ld.value === 1 && !ld.writable && !ld.enumerable && ld.configurable &&\n  Object.getPrototypeOf(fill) === Function.prototype && !Object.prototype.hasOwnProperty.call(fill, 'prototype');\nif (typeof Reflect.construct !== 'function') throw new TypeError('construct prerequisite');\nfunction Constructor() { this.proof = 7; }\nif (Reflect.construct(Constructor, []).proof !== 7) throw new TypeError('working construct prerequisite');\nvar nonconstructor = false;\ntry { Reflect.construct(fill, []); } catch (e) { nonconstructor = e instanceof TypeError; }\nvar deleted = delete owner.fill;\nvar a = new Uint8Array([3,4]);\nvar returned = fill.call(a, 5);\nvar actual = [metadata, nonconstructor, deleted, owner.fill === undefined, returned === a, a[0], a[1]].join(',');\nif (actual !== \"true,true,true,true,false,5,5\") throw new Error('independent fill literal mismatch');\n",
+      "source_sha256": "dfc483f72b8c2b4846a12464fcdf4b1ccb7eef41a64a1c3005f41fe673a8c751",
+      "common_prefix_sha256": "5e37c6c6789e6b33479662b249b527be46d6a9e2433c9acfd50854396131af2f",
+      "expected_literal": "true,true,true,true,false,5,5"
+    }
+  ]
+}

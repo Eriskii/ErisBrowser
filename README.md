@@ -20,7 +20,9 @@ resource outcomes prevent an upstream baseline.
 The [TypedArray search follow-up](docs/typedarray-search.md) adds `at`,
 `includes`, `indexOf` and `lastIndexOf` for Number views, including relative
 indices and fresh buffer checks after index conversion. `includes` matches
-NaN; the two index searches use strict equality. Remaining bulk methods,
+NaN; the two index searches use strict equality.
+[`fill`](docs/typedarray-fill.md) writes ranges through the same shared storage
+and rechecks resized buffers after argument conversion. Remaining bulk methods,
 BigInt codecs and shared memory remain unfinished.
 [Reflect property operations](docs/reflect-properties.md) add nine methods,
 including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean

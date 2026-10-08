@@ -49,6 +49,11 @@ before `lastIndexOf`; the original test and failure remain visible. The
 the published views engine and records only 12 passes, with unhealthy controls.
 Those earlier passes alone did not establish method support.
 
+The later [`fill` increment](typedarray-fill.md) recovers both missing-method
+failures in the same original bodies. Its [search replay](../tests/conformance/test262-typedarray-search-after-fill.json)
+records 80 passes, 78 resource stops and 132 exclusions, with 56 healthy controls;
+the resource outcomes still prevent an upstream baseline.
+
 The full Rust 1.88 suite with `vulkan-raster` passes 2,310 tests. All 1,305 script
 tests pass on Rust 1.88 and 1.98. Fourteen new search groups cover all ten codecs,
 equality and index boundaries, ordered callbacks, changing buffer state, saved

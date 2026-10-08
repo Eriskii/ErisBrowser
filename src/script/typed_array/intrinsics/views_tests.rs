@@ -93,19 +93,19 @@ fn prefix_snapshot(runtime: &Runtime, end: usize) -> Vec<String> {
 }
 
 fn expected_site_heap() -> usize {
-    // Thirty-six small maps plus three shared-owner nodes. The original
-    // 31-leaf graph had92 order handles; the views/search graph has111.
-    // The65 pairs pay17 staged and48 conservatively reserved sort scratch
+    // Thirty-seven small maps plus three shared-owner nodes. The original
+    // 31-leaf graph had92 order handles; the views/search graph has114.
+    // The66 pairs pay18 staged and48 conservatively reserved sort scratch
     // pairs before the bulk collection.
     let block =
         16 * (size_of::<PropertyKey>() + size_of::<Property>()) + 32 * size_of::<usize>() + 64;
-    39 * block
-        + 65 * size_of::<(PropertyKey, Property)>()
-        + 37 * (72 + size_of::<Option<AbortSlot>>() + size_of::<Option<f64>>())
-        + 111 * size_of::<PropertyKey>()
-        + 3656
-        + 26 * (size_of::<Native>() + 32)
-        + 406
+    40 * block
+        + 66 * size_of::<(PropertyKey, Property)>()
+        + 38 * (72 + size_of::<Option<AbortSlot>>() + size_of::<Option<f64>>())
+        + 114 * size_of::<PropertyKey>()
+        + 3736
+        + 27 * (size_of::<Native>() + 32)
+        + 421
 }
 
 fn old_site_heap() -> usize {
@@ -125,7 +125,27 @@ fn expected_site_work() -> usize {
     // native names50, and bounded Array alias704. No production constants.
     // Search additions: four58-work leaves,384 shared-owner work,64 fixed,
     // four strings88, four bags36, and four native names104.
-    4742 - 416 + 116 + 1370 + 64 + 64 + 18 + 50 + 704 + 232 + 384 + 64 + 88 + 36 + 104
+    // Fill adds one58-work leaf,96 owner work,16 fixed,16 text,9 bag,23 name.
+    4742 - 416
+        + 116
+        + 1370
+        + 64
+        + 64
+        + 18
+        + 50
+        + 704
+        + 232
+        + 384
+        + 64
+        + 88
+        + 36
+        + 104
+        + 58
+        + 96
+        + 16
+        + 16
+        + 9
+        + 23
 }
 
 #[test]
@@ -140,7 +160,7 @@ fn typed_array_views_metadata_preserves_old_31_bag_ordinals_and_cached_handles()
         runtime.environments[0].bindings.keys().collect::<Vec<_>>()
     );
     runtime.initialize_typed_array_intrinsics().unwrap();
-    assert_eq!(runtime.objects.len(), base + 37);
+    assert_eq!(runtime.objects.len(), base + 38);
     assert_eq!(runtime.objects.capacity(), capacity);
     assert_eq!(runtime.native_properties, registry);
     assert_eq!(prefix_snapshot(&runtime, base), prefix);
@@ -353,14 +373,14 @@ fn typed_array_views_metadata_preserves_old_31_bag_ordinals_and_cached_handles()
             .iter()
             .map(|bag| bag.values.len())
             .sum::<usize>(),
-        111
+        114
     );
     assert_eq!(
         runtime.objects[base..]
             .iter()
             .map(|bag| bag.order.len())
             .sum::<usize>(),
-        111
+        114
     );
     assert!(runtime.typed_arrays.records.is_empty());
 }
@@ -391,9 +411,10 @@ fn typed_array_views_and_search_metadata_append_properties_and_exact_array_alias
         "includes".into(),
         "indexOf".into(),
         "lastIndexOf".into(),
+        "fill".into(),
     ];
     assert_eq!(runtime.objects[base].order, expected);
-    assert_eq!(runtime.objects[base].values.len(), 17);
+    assert_eq!(runtime.objects[base].values.len(), 18);
     assert_eq!(bag_snapshot(&runtime, array_owner), array_before);
     for (name, full, ordinal, length) in [
         ("subarray", "TypedArray.subarray", 31, 2.0),
@@ -402,6 +423,7 @@ fn typed_array_views_and_search_metadata_append_properties_and_exact_array_alias
         ("includes", "TypedArray.includes", 34, 1.0),
         ("indexOf", "TypedArray.indexOf", 35, 1.0),
         ("lastIndexOf", "TypedArray.lastIndexOf", 36, 1.0),
+        ("fill", "TypedArray.fill", 37, 1.0),
     ] {
         let value = data(&runtime, base, name);
         descriptor(&runtime, base, name, value, true, true);
@@ -448,14 +470,14 @@ fn typed_array_views_and_search_metadata_append_properties_and_exact_array_alias
 fn typed_array_views_metadata_literal_ledger_and_exact_one_short_site_admission() {
     let work = expected_site_work();
     let heap = expected_site_heap();
-    assert_eq!(work, 7620);
-    assert_eq!(work - 4742, 2878);
-    let delta = heap - old_site_heap() + 6 * size_of::<ScriptObject>();
+    assert_eq!(work, 7838);
+    assert_eq!(work - 4742, 3096);
+    let delta = heap - old_site_heap() + 7 * size_of::<ScriptObject>();
     println!(
         "TYPED_VIEWS_SITE work={work} heap={heap} reserved_arena_delta={} marginal_total={delta}",
-        6 * size_of::<ScriptObject>()
+        7 * size_of::<ScriptObject>()
     );
-    assert_eq!(delta, 19954);
+    assert_eq!(delta, 22049);
     for short in [false, true] {
         let mut runtime = before_installation();
         let base = runtime.objects.len();
@@ -500,10 +522,10 @@ fn typed_array_views_metadata_literal_ledger_and_exact_one_short_site_admission(
 
 #[test]
 fn typed_array_views_metadata_initial_work_and_heap_admission_precede_new_objects() {
-    let initial_work = 2870 - 416 + 348 + 192 + 1754 + 64 + 64;
+    let initial_work = 2870 - 416 + 348 + 192 + 1754 + 64 + 64 + 58 + 96 + 16;
     let block =
         16 * (size_of::<PropertyKey>() + size_of::<Property>()) + 32 * size_of::<usize>() + 64;
-    let initial_heap = 39 * block + 65 * size_of::<(PropertyKey, Property)>();
+    let initial_heap = 40 * block + 66 * size_of::<(PropertyKey, Property)>();
     for heap_cut in [false, true] {
         let mut runtime = before_installation();
         let base = runtime.objects.len();
@@ -663,7 +685,7 @@ fn typed_array_views_metadata_shared_owner_shape_guards_leave_owner_unchanged() 
         let mut runtime = before_installation();
         let owner = runtime.objects.len();
         let mut bag = ScriptObject {
-            order: Vec::with_capacity(if broken == 2 { 16 } else { 17 }),
+            order: Vec::with_capacity(if broken == 2 { 17 } else { 18 }),
             ..ScriptObject::default()
         };
         if broken == 0 {
@@ -675,7 +697,7 @@ fn typed_array_views_metadata_shared_owner_shape_guards_leave_owner_unchanged() 
             bag.order.push("old".into());
         }
         runtime.objects.push(bag);
-        let mut entries: [(PropertyKey, Property); 17] = std::array::from_fn(|index| {
+        let mut entries: [(PropertyKey, Property); 18] = std::array::from_fn(|index| {
             (
                 format!("key{index:02}").into(),
                 Property::data(Value::Number(index as f64), true, false, true),

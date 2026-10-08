@@ -6,6 +6,7 @@ use super::*;
 #[cfg(test)]
 mod call_tests;
 mod constructors;
+mod fill;
 mod index;
 mod intrinsics;
 mod search;
@@ -474,6 +475,7 @@ impl Runtime {
         match method {
             "subarray" => self.typed_array_subarray(receiver, record, arguments, doc),
             "join" => self.typed_array_join(record, arguments, doc),
+            "fill" => self.typed_array_fill(receiver, record, arguments, doc),
             "at" => self.typed_array_at(record, arguments, doc),
             "includes" => {
                 self.typed_array_search(search::SearchKind::Includes, record, arguments, doc)

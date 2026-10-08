@@ -80,7 +80,7 @@ class ReflectPropertyTests(unittest.TestCase):
                          (200, 16))
         self.assertTrue(all((r is not None) == ('Proxy' in c['metadata']['features'])
                             for c, r in zip(cases, reasons)))
-        self.assertEqual(len(set(runner.PROFILES) - {'typedarray-search', 'typedarray-views'}), 47)
+        self.assertEqual(len(set(runner.PROFILES) - {'typedarray-fill', 'typedarray-search', 'typedarray-views'}), 47)
 
     def test_controls_retain_all_frozen_sources_modes_and_positive_links(self):
         raw = CONTROLS.read_bytes()

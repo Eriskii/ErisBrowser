@@ -8,6 +8,8 @@ over resizable buffers. [Views and string conversion](typedarray-views-test262.m
 add shared `subarray`, `join` and the exact Array `toString` alias.
 The [search follow-up](typedarray-search.md) adds `at`, `includes`, `indexOf`
 and `lastIndexOf`; full pinned populations and resource stops remain visible.
+[`fill`](typedarray-fill.md) now writes Number view ranges with ordered conversion
+and fresh buffer bounds, recovering the two search cases that needed it.
 Remaining methods, BigInt views, shared memory and broader interpreter
 accounting remain open work.
 

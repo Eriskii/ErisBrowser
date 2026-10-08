@@ -189,14 +189,14 @@ fn expected(row: &(usize, usize, usize, usize, usize, usize, usize)) -> (usize, 
         (16, 0),
         (8, 0),
     ][key_id];
-    // The four search metadata members change the shared owner13->17.
+    // The four search members and fill change the shared owner13->18.
     // Only absent-own scenario0 reaches it. The existing Reflect/splice
     // lookup tariffs each traverse that owner once; assignment has no fee
     // dependent on its size. All KEYS are ASCII, so byte length is UTF16 length.
     let owner_growth = if scenario == 0 {
         match route {
-            0 => 4 * (1 + KEYS[key_id].len()),
-            2 => 4 * (1 + KEYS[key_id].len() / 8),
+            0 => 5 * (1 + KEYS[key_id].len()),
+            2 => 5 * (1 + KEYS[key_id].len() / 8),
             _ => 0,
         }
     } else {

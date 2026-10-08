@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Buffer fill</title>
+<style>
+body{margin:32px;background:#f5f7fa;color:#172033;font:18px sans-serif}
+h1{font-size:30px}button{padding:12px;background:#245bcc;color:white;border:0}
+pre{padding:20px;background:white;border:1px solid #cbd5e1;font:18px monospace;line-height:1.6}
+</style></head><body>
+<h1>Buffer fill</h1><p>Fill a range and inspect the bytes shared by two views.</p>
+<button id="change">Resize and fill</button><pre id="result">Waiting for script</pre>
+<script>
+var buffer=new ArrayBuffer(8,{maxByteLength:16});
+var bytes=new Uint8Array(buffer);
+var selected=bytes.subarray(2,6);
+bytes.fill(17);
+selected.fill(80,1,-1);
+function show(){
+  document.getElementById('result').textContent='Buffer: '+bytes.join(' ')+'\n'
+    +'Selected bytes: '+selected.join(' ')+'\n'
+    +'Byte length: '+bytes.byteLength;
+}
+document.getElementById('change').onclick=function(){
+  bytes.fill({valueOf:function(){buffer.resize(6);return 300;}},2);
+  show();document.title='Buffer filled';
+};
+show();
+</script></body></html>

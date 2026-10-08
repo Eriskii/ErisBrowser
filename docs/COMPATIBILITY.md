@@ -144,9 +144,17 @@ bounds for each reached element. `includes` uses SameValueZero, including NaN;
 resize. Omitted and explicit `undefined` reverse-search indices remain distinct.
 The pinned profile retains all 145 original sources and 290 modes; its policy
 schedules 158 modes and explicitly excludes 88 BigInt, 26 complete-helper and
-18 host-hook modes. The report records **78 passes, 78 work-limit stops and two
+18 host-hook modes. The search checkpoint records **78 passes, 78 work-limit stops and two
 failures**, with all 56 controls verified. Both failures call the missing `fill`
 method before the search. Resource outcomes prevent an upstream baseline.
+
+[`fill`](typedarray-fill.md) now supports Number view ranges, ordered value/start/end
+conversion, fresh final bounds and complete scalar writes under the existing
+resource limits. Its full profile records **22 passes, 32 work-limit stops and
+50 exclusions**, with all 52 controls verified. Both earlier search failures now
+pass; the search profile records **80 passes, 78 work-limit stops and 132 exclusions**.
+Neither complete report is eligible for an upstream baseline. Direct Page and
+confined-worker click tests verify the example's literal text and result pixels.
 
 The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,
