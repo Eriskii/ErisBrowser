@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "scope": "Number TypedArray.toReversed independent paired source controls",
+  "controls": [
+    {
+      "name": "ten-kinds-and-fresh-results-positive",
+      "pair": "ten-kinds-and-fresh-results",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar reversed = 0, original = 0, authentic = 0, fresh = 0;\nfor (var i = 0; i < kinds.length; i++) {\n  var a = new kinds[i]([1, 2, 3]), b = copy.call(a);\n  if (b.length === 3 && b[0] === 3 && b[1] === 2 && b[2] === 1) reversed++;\n  if (a[0] === 1 && a[1] === 2 && a[2] === 3) original++;\n  if (ArrayBuffer.isView(b) && Object.getPrototypeOf(b) === kinds[i].prototype) authentic++;\n  if (b !== a && b.buffer !== a.buffer && b.byteOffset === 0 && b.buffer.resizable === false) fresh++;\n}\nvar empty = new Uint8Array(0), e = copy.call(empty);\nvar single = new Uint8Array([7]), s = copy.call(single);\nvar four = new Uint8Array([1, 2, 3, 4]), first = copy.call(four), second = copy.call(four);\nfirst[0] = 9; four[0] = 8;\nvar actual = [reversed, original, authentic, fresh, e !== empty, e.buffer !== empty.buffer, e.length,\n  s !== single, s.buffer !== single.buffer, s[0], single[0], first !== second, first.buffer !== second.buffer,\n  first[0], first[3], second[0], second[3], four[0], four[3]].join(',');\nif (actual !== \"10,10,10,10,true,true,0,true,true,7,7,true,true,9,1,4,1,8,4\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "67310af3667bec9be138af68a9d77d633cb233eae2a31d8309a3716ca0e84288",
+      "common_prefix_sha256": "fcf7cc18c08a7f921a90c13d58ab49cdd74d182aea1055094dc59f101575bd37",
+      "expected_literal": "10,10,10,10,true,true,0,true,true,7,7,true,true,9,1,4,1,8,4"
+    },
+    {
+      "name": "ten-kinds-and-fresh-results-wrong",
+      "pair": "ten-kinds-and-fresh-results",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar reversed = 0, original = 0, authentic = 0, fresh = 0;\nfor (var i = 0; i < kinds.length; i++) {\n  var a = new kinds[i]([1, 2, 3]), b = copy.call(a);\n  if (b.length === 3 && b[0] === 3 && b[1] === 2 && b[2] === 1) reversed++;\n  if (a[0] === 1 && a[1] === 2 && a[2] === 3) original++;\n  if (ArrayBuffer.isView(b) && Object.getPrototypeOf(b) === kinds[i].prototype) authentic++;\n  if (b !== a && b.buffer !== a.buffer && b.byteOffset === 0 && b.buffer.resizable === false) fresh++;\n}\nvar empty = new Uint8Array(0), e = copy.call(empty);\nvar single = new Uint8Array([7]), s = copy.call(single);\nvar four = new Uint8Array([1, 2, 3, 4]), first = copy.call(four), second = copy.call(four);\nfirst[0] = 9; four[0] = 8;\nvar actual = [reversed, original, authentic, fresh, e !== empty, e.buffer !== empty.buffer, e.length,\n  s !== single, s.buffer !== single.buffer, s[0], single[0], first !== second, first.buffer !== second.buffer,\n  first[0], first[3], second[0], second[3], four[0], four[3]].join(',');\nif (actual !== \"10,10,10,10,true,true,0,true,true,7,7,true,true,9,8,4,8,8,4\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "4102cbb61ef6a3a1de5aa6ff528b10f92cb9515c27c473b7c4ee344a495a5c18",
+      "common_prefix_sha256": "fcf7cc18c08a7f921a90c13d58ab49cdd74d182aea1055094dc59f101575bd37",
+      "expected_literal": "10,10,10,10,true,true,0,true,true,7,7,true,true,9,8,4,8,8,4"
+    },
+    {
+      "name": "offset-and-floating-copy-positive",
+      "pair": "offset-and-floating-copy",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar buffer = new ArrayBuffer(10), raw = new Uint8Array(buffer);\nfor (var i = 0; i < 10; i++) raw[i] = 165;\nvar source = new Uint16Array(buffer, 2, 3); source[0] = 4660; source[1] = 22136; source[2] = 39612;\nvar copied = copy.call(source), result = [copied[0], copied[1], copied[2]].join(',');\ncopied[0] = 7;\nvar bytes = [];\nfor (var j = 0; j < 10; j++) bytes.push(raw[j]);\nvar hb = new ArrayBuffer(6), hu = new Uint8Array(hb);\nhu[0] = 0; hu[1] = 60; hu[2] = 1; hu[3] = 124; hu[4] = 0; hu[5] = 128;\nvar h = new Float16Array(hb), hc = copy.call(h);\nvar f = new Float32Array([-0, Infinity, -Infinity, NaN]), fc = copy.call(f);\nvar d = new Float64Array([NaN, -0]), dc = copy.call(d);\nvar actual = result + ';' + bytes.join(',') + ';' +\n  [copied.byteOffset, copied.buffer.byteLength, Object.is(hc[0], -0), hc[1] !== hc[1], hc[2] === 1,\n   hu[2], hu[3], fc[0] !== fc[0], fc[1] === -Infinity, fc[2] === Infinity, Object.is(fc[3], -0),\n   Object.is(dc[0], -0), dc[1] !== dc[1], Object.is(d[1], -0)].join(',');\nif (actual !== \"39612,22136,4660;165,165,52,18,120,86,188,154,165,165;0,6,true,true,true,1,124,true,true,true,true,true,true,true\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "aad8ab910b7bb18fef62d7890d9b6e087924436aa63bceba018dbee1790013b0",
+      "common_prefix_sha256": "7411f5267bdbad4599225135fd7f602decd26022481d1295b4cbe719821942ce",
+      "expected_literal": "39612,22136,4660;165,165,52,18,120,86,188,154,165,165;0,6,true,true,true,1,124,true,true,true,true,true,true,true"
+    },
+    {
+      "name": "offset-and-floating-copy-wrong",
+      "pair": "offset-and-floating-copy",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar buffer = new ArrayBuffer(10), raw = new Uint8Array(buffer);\nfor (var i = 0; i < 10; i++) raw[i] = 165;\nvar source = new Uint16Array(buffer, 2, 3); source[0] = 4660; source[1] = 22136; source[2] = 39612;\nvar copied = copy.call(source), result = [copied[0], copied[1], copied[2]].join(',');\ncopied[0] = 7;\nvar bytes = [];\nfor (var j = 0; j < 10; j++) bytes.push(raw[j]);\nvar hb = new ArrayBuffer(6), hu = new Uint8Array(hb);\nhu[0] = 0; hu[1] = 60; hu[2] = 1; hu[3] = 124; hu[4] = 0; hu[5] = 128;\nvar h = new Float16Array(hb), hc = copy.call(h);\nvar f = new Float32Array([-0, Infinity, -Infinity, NaN]), fc = copy.call(f);\nvar d = new Float64Array([NaN, -0]), dc = copy.call(d);\nvar actual = result + ';' + bytes.join(',') + ';' +\n  [copied.byteOffset, copied.buffer.byteLength, Object.is(hc[0], -0), hc[1] !== hc[1], hc[2] === 1,\n   hu[2], hu[3], fc[0] !== fc[0], fc[1] === -Infinity, fc[2] === Infinity, Object.is(fc[3], -0),\n   Object.is(dc[0], -0), dc[1] !== dc[1], Object.is(d[1], -0)].join(',');\nif (actual !== \"39612,22136,4660;165,165,52,18,120,86,7,0,165,165;0,6,true,true,true,1,124,true,true,true,true,true,true,true\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "be73cac4a2860569c474acafb754f4c563c0c87be4a73c72cbd2c5f707db31b9",
+      "common_prefix_sha256": "7411f5267bdbad4599225135fd7f602decd26022481d1295b4cbe719821942ce",
+      "expected_literal": "39612,22136,4660;165,165,52,18,120,86,7,0,165,165;0,6,true,true,true,1,124,true,true,true,true,true,true,true"
+    },
+    {
+      "name": "intrinsic-allocation-and-ignored-hooks-positive",
+      "pair": "intrinsic-allocation-and-ignored-hooks",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar Original = Uint8Array, prototype = Original.prototype;\nvar source = new Original([1, 2, 3]), hooks = 0, effects = 0;\nfunction poison() { hooks++; throw new Error('unexpected copying reverse hook'); }\nObject.defineProperty(source, 'length', {get:poison});\nObject.defineProperty(source, 'constructor', {get:poison});\nObject.defineProperty(Original, Symbol.species, {get:poison, configurable:true});\nvar ordinary = {};\nObject.defineProperty(ordinary, '0', {get:poison});\nObject.setPrototypeOf(source, ordinary);\nsource.note = 17;\nvar extra = {valueOf:poison, toString:poison}; extra[Symbol.toPrimitive] = poison;\nglobalThis.Uint8Array = poison;\nvar result = copy.call(source, (effects++, extra), extra);\nvar actual = [Object.getPrototypeOf(result) === prototype, ArrayBuffer.isView(result),\n  result[0], result[1], result[2], source[0], source[1], source[2], hooks, effects,\n  source.note, Object.prototype.hasOwnProperty.call(result, 'note')].join(',');\nif (actual !== \"true,true,3,2,1,1,2,3,0,1,17,false\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "93e10e9e92527598c1f0444b01109665575bffadb873d9d903177b374c39c546",
+      "common_prefix_sha256": "c488a7cb309b50081c270518182f3fb264877ad8cc60a2836230f8f02921081c",
+      "expected_literal": "true,true,3,2,1,1,2,3,0,1,17,false"
+    },
+    {
+      "name": "intrinsic-allocation-and-ignored-hooks-wrong",
+      "pair": "intrinsic-allocation-and-ignored-hooks",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar Original = Uint8Array, prototype = Original.prototype;\nvar source = new Original([1, 2, 3]), hooks = 0, effects = 0;\nfunction poison() { hooks++; throw new Error('unexpected copying reverse hook'); }\nObject.defineProperty(source, 'length', {get:poison});\nObject.defineProperty(source, 'constructor', {get:poison});\nObject.defineProperty(Original, Symbol.species, {get:poison, configurable:true});\nvar ordinary = {};\nObject.defineProperty(ordinary, '0', {get:poison});\nObject.setPrototypeOf(source, ordinary);\nsource.note = 17;\nvar extra = {valueOf:poison, toString:poison}; extra[Symbol.toPrimitive] = poison;\nglobalThis.Uint8Array = poison;\nvar result = copy.call(source, (effects++, extra), extra);\nvar actual = [Object.getPrototypeOf(result) === prototype, ArrayBuffer.isView(result),\n  result[0], result[1], result[2], source[0], source[1], source[2], hooks, effects,\n  source.note, Object.prototype.hasOwnProperty.call(result, 'note')].join(',');\nif (actual !== \"true,true,3,2,1,1,2,3,1,1,17,false\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "73b981d7ee479e1ab2f71b75e1e687bcfc69e5c9437582ca7bf4c5c110771932",
+      "common_prefix_sha256": "c488a7cb309b50081c270518182f3fb264877ad8cc60a2836230f8f02921081c",
+      "expected_literal": "true,true,3,2,1,1,2,3,1,1,17,false"
+    },
+    {
+      "name": "resize-and-initial-validation-positive",
+      "pair": "resize-and-initial-validation",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar buffer = new ArrayBuffer(10, {maxByteLength:12});\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nvar tracking = new Uint16Array(buffer, 2);\ntracking[0] = 258; tracking[1] = 772; tracking[2] = 1286; tracking[3] = 1800;\nvar hooks = 0, extra = {valueOf:function(){hooks++; return 1;}};\nvar result = copy.call(tracking, (buffer.resize(7), extra));\nif (buffer.byteLength !== 7) throw new TypeError('working resize prerequisite');\nvar first = [result.length, result[0], result[1], result.byteOffset, result.buffer.byteLength, result.buffer.resizable, hooks].join(',');\nbuffer.resize(12);\nvar grown = [tracking.length, tracking[0], tracking[1], tracking[2], tracking[3], tracking[4], result.length, result[0], result[1]].join(',');\nvar fixed = new Uint16Array(buffer, 2, 3);\nbuffer.resize(5);\nvar outOfBounds = false;\ntry { copy.call(fixed); } catch (e) { outOfBounds = e instanceof TypeError; }\nvar end = new Uint16Array(buffer, 4), empty = copy.call(end);\nbuffer.resize(3);\nvar invalidEnd = false;\ntry { copy.call(end); } catch (e) { invalidEnd = e instanceof TypeError; }\nvar detachedBuffer = new ArrayBuffer(1), detached = new Uint8Array(detachedBuffer);\nif (typeof detachedBuffer.transfer !== 'function') throw new TypeError('transfer prerequisite');\nvar moved = detachedBuffer.transfer();\nif (moved.byteLength !== 1 || detachedBuffer.byteLength !== 0) throw new TypeError('working transfer prerequisite');\nvar invalidDetached = false;\ntry { copy.call(detached); } catch (e) { invalidDetached = e instanceof TypeError; }\nvar actual = first + ';' + grown + ';' + [outOfBounds, empty.length, empty !== end,\n  empty.buffer !== buffer, invalidEnd, invalidDetached].join(',');\nif (actual !== \"2,772,258,0,4,false,0;5,258,772,6,0,0,2,772,258;true,0,true,true,true,true\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "ca87ea99faf60be2ee72bb95948550eacec5c46b7688c5ff6cf04e81198b7e02",
+      "common_prefix_sha256": "6488ee0ac35e1f962004328f4a2d0046b0a92cdef0a191a8d07bca6744e9bb3b",
+      "expected_literal": "2,772,258,0,4,false,0;5,258,772,6,0,0,2,772,258;true,0,true,true,true,true"
+    },
+    {
+      "name": "resize-and-initial-validation-wrong",
+      "pair": "resize-and-initial-validation",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar buffer = new ArrayBuffer(10, {maxByteLength:12});\nif (typeof buffer.resize !== 'function') throw new TypeError('resize prerequisite');\nvar tracking = new Uint16Array(buffer, 2);\ntracking[0] = 258; tracking[1] = 772; tracking[2] = 1286; tracking[3] = 1800;\nvar hooks = 0, extra = {valueOf:function(){hooks++; return 1;}};\nvar result = copy.call(tracking, (buffer.resize(7), extra));\nif (buffer.byteLength !== 7) throw new TypeError('working resize prerequisite');\nvar first = [result.length, result[0], result[1], result.byteOffset, result.buffer.byteLength, result.buffer.resizable, hooks].join(',');\nbuffer.resize(12);\nvar grown = [tracking.length, tracking[0], tracking[1], tracking[2], tracking[3], tracking[4], result.length, result[0], result[1]].join(',');\nvar fixed = new Uint16Array(buffer, 2, 3);\nbuffer.resize(5);\nvar outOfBounds = false;\ntry { copy.call(fixed); } catch (e) { outOfBounds = e instanceof TypeError; }\nvar end = new Uint16Array(buffer, 4), empty = copy.call(end);\nbuffer.resize(3);\nvar invalidEnd = false;\ntry { copy.call(end); } catch (e) { invalidEnd = e instanceof TypeError; }\nvar detachedBuffer = new ArrayBuffer(1), detached = new Uint8Array(detachedBuffer);\nif (typeof detachedBuffer.transfer !== 'function') throw new TypeError('transfer prerequisite');\nvar moved = detachedBuffer.transfer();\nif (moved.byteLength !== 1 || detachedBuffer.byteLength !== 0) throw new TypeError('working transfer prerequisite');\nvar invalidDetached = false;\ntry { copy.call(detached); } catch (e) { invalidDetached = e instanceof TypeError; }\nvar actual = first + ';' + grown + ';' + [outOfBounds, empty.length, empty !== end,\n  empty.buffer !== buffer, invalidEnd, invalidDetached].join(',');\nif (actual !== \"2,772,258,0,4,false,0;5,258,772,6,0,0,5,772,258;true,0,true,true,true,true\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "b69daad60d00db0229429b4b22072ca1c015f485d9b1342a8d09ff654282d7a3",
+      "common_prefix_sha256": "6488ee0ac35e1f962004328f4a2d0046b0a92cdef0a191a8d07bca6744e9bb3b",
+      "expected_literal": "2,772,258,0,4,false,0;5,258,772,6,0,0,5,772,258;true,0,true,true,true,true"
+    },
+    {
+      "name": "metadata-saved-identity-and-receiver-positive",
+      "pair": "metadata-saved-identity-and-receiver",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar descriptor = Object.getOwnPropertyDescriptor(owner, 'toReversed');\nvar nd = Object.getOwnPropertyDescriptor(copy, 'name'), ld = Object.getOwnPropertyDescriptor(copy, 'length');\nvar metadata = descriptor.value === copy && descriptor.writable && !descriptor.enumerable && descriptor.configurable &&\n  nd.value === 'toReversed' && !nd.writable && !nd.enumerable && nd.configurable &&\n  ld.value === 0 && !ld.writable && !ld.enumerable && ld.configurable &&\n  Object.getPrototypeOf(copy) === Function.prototype && !Object.prototype.hasOwnProperty.call(copy, 'prototype');\nif (typeof Reflect.construct !== 'function') throw new TypeError('construct prerequisite');\nfunction Constructor() { this.proof = 7; }\nif (Reflect.construct(Constructor, []).proof !== 7) throw new TypeError('working construct prerequisite');\nvar nonconstructor = false;\ntry { Reflect.construct(copy, []); } catch (e) { nonconstructor = e instanceof TypeError; }\nvar invalid = [null, undefined, true, 12, 'abc', {}, [], Object.create(Uint8Array.prototype), new ArrayBuffer(0), new DataView(new ArrayBuffer(0))];\nvar rejected = 0;\nfor (var i = 0; i < invalid.length; i++) {\n  try { copy.call(invalid[i]); } catch (e) { if (e instanceof TypeError) rejected++; }\n}\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array], shared = 0;\nfor (var j = 0; j < kinds.length; j++) if (kinds[j].prototype.toReversed === copy) shared++;\nvar deleted = delete owner.toReversed, source = new Uint8Array([3, 4]), result = copy.call(source);\nvar actual = [metadata, nonconstructor, rejected, shared, deleted, owner.toReversed === undefined,\n  result !== source, result.buffer !== source.buffer, result[0], result[1], source[0], source[1]].join(',');\nif (actual !== \"true,true,10,10,true,true,true,true,4,3,3,4\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "455eb1b855fd9642c5e49c62242d54876cf1fa081729dfc3fb863dc70188a808",
+      "common_prefix_sha256": "736be45ad0d0780a28ffd0deab32969e7c68c6223329570c7db7e900f0b2e11a",
+      "expected_literal": "true,true,10,10,true,true,true,true,4,3,3,4"
+    },
+    {
+      "name": "metadata-saved-identity-and-receiver-wrong",
+      "pair": "metadata-saved-identity-and-receiver",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.toReversed;\nif (typeof copy !== 'function') throw new TypeError('toReversed prerequisite');\nvar guard = new Uint8Array([2, 4]), proof = copy.call(guard);\nif (!ArrayBuffer.isView(proof) || proof === guard || proof.buffer === guard.buffer || proof[0] !== 4 || proof[1] !== 2 || guard[0] !== 2 || guard[1] !== 4) throw new TypeError('working copying reverse prerequisite');\nvar descriptor = Object.getOwnPropertyDescriptor(owner, 'toReversed');\nvar nd = Object.getOwnPropertyDescriptor(copy, 'name'), ld = Object.getOwnPropertyDescriptor(copy, 'length');\nvar metadata = descriptor.value === copy && descriptor.writable && !descriptor.enumerable && descriptor.configurable &&\n  nd.value === 'toReversed' && !nd.writable && !nd.enumerable && nd.configurable &&\n  ld.value === 0 && !ld.writable && !ld.enumerable && ld.configurable &&\n  Object.getPrototypeOf(copy) === Function.prototype && !Object.prototype.hasOwnProperty.call(copy, 'prototype');\nif (typeof Reflect.construct !== 'function') throw new TypeError('construct prerequisite');\nfunction Constructor() { this.proof = 7; }\nif (Reflect.construct(Constructor, []).proof !== 7) throw new TypeError('working construct prerequisite');\nvar nonconstructor = false;\ntry { Reflect.construct(copy, []); } catch (e) { nonconstructor = e instanceof TypeError; }\nvar invalid = [null, undefined, true, 12, 'abc', {}, [], Object.create(Uint8Array.prototype), new ArrayBuffer(0), new DataView(new ArrayBuffer(0))];\nvar rejected = 0;\nfor (var i = 0; i < invalid.length; i++) {\n  try { copy.call(invalid[i]); } catch (e) { if (e instanceof TypeError) rejected++; }\n}\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array], shared = 0;\nfor (var j = 0; j < kinds.length; j++) if (kinds[j].prototype.toReversed === copy) shared++;\nvar deleted = delete owner.toReversed, source = new Uint8Array([3, 4]), result = copy.call(source);\nvar actual = [metadata, nonconstructor, rejected, shared, deleted, owner.toReversed === undefined,\n  result !== source, result.buffer !== source.buffer, result[0], result[1], source[0], source[1]].join(',');\nif (actual !== \"true,true,10,10,true,true,false,false,4,3,3,4\") throw new Error('independent toReversed literal mismatch');\n",
+      "source_sha256": "f72d43bc05dc4051e4fe8f160e1c6b5c307823d00e701f05cf22f27a2eeedc92",
+      "common_prefix_sha256": "736be45ad0d0780a28ffd0deab32969e7c68c6223329570c7db7e900f0b2e11a",
+      "expected_literal": "true,true,10,10,true,true,false,false,4,3,3,4"
+    }
+  ]
+}

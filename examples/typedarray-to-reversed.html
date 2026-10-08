@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Reversed copy</title>
+<style>
+body{margin:32px;background:#f5f7fa;color:#172033;font:18px sans-serif}
+h1{font-size:30px}button{padding:12px;background:#245bcc;color:white;border:0}
+pre{padding:20px;background:white;border:1px solid #cbd5e1;font:18px monospace;line-height:1.6}
+</style></head><body>
+<h1>Reversed copy</h1><p>Make a reversed copy while keeping the original buffer.</p>
+<button id="change">Make reversed copy</button><pre id="result">Waiting for script</pre>
+<script>
+var buffer=new ArrayBuffer(12,{maxByteLength:16});
+var words=new Uint16Array(buffer);
+words[0]=99;words[1]=11;words[2]=22;words[3]=33;words[4]=44;words[5]=88;
+var selected=words.subarray(1,5);
+var current=selected;
+var copy=selected.toReversed;
+var separate='ready';
+var fixed='ready';
+function show(){
+  document.getElementById('result').textContent='Buffer: '+words.join(' ')+'\n'
+    +'Result: '+current.join(' ')+'\n'
+    +'Separate buffer: '+separate+'\n'
+    +'Fixed result: '+fixed;
+}
+document.getElementById('change').onclick=function(){
+  var next=copy.call(current);
+  separate=next!==current&&next.buffer!==current.buffer&&next.buffer!==words.buffer;
+  fixed=next.buffer.resizable===false&&next.byteOffset===0&&next.byteLength===8;
+  current=next;
+  show();document.title='Copy created';
+};
+show();
+</script></body></html>

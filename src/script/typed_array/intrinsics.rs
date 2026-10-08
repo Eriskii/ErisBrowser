@@ -6,7 +6,7 @@ use std::collections::btree_map::Entry;
 #[cfg(test)]
 mod views_tests;
 
-pub(in crate::script) const METADATA_OBJECTS: usize = 39;
+pub(in crate::script) const METADATA_OBJECTS: usize = 40;
 pub(in crate::script) const GLOBAL_COUNT: usize = 10;
 pub(in crate::script) const GLOBAL_NAME_MAX: usize = {
     let mut maximum = 0;
@@ -23,7 +23,7 @@ pub(in crate::script) const GLOBAL_NAME_MAX: usize = {
 
 // The indices are the accepted Kind order, not the global staging order.
 // These are bounded stack arrays; there is no temporary sorting Vec.
-const LITERALS: [&str; 37] = [
+const LITERALS: [&str; 38] = [
     "length",
     "name",
     "prototype",
@@ -61,25 +61,27 @@ const LITERALS: [&str; 37] = [
     "lastIndexOf",
     "fill",
     "reverse",
+    "toReversed",
 ];
 
 // The original ten-key shared owner (416 work) is replaced by the bulk-built
-// nineteen-key owner below. Thirty old small leaves retain their exact fees;
-// the eight additional length/name leaves each cost58. No old entry tariff is reduced.
-const MAP_WORK: usize = 31 * 16 + 92 * 18 + 718 - 416 + 8 * 58;
+// twenty-key owner below. Thirty old small leaves retain their exact fees;
+// the nine additional length/name leaves each cost58. No old entry tariff is reduced.
+const MAP_WORK: usize = 31 * 16 + 92 * 18 + 718 - 416 + 9 * 58;
 const FIXED_WORK: usize = 192;
-// Includes eighteen application-order, eighteen stable-sort and eighteen
+// Includes nineteen application-order, nineteen stable-sort and nineteen
 // dedup comparisons, each bounded by4+2*11. The tree still has three nodes.
 // Each appended method adds6 staging,8 tree writes,4 order and3*26 comparisons.
-// Retain the earlier64-work right-border allowance even though19 sorted entries
-// fill11/root1/right7 directly and require no payload repair.
-const SHARED_OWNER_WORK: usize = 1370 + 384 + 96 + 96;
+// Retain the earlier64-work right-border allowance even though20 sorted entries
+// fill11/root1/right8 directly and require no payload repair.
+const SHARED_OWNER_WORK: usize = 1370 + 384 + 96 + 96 + 96;
 const VIEW_FIXED_WORK: usize = 64;
 const SEARCH_FIXED_WORK: usize = 64;
 // Method invocation/store/retirement6, pooled handle lifetime2, parent/ID2,
 // and fixed literal/count/order-index control6. Payloads and maps pay separately.
 const FILL_FIXED_WORK: usize = 16;
 const REVERSE_FIXED_WORK: usize = 16;
+const TO_REVERSED_FIXED_WORK: usize = 16;
 
 fn leaf_bytes() -> usize {
     16 * (std::mem::size_of::<PropertyKey>() + std::mem::size_of::<Property>())
@@ -112,13 +114,14 @@ impl Runtime {
                 + VIEW_FIXED_WORK
                 + SEARCH_FIXED_WORK
                 + FILL_FIXED_WORK
-                + REVERSE_FIXED_WORK,
+                + REVERSE_FIXED_WORK
+                + TO_REVERSED_FIXED_WORK,
         )?;
-        //38 fresh small leaves plus three nodes for the shared owner. Pay the
-        // complete19-pair staging Vec and conservative48-pair sort scratch.
+        //39 fresh small leaves plus three nodes for the shared owner. Pay the
+        // complete20-pair staging Vec and conservative48-pair sort scratch.
         self.charge(
             (METADATA_OBJECTS + 2) * leaf_bytes()
-                + (19 + 48) * std::mem::size_of::<(PropertyKey, Property)>(),
+                + (20 + 48) * std::mem::size_of::<(PropertyKey, Property)>(),
         )?;
         if self.typed_arrays.intrinsic.is_some() || self.typed_arrays.prototype.is_some() {
             return Err(ScriptError::resource(
@@ -174,8 +177,9 @@ impl Runtime {
             self.dom_proto_text(LITERALS[34])?,
             self.dom_proto_text(LITERALS[35])?,
             self.dom_proto_text(LITERALS[36])?,
+            self.dom_proto_text(LITERALS[37])?,
         ];
-        let shared_prototype = self.dom_proto_object(Some(Value::Object(object)), 19)?;
+        let shared_prototype = self.dom_proto_object(Some(Value::Object(object)), 20)?;
         let shared_bag =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 4)?;
         let shared = self.typed_array_intrinsic_native("TypedArray", shared_bag)?;
@@ -281,6 +285,9 @@ impl Runtime {
         // Append reverse after all38 existing bags without shifting old IDs.
         let reverse =
             self.typed_array_intrinsic_method_length("TypedArray.reverse", &pool, 36, 0)?;
+        // Append after all39 old bags; preserve every existing native identity.
+        let to_reversed =
+            self.typed_array_intrinsic_method_length("TypedArray.toReversed", &pool, 37, 0)?;
         // Storage order is strings then the two symbols.
         self.typed_array_fill_shared(
             shared_prototype,
@@ -334,6 +341,10 @@ impl Runtime {
                     Property::data(subarray, true, false, true),
                 ),
                 (
+                    pool[37].clone().into(),
+                    Property::data(to_reversed, true, false, true),
+                ),
+                (
                     pool[30].clone().into(),
                     Property::data(to_string, true, false, true),
                 ),
@@ -354,8 +365,8 @@ impl Runtime {
         Ok(())
     }
 
-    // Private to this closed installation. All38 small leaves and their98
-    // entries are prepaid. The nineteen-key shared owner uses its separate
+    // Private to this closed installation. All39 small leaves and their100
+    // entries are prepaid. The twenty-key shared owner uses its separate
     // bulk builder. Each order Vec already has its exact final capacity.
     fn typed_array_fill_intrinsic<const N: usize>(
         &mut self,
@@ -381,7 +392,7 @@ impl Runtime {
     fn typed_array_intrinsic_method(
         &mut self,
         full: &str,
-        pool: &[JsString; 37],
+        pool: &[JsString; 38],
         display: usize,
     ) -> Result<Value> {
         self.typed_array_intrinsic_method_length(full, pool, display, 0)
@@ -390,7 +401,7 @@ impl Runtime {
     fn typed_array_intrinsic_method_length(
         &mut self,
         full: &str,
-        pool: &[JsString; 37],
+        pool: &[JsString; 38],
         display: usize,
         length: usize,
     ) -> Result<Value> {
@@ -451,12 +462,12 @@ impl Runtime {
     fn typed_array_fill_shared(
         &mut self,
         owner: usize,
-        entries: [(PropertyKey, Property); 19],
+        entries: [(PropertyKey, Property); 20],
     ) -> Result<()> {
         let bag = &mut self.objects[owner];
         if !bag.values.is_empty()
             || !bag.order.is_empty()
-            || bag.order.capacity() < 19
+            || bag.order.capacity() < 20
             || entries.windows(2).any(|pair| pair[0].0 >= pair[1].0)
         {
             return Err(ScriptError::resource(
@@ -465,16 +476,16 @@ impl Runtime {
         }
         let mut staged = Vec::new();
         staged
-            .try_reserve_exact(19)
+            .try_reserve_exact(20)
             .map_err(|_| ScriptError::resource("TypedArray shared map allocation failed"))?;
         for index in [
-            4, 1, 2, 3, 12, 18, 10, 16, 5, 17, 14, 9, 15, 0, 7, 8, 11, 6, 13,
+            4, 1, 2, 3, 12, 19, 10, 17, 5, 18, 14, 9, 16, 0, 7, 8, 11, 6, 13, 15,
         ] {
             bag.order.push(entries[index].0.clone());
         }
         staged.extend(entries);
-        // Strictly ascending19-element input:18 sort comparisons and18 dedup
-        // checks; bulk construction allocates three nodes (11/root1/right7).
+        // Strictly ascending20-element input:19 sort comparisons and19 dedup
+        // checks; bulk construction allocates three nodes (11/root1/right8).
         // The existing64-work right-border allowance remains conservative.
         bag.values = staged.into_iter().collect();
         Ok(())

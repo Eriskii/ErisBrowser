@@ -182,7 +182,7 @@ class ArraySpliceCorpusTests(unittest.TestCase):
                 with self.assertRaises(ValueError): runner.load_corpus(dest, PROFILE)
 
     def test_all_39_previous_profile_contracts_are_byte_identical(self):
-        contract = capture_contracts(excluded={'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', PROFILE, 'array-buffer', 'array-concat'})
+        contract = capture_contracts(excluded={'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', PROFILE, 'array-buffer', 'array-concat'})
         self.assertEqual(contract['counts'], dict(profiles=39, cases=17822, preflights=3900))
         self.assertEqual(runner.digest(canonical(contract)),
                          'b8a27a6e4ce9a40a9c212360b0b0dcf550577316e70f3db9b708ce2d201fbe67')

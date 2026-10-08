@@ -28,7 +28,10 @@ per nonempty call while retaining checked writes and unchanged conformance resul
 [`reverse`](docs/typedarray-reverse.md) reverses a Number view in place, with
 checked scalar writes and shared-buffer visibility. Its complete upstream
 profile records 22 passes, four work-limit stops and 18 exclusions.
-Remaining bulk methods, BigInt codecs and shared memory remain unfinished.
+[`toReversed`](docs/typedarray-to-reversed.md) creates a reversed Number view
+with independent fixed storage and leaves its source unchanged. Its complete
+18-mode upstream profile records eight passes, eight work-limit stops and two
+exclusions. Remaining bulk methods, BigInt codecs and shared memory remain unfinished.
 [Reflect property operations](docs/reflect-properties.md) add nine methods,
 including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean
 integrity checks. Their frozen upstream profile passes 200 modes and retains

@@ -167,6 +167,15 @@ outcomes prevent an upstream baseline. Both the direct and confined-worker
 example tests verify two clicks and shared-buffer changes. All 43 earlier
 reports retain their case and control rows exactly.
 
+[`toReversed`](typedarray-to-reversed.md) now creates a reversed copy of each
+Number view kind without changing its source. The result has distinct fixed
+storage, including for an empty source. The complete 18-mode profile records
+**eight passes, eight work-limit stops and two host exclusions**, with all
+52 controls verified. Resource outcomes keep the report unhealthy and prevent
+an upstream baseline or gate. Direct Page and confined-worker tests check two
+real clicks, literal text and changed result pixels. All 44 earlier reports
+retain their 18,280 case rows and 4,232 control rows exactly.
+
 The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,
 20 failures and 38 exclusions. All other observations in the 37 replayed

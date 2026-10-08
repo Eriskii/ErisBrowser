@@ -82,7 +82,7 @@ class TypedArrayFillTests(unittest.TestCase):
         self.assertEqual(reasons.count('TypedArray fill policy excludes the complete resizableArrayBufferUtils helper'), 4)
         self.assertEqual(sum(runner.unsupported_reason(c, FEATURES) is None for c in cases), 58)
         self.assertEqual(sum('/BigInt/' in c['file'] for c in cases), 36)
-        self.assertEqual(len(set(runner.PROFILES) - {'typedarray-reverse'}), 50)
+        self.assertEqual(len(set(runner.PROFILES) - {'typedarray-to-reversed', 'typedarray-reverse'}), 50)
 
     def test_controls_retain_frozen_bytes_modes_and_same_mode_positive_links(self):
         raw = CONTROLS.read_bytes()

@@ -112,19 +112,20 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // Fill adds218work/2095bytes and one reserved bag.
     // Reverse forecasts227work/2110bytes and one further bag from its ledger;
     // the separately printed raw diagnostic must confirm these totals.
+    // ToReversed forecasts236work/2125bytes and one further reserved bag.
     // Four search methods add908work/8440bytes and four reserved bags; the
     // independent metadata endpoints and raw diagnostic verify that delta.
     assert_eq!(
         runtime.steps,
-        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227
+        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236
     );
     assert_eq!(
         runtime.allocated,
-        1_782_581 + added - 5711 + 27648 - 197266 + 11514 + 64 + 8440 + 2095 + 2110
+        1_782_581 + added - 5711 + 27648 - 197266 + 11514 + 64 + 8440 + 2095 + 2110 + 2125
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (738, 738)
+        (739, 739)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

@@ -14,6 +14,7 @@ mod search;
 mod set_key;
 #[cfg(test)]
 mod tests;
+mod to_reversed;
 mod views;
 
 use index::Index;
@@ -478,6 +479,7 @@ impl Runtime {
             "join" => self.typed_array_join(record, arguments, doc),
             "fill" => self.typed_array_fill(receiver, record, arguments, doc),
             "reverse" => self.typed_array_reverse(receiver, record),
+            "toReversed" => self.typed_array_to_reversed(record, doc),
             "at" => self.typed_array_at(record, arguments, doc),
             "includes" => {
                 self.typed_array_search(search::SearchKind::Includes, record, arguments, doc)

@@ -20,6 +20,8 @@ TYPEDARRAY_HELPERS = {'assert.js', 'sta.js', 'byteConversionValues.js', 'compare
                       'detachArrayBuffer.js', 'isConstructor.js', 'nans.js', 'propertyHelper.js',
                       'resizableArrayBufferUtils.js', 'testTypedArray.js'}
 TYPEDARRAY_SELECTION_SHA256 = 'cdc70bbb65c93629ee519af8344bf46552e41b1892677827e385535a49a637e5'
+TYPEDARRAY_TO_REVERSED_DIRECTORIES = {'TypedArray/prototype/toReversed': 9}
+TYPEDARRAY_TO_REVERSED_HELPERS = {'assert.js', 'propertyHelper.js', 'sta.js', 'detachArrayBuffer.js', 'testTypedArray.js', 'compareArray.js', 'isConstructor.js'}
 TYPEDARRAY_REVERSE_DIRECTORIES = {'TypedArray/prototype/reverse/BigInt': 6, 'TypedArray/prototype/reverse': 16}
 TYPEDARRAY_REVERSE_HELPERS = {'compareArray.js', 'propertyHelper.js', 'sta.js', 'testTypedArray.js', 'isConstructor.js', 'resizableArrayBufferUtils.js', 'assert.js', 'detachArrayBuffer.js'}
 TYPEDARRAY_FILL_DIRECTORIES = {'TypedArray/prototype/fill/BigInt': 18, 'TypedArray/prototype/fill': 34}
@@ -72,6 +74,7 @@ CORE_ITERATOR_DIRECTORIES = {
     'StringIteratorPrototype': 2, 'StringIteratorPrototype/next': 5,
 }
 ITERATION_SUBTREES = {
+    'typedarray-to-reversed': {'TypedArray/prototype/toReversed': '81dd62f1e66f16a0265e31a328517c598feaea67'},
     'typedarray-reverse': {'TypedArray/prototype/reverse': 'cfbd5368520d987e1256f9981c2e587d898f1df7'},
     'typedarray-fill': {'TypedArray/prototype/fill': '5eaac187670caf1fa1256e78d7ae5780de16c47d'},
     'typedarray-search': {'TypedArray/prototype/at': 'c1f0eae9a0485de57814aeb7e8f45fc0f87f420a', 'TypedArray/prototype/includes': '16d1253435098c7ca5278234db6baa1e1675f3dc', 'TypedArray/prototype/indexOf': '9be33464f6f7515879f69dbf73cb8d397d9dca42', 'TypedArray/prototype/lastIndexOf': '9cb18b7262c326fd41c564ffec8551492344b7f0'},
@@ -93,6 +96,7 @@ ITERATION_SUBTREES = {
     },
 }
 ITERATION_HELPERS = {
+    'typedarray-to-reversed': TYPEDARRAY_TO_REVERSED_HELPERS,
     'typedarray-reverse': TYPEDARRAY_REVERSE_HELPERS,
     'typedarray-fill': TYPEDARRAY_FILL_HELPERS,
     'typedarray-search': TYPEDARRAY_SEARCH_HELPERS,
@@ -110,7 +114,7 @@ ITERATION_HELPERS = {
                        'propertyHelper.js', 'resizableArrayBufferUtils.js',
                        'detachArrayBuffer.js', 'testTypedArray.js'},
 }
-TREE_PROFILES = {'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+TREE_PROFILES = {'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -188,7 +192,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'typedarray-reverse': TYPEDARRAY_REVERSE_DIRECTORIES, 'typedarray-fill': TYPEDARRAY_FILL_DIRECTORIES, 'typedarray-search': TYPEDARRAY_SEARCH_DIRECTORIES, 'typedarray-views': TYPEDARRAY_VIEW_DIRECTORIES, 'reflect-properties': REFLECT_PROPERTY_DIRECTORIES, 'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'typedarray-to-reversed': TYPEDARRAY_TO_REVERSED_DIRECTORIES, 'typedarray-reverse': TYPEDARRAY_REVERSE_DIRECTORIES, 'typedarray-fill': TYPEDARRAY_FILL_DIRECTORIES, 'typedarray-search': TYPEDARRAY_SEARCH_DIRECTORIES, 'typedarray-views': TYPEDARRAY_VIEW_DIRECTORIES, 'reflect-properties': REFLECT_PROPERTY_DIRECTORIES, 'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -201,7 +205,7 @@ PROFILES = {'typedarray-reverse': TYPEDARRAY_REVERSE_DIRECTORIES, 'typedarray-fi
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'typedarray-reverse': 'test/built-ins', 'typedarray-fill': 'test/built-ins', 'typedarray-search': 'test/built-ins', 'typedarray-views': 'test/built-ins', 'reflect-properties': 'test/built-ins', 'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'typedarray-to-reversed': 'test/built-ins', 'typedarray-reverse': 'test/built-ins', 'typedarray-fill': 'test/built-ins', 'typedarray-search': 'test/built-ins', 'typedarray-views': 'test/built-ins', 'reflect-properties': 'test/built-ins', 'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -948,6 +952,8 @@ def import_corpus(output, profile='string-json'):
             harness.update(metadata['includes'])
             if 'async' in metadata['flags']:
                 harness.add('doneprintHandle.js')
+    if profile == 'typedarray-to-reversed' and harness != TYPEDARRAY_TO_REVERSED_HELPERS:
+        raise ValueError('TypedArray toReversed requested harness differs from the frozen seven helpers')
     if profile == 'typedarray-reverse' and harness != TYPEDARRAY_REVERSE_HELPERS:
         raise ValueError('TypedArray reverse requested harness differs from the frozen eight helpers')
     if profile == 'typedarray-fill' and harness != TYPEDARRAY_FILL_HELPERS:
@@ -972,6 +978,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'typedarray-to-reversed': 'all 9 original .js files in the complete TypedArray prototype toReversed tree, which has no BigInt child directory; full root-linked Git proof; no implementation',
         'typedarray-reverse': 'all 22 original .js files in the complete TypedArray prototype reverse tree, including all BigInt originals; full root-linked Git proof; no implementation',
         'typedarray-fill': 'all 52 original .js files in the complete TypedArray prototype fill tree, including all BigInt originals; full root-linked Git proof; no implementation',
         'typedarray-search': 'all 145 original .js files in four complete TypedArray prototype at/includes/indexOf/lastIndexOf trees, including all BigInt originals; full root-linked Git proof; no implementation',

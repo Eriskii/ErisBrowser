@@ -72,6 +72,8 @@ DATA_VIEW_FEATURES = ARRAY_BUFFER_FEATURES | {
     'DataView.prototype.getInt8', 'DataView.prototype.getUint16',
     'DataView.prototype.getUint32', 'DataView.prototype.setUint8', 'Float16Array',
 }
+TYPEDARRAY_TO_REVERSED_FEATURES = {'TypedArray', 'Symbol.species', 'Reflect.construct',
+                                  'change-array-by-copy'}
 TYPEDARRAY_REVERSE_FEATURES = {'TypedArray', 'ArrayBuffer', 'Symbol', 'Reflect.construct',
                               'arrow-function', 'resizable-arraybuffer'}
 TYPEDARRAY_FILL_FEATURES = {'TypedArray', 'ArrayBuffer', 'Symbol', 'Reflect.construct',
@@ -92,7 +94,7 @@ ARRAY_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 STRING_LAST_INDEX_OF_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES
 REGEXP_SPLIT_FEATURES = CONSTRUCTION_FEATURES
 REGEXP_CONSTRUCTOR_FEATURES = CONSTRUCTION_FEATURES | REGEXP_FEATURES | {'u180e'}
-PROFILE_FEATURES = {'typedarray-reverse': TYPEDARRAY_REVERSE_FEATURES, 'typedarray-fill': TYPEDARRAY_FILL_FEATURES, 'typedarray-search': TYPEDARRAY_SEARCH_FEATURES, 'typedarray-views': TYPEDARRAY_VIEW_FEATURES, 'reflect-properties': REFLECT_PROPERTY_FEATURES, 'typedarray-foundation': TYPEDARRAY_FEATURES, 'object-has-own': OBJECT_HAS_OWN_FEATURES, 'object-is': OBJECT_IS_FEATURES, 'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
+PROFILE_FEATURES = {'typedarray-to-reversed': TYPEDARRAY_TO_REVERSED_FEATURES, 'typedarray-reverse': TYPEDARRAY_REVERSE_FEATURES, 'typedarray-fill': TYPEDARRAY_FILL_FEATURES, 'typedarray-search': TYPEDARRAY_SEARCH_FEATURES, 'typedarray-views': TYPEDARRAY_VIEW_FEATURES, 'reflect-properties': REFLECT_PROPERTY_FEATURES, 'typedarray-foundation': TYPEDARRAY_FEATURES, 'object-has-own': OBJECT_HAS_OWN_FEATURES, 'object-is': OBJECT_IS_FEATURES, 'data-view': DATA_VIEW_FEATURES, 'array-buffer': ARRAY_BUFFER_FEATURES, 'array-concat': ARRAY_CONCAT_FEATURES, 'array-splice': ARRAY_SPLICE_FEATURES, 'array-from': ARRAY_FROM_FEATURES, 'for-of': FOR_OF_FEATURES, 'core-iterators': CORE_ITERATOR_FEATURES, 'date': DATE_FEATURES, 'array-find': ARRAY_FIND_FEATURES, 'object-integrity': OBJECT_INTEGRITY_FEATURES, 'array-predicates': ARRAY_PREDICATE_FEATURES, 'array-descriptors': ARRAY_DESCRIPTOR_FEATURES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_FEATURES, 'string-last-index-of': STRING_LAST_INDEX_OF_FEATURES, 'regexp-match-search': REGEXP_MATCH_SEARCH_FEATURES, 'regexp-constructor': REGEXP_CONSTRUCTOR_FEATURES, 'regexp-split': REGEXP_SPLIT_FEATURES, 'string-search': STRING_SEARCH_FEATURES, 'function-constructor': FUNCTION_CONSTRUCTOR_FEATURES, 'string-concat': STRING_CONCAT_FEATURES, 'symbols': SYMBOL_FEATURES, 'string-json': SUPPORTED_FEATURES, 'regexp': REGEXP_FEATURES,
                     'reflect-construction': CONSTRUCTION_FEATURES, 'new-target': CONSTRUCTION_FEATURES,
                     'template-literal': TEMPLATE_FEATURES, 'functions': FUNCTION_FEATURES,
                     'rest-parameters': REST_PARAMETER_FEATURES,
@@ -219,13 +221,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -548,6 +550,28 @@ def core_iterator_preflight_variants():
     return [('core-iterators-' + name + suffix, guard + setup + f'assert.sameValue({actual},{value});', expected, mode)
             for mode in ('sloppy', 'strict') for name, setup, actual, good, bad in pairs
             for suffix, value, expected in (('', good, 'passed'), ('-mismatch', bad, 'failed'))]
+
+
+def typedarray_to_reversed_preflight_variants():
+    """Exact independently frozen sources; wrong partners throw intrinsic Error."""
+    path = Path(__file__).with_name('typedarray-to-reversed-controls.json')
+    if path.is_symlink():
+        raise ValueError('TypedArray toReversed controls must not be a symlink')
+    with path.open('rb') as handle:
+        data = handle.read(65537)
+    if (len(data) > 65536 or digest(data) !=
+            '4ee0fa10856baf96b8a676766650dc91e0ebb27e83d574b48b1f8d7285d96ebc'):
+        raise ValueError('TypedArray toReversed frozen control file integrity mismatch')
+    controls = json.loads(data)['controls']
+    variants = []
+    for control in controls:
+        source = control['source']
+        if digest(source.encode()) != control['source_sha256']:
+            raise ValueError('TypedArray toReversed frozen control source integrity mismatch')
+        for mode in control['modes']:
+            variants.append(('typedarray-to-reversed-' + control['name'], source,
+                             'passed' if control['positive'] else 'failed', mode))
+    return variants
 
 
 def typedarray_reverse_preflight_variants():
@@ -2486,6 +2510,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         variants += array_buffer_preflight_variants()
     if profile == 'data-view':
         variants += data_view_preflight_variants()
+    if profile == 'typedarray-to-reversed':
+        variants += typedarray_to_reversed_preflight_variants()
     if profile == 'typedarray-reverse':
         variants += typedarray_reverse_preflight_variants()
     if profile == 'typedarray-fill':
@@ -2518,7 +2544,8 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
         correct = result['status'] == expected
         if expected == 'failed':
             observation = result.get('observation', {})
-            if ((profile == 'typedarray-reverse' and name.startswith('typedarray-reverse-'))
+            if ((profile == 'typedarray-to-reversed' and name.startswith('typedarray-to-reversed-'))
+                    or (profile == 'typedarray-reverse' and name.startswith('typedarray-reverse-'))
                     or (profile == 'typedarray-fill' and name.startswith('typedarray-fill-'))
                     or (profile == 'typedarray-search' and name.startswith('typedarray-search-'))
                     or (profile == 'typedarray-views' and name.startswith('typedarray-views-'))
@@ -2557,6 +2584,20 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
                      if item['name'].startswith('object-is-') and item['expected'] == 'passed'}
         for item in outcomes:
             if item['name'].startswith('object-is-') and item['name'].endswith('-wrong'):
+                partner = positives[(item['name'].removesuffix('-wrong') + '-positive',
+                                     item['result']['mode'])]
+                result = partner['result']
+                item['prerequisite'] = dict(name=partner['name'], mode=result['mode'],
+                    case_sha256=result['case_sha256'], source_sha256=result['source_sha256'],
+                    expected=partner['expected'], verified=partner['verified'])
+                item['verified'] = item['verified'] and partner['verified']
+    if profile == 'typedarray-to-reversed':
+        # Preserve the independently authored positive/wrong names and require
+        # the positive source to succeed in the same mode before verifying it.
+        positives = {(item['name'], item['result']['mode']): item for item in outcomes
+                     if item['name'].startswith('typedarray-to-reversed-') and item['expected'] == 'passed'}
+        for item in outcomes:
+            if item['name'].startswith('typedarray-to-reversed-') and item['name'].endswith('-wrong'):
                 partner = positives[(item['name'].removesuffix('-wrong') + '-positive',
                                      item['result']['mode'])]
                 result = partner['result']

@@ -16,8 +16,11 @@ local benchmark records larger-fill gains and small empty/single-element slowdow
 [`reverse`](typedarray-reverse.md) now reverses Number views in place with
 ordered scalar writes and current resized bounds. Its complete profile retains
 four work-limit stops and 18 exclusions alongside 22 passes.
-Remaining methods, BigInt views, shared memory and broader interpreter
-accounting remain open work.
+[`toReversed`](typedarray-to-reversed.md) now copies Number views into fresh
+fixed storage, including empty and resized sources. Its complete profile records
+eight passes, eight work-limit stops and two host exclusions; the resource
+outcomes still prevent an upstream baseline. Remaining methods, BigInt views,
+shared memory and broader interpreter accounting remain open work.
 
 [Native rectangle accounting](native-rect-accounting.md) reserves the actual
 clipped pre-blend loop area for each Rect instead of a complete viewport. Small

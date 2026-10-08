@@ -1,0 +1,203 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all 9 original .js files in the complete TypedArray prototype toReversed tree, which has no BigInt child directory; full root-linked Git proof; no implementation",
+  "directories": {
+    "TypedArray/prototype/toReversed": [
+      "ignores-species.js",
+      "immutable.js",
+      "length-property-ignored.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "property-descriptor.js",
+      "reverses.js",
+      "this-value-invalid.js"
+    ]
+  },
+  "test_files": 9,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/detachArrayBuffer.js",
+      "upstream_path": "harness/detachArrayBuffer.js",
+      "bytes": 537,
+      "sha256": "d487a9c3c7d51b7e9d66c5fce89929ab3d09a6341d21a833e38f9caba6bf2e0e"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "harness/testTypedArray.js",
+      "upstream_path": "harness/testTypedArray.js",
+      "bytes": 16526,
+      "sha256": "51eb50e53e6215f31f14d64d249bea2d08ad943c77835f63ba52ec694de2189a"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/ignores-species.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/ignores-species.js",
+      "bytes": 1260,
+      "sha256": "e56660c9cd73c9b8ee903d9384aa34e43562a98153586609ce66c2893d7373c6"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/immutable.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/immutable.js",
+      "bytes": 562,
+      "sha256": "a41b42d9e3df223090ec2dbca7be408f1b668cad79810a82ecd456650bc96b4d"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/length-property-ignored.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/length-property-ignored.js",
+      "bytes": 1414,
+      "sha256": "020cfce052ceed6dea7562bd240f62cb0c3e12f76b4c8faa9f992fa0dedd42c1"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/length.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/length.js",
+      "bytes": 1163,
+      "sha256": "78031a351ddf74e33e9c914cbe140711cff08dff2ed55abe7210f9b04b365cd4"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/name.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/name.js",
+      "bytes": 947,
+      "sha256": "360f8a1ef2fead046f60b955c474dc0e43013ced1049f89dfd5a4d9d670e60f1"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/not-a-constructor.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/not-a-constructor.js",
+      "bytes": 970,
+      "sha256": "7ec7b17bc9c7615acccdf38eeaca355abae441d637e589786eb821c59b6e9df8"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/property-descriptor.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/property-descriptor.js",
+      "bytes": 839,
+      "sha256": "baec3d0b47a98ccdcb47efae12daca3d13b155c87a5aa574830a7c1e47912852"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/reverses.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/reverses.js",
+      "bytes": 860,
+      "sha256": "6f361bd59415c6f1e61ae3780a1a7593511f5a36984df528d17decc58d7962e9"
+    },
+    {
+      "path": "test/built-ins/TypedArray/prototype/toReversed/this-value-invalid.js",
+      "upstream_path": "test/built-ins/TypedArray/prototype/toReversed/this-value-invalid.js",
+      "bytes": 1287,
+      "sha256": "d16fbb79856757bf422c49d576c5d1d00ad33e4a22cd16ce53f83ad42348bf9d"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-root-linked-recursive-git-subtrees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "prefix": "test/built-ins",
+    "subtree_trees": {
+      "TypedArray/prototype/toReversed": "81dd62f1e66f16a0265e31a328517c598feaea67"
+    },
+    "directory_trees": {
+      "TypedArray/prototype/toReversed": "81dd62f1e66f16a0265e31a328517c598feaea67"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+      "harness/detachArrayBuffer.js": "81af99f3b04af9f698185665c036ad34b91eaea4",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "harness/testTypedArray.js": "a6418c2f70bf62cb39d95d3640ac9e41153cceb7",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/recursive-81dd62f1e66f16a0265e31a328517c598feaea67.json",
+        "bytes": 2155,
+        "sha256": "cc5c4241377d6783900198561af1121f25a5e8ec76ee500d833ab5a2c6862fba",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/81dd62f1e66f16a0265e31a328517c598feaea67?recursive=1"
+      },
+      {
+        "path": "inventory-proof/tree-37185873f6a6ea631208a82eb48c6c007216dcdd.json",
+        "bytes": 8455,
+        "sha256": "50bc09c2f550bda448827a8cad99f54f6d180b8ff4675c79c0ace25c58312da9",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/37185873f6a6ea631208a82eb48c6c007216dcdd"
+      },
+      {
+        "path": "inventory-proof/tree-6c5e7d4fb69b2d746936b8aec5be29d72132e81c.json",
+        "bytes": 3005,
+        "sha256": "bb44d4e31102839643ae41629c75eaf9d3521bc949908722497a809974624f53",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/6c5e7d4fb69b2d746936b8aec5be29d72132e81c"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      }
+    ]
+  }
+}
