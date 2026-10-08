@@ -103,11 +103,14 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
         runtime.prototypes.len(),
         runtime.environments[0].bindings.len()
     );
-    assert_eq!(runtime.steps, 5941 - 5656);
-    assert_eq!(runtime.allocated, 1_782_581 + added);
+    // Later ArrayBuffer initialization saves3489work/5711bytes; the Reflect
+    // extension consumes3278work and27648bytes (including9 arena slots).
+    // Their independent endpoint tests and raw diagnostic precede this update.
+    assert_eq!(runtime.steps, 5941 - 5656 + 3489 - 3278);
+    assert_eq!(runtime.allocated, 1_782_581 + added - 5711 + 27648);
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (721, 721)
+        (730, 730)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

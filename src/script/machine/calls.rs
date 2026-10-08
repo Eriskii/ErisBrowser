@@ -225,6 +225,20 @@ fn invoke_native(
                     doc,
                 )
             })
+    } else if crate::script::reflect_properties_install::is_method(&native.name) {
+        runtime
+            .reflect_property_call_preflight(&native.name)
+            .and_then(|()| {
+                runtime.native_call(
+                    &Native {
+                        properties: native.properties,
+                        name: native.name.clone(),
+                        receiver,
+                    },
+                    arguments,
+                    doc,
+                )
+            })
     } else if native.name.contains('.') {
         runtime.native_call(
             &Native {

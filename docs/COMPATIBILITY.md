@@ -111,11 +111,27 @@ operations use the same indexed property hooks. Static and bulk/search/sort/copy
 string methods, BigInt views and shared buffers remain incomplete. The frozen
 local matrix passes all 54 modes with 32 verified paired controls; the upstream
 profile retains its failures, exclusions and work-limit stops.
-It records 572 passes, 86 failures, 488 unsupported modes and 92 work stops.
-The same increment raises the existing ArrayBuffer profile to 310 passes,
+The foundation checkpoint records 572 passes, 86 failures, 488 unsupported modes
+and 92 work stops. The later [Reflect property increment](reflect-properties.md)
+records **588 passes, 44 failures, 488 unsupported modes and 118 work stops**
+over the same 1,238 modes. Sixteen former failures pass; 26 advance past an absent
+Reflect method and exhaust the unchanged instruction budget. No previous pass
+regresses. Both historical reports are retained.
+The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,
 20 failures and 38 exclusions. All other observations in the 37 replayed
 CI-gated profiles remain unchanged; their original baseline files are retained.
+
+[Reflect property operations](reflect-properties.md) add `has`, `get`, `set`,
+`deleteProperty`, `getOwnPropertyDescriptor`, `getPrototypeOf`, `setPrototypeOf`,
+`isExtensible` and `preventExtensions`. Explicit receivers, supported exotic
+properties, descriptor flags and Boolean refusal behavior share the existing
+property machinery. The intrinsic Object prototype is immutable. The complete
+108-source profile records **200 passed and 16 Proxy exclusions**, with all
+52 controls verified; the independent local matrix passes 28 modes and 20 paired
+controls. Represented DOM descriptors are supported, while unresolved legacy
+DOM string properties explicitly remain unsupported. Proxy, foreign realms and
+full platform-object internal methods remain incomplete.
 
 [Array concat](../tests/conformance/array-concat.md) supports generic receivers,
 live spreadability and same-realm species results, including ordinary objects,

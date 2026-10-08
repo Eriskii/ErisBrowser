@@ -49,6 +49,8 @@ mod own_keys;
 mod parser;
 mod processing_instruction;
 mod property_keys;
+mod reflect_properties;
+mod reflect_properties_install;
 mod regexp_builtins;
 mod scalar_codec;
 mod string_builtins;
@@ -2250,7 +2252,8 @@ impl Runtime {
         )?;
         self.initialize_typed_array_intrinsics()?;
         self.initialize_dom_prototypes()?;
-        self.install_object_has_own_intrinsic()
+        self.install_object_has_own_intrinsic()?;
+        self.initialize_reflect_property_intrinsics()
     }
 
     fn initialize_number_statics(&mut self) -> Result<()> {
@@ -4542,7 +4545,16 @@ impl Runtime {
         } else {
             Some(prototype)
         };
-        if self.objects[id].non_extensible && self.objects[id].prototype != next {
+        self.work(2)?;
+        if self.objects[id].prototype == next {
+            return Ok(());
+        }
+        if self.object_prototype_is_immutable(id)? {
+            return Err(ScriptError::type_error(
+                "immutable object prototype cannot change",
+            ));
+        }
+        if self.objects[id].non_extensible {
             return Err(ScriptError::type_error(
                 "non-extensible object prototype cannot change",
             ));
@@ -8004,6 +8016,9 @@ impl Runtime {
         }
         if native.name == "Object.hasOwn" {
             return self.object_has_own(&args, doc);
+        }
+        if reflect_properties_install::is_method(&native.name) {
+            return self.reflect_property_call(&native.name, &args, doc);
         }
         if native.name == "Object.is" {
             return self.object_is(&args);

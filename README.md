@@ -13,6 +13,11 @@ Its complete upstream profile records 694 passes, 12 failures and 416 exclusions
 Number element types, constructors, live indexed properties and iterators over
 fixed or resizable buffers. Bulk methods, BigInt codecs and shared memory remain
 unfinished.
+[Reflect property operations](docs/reflect-properties.md) add nine methods,
+including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean
+integrity checks. Their frozen upstream profile passes 200 modes and retains
+16 Proxy exclusions. These methods also improve TypedArray compatibility;
+remaining failures and work-limit stops are recorded separately.
 [Decimal Number formatting](docs/number-format.md) now selects the even decimal
 significand at exact shortest-format ties, including JSON and property names.
 [Object.is](tests/conformance/object-is.md) now passes its complete 42-case

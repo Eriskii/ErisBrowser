@@ -1,6 +1,8 @@
 //! Non-shared ArrayBuffer slots, ordered callbacks and transactional byte storage.
 use super::*;
 
+mod bootstrap;
+
 #[cfg(test)]
 mod tests;
 
@@ -50,10 +52,6 @@ fn search_work(count: usize, units: usize) -> usize {
     tree_bound(count).0.saturating_mul(1 + units / 8)
 }
 
-fn insertion_work(count: usize) -> usize {
-    tree_bound(count).1.saturating_add(1).saturating_mul(128)
-}
-
 fn byte_work(length: usize) -> usize {
     if length == 0 {
         0
@@ -63,114 +61,6 @@ fn byte_work(length: usize) -> usize {
 }
 
 impl Runtime {
-    fn buffer_install_function(
-        &mut self,
-        owner: usize,
-        full: &str,
-        display: &str,
-        length: usize,
-        key: PropertyKey,
-        getter: bool,
-    ) -> Result<()> {
-        // Intrinsic lookup/insertion, property keys, native names, owner map and
-        // order-vector handles. Fixed installation keys have bounded lengths.
-        let count = self.objects[owner].values.len();
-        self.work(
-            64 + search_work(self.native_properties.len(), full.len()).saturating_mul(2)
-                + insertion_work(self.native_properties.len())
-                + search_work(count, display.len()).saturating_mul(2)
-                + insertion_work(count)
-                + self.objects[owner].order.len(),
-        )?;
-        self.charge(1536 + 8 * (full.len() + display.len()))?;
-        let function = self.intrinsic_function(full, display, length)?;
-        let property = if getter {
-            Property {
-                value: PropertyValue::Accessor {
-                    get: function,
-                    set: Value::Undefined,
-                },
-                enumerable: false,
-                configurable: true,
-            }
-        } else {
-            Property::data(function, true, false, true)
-        };
-        self.objects[owner].insert_property(key, property);
-        Ok(())
-    }
-
-    pub(super) fn install_array_buffer_intrinsics(&mut self) -> Result<()> {
-        self.work(
-            64 + search_work(self.native_properties.len(), 11)
-                + search_work(self.prototypes.len(), 11),
-        )?;
-        self.charge(1024)?;
-        let constructor = self.native_properties["ArrayBuffer"];
-        let prototype = self.prototypes["ArrayBuffer"];
-        self.array_buffers.intrinsic = Some(self.alloc_native("ArrayBuffer", Value::Window)?);
-        self.array_buffers.prototype = Some(prototype);
-        self.buffer_install_function(
-            constructor,
-            "ArrayBuffer.isView",
-            "isView",
-            1,
-            "isView".into(),
-            false,
-        )?;
-        for (name, full) in [
-            ("byteLength", "ArrayBuffer.getByteLength"),
-            ("maxByteLength", "ArrayBuffer.getMaxByteLength"),
-            ("resizable", "ArrayBuffer.getResizable"),
-            ("detached", "ArrayBuffer.getDetached"),
-        ] {
-            self.work(32)?;
-            self.charge(256)?;
-            self.buffer_install_function(
-                prototype,
-                full,
-                &format!("get {name}"),
-                0,
-                name.into(),
-                true,
-            )?;
-        }
-        for (name, full, length) in [
-            ("resize", "ArrayBuffer.resize", 1),
-            ("slice", "ArrayBuffer.slice", 2),
-            ("transfer", "ArrayBuffer.transfer", 0),
-            (
-                "transferToFixedLength",
-                "ArrayBuffer.transferToFixedLength",
-                0,
-            ),
-        ] {
-            self.work(32)?;
-            self.charge(256)?;
-            self.buffer_install_function(prototype, full, name, length, name.into(), false)?;
-        }
-        self.work(search_work(15, 8).saturating_mul(2))?;
-        let species = self.well_known_key("species");
-        self.buffer_install_function(
-            constructor,
-            "ArrayBuffer.species",
-            "get [Symbol.species]",
-            0,
-            species,
-            true,
-        )?;
-        self.work(search_work(15, 11))?;
-        let tag = self.well_known_key("toStringTag");
-        let count = self.objects[prototype].values.len();
-        self.work(search_work(count, 0).saturating_mul(2) + insertion_work(count))?;
-        self.charge(512)?;
-        self.objects[prototype].insert_property(
-            tag,
-            Property::data(Value::String("ArrayBuffer".into()), false, false, true),
-        );
-        Ok(())
-    }
-
     fn buffer_record(&mut self, value: &Value) -> Result<usize> {
         self.tick()?;
         let Value::Object(id) = value else {

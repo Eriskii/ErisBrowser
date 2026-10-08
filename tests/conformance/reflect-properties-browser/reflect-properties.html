@@ -1,0 +1,50 @@
+<!doctype html><html><head><title>Reflect ready</title><style>
+body{margin:0;width:320px;height:160px;background:white;color:black;font:16px monospace}
+#change{position:absolute;left:16px;top:16px;width:64px;height:32px;background:green}
+#word{position:absolute;left:96px;top:16px}#status{position:absolute;left:16px;top:72px}
+</style></head><body><div id="change"></div><div id="word">Ready</div><div id="status">waiting</div><script>
+var marker=document.getElementById('change'),word=document.getElementById('word').firstChild;
+var status=document.getElementById('status').firstChild,title=document.getElementsByTagName('title')[0].firstChild;
+var get=Reflect.get,set=Reflect.set,has=Reflect.has,remove=Reflect.deleteProperty;
+var descriptor=Reflect.getOwnPropertyDescriptor,getProto=Reflect.getPrototypeOf,setProto=Reflect.setPrototypeOf;
+var extensible=Reflect.isExtensible,prevent=Reflect.preventExtensions;
+var methods=[get,set,has,remove,descriptor,getProto,setProto,extensible,prevent];
+for(var i=0;i<methods.length;i++)if(typeof methods[i]!=='function')throw new Error('missing Reflect method');
+var originalReceiver={value:17},getterCalls=0,setterCalls=0,conversions=0;
+var getter=function(){getterCalls++;return this.value;},source={};
+Object.defineProperty(source,'read',{get:getter,configurable:true});
+var writable={x:1},blockedReceiver={};
+Object.defineProperty(blockedReceiver,'x',{set:function(v){setterCalls++;},configurable:true});
+var backing=new ArrayBuffer(2,{maxByteLength:4}),tracking=new Uint8Array(backing);
+tracking[0]=9;tracking[1]=5;
+if(tracking.length!==2||tracking[1]!==5||!ArrayBuffer.isView(tracking))throw new Error('genuine typed view');
+Reflect.get=null;
+if(Reflect.get!==null||typeof get!=='function')throw new Error('saved get identity');
+function exercise(expected,phase){
+  var value=get(source,'read',originalReceiver);
+  if(value!==expected||getterCalls!==phase+1)throw new Error('original receiver');
+  if(!has(source,'read')||has(source,'missing'))throw new Error('presence');
+  var own=descriptor(source,'read');
+  if(own.get!==getter||own.set!==undefined||own.enumerable!==false||own.configurable!==true||descriptor(source,'missing')!==undefined||getterCalls!==phase+1)throw new Error('descriptor without getter');
+  if(set(writable,'x',2)!==true||writable.x!==2)throw new Error('ordinary set prerequisite');
+  var refused=set(writable,'x',7,blockedReceiver);
+  if(refused!==false||setterCalls!==0||writable.x!==2)throw new Error('receiver accessor refusal');
+  var parent={inherited:4},child=Object.create(parent),replacement={next:6};
+  if(getProto(child)!==parent||!has(child,'inherited')||get(child,'inherited')!==4)throw new Error('inherited presence');
+  child.temporary=1;Object.defineProperty(child,'locked',{value:8,configurable:false});
+  if(remove(child,'temporary')!==true||has(child,'temporary')||remove(child,'locked')!==false||get(child,'locked')!==8)throw new Error('delete booleans');
+  if(setProto(child,replacement)!==true||getProto(child)!==replacement||has(child,'inherited')||get(child,'next')!==6||setProto(child,child)!==false)throw new Error('prototype outcomes');
+  if(extensible(child)!==true||prevent(child)!==true||extensible(child)!==false||setProto(child,parent)!==false||setProto(child,replacement)!==true)throw new Error('extensibility outcomes');
+  backing.resize(2);
+  if(tracking.buffer!==backing||tracking.length!==2||tracking[0]!==9)throw new Error('retained live view');
+  var assigned=set(tracking,'1',{valueOf:function(){conversions++;backing.resize(1);return 7;}});
+  if(assigned!==true||conversions!==phase+1||tracking.length!==1||tracking[0]!==9||tracking[1]!==undefined)throw new Error('resize during value conversion');
+  status.data=value+' | '+refused+' | '+conversions+','+tracking.length+' | nine';
+}
+exercise(17,0);document.body.setAttribute('data-phase','0');
+marker.onclick=function(){
+  originalReceiver.value=23;exercise(23,1);
+  word.data='Changed';title.data='Reflect changed';marker.style.backgroundColor='blue';
+  document.body.setAttribute('data-phase','1');
+};
+</script></body></html>

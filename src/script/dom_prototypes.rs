@@ -58,6 +58,7 @@ pub(super) const PREFIX: &str = "DOM.Interface.";
 pub(super) const BOOTSTRAP_OBJECTS: usize = 351
     + object_has_own::METADATA_OBJECTS
     + typed_array::METADATA_OBJECTS
+    + reflect_properties_install::METADATA_OBJECTS
     + 2 * (INTERFACES.len() - 1)
     + 5
     + processing_instruction::METADATA_OBJECTS
