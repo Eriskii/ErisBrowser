@@ -29,9 +29,13 @@ read-only layout and image-source mutations add no fetching.
 
 [Bounded tiled raster painting](docs/tiled-image-raster.md) adds a display-list
 primitive for already decoded images, with independent axis repetition,
-positioned tiles and rounded clipping. It uses center-based nearest sampling
-and whole-frame software fallback. URL backgrounds now consume this primitive;
-the paint command itself performs no fetching or decoding.
+positioned tiles and rounded clipping. It uses center-based nearest sampling.
+The [Native background follow-up](docs/vulkan-backgrounds.md) admits square-corner
+raster backgrounds, including alpha and opacity groups, through CPU-prepared
+lookup tables and the existing GPU image shaders. Rounded backgrounds retain
+whole-frame software fallback. URL backgrounds consume this primitive; the paint
+command itself performs no fetching or decoding. Try the
+[clickable background example](examples/vulkan-backgrounds.html).
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

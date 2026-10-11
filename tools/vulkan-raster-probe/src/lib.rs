@@ -11,6 +11,8 @@ pub use eris_raster_core::{
 
 pub mod alpha_fixtures;
 #[cfg(feature = "browser-bridge")]
+pub mod background_fixtures;
+#[cfg(feature = "browser-bridge")]
 pub mod browser_adapter;
 #[cfg(feature = "browser-bridge")]
 pub mod browser_fixtures;

@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8">
+<title id="heading">Repeated image background</title>
+<style>
+html,body { margin:0; background:white }
+#board { position:absolute; left:8px; top:8px; width:32px; height:16px;
+  background:#eee url(background-tile.png) 0 0 / 8px 8px repeat }
+#fixed { position:fixed; left:56px; top:8px; width:8px; height:8px;
+  background:url(background-tile.png) 0 0 / 4px 4px repeat }
+</style>
+<div id="board" title="Click to position a single tile" onclick="this.style.backgroundRepeat='no-repeat';this.style.backgroundPosition='right bottom';document.getElementById('heading').firstChild.data='Positioned image background'"></div>
+<div id="fixed" title="Fixed repeating tile"></div>

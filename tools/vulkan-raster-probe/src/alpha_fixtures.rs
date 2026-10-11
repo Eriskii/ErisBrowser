@@ -587,6 +587,9 @@ mod tests {
                     Command::Unsupported(_) => panic!("unsupported command in positive fixture"),
                     Command::Glyph { .. } => panic!("glyph command in legacy alpha fixture"),
                     Command::ScreenImage { .. } => panic!("screen image in legacy alpha fixture"),
+                    Command::BackgroundImage { .. } => {
+                        panic!("background image in legacy alpha fixture")
+                    }
                     Command::PushOpacity(_) | Command::PopOpacity => {
                         panic!("native opacity command in legacy Probe fixture")
                     }

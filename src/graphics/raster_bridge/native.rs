@@ -8,8 +8,8 @@ use crate::graphics::{
     text_masks::{self, MaskInfo, MaskKey, Session, TextRun},
 };
 use eris_raster_core::{
-    MAX_MASK_COVERAGE_BYTES, MAX_NATIVE_PHASES, MAX_ROW_ENTRIES, PARAM_STRIDE, Phase, Profile,
-    SourceMask,
+    BackgroundImageGeometry, MAX_MASK_COVERAGE_BYTES, MAX_NATIVE_PHASES, MAX_ROW_ENTRIES,
+    PARAM_STRIDE, Phase, Profile, SourceMask,
     rounded::{RoundedTile, RoundedTiles, RoundedTilesCoverage, RoundedTilesDisposition},
     scope::CoordinateState,
 };
@@ -226,8 +226,35 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
             let location = Some(index);
             let leaf = |error| NativeFallback::leaf(error, Some(phase));
             match command {
-                DrawCommand::BackgroundImage { .. } => {
-                    return Err(at(FallbackKind::UnsupportedBackgroundImage, phase, index));
+                DrawCommand::BackgroundImage {
+                    rect,
+                    tile,
+                    radius,
+                    key,
+                    ..
+                } => {
+                    if !bounded_scalar(*radius) {
+                        return Err(at(FallbackKind::InvalidGeometry, phase, index));
+                    }
+                    // Rounded coverage is not separable into X/Y lookup tables.
+                    // Refuse even missing/offscreen/suppressed commands before
+                    // any image table, font mask or source payload preparation.
+                    if *radius != 0.0 {
+                        return Err(at(FallbackKind::UnsupportedBackgroundImage, phase, index));
+                    }
+                    validate_rect(convert_rect(*rect), location).map_err(leaf)?;
+                    validate_rect(convert_rect(*tile), location).map_err(leaf)?;
+                    if tile.width <= 0.0 || tile.height <= 0.0 {
+                        return Err(at(FallbackKind::InvalidGeometry, phase, index));
+                    }
+                    add_key(
+                        key.len(),
+                        &mut counts.command_key_bytes,
+                        MAX_COMMAND_KEY_BYTES,
+                        location,
+                    )
+                    .map_err(leaf)?;
+                    counts.image_commands += 1;
                 }
                 DrawCommand::LinearGradient {
                     rect,
@@ -365,6 +392,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                 command,
                 DrawCommand::Rect { .. }
                     | DrawCommand::Image { .. }
+                    | DrawCommand::BackgroundImage { .. }
                     | DrawCommand::LinearGradient { .. }
                     | DrawCommand::PushClip { .. }
                     | DrawCommand::PopClip
@@ -448,6 +476,7 @@ fn geometry_pixel_work(
                 command,
                 DrawCommand::Rect { .. }
                     | DrawCommand::Image { .. }
+                    | DrawCommand::BackgroundImage { .. }
                     | DrawCommand::LinearGradient { .. }
             )
         }) {
@@ -462,8 +491,26 @@ fn geometry_pixel_work(
             let slot = ordinal;
             ordinal += 1;
             let scope = match command {
-                DrawCommand::BackgroundImage { .. } => {
-                    unreachable!("preflight refused background images")
+                DrawCommand::BackgroundImage {
+                    rect, tile, repeat, ..
+                } => {
+                    let geometry = BackgroundImageGeometry::new(
+                        target,
+                        convert_rect(*rect),
+                        convert_rect(*tile),
+                        *repeat,
+                        &state,
+                    )
+                    .map_err(|_| at(FallbackKind::InvalidGeometry, phase, index))?;
+                    // Preserve Canvas's full candidate tariff and prepay the
+                    // extra per-axis LUT work before source packing. Missing,
+                    // transparent and suppressed sources keep this conservative
+                    // upper bound even if no actual LUT is later emitted.
+                    total = total
+                        .checked_add(geometry.loop_work)
+                        .and_then(|work| work.checked_add(geometry.lut_work))
+                        .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                    continue;
                 }
                 DrawCommand::Rect { rect, .. } => {
                     let offset = state.offset();
@@ -781,6 +828,9 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
         (MAX_SOURCE_ENTRIES, size_of::<RasterImage>()),
         (2, size_of::<GradientReservation>()),
         (1, size_of::<OpaqueGradient<'_>>()),
+        // Background geometry is stack metadata, never a generated raster.
+        // Bound both return-value/caller copies during the charged prepass.
+        (2, size_of::<BackgroundImageGeometry>()),
         // ResolvedGradient: <=32 five-f64 stops plus bounded geometry/header.
         (32, 5 * size_of::<f64>()),
         (1, 256),
@@ -892,7 +942,9 @@ pub fn plan_native_scene(
     let mut missing_images = 0;
     for phase in phases {
         for command in phase.commands {
-            if let DrawCommand::Image { key, .. } = command {
+            if let DrawCommand::Image { key, .. } | DrawCommand::BackgroundImage { key, .. } =
+                command
+            {
                 if let Some(image) = find_image(&entries, key) {
                     image_ids[ordinal] = Some(source_id(&mut unique, image));
                 } else {
@@ -981,8 +1033,20 @@ pub fn plan_native_scene(
             let gradient_window = gradients.windows[ordinal];
             ordinal += 1;
             let lowered_command = match command {
-                DrawCommand::BackgroundImage { .. } => {
-                    unreachable!("preflight refused background images")
+                DrawCommand::BackgroundImage {
+                    rect, tile, repeat, ..
+                } => {
+                    let Some(source) = source_image else {
+                        continue;
+                    };
+                    // Core applies the current phase/fixed offset once. Keep
+                    // the raw tile phase, separate from the paint outline.
+                    Command::BackgroundImage {
+                        rect: convert_rect(*rect),
+                        tile: convert_rect(*tile),
+                        repeat: *repeat,
+                        source,
+                    }
                 }
                 DrawCommand::Text {
                     x,
@@ -1318,3 +1382,6 @@ mod tests;
 
 #[cfg(test)]
 mod gradient_tests;
+
+#[cfg(test)]
+mod background_image_tests;

@@ -17,6 +17,8 @@ pub const MAX_ROW_ENTRIES: usize = 65_536;
 pub const MAX_LUT_ENTRIES: usize = MAX_COMMANDS * (MAX_WIDTH + MAX_HEIGHT) as usize;
 pub type Result<T> = std::result::Result<T, String>;
 
+pub mod background_image;
+pub use background_image::BackgroundImageGeometry;
 pub mod profile;
 pub use profile::Profile;
 mod opacity;
@@ -81,6 +83,14 @@ pub enum Command {
     },
     Image {
         rect: Rect,
+        source: u32,
+    },
+    /// Square-corner raster background with independent paint/tile geometry.
+    /// Both rectangles receive the active document/fixed coordinate offset.
+    BackgroundImage {
+        rect: Rect,
+        tile: Rect,
+        repeat: [bool; 2],
         source: u32,
     },
     /// An unscaled source placed in absolute framebuffer coordinates. The
@@ -301,9 +311,15 @@ impl Plan {
     }
 }
 #[derive(Clone, Copy)]
+enum ImageSampling {
+    Edge,
+    Background { repeat: [bool; 2] },
+}
+#[derive(Clone, Copy)]
 struct ImageDraft {
     rect: Rect,
     source: usize,
+    sampling: ImageSampling,
 }
 #[derive(Clone, Copy)]
 struct GlyphDraft {
@@ -658,6 +674,7 @@ pub fn native_planner_metadata_peak_bytes() -> Result<usize> {
     let counts = [
         (1, std::mem::size_of::<Plan>()),
         (1, std::mem::size_of::<PlannerDraft<'_>>()),
+        (1, std::mem::size_of::<Option<BackgroundImageGeometry>>()),
         (slots, std::mem::size_of::<PendingDraw>()),
         (slots, std::mem::size_of::<Draw>()),
         (1, std::mem::size_of::<Vec<scope::CoordinateState>>()),
@@ -819,6 +836,7 @@ impl<'a> PlannerDraft<'a> {
                 });
                 continue;
             }
+            let mut background = None;
             let (rect, color, image) = match *command {
                 Command::Unsupported(kind) => return Err(format!("unsupported {kind}")),
                 Command::Rect { rect, rgba, radius } => {
@@ -838,7 +856,35 @@ impl<'a> PlannerDraft<'a> {
                         return Err("source ID outside validated table".into());
                     }
                     let rect = rect.translated(offset);
-                    (rect, 0, Some(ImageDraft { rect, source }))
+                    (
+                        rect,
+                        0,
+                        Some(ImageDraft {
+                            rect,
+                            source,
+                            sampling: ImageSampling::Edge,
+                        }),
+                    )
+                }
+                Command::BackgroundImage {
+                    rect,
+                    tile,
+                    repeat,
+                    source,
+                } => {
+                    let geometry =
+                        BackgroundImageGeometry::new(frame, rect, tile, repeat, &coordinates)?;
+                    let source = source as usize;
+                    if sources.get(source).is_none() {
+                        return Err("source ID outside validated table".into());
+                    }
+                    let sampling = ImageDraft {
+                        rect: geometry.translated_tile,
+                        source,
+                        sampling: ImageSampling::Background { repeat },
+                    };
+                    background = Some(geometry);
+                    (rect.translated(offset), 0, Some(sampling))
                 }
                 Command::ScreenImage { x, y, source } => {
                     let source = source as usize;
@@ -848,7 +894,15 @@ impl<'a> PlannerDraft<'a> {
                     let rect =
                         Rect::new(x as f32, y as f32, image.width as f32, image.height as f32);
                     rect.validate()?;
-                    (rect, 0, Some(ImageDraft { rect, source }))
+                    (
+                        rect,
+                        0,
+                        Some(ImageDraft {
+                            rect,
+                            source,
+                            sampling: ImageSampling::Edge,
+                        }),
+                    )
                 }
                 Command::PushClip(_)
                 | Command::PopClip
@@ -864,7 +918,11 @@ impl<'a> PlannerDraft<'a> {
             // CPU opaque rectangles inside an opacity layer use blend's
             // half-open integer clip, not the opaque-root fill fast path.
             let blend = image.is_some() || color >> 24 != 255 || self.opacity.in_group();
-            let Some((x, y, width, height)) = coverage(rect, clip, frame, blend) else {
+            let bounds = match background {
+                Some(geometry) => geometry.bounds,
+                None => coverage(rect, clip, frame, blend),
+            };
+            let Some((x, y, width, height)) = bounds else {
                 continue;
             };
             let draw = Draw {
@@ -979,22 +1037,46 @@ impl<'a> PlannerDraft<'a> {
             let mut draw = item.draw;
             if let Some(image) = item.image {
                 let source = &sources[image.source];
-                let x_base = append_table(
-                    &mut input,
-                    draw.x,
-                    draw.width,
-                    image.rect.x,
-                    image.rect.width,
-                    source.width,
-                )?;
-                let y_base = append_table(
-                    &mut input,
-                    draw.y,
-                    draw.height,
-                    image.rect.y,
-                    image.rect.height,
-                    source.height,
-                )?;
+                let (x_base, y_base) = match image.sampling {
+                    ImageSampling::Edge => (
+                        append_table(
+                            &mut input,
+                            draw.x,
+                            draw.width,
+                            image.rect.x,
+                            image.rect.width,
+                            source.width,
+                        )?,
+                        append_table(
+                            &mut input,
+                            draw.y,
+                            draw.height,
+                            image.rect.y,
+                            image.rect.height,
+                            source.height,
+                        )?,
+                    ),
+                    ImageSampling::Background { repeat } => (
+                        background_image::append_table(
+                            &mut input,
+                            draw.x,
+                            draw.width,
+                            image.rect.x,
+                            image.rect.width,
+                            source.width,
+                            repeat[0],
+                        )?,
+                        background_image::append_table(
+                            &mut input,
+                            draw.y,
+                            draw.height,
+                            image.rect.y,
+                            image.rect.height,
+                            source.height,
+                            repeat[1],
+                        )?,
+                    ),
+                };
                 draw.image = Some(ImageParameters {
                     source_base: bases[image.source],
                     source_width: source.width,
@@ -1092,3 +1174,6 @@ mod identity_image_tests;
 
 #[cfg(test)]
 mod screen_image_tests;
+
+#[cfg(test)]
+mod background_image_tests;

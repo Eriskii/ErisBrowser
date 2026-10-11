@@ -33,6 +33,22 @@ fn malformed_images() -> ImageStore {
     images
 }
 
+// The two Probe routes still reject every BackgroundImage. Native now
+// admits square corners, so preserve these whole-frame refusal witnesses with
+// an explicit rounded clone; original Probe inputs and Canvas literals stay exact.
+fn rounded_native(commands: &[DrawCommand]) -> Vec<DrawCommand> {
+    commands
+        .iter()
+        .cloned()
+        .map(|mut command| {
+            if let DrawCommand::BackgroundImage { radius, .. } = &mut command {
+                *radius = 1.0;
+            }
+            command
+        })
+        .collect()
+}
+
 fn assert_three_refuse(commands: &[DrawCommand], images: &ImageStore, index: usize) {
     let frame = Frame::new(4, 2, 0xffffff);
     let fonts = Fonts::new();
@@ -51,7 +67,10 @@ fn assert_three_refuse(commands: &[DrawCommand], images: &ImageStore, index: usi
     assert_eq!(
         native::plan_native_scene(
             frame,
-            &[native::NativePhase { frame, commands }],
+            &[native::NativePhase {
+                frame,
+                commands: &rounded_native(commands)
+            }],
             images,
             &fonts,
         )
@@ -129,7 +148,7 @@ fn background_image_native_refusal_reports_original_phase_inside_suppressed_scop
         },
         native::NativePhase {
             frame,
-            commands: &hidden,
+            commands: &rounded_native(&hidden),
         },
         native::NativePhase {
             frame,
@@ -183,7 +202,7 @@ fn background_image_fonts_and_native_refuse_before_preceding_text_materializes()
             frame,
             &[native::NativePhase {
                 frame,
-                commands: &commands
+                commands: &rounded_native(&commands)
             }],
             &images,
             &fonts
@@ -263,7 +282,8 @@ fn background_image_refusal_preserves_earlier_invalid_and_cheap_store_guards() {
         plan_display_list_with_fonts(&commands, &sparse, frame, &Fonts::new()).unwrap_err(),
         expected
     );
-    // Native already checks all command structure before the image table guard.
+    // Native still checks command structure first. This valid square background
+    // now reaches the unchanged image-table capacity guard.
     assert_eq!(
         native::plan_native_scene(
             frame,
@@ -276,9 +296,9 @@ fn background_image_refusal_preserves_earlier_invalid_and_cheap_store_guards() {
         )
         .unwrap_err(),
         native::NativeFallback {
-            kind: FallbackKind::UnsupportedBackgroundImage,
-            phase_index: Some(0),
-            command_index: Some(0)
+            kind: FallbackKind::ImageStoreLimit,
+            phase_index: None,
+            command_index: None
         }
     );
 }
