@@ -933,6 +933,7 @@ struct Fragment {
     boxes: Vec<BoxGeometry>,
     positioned: Vec<PositionJob>,
     rounded_border: bool,
+    gradient: bool,
 }
 
 enum InlineKind {
@@ -1018,6 +1019,7 @@ struct Engine<'a> {
     commands_created: usize,
     open_clips: usize,
     canvas_background_node: Option<NodeId>,
+    inline_gradients: bool,
     fallback: ComputedStyle,
     disclosure_hidden: Vec<bool>,
 }
@@ -1038,14 +1040,15 @@ pub fn layout(
     let html = doc.first_html_element("html");
     let canvas_background_node = html
         .filter(|id| {
-            styles
-                .get(*id)
-                .is_some_and(|style| style.background_color.a > 0)
+            styles.get(*id).is_some_and(|style| {
+                style.background_color.a > 0 || style.background_image.is_some()
+            })
         })
         .or_else(|| {
             doc.first_html_element("body").filter(|id| {
                 styles.get(*id).is_some_and(|style| {
-                    style.display != Display::None && style.background_color.a > 0
+                    style.display != Display::None
+                        && (style.background_color.a > 0 || style.background_image.is_some())
                 })
             })
         });
@@ -1081,9 +1084,11 @@ pub fn layout(
         commands_created: 0,
         open_clips: 0,
         canvas_background_node,
+        inline_gradients: false,
         fallback: ComputedStyle::default(),
         disclosure_hidden: doc.disclosure_hidden_mask(),
     };
+    let mut canvas_gradient = None;
     if let Some(id) = canvas_background_node {
         // A propagated body background belongs to the root element's canvas
         // background group, including the root's opacity, not body's opacity.
@@ -1094,6 +1099,16 @@ pub fn layout(
             color: style.background_color,
             radius: 0.0,
         });
+        if engine.style(id).background_image.is_some() {
+            let index = engine.commands.len();
+            if engine.push(DrawCommand::Rect {
+                rect: Rect::default(),
+                color: Color::TRANSPARENT,
+                radius: 0.0,
+            }) {
+                canvas_gradient = Some(index);
+            }
+        }
         engine.paint_owner.node = doc.root;
     }
     let size = if doc.nodes.get(doc.root).is_some() {
@@ -1114,6 +1129,22 @@ pub fn layout(
     {
         rect.height = content_height;
     }
+    if let (Some(index), Some(source)) = (canvas_gradient, canvas_background_node) {
+        let root = html.unwrap_or(source);
+        if let Some(tile) = engine.canvas_gradient_tile(root)
+            && let Some(gradient) = engine.style(source).background_image.clone()
+        {
+            engine.commands[index] = DrawCommand::LinearGradient {
+                rect: rect(0.0, 0.0, viewport.width, content_height),
+                tile,
+                radius: 0.0,
+                gradient,
+                current_color: engine.style(root).color,
+                stop_scale: 1.0,
+            };
+        }
+    }
+    engine.finish_inline_gradients();
     engine.restack();
     engine.commands.retain(|command| match command {
         DrawCommand::Rect { rect, color, .. } => {
@@ -1130,6 +1161,20 @@ pub fn layout(
 }
 
 impl Engine<'_> {
+    fn canvas_gradient_tile(&mut self, root: NodeId) -> Option<Rect> {
+        // Root geometry is appended after its descendants. Pay the complete
+        // possible scan, retaining other paint work when admission refuses.
+        let cost = self.boxes.len();
+        if cost > self.position_work_left {
+            return None;
+        }
+        self.position_work_left -= cost;
+        self.boxes
+            .iter()
+            .find(|g| g.node == root && !g.inline)
+            .map(|g| g.padding)
+    }
+
     fn html_tag(&self, id: NodeId) -> Option<&str> {
         (self.doc.namespace(id) == Some(Namespace::Html))
             .then(|| self.doc.tag(id))
@@ -1508,8 +1553,13 @@ impl Engine<'_> {
         });
         self.flow_height_reference = definite_height.map(|height| (height - extras).max(0.0));
         let paint_start = self.commands.len();
+        let gradient = if self.canvas_background_node == Some(id) {
+            None
+        } else {
+            style.background_image.clone()
+        };
         // Reserve paint slots before descendants, then fill in the height.
-        for _ in 0..5 {
+        for _ in 0..5 + usize::from(gradient.is_some()) {
             self.push(DrawCommand::Rect {
                 rect: rect(x, y, 0.0, 0.0),
                 color: rgba(0, 0, 0, 0),
@@ -1724,9 +1774,46 @@ impl Engine<'_> {
                 };
             }
         }
-        for (offset, command) in replacements.into_iter().enumerate() {
-            if let Some(slot) = self.commands.get_mut(paint_start + offset) {
-                *slot = command;
+        if let Some(gradient) = gradient {
+            let tile = rect(
+                x + border.left,
+                y + border.top,
+                width - border.horizontal(),
+                height - border.vertical(),
+            );
+            let rounded = self.rounded_border(id);
+            let command = DrawCommand::LinearGradient {
+                rect: if rounded {
+                    tile
+                } else {
+                    rect(x, y, width, height)
+                },
+                tile,
+                radius: if rounded {
+                    (style.border_radius - border.top).max(0.0)
+                } else {
+                    style.border_radius
+                },
+                gradient,
+                current_color: style.color,
+                stop_scale: 1.0,
+            };
+            let [background, top, right, bottom, left] = replacements;
+            let commands = if rounded {
+                [background, top, command, right, bottom, left]
+            } else {
+                [background, command, top, right, bottom, left]
+            };
+            for (offset, command) in commands.into_iter().enumerate() {
+                if let Some(slot) = self.commands.get_mut(paint_start + offset) {
+                    *slot = command;
+                }
+            }
+        } else {
+            for (offset, command) in replacements.into_iter().enumerate() {
+                if let Some(slot) = self.commands.get_mut(paint_start + offset) {
+                    *slot = command;
+                }
             }
         }
         self.hits[hit_start].rect.height = height;
@@ -2279,6 +2366,12 @@ impl Engine<'_> {
                             color.a > 0 && rect.width > 0.0 && rect.height > 0.0
                         }
                         DrawCommand::Text { text, color, .. } => !text.is_empty() && color.a > 0,
+                        DrawCommand::LinearGradient { rect, tile, .. } => {
+                            rect.width > 0.0
+                                && rect.height > 0.0
+                                && tile.width > 0.0
+                                && tile.height > 0.0
+                        }
                         _ => true,
                     };
                     if visible {
@@ -2455,6 +2548,8 @@ impl Engine<'_> {
             boxes: self.boxes.split_off(box_start),
             positioned: self.positioned.split_off(positioned_start),
             rounded_border: self.rounded_border(id),
+            gradient: self.canvas_background_node != Some(id)
+                && self.style(id).background_image.is_some(),
         }
     }
 
@@ -2463,7 +2558,20 @@ impl Engine<'_> {
         let border = self.borders(id);
         style.border_radius > 0.0
             && self.canvas_background_node != Some(id)
-            && style.background_color.a == 255
+            && if let Some(gradient) = &style.background_image {
+                style.border_color.a == 255
+                    && (style.background_color.a == 255
+                        || !gradient.stops.is_empty()
+                            && gradient.stops.iter().all(|stop| {
+                                use crate::graphics::gradient::GradientColor;
+                                match stop.color {
+                                    GradientColor::Color(color) => color.a == 255,
+                                    GradientColor::CurrentColor => style.color.a == 255,
+                                }
+                            }))
+            } else {
+                style.background_color.a == 255
+            }
             && border.top > 0.0
             && border.top == border.right
             && border.top == border.bottom
@@ -3060,7 +3168,114 @@ impl Engine<'_> {
                 fixed: false,
                 inline: true,
             });
+            self.paint_inline_gradient(id, area);
             ancestor = self.doc.nodes[id].parent;
+        }
+    }
+
+    fn paint_inline_gradient(&mut self, id: NodeId, area: Rect) {
+        if self.canvas_background_node == Some(id) || area.width <= 0.0 || area.height <= 0.0 {
+            return;
+        }
+        let style = self.style(id);
+        let Some(gradient) = style.background_image.clone() else {
+            return;
+        };
+        let (color, current_color, radius) =
+            (style.background_color, style.color, style.border_radius);
+        // Reserve the real fragment clip, both background layers and its closer
+        // together. The full sliced strip is resolved after all fragment moves.
+        if self.commands_created + self.open_clips + 4 > MAX_COMMANDS {
+            return;
+        }
+        let old_owner = self.paint_owner;
+        self.paint_owner = PaintOwner {
+            node: id,
+            background: true,
+        };
+        self.push(DrawCommand::PushClip { rect: area });
+        self.push(DrawCommand::Rect {
+            rect: area,
+            color,
+            radius,
+        });
+        self.push(DrawCommand::LinearGradient {
+            rect: area,
+            // A negative width is private pending state, distinct from a real
+            // zero-width positioning box. It is never admitted to paint.
+            tile: Rect {
+                width: -1.0,
+                ..Rect::default()
+            },
+            radius,
+            gradient,
+            current_color,
+            stop_scale: 1.0,
+        });
+        self.push(DrawCommand::PopClip);
+        self.inline_gradients = true;
+        self.paint_owner = old_owner;
+    }
+
+    fn finish_inline_gradients(&mut self) {
+        if !self.inline_gradients || self.doc.nodes.len() > MAX_VISITS {
+            return;
+        }
+        // DOM and command limits bound the table and both complete passes. A
+        // refused preparation leaves pending tiles invisible, not restarted
+        // independently at every token. Color-only lists do none of this work.
+        let cost = self
+            .commands
+            .len()
+            .saturating_mul(3)
+            .saturating_add(self.doc.nodes.len());
+        if cost > self.position_work_left {
+            return;
+        }
+        self.position_work_left -= cost;
+        let mut metrics = Vec::new();
+        if metrics.try_reserve_exact(self.doc.nodes.len()).is_err() {
+            return;
+        }
+        metrics.resize(self.doc.nodes.len(), (0.0f64, 0.0f64));
+        for (command, owner) in self.commands.iter().zip(&self.owners) {
+            if let DrawCommand::LinearGradient { rect, tile, .. } = command
+                && tile.width < 0.0
+                && let Some((width, _)) = metrics.get_mut(owner.node)
+            {
+                *width += f64::from(rect.width);
+            }
+        }
+        for index in 0..self.commands.len() {
+            let area = match &self.commands[index] {
+                DrawCommand::LinearGradient { rect, tile, .. } if tile.width < 0.0 => *rect,
+                _ => continue,
+            };
+            let (width, advance) = &mut metrics[self.owners[index].node];
+            if !width.is_finite() || *width <= 0.0 || *width > f64::from(MAX_EXTENT) {
+                continue;
+            }
+            let left = f64::from(area.x) - *advance;
+            *advance += f64::from(area.width);
+            if !left.is_finite() || left.abs() > f64::from(MAX_EXTENT) {
+                continue;
+            }
+            // Each piece uses its own cross-axis extent (CSS Break3 slice).
+            let strip = Rect {
+                x: left as f32,
+                y: area.y,
+                width: *width as f32,
+                height: area.height,
+            };
+            if let DrawCommand::LinearGradient { rect, tile, .. } = &mut self.commands[index] {
+                *rect = strip;
+                *tile = strip;
+            }
+            if let Some(DrawCommand::Rect { rect, .. }) =
+                index.checked_sub(1).and_then(|i| self.commands.get_mut(i))
+            {
+                *rect = strip;
+            }
         }
     }
 
@@ -3150,7 +3365,9 @@ impl Engine<'_> {
                     );
                     self.record_inline_boxes(item.node, item_rect);
                     let owner_style = self.style(item.owner);
-                    if owner_style.background_color.a > 0 && owner_style.display == Display::Inline
+                    if owner_style.background_color.a > 0
+                        && owner_style.display == Display::Inline
+                        && owner_style.background_image.is_none()
                     {
                         self.push(DrawCommand::Rect {
                             rect: item_rect,
@@ -4035,7 +4252,7 @@ impl Engine<'_> {
         let mut cursor = y + caption_height + spacing;
         for (row, &id) in rows.iter().enumerate() {
             row_y.push(cursor);
-            let style = self.style(id);
+            let style = self.style(id).clone();
             let row_rect = rect(
                 x + spacing,
                 cursor,
@@ -4053,6 +4270,16 @@ impl Engine<'_> {
                 color: background,
                 radius: 0.0,
             });
+            if let Some(gradient) = style.background_image.clone() {
+                self.push(DrawCommand::LinearGradient {
+                    rect: row_rect,
+                    tile: row_rect,
+                    radius: 0.0,
+                    gradient,
+                    current_color: style.color,
+                    stop_scale: 1.0,
+                });
+            }
             self.paint_owner = saved_owner;
             self.push_hit(HitRegion {
                 fixed: false,
@@ -4074,12 +4301,15 @@ impl Engine<'_> {
                 "bottom" | "text-bottom" => extra,
                 _ => 0.0,
             };
-            let content_start =
-                if matches!(fragment.commands.get(5), Some(DrawCommand::PushClip { .. })) {
-                    6
-                } else {
-                    5
-                };
+            let paint_slots = 5 + usize::from(fragment.gradient);
+            let content_start = if matches!(
+                fragment.commands.get(paint_slots),
+                Some(DrawCommand::PushClip { .. })
+            ) {
+                paint_slots + 1
+            } else {
+                paint_slots
+            };
             for command in fragment.commands.iter_mut().skip(content_start) {
                 translate(command, 0.0, offset);
             }
@@ -4942,6 +5172,12 @@ fn translate_fragment(fragment: &mut Fragment, dx: f32, dy: f32) {
 
 fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
     match command {
+        DrawCommand::LinearGradient { rect, tile, .. } => {
+            for area in [rect, tile] {
+                area.x = finite(area.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+                area.y = finite(area.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            }
+        }
         DrawCommand::Rect { rect, .. }
         | DrawCommand::Image { rect, .. }
         | DrawCommand::PushClip { rect } => {
@@ -4981,7 +5217,30 @@ fn stretch_fragment(fragment: &mut Fragment, height: f32) {
         g.padding.height += extra;
         g.content.height += extra;
     }
-    for (index, command) in fragment.commands.iter_mut().take(5).enumerate() {
+    let paint_slots = 5 + usize::from(fragment.gradient);
+    for (index, command) in fragment.commands.iter_mut().take(paint_slots).enumerate() {
+        if fragment.gradient {
+            match command {
+                DrawCommand::LinearGradient { rect, tile, .. } => {
+                    rect.height += height - old_height;
+                    tile.height += height - old_height;
+                }
+                DrawCommand::Rect { rect, .. } if fragment.rounded_border => {
+                    if index == 0 {
+                        rect.height = height;
+                    } else if index == 1 {
+                        rect.height += height - old_height;
+                    }
+                }
+                DrawCommand::Rect { rect, .. } => match index {
+                    0 | 3 | 5 => rect.height = height,
+                    4 => rect.y += height - old_height,
+                    _ => {}
+                },
+                _ => {}
+            }
+            continue;
+        }
         if let DrawCommand::Rect { rect, .. } = command {
             match index {
                 1 if fragment.rounded_border => rect.height += height - old_height,
@@ -4991,7 +5250,7 @@ fn stretch_fragment(fragment: &mut Fragment, height: f32) {
             }
         }
     }
-    if let Some(DrawCommand::PushClip { rect }) = fragment.commands.get_mut(5) {
+    if let Some(DrawCommand::PushClip { rect }) = fragment.commands.get_mut(paint_slots) {
         rect.height += height - old_height;
     }
     fragment.size.height = height;
@@ -5020,6 +5279,9 @@ fn fit_text(text: &str, width: f32, measure: impl Fn(&str) -> f32) -> String {
     }
     single_line[..boundaries[low]].to_owned()
 }
+
+#[cfg(test)]
+mod gradient_tests;
 
 #[cfg(test)]
 mod tests {
@@ -6997,6 +7259,26 @@ mod tests {
                 | DrawCommand::PushClip { rect } => {
                     vec![rect.x, rect.y, rect.width, rect.height]
                 }
+                DrawCommand::LinearGradient {
+                    rect,
+                    tile,
+                    radius,
+                    stop_scale,
+                    ..
+                } => {
+                    vec![
+                        rect.x,
+                        rect.y,
+                        rect.width,
+                        rect.height,
+                        tile.x,
+                        tile.y,
+                        tile.width,
+                        tile.height,
+                        *radius,
+                        *stop_scale,
+                    ]
+                }
                 DrawCommand::Text { x, y, size, .. } => vec![*x, *y, *size],
                 DrawCommand::Line {
                     x1,
@@ -7333,6 +7615,7 @@ mod object_fit_tests {
             commands_created: 0,
             open_clips: 0,
             canvas_background_node: None,
+            inline_gradients: false,
             fallback: ComputedStyle::default(),
             disclosure_hidden: doc.disclosure_hidden_mask(),
         }

@@ -471,7 +471,20 @@ fn shorthand_value(name: &str, values: &[&str]) -> String {
                 values.join(" ")
             }
         }
-        "background" => values[0].into(),
+        "background" => {
+            // A CSS-wide keyword cannot be one component of a shorthand.
+            // The identical-all-wide case was handled above.
+            if values.iter().any(|value| wide(value)) {
+                return String::new();
+            }
+            if values[1] == "none" {
+                values[0].into()
+            } else if values[0] == "transparent" {
+                values[1].into()
+            } else {
+                format!("{} {}", values[1], values[0])
+            }
+        }
         "border"
             if values
                 .as_chunks::<3>()
@@ -620,7 +633,8 @@ fn records(
     let count = css::shorthand_properties(property).map_or(1, |names| names.len());
     spend(work, count.saturating_mul(value.len() + 64) + 1)?;
     let mut expanded = Vec::new();
-    css::expand_declaration(property, value, important, &mut expanded);
+    css::expand_declaration_with_budget(property, value, important, &mut expanded, work)
+        .map_err(|_| Error::Limit)?;
     if expanded.is_empty() {
         return Ok(None);
     }
@@ -777,7 +791,9 @@ fn valid_value(property: &str, value: &str, work: &mut usize) -> Result<bool, Er
                     }
                 })
         }
-        "background" => color(value),
+        "background" => {
+            css::valid_background_property(property, value, work).map_err(|_| Error::Limit)?
+        }
         "flex" => {
             matches!(value, "auto" | "none")
                 || (1..=3).contains(&parts.len())
@@ -848,6 +864,9 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
     spend(work, value.len().saturating_mul(12) + 1)?;
     if wide(value) {
         return Ok(true);
+    }
+    if property == "background-image" {
+        return css::valid_background_property(property, value, work).map_err(|_| Error::Limit);
     }
     if matches!(property, "object-fit" | "object-position") {
         return css::valid_object_property(property, value, work).map_err(|_| Error::Limit);
@@ -1523,3 +1542,6 @@ mod tests {
         assert_eq!(ordinary.item(0), "color");
     }
 }
+
+#[cfg(test)]
+mod gradient_tests;

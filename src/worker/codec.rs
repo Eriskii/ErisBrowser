@@ -1,6 +1,10 @@
 //! Versioned length-prefixed protocol; no generic deserializer can allocate an
 //! attacker-declared collection before checking its count and remaining bytes.
 use super::{Command, Init, Reply, Snapshot};
+use crate::graphics::gradient::{
+    GradientColor, GradientDirection, GradientPosition, GradientStop, LinearGradient,
+    MAX_GRADIENT_STOPS,
+};
 use crate::{
     dom::{
         AttributeNamespace, Doctype, Document, DocumentMode, DomString, Element, MAX_DOM_BYTES,
@@ -21,6 +25,7 @@ pub(super) const MAX_REQUEST: usize = 18 * 1024 * 1024;
 const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
+const MAX_GRADIENT_BYTES: usize = 8 * 1024 * 1024;
 const MAGIC: &[u8] = b"ERWA";
 type Result<T> = std::result::Result<T, String>;
 
@@ -206,6 +211,16 @@ impl<'a> Decoder<'a> {
             Err("invalid IPC timing".into())
         } else {
             Ok(n)
+        }
+    }
+    // Gradient lengths and angles are signed. Timing's separate reader retains
+    // its original nonnegative range; neither path accepts nonfinite values.
+    fn gradient_f64(&mut self) -> Result<f64> {
+        let n = f64::from_le_bytes(self.raw(8)?.try_into().map_err(|_| "invalid f64")?);
+        if n.is_finite() {
+            Ok(n)
+        } else {
+            Err("nonfinite IPC gradient scalar".into())
         }
     }
     fn string(&mut self, maximum: usize) -> Result<String> {
@@ -465,6 +480,102 @@ pub(super) fn decode_reply(bytes: &[u8]) -> Result<Reply> {
         navigation,
     })
 }
+// Each wire command owns independent decoded data, even when the sender shares
+// an Arc. Include both Arc reference-count headers and conservative alignment
+// padding as well as the concrete stop and LinearGradient payloads.
+fn gradient_retained_bytes(count: usize) -> Option<usize> {
+    use std::mem::{align_of, size_of};
+    count.checked_mul(size_of::<GradientStop>())?.checked_add(
+        size_of::<LinearGradient>()
+            + 4 * size_of::<usize>()
+            + align_of::<GradientStop>()
+            + align_of::<LinearGradient>(),
+    )
+}
+
+fn encode_gradient(e: &mut Encoder, gradient: &LinearGradient, remaining: &mut usize) {
+    let Some(bytes) = gradient_retained_bytes(gradient.stops.len()) else {
+        e.failed = true;
+        return;
+    };
+    if !gradient.valid() || bytes > *remaining {
+        e.failed = true;
+        return;
+    }
+    *remaining -= bytes;
+    match gradient.direction {
+        GradientDirection::Angle(angle) => {
+            e.byte(0);
+            e.f64(angle);
+        }
+        GradientDirection::Corner { right, bottom } => {
+            e.byte(1);
+            e.boolean(right);
+            e.boolean(bottom);
+        }
+    }
+    e.u32(gradient.stops.len());
+    for stop in gradient.stops.iter() {
+        match stop.color {
+            GradientColor::Color(color) => {
+                e.byte(0);
+                e.color(color);
+            }
+            GradientColor::CurrentColor => e.byte(1),
+        }
+        e.boolean(stop.position.is_some());
+        if let Some(position) = stop.position {
+            e.f64(position.px);
+            e.f64(position.percent);
+        }
+    }
+}
+
+fn decode_gradient(d: &mut Decoder<'_>, remaining: &mut usize) -> Result<Arc<LinearGradient>> {
+    let direction = match d.byte()? {
+        0 => GradientDirection::Angle(d.gradient_f64()?),
+        1 => GradientDirection::Corner {
+            right: d.boolean()?,
+            bottom: d.boolean()?,
+        },
+        _ => return Err("unknown IPC gradient direction".into()),
+    };
+    let count = d.count(MAX_GRADIENT_STOPS)?;
+    if count == 0 {
+        return Err("empty IPC gradient".into());
+    }
+    let bytes = gradient_retained_bytes(count).ok_or("IPC gradient size overflow")?;
+    if bytes > *remaining {
+        return Err("IPC retained gradient budget exceeded".into());
+    }
+    // Validate every tag, optional value and finite scalar in bounded stack
+    // storage before allocating either Arc. Truncated input cannot allocate.
+    let mut stops = [GradientStop {
+        color: GradientColor::CurrentColor,
+        position: None,
+    }; MAX_GRADIENT_STOPS];
+    for stop in &mut stops[..count] {
+        stop.color = match d.byte()? {
+            0 => GradientColor::Color(d.color()?),
+            1 => GradientColor::CurrentColor,
+            _ => return Err("unknown IPC gradient color".into()),
+        };
+        stop.position = if d.boolean()? {
+            Some(GradientPosition {
+                px: d.gradient_f64()?,
+                percent: d.gradient_f64()?,
+            })
+        } else {
+            None
+        };
+    }
+    *remaining -= bytes;
+    Ok(Arc::new(LinearGradient {
+        direction,
+        stops: Arc::from(&stops[..count]),
+    }))
+}
+
 fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
     e.u64(s.generation);
     e.u64(s.processed_edit_sequence);
@@ -595,6 +706,7 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
         });
     }
     e.u32(s.layout.commands.len());
+    let mut gradient_bytes = MAX_GRADIENT_BYTES;
     for command in &s.layout.commands {
         match command {
             DrawCommand::PushClip { rect } => {
@@ -643,6 +755,22 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
                 e.byte(4);
                 e.rect(*rect);
                 e.string(key);
+            }
+            DrawCommand::LinearGradient {
+                rect,
+                tile,
+                radius,
+                gradient,
+                current_color,
+                stop_scale,
+            } => {
+                e.byte(10);
+                e.rect(*rect);
+                e.rect(*tile);
+                e.f32(*radius);
+                e.color(*current_color);
+                e.f32(*stop_scale);
+                encode_gradient(e, gradient, &mut gradient_bytes);
             }
             DrawCommand::Line {
                 x1,
@@ -878,6 +1006,7 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     let mut commands = Vec::new();
     let mut text_bytes = 8 * 1024 * 1024;
     let mut glyphs = 500_000usize;
+    let mut gradient_bytes = MAX_GRADIENT_BYTES;
     // A shared typed stack prevents closures from escaping another scope kind.
     #[derive(PartialEq)]
     enum Scope {
@@ -992,6 +1121,25 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                     return Err("unbalanced IPC opacity scopes".into());
                 }
                 DrawCommand::PopOpacity
+            }
+            10 => {
+                let rect = d.rect()?;
+                let tile = d.rect()?;
+                let radius = d.f32()?;
+                let current_color = d.color()?;
+                let stop_scale = d.f32()?;
+                if radius < 0.0 || tile.width <= 0.0 || tile.height <= 0.0 || stop_scale <= 0.0 {
+                    return Err("invalid IPC gradient geometry".into());
+                }
+                let gradient = decode_gradient(d, &mut gradient_bytes)?;
+                DrawCommand::LinearGradient {
+                    rect,
+                    tile,
+                    radius,
+                    gradient,
+                    current_color,
+                    stop_scale,
+                }
             }
             _ => return Err("unknown IPC display command".into()),
         };
@@ -1272,6 +1420,9 @@ pub(super) fn decode_image_result(bytes: &[u8], budget: usize) -> Result<Result<
     d.end()?;
     Ok(result)
 }
+
+#[cfg(test)]
+mod gradient_tests;
 
 #[cfg(test)]
 mod tests {

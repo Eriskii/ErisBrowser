@@ -139,6 +139,21 @@ fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawComma
                 rect: rect(r),
                 key: copy_payload(key, &mut key_capacity, MAX_COMMAND_KEY_BYTES)?,
             },
+            DrawCommand::LinearGradient {
+                rect: r,
+                tile,
+                radius,
+                gradient,
+                current_color,
+                stop_scale,
+            } => DrawCommand::LinearGradient {
+                rect: rect(r),
+                tile: rect(tile),
+                radius: radius * zoom,
+                gradient: Arc::clone(gradient),
+                current_color: *current_color,
+                stop_scale: stop_scale * zoom,
+            },
             DrawCommand::Line {
                 x1,
                 y1,
@@ -564,6 +579,9 @@ pub(super) fn prepare(
         selection: scene.selection,
     })
 }
+
+#[cfg(test)]
+mod gradient_tests;
 
 #[cfg(test)]
 mod tests {

@@ -392,6 +392,24 @@
       "description": "An identity width with doubled height and an identity height with doubled width each preserve one-pixel source sentinels independently.",
       "test": "image-identity-mixed-axes.html",
       "reference": "image-identity-mixed-axes-ref.html"
+    },
+    {
+      "name": "linear-gradient-colors",
+      "description": "Legacy sRGB interpolation, premultiplied transparency, double stops, fixup, corner geometry and currentColor against literal rectangles.",
+      "test": "linear-gradient-colors.html",
+      "reference": "linear-gradient-colors-ref.html"
+    },
+    {
+      "name": "linear-gradient-background-box",
+      "description": "Padding-box sizing repeats under transparent borders; color/image shorthand resets and longhand preservation remain independent.",
+      "test": "linear-gradient-background-box.html",
+      "reference": "linear-gradient-background-box-ref.html"
+    },
+    {
+      "name": "linear-gradient-canvas",
+      "description": "The root image suppresses body propagation and repeats its forty-pixel tile across the viewport canvas.",
+      "test": "linear-gradient-canvas.html",
+      "reference": "linear-gradient-canvas-ref.html"
     }
   ]
 }

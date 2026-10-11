@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These sixty-five self-authored cases compare Eris rendering against independently
+These sixty-eight self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared
@@ -53,3 +53,9 @@ rectangles, covering one-pixel rows and columns, offset clipping, and each
 identity axis beside a scaled axis. The
 [identity-sampling follow-up](../../docs/image-fitting.md#identity-sampling-follow-up)
 records the distinct sampling fix and retained predecessor failures.
+
+Three linear-gradient cases compare interpolated and hard-edge colors,
+premultiplied transparency, default background boxes and canvas propagation
+against literal rectangles. The [gradient checkpoint](../../docs/linear-gradients.md)
+records the bounded syntax, software evaluator and explicit native raster
+fallback. These add no general CSS Images or color-management claim.

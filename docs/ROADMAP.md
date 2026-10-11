@@ -32,6 +32,14 @@ Later symbols can increase charged scratch storage, and late numeric fallback
 still pays for discarded work. The local benchmark has small mixed median
 changes and several p95 regressions; broader interpreter performance remains open.
 
+[Linear gradient backgrounds](linear-gradients.md) now have a bounded software
+implementation for one legacy-sRGB layer. CSS declarations/supports/style setters,
+default background geometry, worker transport and explicit whole-scene native
+fallback are included. Broader gradient syntax, author background geometry
+controls, color spaces and native GPU gradient rendering remain open. All
+68 self-authored references pass after the canvas currentColor correction; the
+full Rust suites and strict checks also pass.
+
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four
 component positions. Paint fitting leaves box layout and hit areas intact, with

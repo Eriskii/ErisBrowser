@@ -4,6 +4,12 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Linear gradient backgrounds](docs/linear-gradients.md) add one bounded
+`linear-gradient()` layer with legacy sRGB colors, alpha, physical directions
+and length/percentage stops. The software painter evaluates it directly, with
+shared CSS/supports/style validation and explicit whole-scene Vulkan raster
+fallback. Try the [clickable example](examples/linear-gradient.html).
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;

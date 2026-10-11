@@ -203,6 +203,9 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
             let location = Some(index);
             let leaf = |error| NativeFallback::leaf(error, Some(phase));
             match command {
+                DrawCommand::LinearGradient { .. } => {
+                    return Err(at(FallbackKind::UnsupportedGradient, phase, index));
+                }
                 DrawCommand::Rect { rect, radius, .. } => {
                     validate_rect(convert_rect(*rect), location).map_err(leaf)?;
                     if !bounded_scalar(*radius) {
@@ -410,6 +413,9 @@ fn geometry_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResul
                 DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
                 DrawCommand::PopOpacity => Command::PopOpacity,
                 DrawCommand::Text { .. } | DrawCommand::Line { .. } => continue,
+                DrawCommand::LinearGradient { .. } => {
+                    unreachable!("preflight refused gradients")
+                }
             };
             state
                 .apply(&scope)
@@ -948,6 +954,9 @@ pub fn plan_native_scene(
                 DrawCommand::PopFixed => Command::PopFixed,
                 DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
                 DrawCommand::PopOpacity => Command::PopOpacity,
+                DrawCommand::LinearGradient { .. } => {
+                    unreachable!("preflight refused gradients")
+                }
             };
             state
                 .apply(&lowered_command)

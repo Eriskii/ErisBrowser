@@ -1,0 +1,1059 @@
+{
+  "archive": {
+    "bytes": 2194561,
+    "members": 551,
+    "path": "linear-gradients.tar.gz",
+    "sha256": "ca82b5ef064c5ec2f29767f50b3b61f43c832a6996672c0bc84e3db0f41f821a"
+  },
+  "base": "530022279229c7fa7c1cd497929c07f36e712797",
+  "candidate": {
+    "build_receipt": "/tmp/eris-linear-gradient-1/validation/candidate-browser-build-2.json",
+    "bytes": 61972560,
+    "path": "/tmp/eris-linear-gradient-1/eris-browser-final",
+    "sha256": "7034c8f037db18534f135d1d301c48d0906f7048e53734fb8c0492b6e2c8ddd9",
+    "source": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+    "source_sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6",
+    "strip_receipt": "/tmp/eris-linear-gradient-1/validation/candidate-browser-strip-2.json"
+  },
+  "checks": {
+    "baseline-reftests-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-linear-gradient-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-image-identity-1/eris-browser-candidate",
+        "--manifest",
+        "/tmp/eris-linear-gradient-preparation-1/root/only-new.json",
+        "--output-dir",
+        "/tmp/eris-linear-gradient-1/reftests-baseline-1"
+      ],
+      "expected_exit": 1,
+      "log": {
+        "bytes": 2503,
+        "path": "/tmp/eris-linear-gradient-1/validation/baseline-reftests-1.log",
+        "sha256": "b91a17655f8d5552757a6cb45533379f09916b45efc8931933d08e7e49bbaf23"
+      },
+      "receipt": {
+        "bytes": 500,
+        "path": "/tmp/eris-linear-gradient-1/validation/baseline-reftests-1.json",
+        "sha256": "37ea147a9abdf83b776326f83905b73cf79005fab458208a2451e4cb17c2ffb8"
+      }
+    },
+    "bridge-discovery-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "graphics::raster_bridge::",
+        "--",
+        "--list"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 11674,
+        "path": "/tmp/eris-linear-gradient-1/validation/bridge-discovery-1.log",
+        "sha256": "ad2d80c41e2b855f12bf0f1a934edc02cededf2e1c6f49f8ce5544dfdbab6252"
+      },
+      "receipt": {
+        "bytes": 414,
+        "path": "/tmp/eris-linear-gradient-1/validation/bridge-discovery-1.json",
+        "sha256": "4defd45337c586784ca9a953c7690e99d8bda9f0033771dd87c7c9e19d4b70ca"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "bridge-roster-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-linear-gradient-1/check-bridge-roster.py",
+        "/tmp/eris-linear-gradient-1/validation/bridge-discovery-1.log"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 163,
+        "path": "/tmp/eris-linear-gradient-1/validation/bridge-roster-1.log",
+        "sha256": "a72540bbd9e3c7f3b8ca2d16a9cbc20693c9b755970a627f2afd1d76ea150c02"
+      },
+      "receipt": {
+        "bytes": 331,
+        "path": "/tmp/eris-linear-gradient-1/validation/bridge-roster-1.json",
+        "sha256": "460de3ee42556b11f69462af58a2996db46fead04af5acd09c17e7f93fbd6733"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "candidate-browser-build-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-build-1.log",
+        "sha256": "4cf86278c1e6d659943a46a3d7e3da429ac15be90f0f17742e24ef85228e7d3e"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-build-1.json",
+        "sha256": "17a3bed0d947a00c6cf4e5b0e0cc1677a865a66969d7b6bb004640dbd680159a"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "candidate-browser-build-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-build-2.log",
+        "sha256": "22e0df986057b9ba5be07526ac5fb348862a3dedef42108383cc3e088acbb889"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-build-2.json",
+        "sha256": "2bc1180e6d831826352cbf4f241ae3201be0c15ffb3a2eb0d93f34e6dc5797f8"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "candidate-browser-strip-1": {
+      "command": [
+        "strip",
+        "--strip-debug",
+        "/tmp/eris-linear-gradient-1/eris-browser-candidate"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-strip-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 291,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-strip-1.json",
+        "sha256": "a5ada2527c5403c860d453f32cfbf25728473b32055dc980eb8df4c769c408a3"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "candidate-browser-strip-2": {
+      "command": [
+        "strip",
+        "--strip-debug",
+        "/tmp/eris-linear-gradient-1/eris-browser-final"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-strip-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 287,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-browser-strip-2.json",
+        "sha256": "ed821be0306232154b8e630d0591f1ac7abcb1df387d2a1d162acac94fb9b24a"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "candidate-reftests-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-linear-gradient-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-linear-gradient-1/eris-browser-candidate",
+        "--output-dir",
+        "/tmp/eris-linear-gradient-1/reftests-candidate-1"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 25306,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-reftests-1.log",
+        "sha256": "0f9e62d006a3c8b975dbd8c6dce76e12d6477079c1d8beca75754516940f4f09"
+      },
+      "receipt": {
+        "bytes": 418,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-reftests-1.json",
+        "sha256": "887bf8cfab8c2f402f1d9bd114ecfb64e6088555d20ebbe5cc6e3361aaaf61ac"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "candidate-reftests-2": {
+      "command": [
+        "python3",
+        "/tmp/eris-linear-gradient-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-linear-gradient-1/eris-browser-final",
+        "--output-dir",
+        "/tmp/eris-linear-gradient-1/reftests-candidate-2"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 25303,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-reftests-2.log",
+        "sha256": "700d05b154816a324c6c142a393c7c4da69eb2445d452b41a07ab5357036e91c"
+      },
+      "receipt": {
+        "bytes": 413,
+        "path": "/tmp/eris-linear-gradient-1/validation/candidate-reftests-2.json",
+        "sha256": "165eade94dcdf68811cb711ad2f331371c197868607645a2ae8bae8cbb0b33c0"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 586,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-198-1.log",
+        "sha256": "073c8647dadd0177f0c8270089b2a4be3e98bbd299a111a2c75cdd55f3493dca"
+      },
+      "receipt": {
+        "bytes": 358,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-198-1.json",
+        "sha256": "d497b2865a83ecc8db58180aeeac272ea21e30862dbca5135d065b68b47f2cff"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "clippy-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 144,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-198-2.log",
+        "sha256": "b9fe6ccb2b0bb912d001580ffc9ee954eb59761f7bf18f5335287c322a0f4a2d"
+      },
+      "receipt": {
+        "bytes": 358,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-198-2.json",
+        "sha256": "4b2124273553598da9c889b56be57d1f420a8d5540d52e1972f72814bd87c549"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "clippy-msrv-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 240,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-msrv-1.log",
+        "sha256": "2e35668b2f81d77af329853916b8d0fdca4cbc2292a7ee507def34a10a32d0fc"
+      },
+      "receipt": {
+        "bytes": 398,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-msrv-1.json",
+        "sha256": "799d3ba5122ee77221fd0d9bb7164c85cccfd28719239e1b067c5be011285902"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "clippy-msrv-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 144,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-msrv-2.log",
+        "sha256": "06df8865668e05cc3615769f7a01921c655485a68ab8686e92124b49a1d81219"
+      },
+      "receipt": {
+        "bytes": 398,
+        "path": "/tmp/eris-linear-gradient-1/validation/clippy-msrv-2.json",
+        "sha256": "4abc19eae41066cca2d7875316386cdc11b46438d93e011f09e0e27473fd4abb"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "focused-gradient-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "gradient",
+        "--",
+        "--include-ignored",
+        "--test-threads=4",
+        "--nocapture"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 6029,
+        "path": "/tmp/eris-linear-gradient-1/validation/focused-gradient-1.log",
+        "sha256": "e71da664758df1aa2dd3e96ce437dabed64b1e6aa2110aa061d227219530937d"
+      },
+      "receipt": {
+        "bytes": 440,
+        "path": "/tmp/eris-linear-gradient-1/validation/focused-gradient-1.json",
+        "sha256": "876cd680648bb18a1606edd141115add16e7ff3390fa67504f53ad399e41c763"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-1.json",
+        "sha256": "b3b96bc61d6005cabc33dd103efb4d6a844b54f76802eabdb5a79a171ca11d1d"
+      }
+    },
+    "format-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 2,
+      "log": {
+        "bytes": 192,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-1.log",
+        "sha256": "e8916143523839a6a0f94e31c08e73c63aa1d8b0a5c6896a33fa3abac6c503d2"
+      },
+      "receipt": {
+        "bytes": 296,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-1.json",
+        "sha256": "33f78b914bc7688f6f21d3a42b01583bc342a080771cc94b97e58e62d7de739f"
+      }
+    },
+    "format-2": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 369,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-2.json",
+        "sha256": "2e85aed7c5fac0ead5228baa6236cddc66e05388927a8be110aead4c45990ced"
+      }
+    },
+    "format-3": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-3.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 368,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-3.json",
+        "sha256": "af311cd45942506c76d0e15c3a0bafd459ecd9c34fa1ca6db2d88656773e13c4"
+      }
+    },
+    "format-check-1": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-check-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 400,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-check-1.json",
+        "sha256": "7f43f2c4d4a05f18d7f43aa5d96abc8cae78aa7eaf8ef7d09673573eead14813"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "format-check-2": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-check-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 400,
+        "path": "/tmp/eris-linear-gradient-1/validation/format-check-2.json",
+        "sha256": "5ef743f94fad66056d6e9794bc7f3706425eb704e6d25e7d7e52c45d680f0776"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "full-default-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 231542,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-default-198-1.log",
+        "sha256": "413f05387a1a606b78d50571703fa3449f75007cbb5651cc80ac84c230d482c3"
+      },
+      "receipt": {
+        "bytes": 364,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-default-198-1.json",
+        "sha256": "80a518c428abb788a9c1d98e788d1fcfc12c0fc4b8da199eac5ed5814b9170a1"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "full-default-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 231656,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-default-198-2.log",
+        "sha256": "38951bb21e596c6d9a35299c9abc25c08cf30a0b2a8c6838bfde0e6a3711f715"
+      },
+      "receipt": {
+        "bytes": 363,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-default-198-2.json",
+        "sha256": "0b3be9d6c5958827083e5d393287b4210af38ea4b2ed1b12cf0f0d27822cc771"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "full-native-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 252387,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-native-1.log",
+        "sha256": "cde72af4bde06c90e6e62faaffa7ee920776a3de7685485b3d951e1999006505"
+      },
+      "receipt": {
+        "bytes": 397,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-native-1.json",
+        "sha256": "38d58ee7625f012c9c7ad2bde1bb9eef258cffa362162c3973358904190678d2"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-2.json",
+        "sha256": "b8b302ac503ef1625ff51bf71f898852d0a0129736a332d18c902cd9e4e2c255"
+      }
+    },
+    "full-native-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 252502,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-native-2.log",
+        "sha256": "241c415fd5d6aebe7cee757450b85e2d9cb57e9b14bdb4cdd86e69b7049e0153"
+      },
+      "receipt": {
+        "bytes": 397,
+        "path": "/tmp/eris-linear-gradient-1/validation/full-native-2.json",
+        "sha256": "07fe15a8f17c737c432fb70b609135d6703fae8d0e22379dc9fbedcccf30c052"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+        "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+      }
+    },
+    "initial-reftests-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-linear-gradient-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-linear-gradient-1/eris-browser-initial",
+        "--manifest",
+        "/tmp/eris-linear-gradient-preparation-1/root/only-new.json",
+        "--output-dir",
+        "/tmp/eris-linear-gradient-1/reftests-initial-1"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 1403,
+        "path": "/tmp/eris-linear-gradient-1/validation/initial-reftests-1.log",
+        "sha256": "015edf824942727c2f93ef9faee1bfc507342eb7e92784dd004323efe625b663"
+      },
+      "receipt": {
+        "bytes": 498,
+        "path": "/tmp/eris-linear-gradient-1/validation/initial-reftests-1.json",
+        "sha256": "addde2617b51ef4824f9b4b354cedabc85e40be6f43adaa9e1dc4741b863513b"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-1.json",
+        "sha256": "b3b96bc61d6005cabc33dd103efb4d6a844b54f76802eabdb5a79a171ca11d1d"
+      }
+    },
+    "initial-witness-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-linear-gradient-1/worktree/tools/ci_test_runner.py",
+        "/tmp/eris-linear-gradient-1/linear-gradient-witness-initial",
+        "--include-ignored",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 290,
+        "path": "/tmp/eris-linear-gradient-1/validation/initial-witness-1.log",
+        "sha256": "2e4b5290957ca22f2a4bdad65aaa29d008f3dc376a1be14037ecc2572150571b"
+      },
+      "receipt": {
+        "bytes": 408,
+        "path": "/tmp/eris-linear-gradient-1/validation/initial-witness-1.json",
+        "sha256": "443d5a580886788809ce19cdacdd9e6a6019e0e1b94c2be973c4cdf8dee8418b"
+      },
+      "source": {
+        "bytes": 56130,
+        "path": "/tmp/eris-linear-gradient-1/compiled-source-1.json",
+        "sha256": "b3b96bc61d6005cabc33dd103efb4d6a844b54f76802eabdb5a79a171ca11d1d"
+      }
+    },
+    "parent-ci-1": {
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "38118628199",
+        "--json",
+        "status,conclusion,jobs,headSha,url",
+        "--jq",
+        "{status,conclusion,headSha,url,jobs:[.jobs[]|{name,status,conclusion}]}"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 966,
+        "path": "/tmp/eris-linear-gradient-1/validation/parent-ci-1.log",
+        "sha256": "ea9509039c6ca49747fe8c9014fa0b79830ecb339fd2bb1967804c1d067e78ec"
+      },
+      "receipt": {
+        "bytes": 382,
+        "path": "/tmp/eris-linear-gradient-1/validation/parent-ci-1.json",
+        "sha256": "a56dc3a2bce03319c7e514eb5fcf76a4b83c2e66dbb18d365e118a36dc733b48"
+      }
+    },
+    "parent-ci-2": {
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "38118628199",
+        "--json",
+        "status,conclusion,headSha,url",
+        "--jq",
+        "{status,conclusion,headSha,url}"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 171,
+        "path": "/tmp/eris-linear-gradient-1/validation/parent-ci-2.log",
+        "sha256": "6e8a20c8ca8e802655adabc7588011756a7837419c288219ba3d6a7aa2993233"
+      },
+      "receipt": {
+        "bytes": 338,
+        "path": "/tmp/eris-linear-gradient-1/validation/parent-ci-2.json",
+        "sha256": "0f4e8502f75818393e5517bc4b1b5cd4f88fde1a64234f25731a77701b900579"
+      }
+    }
+  },
+  "corrections": [
+    "First focused run: 45 passes and one table fixture failure from an unsupported border-spacing prerequisite; retained and corrected using existing two-pixel spacing plus a color-only baseline.",
+    "Root padding-box lookup charged to layout work budget; mixed CSS-wide shorthand serialization corrected.",
+    "Canvas gradient currentColor now resolves against root style, including body propagation; primary-source chain, one-line change and literal regression retained.",
+    "First formatter wrapper invocation rejected unsupported --locked/--offline arguments before editing source."
+  ],
+  "limitations": [
+    "No complete web-standards, broad security or Chromium performance claim.",
+    "Self-authored references, not Web Platform Tests or external browser comparisons.",
+    "Scenes containing gradients explicitly fall back to software rasterization; no native gradient shader/GPU execution claim.",
+    "Modern color spaces, radial/conic/repeating gradient functions, URL/multiple image layers and author background sizing/repeat/origin/clip controls remain unsupported."
+  ],
+  "live_source": {
+    "bytes": 56130,
+    "path": "/tmp/eris-linear-gradient-1/compiled-source-3.json",
+    "sha256": "53e8ac8b638d2ad638bc21680b0b7cf792cab0cf26ed3317920c2c29e41e86e6"
+  },
+  "provenance": "Raw source holds, reviewed corrections, historical failures, final input hashes, immutable binary identity, check commands/logs and reference pixels are retained in the archive. Historical live paths denote bytes at their recorded phase; retained raw copies and source inventories distinguish phases.",
+  "published": {
+    ".github/workflows/check.yml": {
+      "bytes": 19032,
+      "sha256": "8bccf8cdf66b520866801d6397b00757f02146eb45830870d13c7ea1645a9255"
+    },
+    "README.md": {
+      "bytes": 49998,
+      "sha256": "a65e3f5dc2eb8af0ac7c8c284f2e28eac650e03552441e670751402f12df67ff"
+    },
+    "docs/COMPATIBILITY.md": {
+      "bytes": 70696,
+      "sha256": "7317dc937eacda86eea57b63c8235c48bcff00d2a6e5b2757a95f5be78170757"
+    },
+    "docs/ROADMAP.md": {
+      "bytes": 30970,
+      "sha256": "32ecf45efd2b3d1a02240a184cd5841e0b56b2ce21127a35704e2cd5ed5129cc"
+    },
+    "docs/linear-gradients.md": {
+      "bytes": 7910,
+      "sha256": "45b906c64d5d67dd1fe607a0bf4c3c2e1e03f5bb28c932f9210de9421822b2c4"
+    },
+    "examples/linear-gradient.html": {
+      "bytes": 2277,
+      "sha256": "d83eb8e6769de75a0cafe7e1bb8aa0847c144851084a596a244cb3ee9dc70e1a"
+    },
+    "src/bin/eris-stress.rs": {
+      "bytes": 57507,
+      "sha256": "c25cf10bc423313686f32bdd16a869e3635797b863a9feb18152a98d12331154"
+    },
+    "src/browser.rs": {
+      "bytes": 126158,
+      "sha256": "edb71dd7c5c5a86b55a8b3073ba4e1a8fbe50df10f8ea4e11828648e90de33e6"
+    },
+    "src/browser/gradient_tests.rs": {
+      "bytes": 2399,
+      "sha256": "84a7f594ac79c84f1c5e451b006b0cf065937b4b3ea5c8bca197e622610e21ef"
+    },
+    "src/browser/native_benchmark_identity.rs": {
+      "bytes": 27583,
+      "sha256": "d96ca946457d40055ee50706f7e1ecdbbdc909e5042dd0d9ca75f846815e15a0"
+    },
+    "src/browser/native_benchmark_identity/gradient_tests.rs": {
+      "bytes": 3604,
+      "sha256": "714e2a759c5c48c3c471444b745c4ba32bb4a9243a5f5a3612ee416d30046439"
+    },
+    "src/browser/native_scene.rs": {
+      "bytes": 36897,
+      "sha256": "958e8823ba357b1601dee616eef192311422f048f7dca696241e8cb628c4aa0a"
+    },
+    "src/browser/native_scene/gradient_tests.rs": {
+      "bytes": 1189,
+      "sha256": "01fb62e0f3f6d0a746fed71bc6680fda3750d4bf7cd5dd495d909f85892d7d99"
+    },
+    "src/css.rs": {
+      "bytes": 309961,
+      "sha256": "0c583ade4692fd6a11e9f35b2b3549872f350b981098919ec75c257e438d3a5c"
+    },
+    "src/css/gradient.rs": {
+      "bytes": 17185,
+      "sha256": "99647a2baf64487e3aff8fcddd43d41d0ecde76ad53cb712d52f478ba7ad6ff7"
+    },
+    "src/css/gradient/tests.rs": {
+      "bytes": 9888,
+      "sha256": "74ced815cc82989a08e4c39147beb3c648dc5c6a94d2f086f8efae8e9d8dd249"
+    },
+    "src/cssom.rs": {
+      "bytes": 56973,
+      "sha256": "6c15922da895537657e8e0ca2b9211783046bc548acc08d753f63b717d9f8d54"
+    },
+    "src/cssom/gradient_tests.rs": {
+      "bytes": 4664,
+      "sha256": "354dac6351e15a32b620e36dcbde07d7fe22cb38dd7ad4c7cc380cd8982e6b64"
+    },
+    "src/graphics.rs": {
+      "bytes": 69344,
+      "sha256": "360b6864bddcd5adaa3ac976eebca29efc2b00186c4d93e871ea0646eefc97e2"
+    },
+    "src/graphics/gradient.rs": {
+      "bytes": 11935,
+      "sha256": "fd4b5115ca1ed965c2b5de5ea6eaea5157ff5810441620299a21c7bc17757dfa"
+    },
+    "src/graphics/gradient/tests.rs": {
+      "bytes": 11305,
+      "sha256": "72da00bf00e2bfcdd2f0ec52bf68b6062db7899c4669e88e3f298d21ac46de25"
+    },
+    "src/graphics/raster_bridge.rs": {
+      "bytes": 18349,
+      "sha256": "f1de8c02789078da7cfd60b77f876fe5b73b374a48cd5157cb9d3eb27b19d6ca"
+    },
+    "src/graphics/raster_bridge/gradient_tests.rs": {
+      "bytes": 4757,
+      "sha256": "0f553d1519f2bffea549b6677c1a326c26997aaa89a894d36511073cbbd291a3"
+    },
+    "src/graphics/raster_bridge/native.rs": {
+      "bytes": 42997,
+      "sha256": "155a86077098aeab847cdcd10139a14fb3aad575598f0fd11c1ebefea6d40f38"
+    },
+    "src/graphics/raster_bridge/text.rs": {
+      "bytes": 15495,
+      "sha256": "40539be4235d4d215fdb0088b43bac34264966ac6abc4c567c6451500a3c9ac9"
+    },
+    "src/layout.rs": {
+      "bytes": 325553,
+      "sha256": "fb0c7ededbf879b6fb7be83dc55f3283b8f6a4ad50415510efd7a32f29b25855"
+    },
+    "src/layout/gradient_tests.rs": {
+      "bytes": 19857,
+      "sha256": "0983137456d6417c5bdc070249cac4413b77c649e68ec135957399ffc3ef56bf"
+    },
+    "src/worker/codec.rs": {
+      "bytes": 92389,
+      "sha256": "298476d087faced1e77bb9c3c706952cdb2b7d44bdfcaacbcfaf70920176d60c"
+    },
+    "src/worker/codec/gradient_tests.rs": {
+      "bytes": 10877,
+      "sha256": "f0c5329b25dbdfa52bdd860d465552ac6e5c567d318dc2a6c65da31a66f1e75b"
+    },
+    "tests/linear_gradient.rs": {
+      "bytes": 4394,
+      "sha256": "d0177258e2b5c7661bd4f3318e5705dfb4ddbff34d83fcbd0da5bbc84600fc62"
+    },
+    "tests/reftests/README.md": {
+      "bytes": 3263,
+      "sha256": "c9f053300b49fea3d8469672618e4d1e561f64a100516a2d1f79c1ce1ede3374"
+    },
+    "tests/reftests/linear-gradient-background-box-ref.html": {
+      "bytes": 817,
+      "sha256": "ace64543bc8df1c5b1d26fe74bae06954addd372faf912d5b914c36904a08c76"
+    },
+    "tests/reftests/linear-gradient-background-box.html": {
+      "bytes": 533,
+      "sha256": "9b7cce2a552690f54cb89904f68ed3b644f447f97496026794abd2e773748a4b"
+    },
+    "tests/reftests/linear-gradient-canvas-ref.html": {
+      "bytes": 1047,
+      "sha256": "67b8423ce58360893aac8f697f1d6426e12ff4dfebf4e47df26a3d00a572833b"
+    },
+    "tests/reftests/linear-gradient-canvas.html": {
+      "bytes": 154,
+      "sha256": "b388d41bf76c5c0ec53f8971c73885c7ac20422cb587a5637622f18ebc5c0cfe"
+    },
+    "tests/reftests/linear-gradient-colors-ref.html": {
+      "bytes": 2213,
+      "sha256": "d913d8984ee968fc1e409e44af28dc7013ab783b18b2e90888b57aafc301c30f"
+    },
+    "tests/reftests/linear-gradient-colors.html": {
+      "bytes": 953,
+      "sha256": "683b09ce20ec11e91fb0669dbd4e6bfd7f6bec284fbdbf68f26da9c06c3b6abd"
+    },
+    "tests/reftests/manifest.json": {
+      "bytes": 18970,
+      "sha256": "513a1b8e10556da49a37d0db41d59aa32b37c5845e8be627a4ee0b30199a3685"
+    },
+    "tests/support/linear_gradient.rs": {
+      "bytes": 4680,
+      "sha256": "49bb25446d9e8698eb61cdfa57e2deb3e84e3aa1dad09d4bff2ccb04e18597c7"
+    }
+  },
+  "reports": {
+    "baseline": {
+      "binary": "/tmp/eris-image-identity-1/eris-browser-candidate",
+      "binary_record": {
+        "bytes": 779,
+        "path": "/tmp/eris-linear-gradient-1/baseline-browser-binary.json",
+        "sha256": "772902a0c1033a9c50736d28fa88dbcb9859d307daa4e4023101181ae7994d6d"
+      },
+      "check": "baseline-reftests-1",
+      "counts": [
+        0,
+        3,
+        3
+      ],
+      "manifest": {
+        "bytes": 1284,
+        "path": "/tmp/eris-linear-gradient-preparation-1/root/only-new.json",
+        "sha256": "b1af613cfb075d1152a4a81e739ccc646486c17505c08ce447efa75dccc5dfe0"
+      },
+      "report": {
+        "bytes": 2503,
+        "path": "/tmp/eris-linear-gradient-1/reftests-baseline-1/report.json",
+        "sha256": "b91a17655f8d5552757a6cb45533379f09916b45efc8931933d08e7e49bbaf23"
+      }
+    },
+    "before-root-color": {
+      "binary": "/tmp/eris-linear-gradient-1/eris-browser-candidate",
+      "binary_record": {
+        "bytes": 505,
+        "path": "/tmp/eris-linear-gradient-1/candidate-browser-binary.json",
+        "sha256": "6b9ee0996366b5f4aadfed78fde2ba750f968e946f634df568e709e54cddfcd7"
+      },
+      "check": "candidate-reftests-1",
+      "counts": [
+        68,
+        0,
+        68
+      ],
+      "manifest": {
+        "bytes": 18970,
+        "path": "/tmp/eris-linear-gradient-1/worktree/tests/reftests/manifest.json",
+        "sha256": "513a1b8e10556da49a37d0db41d59aa32b37c5845e8be627a4ee0b30199a3685"
+      },
+      "report": {
+        "bytes": 25306,
+        "path": "/tmp/eris-linear-gradient-1/reftests-candidate-1/report.json",
+        "sha256": "0f9e62d006a3c8b975dbd8c6dce76e12d6477079c1d8beca75754516940f4f09"
+      }
+    },
+    "final": {
+      "binary": "/tmp/eris-linear-gradient-1/eris-browser-final",
+      "binary_record": {
+        "bytes": 501,
+        "path": "/tmp/eris-linear-gradient-1/candidate-browser-binary-2.json",
+        "sha256": "cde4230b7325d92e39e0cc8a97aea2c31ada5a81d1bc1bbe852eadda43f0ca48"
+      },
+      "check": "candidate-reftests-2",
+      "counts": [
+        68,
+        0,
+        68
+      ],
+      "manifest": {
+        "bytes": 18970,
+        "path": "/tmp/eris-linear-gradient-1/worktree/tests/reftests/manifest.json",
+        "sha256": "513a1b8e10556da49a37d0db41d59aa32b37c5845e8be627a4ee0b30199a3685"
+      },
+      "report": {
+        "bytes": 25303,
+        "path": "/tmp/eris-linear-gradient-1/reftests-candidate-2/report.json",
+        "sha256": "700d05b154816a324c6c142a393c7c4da69eb2445d452b41a07ab5357036e91c"
+      }
+    },
+    "initial": {
+      "binary": "/tmp/eris-linear-gradient-1/eris-browser-initial",
+      "binary_record": {
+        "bytes": 318,
+        "path": "/tmp/eris-linear-gradient-1/initial-browser-binary.json",
+        "sha256": "61bc930da29ad9a00dbd97dcbd31156b3c651a0350240efeacd51794c83861e9"
+      },
+      "check": "initial-reftests-1",
+      "counts": [
+        3,
+        0,
+        3
+      ],
+      "manifest": {
+        "bytes": 1284,
+        "path": "/tmp/eris-linear-gradient-preparation-1/root/only-new.json",
+        "sha256": "b1af613cfb075d1152a4a81e739ccc646486c17505c08ce447efa75dccc5dfe0"
+      },
+      "report": {
+        "bytes": 1403,
+        "path": "/tmp/eris-linear-gradient-1/reftests-initial-1/report.json",
+        "sha256": "015edf824942727c2f93ef9faee1bfc507342eb7e92784dd004323efe625b663"
+      }
+    }
+  },
+  "results": {
+    "bridge_discovery_names": 96,
+    "full_suites_failed": 0,
+    "full_suites_ignored": 0,
+    "rust_1_88_vulkan_feature": 2502,
+    "rust_1_98_default": 2326,
+    "self_authored_visual_references": 68,
+    "strict_lint": "Both toolchains pass all-target Clippy with warnings denied.",
+    "visual_failures": 0
+  },
+  "scope": "One linear-gradient background layer, strict bounded legacy-color/in-srgb grammar, computed-style sharing, layout canvas/inline/table placement, direct software sampling and confined-worker transport.",
+  "source_count": 501
+}

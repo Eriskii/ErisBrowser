@@ -2,6 +2,7 @@
 use ab_glyph::{Font, FontArc, PxScale, ScaleFont, point};
 use std::{cell::RefCell, collections::HashMap, path::Path, sync::Arc};
 
+pub mod gradient;
 #[cfg(feature = "raster-bridge")]
 pub mod raster_bridge;
 pub mod text_masks;
@@ -99,6 +100,16 @@ pub enum DrawCommand {
     Image {
         rect: Rect,
         key: String,
+    },
+    /// A background tile repeated in both axes and clipped to its paint box.
+    LinearGradient {
+        rect: Rect,
+        tile: Rect,
+        radius: f32,
+        gradient: Arc<gradient::LinearGradient>,
+        current_color: Color,
+        /// Scales computed CSS pixel stop lengths when the page is zoomed.
+        stop_scale: f32,
     },
     Line {
         x1: f32,
@@ -856,6 +867,21 @@ impl Canvas {
                         self.image(rect.translated(dx, dy), img);
                     }
                 }
+                DrawCommand::LinearGradient {
+                    rect,
+                    tile,
+                    radius,
+                    gradient,
+                    current_color,
+                    stop_scale,
+                } => self.linear_gradient(
+                    rect.translated(dx, dy),
+                    tile.translated(dx, dy),
+                    *radius,
+                    gradient,
+                    *current_color,
+                    *stop_scale,
+                ),
                 DrawCommand::Line {
                     x1,
                     y1,

@@ -353,8 +353,10 @@ pub fn plan_display_list_with_fonts(
             DrawCommand::PopClip => Command::PopClip,
             DrawCommand::PushFixed => Command::PushFixed,
             DrawCommand::PopFixed => Command::PopFixed,
-            DrawCommand::PushOpacity { .. } | DrawCommand::PopOpacity => {
-                unreachable!("preflight refused opacity")
+            DrawCommand::PushOpacity { .. }
+            | DrawCommand::PopOpacity
+            | DrawCommand::LinearGradient { .. } => {
+                unreachable!("preflight refused unsupported paint")
             }
         };
         state

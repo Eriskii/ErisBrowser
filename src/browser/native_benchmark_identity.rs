@@ -7,6 +7,7 @@
 //! or GPU state is serialized. Source and bundled fonts are host-manifest inputs.
 //! This is an input comparison, not a pixel oracle or renderer admission check.
 use super::{Browser, Selection, TaskState};
+use eris::graphics::gradient::{GradientColor, GradientDirection};
 use eris::graphics::{Color, DrawCommand, ImageStore, RasterImage, Rect};
 use std::sync::Arc;
 use winit::dpi::PhysicalSize;
@@ -59,6 +60,12 @@ impl Bytes {
             return Err("benchmark identity nonfinite scalar".into());
         }
         self.u32(value.to_bits())
+    }
+    fn f64(&mut self, value: f64) -> Result<(), String> {
+        if !value.is_finite() {
+            return Err("benchmark identity nonfinite gradient scalar".into());
+        }
+        self.append(&value.to_bits().to_le_bytes())
     }
     fn blob(&mut self, value: &[u8]) -> Result<(), String> {
         // Reject oversize before writing even its prefix.
@@ -194,6 +201,7 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
             DrawCommand::Text { .. } => (7, None, None),
             DrawCommand::Image { .. } => (8, None, None),
             DrawCommand::Line { .. } => (9, None, None),
+            DrawCommand::LinearGradient { .. } => (10, None, None),
         };
         if let Some(scope) = push {
             let slot = scopes
@@ -260,6 +268,54 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
             DrawCommand::Image { rect, key } => {
                 bytes.rect(*rect)?;
                 bytes.text(key)?;
+            }
+            DrawCommand::LinearGradient {
+                rect,
+                tile,
+                radius,
+                gradient,
+                current_color,
+                stop_scale,
+            } => {
+                if !gradient.valid()
+                    || *radius < 0.0
+                    || *stop_scale <= 0.0
+                    || tile.width <= 0.0
+                    || tile.height <= 0.0
+                {
+                    return Err("benchmark identity invalid gradient".into());
+                }
+                bytes.rect(*rect)?;
+                bytes.rect(*tile)?;
+                bytes.f32(*radius)?;
+                bytes.color(*current_color)?;
+                bytes.f32(*stop_scale)?;
+                match gradient.direction {
+                    GradientDirection::Angle(angle) => {
+                        bytes.byte(0)?;
+                        bytes.f64(angle)?;
+                    }
+                    GradientDirection::Corner { right, bottom } => {
+                        bytes.byte(1)?;
+                        bytes.boolean(right)?;
+                        bytes.boolean(bottom)?;
+                    }
+                }
+                bytes.count(gradient.stops.len())?;
+                for stop in gradient.stops.iter() {
+                    match stop.color {
+                        GradientColor::Color(color) => {
+                            bytes.byte(0)?;
+                            bytes.color(color)?;
+                        }
+                        GradientColor::CurrentColor => bytes.byte(1)?,
+                    }
+                    bytes.boolean(stop.position.is_some())?;
+                    if let Some(position) = stop.position {
+                        bytes.f64(position.px)?;
+                        bytes.f64(position.percent)?;
+                    }
+                }
             }
             DrawCommand::Line {
                 x1,
@@ -338,6 +394,9 @@ fn images(bytes: &mut Bytes, images: &ImageStore) -> Result<(), String> {
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod gradient_tests;
 
 #[cfg(test)]
 mod tests {

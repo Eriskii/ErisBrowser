@@ -2,7 +2,8 @@
 use crate::dom::{
     Document, Namespace, NodeId, NodeKind, matches_compiled_selector, split_top_level,
 };
-use crate::graphics::Color;
+use crate::graphics::{Color, gradient::LinearGradient};
+mod gradient;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::{Arc, LazyLock};
 
@@ -269,6 +270,7 @@ pub struct ComputedStyle {
     pub border_width: Edges<f32>,
     pub color: Color,
     pub background_color: Color,
+    pub background_image: Option<Arc<LinearGradient>>,
     pub border_color: Color,
     pub font_size: f32,
     pub line_height: f32,
@@ -337,6 +339,7 @@ impl Default for ComputedStyle {
             border_width: Edges::all(0.0),
             color: Color::BLACK,
             background_color: Color::TRANSPARENT,
+            background_image: None,
             border_color: Color::BLACK,
             font_size: 16.0,
             line_height: 19.2,
@@ -1513,11 +1516,14 @@ pub(crate) fn supports_declaration_with_budget(
             return Ok(false);
         }
         let property = property.to_ascii_lowercase();
-        if matches!(property.as_str(), "object-fit" | "object-position") {
+        if matches!(
+            property.as_str(),
+            "object-fit" | "object-position" | "background" | "background-image"
+        ) {
             if css_wide(clean) {
                 return Ok(true);
             }
-            valid_object_property(&property, value, &mut evaluator.work).map_err(|_| ())
+            valid_declaration_value(&property, value, &mut evaluator.work).map_err(|_| ())
         } else {
             Ok(supports_property(&property, clean))
         }
@@ -1686,7 +1692,10 @@ impl SupportsEvaluator {
             return Ok(false);
         }
         let name = name.to_ascii_lowercase();
-        if matches!(name.as_str(), "object-fit" | "object-position") {
+        if matches!(
+            name.as_str(),
+            "object-fit" | "object-position" | "background" | "background-image"
+        ) {
             // Comments must not supply the mandatory whitespace around calc
             // operators when the supports condition normalizes its input.
             let original_tokens =
@@ -1699,7 +1708,7 @@ impl SupportsEvaluator {
             if !valid_calculations(&original[colon.end..], &mut self.work).map_err(|_| ())? {
                 return Ok(false);
             }
-            valid_object_property(&name, value, &mut self.work).map_err(|_| ())
+            valid_declaration_value(&name, value, &mut self.work).map_err(|_| ())
         } else {
             Ok(supports_property(&name, value))
         }
@@ -1810,6 +1819,10 @@ fn supports_color(value: &str) -> bool {
     valid && parse_color(value).is_some()
 }
 pub(crate) fn supports_property(name: &str, value: &str) -> bool {
+    if matches!(name, "background" | "background-image") {
+        let mut work = MAX_SUPPORTS_WORK;
+        return valid_background_property(name, value, &mut work).unwrap_or(false);
+    }
     if matches!(name, "object-fit" | "object-position") {
         let mut work = MAX_SUPPORTS_WORK;
         return valid_object_property(name, value, &mut work).unwrap_or(false);
@@ -2180,7 +2193,11 @@ fn parse_declarations_with_limit(
             }
         }
         let start = declarations.len();
-        expand_declaration(&name, value, important, &mut declarations);
+        if expand_declaration_with_budget(&name, value, important, &mut declarations, work).is_err()
+        {
+            declarations.truncate(start);
+            break;
+        }
         // Reject malformed complete math values before selecting a cascade
         // winner. Pending var() declarations are validated after substitution.
         if !custom
@@ -2289,7 +2306,7 @@ pub(crate) fn shorthand_properties(name: &str) -> Option<Vec<String>> {
         "place-self" => &["align-self", "justify-self"],
         "place-content" => &["align-content", "justify-content"],
         "inset" => &["top", "right", "bottom", "left"],
-        "background" => &["background-color"],
+        "background" => &["background-color", "background-image"],
         "list-style" => &["list-style-type", "list-style-position"],
         "flex" => &["flex-grow", "flex-shrink", "flex-basis"],
         "flex-flow" => &["flex-direction", "flex-wrap"],
@@ -2349,12 +2366,31 @@ pub(crate) fn shorthand_properties(name: &str) -> Option<Vec<String>> {
     };
     Some(list.iter().map(|name| (*name).into()).collect())
 }
-pub(crate) fn expand_declaration(
+pub(crate) fn expand_declaration_with_budget(
     name: &str,
     value: &str,
     important: bool,
     out: &mut Vec<Declaration>,
-) {
+    work: &mut usize,
+) -> Result<(), crate::selectors::Error> {
+    if name == "background" && !css_wide(value) && !contains_var_function(value) {
+        if let Some((image, color)) = gradient::background_parts(value, work)? {
+            crate::selectors::spend(work, image.len() + color.len() + 128)?;
+            for (name, value) in [("background-color", color), ("background-image", image)] {
+                out.push(Declaration {
+                    name: name.into(),
+                    value: value.into(),
+                    important,
+                    pending_shorthand: None,
+                });
+            }
+        }
+    } else {
+        expand_declaration(name, value, important, out);
+    }
+    Ok(())
+}
+fn expand_declaration(name: &str, value: &str, important: bool, out: &mut Vec<Declaration>) {
     if name == "list-style" && !css_wide(value) && !contains_var_function(value) {
         let lower = value.to_ascii_lowercase();
         let parts = words(&lower);
@@ -2595,11 +2631,7 @@ pub(crate) fn expand_declaration(
             add(out, &format!("border-{side}-color"), color);
         }
     } else if name == "background" {
-        let candidate = words(value)
-            .into_iter()
-            .find(|v| *v == "currentcolor" || v.starts_with("var(") || parse_color(v).is_some())
-            .unwrap_or("transparent");
-        add(out, "background-color", candidate);
+        // Ordinary backgrounds use the metered atomic wrapper.
     } else if name == "flex" {
         match value {
             "none" => {
@@ -2925,7 +2957,8 @@ fn cascaded_value(
                 }
                 *work -= cost;
                 let mut expanded = Vec::new();
-                expand_declaration(shorthand, &value, false, &mut expanded);
+                expand_declaration_with_budget(shorthand, &value, false, &mut expanded, work)
+                    .ok()?;
                 expanded
                     .into_iter()
                     .find(|decl| decl.name == name)
@@ -3025,6 +3058,7 @@ pub fn compute_styles_with_rules(
     let mut visited = vec![false; doc.nodes.len()];
     let mut retained_variable_bytes = 0usize;
     let mut grid_tracks = GridTrackPool::default();
+    let mut gradients = gradient::GradientPool::default();
     let mut root_font = 16.0;
     while let Some(id) = pending.pop() {
         let Some(node) = doc.nodes.get(id) else {
@@ -3198,7 +3232,20 @@ pub fn compute_styles_with_rules(
                 style.border_color = style.color;
             }
             for (name, value) in &resolved {
-                if name != "font-size" && name != "color" {
+                if name == "background-image" && !css_wide(value) {
+                    // Parse and admit immutable storage before publishing the
+                    // computed image. Refusal leaves the initial none value.
+                    style.background_image = match gradient::parse_image(
+                        value,
+                        [style.font_size, root_font, width, height],
+                        &mut work,
+                    ) {
+                        Ok(Some(gradient::ParsedImage::Gradient(parsed))) => {
+                            gradients.intern(&parsed, &mut work).ok().flatten()
+                        }
+                        _ => None,
+                    };
+                } else if name != "font-size" && name != "color" {
                     apply_property(
                         &mut style,
                         name,
@@ -3293,6 +3340,7 @@ const SUPPORTED_PROPERTIES: &[&str] = &[
     "border-left-color",
     "color",
     "background-color",
+    "background-image",
     "font-size",
     "font-family",
     "font-style",
@@ -4678,6 +4726,7 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "max-height" => s.max_height = p.max_height,
         "color" => s.color = p.color,
         "background-color" => s.background_color = p.background_color,
+        "background-image" => s.background_image = p.background_image.clone(),
         "font-size" => s.font_size = p.font_size,
         "font-weight" => s.font_weight = p.font_weight,
         "font-family" => s.font_family = p.font_family.clone(),
@@ -5251,6 +5300,13 @@ pub(crate) fn valid_object_property(
         _ => Ok(false),
     }
 }
+pub(crate) fn valid_background_property(
+    name: &str,
+    value: &str,
+    work: &mut usize,
+) -> Result<bool, crate::selectors::Error> {
+    gradient::valid(name, value, work)
+}
 fn valid_declaration_value(
     name: &str,
     value: &str,
@@ -5258,6 +5314,8 @@ fn valid_declaration_value(
 ) -> Result<bool, crate::selectors::Error> {
     if matches!(name, "object-fit" | "object-position") {
         valid_object_property(name, value, work)
+    } else if matches!(name, "background" | "background-image") {
+        valid_background_property(name, value, work)
     } else {
         Ok(valid_math_property(name, value))
     }
@@ -6406,6 +6464,7 @@ mod tests {
             "(color:HSLA(120deg 50% 40% / .5))",
             "(color:currentcolor)",
             "(background:#ff000080)",
+            "(background:linear-gradient(red,blue))",
             "(grid-template-columns:repeat(2,minmax(10px,1fr) 20%))",
             "(grid-auto-rows:min-content 1fr)",
             "(grid-auto-flow:column dense)",
@@ -6442,7 +6501,6 @@ mod tests {
             "(color:rgb(1 / 2 / 3))",
             "(color:hsl(1deg 2 3))",
             "(color:lab(30% 0 0))",
-            "(background:linear-gradient(red,blue))",
             "(background:red garbage)",
             "(grid-template-columns:subgrid)",
             "(grid-template-columns:10)",

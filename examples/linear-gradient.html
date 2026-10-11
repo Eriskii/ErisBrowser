@@ -1,0 +1,31 @@
+<!doctype html><meta charset=utf-8>
+<title id=heading>Gradient ready</title>
+<style>
+html,body{margin:0;background:white}
+#board{position:relative;width:96px;height:64px}
+.sample{position:absolute;height:16px}
+#stripe{left:8px;top:8px;width:4px;background:linear-gradient(to right,#000,#f8f8f8)}
+#switch{left:24px;top:8px;width:32px;background:linear-gradient(to right,red 50%,blue 50%)}
+#alpha{left:8px;top:32px;width:4px;background:linear-gradient(to right,rgb(248 0 0),transparent)}
+#parent{left:24px;top:32px;width:32px;background:linear-gradient(currentColor);color:red}
+#inherited{width:32px;height:16px;background-image:inherit;color:lime}
+#reset{left:64px;top:8px;width:16px;background-image:linear-gradient(red,blue);background:lime}
+</style><body data-phase=ready data-style-kept=ready>
+<div id=board><div id=stripe class=sample></div><div id=switch class=sample></div><div id=alpha class=sample></div><div id=parent class=sample><div id=inherited></div></div><div id=reset class=sample></div></div>
+<script>
+var first=document.getElementById('switch');
+var supported=CSS.supports('background-image','linear-gradient(to right,#000,#f8f8f8)')&&CSS.supports('background','yellow linear-gradient(in srgb,red,transparent)')&&CSS.supports('background-image','linear-gradient(currentColor)')&&!CSS.supports('background-image','linear-gradient(red,)')&&!CSS.supports('background','linear-gradient(red,blue) nonsense')&&!CSS.supports('background-image','linear-gradient(in oklab,red,blue)');
+document.body.setAttribute('data-supports',supported?'yes':'no');
+first.addEventListener('click',function(){
+first.style.color='lime';
+first.style.backgroundColor='yellow';
+first.style.setProperty('background-image','linear-gradient(to right,currentColor 50%,transparent 50%)');
+var saved=first.style.backgroundImage;
+var shorthand=first.style.getPropertyValue('background');
+first.style.backgroundImage='linear-gradient(red,)';
+first.style.background='linear-gradient(red,) orange';
+document.body.setAttribute('data-style-kept',saved!==''&&shorthand!==''&&first.style.backgroundImage===saved&&first.style.backgroundColor==='yellow'?'yes':'no');
+document.body.setAttribute('data-phase','changed');
+document.getElementById('heading').firstChild.data='Gradient changed';
+});
+</script>

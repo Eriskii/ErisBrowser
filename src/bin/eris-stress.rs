@@ -557,6 +557,26 @@ fn pipeline(
                 glyphs = glyphs.saturating_add(text.chars().count());
             }
             DrawCommand::Image { rect, .. } | DrawCommand::PushClip { rect } => rectangle(*rect)?,
+            DrawCommand::LinearGradient {
+                rect,
+                tile,
+                radius,
+                gradient,
+                stop_scale,
+                ..
+            } => {
+                rectangle(*rect)?;
+                rectangle(*tile)?;
+                finite(&[*radius, *stop_scale], "gradient geometry")?;
+                if *radius < 0.0
+                    || *stop_scale <= 0.0
+                    || tile.width <= 0.0
+                    || tile.height <= 0.0
+                    || !gradient.valid()
+                {
+                    return Err("invalid linear gradient".into());
+                }
+            }
             DrawCommand::PushFixed
             | DrawCommand::PopFixed
             | DrawCommand::PopClip
