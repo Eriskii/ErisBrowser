@@ -62,9 +62,13 @@ validation is recorded separately in its chapter.
 the existing track, colspan and rowspan equations. HTML's 2px default remains;
 zero and unequal axes can be authored through the shared CSS/supports/CSSOM
 parser. Final cell geometry still drives background retiling under the same
-budgets. Full intrinsic table sizing, separated-background painting,
-`border-collapse`, caption placement and the broader table model remain open.
-This checkpoint's validation belongs to its own chapter.
+budgets. The [row-background follow-up](table-row-backgrounds.md) uses each real
+originating cell as a paint clip, with row-shared gradient/URL positioning and
+no invented paint for missing slots. Shared command, work and key limits still
+apply; painted rows can consume more commands. Full intrinsic table sizing,
+row-group/column backgrounds, `empty-cells`, `border-collapse`, general
+relative/rounded-cell clipping and caption placement remain open. Each
+checkpoint's validation belongs to its own chapter.
 
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four

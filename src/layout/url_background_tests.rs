@@ -678,13 +678,9 @@ fn table_row_and_stretched_cell_recompute_raster_tile_from_final_height() {
     bindings[r] = Some(loaded("blue"));
     let result = layout_with_backgrounds(&doc, &styles, 14.0, 10.0, &Fonts::new(), &bindings);
     let images = rasters(&result);
-    assert!(images.contains(&(
-        rect(2.0, 2.0, 10.0, 6.0),
-        rect(2.0, 2.0, 4.0, 2.0),
-        0.0,
-        [true, true],
-        "blue"
-    )));
+    for paint in [rect(2.0, 2.0, 4.0, 6.0), rect(8.0, 2.0, 4.0, 6.0)] {
+        assert!(images.contains(&(paint, rect(2.0, 2.0, 4.0, 2.0), 0.0, [true, true], "blue")));
+    }
     assert!(images.contains(&(
         rect(2.0, 2.0, 4.0, 6.0),
         rect(-2.0, 2.0, 12.0, 6.0),

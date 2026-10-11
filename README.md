@@ -103,9 +103,15 @@ returns an empty shorthand when it cannot represent them. Try the
 lengths to the existing table layout. Horizontal and vertical gaps now affect
 tracks, spans and final cell backgrounds independently; HTML tables retain
 2px gaps by default. CSSOM and supports checks share the bounded length/calc
-parser. Intrinsic table sizing, row-background gaps and caption handling remain
-limited, and `border-collapse` is unsupported. Try the
-[spacing demo](examples/table-spacing.html).
+parser. Intrinsic table sizing and caption handling remain limited, and
+`border-collapse` is unsupported. Try the [spacing demo](examples/table-spacing.html).
+
+[Row backgrounds](docs/table-row-backgrounds.md) now paint through cells
+originating in each row, leaving inter-cell gaps and missing slots clear.
+Rowspans keep their originating row's paint; gradient and URL tiles retain one
+row-based phase across all clips. This uses the existing shared budgets and
+can require more commands on painted rows. Try the
+[row-background demo](examples/table-row-backgrounds.html).
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

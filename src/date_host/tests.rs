@@ -204,10 +204,25 @@ fn host_supervisor_deadline_covers_pending_spawn_and_refuses_accumulation() {
 
 #[cfg(target_os = "linux")]
 fn shell_fixture(label: &str, body: &str) -> PathBuf {
-    use std::os::unix::fs::PermissionsExt;
+    use std::{
+        os::unix::fs::PermissionsExt,
+        process::{Command, Stdio},
+    };
     let path =
         std::env::temp_dir().join(format!("eris-zone-helper-{}-{label}", std::process::id()));
-    std::fs::write(&path, format!("#!/bin/sh\n{body}\n")).unwrap();
+    // A parallel test can fork while this process holds a writable executable
+    // descriptor, retaining it even after our close and causing ETXTBSY. Only
+    // the waited writer child opens the fixture, so sibling forks cannot inherit it.
+    let status = Command::new("/bin/sh")
+        .arg("-c")
+        .arg("umask 077; printf \"%s\" \"$2\" > \"$1\"")
+        .arg("eris-zone-fixture-writer")
+        .arg(&path)
+        .arg(format!("#!/bin/sh\n{body}\n"))
+        .stdin(Stdio::null())
+        .status()
+        .expect("write timezone helper fixture in isolated child");
+    assert!(status.success(), "timezone helper fixture writer: {status}");
     std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o700)).unwrap();
     path
 }

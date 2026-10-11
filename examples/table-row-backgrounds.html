@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Table row backgrounds</title><style>
+body{margin:24px;background:#f5f5f5;color:#202020;font:16px sans-serif}h1{font-size:24px}h2{font-size:18px;margin:0 0 12px}section{margin:20px 0;padding:12px;border:2px solid #555;background:white}
+table,tbody,tr,td{margin:0;padding:0;border:0;box-sizing:content-box}table{width:240px;background:#ffe080;border-spacing:12px 8px}tbody,td{background:transparent}tr{height:28px}td{width:102px;height:28px;text-align:center;vertical-align:middle;color:white}.red{background:#b83030}.blue{background:#265cbd}
+</style></head><body><h1>Table row backgrounds</h1><p>Yellow is the table. Row backgrounds paint through their real cells, leaving spacing gaps visible. Image position is shared across the row.</p>
+<section><h2>Gaps and a missing cell</h2><table id="missing"><tr class="red"><td id="missing-a">A</td><td id="missing-b">B</td></tr><tr class="blue"><td id="missing-c">C</td></tr></table></section>
+<section><h2>A rowspan keeps its originating row color</h2><table id="spanning"><tr class="red"><td id="spanning-a" rowspan="2" style="height:64px">A</td><td id="spanning-b">B</td></tr><tr class="blue"><td id="spanning-c">C</td></tr></table></section>
+<section><h2>One gradient tile across both cells</h2><table id="gradient"><tr style="background-image:linear-gradient(to right,#b83030 50%,#265cbd 50%);background-repeat:no-repeat"><td id="gradient-a">A</td><td id="gradient-b">B</td></tr></table></section>
+<section><h2>Repeating image phase crosses the gap</h2><table id="image"><tr style="background-image:url(table-row-backgrounds-assets/two-color.png);background-size:40px 28px;background-repeat:repeat-x"><td id="image-a">A</td><td id="image-b">B</td></tr></table></section>
+<p>These are fixed-width examples of the current separated table model. Intrinsic sizing, border collapse, row-group and column backgrounds remain outside this checkpoint.</p></body></html>

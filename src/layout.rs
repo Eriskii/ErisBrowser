@@ -4255,6 +4255,90 @@ impl<'a> Engine<'a> {
         natural_height
     }
 
+    fn paint_table_cell_row_background(
+        &mut self,
+        row: NodeId,
+        cell: NodeId,
+        fragment: &Fragment,
+        offset: [f32; 2],
+        row_area: Rect,
+    ) -> bool {
+        let style = self.style(row);
+        let background = style.background_color;
+        let no_images = style.backgrounds.is_single_none();
+        if background.a == 0 && no_images {
+            return false;
+        }
+        let count = if no_images {
+            0
+        } else {
+            style.backgrounds.image_slots().len()
+        };
+        let current_color = style.color;
+        // Admit the entire cell's slot group before geometry or key payloads.
+        // URL refusal still leaves an empty layer, as on the other paint paths.
+        if !self.admit_decoration_slots(1 + count)
+            || !background_boxes::layers_work(count)
+                .is_some_and(|cost| background_boxes::spend(&mut self.position_work_left, cost))
+        {
+            return false;
+        }
+        let Some(geometry) = fragment
+            .boxes
+            .get(fragment.principal_box as usize)
+            .filter(|geometry| geometry.node == cell && !geometry.inline && !geometry.fixed)
+        else {
+            return false;
+        };
+        let mut paint = geometry.border;
+        if ![paint.x, paint.y, paint.width, paint.height]
+            .into_iter()
+            .all(|v| v.is_finite() && v.abs() <= MAX_EXTENT)
+            || paint.width <= 0.0
+            || paint.height <= 0.0
+        {
+            return false;
+        }
+        let x = f64::from(paint.x) + f64::from(offset[0]);
+        let y = f64::from(paint.y) + f64::from(offset[1]);
+        if !x.is_finite()
+            || !y.is_finite()
+            || x.abs() > f64::from(MAX_EXTENT)
+            || y.abs() > f64::from(MAX_EXTENT)
+        {
+            return false;
+        }
+        // Omit invalid coverage instead of clamping it independently of the
+        // shared tile. As with rect(), origins and extents are bounded separately:
+        // right/bottom remain finite and can reach 2 * MAX_EXTENT.
+        // Casting these checked sums preserves normal f32 motion.
+        paint.x = x as f32;
+        paint.y = y as f32;
+        let saved_owner = self.paint_owner;
+        self.paint_owner = PaintOwner {
+            node: row,
+            background: true,
+            inline_layer: InlineLayer::None,
+            inline_prefix: 0.0,
+            inline_sides: 0,
+            background_image_index: 0,
+        };
+        self.push(DrawCommand::Rect {
+            rect: paint,
+            color: background,
+            radius: 0.0,
+        });
+        for image_index in (0..count).rev() {
+            self.paint_owner.background_image_index = image_index as u8;
+            let command = self
+                .background_command(row, image_index, paint, row_area, 0.0, current_color, false)
+                .unwrap_or_else(background_boxes::empty);
+            self.push(command);
+        }
+        self.paint_owner = saved_owner;
+        true
+    }
+
     fn layout_table(
         &mut self,
         children: &[NodeId],
@@ -4421,64 +4505,12 @@ impl<'a> Engine<'a> {
         let mut cursor = y + caption_height + vertical;
         for (row, &id) in rows.iter().enumerate() {
             row_y.push(cursor);
-            let style = self.style(id).clone();
             let row_rect = rect(
                 x + horizontal,
                 cursor,
                 available + horizontal * column_count.saturating_sub(1) as f32,
                 heights[row],
             );
-            // Row tracks have coincident border/padding/content boxes in the
-            // current table model. All origin/clip choices therefore select
-            // this same area; retain the existing square paint and tariff.
-            let background = style.background_color;
-            let saved_owner = self.paint_owner;
-            self.paint_owner = PaintOwner {
-                node: id,
-                background: true,
-                inline_layer: InlineLayer::None,
-                inline_prefix: 0.0,
-                inline_sides: 0,
-                background_image_index: 0,
-            };
-            let count = if style.backgrounds.is_single_none() {
-                0
-            } else {
-                style.backgrounds.image_slots().len()
-            };
-            if self.admit_decoration_slots(1 + count) {
-                self.push(DrawCommand::Rect {
-                    rect: row_rect,
-                    color: background,
-                    radius: 0.0,
-                });
-                let cost = if count > 1 {
-                    background_boxes::layers_work(count)
-                } else {
-                    Some(0)
-                };
-                if cost.is_some_and(|n| background_boxes::spend(&mut self.position_work_left, n)) {
-                    for image_index in (0..count).rev() {
-                        let command = self
-                            .background_command(
-                                id,
-                                image_index,
-                                row_rect,
-                                row_rect,
-                                0.0,
-                                style.color,
-                                false,
-                            )
-                            .unwrap_or_else(background_boxes::empty);
-                        self.push(command);
-                    }
-                } else {
-                    for _ in 0..count {
-                        self.push(background_boxes::empty());
-                    }
-                }
-            }
-            self.paint_owner = saved_owner;
             self.push_hit(HitRegion {
                 fixed: false,
                 node: id,
@@ -4487,6 +4519,10 @@ impl<'a> Engine<'a> {
             });
             cursor += heights[row] + vertical;
         }
+        // Compute the paint extent lazily, only after sizing every cell and
+        // distributing rowspans. Paint refusal cannot change track/row sizes.
+        // Some(None) remembers refusal without rescanning on later cells.
+        let mut row_paint_width: Option<Option<f32>> = None;
         for cell in cells {
             let Some(mut fragment) = cell.fragment else {
                 continue;
@@ -4519,6 +4555,33 @@ impl<'a> Engine<'a> {
                 + horizontal
                 + tracks[..cell.column].iter().sum::<f32>()
                 + horizontal * cell.column as f32;
+            let row = rows[cell.row];
+            let style = self.style(row);
+            if style.background_color.a != 0 || !style.backgrounds.is_single_none() {
+                let paint_width = *row_paint_width.get_or_insert_with(|| {
+                    background_boxes::spend(&mut self.position_work_left, tracks.len()).then(|| {
+                        tracks.iter().sum::<f32>()
+                            + horizontal * column_count.saturating_sub(1) as f32
+                    })
+                });
+                if let Some(paint_width) = paint_width {
+                    // Row boxes currently have coincident border, padding and
+                    // content areas. Coverage follows the actual originating
+                    // cell, while every layer retains this one row phase.
+                    self.paint_table_cell_row_background(
+                        row,
+                        cell.node,
+                        &fragment,
+                        [cell_x, row_y[cell.row]],
+                        Rect {
+                            x: x + horizontal,
+                            y: row_y[cell.row],
+                            width: paint_width,
+                            height: heights[cell.row],
+                        },
+                    );
+                }
+            }
             self.append_fragment(fragment, cell_x, row_y[cell.row]);
         }
         extent(cursor - y)
@@ -8934,3 +8997,6 @@ mod layers_tests;
 
 #[cfg(test)]
 mod table_spacing_tests;
+
+#[cfg(test)]
+mod row_background_tests;

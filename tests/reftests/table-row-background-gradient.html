@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Row backgrounds: shared gradient phase</title><style>
+html,body{margin:0;padding:0;background:white;font-size:0;line-height:0}
+table,tbody,thead,tfoot,tr,td,th,caption{margin:0;padding:0;border:0;box-sizing:content-box}
+table{position:absolute;background:#ffff00;border-spacing:2px 1px}
+tbody,thead,tfoot,tr,td,th{background:transparent}
+tr{height:2px}td{width:4px;height:2px;vertical-align:top}
+</style></head><body>
+<table id="shared-gradient-table" style="left:10px;top:10px;width:14px"><tr id="shared-gradient-row" style="height:2px;background-image:linear-gradient(to right,red 4px,blue 4px);background-size:100% 100%;background-position:0% 0%;background-repeat:no-repeat;"><td id="shared-gradient-a" style="width:4px;height:2px"></td><td id="shared-gradient-b" style="width:4px;height:2px"></td></tr></table>
+<table id="no-repeat-span-table" style="left:60px;top:10px;width:14px"><tr id="no-repeat-span-row0" style="height:2px;background-image:linear-gradient(blue);background-size:100% 100%;background-position:0% 0%;background-repeat:no-repeat;"><td id="no-repeat-span-a" style="width:4px;height:5px" rowspan="2"></td><td id="no-repeat-span-b" style="width:4px;height:2px"></td></tr><tr id="no-repeat-span-row1" style="height:2px;"><td id="no-repeat-span-c" style="width:4px;height:2px"></td></tr></table>
+<table id="repeat-y-span-table" style="left:110px;top:10px;width:14px"><tr id="repeat-y-span-row0" style="height:2px;background-image:linear-gradient(blue);background-size:100% 100%;background-position:0% 0%;background-repeat:repeat-y;"><td id="repeat-y-span-a" style="width:4px;height:5px" rowspan="2"></td><td id="repeat-y-span-b" style="width:4px;height:2px"></td></tr><tr id="repeat-y-span-row1" style="height:2px;"><td id="repeat-y-span-c" style="width:4px;height:2px"></td></tr></table>
+<table id="overflow-table" style="left:10px;top:60px;width:10px"><tr id="overflow-row" style="height:2px;background-image:linear-gradient(to right,red 50%,blue 50%);background-size:100% 100%;background-position:0% 0%;background-repeat:no-repeat;"><td id="overflow-a" style="width:6px;height:2px"></td><td id="overflow-b" style="width:6px;height:2px"></td></tr></table>
+</body></html>

@@ -590,6 +590,30 @@
       "description": "Table border/padding offsets are additive; a top caption offsets the grid once.",
       "test": "table-spacing-padding-caption.html",
       "reference": "table-spacing-padding-caption-ref.html"
+    },
+    {
+      "name": "table-row-background-gaps",
+      "description": "Only real cells receive row paint; inter-cell gaps, a missing trailing slot and an empty row expose the table.",
+      "test": "table-row-background-gaps.html",
+      "reference": "table-row-background-gaps-ref.html"
+    },
+    {
+      "name": "table-row-background-spans",
+      "description": "Originating-row color covers a full rowspan and the internal nominal gap of a colspan.",
+      "test": "table-row-background-spans.html",
+      "reference": "table-row-background-spans-ref.html"
+    },
+    {
+      "name": "table-row-background-gradient",
+      "description": "All cell clips retain one row gradient tile; rowspan repeat and fixed-track overflow preserve phase.",
+      "test": "table-row-background-gradient.html",
+      "reference": "table-row-background-gradient-ref.html"
+    },
+    {
+      "name": "table-row-background-url-layers",
+      "description": "Row-owned URL phase survives separated clips and no-repeat; image order retains an authored none slot.",
+      "test": "table-row-background-url-layers.html",
+      "reference": "table-row-background-url-layers-ref.html"
     }
   ]
 }

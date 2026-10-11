@@ -27,6 +27,8 @@ mod inline_edges;
 #[allow(dead_code)]
 #[path = "support/vulkan_backgrounds.rs"]
 mod raster_witness;
+#[path = "worker/table_row_backgrounds.rs"]
+mod table_row_backgrounds;
 #[path = "worker/table_spacing.rs"]
 mod table_spacing;
 #[path = "worker/url_backgrounds.rs"]

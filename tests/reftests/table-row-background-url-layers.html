@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Row backgrounds: URL phase and layer order</title><style>
+html,body{margin:0;padding:0;background:white;font-size:0;line-height:0}
+table,tbody,thead,tfoot,tr,td,th,caption{margin:0;padding:0;border:0;box-sizing:content-box}
+table{position:absolute;background:#ffff00;border-spacing:2px 1px}
+tbody,thead,tfoot,tr,td,th{background:transparent}
+tr{height:2px}td{width:4px;height:2px;vertical-align:top}
+</style></head><body>
+<table id="url-repeat-table" style="left:10px;top:10px;width:14px"><tr id="url-repeat-row" style="height:2px;background-image:url(background-box-inline-assets/two-color.png);background-size:4px 2px;background-position:0% 0%;background-repeat:repeat-x;"><td id="url-repeat-a" style="width:4px;height:2px"></td><td id="url-repeat-b" style="width:4px;height:2px"></td></tr></table>
+<table id="url-no-repeat-table" style="left:60px;top:10px;width:14px"><tr id="url-no-repeat-row" style="height:2px;background-image:url(background-box-inline-assets/two-color.png);background-size:4px 2px;background-position:0% 0%;background-repeat:no-repeat;"><td id="url-no-repeat-a" style="width:4px;height:2px"></td><td id="url-no-repeat-b" style="width:4px;height:2px"></td></tr></table>
+<table id="gradient-first-table" style="left:10px;top:60px;width:14px"><tr id="gradient-first-row" style="height:2px;background-image:linear-gradient(to right,lime 50%,transparent 50%),none,url(background-box-inline-assets/two-color.png);background-size:4px 2px,auto,4px 2px;background-position:0% 0%;background-repeat:repeat-x,no-repeat,repeat-x;"><td id="gradient-first-a" style="width:4px;height:2px"></td><td id="gradient-first-b" style="width:4px;height:2px"></td></tr></table>
+<table id="url-first-table" style="left:60px;top:60px;width:14px"><tr id="url-first-row" style="height:2px;background-image:url(background-box-inline-assets/two-color.png),none,linear-gradient(to right,lime 50%,transparent 50%);background-size:4px 2px,auto,4px 2px;background-position:0% 0%;background-repeat:repeat-x,no-repeat,repeat-x;"><td id="url-first-a" style="width:4px;height:2px"></td><td id="url-first-b" style="width:4px;height:2px"></td></tr></table>
+</body></html>

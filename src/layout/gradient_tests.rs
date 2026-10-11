@@ -399,8 +399,8 @@ fn nested_inline_uses_ancestor_color_and_nominal_owner_height() {
 
 #[test]
 fn table_cell_background_stretches_while_bottom_aligned_child_moves() {
-    // Existing table layout has fixed 2px spacing, not CSS border-spacing.
-    // Width14 pays 4+4 cells and three2px gaps; the row spans both cells+gap.
+    // HTML UA spacing is 2px on each axis. Width14 pays two4px cells and
+    // three2px gaps; each row clip keeps the same full10px positioning area.
     let (doc, mut styles) = prepare(
         "<style>body{margin:0}table{width:14px}tr{height:6px}td{width:4px;height:2px;padding:0;vertical-align:bottom}i{display:block;width:1px;height:1px}</style><table><tr id=r><td id=a><i id=c></i></td><td></td></tr></table>",
         14.0,
@@ -441,10 +441,12 @@ fn table_cell_background_stretches_while_bottom_aligned_child_moves() {
     );
     let result = layout(&doc, &styles, 14.0, 10.0, &Fonts::new());
     let g = gradients(&result);
-    assert!(
-        g.iter()
-            .any(|v| v.0 == rect(2.0, 2.0, 10.0, 6.0) && v.1 == v.0)
-    );
+    for paint in [rect(2.0, 2.0, 4.0, 6.0), rect(8.0, 2.0, 4.0, 6.0)] {
+        assert!(
+            g.iter()
+                .any(|v| v.0 == paint && v.1 == rect(2.0, 2.0, 10.0, 6.0))
+        );
+    }
     assert!(
         g.iter()
             .any(|v| v.0 == rect(2.0, 2.0, 4.0, 6.0) && v.1 == v.0)

@@ -437,11 +437,9 @@ fn table_rows_and_late_stretched_cells_resolve_final_percentage_and_calc_sizes()
     }
     let result = layout(&doc, &styles, 14.0, 10.0, &Fonts::new());
     let g = gradients(&result);
-    assert!(g.contains(&(
-        rect(2.0, 2.0, 10.0, 6.0),
-        rect(4.5, 3.5, 5.0, 3.0),
-        [false; 2]
-    )));
+    for paint in [rect(2.0, 2.0, 4.0, 6.0), rect(8.0, 2.0, 4.0, 6.0)] {
+        assert!(g.contains(&(paint, rect(4.5, 3.5, 5.0, 3.0), [false; 2])));
+    }
     assert!(g.contains(&(
         rect(2.0, 2.0, 4.0, 6.0),
         rect(3.0, 3.5, 2.0, 3.0),

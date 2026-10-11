@@ -43,9 +43,11 @@ The table model remains limited:
 - Track sizing distributes remaining space over the existing explicit/auto
   tracks; it does not implement full intrinsic min/max table sizing. Oversized
   fixed cells retain the current overflow and row-rectangle policy.
-- Row backgrounds currently paint across inter-cell gaps. The focused pixel
-  fixtures use transparent rows so table color remains visible there; complete
-  separated-background painting is not established.
+- At this spacing checkpoint, row backgrounds still painted across inter-cell
+  gaps; its fixtures therefore used transparent rows. The later
+  [row-background follow-up](table-row-backgrounds.md) adds originating-cell
+  clips and shared row image phase. Row-group/column backgrounds and the
+  broader separated-background model remain incomplete.
 - Collected captions remain stacked at the content origin before the first
   vertical grid gap. `caption-side` and general caption placement are absent.
 - A table without rows returns its caption height without grid gaps; an empty

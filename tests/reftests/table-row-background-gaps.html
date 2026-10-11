@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Row backgrounds: gaps and actual cells</title><style>
+html,body{margin:0;padding:0;background:white;font-size:0;line-height:0}
+table,tbody,thead,tfoot,tr,td,th,caption{margin:0;padding:0;border:0;box-sizing:content-box}
+table{position:absolute;background:#ffff00;border-spacing:2px 1px}
+tbody,thead,tfoot,tr,td,th{background:transparent}
+tr{height:2px}td{width:4px;height:2px;vertical-align:top}
+</style></head><body>
+<table id="ordinary-table" style="left:10px;top:10px;width:14px"><tr id="ordinary-row0" style="height:2px;background-color:red;"><td id="ordinary-a" style="width:4px;height:2px"></td><td id="ordinary-b" style="width:4px;height:2px"></td></tr><tr id="ordinary-row1" style="height:2px;background-color:blue;"><td id="ordinary-c" style="width:4px;height:2px"></td><td id="ordinary-d" style="width:4px;height:2px"></td></tr></table>
+<table id="missing-table" style="left:60px;top:10px;width:14px"><tr id="missing-row0" style="height:2px;background-color:red;"><td id="missing-a" style="width:4px;height:2px"></td><td id="missing-b" style="width:4px;height:2px"></td></tr><tr id="missing-row1" style="height:2px;background-color:blue;"><td id="missing-c" style="width:4px;height:2px"></td></tr></table>
+<table id="empty-row-table" style="left:110px;top:10px;width:14px"><tr id="empty-row-row0" style="height:2px;background-color:red;"><td id="empty-row-a" style="width:4px;height:2px"></td><td id="empty-row-b" style="width:4px;height:2px"></td></tr><tr id="empty-row-row1" style="height:2px;background-color:blue;"></tr></table>
+</body></html>
