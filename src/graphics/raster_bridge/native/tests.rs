@@ -1269,3 +1269,8 @@ fn native_wide_group_preflight_is_atomic_at_each_global_cutpoint() {
 mod rect_accounting_tests;
 #[path = "scope_accounting_tests.rs"]
 mod scope_accounting_tests;
+
+#[path = "image_accounting_tests.rs"]
+mod image_accounting_tests;
+#[path = "image_loop_differential_tests.rs"]
+mod image_loop_differential_tests;

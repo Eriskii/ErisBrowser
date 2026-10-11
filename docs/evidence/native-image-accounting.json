@@ -1,0 +1,243 @@
+{
+  "archive": "native-image-accounting.tar.gz",
+  "archive_bytes": 5492860,
+  "archive_members": 807,
+  "archive_sha256": "53965831f1d82699173f13d08f560fc9f96d9ccafcfff5ac15ab66174384ed42",
+  "base": "4a5f184340c66874b9ff3383689aef504a819e7e",
+  "checks": {
+    "baseline-browser-1": {
+      "exit": 0,
+      "results": [
+        2,
+        0,
+        1
+      ],
+      "source": "baseline-source.json"
+    },
+    "baseline-native-build-1": {
+      "exit": 0,
+      "results": null,
+      "source": "parent-source.json"
+    },
+    "candidate-browser-1": {
+      "exit": 0,
+      "results": [
+        2,
+        0,
+        1
+      ],
+      "source": "compiled-source-2.json"
+    },
+    "candidate-native-build-1": {
+      "exit": 0,
+      "results": null,
+      "source": "compiled-source-2.json"
+    },
+    "candidate-strip-1": {
+      "exit": 0,
+      "results": null,
+      "source": "compiled-source-2.json"
+    },
+    "clippy-198-1": {
+      "exit": 0,
+      "results": null,
+      "source": "compiled-source-2.json"
+    },
+    "clippy-msrv-1": {
+      "exit": 0,
+      "results": null,
+      "source": "compiled-source-2.json"
+    },
+    "focused-native-1": {
+      "exit": 101,
+      "results": [
+        64,
+        1,
+        1
+      ],
+      "source": "compiled-source-1.json"
+    },
+    "focused-native-2": {
+      "exit": 0,
+      "results": [
+        65,
+        0,
+        1
+      ],
+      "source": "compiled-source-2.json"
+    },
+    "format-1": {
+      "exit": 0,
+      "results": null,
+      "source": "compiled-source-1.json"
+    },
+    "format-check-1": {
+      "exit": 0,
+      "results": null,
+      "source": "compiled-source-2.json"
+    },
+    "full-native-1": {
+      "exit": 0,
+      "results": [
+        2420,
+        0,
+        25
+      ],
+      "source": "compiled-source-2.json"
+    },
+    "native-198-1": {
+      "exit": 0,
+      "results": [
+        65,
+        0,
+        24
+      ],
+      "source": "compiled-source-2.json"
+    }
+  },
+  "compiled_source_sha256": "2d5f607053dd186e011ae20023cc2844733b93c56b28b76f3f3aec4d4e99babd",
+  "index_sha256": "84bd0ff6824db6a356316392343295c9c93dad7f2c3979ff644b081be4799c98",
+  "payload_bytes": 20955807,
+  "published_bindings": {
+    "README.md": {
+      "bytes": 48935,
+      "sha256": "2cdf8c83bcc860c068df43187491169aabaa961572621c85f7b4503947b27d59"
+    },
+    "docs/COMPATIBILITY.md": {
+      "bytes": 68410,
+      "sha256": "14a56a6f3339f4776a665eea48d02902a8d4b043d8aa43f92f4d5ef7f18d791c"
+    },
+    "docs/ROADMAP.md": {
+      "bytes": 29432,
+      "sha256": "7e98147285164d2e35c74cb64b71310d71515dfca2c02f30767ba5d783ac5dd2"
+    },
+    "docs/native-image-accounting.md": {
+      "bytes": 7971,
+      "sha256": "679d903edb2852065659c7cd3bb4c2dfce1a0b11f948632cfb7addfe268cdd00"
+    },
+    "examples/vulkan-small-images.html": {
+      "bytes": 3870,
+      "sha256": "51cccf1617d3af4d470b7fc9b5230beee11837234cabcaa773fe61daac3caf7d"
+    },
+    "examples/vulkan-small-images.png": {
+      "bytes": 77,
+      "sha256": "f6b373ee62d8abe053e1decceb83b38627e0ce3df932ce72729f10a2e6e8fc58"
+    },
+    "src/graphics/raster_bridge/native.rs": {
+      "bytes": 42562,
+      "sha256": "eaefcc281136e4c6dcf33ee295f966a1e3c8968ea775e75897bda4fa0baa0558"
+    },
+    "src/graphics/raster_bridge/native/image_accounting_tests.rs": {
+      "bytes": 16708,
+      "sha256": "f2fa3c3ebb4cf582b4c46364b0786bc0f322ad594c1b5b4e22a9c8a0ba2546f7"
+    },
+    "src/graphics/raster_bridge/native/image_loop_differential_tests.rs": {
+      "bytes": 3172,
+      "sha256": "c30b163b28a0a57ad05d75d59a5104f210063b8746644433b450e409466899b5"
+    },
+    "src/graphics/raster_bridge/native/rect_accounting_tests.rs": {
+      "bytes": 16217,
+      "sha256": "ab53869b20d80e17621dd1146d681eeebe92a43314167b1b5ad5e628351ab2a9"
+    },
+    "src/graphics/raster_bridge/native/scope_accounting_tests.rs": {
+      "bytes": 14550,
+      "sha256": "d56f8c3547c195152089d3fe4b8f2e515d842d7b668f8c17188aa2f63f62d5af"
+    },
+    "src/graphics/raster_bridge/native/tests.rs": {
+      "bytes": 39946,
+      "sha256": "73117a78fd741d67ef5b75b6ac6175ceb4355f159b5b75ecbee3b17492bbb8c8"
+    },
+    "tests/support/vulkan_small_images.rs": {
+      "bytes": 10677,
+      "sha256": "844d3a710da7da937ba3e5488cae5e5140d9b7351cb8668e36378e363e5f994d"
+    },
+    "tests/vulkan_small_images.rs": {
+      "bytes": 5046,
+      "sha256": "a1fc2d6d787a811ad7f818dce2e6fcf107d48ca193e2f42949738694b95008b2"
+    }
+  },
+  "scene": {
+    "candidate_cpu": [
+      23040,
+      23232
+    ],
+    "changed_pixels": 288,
+    "core_gpu_bytes": [
+      2115360,
+      2115392
+    ],
+    "core_invocations": [
+      547328,
+      547520
+    ],
+    "cpu_limit": 4194304,
+    "height": 512,
+    "images": 40,
+    "parent_cpu": 10485760,
+    "pixels_per_state": 262144,
+    "retained_ids": 44,
+    "source_bytes": 16,
+    "sources": 1,
+    "width": 512
+  },
+  "schema": 1,
+  "scope": "Admission precision under unchanged caps. CPU plan decoding is not GPU execution. No timing or Chromium-relative claim.",
+  "source_files": {
+    "baseline": 295,
+    "candidate": 297,
+    "parent": 291
+  },
+  "status": "validated native image accounting evidence",
+  "window": {
+    "CPU_upload": false,
+    "adapter": "NVIDIA GeForce RTX 4070 SUPER",
+    "attempts_retained": 2,
+    "cleanup_complete": true,
+    "compared_bytes": 4320000,
+    "exact": true,
+    "first_attempt": {
+      "attempt": "window/run-1",
+      "cleanup_complete": true,
+      "final_physical_size": [
+        1770,
+        1320
+      ],
+      "logical_size": [
+        1180,
+        880
+      ],
+      "reason": "Viewport-budget refusal above unchanged1280x1024 Native cap at observed1.5scale; verification incomplete0/1.",
+      "status": "failed",
+      "verified_frames": 0
+    },
+    "frames": 1,
+    "generation": 1,
+    "identity_limit": "Serial/generation join raw scene and acquired records; viewport_revision5 is logged only by the acquired record, with FrameStamp propagation source-bound.",
+    "images": 1,
+    "logical_size": [
+      800,
+      600
+    ],
+    "lowered_commands": 221,
+    "page_commands": 40,
+    "phases": 3,
+    "physical_size": [
+      1200,
+      900
+    ],
+    "raster_invocations": 1300736,
+    "reference": true,
+    "rounded_masks": 1,
+    "route": "native-raster",
+    "scope": "One complete actual acquired Native texture compared exactly with Canvas before the desktop compositor. No click-state GPU verification, screenshot, timing/performance, complete system-library inventory or general compatibility claim.",
+    "selected_attempt": "window/run-2",
+    "serial": 9,
+    "startup_fallbacks_retained": 4,
+    "status": "verified",
+    "total_invocations": 2385536,
+    "unpresented_prepared_serials": [
+      8
+    ],
+    "viewport_revision": 5
+  }
+}

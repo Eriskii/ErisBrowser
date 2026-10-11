@@ -480,7 +480,13 @@ draws the complete scene. [Nested opacity](docs/vulkan-full-opacity.md) uses
 cropped RGBA16 intermediates for transparent or opaque groups at every finite
 binary32 opacity in `[0,1]`, preserving the software painter’s rounding stages.
 [Precise rectangle reservations](docs/native-rect-accounting.md) admit more
-small-shape scenes under the existing CPU work limits.
+small-shape scenes under the existing CPU work limits. The
+[image accounting follow-up](docs/native-image-accounting.md) reserves clipped
+image sampling loops under the same limits, with a clickable forty-image
+example. Its Page and confined-worker checks verify the complete pixels before
+and after a real click. A separate 1200×900 NVIDIA acquired texture matches all
+4,320,000 Canvas-reference bytes before the compositor. No timing result is
+claimed for this change.
 Software remains the default and headless path. The
 separate [raster probe](tools/vulkan-raster-probe/README.md) retains its original
 30 cases and 26 glyph cases on three adapters. Broader text, compositing

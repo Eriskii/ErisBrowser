@@ -32,10 +32,16 @@ Later symbols can increase charged scratch storage, and late numeric fallback
 still pays for discarded work. The local benchmark has small mixed median
 changes and several p95 regressions; broader interpreter performance remains open.
 
-[Native rectangle accounting](native-rect-accounting.md) reserves the actual
-clipped pre-blend loop area for each Rect instead of a complete viewport. Small
-shape pages can now fit the unchanged CPU allowance; Image, Line and opacity
-charges, mask limits and GPU admission remain unchanged.
+[Native rectangle accounting](native-rect-accounting.md) reserves the clipped
+pre-blend loop area for each Rect. The [image follow-up](native-image-accounting.md)
+extends that coordinate pass to Image sampling loops, preserving fractional
+clip work and fixed-scope restoration under the same CPU allowance. Line and
+opacity reservations, source/mask limits and GPU admission remain unchanged.
+The forty-image Page/worker witness now changes from the parent’s CPU-budget
+refusal to candidate admission with exact pixels before and after a click.
+A separate 1200×900 NVIDIA acquired texture matches all 4,320,000 reference
+bytes before the compositor. Broader scene and performance measurements remain
+open; the first oversized-surface refusal is retained.
 
 [Native group opacity](vulkan-full-opacity.md) now represents every finite
 binary32 opacity value in `0..=1`, including nested transparent sources, without
@@ -46,7 +52,8 @@ and retained reuse share the existing limits. The earlier
 Larger scene admission remains on the docket.
 Native clip/fixed scope accounting charges metadata work without reserving
 full-frame pixel work, allowing sparsely painted nested-clipping scenes to fit
-the existing limits. Primitive and opacity pixel reserves remain unchanged.
+the existing limits. That earlier checkpoint retained all primitive and opacity
+pixel reserves; the rectangle and image follow-ups refine primitive estimates.
 
 The native owner now reuses one exact-size, fully retired GPU buffer set while
 rewriting every input and drawing each complete scene. Limits, queued-write

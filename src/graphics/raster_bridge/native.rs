@@ -3,7 +3,7 @@
 //! scope. Returned plans retain no borrowed scene or font/image leases.
 use super::*;
 use crate::graphics::{
-    Fonts,
+    Fonts, Rect as BrowserRect,
     text_masks::{self, MaskInfo, MaskKey, Session, TextRun},
 };
 use eris_raster_core::{
@@ -292,12 +292,13 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                 }
             }
             counts.nontext += 1;
-            // Preserve every operation/parameter slot. Rects get a separate
-            // pre-blend geometry reservation after this complete preflight;
-            // Image, Line and opacity retain their full-frame pixel allowance.
+            // Preserve every operation/parameter slot. Rects and Images get a
+            // separate pre-blend geometry reservation after this complete
+            // preflight; Line and opacity retain their full-frame allowance.
             if !matches!(
                 command,
                 DrawCommand::Rect { .. }
+                    | DrawCommand::Image { .. }
                     | DrawCommand::PushClip { .. }
                     | DrawCommand::PopClip
                     | DrawCommand::PushFixed
@@ -317,18 +318,46 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
     Ok(counts)
 }
 
+/// Canvas::image's destination loop, before blend rejects fractional clip
+/// edges. Inputs come from validated commands and the current coordinate state;
+/// neither source-image lookup nor opacity/alpha inspection changes this bound.
+fn image_loop_work(target: Frame, rect: BrowserRect, clip: Rect) -> u64 {
+    if rect.width <= 0.0 || rect.height <= 0.0 {
+        return 0;
+    }
+    let visible = rect.intersect(BrowserRect {
+        x: clip.x,
+        y: clip.y,
+        width: clip.width,
+        height: clip.height,
+    });
+    if visible.width <= 0.0 || visible.height <= 0.0 {
+        return 0;
+    }
+    // Unlike Rect, Image does not raise its lower loop bound to ceil(clip).
+    // Those extra sampled pixels still consume work even if blend clips them.
+    let x0 = visible.x.floor().max(0.0) as i32;
+    let y0 = visible.y.floor().max(0.0) as i32;
+    let x1 = (visible.x + visible.width).ceil().min(target.width as f32) as i32;
+    let y1 = (visible.y + visible.height)
+        .ceil()
+        .min(target.height as f32) as i32;
+    (x1 - x0).max(0) as u64 * (y1 - y0).max(0) as u64
+}
+
 /// Called only after complete original-input validation. No coverage, glyphs,
 /// source payloads or per-command cache are allocated by this geometry pass.
 /// One bounded CoordinateState scope Vec is live at a time and is dropped
 /// before later preparation, within its existing structural peak allowance.
-fn rect_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<u64> {
+fn geometry_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<u64> {
     let mut total = 0u64;
     for (phase, input) in phases.iter().enumerate() {
-        if !input
-            .commands
-            .iter()
-            .any(|command| matches!(command, DrawCommand::Rect { .. }))
-        {
+        if !input.commands.iter().any(|command| {
+            matches!(
+                command,
+                DrawCommand::Rect { .. } | DrawCommand::Image { .. }
+            )
+        }) {
             continue;
         }
         // Frame/range validation is already complete; the only remaining
@@ -363,15 +392,24 @@ fn rect_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<u6
                         .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
                     continue;
                 }
+                DrawCommand::Image { rect, .. } => {
+                    let offset = state.offset();
+                    let work =
+                        image_loop_work(target, rect.translated(offset.0, offset.1), state.clip());
+                    // Retain a geometric upper bound for missing sources,
+                    // transparent samples and zero-opacity descendants too.
+                    total = total
+                        .checked_add(work)
+                        .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                    continue;
+                }
                 DrawCommand::PushClip { rect } => Command::PushClip(convert_rect(*rect)),
                 DrawCommand::PopClip => Command::PopClip,
                 DrawCommand::PushFixed => Command::PushFixed,
                 DrawCommand::PopFixed => Command::PopFixed,
                 DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
                 DrawCommand::PopOpacity => Command::PopOpacity,
-                DrawCommand::Text { .. } | DrawCommand::Image { .. } | DrawCommand::Line { .. } => {
-                    continue;
-                }
+                DrawCommand::Text { .. } | DrawCommand::Line { .. } => continue,
             };
             state
                 .apply(&scope)
@@ -547,7 +585,7 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
     let failure = || NativeFallback::new(FallbackKind::AllocationFailure, None, None);
     // A second copy of the complete core structural allowance safely covers
     // the adapter's additional live CoordinateState and its bounded scope Vec.
-    // Rect reservation and later lowering use that state at disjoint times.
+    // Geometry reservation and later lowering use that state at disjoint times.
     let core = eris_raster_core::native_planner_metadata_peak_bytes().map_err(|_| failure())?;
     let input_words = MAX_MASK_COVERAGE_BYTES
         .checked_add(MAX_ROW_ENTRIES)
@@ -648,10 +686,10 @@ pub fn plan_native_scene(
     .map_err(|error| NativeFallback::leaf(error, None))?;
     let area = u64::from(target.width) * u64::from(target.height);
     let cpu_limit = (area * 16).clamp(1_000_000, 32_000_000);
-    let rect_work = rect_pixel_work(target, phases)?;
+    let geometry_work = geometry_pixel_work(target, phases)?;
     let cpu_nontext = area
         .checked_mul(counts.full_area_commands as u64)
-        .and_then(|work| work.checked_add(rect_work))
+        .and_then(|work| work.checked_add(geometry_work))
         .ok_or_else(|| NativeFallback::new(FallbackKind::CpuPaintBudget, None, None))?;
     if cpu_nontext > cpu_limit {
         return Err(NativeFallback::new(

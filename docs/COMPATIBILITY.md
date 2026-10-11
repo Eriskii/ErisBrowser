@@ -443,6 +443,17 @@ This is an implementation inventory, not a conformance certificate. A feature li
 
 The URL parser and encoding libraries are infrastructure libraries, not independent reimplementations of those specifications. There is no claim that every dependency is authored in this repository.
 
+[Native image accounting](native-image-accounting.md) refines the optional GPU
+route’s CPU preparation estimate to the clipped image sampling loop. It retains
+work at fractional clip edges and conservatively charges transparent, missing
+and opacity-suppressed images. The original command/source validation and all
+CPU, memory and GPU caps remain in force; other limits can still require whole
+frame CPU fallback. The forty-image Page and confined-worker witnesses pass
+complete pixel comparisons before and after a real click. A separate initial
+scene on one NVIDIA adapter matches a full 1200×900 acquired texture against
+Canvas before the compositor. This changes admission accounting, not image
+formats, sampling, CSS coverage or measured performance.
+
 Ordinary objects support descriptor defaults, writable/enumerable/configurable checks, getters/setters, reflective descriptor queries and deletion. Enumeration visits own keys and inherited enumerable keys while respecting shadowing. Window descriptor queries expose tracked global bindings, including the CSS namespace, with ordered property-key conversion and current flags/values. The replaceable [Window.self accessor](../tests/conformance/window-self.md) supports assignment, deletion, descriptor restoration and author accessors, with global lexical shadowing kept separate. The [global value properties](../tests/conformance/global-values.md) share this handling: globalThis is initially writable/configurable and nonenumerable; undefined, NaN and Infinity are nonwritable, nonconfigurable and nonenumerable. Replacing globalThis preserves private Window/event identity. [Window binding reflection](../tests/conformance/window-reflection.md) now supports own membership, enumerability and ordered string/symbol key enumeration over the supported bindings. [General Window definitions and global bindings](../tests/conformance/window-global-bindings.md) now share data/accessor records, preserve arbitrary UTF-16 key identity, keep execution receivers private, and validate global function declarations across scripts. Event-handler descriptor/deletion behavior, extensibility, complete interfaces and named-property behavior remain incomplete. Arrays support indexed data/accessor descriptors, writable length, sparse u32 logical lengths and nonextensibility. Length reduction deletes own indices in descending order and preserves partial effects when a nonconfigurable index blocks it. Object and Reflect property definitions share the same array rules. Eleven existing Array methods now use live property operations on supported ordinary array-like receivers. Splice supports same-realm custom species; Number TypedArrays now supply live indexed properties to generic Array operations. Map/filter/slice custom species, Proxy and general host reflection remain incomplete. See [array descriptor coverage](../tests/conformance/array-descriptors.md). The unchanged upstream property-helper harness runs directly; no native test assertion shims replace it.
 
 The complete pinned [global-value inventory](../tests/conformance/test262-global-values.md)

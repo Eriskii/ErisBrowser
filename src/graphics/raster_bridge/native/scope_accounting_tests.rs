@@ -145,7 +145,17 @@ fn native_scope_accounting_keeps_full_rect_image_line_charges_across_phases() {
     let target = Frame::new(250, 200, 0);
     let primitives = [
         fill(0.0, 0.0, 250.0, 200.0, Color::TRANSPARENT, 0.0),
-        image("missing", 0.0),
+        // Use a full-frame destination to retain the existing shared quota
+        // boundary now that Image pays for its actual destination geometry.
+        DrawCommand::Image {
+            rect: BrowserRect {
+                x: 0.0,
+                y: 0.0,
+                width: 250.0,
+                height: 200.0,
+            },
+            key: "missing".into(),
+        },
         DrawCommand::Line {
             x1: 0.0,
             y1: 0.0,

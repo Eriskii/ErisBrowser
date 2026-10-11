@@ -259,25 +259,29 @@ fn native_rect_accounting_keeps_exact_cpu_limit_and_one_pixel_refusal() {
         single(&commands, target).unwrap_err().kind,
         FallbackKind::CpuPaintBudget
     );
-    // Image, Line and opacity markers deliberately retain full-frame fees.
+    // Image reserves its destination loop, including missing sources.
+    // Line and opacity markers retain their existing full-frame fees.
     let other = [
-        image("missing", 0.0),
-        DrawCommand::Line {
-            x1: 0.0,
-            y1: 0.0,
-            x2: 0.0,
-            y2: 0.0,
-            color: Color::TRANSPARENT,
-            width: 0.0,
-        },
+        (image("missing", 0.0), 1),
+        (
+            DrawCommand::Line {
+                x1: 0.0,
+                y1: 0.0,
+                x2: 0.0,
+                y2: 0.0,
+                color: Color::TRANSPARENT,
+                width: 0.0,
+            },
+            262_144,
+        ),
     ];
-    for command in other {
+    for (command, expected) in other {
         assert_eq!(
             single(&[command], target)
                 .unwrap()
                 .stats()
                 .cpu_pixel_upper_bound,
-            262_144
+            expected
         );
     }
     for opacity in [0.0, 0.3, 1.0, f32::from_bits(1)] {

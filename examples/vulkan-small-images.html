@@ -1,0 +1,54 @@
+<!doctype html><meta charset=utf-8>
+<title id=heading>Small images ready</title>
+<style>
+body{margin:0;width:512px;height:512px}
+.icon{position:absolute;width:24px;height:24px}
+</style><body data-phase=ready>
+<img id=icon00 class=icon src=vulkan-small-images.png style="left:16px;top:16px">
+<img id=icon01 class=icon src=vulkan-small-images.png style="left:48px;top:16px">
+<img id=icon02 class=icon src=vulkan-small-images.png style="left:80px;top:16px">
+<img id=icon03 class=icon src=vulkan-small-images.png style="left:112px;top:16px">
+<img id=icon04 class=icon src=vulkan-small-images.png style="left:144px;top:16px">
+<img id=icon05 class=icon src=vulkan-small-images.png style="left:176px;top:16px">
+<img id=icon06 class=icon src=vulkan-small-images.png style="left:208px;top:16px">
+<img id=icon07 class=icon src=vulkan-small-images.png style="left:240px;top:16px">
+<img id=icon08 class=icon src=vulkan-small-images.png style="left:16px;top:48px">
+<img id=icon09 class=icon src=vulkan-small-images.png style="left:48px;top:48px">
+<img id=icon10 class=icon src=vulkan-small-images.png style="left:80px;top:48px">
+<img id=icon11 class=icon src=vulkan-small-images.png style="left:112px;top:48px">
+<img id=icon12 class=icon src=vulkan-small-images.png style="left:144px;top:48px">
+<img id=icon13 class=icon src=vulkan-small-images.png style="left:176px;top:48px">
+<img id=icon14 class=icon src=vulkan-small-images.png style="left:208px;top:48px">
+<img id=icon15 class=icon src=vulkan-small-images.png style="left:240px;top:48px">
+<img id=icon16 class=icon src=vulkan-small-images.png style="left:16px;top:80px">
+<img id=icon17 class=icon src=vulkan-small-images.png style="left:48px;top:80px">
+<img id=icon18 class=icon src=vulkan-small-images.png style="left:80px;top:80px">
+<img id=icon19 class=icon src=vulkan-small-images.png style="left:112px;top:80px">
+<img id=icon20 class=icon src=vulkan-small-images.png style="left:144px;top:80px">
+<img id=icon21 class=icon src=vulkan-small-images.png style="left:176px;top:80px">
+<img id=icon22 class=icon src=vulkan-small-images.png style="left:208px;top:80px">
+<img id=icon23 class=icon src=vulkan-small-images.png style="left:240px;top:80px">
+<img id=icon24 class=icon src=vulkan-small-images.png style="left:16px;top:112px">
+<img id=icon25 class=icon src=vulkan-small-images.png style="left:48px;top:112px">
+<img id=icon26 class=icon src=vulkan-small-images.png style="left:80px;top:112px">
+<img id=icon27 class=icon src=vulkan-small-images.png style="left:112px;top:112px">
+<img id=icon28 class=icon src=vulkan-small-images.png style="left:144px;top:112px">
+<img id=icon29 class=icon src=vulkan-small-images.png style="left:176px;top:112px">
+<img id=icon30 class=icon src=vulkan-small-images.png style="left:208px;top:112px">
+<img id=icon31 class=icon src=vulkan-small-images.png style="left:240px;top:112px">
+<img id=icon32 class=icon src=vulkan-small-images.png style="left:16px;top:144px">
+<img id=icon33 class=icon src=vulkan-small-images.png style="left:48px;top:144px">
+<img id=icon34 class=icon src=vulkan-small-images.png style="left:80px;top:144px">
+<img id=icon35 class=icon src=vulkan-small-images.png style="left:112px;top:144px">
+<img id=icon36 class=icon src=vulkan-small-images.png style="left:144px;top:144px">
+<img id=icon37 class=icon src=vulkan-small-images.png style="left:176px;top:144px">
+<img id=icon38 class=icon src=vulkan-small-images.png style="left:208px;top:144px">
+<img id=icon39 class=icon src=vulkan-small-images.png style="left:240px;top:144px">
+<script>
+var first=document.getElementById('icon00');var phase=0;
+first.addEventListener('click',function(){
+phase=1-phase;first.style.width=phase?'32px':'24px';
+document.body.setAttribute('data-phase',phase?'wider':'ready');
+document.getElementById('heading').firstChild.data=phase?'Small images wider':'Small images ready';
+});
+</script>
