@@ -11,11 +11,12 @@ mod singleton_tests;
 #[cfg(test)]
 mod tests;
 
-// The first name of each length needs no separately allocated search tree.
-// A tree is published only after a second distinct, live name is admitted.
+// The first two names of each length need no separately allocated search tree.
+// A tree is published only after a third distinct, live name is admitted.
 #[cfg_attr(test, derive(Clone, Debug, PartialEq, Eq))]
 enum NameBucket {
     Single(JsString),
+    Pair([JsString; 2]),
     Tree(BTreeMap<JsString, ()>),
 }
 
@@ -489,7 +490,7 @@ impl Runtime {
         // and edge/backlink updates, not individual machine-word copies. A map
         // header moves without traversing its contents. One node allowance per
         // tree insertion/bucket covers cumulative append-only splits; the first
-        // inline name is covered by its outer-node allowance. That allowance
+        // two inline names are covered by their outer-node allowance. That allowance
         // uses the full enum size. BTreeMap's infallible allocator
         // remains a prepaid boundary. Hidden properties are inserted too.
         match visited.buckets.entry(length) {
@@ -504,15 +505,34 @@ impl Runtime {
                         let Some(property) = reader(self, object, key)? else {
                             return Ok(None);
                         };
-                        // Build an empty root and insert into its one-key leaf:
-                        // 25 + 25 bounded entry moves, 3 + length for the second
-                        // search, and 4 for retained handles/publication. This
-                        // fresh two-key leaf cannot split or traverse a parent.
-                        // The general tree insertion schedule below is unchanged.
-                        self.work(length.saturating_add(57))?;
+                        // Both retained handles fit in the already-paid outer
+                        // node. Admit clones, assembly, publication and old
+                        // handle retirement before changing the bucket.
+                        self.work(8)?;
+                        *bucket.get_mut() = NameBucket::Pair([first.clone(), key.clone()]);
+                        Ok(Some(property))
+                    }
+                    NameBucket::Pair(pair) => {
+                        self.work(length.saturating_add(1))?;
+                        if pair[0] == *key {
+                            return Ok(None);
+                        }
+                        self.work(length.saturating_add(1))?;
+                        if pair[1] == *key {
+                            return Ok(None);
+                        }
+                        let Some(property) = reader(self, object, key)? else {
+                            return Ok(None);
+                        };
+                        // A fresh three-key leaf cannot split: three bounded
+                        // insertions25 each, searches3+L and4+2L, and six
+                        // retained-handle/publication operations. Pay the whole
+                        // construction before allocating or mutating state.
+                        self.work(length.saturating_mul(3).saturating_add(88))?;
                         self.charge(VISITED_NAME_BYTES)?;
                         let mut names = BTreeMap::new();
-                        names.insert(first.clone(), ());
+                        names.insert(pair[0].clone(), ());
+                        names.insert(pair[1].clone(), ());
                         names.insert(key.clone(), ());
                         *bucket.get_mut() = NameBucket::Tree(names);
                         Ok(Some(property))
@@ -580,3 +600,9 @@ mod one_pass_diagnostic_tests;
 
 #[cfg(test)]
 mod one_pass_tests;
+
+#[cfg(test)]
+mod pair_tests;
+
+#[cfg(test)]
+mod pair_quota_tests;

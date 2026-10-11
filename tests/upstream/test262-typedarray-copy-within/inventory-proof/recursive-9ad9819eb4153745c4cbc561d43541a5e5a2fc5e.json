@@ -1,0 +1,538 @@
+{
+  "sha": "9ad9819eb4153745c4cbc561d43541a5e5a2fc5e",
+  "truncated": false,
+  "tree": [
+    {
+      "path": "BigInt",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "62fec8ad52f3743ecbfc013ae3fa29fb7056a85b",
+      "url": "https://api.github.com/repos/tc39/test262/git/trees/62fec8ad52f3743ecbfc013ae3fa29fb7056a85b"
+    },
+    {
+      "path": "BigInt/coerced-values-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "50ff90fc4b3d97ef6172b39b31d8ee334d667fda",
+      "size": 2101,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/50ff90fc4b3d97ef6172b39b31d8ee334d667fda"
+    },
+    {
+      "path": "BigInt/coerced-values-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a7c6cbcba6b57a3d986f676af33b26343e694ab",
+      "size": 2362,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/4a7c6cbcba6b57a3d986f676af33b26343e694ab"
+    },
+    {
+      "path": "BigInt/coerced-values-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4551963f7f9f6f36f359e98bcb44c769a0041188",
+      "size": 2365,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/4551963f7f9f6f36f359e98bcb44c769a0041188"
+    },
+    {
+      "path": "BigInt/detached-buffer.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cad1119ceba4d323a025e7db3133b8a510fd0cee",
+      "size": 1101,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/cad1119ceba4d323a025e7db3133b8a510fd0cee"
+    },
+    {
+      "path": "BigInt/get-length-ignores-length-prop.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c433e9718368661efc0c06c21fcf6fc11642a121",
+      "size": 1499,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/c433e9718368661efc0c06c21fcf6fc11642a121"
+    },
+    {
+      "path": "BigInt/negative-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a00b5a4c1bd9cedec8abf20988a70a1da3b71aba",
+      "size": 2774,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/a00b5a4c1bd9cedec8abf20988a70a1da3b71aba"
+    },
+    {
+      "path": "BigInt/negative-out-of-bounds-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4877a16671f254f3292a05d83bce00b24e651b2c",
+      "size": 3247,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/4877a16671f254f3292a05d83bce00b24e651b2c"
+    },
+    {
+      "path": "BigInt/negative-out-of-bounds-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbfc985e94a3ecac112394a51191254915d438d5",
+      "size": 2728,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/cbfc985e94a3ecac112394a51191254915d438d5"
+    },
+    {
+      "path": "BigInt/negative-out-of-bounds-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f1ca8b608a55f18a4bf5dab6a41b1c6def4862f",
+      "size": 1921,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/2f1ca8b608a55f18a4bf5dab6a41b1c6def4862f"
+    },
+    {
+      "path": "BigInt/negative-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ceb36225dcb703c0c2619f8f1b0d1935ae173b6",
+      "size": 2257,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/8ceb36225dcb703c0c2619f8f1b0d1935ae173b6"
+    },
+    {
+      "path": "BigInt/negative-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "defdb9f9c2285037a88234afcca31465b4e49ba2",
+      "size": 1667,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/defdb9f9c2285037a88234afcca31465b4e49ba2"
+    },
+    {
+      "path": "BigInt/non-negative-out-of-bounds-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5de4974df747f6d5437622f01105b04d2ce2f40d",
+      "size": 1745,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/5de4974df747f6d5437622f01105b04d2ce2f40d"
+    },
+    {
+      "path": "BigInt/non-negative-out-of-bounds-target-and-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32a7d4b2b4a5d50c862eef9a07b26a74ed303fbc",
+      "size": 2135,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/32a7d4b2b4a5d50c862eef9a07b26a74ed303fbc"
+    },
+    {
+      "path": "BigInt/non-negative-target-and-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b36bb3e42df2993db7ce1e8348c169e261ef422",
+      "size": 1501,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/3b36bb3e42df2993db7ce1e8348c169e261ef422"
+    },
+    {
+      "path": "BigInt/non-negative-target-start-and-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9605fee5a0509e4245c17eef6539af8ffdefcd69",
+      "size": 2146,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/9605fee5a0509e4245c17eef6539af8ffdefcd69"
+    },
+    {
+      "path": "BigInt/return-abrupt-from-end-is-symbol.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27a1d8e6a57538fb9ae1ca3220f083cdc7c3eaf2",
+      "size": 1215,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/27a1d8e6a57538fb9ae1ca3220f083cdc7c3eaf2"
+    },
+    {
+      "path": "BigInt/return-abrupt-from-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "756928658d58d1f66c0e41f9c0821efc486574e6",
+      "size": 1274,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/756928658d58d1f66c0e41f9c0821efc486574e6"
+    },
+    {
+      "path": "BigInt/return-abrupt-from-start-is-symbol.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44352d75d7bbc0b0086e10d514f12a8bd72fe051",
+      "size": 1166,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/44352d75d7bbc0b0086e10d514f12a8bd72fe051"
+    },
+    {
+      "path": "BigInt/return-abrupt-from-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a994750084687ea85e5f687fbfca282eea48f9f",
+      "size": 1331,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/5a994750084687ea85e5f687fbfca282eea48f9f"
+    },
+    {
+      "path": "BigInt/return-abrupt-from-target-is-symbol.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e96cb6a94c5ef6dff8625a412d39d0762a2f2839",
+      "size": 1169,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/e96cb6a94c5ef6dff8625a412d39d0762a2f2839"
+    },
+    {
+      "path": "BigInt/return-abrupt-from-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0bdec02c2f9f90781528dea37d737e5791de6a79",
+      "size": 1214,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/0bdec02c2f9f90781528dea37d737e5791de6a79"
+    },
+    {
+      "path": "BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fe69f12eb288d6e19cb8d101a622587bd8189921",
+      "size": 1732,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/fe69f12eb288d6e19cb8d101a622587bd8189921"
+    },
+    {
+      "path": "BigInt/return-this.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a3155113c38d280634a5c8f4ea2ec4b380e43ee",
+      "size": 1202,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/5a3155113c38d280634a5c8f4ea2ec4b380e43ee"
+    },
+    {
+      "path": "BigInt/undefined-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed9199a950352507ca0ec68e9fbb801a6dcb4ab2",
+      "size": 1487,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/ed9199a950352507ca0ec68e9fbb801a6dcb4ab2"
+    },
+    {
+      "path": "bit-precision.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d50404adc103226d14721abde6eb6f5f396caf3",
+      "size": 1131,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/9d50404adc103226d14721abde6eb6f5f396caf3"
+    },
+    {
+      "path": "byteoffset.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8bb96b6fc30681d20863a360edfa7b334378e75b",
+      "size": 1101,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/8bb96b6fc30681d20863a360edfa7b334378e75b"
+    },
+    {
+      "path": "coerced-target-start-end-shrink.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51a22439fef9de379bc84b4f5d8695de29e2a95a",
+      "size": 3194,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/51a22439fef9de379bc84b4f5d8695de29e2a95a"
+    },
+    {
+      "path": "coerced-target-start-grow.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94495d35bd0cfccc435ca520d242931e5dc50699",
+      "size": 1517,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/94495d35bd0cfccc435ca520d242931e5dc50699"
+    },
+    {
+      "path": "coerced-values-end-detached-prototype.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "289133f850eee7bf1d35e8e010477fc173afbfab",
+      "size": 1469,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/289133f850eee7bf1d35e8e010477fc173afbfab"
+    },
+    {
+      "path": "coerced-values-end-detached.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d39f016bded34bdeb8655df256551fd89c561de",
+      "size": 1379,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/3d39f016bded34bdeb8655df256551fd89c561de"
+    },
+    {
+      "path": "coerced-values-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8c2157f50e248a4163dbda48843f0952d475160",
+      "size": 2039,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/a8c2157f50e248a4163dbda48843f0952d475160"
+    },
+    {
+      "path": "coerced-values-start-detached.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5bb1b155059d81642e7151bfdb0af81421364fb1",
+      "size": 1336,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/5bb1b155059d81642e7151bfdb0af81421364fb1"
+    },
+    {
+      "path": "coerced-values-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "92aa33c9cd155fb6aa480e9ca3bd8f8b1214e267",
+      "size": 2284,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/92aa33c9cd155fb6aa480e9ca3bd8f8b1214e267"
+    },
+    {
+      "path": "coerced-values-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e3239903f9576ae653bf8cb941141591fe76092",
+      "size": 2446,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/8e3239903f9576ae653bf8cb941141591fe76092"
+    },
+    {
+      "path": "detached-buffer.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0cfbea181155624de98cb102a18d3c50515ada55",
+      "size": 1087,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/0cfbea181155624de98cb102a18d3c50515ada55"
+    },
+    {
+      "path": "get-length-ignores-length-prop.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdf6b8ba4424fcdaab194c2edfc10e9f06dc7614",
+      "size": 1485,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/fdf6b8ba4424fcdaab194c2edfc10e9f06dc7614"
+    },
+    {
+      "path": "immutable-buffer.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21561cd7d6a87eda0f6f78bfa3654555a3351dd4",
+      "size": 2203,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/21561cd7d6a87eda0f6f78bfa3654555a3351dd4"
+    },
+    {
+      "path": "invoked-as-func.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "92611443e44c04aaf8e0a96a9b162cf9df80194d",
+      "size": 991,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/92611443e44c04aaf8e0a96a9b162cf9df80194d"
+    },
+    {
+      "path": "invoked-as-method.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07271dbbee2547b37233f8e17049ecc2b12ed6e8",
+      "size": 1018,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/07271dbbee2547b37233f8e17049ecc2b12ed6e8"
+    },
+    {
+      "path": "length.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e00ec8c3531ff9aa6f365248d531da50ee39cd7",
+      "size": 1176,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/6e00ec8c3531ff9aa6f365248d531da50ee39cd7"
+    },
+    {
+      "path": "name.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a5361d7b46ec8cc533634e8c0d360bc21a53179",
+      "size": 949,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/8a5361d7b46ec8cc533634e8c0d360bc21a53179"
+    },
+    {
+      "path": "negative-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d18750139ed273ef4044e6a20d08009443e1921",
+      "size": 2686,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/3d18750139ed273ef4044e6a20d08009443e1921"
+    },
+    {
+      "path": "negative-out-of-bounds-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24e6955e39dc9461805001b8d028b1a0d8cc795f",
+      "size": 3143,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/24e6955e39dc9461805001b8d028b1a0d8cc795f"
+    },
+    {
+      "path": "negative-out-of-bounds-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ef955bd0a902b8d16813cee1ae8cbf3c59634b0",
+      "size": 2638,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/5ef955bd0a902b8d16813cee1ae8cbf3c59634b0"
+    },
+    {
+      "path": "negative-out-of-bounds-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34690c59db03e3a23244236bf93570a6cd53e5b6",
+      "size": 1869,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/34690c59db03e3a23244236bf93570a6cd53e5b6"
+    },
+    {
+      "path": "negative-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eacbcd9687b7fcf89a212d60f6aed043a67c147f",
+      "size": 2187,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/eacbcd9687b7fcf89a212d60f6aed043a67c147f"
+    },
+    {
+      "path": "negative-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a3e12b60a3bffdfb52e11fcbf9a180fa36fe0f50",
+      "size": 1627,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/a3e12b60a3bffdfb52e11fcbf9a180fa36fe0f50"
+    },
+    {
+      "path": "non-negative-out-of-bounds-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0cd078665efe1bb206f88f5ac5ce786c038dce60",
+      "size": 1691,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/0cd078665efe1bb206f88f5ac5ce786c038dce60"
+    },
+    {
+      "path": "non-negative-out-of-bounds-target-and-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ef8740a1ac618eaae8428d6bb85033a01304a7e",
+      "size": 2043,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/1ef8740a1ac618eaae8428d6bb85033a01304a7e"
+    },
+    {
+      "path": "non-negative-target-and-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db6cc87defbc4b7f13abcdc9a9c2880bbb326b8b",
+      "size": 1439,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/db6cc87defbc4b7f13abcdc9a9c2880bbb326b8b"
+    },
+    {
+      "path": "non-negative-target-start-and-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c81708208e77766b4d792031210f399beee3c775",
+      "size": 2088,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/c81708208e77766b4d792031210f399beee3c775"
+    },
+    {
+      "path": "not-a-constructor.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e55bc66b2a98a375c099809da0bca48d978b67e",
+      "size": 973,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/0e55bc66b2a98a375c099809da0bca48d978b67e"
+    },
+    {
+      "path": "prop-desc.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6d37c5c42d650af6f31e434d83dfd43c435b19d",
+      "size": 719,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/f6d37c5c42d650af6f31e434d83dfd43c435b19d"
+    },
+    {
+      "path": "resizable-buffer.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d86049c04e656f509e3e0124a90859b3cce6835c",
+      "size": 4955,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/d86049c04e656f509e3e0124a90859b3cce6835c"
+    },
+    {
+      "path": "return-abrupt-from-end-is-symbol.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67a099ca5d6409910cbcfac3e59d90a679206ed4",
+      "size": 1201,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/67a099ca5d6409910cbcfac3e59d90a679206ed4"
+    },
+    {
+      "path": "return-abrupt-from-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de0d1d9e5dfcbe3706e9126687e464f10cccae51",
+      "size": 1260,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/de0d1d9e5dfcbe3706e9126687e464f10cccae51"
+    },
+    {
+      "path": "return-abrupt-from-start-is-symbol.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2905361800b98b2bf6f7f3527ec8e3760723d9ee",
+      "size": 1152,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/2905361800b98b2bf6f7f3527ec8e3760723d9ee"
+    },
+    {
+      "path": "return-abrupt-from-start.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c97639ccf9582f20d9884385f24d0d9699a64a73",
+      "size": 1317,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/c97639ccf9582f20d9884385f24d0d9699a64a73"
+    },
+    {
+      "path": "return-abrupt-from-target-is-symbol.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a403ce70cbfb592bde490ee618614e70dbf786e",
+      "size": 1155,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/8a403ce70cbfb592bde490ee618614e70dbf786e"
+    },
+    {
+      "path": "return-abrupt-from-target.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97d60c4e5f0ae5f7e802abaf8f06733389b41b02",
+      "size": 1200,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/97d60c4e5f0ae5f7e802abaf8f06733389b41b02"
+    },
+    {
+      "path": "return-abrupt-from-this-out-of-bounds.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd8466ca1924f6c21e5033761093e3abeb810b92",
+      "size": 1689,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/dd8466ca1924f6c21e5033761093e3abeb810b92"
+    },
+    {
+      "path": "return-this.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42eb83172a561c2cb8acc1017732a2a44e5e0f66",
+      "size": 1185,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/42eb83172a561c2cb8acc1017732a2a44e5e0f66"
+    },
+    {
+      "path": "this-is-not-object.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7744256f45df6084863c0b733e8fa78e8b6bb211",
+      "size": 1462,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/7744256f45df6084863c0b733e8fa78e8b6bb211"
+    },
+    {
+      "path": "this-is-not-typedarray-instance.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad6932f626a40731c3b801180ccab2004642f5f0",
+      "size": 1374,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/ad6932f626a40731c3b801180ccab2004642f5f0"
+    },
+    {
+      "path": "undefined-end.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c491bf2c6544d77af266aa4121659db3dc8bc43",
+      "size": 1457,
+      "url": "https://api.github.com/repos/tc39/test262/git/blobs/0c491bf2c6544d77af266aa4121659db3dc8bc43"
+    }
+  ],
+  "derived_from": {
+    "path": "/tmp/eris-next-typedarray-assessment-1/inventory/TypedArray.json",
+    "bytes": 384814,
+    "sha256": "f2a18da8b6ab95654f062cb1b08bcc61b26cb022278dadcf4d118ec230426fa5"
+  }
+}

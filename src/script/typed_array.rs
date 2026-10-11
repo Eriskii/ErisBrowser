@@ -6,6 +6,7 @@ use super::*;
 #[cfg(test)]
 mod call_tests;
 mod constructors;
+mod copy_within;
 mod fill;
 mod index;
 mod intrinsics;
@@ -477,6 +478,7 @@ impl Runtime {
         match method {
             "subarray" => self.typed_array_subarray(receiver, record, arguments, doc),
             "join" => self.typed_array_join(record, arguments, doc),
+            "copyWithin" => self.typed_array_copy_within(receiver, record, arguments, doc),
             "fill" => self.typed_array_fill(receiver, record, arguments, doc),
             "reverse" => self.typed_array_reverse(receiver, record),
             "toReversed" => self.typed_array_to_reversed(record, doc),

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Overlapping copy</title>
+<style>
+body{margin:32px;background:#f5f7fa;color:#172033;font:18px sans-serif}
+h1{font-size:30px}button{padding:12px;background:#245bcc;color:white;border:0}
+pre{padding:20px;background:white;border:1px solid #cbd5e1;font:18px monospace;line-height:1.6}
+</style></head><body>
+<h1>Overlapping copy</h1><p>Copy values inside a view, keeping the surrounding buffer.</p>
+<button id="change">Copy overlapping values</button><pre id="result">Waiting for script</pre>
+<script>
+var buffer=new ArrayBuffer(12,{maxByteLength:16});
+var words=new Uint16Array(buffer);
+words[0]=99;words[1]=11;words[2]=22;words[3]=33;words[4]=44;words[5]=88;
+var selected=words.subarray(1,5);
+var alias=new Uint16Array(buffer,2,4);
+var copy=selected.copyWithin;
+var right=true;
+var same='ready';
+function show(){
+  document.getElementById('result').textContent='Buffer: '+words.join(' ')+'\n'
+    +'View: '+alias.join(' ')+'\n'
+    +'Same view: '+same;
+}
+document.getElementById('change').onclick=function(){
+  if(right){same=copy.call(selected,1,0,3)===selected;document.title='Copied right';}
+  else{same=copy.call(selected,0,1,4)===selected;document.title='Copied left';}
+  right=!right;show();
+};
+show();
+</script></body></html>

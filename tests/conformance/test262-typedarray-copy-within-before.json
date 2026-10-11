@@ -1,0 +1,3147 @@
+{
+  "suite": "pinned-test262-typedarray-copy-within-selection",
+  "full_test262_conformance": false,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "c45677cd080dc59c06e9667cb1c8e6d94bc20869e5f237ca1083f6615c9cdefe",
+  "runner_policy": {
+    "format": 2,
+    "supported_features": [
+      "ArrayBuffer",
+      "Reflect.construct",
+      "Symbol",
+      "TypedArray",
+      "arrow-function",
+      "resizable-arraybuffer"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": false,
+    "host_hooks": false,
+    "timeout_seconds": 3.0,
+    "excluded_harness": [
+      "resizableArrayBufferUtils.js"
+    ]
+  },
+  "runner_policy_sha256": "7b2e4ceeaa92428c9cc8092b6fd782970eee9d4a870f7332cc1d44bd6d60f1e8",
+  "source_files": 65,
+  "source_tests": 65,
+  "negative_source_tests": 0,
+  "fixture_files": [],
+  "mode_cases": 130,
+  "counts": {
+    "unsupported": 64,
+    "failed": 56,
+    "resource": 6,
+    "passed": 4
+  },
+  "seconds": 1.472,
+  "binary": "/tmp/eris-own-keys-one-pass-1/eris-js-candidate-1",
+  "binary_sha256": "b366575d98cffdedbf20f5345ab44d11fb2d615d57ba7e7b94a30c756a38d8a9",
+  "harness_preflight": [
+    {
+      "name": "success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "7fe7d94d9e84765c39e095ba88d5f54cb937df0d780785e185ff5dfd3bb74291",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:assert-false",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6470c0827c0de6472342233bbb189008df60df75393ac98843660e2729be2e41",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a4d7d481cb816dc706a6b8f84e7dbcea5f1d7c6393094ab35cb6d47ab0d39494",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:signed-zero",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8e329999cda16ae14b530d61dcc7794f2b572e0809370e4c6b8ee9faff63d074",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:not-same-value",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "738a0dd64663125af510063f604bec8e8f914f340be2cd3f430eaf1e5cf2cc0c",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "bdf648715c68784de062689b85db48546e44e14dc31df5644ff1e420e5623d1c",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d0f5b25203199d201f006e90e7bb6b78023d5bb7ea803581daf5caf2d52fcf9c",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:throws-missing",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "29bc8742a93e811f9680ef2098bfcb4984e86673ea3da41c377e907067cde255",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:array-mismatch",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a883850a23bc0f55e12bb5f3d09780b9935eb141e2af3892dabc5b5a35172096",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-success",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "b35a36c10460a813dbcc5a40b356d1ae07c2d54c272b35a717dd6bddf667c51e",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-writable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6cbcbbbcae8167c890124971bd07ceb81f6daf8e286ad12025bb4a82a0672944",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-enumerable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2a651b1aefd71f4a017d564e91b842569e6cd78d0145d03b20b48d0836c3c56d",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:property-configurable",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e18cf4dde2cd44993c84b43d6a01e68c021d56365f4e15673fe1fa2bdb774cd8",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3c5650218df0ef937e5a3ecd6f9c7460f960e61f0c9832515a63b77b832d78cd",
+        "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-assert-false",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-assert-false",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "11fe2e709b0565e340d83176bc248895795e43c8d9eaa47619dcd939374937e7",
+        "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "03efed7bd86096fb67e4d8e0941b4768e61e8f7068c95f9b5ac63c86a95ee96f",
+        "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-signed-zero",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-signed-zero",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "b4ce5d0baa51a09beb8d14cc65bf66e805a4f48e03ad306bd044f6bf0fba7631",
+        "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-not-same-value",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-not-same-value",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "615fa57db6e08e455e124d6f3eaf118f2e4eab20161f51aab723923c9a0f8d36",
+        "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "bafcbdea8809ac7c1628fe502c6a060a0e2ad7ca9a8598faf3e902734673c4e4",
+        "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-wrong-type",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-wrong-type",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "f83aeacb9dc37b65255ab7bfd51a0d8052e8da2915d8fb7fe06777292780b078",
+        "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-throws-missing",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-throws-missing",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a6d552fcd92dddd52b6239ebe82177f95648349f2b07847a36307aada0579e35",
+        "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-array-mismatch",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-array-mismatch",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "8f8086b6d6f7fc051eac7270c9ca4be3f85cbcb5ae935dabd4c6d264cc917338",
+        "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-success",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-success",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "a46db4f2087865126ceac90ba93407c3877f00c0c698d8f4e604111f395780ba",
+        "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-writable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-writable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "412b91a8d1093f526f34b58ad29668225c387226712184ef8d79e36cd470bccd",
+        "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-enumerable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-enumerable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c571e812c4ddab362d7caabd07b4b3ed427f9962e91e728c61b272fe7f8004eb",
+        "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-property-configurable",
+      "expected": "failed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-property-configurable",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "634b734df32d4d581162c58f74ddb831dc337fce988dd52d74f23fca1d93a126",
+        "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "Test262Error",
+          "error_identity": "",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-receiver",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-receiver",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "9e721632d9643b3489c411eb2d5a3f87a08c3bea9f9cf9a673ebb102b24a5974",
+        "source_sha256": "d0e7bb44576a0bf890774b1736e79cd0166a2e32fe030a3ba86e5015f2c244bf",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-unbound-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-unbound-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2916d638664aa431071561dff0ba0337d5f005f08424cfe8c67d07c93c0cf792",
+        "source_sha256": "150659db8ea36d09b80df3f046ab341af7b1f64b691051fa9c866e2da4c5314d",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-readonly-write",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-readonly-write",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "937d5d1a945b824e6d6d60304aea3337db809214469240d437ba6081a9bec231",
+        "source_sha256": "a1cce38d2daa07cbcc33a2d2db74f0e720a5f0deee03767480c699db33b4882b",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-delete",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-delete",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "2c630739c1458f6444b889a03992a2be2de36b0e00dd56522bf0844fe2c54a2c",
+        "source_sha256": "cb997e967d015ba97c122c1ea746bdd0fbcb2659573645728918558d1349a965",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-arguments",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-arguments",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "54df002c837ca5ed70e5d5b49dc0375e40bbfb6b88580dfdc66b5ee7bec44171",
+        "source_sha256": "a77f7981af7c3910476440f16ac4c18b7ffaf381714ad33e70fa0d0d5c953887",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "strict-tdz",
+      "expected": "passed",
+      "verified": true,
+      "result": {
+        "id": "harness-preflight:strict-tdz",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "cf503031beb1832405ad98ea6ca81c8b6de9bb1f90143829dac8788b2affbbfd",
+        "source_sha256": "2e0d83e7123f5fa749a3f10484c95aa95eac4140438da59faa19edfb82d1061f",
+        "expected_negative": null,
+        "status": "passed",
+        "observation": {
+          "status": "complete",
+          "phase": "runtime",
+          "error_type": "",
+          "error_identity": "",
+          "message": "",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-ten-kinds-overlap-and-offset-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-ten-kinds-overlap-and-offset-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8c44e5f0b4f6186d184490fcc4aa7b35ab037ce2f96eeded541f35298f751235",
+        "source_sha256": "a86973b4cb0341456f27b3157068044fa6328694ac08bcf254b1fba891249a11",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-ten-kinds-overlap-and-offset-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-ten-kinds-overlap-and-offset-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "73ff961d708b5b80aa93f182fd689a1e76388f2298455a629c0c978086a0c152",
+        "source_sha256": "a86973b4cb0341456f27b3157068044fa6328694ac08bcf254b1fba891249a11",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-ten-kinds-overlap-and-offset-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-ten-kinds-overlap-and-offset-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "ebe24e55e0a2d9acbbb8191501cc001611556df48f81ff671a6e505526e274d3",
+        "source_sha256": "340d4a4425b2fb3edd71664867594a6e3c563557b9459888b2fae1baf33d63a7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-ten-kinds-overlap-and-offset-positive",
+        "mode": "sloppy",
+        "case_sha256": "8c44e5f0b4f6186d184490fcc4aa7b35ab037ce2f96eeded541f35298f751235",
+        "source_sha256": "a86973b4cb0341456f27b3157068044fa6328694ac08bcf254b1fba891249a11",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-ten-kinds-overlap-and-offset-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-ten-kinds-overlap-and-offset-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0c8defc0f13d611aeb8c4333f20a4b5ebf248487268f4d353bca00f8a7afb782",
+        "source_sha256": "340d4a4425b2fb3edd71664867594a6e3c563557b9459888b2fae1baf33d63a7",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-ten-kinds-overlap-and-offset-positive",
+        "mode": "strict",
+        "case_sha256": "73ff961d708b5b80aa93f182fd689a1e76388f2298455a629c0c978086a0c152",
+        "source_sha256": "a86973b4cb0341456f27b3157068044fa6328694ac08bcf254b1fba891249a11",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-raw-floating-bits-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-raw-floating-bits-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "d7a7c19b41d50827b1b280a260d75e12ebb607785c05c78d9f885923b43b8bf0",
+        "source_sha256": "0015022cb930c52734292df0be12c25782e75a3af68b2e8e5f9b614bae3c1809",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-raw-floating-bits-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-raw-floating-bits-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "5c0e990eac8b97997fbd71a4112c5ff3e671da0e517c90808b9e6e7dd6be107b",
+        "source_sha256": "0015022cb930c52734292df0be12c25782e75a3af68b2e8e5f9b614bae3c1809",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-raw-floating-bits-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-raw-floating-bits-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a64c08d070e1260ce36067d1063d3e3ac88170dd4b9ebaf9301da01c88796d52",
+        "source_sha256": "ba4506b308b9083cc4f9cf2c90c258e3c4d748c0d365d5ed7e43a781a09196d1",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-raw-floating-bits-positive",
+        "mode": "sloppy",
+        "case_sha256": "d7a7c19b41d50827b1b280a260d75e12ebb607785c05c78d9f885923b43b8bf0",
+        "source_sha256": "0015022cb930c52734292df0be12c25782e75a3af68b2e8e5f9b614bae3c1809",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-raw-floating-bits-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-raw-floating-bits-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "11cb2fe8ab56a9b015ebb56c8ef3d64ce54e0df986c1594338033c179329093d",
+        "source_sha256": "ba4506b308b9083cc4f9cf2c90c258e3c4d748c0d365d5ed7e43a781a09196d1",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-raw-floating-bits-positive",
+        "mode": "strict",
+        "case_sha256": "5c0e990eac8b97997fbd71a4112c5ff3e671da0e517c90808b9e6e7dd6be107b",
+        "source_sha256": "0015022cb930c52734292df0be12c25782e75a3af68b2e8e5f9b614bae3c1809",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-conversion-order-and-ranges-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-conversion-order-and-ranges-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "6e74fa2f7196c34473d1547d2854e0dac8282927a2b09145e87befb93c35ae89",
+        "source_sha256": "634b43cf59735294dc7c6a46bc53f9f766026c3d0b08c5007425bd96fc3dbc1e",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-conversion-order-and-ranges-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-conversion-order-and-ranges-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "0bc6f24144682e5974086924afa7d9250b68775f4385a0c1579130e274ed295b",
+        "source_sha256": "634b43cf59735294dc7c6a46bc53f9f766026c3d0b08c5007425bd96fc3dbc1e",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-conversion-order-and-ranges-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-conversion-order-and-ranges-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "8b1b9e9639a46926141f5b41254e680f17e950c56cbab0a6ad9b9b6b15436f36",
+        "source_sha256": "61ddb4be5eb5d88e2b66c4cebc96193e9ce8e954dba2c746110636f31f8c8420",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-conversion-order-and-ranges-positive",
+        "mode": "sloppy",
+        "case_sha256": "6e74fa2f7196c34473d1547d2854e0dac8282927a2b09145e87befb93c35ae89",
+        "source_sha256": "634b43cf59735294dc7c6a46bc53f9f766026c3d0b08c5007425bd96fc3dbc1e",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-conversion-order-and-ranges-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-conversion-order-and-ranges-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "fc0f59aa5c77082cd56792e216299ae42318cd6b9e5c6eab8d7319eb300808ec",
+        "source_sha256": "61ddb4be5eb5d88e2b66c4cebc96193e9ce8e954dba2c746110636f31f8c8420",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-conversion-order-and-ranges-positive",
+        "mode": "strict",
+        "case_sha256": "0bc6f24144682e5974086924afa7d9250b68775f4385a0c1579130e274ed295b",
+        "source_sha256": "634b43cf59735294dc7c6a46bc53f9f766026c3d0b08c5007425bd96fc3dbc1e",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-captured-length-and-refreshed-prefix-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-captured-length-and-refreshed-prefix-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "105fad12dd484021b882d4f425b9503950a1e6dae3b885da7c19ff3680f4e375",
+        "source_sha256": "5c6a37d28a9d712c71f7a3d3a1eade6d84249e9dc1e06177fea4755a3c894e1e",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-captured-length-and-refreshed-prefix-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-captured-length-and-refreshed-prefix-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c1c3b5fcd773abcc191dee0777172763253a758216c379a4fb46023e2d65cd2a",
+        "source_sha256": "5c6a37d28a9d712c71f7a3d3a1eade6d84249e9dc1e06177fea4755a3c894e1e",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-captured-length-and-refreshed-prefix-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-captured-length-and-refreshed-prefix-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "2d658dc6e636e127a1935f1ac66b0e0480a5ef353e0944ad4c6281e64e57fd02",
+        "source_sha256": "7543dfa5aa326dd7222cafb6305984e7e9531a753ebb68877cbd4ac2abca98d0",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-captured-length-and-refreshed-prefix-positive",
+        "mode": "sloppy",
+        "case_sha256": "105fad12dd484021b882d4f425b9503950a1e6dae3b885da7c19ff3680f4e375",
+        "source_sha256": "5c6a37d28a9d712c71f7a3d3a1eade6d84249e9dc1e06177fea4755a3c894e1e",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-captured-length-and-refreshed-prefix-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-captured-length-and-refreshed-prefix-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "3497f161248da0ffed4ecf6fcbf883064e96d1496f58557aaa67264ed505fc2f",
+        "source_sha256": "7543dfa5aa326dd7222cafb6305984e7e9531a753ebb68877cbd4ac2abca98d0",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-captured-length-and-refreshed-prefix-positive",
+        "mode": "strict",
+        "case_sha256": "c1c3b5fcd773abcc191dee0777172763253a758216c379a4fb46023e2d65cd2a",
+        "source_sha256": "5c6a37d28a9d712c71f7a3d3a1eade6d84249e9dc1e06177fea4755a3c894e1e",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-initial-and-late-invalidity-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-initial-and-late-invalidity-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "a43c3b2598f362c08cdb0b0985667cb12922e434fc27fcf49a4e4dbdb51aca29",
+        "source_sha256": "726322c1e850d4500353abb852f1bd1efefd279d906c38d1163716415783810f",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-initial-and-late-invalidity-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-initial-and-late-invalidity-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "77a42b0cda89889a8bcebba9ff533a5e9797f5a7406b87497f5dedf10b63f357",
+        "source_sha256": "726322c1e850d4500353abb852f1bd1efefd279d906c38d1163716415783810f",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-initial-and-late-invalidity-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-initial-and-late-invalidity-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "c64946512a020916b809e1b1ad18f62d010c9e9b91ea2995a72b67817603f9de",
+        "source_sha256": "8a1e2cbf4dbb6537a918f9e4722cc3b29c9339d6f4cdeb4d2c83b691b151694b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-initial-and-late-invalidity-positive",
+        "mode": "sloppy",
+        "case_sha256": "a43c3b2598f362c08cdb0b0985667cb12922e434fc27fcf49a4e4dbdb51aca29",
+        "source_sha256": "726322c1e850d4500353abb852f1bd1efefd279d906c38d1163716415783810f",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-initial-and-late-invalidity-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-initial-and-late-invalidity-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "c70c8ca72c596c99dba5b7b07c00825f9a87345852aa20d1fd2a5e22eba641b4",
+        "source_sha256": "8a1e2cbf4dbb6537a918f9e4722cc3b29c9339d6f4cdeb4d2c83b691b151694b",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-initial-and-late-invalidity-positive",
+        "mode": "strict",
+        "case_sha256": "77a42b0cda89889a8bcebba9ff533a5e9797f5a7406b87497f5dedf10b63f357",
+        "source_sha256": "726322c1e850d4500353abb852f1bd1efefd279d906c38d1163716415783810f",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-saved-metadata-and-internal-length-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-saved-metadata-and-internal-length-positive",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "e5163ee34e16fd7bd095df08c2c8dbbb4031fb8a9d60c068ad8f52ecaa1ff43c",
+        "source_sha256": "ca26d0728e568d30906d52375b778868585ca7879812eb9d188c00384c5c4753",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-saved-metadata-and-internal-length-positive",
+      "expected": "passed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-saved-metadata-and-internal-length-positive",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "966a79f53f66fb0c22be8f02ce128bedf3d5396e840fb1fef76548ca28cf5688",
+        "source_sha256": "ca26d0728e568d30906d52375b778868585ca7879812eb9d188c00384c5c4753",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      }
+    },
+    {
+      "name": "typedarray-copy-within-saved-metadata-and-internal-length-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-saved-metadata-and-internal-length-wrong",
+        "file": "<preflight>",
+        "mode": "sloppy",
+        "case_sha256": "54e0fc2af97e288a27522433cda39d2301a3461f2b70bfb935537ac1ee130576",
+        "source_sha256": "d0e3dd298102e49bd11a27db6f08ca21353331e82013265356ea3e6f282b5528",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-saved-metadata-and-internal-length-positive",
+        "mode": "sloppy",
+        "case_sha256": "e5163ee34e16fd7bd095df08c2c8dbbb4031fb8a9d60c068ad8f52ecaa1ff43c",
+        "source_sha256": "ca26d0728e568d30906d52375b778868585ca7879812eb9d188c00384c5c4753",
+        "expected": "passed",
+        "verified": false
+      }
+    },
+    {
+      "name": "typedarray-copy-within-saved-metadata-and-internal-length-wrong",
+      "expected": "failed",
+      "verified": false,
+      "result": {
+        "id": "harness-preflight:typedarray-copy-within-saved-metadata-and-internal-length-wrong",
+        "file": "<preflight>",
+        "mode": "strict",
+        "case_sha256": "789f18c5935737a95ebfd06b1d3a80cbd1cbd033434d84c9e7fd3fa066f2c17d",
+        "source_sha256": "d0e3dd298102e49bd11a27db6f08ca21353331e82013265356ea3e6f282b5528",
+        "expected_negative": null,
+        "status": "failed",
+        "observation": {
+          "status": "exception",
+          "phase": "runtime",
+          "error_type": "TypeError",
+          "error_identity": "TypeError",
+          "message": "uncaught exception: [object Object]",
+          "harness": ""
+        }
+      },
+      "prerequisite": {
+        "name": "typedarray-copy-within-saved-metadata-and-internal-length-positive",
+        "mode": "strict",
+        "case_sha256": "966a79f53f66fb0c22be8f02ce128bedf3d5396e840fb1fef76548ca28cf5688",
+        "source_sha256": "ca26d0728e568d30906d52375b778868585ca7879812eb9d188c00384c5c4753",
+        "expected": "passed",
+        "verified": false
+      }
+    }
+  ],
+  "harness_preflight_passed": false,
+  "regressions": [],
+  "improvements": [],
+  "cases": [
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-end.js",
+      "mode": "sloppy",
+      "case_sha256": "fe96265b99ff15b0b18483e8d81cdd8aef69c25093672f69fd505725e6074b8c",
+      "source_sha256": "1c16b68166fec7b2f34f129da8fcbb438746246ecc971841c5ee317854bf55f9",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-end.js",
+      "mode": "strict",
+      "case_sha256": "71f45c634e4f407485fdbf59214cd7af0f605fe6158df434d722fb3044c62844",
+      "source_sha256": "1c16b68166fec7b2f34f129da8fcbb438746246ecc971841c5ee317854bf55f9",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-start.js",
+      "mode": "sloppy",
+      "case_sha256": "c1bd7a336f6f91da6a5d71e1d8369595dcd5e536d0eb4ec0f80edb3923a40173",
+      "source_sha256": "5071fbd36acff894aaa62d4b0593577034b323a343593a49a16a9f62fe5f7e6d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-start.js",
+      "mode": "strict",
+      "case_sha256": "fbf2c312ed6ed97b95b17fa37fb3502da827ba11f0e7d35130b607dfe8f98d02",
+      "source_sha256": "5071fbd36acff894aaa62d4b0593577034b323a343593a49a16a9f62fe5f7e6d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-target.js",
+      "mode": "sloppy",
+      "case_sha256": "61464ade322699b3a3569de832c7cb25d81aa9a9c620be5dacd93f1cad9aaf59",
+      "source_sha256": "f7820ca28ebd0ad0dc7e7fb45f7b62b83a04fabb85e8489951f0d778ed1930f8",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/coerced-values-target.js",
+      "mode": "strict",
+      "case_sha256": "1620506d086872e97c42b6df3ab2c1694c966e1e31d1a24f2f09e8d0fffe37bd",
+      "source_sha256": "f7820ca28ebd0ad0dc7e7fb45f7b62b83a04fabb85e8489951f0d778ed1930f8",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/detached-buffer.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/detached-buffer.js",
+      "mode": "sloppy",
+      "case_sha256": "5dcba036456e6223cad8cd6f75695cf137941dba3c8b4ac32f0a57ffa1f1228c",
+      "source_sha256": "0d4a02f7487c2a0c25362f2f34039caf5f16b9d4f0760448e82af1f48bc8dc8d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/detached-buffer.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/detached-buffer.js",
+      "mode": "strict",
+      "case_sha256": "599c7ae4e42218f484b2b9b84ece4cc9c1de151aeb503b2788443b89959197b9",
+      "source_sha256": "0d4a02f7487c2a0c25362f2f34039caf5f16b9d4f0760448e82af1f48bc8dc8d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/get-length-ignores-length-prop.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/get-length-ignores-length-prop.js",
+      "mode": "sloppy",
+      "case_sha256": "9bd798d378e3fed34b7b570a15114bd791bb9bd947fa4bfaa425a515d6408128",
+      "source_sha256": "c63e1155dcf892c13e2653804519eee9e7be6cd34a9aa21e3f8022a6f83eb6d3",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/get-length-ignores-length-prop.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/get-length-ignores-length-prop.js",
+      "mode": "strict",
+      "case_sha256": "aa4f5878591b052e4fb871287ad6cfc236a7238fb7a43dd2de2a7ed781bf2c51",
+      "source_sha256": "c63e1155dcf892c13e2653804519eee9e7be6cd34a9aa21e3f8022a6f83eb6d3",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-end.js",
+      "mode": "sloppy",
+      "case_sha256": "4772632d0493cb9048d58af48a32bce84a8d38b5abc15d676cf14b6bf17535c9",
+      "source_sha256": "03fa7476f0c3d4ab4d9f03f9833b576c88b69b215bb9c7820e308b4ec5f11808",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-end.js",
+      "mode": "strict",
+      "case_sha256": "6e9694c71037f6d8b5abc5b65fe5f14125cafea3aee6075b6066c5d3e74b4bdd",
+      "source_sha256": "03fa7476f0c3d4ab4d9f03f9833b576c88b69b215bb9c7820e308b4ec5f11808",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-end.js",
+      "mode": "sloppy",
+      "case_sha256": "b2245b5d88d69baae84e08b10bf6fdf4b2730c8a9bd37c274f03e59a4b80ce83",
+      "source_sha256": "52f4e3d7d29be666a780983ee0ff6b4598d33e48956d7011af621d8915b31c7b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-end.js",
+      "mode": "strict",
+      "case_sha256": "44334e86026b1411f6f5853d1eb5c4842e9785ef9d723b329f193ab8f5d0599e",
+      "source_sha256": "52f4e3d7d29be666a780983ee0ff6b4598d33e48956d7011af621d8915b31c7b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-start.js",
+      "mode": "sloppy",
+      "case_sha256": "81251ac738f8a21d8d27f84dd5277db0cca6bf3407878b8653bda56f6b98e4c0",
+      "source_sha256": "d3f72a5afd21decad0d4b7c07141599a77662b3de5e53244b50f8507d4eb642c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-start.js",
+      "mode": "strict",
+      "case_sha256": "96db165d6baf5a370837eb55577cdfaaad0ee35899a07711cfc98cc64360d09b",
+      "source_sha256": "d3f72a5afd21decad0d4b7c07141599a77662b3de5e53244b50f8507d4eb642c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-target.js",
+      "mode": "sloppy",
+      "case_sha256": "42aa02daf81c46da4a1fee7cc76d23aa0acee6dcf49b68996cfdb46a5f10e1d5",
+      "source_sha256": "288a99760ef5d1de6233766c189d36d48fcddd37f46b93d52d4052541f8f018b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-out-of-bounds-target.js",
+      "mode": "strict",
+      "case_sha256": "5fbc217c60dad4f12aeb174ee81737736495741d2c73a0501c95dee28cbffd42",
+      "source_sha256": "288a99760ef5d1de6233766c189d36d48fcddd37f46b93d52d4052541f8f018b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-start.js",
+      "mode": "sloppy",
+      "case_sha256": "a738b8f861e0086e3d334f8327f46076698dcb5253650d7d47bbe65b13b5a12e",
+      "source_sha256": "1cb1bd29ad6f60cdf063ba3184c3e8946a31258d3218e4f794e5e10c25aa4cfe",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-start.js",
+      "mode": "strict",
+      "case_sha256": "aa8a4035f597217727fb7920ea1ceff6e5f4737401508df0ef991e492f15f7a4",
+      "source_sha256": "1cb1bd29ad6f60cdf063ba3184c3e8946a31258d3218e4f794e5e10c25aa4cfe",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-target.js",
+      "mode": "sloppy",
+      "case_sha256": "727a2437ae6ec9529739135ae5811f4c6ee7470d7a142745963669d83dd49c78",
+      "source_sha256": "bce4d9255fd9352dce2a9f44f5bddb96e7368e4d4d2edd28a395a1d747ed42b3",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/negative-target.js",
+      "mode": "strict",
+      "case_sha256": "172a19fc9479beef60494866aa22c818510951d9da21fd66b1cf8ae537a64e59",
+      "source_sha256": "bce4d9255fd9352dce2a9f44f5bddb96e7368e4d4d2edd28a395a1d747ed42b3",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-end.js",
+      "mode": "sloppy",
+      "case_sha256": "535558b304d30504535a73780502dd0781c214467eccd9f77e3c5f37ae145248",
+      "source_sha256": "796be3dad38d8094ad75a47e7de75ca05615a9b4fbb581b49086e1f87343d173",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-end.js",
+      "mode": "strict",
+      "case_sha256": "2189891ae9ad403f734d56902f471e95d2f11a6090cecb114c3056b9565dfb1a",
+      "source_sha256": "796be3dad38d8094ad75a47e7de75ca05615a9b4fbb581b49086e1f87343d173",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-target-and-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-target-and-start.js",
+      "mode": "sloppy",
+      "case_sha256": "8e5b20964b01bb7316cb89505a30c79087e2ab91b3fd709f864e8060ba47dc9d",
+      "source_sha256": "785eca1beaa117fbd42ede3f941b4f78c19aca48fa93ba81eb56eabf83c0170d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-target-and-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-out-of-bounds-target-and-start.js",
+      "mode": "strict",
+      "case_sha256": "093bb88414bc1fb62426ef77e2acb54e52f73802c2521f27266c579e6f61a368",
+      "source_sha256": "785eca1beaa117fbd42ede3f941b4f78c19aca48fa93ba81eb56eabf83c0170d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-and-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-and-start.js",
+      "mode": "sloppy",
+      "case_sha256": "4cdadf0a85b49d2d66e7943be60a16339e47b685f643f8bb4f40e939e2f8aacf",
+      "source_sha256": "febb4d3741cc3a9f6577f89ad974008545c52d8172d7f734bab3e53b09a201b6",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-and-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-and-start.js",
+      "mode": "strict",
+      "case_sha256": "1fadb441d9f0cb6ef4b1df322b0656c11ab35a8eaa8d6ab72322ebcc6f701da9",
+      "source_sha256": "febb4d3741cc3a9f6577f89ad974008545c52d8172d7f734bab3e53b09a201b6",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-start-and-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-start-and-end.js",
+      "mode": "sloppy",
+      "case_sha256": "57caeb81cfd8158ee719257baf9d1c5c37906a61a5a726fbb4047a88a2f69c81",
+      "source_sha256": "5435d626abeeed16fda467d59d9b7b9dcb7a16dbf2c142fbaf133c388ac10a7a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-start-and-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/non-negative-target-start-and-end.js",
+      "mode": "strict",
+      "case_sha256": "379702174d5caaa64408c8acd427cbc3342db1353bcc27868d84c4d5a56637a2",
+      "source_sha256": "5435d626abeeed16fda467d59d9b7b9dcb7a16dbf2c142fbaf133c388ac10a7a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end-is-symbol.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end-is-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "21c3c898f8a6c6c75a41f5cf4fb68345157a4f847377b435d074380a8c6a256d",
+      "source_sha256": "69cf8cca5b484e7af1a407ea4ca31c92389c0c4f6d4b8dfda958d8abcb370d6d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end-is-symbol.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end-is-symbol.js",
+      "mode": "strict",
+      "case_sha256": "10725e02ad797acca1fed7d3f5f49a47cf7d14e2e1e35a1aa2386e189dec7763",
+      "source_sha256": "69cf8cca5b484e7af1a407ea4ca31c92389c0c4f6d4b8dfda958d8abcb370d6d",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end.js",
+      "mode": "sloppy",
+      "case_sha256": "e760b1ab3013a66c91c9659562115e234ebdb83223c988e82c6ee99cc4bbc3a9",
+      "source_sha256": "1c1cfbca3f8cab785c85d06ab92da573541e85e0e40d245ff003af1af257693b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-end.js",
+      "mode": "strict",
+      "case_sha256": "60274f1ee014ac0a0bacdb677ee83e141aa9f5f278e03b647fdb48c94947fa8c",
+      "source_sha256": "1c1cfbca3f8cab785c85d06ab92da573541e85e0e40d245ff003af1af257693b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start-is-symbol.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start-is-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "38ce2b6826511c37c7976cd6357ef7555982a3b2f9e10d6b2e9b87f577136e3b",
+      "source_sha256": "7b0d9980924784c66c4215d716d014a5b8985cb47229076f1904aa33a222a9ab",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start-is-symbol.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start-is-symbol.js",
+      "mode": "strict",
+      "case_sha256": "e517883c574e65ca7321edb53b923e735ab51aa0f723c40ceb198622add3db1f",
+      "source_sha256": "7b0d9980924784c66c4215d716d014a5b8985cb47229076f1904aa33a222a9ab",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start.js",
+      "mode": "sloppy",
+      "case_sha256": "240e0c0d935a1a445139626d61981cb3bdb9978ce85d3e4d6d2f6a9dcb5687c3",
+      "source_sha256": "d73342d2fe0d225a51a3e9738d42e849982e2bc442d08ba6887a74083d87ed02",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-start.js",
+      "mode": "strict",
+      "case_sha256": "2d5d7a6387c02db094f27278d73fd978ab2cf7daca2951b8ff9fec15c4622522",
+      "source_sha256": "d73342d2fe0d225a51a3e9738d42e849982e2bc442d08ba6887a74083d87ed02",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target-is-symbol.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target-is-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "9ba97740fe98720671f19a7f6ec55e706518c29726fb4fe14ef3833d454a8061",
+      "source_sha256": "507a6970c8e173092d1e63451860507ed4917c3495adb237877b4d429152312a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target-is-symbol.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target-is-symbol.js",
+      "mode": "strict",
+      "case_sha256": "05245fcc06ee87eefe3fb48f8713b156f7aa63066352b26a906bc737ef56adb6",
+      "source_sha256": "507a6970c8e173092d1e63451860507ed4917c3495adb237877b4d429152312a",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target.js",
+      "mode": "sloppy",
+      "case_sha256": "2ae5f0d099b25e4b180fbef157d893b91051e5fdc9112f2541fef24b5e04909b",
+      "source_sha256": "cc9263ca4fabd6a315256709cf8e81e678b8c83ac1ef46ff9510a8dc7543fcd7",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-target.js",
+      "mode": "strict",
+      "case_sha256": "70a6c5dd4044dab56c9dbe1145651f04447bdc27dfa5a9c2b9a41e938fc7fccf",
+      "source_sha256": "cc9263ca4fabd6a315256709cf8e81e678b8c83ac1ef46ff9510a8dc7543fcd7",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-this-out-of-bounds.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "mode": "sloppy",
+      "case_sha256": "24a58a025f1d00a8360d8c56d2165932cc3e242acdfe2f55cbd09239e5c3d4a7",
+      "source_sha256": "cb562fdc0a846ee5a5a250d9ef82c3dff59db7c06340912228b81b24ffd11912",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-this-out-of-bounds.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-abrupt-from-this-out-of-bounds.js",
+      "mode": "strict",
+      "case_sha256": "adda8e9a762df6a220daaa3b670e1a23aa755ce4d3090f36791352339ab6f268",
+      "source_sha256": "cb562fdc0a846ee5a5a250d9ef82c3dff59db7c06340912228b81b24ffd11912",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-this.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-this.js",
+      "mode": "sloppy",
+      "case_sha256": "7769dea057b97b247da68a6060a113a08e73be8c3c0472ce0f8b1de3ad37c47f",
+      "source_sha256": "e648db65e42cbb9b2e292b8cda856d98f0e78a79f992caf142010716970a560b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-this.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/return-this.js",
+      "mode": "strict",
+      "case_sha256": "dbf24e9647801bc85f14102edebf89657ba409e0b84c5b19c64642ac3ecee15b",
+      "source_sha256": "e648db65e42cbb9b2e292b8cda856d98f0e78a79f992caf142010716970a560b",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/undefined-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/undefined-end.js",
+      "mode": "sloppy",
+      "case_sha256": "90b0cadd012e5e5673371e76aedd2494fc56a5db3939b0b9d9fef90493be3d39",
+      "source_sha256": "de179d7486fae6b2878b6e5688bfb5619ec006a893931a12e5fc70adb0f607af",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/undefined-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/BigInt/undefined-end.js",
+      "mode": "strict",
+      "case_sha256": "de670b3af9f322e346cc548db50de3ade394a458b93e8f36d0ac001fba6f379b",
+      "source_sha256": "de179d7486fae6b2878b6e5688bfb5619ec006a893931a12e5fc70adb0f607af",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: BigInt"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/bit-precision.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/bit-precision.js",
+      "mode": "sloppy",
+      "case_sha256": "ee03fdef442b41f29526165e109deb239d5894eae502533abc28775c8cfb444d",
+      "source_sha256": "7ad80f04afe57a301f0029d8af38e948376d5574d88f0f4af6210d979123efaf",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/bit-precision.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/bit-precision.js",
+      "mode": "strict",
+      "case_sha256": "f388f1839bd1319b0933f05481f28f48fb795870d081e85babe680c23c381580",
+      "source_sha256": "7ad80f04afe57a301f0029d8af38e948376d5574d88f0f4af6210d979123efaf",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/byteoffset.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/byteoffset.js",
+      "mode": "sloppy",
+      "case_sha256": "afc9aca754a21d0d957b5790c7b77376a17400936b50fb5e04de623d35f05ad0",
+      "source_sha256": "2478ece00005edc56a35c99189074dae5b148b5277f8a4510cabab7aecd109bb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/byteoffset.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/byteoffset.js",
+      "mode": "strict",
+      "case_sha256": "1faee2540a3400b987686bcb30d69693536b41f55be3ec0bd9668d4aaecb0a0c",
+      "source_sha256": "2478ece00005edc56a35c99189074dae5b148b5277f8a4510cabab7aecd109bb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-end-shrink.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-end-shrink.js",
+      "mode": "sloppy",
+      "case_sha256": "39df765edc20067033636cd9b884be3c05498929b7a28842b8329ae5fca27389",
+      "source_sha256": "ac02bbcfbb14617b0b886d210d85e4b17e4f16b8267bb853935e2b6004baa5bd",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "TypedArray copyWithin policy excludes the complete resizableArrayBufferUtils helper"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-end-shrink.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-end-shrink.js",
+      "mode": "strict",
+      "case_sha256": "72bda0623330d442666cc270448dfad10506093983aa25019c0a2835350047ec",
+      "source_sha256": "ac02bbcfbb14617b0b886d210d85e4b17e4f16b8267bb853935e2b6004baa5bd",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "TypedArray copyWithin policy excludes the complete resizableArrayBufferUtils helper"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-grow.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-grow.js",
+      "mode": "sloppy",
+      "case_sha256": "398271a19972676386f07c65193ecc0d0db02ae4085c2546864516d3a7f9903d",
+      "source_sha256": "9e04b1bd78d83156cbeb5cc402fc77c333791868cefbdeb3574df4c5e2933b43",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "TypedArray copyWithin policy excludes the complete resizableArrayBufferUtils helper"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-grow.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-target-start-grow.js",
+      "mode": "strict",
+      "case_sha256": "b9eee170edd01b4798a2d3c81f93160ca91d49c430e1cdb43a09aa5dfa109b79",
+      "source_sha256": "9e04b1bd78d83156cbeb5cc402fc77c333791868cefbdeb3574df4c5e2933b43",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "TypedArray copyWithin policy excludes the complete resizableArrayBufferUtils helper"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached-prototype.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached-prototype.js",
+      "mode": "sloppy",
+      "case_sha256": "4786200cd53b81eb0cc89427bd4da540bbe93e0424c44993c94069495f49eab5",
+      "source_sha256": "4eb269d83468152e21cd8d3e1023633dfeecde4fbdfa1c0204e515c8afad1348",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached-prototype.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached-prototype.js",
+      "mode": "strict",
+      "case_sha256": "5fe2bc04f11a26e4e9ac89e44b037b03980ce37869723c807257755c39dd37ab",
+      "source_sha256": "4eb269d83468152e21cd8d3e1023633dfeecde4fbdfa1c0204e515c8afad1348",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached.js",
+      "mode": "sloppy",
+      "case_sha256": "dcff5b696f725129dad041d6af17e781717274ec96b5d55fbf3fd0dc917fe024",
+      "source_sha256": "a1ee6e7e31b5603157ffff7ca3205ca25661d77a5faf3869eee26cf17a9376af",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end-detached.js",
+      "mode": "strict",
+      "case_sha256": "548d5af2164b93517dbafc906f60022059fc85f925a7b501e707d79c7fd2d631",
+      "source_sha256": "a1ee6e7e31b5603157ffff7ca3205ca25661d77a5faf3869eee26cf17a9376af",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end.js",
+      "mode": "sloppy",
+      "case_sha256": "04dedd88afaf890fc3e0e4dccddda27ff8f9d7c0a7adf70a7bb3c77fb61e8d4a",
+      "source_sha256": "60719c178c530a77c593c93f02960ba71ca282d5404b9e10d5761fa9815ac85a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-end.js",
+      "mode": "strict",
+      "case_sha256": "5199a6796642cd930c36874d1157ccd709233f2d29eea8cb14f3a0981e717810",
+      "source_sha256": "60719c178c530a77c593c93f02960ba71ca282d5404b9e10d5761fa9815ac85a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start-detached.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start-detached.js",
+      "mode": "sloppy",
+      "case_sha256": "ff5b9b6e75ab9041f27358f1d605e01606bda7d6704fb238b3ac3fb90d72e394",
+      "source_sha256": "bca644f7db35661d399052b742b59c3a4c8039f2c65c6b9e313a5822e5998d75",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start-detached.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start-detached.js",
+      "mode": "strict",
+      "case_sha256": "35ffe2d2325a5ddbccf7688017966ab37b378ac31011ec252c01526626112357",
+      "source_sha256": "bca644f7db35661d399052b742b59c3a4c8039f2c65c6b9e313a5822e5998d75",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start.js",
+      "mode": "sloppy",
+      "case_sha256": "2b6656e668faab63170ce1999b3a929ae58ac217248c960c4deac944514e059c",
+      "source_sha256": "bcae43c6d84b85bda72c75f2335bcf79f4f340da4248faaff0f2ea1c5b90711e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-start.js",
+      "mode": "strict",
+      "case_sha256": "bc8bda9b1def3f1c3ec16ec060d045b9d9350fa4e667a13d2e354263b9b03941",
+      "source_sha256": "bcae43c6d84b85bda72c75f2335bcf79f4f340da4248faaff0f2ea1c5b90711e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-target.js",
+      "mode": "sloppy",
+      "case_sha256": "52c9ce56e819555d118a60aeeeb3b5cf9652b71a787827dadfd7e79cdb5fe8a8",
+      "source_sha256": "d0e67fb71513972b1808111463a27a2982c1932b58a08dea9f4baeb3d781aa79",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/coerced-values-target.js",
+      "mode": "strict",
+      "case_sha256": "bbf535f72a6fcfdeb1b51fef52c3c84c80f4be850bec6b8bba8fca2c61d15b92",
+      "source_sha256": "d0e67fb71513972b1808111463a27a2982c1932b58a08dea9f4baeb3d781aa79",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/detached-buffer.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/detached-buffer.js",
+      "mode": "sloppy",
+      "case_sha256": "1212f2931c9c28074030dad51fb59c2b1192a25bb3aca1fd21082bbba6e2275c",
+      "source_sha256": "2a38d643b41423b9a0065bec4b8e4c02ee9a79d08b94c9fe4e5d6736c0c9970c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/detached-buffer.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/detached-buffer.js",
+      "mode": "strict",
+      "case_sha256": "b3dbe37df5d2c0907cc8907b748521108814cba5a59a3c7bf5938d07ed87106b",
+      "source_sha256": "2a38d643b41423b9a0065bec4b8e4c02ee9a79d08b94c9fe4e5d6736c0c9970c",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "Test262 host hooks are not implemented (conservative source check)"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/get-length-ignores-length-prop.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/get-length-ignores-length-prop.js",
+      "mode": "sloppy",
+      "case_sha256": "31cf3cd58bad51dc57e0367926c872f3187910e8ff9aaf2bf69edec042ffbea0",
+      "source_sha256": "d832e8374022dcc322683c5b425b1d99f8303ab7958838db929d3525ef03ddfc",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/get-length-ignores-length-prop.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/get-length-ignores-length-prop.js",
+      "mode": "strict",
+      "case_sha256": "487003e9942e38248e1de1e2029f1406d921ec40dd3b2763dc785e8b6a7ac36e",
+      "source_sha256": "d832e8374022dcc322683c5b425b1d99f8303ab7958838db929d3525ef03ddfc",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/immutable-buffer.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/immutable-buffer.js",
+      "mode": "sloppy",
+      "case_sha256": "04d67a34b6643f0465c42779a45c69df2dee3162d92cd4edce74f80c94d5f7fe",
+      "source_sha256": "1455ccf2bbd2fdfc716cb439a0494972caa3bf9e6ea2348bfe2a371e17ddfb86",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: immutable-arraybuffer"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/immutable-buffer.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/immutable-buffer.js",
+      "mode": "strict",
+      "case_sha256": "bf6ffe691ba2681173ec40b1bd3019bdcd8b244268e874e2f3e186a9192febb0",
+      "source_sha256": "1455ccf2bbd2fdfc716cb439a0494972caa3bf9e6ea2348bfe2a371e17ddfb86",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "unimplemented declared features: immutable-arraybuffer"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-func.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-func.js",
+      "mode": "sloppy",
+      "case_sha256": "35aaac774be5c7448be8f55b3061430f8c75e24092ff011f60c2ae2feb4c05ee",
+      "source_sha256": "4d87b38c94ab8715a4258642c9e1dd6287887ce16c31cb3a24a8091054d8d368",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-func.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-func.js",
+      "mode": "strict",
+      "case_sha256": "6b1a3e7bba18b492b8bcbab958fa2428fb7315508c1aa84ee94601c4088cd763",
+      "source_sha256": "4d87b38c94ab8715a4258642c9e1dd6287887ce16c31cb3a24a8091054d8d368",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-method.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-method.js",
+      "mode": "sloppy",
+      "case_sha256": "690038d61400c1404e153bfe5a11aedb74fc1cafac7d7a5a91bb2c811d060770",
+      "source_sha256": "ae2011928e603ede02d4e215014f1a7afe51f009e46f9263a4f24b2735c46a2a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-method.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/invoked-as-method.js",
+      "mode": "strict",
+      "case_sha256": "84ca5315a3424bf7c732a65f33354a9203ae41e16b0c3e6cd69769c87546f6aa",
+      "source_sha256": "ae2011928e603ede02d4e215014f1a7afe51f009e46f9263a4f24b2735c46a2a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/length.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/length.js",
+      "mode": "sloppy",
+      "case_sha256": "02e40d59009924d434e8e97ed66e8120213db9558f8605d3b60ec82fd4298f0d",
+      "source_sha256": "0578f38de35c11d13522587e43d2b3fe59cb05961da751a8760bc2c71836dc7b",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "cannot convert null or undefined to object",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/length.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/length.js",
+      "mode": "strict",
+      "case_sha256": "b5c1f8b043f0b44c6434aa4a535b1c4e0b9bba7d0c956e1c82325326971a95ad",
+      "source_sha256": "0578f38de35c11d13522587e43d2b3fe59cb05961da751a8760bc2c71836dc7b",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "cannot convert null or undefined to object",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/name.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/name.js",
+      "mode": "sloppy",
+      "case_sha256": "59488408152ec15a61cf8d7e4cddc8ffb1b58b67b68d9f92bc4e765f73bfb038",
+      "source_sha256": "c8928b59c7a33ca9be01f2d856e85f4bf8477bc59344c8442b67053f0beb7e61",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "cannot convert null or undefined to object",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/name.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/name.js",
+      "mode": "strict",
+      "case_sha256": "19d85422e8b419e6cac268a8876fbe8cd42c55813a88945e0059c2e717af8398",
+      "source_sha256": "c8928b59c7a33ca9be01f2d856e85f4bf8477bc59344c8442b67053f0beb7e61",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "cannot convert null or undefined to object",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-end.js",
+      "mode": "sloppy",
+      "case_sha256": "016839a6d63a401d41983f200a5d5b5704bb55a1be3420c018a7a7207773db9c",
+      "source_sha256": "8fcdd6363ff756c9980e1515f08d90ce1681be168199b03b1d029f4899065a1f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-end.js",
+      "mode": "strict",
+      "case_sha256": "94f30093482472ac58f2bdea611ffa74e6312553c25814b8c44e3dd86687fd75",
+      "source_sha256": "8fcdd6363ff756c9980e1515f08d90ce1681be168199b03b1d029f4899065a1f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-end.js",
+      "mode": "sloppy",
+      "case_sha256": "0dc761eea02522fc562fb8e5add15a4abb0556d9a3659c295715fd3a3973bd97",
+      "source_sha256": "e31d21919cd6574c5ba24fa7b730bbd4bb50cc8863679871fb77328c095d462f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-end.js",
+      "mode": "strict",
+      "case_sha256": "b8557dd464aa237ceefc6325ec35a92e6d759b9b76af7fa40d6afdbc3319ead4",
+      "source_sha256": "e31d21919cd6574c5ba24fa7b730bbd4bb50cc8863679871fb77328c095d462f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-start.js",
+      "mode": "sloppy",
+      "case_sha256": "61838458786aaa875015f5936ca9cb7b13b568306281d79c3dad2062e0e3817f",
+      "source_sha256": "3388b915f0b23d84f577d68105351080a8a20ac41d87e7d737d2e9b695381b67",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-start.js",
+      "mode": "strict",
+      "case_sha256": "2a65a41a1afae4dfcdbb0160c35ca66b0fc60d05448b844440292bff63cef1ef",
+      "source_sha256": "3388b915f0b23d84f577d68105351080a8a20ac41d87e7d737d2e9b695381b67",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-target.js",
+      "mode": "sloppy",
+      "case_sha256": "661027e6075c677818d625aea4ed4b7fc6cc99aca5085640b9629e290b2c4de6",
+      "source_sha256": "0e671e18f218601dea47207a28fb2d28414fdaa93d9811d853b811f7ea20d223",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-out-of-bounds-target.js",
+      "mode": "strict",
+      "case_sha256": "131ca3eb8c17fbdf7b4e0768cc216630cb17bcf9b439ba9ea89937f0ba6c5fcf",
+      "source_sha256": "0e671e18f218601dea47207a28fb2d28414fdaa93d9811d853b811f7ea20d223",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-start.js",
+      "mode": "sloppy",
+      "case_sha256": "b8be83ba0226acd65118834cd4f80f2b1165033809bcd092a3e2f1d18331c4c2",
+      "source_sha256": "17965a136cdb3ecddbe2459af3a2112bc2da6357d394cf0b1da076608310df83",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-start.js",
+      "mode": "strict",
+      "case_sha256": "ef8efce14191704485873c51dcd5d525e6216026a76c5ccf1883a3cd63d458c1",
+      "source_sha256": "17965a136cdb3ecddbe2459af3a2112bc2da6357d394cf0b1da076608310df83",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-target.js",
+      "mode": "sloppy",
+      "case_sha256": "afe8a95c4c09e2f39a8896f94d0aadc1a4c7b524171bc7d6853942ee412c0d43",
+      "source_sha256": "72cfce093ce09a075b91b74918f9ce5b7f619c0b5550a2c2e360eeedc508295f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/negative-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/negative-target.js",
+      "mode": "strict",
+      "case_sha256": "095182d83884a376513b6ecc2429dc0030bd6b3b0d53860c8208dfb1c3fdc319",
+      "source_sha256": "72cfce093ce09a075b91b74918f9ce5b7f619c0b5550a2c2e360eeedc508295f",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-end.js",
+      "mode": "sloppy",
+      "case_sha256": "b4dffc93ccc5e31ecdb382c1743a067e7fd3a9121abac22371a3464678b3c665",
+      "source_sha256": "87f0240a6f151eb851f2964647384142dd330af2822f22819bceb89937f0a846",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-end.js",
+      "mode": "strict",
+      "case_sha256": "4653028829ac1f6d4c68ff2fe799b38554649946a931e6e072c3974d757cd360",
+      "source_sha256": "87f0240a6f151eb851f2964647384142dd330af2822f22819bceb89937f0a846",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-target-and-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-target-and-start.js",
+      "mode": "sloppy",
+      "case_sha256": "1d61a3ab0ec9dcfca7ef4198c6dfcaf365f57b91c7a886b8d2cdf19968914ecf",
+      "source_sha256": "cabff492270659daa98b4f0ea6b10496b400db455c900577d33e93d82983bf67",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-target-and-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-out-of-bounds-target-and-start.js",
+      "mode": "strict",
+      "case_sha256": "a00707cd560561e7e01b116d6bad33bde295b15105cd6929e0e1c2c657142f63",
+      "source_sha256": "cabff492270659daa98b4f0ea6b10496b400db455c900577d33e93d82983bf67",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-and-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-and-start.js",
+      "mode": "sloppy",
+      "case_sha256": "55e6d172f53c975f00b1399db86ffe84ce58f20de56e9682295f24b74bf022f9",
+      "source_sha256": "05586df2ebd099a6d08f09557fb5fcf7d8598b7a6498268229ced07d6b78a063",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-and-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-and-start.js",
+      "mode": "strict",
+      "case_sha256": "3af94f5afccfa5135a17dbbefc122a7bff1e791078155ae8acf67287bb16ce7a",
+      "source_sha256": "05586df2ebd099a6d08f09557fb5fcf7d8598b7a6498268229ced07d6b78a063",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-start-and-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-start-and-end.js",
+      "mode": "sloppy",
+      "case_sha256": "f4384f9a00ef47ff0fa84183afef60598ec6b4af36dd4f432d22c5d8d7156b5b",
+      "source_sha256": "2be791c07f1dabbdbc2d0144274f934ee9709e5bb47c2a3fec29f85cc42d0e5a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-start-and-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/non-negative-target-start-and-end.js",
+      "mode": "strict",
+      "case_sha256": "d04e5dab26b13369f3e5a0411b1e6d35b8e647e4563a3c14ba3817ad70ccd8b9",
+      "source_sha256": "2be791c07f1dabbdbc2d0144274f934ee9709e5bb47c2a3fec29f85cc42d0e5a",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/not-a-constructor.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/not-a-constructor.js",
+      "mode": "sloppy",
+      "case_sha256": "b029698d12913d7878aa8346e7a00e75101d310d75395023d5d233861d4ede7e",
+      "source_sha256": "be1eb8761875459138ee66e23ba83babaed8fe84e88e38c93dd013f439a63727",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/not-a-constructor.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/not-a-constructor.js",
+      "mode": "strict",
+      "case_sha256": "86bddfb4e01c591e754404e0c226fbe24986412f4038d6e5c8cc55f296746c38",
+      "source_sha256": "be1eb8761875459138ee66e23ba83babaed8fe84e88e38c93dd013f439a63727",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/prop-desc.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/prop-desc.js",
+      "mode": "sloppy",
+      "case_sha256": "913ae53eed8387ff5573b9adb0d0ab4710683b78a52b0b2d30662f339c28f797",
+      "source_sha256": "0cce33e04976a1e66ea6f148e9b4d933c80fa613c5766a4adae26033d9113ceb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/prop-desc.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/prop-desc.js",
+      "mode": "strict",
+      "case_sha256": "48529fd735ee1d6ea48e4da7c7748650aa18de57465d78629f9c5acf1ccf0737",
+      "source_sha256": "0cce33e04976a1e66ea6f148e9b4d933c80fa613c5766a4adae26033d9113ceb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/resizable-buffer.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/resizable-buffer.js",
+      "mode": "sloppy",
+      "case_sha256": "7da0fe9c3cd9e2e3513d965c59e5edd5a3c29cc24466d3e2c410bdbc5ed4b585",
+      "source_sha256": "fac20787689112d1c997420c30323893989997a8aeaaffa66ab37e06ab61a9c1",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "TypedArray copyWithin policy excludes the complete resizableArrayBufferUtils helper"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/resizable-buffer.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/resizable-buffer.js",
+      "mode": "strict",
+      "case_sha256": "f3e7e022ed3d47c81a13f74bff81c35bbce3605bcd758e42e80a5cd58970db94",
+      "source_sha256": "fac20787689112d1c997420c30323893989997a8aeaaffa66ab37e06ab61a9c1",
+      "expected_negative": null,
+      "status": "unsupported",
+      "reason": "TypedArray copyWithin policy excludes the complete resizableArrayBufferUtils helper"
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end-is-symbol.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end-is-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "b7e13a98bc47afcca7bb1c280728a8bf4e18f7d63dbef569357e170aea5a7805",
+      "source_sha256": "399f664da3bb2634831df4bd4eeaa0c66f7ba8d041fa4063b2843868c76182b6",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end-is-symbol.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end-is-symbol.js",
+      "mode": "strict",
+      "case_sha256": "2204aa0fb0ed3a8ff0a729ae04c1c3a3662ced006ba6040701cdb2ac427ef35e",
+      "source_sha256": "399f664da3bb2634831df4bd4eeaa0c66f7ba8d041fa4063b2843868c76182b6",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end.js",
+      "mode": "sloppy",
+      "case_sha256": "3ea448c6141f384d5ad31e94830ada2d6b4129da28479a22d34c0a81ec01b858",
+      "source_sha256": "06952c87fa98091ac82f4276f2d31706b2deb8c523496dd2aae8613dbcfdbe9e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-end.js",
+      "mode": "strict",
+      "case_sha256": "7dcbfbd6fc89fc93f6c0a67b258dbd973ee53ec8cc50be1657afdeff9ddf2eda",
+      "source_sha256": "06952c87fa98091ac82f4276f2d31706b2deb8c523496dd2aae8613dbcfdbe9e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start-is-symbol.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start-is-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "da331aa50469166807738893df0bfc85a60c182b457dd0fe8c76951017c034f0",
+      "source_sha256": "f4733cdea75bd18604093792a23fc5961973b3b44f68874576116c46d90627c9",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start-is-symbol.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start-is-symbol.js",
+      "mode": "strict",
+      "case_sha256": "18eb34657e82a87c579faaec69ad58211d479c246308d363a06b6d631d97c075",
+      "source_sha256": "f4733cdea75bd18604093792a23fc5961973b3b44f68874576116c46d90627c9",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start.js",
+      "mode": "sloppy",
+      "case_sha256": "80619860a10b860343b249cea942e8ad1b439dad25ba699d579552c0a4df130c",
+      "source_sha256": "802304ecd2eb138567cbd10d4b29e0c33cd66a8ea55f400d4f9efb37dec26802",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-start.js",
+      "mode": "strict",
+      "case_sha256": "233cab93e31e28f923ea3757be437940b96e419648b4c9e50dc027fdfeb4b408",
+      "source_sha256": "802304ecd2eb138567cbd10d4b29e0c33cd66a8ea55f400d4f9efb37dec26802",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target-is-symbol.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target-is-symbol.js",
+      "mode": "sloppy",
+      "case_sha256": "35c1fdc297cfcac0327c7b0984b227a323fb994d8cfb1bf665f3fe4ff5efb100",
+      "source_sha256": "aca330c686433cf2010d28939671dc7f697532e60bc4165f53ccf3803b2595f7",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target-is-symbol.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target-is-symbol.js",
+      "mode": "strict",
+      "case_sha256": "dae250ddda63d6170235f08755787e7256fd166f9cd541a1676e3539c52e5593",
+      "source_sha256": "aca330c686433cf2010d28939671dc7f697532e60bc4165f53ccf3803b2595f7",
+      "expected_negative": null,
+      "status": "resource",
+      "observation": {
+        "status": "resource",
+        "phase": "runtime",
+        "error_type": "ResourceLimit",
+        "error_identity": "",
+        "message": "script instruction limit exceeded",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target.js",
+      "mode": "sloppy",
+      "case_sha256": "a121ebdb8c33c9698ad4808c254b839ea1b66657008e7cde25d8599264beca6e",
+      "source_sha256": "9d53a9eeaff863cf2bd586baca6a5a116e7d7837eebd56463ed1644efaf6d1d7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-target.js",
+      "mode": "strict",
+      "case_sha256": "69c94477d2e0b5195965508a2c1e85cb3d0de13ed532f2e1ae622501d24d574d",
+      "source_sha256": "9d53a9eeaff863cf2bd586baca6a5a116e7d7837eebd56463ed1644efaf6d1d7",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-this-out-of-bounds.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-this-out-of-bounds.js",
+      "mode": "sloppy",
+      "case_sha256": "fe3e72ed6afe533ed3f2962fc12ce442f7e86bdba6268d40ee40af1a8209a723",
+      "source_sha256": "f4ddcc5a7ae007afc54f80b00539e91488dc6c110d98fa93a7d63545c8b13a7e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-this-out-of-bounds.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-abrupt-from-this-out-of-bounds.js",
+      "mode": "strict",
+      "case_sha256": "5d48a57580f1104bfa43134ae21db7654fdf1ce43740d4bcfd0074f0f34a311f",
+      "source_sha256": "f4ddcc5a7ae007afc54f80b00539e91488dc6c110d98fa93a7d63545c8b13a7e",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "Test262Error",
+        "error_identity": "",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-this.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-this.js",
+      "mode": "sloppy",
+      "case_sha256": "adcdd43fa52cc06af5bcaf82bdeda290ec0bbab56bf43c7bd322f765631e45da",
+      "source_sha256": "199b382edb05ed81465827cbaf5e48ccbd98a069ea1fb948e268a478053efca2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/return-this.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/return-this.js",
+      "mode": "strict",
+      "case_sha256": "fcc275dc9490c3e5ecbfb28f36b2f6270f295a2e0176ebd0598273dbecbe0c06",
+      "source_sha256": "199b382edb05ed81465827cbaf5e48ccbd98a069ea1fb948e268a478053efca2",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-object.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-object.js",
+      "mode": "sloppy",
+      "case_sha256": "dcd70447996237d4b69d4bafea3af21a641118babd9ec20d8ae522f7ea496e2b",
+      "source_sha256": "b5be38ad2a1f7a62c421090b88a2c3e0fdbcf4fb96a3efb8734ae52c5d32e8c4",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-object.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-object.js",
+      "mode": "strict",
+      "case_sha256": "60d69e203706306e45fb737d5674b26b7ec1747771a58e17fa24db850d08acb4",
+      "source_sha256": "b5be38ad2a1f7a62c421090b88a2c3e0fdbcf4fb96a3efb8734ae52c5d32e8c4",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-typedarray-instance.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-typedarray-instance.js",
+      "mode": "sloppy",
+      "case_sha256": "6a27a6beabf68e219aeb22fcaf8f91bed9a6070f1dc6e23f0423b976bee8cc4e",
+      "source_sha256": "13ff340874ea6ab7614b0d8392c6f57e6127245a2dd5f189703708292abb8055",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-typedarray-instance.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/this-is-not-typedarray-instance.js",
+      "mode": "strict",
+      "case_sha256": "7e47b89297760bf69d730f7e9b73a3637f80a6ca15c812a7cae67f12f7fcdce8",
+      "source_sha256": "13ff340874ea6ab7614b0d8392c6f57e6127245a2dd5f189703708292abb8055",
+      "expected_negative": null,
+      "status": "passed",
+      "observation": {
+        "status": "complete",
+        "phase": "runtime",
+        "error_type": "",
+        "error_identity": "",
+        "message": "",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/undefined-end.js:sloppy",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/undefined-end.js",
+      "mode": "sloppy",
+      "case_sha256": "59a1ff3c279080b34e054d9549e1554e44d90ed3369f743325985bd8e9b548f5",
+      "source_sha256": "72d16e3825bea693c608fbead969b4219347be938bbc9ba771fd437e9ac4e5cb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    },
+    {
+      "id": "test/built-ins/TypedArray/prototype/copyWithin/undefined-end.js:strict",
+      "file": "test/built-ins/TypedArray/prototype/copyWithin/undefined-end.js",
+      "mode": "strict",
+      "case_sha256": "1dbcafe695121fa69ee4ff7944dd0eaa236995a8198d7b15ded552e860f1b988",
+      "source_sha256": "72d16e3825bea693c608fbead969b4219347be938bbc9ba771fd437e9ac4e5cb",
+      "expected_negative": null,
+      "status": "failed",
+      "observation": {
+        "status": "exception",
+        "phase": "runtime",
+        "error_type": "TypeError",
+        "error_identity": "TypeError",
+        "message": "uncaught exception: [object Object]",
+        "harness": ""
+      }
+    }
+  ]
+}

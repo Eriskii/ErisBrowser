@@ -176,6 +176,18 @@ an upstream baseline or gate. Direct Page and confined-worker tests check two
 real clicks, literal text and changed result pixels. All 44 earlier reports
 retain their 18,280 case rows and 4,232 control rows exactly.
 
+[`copyWithin`](typedarray-copy-within.md) now copies ranges within all ten Number
+view kinds, chooses the correct overlap direction and preserves exact scalar
+bits. Target, start and defined end arguments convert in order; final buffer
+validation and clipping follow those conversions when the initial count is
+positive. Its complete 130-mode profile records **20 passes, 46 work-limit stops
+and 64 exclusions**, with all 56 controls verified. Resource outcomes keep the
+report unhealthy; no upstream baseline or gate is recorded. Direct Page and
+confined-worker tests check two real clicks, aliasing, literal text and pixels.
+The accompanying visited-name optimization keeps two same-length names inline,
+charging the larger outer representation before use and allocating a search
+tree only for a third distinct live name.
+
 The TypedArray foundation increment raises the existing ArrayBuffer profile to 310 passes,
 two failures and 130 exclusions, and the object-integrity profile to 416 passes,
 20 failures and 38 exclusions. All other observations in the 37 replayed

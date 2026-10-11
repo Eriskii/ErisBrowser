@@ -1,0 +1,150 @@
+{
+  "profile": "typedarray-copy-within",
+  "scope": "independent literal controls; ten Number kinds, nonshared buffers, no engine execution",
+  "controls": [
+    {
+      "name": "ten-kinds-overlap-and-offset-positive",
+      "pair": "ten-kinds-overlap-and-offset",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "ee0589a7602d4623573a3425cd61d9a4d0625b5cd4f458108097b61be5699b21",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar score = 0;\nfor (var k = 0; k < kinds.length; k++) {\n  var Kind = kinds[k];\n  var all = new Kind([99, 11, 22, 33, 44, 88]);\n  var selected = new Kind(all.buffer, Kind.BYTES_PER_ELEMENT, 4);\n  var alias = new Kind(all.buffer, Kind.BYTES_PER_ELEMENT, 4);\n  same(copy.call(selected, 1, 0, 3), selected);\n  values(all, [99, 11, 11, 22, 33, 88]);\n  values(alias, [11, 11, 22, 33]);\n  same(copy.call(selected, 0, 1, 4), selected);\n  values(all, [99, 11, 22, 33, 33, 88]);\n  values(alias, [11, 22, 33, 33]);\n  score += alias[3];\n}\nsame(score, 330);\ntrue;\n",
+      "source_sha256": "a86973b4cb0341456f27b3157068044fa6328694ac08bcf254b1fba891249a11"
+    },
+    {
+      "name": "ten-kinds-overlap-and-offset-wrong",
+      "pair": "ten-kinds-overlap-and-offset",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "ee0589a7602d4623573a3425cd61d9a4d0625b5cd4f458108097b61be5699b21",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar kinds = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float16Array, Float32Array, Float64Array];\nvar score = 0;\nfor (var k = 0; k < kinds.length; k++) {\n  var Kind = kinds[k];\n  var all = new Kind([99, 11, 22, 33, 44, 88]);\n  var selected = new Kind(all.buffer, Kind.BYTES_PER_ELEMENT, 4);\n  var alias = new Kind(all.buffer, Kind.BYTES_PER_ELEMENT, 4);\n  same(copy.call(selected, 1, 0, 3), selected);\n  values(all, [99, 11, 11, 22, 33, 88]);\n  values(alias, [11, 11, 22, 33]);\n  same(copy.call(selected, 0, 1, 4), selected);\n  values(all, [99, 11, 22, 33, 33, 88]);\n  values(alias, [11, 22, 33, 33]);\n  score += alias[3];\n}\nsame(score, 440);\ntrue;\n",
+      "source_sha256": "340d4a4425b2fb3edd71664867594a6e3c563557b9459888b2fae1baf33d63a7"
+    },
+    {
+      "name": "raw-floating-bits-positive",
+      "pair": "raw-floating-bits",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "d728891b52588583808ff6863ce54a1368c516eb143308f85c885624e803b1c0",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar kinds = [Float16Array, Float32Array, Float64Array];\nvar seeds = [[1,126,0,128,0,60], [1,0,192,127,0,0,0,128,0,0,128,63], [1,0,0,0,0,0,248,127,0,0,0,0,0,0,0,128,0,0,0,0,0,0,240,63]];\nvar right = [[1,126,1,126,0,128], [1,0,192,127,1,0,192,127,0,0,0,128], [1,0,0,0,0,0,248,127,1,0,0,0,0,0,248,127,0,0,0,0,0,0,0,128]];\nvar left = [[1,126,0,128,0,128], [1,0,192,127,0,0,0,128,0,0,0,128], [1,0,0,0,0,0,248,127,0,0,0,0,0,0,0,128,0,0,0,0,0,0,0,128]];\nvar score = 0;\nfor (var k = 0; k < kinds.length; k++) {\n  var bytes = new Uint8Array(seeds[k]);\n  var floating = new kinds[k](bytes.buffer);\n  same(copy.call(floating, 1, 0, 2), floating);\n  values(bytes, right[k]);\n  same(copy.call(floating, 0, 1, 3), floating);\n  values(bytes, left[k]);\n  score += bytes[0];\n}\nsame(score, 3);\ntrue;\n",
+      "source_sha256": "0015022cb930c52734292df0be12c25782e75a3af68b2e8e5f9b614bae3c1809"
+    },
+    {
+      "name": "raw-floating-bits-wrong",
+      "pair": "raw-floating-bits",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "d728891b52588583808ff6863ce54a1368c516eb143308f85c885624e803b1c0",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar kinds = [Float16Array, Float32Array, Float64Array];\nvar seeds = [[1,126,0,128,0,60], [1,0,192,127,0,0,0,128,0,0,128,63], [1,0,0,0,0,0,248,127,0,0,0,0,0,0,0,128,0,0,0,0,0,0,240,63]];\nvar right = [[1,126,1,126,0,128], [1,0,192,127,1,0,192,127,0,0,0,128], [1,0,0,0,0,0,248,127,1,0,0,0,0,0,248,127,0,0,0,0,0,0,0,128]];\nvar left = [[1,126,0,128,0,128], [1,0,192,127,0,0,0,128,0,0,0,128], [1,0,0,0,0,0,248,127,0,0,0,0,0,0,0,128,0,0,0,0,0,0,0,128]];\nvar score = 0;\nfor (var k = 0; k < kinds.length; k++) {\n  var bytes = new Uint8Array(seeds[k]);\n  var floating = new kinds[k](bytes.buffer);\n  same(copy.call(floating, 1, 0, 2), floating);\n  values(bytes, right[k]);\n  same(copy.call(floating, 0, 1, 3), floating);\n  values(bytes, left[k]);\n  score += bytes[0];\n}\nsame(score, 0);\ntrue;\n",
+      "source_sha256": "ba4506b308b9083cc4f9cf2c90c258e3c4d748c0d365d5ed7e43a781a09196d1"
+    },
+    {
+      "name": "conversion-order-and-ranges-positive",
+      "pair": "conversion-order-and-ranges",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "d23d2e090a6ee6dc0b42c6774bc5a0f2f887b3f8cb09fc2608c62d4e950d2cd7",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar a = new Uint8Array([1,2,3,4,5]);\nvar order = \"\";\nvar target = {valueOf:function(){order += \"T\"; return -2.9;}};\nvar start = {valueOf:function(){order += \"S\"; return 1.9;}};\nvar end = {valueOf:function(){order += \"E\"; return 4.9;}};\nsame(copy.call(a,target,start,end),a);\nsame(order,\"TSE\"); values(a,[1,2,3,2,3]);\nsame(copy.call(a,-Infinity,3,Infinity),a); values(a,[2,3,3,2,3]);\norder=\"\";\nsame(copy.call(a,{valueOf:function(){order+=\"T\";return Infinity;}},{valueOf:function(){order+=\"S\";return NaN;}},{valueOf:function(){order+=\"E\";return 5;}}),a);\nsame(order,\"TSE\"); values(a,[2,3,3,2,3]);\nvar token={}; var observed; order=\"\";\ntry { copy.call(a,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";throw token;}},{valueOf:function(){order+=\"E\";return 5;}}); } catch(error) { observed=error; }\nsame(observed,token); same(order,\"TS\"); values(a,[2,3,3,2,3]);\nvar empty=new Uint8Array(0); order=\"\";\nsame(copy.call(empty,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";return 0;}},{valueOf:function(){order+=\"E\";return 0;}}),empty);\nsame(order, \"TSE\");\ntrue;\n",
+      "source_sha256": "634b43cf59735294dc7c6a46bc53f9f766026c3d0b08c5007425bd96fc3dbc1e"
+    },
+    {
+      "name": "conversion-order-and-ranges-wrong",
+      "pair": "conversion-order-and-ranges",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "d23d2e090a6ee6dc0b42c6774bc5a0f2f887b3f8cb09fc2608c62d4e950d2cd7",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar a = new Uint8Array([1,2,3,4,5]);\nvar order = \"\";\nvar target = {valueOf:function(){order += \"T\"; return -2.9;}};\nvar start = {valueOf:function(){order += \"S\"; return 1.9;}};\nvar end = {valueOf:function(){order += \"E\"; return 4.9;}};\nsame(copy.call(a,target,start,end),a);\nsame(order,\"TSE\"); values(a,[1,2,3,2,3]);\nsame(copy.call(a,-Infinity,3,Infinity),a); values(a,[2,3,3,2,3]);\norder=\"\";\nsame(copy.call(a,{valueOf:function(){order+=\"T\";return Infinity;}},{valueOf:function(){order+=\"S\";return NaN;}},{valueOf:function(){order+=\"E\";return 5;}}),a);\nsame(order,\"TSE\"); values(a,[2,3,3,2,3]);\nvar token={}; var observed; order=\"\";\ntry { copy.call(a,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";throw token;}},{valueOf:function(){order+=\"E\";return 5;}}); } catch(error) { observed=error; }\nsame(observed,token); same(order,\"TS\"); values(a,[2,3,3,2,3]);\nvar empty=new Uint8Array(0); order=\"\";\nsame(copy.call(empty,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";return 0;}},{valueOf:function(){order+=\"E\";return 0;}}),empty);\nsame(order, \"\");\ntrue;\n",
+      "source_sha256": "61ddb4be5eb5d88e2b66c4cebc96193e9ce8e954dba2c746110636f31f8c8420"
+    },
+    {
+      "name": "captured-length-and-refreshed-prefix-positive",
+      "pair": "captured-length-and-refreshed-prefix",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "8dfaadd7cc3a4f8c8033937dc749992938148cd19741ee4ae32ccc836a3512ef",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar b=new ArrayBuffer(4,{maxByteLength:8}); var a=new Uint8Array(b);\na[0]=1;a[1]=2;a[2]=3;a[3]=4;\nsame(copy.call(a,{valueOf:function(){b.resize(8);a[4]=9;a[5]=9;a[6]=9;a[7]=9;return 1;}},0),a);\nvalues(a,[1,1,2,3,9,9,9,9]);\nvar c=new ArrayBuffer(8,{maxByteLength:8});var t=new Uint8Array(c);\nfor(var i=0;i<8;i++)t[i]=i+1;\nsame(copy.call(t,2,0,{valueOf:function(){c.resize(5);return 8;}}),t);\nvalues(t,[1,2,1,2,3]);c.resize(8);values(t,[1,2,1,2,3,0,0,0]);\nvar d=new ArrayBuffer(8,{maxByteLength:8});var words=new Uint16Array(d);\nwords[0]=257;words[1]=514;words[2]=771;words[3]=1028;\nsame(copy.call(words,1,{valueOf:function(){d.resize(7);return 0;}},4),words);\nvalues(words,[257,257,514]);d.resize(8);values(words,[257,257,514,4]);\nsame(words[3], 4);\ntrue;\n",
+      "source_sha256": "5c6a37d28a9d712c71f7a3d3a1eade6d84249e9dc1e06177fea4755a3c894e1e"
+    },
+    {
+      "name": "captured-length-and-refreshed-prefix-wrong",
+      "pair": "captured-length-and-refreshed-prefix",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "8dfaadd7cc3a4f8c8033937dc749992938148cd19741ee4ae32ccc836a3512ef",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar b=new ArrayBuffer(4,{maxByteLength:8}); var a=new Uint8Array(b);\na[0]=1;a[1]=2;a[2]=3;a[3]=4;\nsame(copy.call(a,{valueOf:function(){b.resize(8);a[4]=9;a[5]=9;a[6]=9;a[7]=9;return 1;}},0),a);\nvalues(a,[1,1,2,3,9,9,9,9]);\nvar c=new ArrayBuffer(8,{maxByteLength:8});var t=new Uint8Array(c);\nfor(var i=0;i<8;i++)t[i]=i+1;\nsame(copy.call(t,2,0,{valueOf:function(){c.resize(5);return 8;}}),t);\nvalues(t,[1,2,1,2,3]);c.resize(8);values(t,[1,2,1,2,3,0,0,0]);\nvar d=new ArrayBuffer(8,{maxByteLength:8});var words=new Uint16Array(d);\nwords[0]=257;words[1]=514;words[2]=771;words[3]=1028;\nsame(copy.call(words,1,{valueOf:function(){d.resize(7);return 0;}},4),words);\nvalues(words,[257,257,514]);d.resize(8);values(words,[257,257,514,4]);\nsame(words[3], 0);\ntrue;\n",
+      "source_sha256": "7543dfa5aa326dd7222cafb6305984e7e9531a753ebb68877cbd4ac2abca98d0"
+    },
+    {
+      "name": "initial-and-late-invalidity-positive",
+      "pair": "initial-and-late-invalidity",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "5b4ac808bfa6f3315fb46f9a025ccdf42254edea4f476b833424f3eb49d10f27",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar calls=0;var arg={valueOf:function(){calls++;return 0;}};\ntypeError(function(){copy.call({},arg,arg,arg);});same(calls,0);\nvar b=new ArrayBuffer(4);var detached=new Uint8Array(b);b.transfer();\ntypeError(function(){copy.call(detached,arg,arg,arg);});same(calls,0);\nvar c=new ArrayBuffer(4,{maxByteLength:4});var fixed=new Uint8Array(c,0,4);c.resize(2);\ntypeError(function(){copy.call(fixed,arg,arg,arg);});same(calls,0);\nvar d=new ArrayBuffer(4);var late=new Uint8Array(d);var order=\"\";\nsame(copy.call(late,{valueOf:function(){order+=\"T\";d.transfer();return 4;}},{valueOf:function(){order+=\"S\";return 0;}},{valueOf:function(){order+=\"E\";return 4;}}),late);\nsame(order,\"TSE\");same(d.byteLength,0);\nvar e=new ArrayBuffer(4,{maxByteLength:4});var lateFixed=new Uint8Array(e,0,4);\nsame(copy.call(lateFixed,4,{valueOf:function(){e.resize(0);return 0;}},4),lateFixed);\nsame(e.byteLength,0);\nvar f=new ArrayBuffer(4,{maxByteLength:4});var badFixed=new Uint8Array(f,0,4);order=\"\";\ntypeError(function(){copy.call(badFixed,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";f.resize(2);return 1;}},{valueOf:function(){order+=\"E\";return 3;}});});same(order,\"TSE\");\nvar g=new ArrayBuffer(4);var badDetached=new Uint8Array(g);order=\"\";\ntypeError(function(){copy.call(badDetached,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";return 1;}},{valueOf:function(){order+=\"E\";g.transfer();return 3;}});});\nsame(order, \"TSE\");\ntrue;\n",
+      "source_sha256": "726322c1e850d4500353abb852f1bd1efefd279d906c38d1163716415783810f"
+    },
+    {
+      "name": "initial-and-late-invalidity-wrong",
+      "pair": "initial-and-late-invalidity",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "5b4ac808bfa6f3315fb46f9a025ccdf42254edea4f476b833424f3eb49d10f27",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nvar calls=0;var arg={valueOf:function(){calls++;return 0;}};\ntypeError(function(){copy.call({},arg,arg,arg);});same(calls,0);\nvar b=new ArrayBuffer(4);var detached=new Uint8Array(b);b.transfer();\ntypeError(function(){copy.call(detached,arg,arg,arg);});same(calls,0);\nvar c=new ArrayBuffer(4,{maxByteLength:4});var fixed=new Uint8Array(c,0,4);c.resize(2);\ntypeError(function(){copy.call(fixed,arg,arg,arg);});same(calls,0);\nvar d=new ArrayBuffer(4);var late=new Uint8Array(d);var order=\"\";\nsame(copy.call(late,{valueOf:function(){order+=\"T\";d.transfer();return 4;}},{valueOf:function(){order+=\"S\";return 0;}},{valueOf:function(){order+=\"E\";return 4;}}),late);\nsame(order,\"TSE\");same(d.byteLength,0);\nvar e=new ArrayBuffer(4,{maxByteLength:4});var lateFixed=new Uint8Array(e,0,4);\nsame(copy.call(lateFixed,4,{valueOf:function(){e.resize(0);return 0;}},4),lateFixed);\nsame(e.byteLength,0);\nvar f=new ArrayBuffer(4,{maxByteLength:4});var badFixed=new Uint8Array(f,0,4);order=\"\";\ntypeError(function(){copy.call(badFixed,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";f.resize(2);return 1;}},{valueOf:function(){order+=\"E\";return 3;}});});same(order,\"TSE\");\nvar g=new ArrayBuffer(4);var badDetached=new Uint8Array(g);order=\"\";\ntypeError(function(){copy.call(badDetached,{valueOf:function(){order+=\"T\";return 0;}},{valueOf:function(){order+=\"S\";return 1;}},{valueOf:function(){order+=\"E\";g.transfer();return 3;}});});\nsame(order, \"TS\");\ntrue;\n",
+      "source_sha256": "8a1e2cbf4dbb6537a918f9e4722cc3b29c9339d6f4cdeb4d2c83b691b151694b"
+    },
+    {
+      "name": "saved-metadata-and-internal-length-positive",
+      "pair": "saved-metadata-and-internal-length",
+      "positive": true,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "10822d8424f9dad16da2521dbfbf1ab920d20728672a43f4c1e7c997a4dcc8e5",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nsame(copy.name,\"copyWithin\");same(copy.length,2);\nvar descriptor=Object.getOwnPropertyDescriptor(owner,\"copyWithin\");\nsame(descriptor.value,copy);same(descriptor.writable,true);same(descriptor.enumerable,false);same(descriptor.configurable,true);\nsame(Object.prototype.hasOwnProperty.call(copy,\"prototype\"),false);\nvar kinds=[Int8Array,Uint8Array,Uint8ClampedArray,Int16Array,Uint16Array,Int32Array,Uint32Array,Float16Array,Float32Array,Float64Array];\nfor(var k=0;k<kinds.length;k++)same(kinds[k].prototype.copyWithin,copy);\nfunction Constructor(){this.ok=1;}\nsame(Reflect.construct(Constructor,[]).ok,1);\ntypeError(function(){Reflect.construct(copy,[]);});\nvar a=new Uint8Array([1,2,3,4]);var hooks=0;\nObject.defineProperty(a,\"length\",{get:function(){hooks++;throw new Error(\"public length\");}});\nObject.defineProperty(a,\"constructor\",{get:function(){hooks++;throw new Error(\"constructor\");}});\nvar ignored={valueOf:function(){hooks++;throw new Error(\"extra argument\");}};\ndelete owner.copyWithin;\nsame(copy.call(a,1,0,3,ignored),a);\nsame(a[0],1);same(a[1],1);same(a[2],2);same(a[3],3);\nsame(hooks, 0);\ntrue;\n",
+      "source_sha256": "ca26d0728e568d30906d52375b778868585ca7879812eb9d188c00384c5c4753"
+    },
+    {
+      "name": "saved-metadata-and-internal-length-wrong",
+      "pair": "saved-metadata-and-internal-length",
+      "positive": false,
+      "modes": [
+        "sloppy",
+        "strict"
+      ],
+      "common_prefix_sha256": "10822d8424f9dad16da2521dbfbf1ab920d20728672a43f4c1e7c997a4dcc8e5",
+      "source": "var owner = Object.getPrototypeOf(Uint8Array.prototype);\nvar copy = owner.copyWithin;\nif (typeof copy !== \"function\") throw new TypeError(\"copyWithin prerequisite\");\nvar guardView = new Uint8Array([1, 2, 3]);\nif (copy.call(guardView, 1, 0, 2) !== guardView || guardView[0] !== 1 || guardView[1] !== 1 || guardView[2] !== 2) throw new TypeError(\"working overlap prerequisite\");\nfunction same(actual, expected) { if (actual !== expected) throw new Error(\"copyWithin literal mismatch\"); }\nfunction values(view, expected) { same(view.length, expected.length); for (var q = 0; q < expected.length; q++) same(view[q], expected[q]); }\nfunction typeError(action) { var caught = false; try { action(); } catch (error) { if (!(error instanceof TypeError)) throw error; caught = true; } if (!caught) throw new Error(\"missing TypeError\"); }\nsame(copy.name,\"copyWithin\");same(copy.length,2);\nvar descriptor=Object.getOwnPropertyDescriptor(owner,\"copyWithin\");\nsame(descriptor.value,copy);same(descriptor.writable,true);same(descriptor.enumerable,false);same(descriptor.configurable,true);\nsame(Object.prototype.hasOwnProperty.call(copy,\"prototype\"),false);\nvar kinds=[Int8Array,Uint8Array,Uint8ClampedArray,Int16Array,Uint16Array,Int32Array,Uint32Array,Float16Array,Float32Array,Float64Array];\nfor(var k=0;k<kinds.length;k++)same(kinds[k].prototype.copyWithin,copy);\nfunction Constructor(){this.ok=1;}\nsame(Reflect.construct(Constructor,[]).ok,1);\ntypeError(function(){Reflect.construct(copy,[]);});\nvar a=new Uint8Array([1,2,3,4]);var hooks=0;\nObject.defineProperty(a,\"length\",{get:function(){hooks++;throw new Error(\"public length\");}});\nObject.defineProperty(a,\"constructor\",{get:function(){hooks++;throw new Error(\"constructor\");}});\nvar ignored={valueOf:function(){hooks++;throw new Error(\"extra argument\");}};\ndelete owner.copyWithin;\nsame(copy.call(a,1,0,3,ignored),a);\nsame(a[0],1);same(a[1],1);same(a[2],2);same(a[3],3);\nsame(hooks, 1);\ntrue;\n",
+      "source_sha256": "d0e3dd298102e49bd11a27db6f08ca21353331e82013265356ea3e6f282b5528"
+    }
+  ]
+}

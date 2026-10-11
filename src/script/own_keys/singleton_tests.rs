@@ -3,6 +3,7 @@ use super::*;
 
 pub(super) enum BucketKeys<'a> {
     Single(std::iter::Once<&'a JsString>),
+    Pair(std::array::IntoIter<&'a JsString, 2>),
     Tree(std::collections::btree_map::Keys<'a, JsString, ()>),
 }
 impl<'a> Iterator for BucketKeys<'a> {
@@ -10,6 +11,7 @@ impl<'a> Iterator for BucketKeys<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         match self {
             Self::Single(keys) => keys.next(),
+            Self::Pair(keys) => keys.next(),
             Self::Tree(keys) => keys.next(),
         }
     }
@@ -20,8 +22,13 @@ impl NameBucket {
         match self {
             Self::Single(old) if *old == key => {}
             Self::Single(old) => {
+                *self = Self::Pair([old.clone(), key]);
+            }
+            Self::Pair(pair) if pair[0] == key || pair[1] == key => {}
+            Self::Pair(pair) => {
                 let mut tree = BTreeMap::new();
-                tree.insert(old.clone(), ());
+                tree.insert(pair[0].clone(), ());
+                tree.insert(pair[1].clone(), ());
                 tree.insert(key, ());
                 *self = Self::Tree(tree);
             }
@@ -33,6 +40,13 @@ impl NameBucket {
     pub(super) fn keys(&self) -> BucketKeys<'_> {
         match self {
             Self::Single(key) => BucketKeys::Single(std::iter::once(key)),
+            // Test-only inspection keeps the old map's lexical view. Production
+            // Pair retains insertion order; visited ordering is not observable.
+            Self::Pair(pair) => BucketKeys::Pair(if pair[0] <= pair[1] {
+                [&pair[0], &pair[1]].into_iter()
+            } else {
+                [&pair[1], &pair[0]].into_iter()
+            }),
             Self::Tree(tree) => BucketKeys::Tree(tree.keys()),
         }
     }
@@ -40,6 +54,9 @@ impl NameBucket {
         match self {
             Self::Single(old) if old == key => Some((old, &())),
             Self::Single(_) => None,
+            Self::Pair(pair) if &pair[0] == key => Some((&pair[0], &())),
+            Self::Pair(pair) if &pair[1] == key => Some((&pair[1], &())),
+            Self::Pair(_) => None,
             Self::Tree(tree) => tree.get_key_value(key),
         }
     }
@@ -48,7 +65,7 @@ impl NameBucket {
     }
     pub(super) fn is_empty(&self) -> bool {
         match self {
-            Self::Single(_) => false,
+            Self::Single(_) | Self::Pair(_) => false,
             Self::Tree(tree) => tree.is_empty(),
         }
     }
@@ -152,11 +169,15 @@ fn singleton_utf16_distinctions_and_both_promotion_orders() {
                     .is_some()
             );
             if i == 1 {
-                assert_eq!(spent(&runtime), (64 + 2 * key.len(), VISITED_NAME_BYTES));
+                assert_eq!(spent(&runtime), (15 + key.len(), 0));
+            } else if i == 2 {
+                assert_eq!(spent(&runtime), (96 + 5 * key.len(), VISITED_NAME_BYTES));
             }
             assert_eq!(retain(&visited, key).units().as_ptr(), key.units().as_ptr());
             if i == 0 {
                 assert!(matches!(visited.buckets[&key.len()], NameBucket::Single(_)));
+            } else if i == 1 {
+                assert!(matches!(visited.buckets[&key.len()], NameBucket::Pair(_)));
             } else {
                 assert!(matches!(visited.buckets[&key.len()], NameBucket::Tree(_)));
             }
@@ -240,32 +261,70 @@ fn singleton_promotion_all_stage_cuts_retain_original_single() {
             let (mut runtime, doc) = fresh();
             let old = JsString::from(first);
             let new = JsString::from(second);
-            let target = object(&mut runtime, &[old.clone(), new.clone()]);
+            let third = JsString::from("cc");
+            let target = object(&mut runtime, &[old.clone(), new.clone(), third.clone()]);
             let mut visited = VisitedNames::default();
             runtime
                 .for_in_visit(&mut visited, &target, &old)
                 .unwrap()
                 .unwrap();
-            (runtime, doc, target, old, new, visited)
+            (runtime, doc, target, old, new, third, visited)
         };
-        // 4 outer +2 enum +3 equality +59 complete promotion. Reader costs0.
-        for steps in [0, 3, 5, 8, 9, 67, 68] {
-            let (mut runtime, _, target, old, new, mut visited) = prepare();
+        // 4 outer +2 enum +3 equality +8 Pair admission. Reader costs0.
+        // No heap is needed for the second retained handle.
+        for steps in [0, 3, 5, 8, 9, 16, 17] {
+            let (mut runtime, _, target, old, new, _, mut visited) = prepare();
+            let before = visited.clone();
+            let object_count = runtime.objects.len();
+            let id = runtime.property_object(&target).unwrap();
+            let order = runtime.objects[id].order.clone();
+            runtime.steps = steps;
+            runtime.allocated = MAX_HEAP;
+            let result = runtime.for_in_visit(&mut visited, &target, &new);
+            if steps == 17 {
+                assert!(result.unwrap().is_some());
+                assert_eq!(runtime.steps, 0);
+                assert!(matches!(visited.buckets[&2], NameBucket::Pair(_)));
+                assert_eq!(
+                    retain(&visited, &new).units().as_ptr(),
+                    new.units().as_ptr()
+                );
+            } else {
+                assert!(result.unwrap_err().is_resource_limit());
+                assert_eq!(visited, before);
+            }
+            assert_eq!(runtime.allocated, MAX_HEAP);
+            assert_eq!(
+                retain(&visited, &old).units().as_ptr(),
+                old.units().as_ptr()
+            );
+            assert_eq!(runtime.objects.len(), object_count);
+            assert_eq!(runtime.objects[id].order, order);
+            clean(&runtime);
+        }
+        // The former tree-promotion heap contract moves to the third distinct
+        // key: 4 outer +2 enum +3 +3 equality +94 complete promotion =106.
+        for steps in [0, 3, 5, 8, 9, 11, 12, 105, 106] {
+            let (mut runtime, _, target, old, new, third, mut visited) = prepare();
+            runtime
+                .for_in_visit(&mut visited, &target, &new)
+                .unwrap()
+                .unwrap();
             let before = visited.clone();
             let object_count = runtime.objects.len();
             let id = runtime.property_object(&target).unwrap();
             let order = runtime.objects[id].order.clone();
             runtime.steps = steps;
             runtime.allocated = MAX_HEAP - VISITED_NAME_BYTES;
-            let result = runtime.for_in_visit(&mut visited, &target, &new);
-            if steps == 68 {
+            let result = runtime.for_in_visit(&mut visited, &target, &third);
+            if steps == 106 {
                 assert!(result.unwrap().is_some());
                 assert_eq!(runtime.steps, 0);
                 assert_eq!(runtime.allocated, MAX_HEAP);
                 assert!(matches!(visited.buckets[&2], NameBucket::Tree(_)));
                 assert_eq!(
-                    retain(&visited, &new).units().as_ptr(),
-                    new.units().as_ptr()
+                    retain(&visited, &third).units().as_ptr(),
+                    third.units().as_ptr()
                 );
             } else {
                 assert!(result.unwrap_err().is_resource_limit());
@@ -275,17 +334,25 @@ fn singleton_promotion_all_stage_cuts_retain_original_single() {
                 retain(&visited, &old).units().as_ptr(),
                 old.units().as_ptr()
             );
+            assert_eq!(
+                retain(&visited, &new).units().as_ptr(),
+                new.units().as_ptr()
+            );
             assert_eq!(runtime.objects.len(), object_count);
             assert_eq!(runtime.objects[id].order, order);
             clean(&runtime);
         }
-        let (mut runtime, _, target, old, new, mut visited) = prepare();
+        let (mut runtime, _, target, old, new, third, mut visited) = prepare();
+        runtime
+            .for_in_visit(&mut visited, &target, &new)
+            .unwrap()
+            .unwrap();
         let before = visited.clone();
-        runtime.steps = 68;
+        runtime.steps = 106;
         runtime.allocated = MAX_HEAP - VISITED_NAME_BYTES + 1;
         assert!(
             runtime
-                .for_in_visit(&mut visited, &target, &new)
+                .for_in_visit(&mut visited, &target, &third)
                 .unwrap_err()
                 .is_resource_limit()
         );
@@ -294,6 +361,11 @@ fn singleton_promotion_all_stage_cuts_retain_original_single() {
             retain(&visited, &old).units().as_ptr(),
             old.units().as_ptr()
         );
+        assert_eq!(
+            retain(&visited, &new).units().as_ptr(),
+            new.units().as_ptr()
+        );
+        clean(&runtime);
     }
 }
 
@@ -321,7 +393,7 @@ fn singleton_hidden_names_shadow_but_deleted_names_remain_eligible() {
 
 #[test]
 fn singleton_general_tree_path_preserves_growth_and_cuts() {
-    for count in [2, 10, 11, 12, 70, 71, 72] {
+    for count in [3, 10, 11, 12, 70, 71, 72] {
         let keys: Vec<JsString> = (0..=count).map(|i| format!("p{i:03}").into()).collect();
         let (mut runtime, _) = fresh();
         let target = object(&mut runtime, &keys);
@@ -371,7 +443,10 @@ fn singleton_general_tree_path_preserves_growth_and_cuts() {
 #[test]
 fn singleton_outer_search_and_cumulative_storage_are_independent() {
     let (mut runtime, _) = fresh();
-    let keys: Vec<JsString> = ["aa", "bb", "cc"].into_iter().map(JsString::from).collect();
+    let keys: Vec<JsString> = ["aa", "bb", "cc", "dd"]
+        .into_iter()
+        .map(JsString::from)
+        .collect();
     let target = object(&mut runtime, &keys);
     let mut visited = VisitedNames::default();
     reset(&mut runtime);
@@ -380,19 +455,37 @@ fn singleton_outer_search_and_cumulative_storage_are_independent() {
         .unwrap()
         .unwrap();
     assert_eq!(spent(&runtime), (31, VISITED_BUCKET_BYTES));
-    runtime.steps = 68;
-    runtime.allocated = MAX_HEAP - VISITED_NAME_BYTES;
+    runtime.steps = 17;
+    runtime.allocated = MAX_HEAP;
     runtime
         .for_in_visit(&mut visited, &target, &keys[1])
         .unwrap()
         .unwrap();
     assert_eq!(runtime.steps, 0);
     assert_eq!(runtime.allocated, MAX_HEAP);
-    let before = visited.clone();
-    runtime.steps = 63;
+    let pair = visited.clone();
+    runtime.steps = 106;
     assert!(
         runtime
             .for_in_visit(&mut visited, &target, &keys[2])
+            .unwrap_err()
+            .is_resource_limit()
+    );
+    assert_eq!(visited, pair);
+    runtime.steps = 106;
+    runtime.allocated = MAX_HEAP - VISITED_NAME_BYTES;
+    runtime
+        .for_in_visit(&mut visited, &target, &keys[2])
+        .unwrap()
+        .unwrap();
+    assert_eq!(runtime.steps, 0);
+    assert_eq!(runtime.allocated, MAX_HEAP);
+    let before = visited.clone();
+    // The unchanged general-tree path now begins after three retained names.
+    runtime.steps = 66;
+    assert!(
+        runtime
+            .for_in_visit(&mut visited, &target, &keys[3])
             .unwrap_err()
             .is_resource_limit()
     );

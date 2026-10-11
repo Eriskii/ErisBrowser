@@ -189,14 +189,14 @@ fn expected(row: &(usize, usize, usize, usize, usize, usize, usize)) -> (usize, 
         (16, 0),
         (8, 0),
     ][key_id];
-    // Search, fill, reverse and toReversed grow the shared owner13->20.
+    // Search, fill, reverse, toReversed and copyWithin grow the shared owner13->21.
     // Only absent-own scenario0 reaches it. The existing Reflect/splice
     // lookup tariffs each traverse that owner once; assignment has no fee
     // dependent on its size. All KEYS are ASCII, so byte length is UTF16 length.
     let owner_growth = if scenario == 0 {
         match route {
-            0 => 7 * (1 + KEYS[key_id].len()),
-            2 => 7 * (1 + KEYS[key_id].len() / 8),
+            0 => 8 * (1 + KEYS[key_id].len()),
+            2 => 8 * (1 + KEYS[key_id].len() / 8),
             _ => 0,
         }
     } else {

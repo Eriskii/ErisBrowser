@@ -21,6 +21,11 @@ fixed storage, including empty and resized sources. Its complete profile records
 eight passes, eight work-limit stops and two host exclusions; the resource
 outcomes still prevent an upstream baseline. Remaining methods, BigInt views,
 shared memory and broader interpreter accounting remain open work.
+[`copyWithin`](typedarray-copy-within.md) now handles Number view overlap with
+raw bit preservation, ordered index conversion and fresh final bounds. The
+complete selection has 20 passes, 46 work-limit stops and 64 exclusions. Its
+visited-name allocation optimization restores the unchanged descriptor test
+within the original budget; broader interpreter performance remains open.
 The [one-pass own-key snapshot](own-keys-one-pass.md) removes a duplicate
 creation-order scan without changing any of the 45 compatibility reports.
 Later symbols can increase charged scratch storage, and late numeric fallback

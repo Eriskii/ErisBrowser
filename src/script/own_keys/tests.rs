@@ -718,12 +718,14 @@ fn own_keys_repeated_snapshots_and_visited_sets_share_cumulative_heap() {
         .unwrap()
         .unwrap();
     assert_eq!(runtime.allocated - before, VISITED_BUCKET_BYTES);
-    // The second distinct name promotes the inline singleton to one inner leaf.
-    runtime.allocated = MAX_HEAP - VISITED_NAME_BYTES;
+    // The second distinct name stays inline even at the heap limit; the third
+    // still needs its independently admitted inner-leaf allowance.
+    runtime.allocated = MAX_HEAP;
     runtime
         .for_in_visit(&mut visited, &target, &"b".into())
         .unwrap()
         .unwrap();
+    assert_eq!(runtime.allocated, MAX_HEAP);
     assert!(
         runtime
             .for_in_visit(&mut visited, &target, &"c".into())
@@ -899,15 +901,16 @@ fn own_keys_length_buckets_preserve_arbitrary_utf16_and_payload_identity() {
 
 #[test]
 fn own_keys_new_and_existing_bucket_insertions_precharge_all_mutation() {
-    // Fresh length, inline promotion and an already-promoted tree are
-    // separately reached storage contracts. All semantic/cut assertions remain.
-    for branch in 0..3 {
+    // Fresh length, second inline name, third-key promotion and general-tree
+    // insertion are separate storage contracts. Semantic assertions remain.
+    for branch in 0..4 {
         let new_bucket = branch == 0;
         let key = JsString::from("zz");
         let seed = visited_names(names(match branch {
             0 => &["a"],
             1 => &["bb"],
-            _ => &["aa", "bb"],
+            2 => &["aa", "bb"],
+            _ => &["aa", "bb", "cc"],
         }));
         let prepare = || {
             let (mut runtime, _) = fresh();
@@ -929,13 +932,18 @@ fn own_keys_new_and_existing_bucket_insertions_precharge_all_mutation() {
             heap,
             if new_bucket {
                 VISITED_BUCKET_BYTES
+            } else if branch == 1 {
+                0
             } else {
                 VISITED_NAME_BYTES
             }
         );
-        // Every new path has one reached allocation allowance. The old cuts
-        // for half of two allocations no longer describe a possible operation.
-        let cuts = [(work - 1, heap), (work, heap - 1), (work, 0)];
+        // Pair admission allocates nothing. Keep exact/one-short heap cuts for
+        // the three allocating paths, and a work cut for every branch.
+        let mut cuts = vec![(work - 1, heap)];
+        if heap != 0 {
+            cuts.extend([(work, heap - 1), (work, 0)]);
+        }
         for (steps, bytes) in cuts {
             let (mut runtime, target, mut visited) = prepare();
             runtime.steps = steps;
