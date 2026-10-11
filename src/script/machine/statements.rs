@@ -281,11 +281,10 @@ pub(super) fn step(
         Phase::Return => done(Flow::Return(value(output))),
         Phase::Throw => {
             let value = value(output);
-            let name = runtime.thrown_name(&value, doc)?;
-            let intrinsic = runtime.thrown_intrinsic_name(&value, doc)?;
+            let metadata = runtime.throw_metadata(&value)?;
             let mut error = runtime.thrown_error(value)?;
-            error.thrown_name = name;
-            error.intrinsic_name = intrinsic;
+            error.thrown_name = metadata.name;
+            error.intrinsic_name = metadata.intrinsic;
             Err(error)
         }
         Phase::Label => {

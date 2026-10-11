@@ -1,0 +1,16 @@
+<!doctype html><title>before</title><style>
+body{margin:0;background:white}#box,#trap{position:absolute;top:2px;width:4px;height:4px}
+#box{left:2px;background:red}#trap{left:20px;background:blue}
+</style><div id="box"></div><div id="trap"></div><script>
+var trace='',box=document.getElementById('box'),token={},named={};
+function poison(){trace+='X';document.getElementById('trap').style.left='24px';while(true){}}
+Object.defineProperty(token,'constructor',{get:poison});
+function C(){}Object.defineProperty(C,'name',{get:poison});named.constructor=C;
+box.addEventListener('click',function(){trace+='A';throw token;});
+box.addEventListener('click',function(){trace+='B';queueMicrotask(function(){trace+='Q';box.style.left='10px';document.title=trace;});});
+box.addEventListener('click',function(){trace+='D';document.title=trace;});
+try{throw token;}catch(e){trace+=e===token?'C':'!';}
+try{throw named;}catch(e){trace+=e===named?'F':'!';}
+queueMicrotask(function(){trace+='M';throw token;});
+queueMicrotask(function(){trace+='N';box.style.left='6px';document.title=trace;});
+</script>

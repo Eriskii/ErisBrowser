@@ -2893,3 +2893,6 @@ mod cssom_wide_getter;
 
 #[path = "worker/microtasks.rs"]
 mod microtasks;
+
+#[path = "worker/throw_completion.rs"]
+mod throw_completion;

@@ -63,6 +63,11 @@ mod scalar_codec;
 mod string_builtins;
 mod symbols;
 mod text_operations;
+#[cfg(test)]
+mod throw_completion_tests;
+mod throw_metadata;
+#[cfg(test)]
+mod throw_metadata_budget_tests;
 mod typed_array;
 mod window;
 use symbols::PropertyKey;
@@ -4100,35 +4105,6 @@ impl Runtime {
         self.work(1 + units / 8)?;
         self.charge(units.saturating_mul(3).saturating_add(512))?;
         Ok(ScriptError::thrown(value))
-    }
-    fn thrown_name(&mut self, value: &Value, doc: &mut Document) -> Result<Option<String>> {
-        if !js_object(value) {
-            return Ok(None);
-        }
-        let constructor = self.get(value.clone(), "constructor", doc)?;
-        if json_callable(&constructor) {
-            let name = self.get(constructor, "name", doc)?;
-            if let Value::String(name) = name {
-                self.work(1 + name.len() / 16)?;
-                self.charge(name.len().saturating_mul(3).saturating_add(24))?;
-                return Ok(Some(name.to_utf8_lossy()));
-            }
-        }
-        Ok(None)
-    }
-    fn thrown_intrinsic_name(
-        &mut self,
-        value: &Value,
-        doc: &mut Document,
-    ) -> Result<Option<&'static str>> {
-        let Value::Object(id) = value else {
-            return Ok(None);
-        };
-        let Some(name) = self.objects[*id].intrinsic_error else {
-            return Ok(None);
-        };
-        let constructor = self.get(value.clone(), "constructor", doc)?;
-        Ok((constructor == self.alloc_native(name, Value::Window)?).then_some(name))
     }
     #[cfg(test)]
     fn eval(

@@ -4,6 +4,11 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Throw diagnostics](docs/throw-completion.md) retain the original JavaScript value
+without invoking constructor or name accessors. Data-only metadata inspection
+keeps ordinary exceptions from triggering unrelated getters or suspending
+later callbacks; its work and storage use the existing runtime limits.
+
 [Microtask callbacks](docs/microtasks.md) add `queueMicrotask` and cleanup
 checkpoints for the existing single Window realm. FIFO jobs share the active
 script/event work allowance and cumulative heap; host-listener jobs settle

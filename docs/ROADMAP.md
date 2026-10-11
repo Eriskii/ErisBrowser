@@ -1,5 +1,10 @@
 # Development docket
 
+[Throw diagnostics](throw-completion.md) now preserve the original operand
+without running constructor/name getters. This removes an exception-identity
+prerequisite for Promise reactions while preserving the existing runtime limits.
+Promise construction, reactions and thenable adoption remain subsequent work.
+
 [Microtask callbacks](microtasks.md) now provide the first shared job FIFO and
 script/host-callback cleanup checkpoints in the existing Window realm.
 `queueMicrotask` preserves callback identity, ordinary invocation and ordered
