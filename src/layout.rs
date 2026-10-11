@@ -42,6 +42,51 @@ pub(crate) struct LoadedBackground<'a> {
     pub(crate) natural: RasterNaturalSize,
 }
 
+#[derive(Clone, Copy, Default)]
+pub(crate) struct BackgroundBindingRange {
+    pub(crate) start: u32,
+    pub(crate) len: u8,
+}
+#[derive(Clone, Copy, Default)]
+pub(crate) struct BackgroundBindings<'a> {
+    pub(crate) ranges: &'a [BackgroundBindingRange],
+    pub(crate) slots: &'a [Option<LoadedBackground<'a>>],
+}
+impl<'a> BackgroundBindings<'a> {
+    pub(crate) fn get(self, node: NodeId, image_index: usize) -> Option<LoadedBackground<'a>> {
+        let range = self.ranges.get(node)?;
+        let start = usize::try_from(range.start).ok()?;
+        let len = usize::from(range.len);
+        if len > crate::css::MAX_BACKGROUND_LAYERS
+            || image_index >= len
+            || start.checked_add(len)? > self.slots.len()
+        {
+            return None;
+        }
+        self.slots
+            .get(start.checked_add(image_index)?)
+            .copied()
+            .flatten()
+    }
+}
+
+pub(crate) fn canvas_background_owner(
+    styles: &[ComputedStyle],
+    html: Option<NodeId>,
+    body: Option<NodeId>,
+) -> Option<NodeId> {
+    let present =
+        |style: &ComputedStyle| style.background_color.a > 0 || !style.backgrounds.is_single_none();
+    html.filter(|id| styles.get(*id).is_some_and(present))
+        .or_else(|| {
+            body.filter(|id| {
+                styles
+                    .get(*id)
+                    .is_some_and(|style| style.display != Display::None && present(style))
+            })
+        })
+}
+
 // Grid occupancy is bounded independently from DOM size. Signed line numbers
 // are clamped before arithmetic; excessive author grids have a finite UA limit.
 const MAX_GRID_TRACKS: usize = 256;
@@ -830,6 +875,7 @@ struct PaintOwner {
     inline_layer: InlineLayer,
     inline_prefix: f32,
     inline_sides: u8,
+    background_image_index: u8,
 }
 #[derive(Clone, Copy)]
 struct BoxGeometry {
@@ -955,6 +1001,12 @@ struct Size {
     height: f32,
 }
 
+struct BoxLayout {
+    size: Size,
+    paint_slots: PaintSlots,
+    principal_box: u32,
+}
+
 struct Fragment {
     size: Size,
     commands: Vec<DrawCommand>,
@@ -962,8 +1014,8 @@ struct Fragment {
     hits: Vec<HitRegion>,
     boxes: Vec<BoxGeometry>,
     positioned: Vec<PositionJob>,
-    rounded_border: bool,
-    gradient: bool,
+    paint_slots: PaintSlots,
+    principal_box: u32,
 }
 
 enum InlineKind {
@@ -1021,7 +1073,7 @@ struct InlineItem {
 }
 
 struct Engine<'a> {
-    backgrounds: &'a [Option<LoadedBackground<'a>>],
+    backgrounds: BackgroundBindings<'a>,
     background_key_bytes_left: usize,
     doc: &'a Document,
     styles: &'a [ComputedStyle],
@@ -1067,7 +1119,14 @@ pub fn layout(
     height: f32,
     fonts: &Fonts,
 ) -> LayoutResult {
-    layout_with_backgrounds(doc, styles, width, height, fonts, &[])
+    layout_with_backgrounds(
+        doc,
+        styles,
+        width,
+        height,
+        fonts,
+        BackgroundBindings::default(),
+    )
 }
 
 /// Resource preparation belongs to Page. This entry only consumes the same
@@ -1078,27 +1137,15 @@ pub(crate) fn layout_with_backgrounds(
     width: f32,
     height: f32,
     fonts: &Fonts,
-    backgrounds: &[Option<LoadedBackground<'_>>],
+    backgrounds: BackgroundBindings<'_>,
 ) -> LayoutResult {
     let viewport = Size {
         width: finite(width, 800.0).clamp(1.0, 100_000.0),
         height: finite(height, 600.0).clamp(1.0, 100_000.0),
     };
     let html = doc.first_html_element("html");
-    let canvas_background_node = html
-        .filter(|id| {
-            styles.get(*id).is_some_and(|style| {
-                style.background_color.a > 0 || style.background_image.is_some()
-            })
-        })
-        .or_else(|| {
-            doc.first_html_element("body").filter(|id| {
-                styles.get(*id).is_some_and(|style| {
-                    style.display != Display::None
-                        && (style.background_color.a > 0 || style.background_image.is_some())
-                })
-            })
-        });
+    let canvas_background_node =
+        canvas_background_owner(styles, html, doc.first_html_element("body"));
     let mut engine = Engine {
         doc,
         styles,
@@ -1117,6 +1164,7 @@ pub(crate) fn layout_with_backgrounds(
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
+            background_image_index: 0,
         },
         flow_height_reference: Some(viewport.height),
         content_height_measure: None,
@@ -1140,26 +1188,20 @@ pub(crate) fn layout_with_backgrounds(
         fallback: ComputedStyle::default(),
         disclosure_hidden: doc.disclosure_hidden_mask(),
     };
-    let mut canvas_gradient = None;
+    let mut canvas_paint = None;
     if let Some(id) = canvas_background_node {
-        // A propagated body background belongs to the root element's canvas
-        // background group, including the root's opacity, not body's opacity.
         engine.paint_owner.node = html.unwrap_or(id);
-        let style = engine.style(id);
-        engine.push(DrawCommand::Rect {
-            rect: rect(0.0, 0.0, viewport.width, viewport.height),
-            color: style.background_color,
-            radius: 0.0,
-        });
-        if engine.style(id).background_image.is_some() {
-            let index = engine.commands.len();
-            if engine.push(DrawCommand::Rect {
-                rect: Rect::default(),
-                color: Color::TRANSPARENT,
-                radius: 0.0,
-            }) {
-                canvas_gradient = Some(index);
+        let count = if engine.style(id).backgrounds.is_single_none() {
+            0
+        } else {
+            engine.style(id).backgrounds.image_slots().len()
+        };
+        if engine.admit_decoration_slots(1 + count) {
+            let start = engine.commands.len();
+            for _ in 0..1 + count {
+                engine.push(background_boxes::empty());
             }
+            canvas_paint = Some((start, count));
         }
         engine.paint_owner.node = doc.root;
     }
@@ -1176,24 +1218,47 @@ pub(crate) fn layout_with_backgrounds(
         .map(|hit| hit.rect.y + hit.rect.height)
         .fold(size.height, f32::max);
     let content_height = painted_bottom.max(viewport.height).min(MAX_EXTENT);
-    if canvas_background_node.is_some()
-        && let Some(DrawCommand::Rect { rect, .. }) = engine.commands.first_mut()
-    {
-        rect.height = content_height;
-    }
-    if let (Some(index), Some(source)) = (canvas_gradient, canvas_background_node) {
+    if let (Some((start, count)), Some(source)) = (canvas_paint, canvas_background_node) {
+        engine.commands[start] = DrawCommand::Rect {
+            rect: rect(0.0, 0.0, viewport.width, content_height),
+            color: engine.style(source).background_color,
+            radius: 0.0,
+        };
         let root = html.unwrap_or(source);
-        if let Some(area) = engine.canvas_gradient_tile(root)
-            && let Some(command) = engine.background_command(
-                source,
-                rect(0.0, 0.0, viewport.width, content_height),
-                area,
-                0.0,
-                engine.style(root).color,
-                false,
-            )
+        let work = if count > 1 {
+            background_boxes::layers_work(count)
+        } else {
+            Some(0)
+        };
+        if work.is_some_and(|cost| background_boxes::spend(&mut engine.position_work_left, cost))
+            && count != 0
+            && let Some(geometry) = engine.canvas_background_geometry(root)
         {
-            engine.commands[index] = command;
+            for offset in 0..count {
+                let index = count - 1 - offset;
+                let origin = engine
+                    .style(source)
+                    .backgrounds
+                    .layer(index)
+                    .unwrap()
+                    .origin;
+                let area = match origin {
+                    BackgroundBox::Border => geometry.border,
+                    BackgroundBox::Padding => geometry.padding,
+                    BackgroundBox::Content => geometry.content,
+                };
+                if let Some(command) = engine.background_command(
+                    source,
+                    index,
+                    rect(0.0, 0.0, viewport.width, content_height),
+                    area,
+                    0.0,
+                    engine.style(root).color,
+                    false,
+                ) {
+                    engine.commands[start + 1 + offset] = command;
+                }
+            }
         }
     }
     engine.finish_inline_backgrounds();
@@ -1212,31 +1277,36 @@ pub(crate) fn layout_with_backgrounds(
     }
 }
 
-impl Engine<'_> {
-    fn loaded_background(&self, node: NodeId) -> Option<LoadedBackground<'_>> {
+impl<'a> Engine<'a> {
+    fn admit_decoration_slots(&mut self, count: usize) -> bool {
+        self.commands_created
+            .checked_add(self.open_clips)
+            .and_then(|n| n.checked_add(count))
+            .is_some_and(|n| n <= MAX_COMMANDS)
+            && self.commands.try_reserve(count).is_ok()
+            && self.owners.try_reserve(count).is_ok()
+    }
+
+    fn loaded_background(&self, node: NodeId, image_index: usize) -> Option<LoadedBackground<'a>> {
         self.backgrounds
-            .get(node)
-            .copied()
-            .flatten()
+            .get(node, image_index)
             .filter(|loaded| loaded.natural.width > 0 && loaded.natural.height > 0)
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn background_command(
         &mut self,
         node: NodeId,
+        image_index: usize,
         paint: Rect,
         area: Rect,
         radius: f32,
         current_color: Color,
         allow_pending_tile: bool,
     ) -> Option<DrawCommand> {
-        let style = self.style(node);
-        let (size, position, repeat) = (
-            style.background_size,
-            style.background_position,
-            style.background_repeat,
-        );
-        match style.background_image.as_ref()? {
+        let layer = self.style(node).backgrounds.layer(image_index)?;
+        let (size, position, repeat) = (layer.size, layer.position, layer.repeat);
+        match layer.image? {
             BackgroundImage::Gradient(gradient) => {
                 let tile = background_tile(area, size, position);
                 if tile.is_none() && !allow_pending_tile {
@@ -1253,10 +1323,7 @@ impl Engine<'_> {
                 })
             }
             BackgroundImage::Url(_) => {
-                let loaded = self.backgrounds.get(node).copied().flatten()?;
-                if loaded.natural.width == 0 || loaded.natural.height == 0 {
-                    return None;
-                }
+                let loaded = self.loaded_background(node, image_index)?;
                 let tile = background_tile_with_raster(area, size, position, loaded.natural);
                 if tile.is_none() && !allow_pending_tile {
                     return None;
@@ -1277,28 +1344,14 @@ impl Engine<'_> {
         }
     }
 
-    fn canvas_gradient_tile(&mut self, root: NodeId) -> Option<Rect> {
-        // Root geometry is appended after its descendants. Pay the complete
-        // possible scan, retaining other paint work when admission refuses.
-        let cost = self.boxes.len();
-        if cost > self.position_work_left {
+    fn canvas_background_geometry(&mut self, root: NodeId) -> Option<BoxGeometry> {
+        if !background_boxes::spend(&mut self.position_work_left, self.boxes.len()) {
             return None;
         }
-        self.position_work_left -= cost;
         self.boxes
             .iter()
             .find(|g| g.node == root && !g.inline)
-            .map(|g| {
-                match self
-                    .canvas_background_node
-                    .map(|source| self.style(source).background_origin)
-                    .unwrap_or(BackgroundBox::Padding)
-                {
-                    BackgroundBox::Border => g.border,
-                    BackgroundBox::Padding => g.padding,
-                    BackgroundBox::Content => g.content,
-                }
-            })
+            .copied()
     }
 
     fn html_tag(&self, id: NodeId) -> Option<&str> {
@@ -1604,6 +1657,7 @@ impl Engine<'_> {
         depth: usize,
     ) -> Size {
         self.layout_box_sized(id, x, y, available, (forced_width, None), depth)
+            .size
     }
 
     fn layout_box_sized(
@@ -1614,9 +1668,14 @@ impl Engine<'_> {
         available: f32,
         forced: (Option<f32>, Option<f32>),
         depth: usize,
-    ) -> Size {
+    ) -> BoxLayout {
+        let geometry_start = self.boxes.len();
         if !self.enter(id, depth) || self.is_hidden(id) {
-            return Size::default();
+            return BoxLayout {
+                size: Size::default(),
+                paint_slots: PaintSlots::default(),
+                principal_box: u32::MAX,
+            };
         }
         let mut style = self.style(id).clone();
         if self.content_height_measure == Some(id) {
@@ -1632,6 +1691,7 @@ impl Engine<'_> {
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
+            background_image_index: 0,
         };
         if style.position == "relative" {
             x += resolve(style.left, available)
@@ -1682,14 +1742,28 @@ impl Engine<'_> {
         });
         self.flow_height_reference = definite_height.map(|height| (height - extras).max(0.0));
         let paint_start = self.commands.len();
-        let has_image = self.canvas_background_node != Some(id) && style.background_image.is_some();
-        // Reserve paint slots before descendants, then fill in the height.
-        for _ in 0..5 + usize::from(has_image) {
-            self.push(DrawCommand::Rect {
-                rect: rect(x, y, 0.0, 0.0),
-                color: rgba(0, 0, 0, 0),
-                radius: 0.0,
-            });
+        let suppressed = self.canvas_background_node == Some(id);
+        let planned = if style.backgrounds.image_slots().len() > 1 {
+            PaintSlots::layers(
+                if suppressed {
+                    0
+                } else {
+                    style.backgrounds.image_slots().len()
+                },
+                style.border_radius > 0.0,
+            )
+        } else {
+            PaintSlots::new(
+                !suppressed && !style.backgrounds.is_single_none(),
+                self.rounded_border(id),
+            )
+        };
+        let mut paint_slots = planned.omitted();
+        if self.admit_decoration_slots(planned.len()) {
+            paint_slots = planned;
+            for _ in 0..planned.len() {
+                self.push(background_boxes::empty());
+            }
         }
         self.paint_owner.background = false;
         let hit_start = self.hits.len();
@@ -1708,6 +1782,7 @@ impl Engine<'_> {
         } else {
             None
         };
+        paint_slots = paint_slots.with_overflow(clip_index.is_some());
         let tag = self.layout_tag(id).to_owned();
         let children = self.layout_children(id);
         let mut natural_height = if matches!(tag.as_str(), "img" | "svg" | "canvas" | "video") {
@@ -1852,9 +1927,10 @@ impl Engine<'_> {
             border,
             padding,
             paint_start,
-            has_image,
+            paint_slots,
         );
         self.hits[hit_start].rect.height = height;
+        let principal_box = u32::try_from(self.boxes.len() - geometry_start).unwrap_or(u32::MAX);
         self.boxes.push(BoxGeometry {
             node: id,
             border: rect(x, y, width, height),
@@ -1922,7 +1998,11 @@ impl Engine<'_> {
         }
         self.paint_owner = previous_owner;
         self.flow_height_reference = previous_flow_height;
-        Size { width, height }
+        BoxLayout {
+            size: Size { width, height },
+            paint_slots,
+            principal_box,
+        }
     }
 
     fn layout_flow(
@@ -2181,6 +2261,7 @@ impl Engine<'_> {
                 inline_layer: InlineLayer::None,
                 inline_prefix: 0.0,
                 inline_sides: 0,
+                background_image_index: 0,
             };
             let mut commands = Vec::with_capacity(fragment.commands.len() + scope_cost);
             let mut owners = Vec::with_capacity(commands.capacity());
@@ -2600,34 +2681,37 @@ impl Engine<'_> {
         let box_start = self.boxes.len();
         let positioned_start = self.positioned.len();
         let old_fragment_root = self.fragment_root.replace(id);
-        let size = self.layout_box_sized(id, 0.0, 0.0, available, (Some(width), height), depth);
+        let laid_out = self.layout_box_sized(id, 0.0, 0.0, available, (Some(width), height), depth);
         self.fragment_root = old_fragment_root;
         Fragment {
-            size,
+            size: laid_out.size,
             commands: self.commands.split_off(command_start),
             owners: self.owners.split_off(command_start),
             hits: self.hits.split_off(hit_start),
             boxes: self.boxes.split_off(box_start),
             positioned: self.positioned.split_off(positioned_start),
-            rounded_border: self.rounded_border(id),
-            gradient: self.canvas_background_node != Some(id)
-                && self.style(id).background_image.is_some(),
+            paint_slots: laid_out.paint_slots,
+            principal_box: laid_out.principal_box,
         }
     }
 
     fn rounded_border(&self, id: NodeId) -> bool {
         let style = self.style(id);
         let border = self.borders(id);
+        if style.backgrounds.image_slots().len() != 1 {
+            return false;
+        }
+        let layer = style.backgrounds.layer(0).unwrap();
         style.border_radius > 0.0
-            && style.background_clip == BackgroundBox::Border
+            && layer.clip == BackgroundBox::Border
             && self.canvas_background_node != Some(id)
-            && if let Some(BackgroundImage::Gradient(gradient)) = &style.background_image {
+            && if let Some(BackgroundImage::Gradient(gradient)) = layer.image {
                 style.border_color.a == 255
                     && (style.background_color.a == 255
-                        || style.background_size == BackgroundSize::default()
-                            && style.background_position == BackgroundPosition::default()
-                            && style.background_repeat == [true; 2]
-                            && style.background_origin == BackgroundBox::Padding
+                        || layer.size == BackgroundSize::default()
+                            && layer.position == BackgroundPosition::default()
+                            && layer.repeat == [true; 2]
+                            && layer.origin == BackgroundBox::Padding
                             && !gradient.stops.is_empty()
                             && gradient.stops.iter().all(|stop| {
                                 use crate::graphics::gradient::GradientColor;
@@ -2636,7 +2720,7 @@ impl Engine<'_> {
                                     GradientColor::CurrentColor => style.color.a == 255,
                                 }
                             }))
-            } else if matches!(style.background_image, Some(BackgroundImage::Url(_))) {
+            } else if matches!(layer.image, Some(BackgroundImage::Url(_))) {
                 // Unknown/transparent URL pixels cannot prove an opaque fill.
                 style.border_color.a == 255 && style.background_color.a == 255
             } else {
@@ -3437,6 +3521,7 @@ impl Engine<'_> {
                 inline_layer: InlineLayer::None,
                 inline_prefix: 0.0,
                 inline_sides: 0,
+                background_image_index: 0,
             };
             let style = self.style(item.node).clone();
             let is_space = matches!(item.kind, InlineKind::Space(_));
@@ -4345,16 +4430,44 @@ impl Engine<'_> {
                 inline_layer: InlineLayer::None,
                 inline_prefix: 0.0,
                 inline_sides: 0,
+                background_image_index: 0,
             };
-            self.push(DrawCommand::Rect {
-                rect: row_rect,
-                color: background,
-                radius: 0.0,
-            });
-            if let Some(command) =
-                self.background_command(id, row_rect, row_rect, 0.0, style.color, false)
-            {
-                self.push(command);
+            let count = if style.backgrounds.is_single_none() {
+                0
+            } else {
+                style.backgrounds.image_slots().len()
+            };
+            if self.admit_decoration_slots(1 + count) {
+                self.push(DrawCommand::Rect {
+                    rect: row_rect,
+                    color: background,
+                    radius: 0.0,
+                });
+                let cost = if count > 1 {
+                    background_boxes::layers_work(count)
+                } else {
+                    Some(0)
+                };
+                if cost.is_some_and(|n| background_boxes::spend(&mut self.position_work_left, n)) {
+                    for image_index in (0..count).rev() {
+                        let command = self
+                            .background_command(
+                                id,
+                                image_index,
+                                row_rect,
+                                row_rect,
+                                0.0,
+                                style.color,
+                                false,
+                            )
+                            .unwrap_or_else(background_boxes::empty);
+                        self.push(command);
+                    }
+                } else {
+                    for _ in 0..count {
+                        self.push(background_boxes::empty());
+                    }
+                }
             }
             self.paint_owner = saved_owner;
             self.push_hit(HitRegion {
@@ -4377,29 +4490,20 @@ impl Engine<'_> {
                 "bottom" | "text-bottom" => extra,
                 _ => 0.0,
             };
-            let paint_slots = PaintSlots::new(fragment.gradient, fragment.rounded_border).len();
-            let content_start = if matches!(
-                fragment.commands.get(paint_slots),
-                Some(DrawCommand::PushClip { .. })
-            ) {
-                paint_slots + 1
-            } else {
-                paint_slots
-            };
+            let content_start =
+                fragment.paint_slots.len() + usize::from(fragment.paint_slots.overflow());
             translate_fragment_commands(&mut fragment, content_start, 0.0, offset);
             for hit in fragment.hits.iter_mut().skip(1) {
                 hit.rect.y += offset;
             }
-            let natural = self
-                .loaded_background(cell.node)
-                .map(|loaded| loaded.natural);
             let style = self.styles.get(cell.node).unwrap_or(&self.fallback);
-            stretch_fragment_background_boxes(
+            stretch_fragment_background_layers(
                 &mut fragment,
                 cell_height,
                 style,
                 cell.available,
-                natural,
+                self.backgrounds,
+                cell.node,
                 &mut self.position_work_left,
             );
             let cell_x = x
@@ -5542,6 +5646,49 @@ fn stretch_fragment_background(
     stretch_fragment_background_with_raster(fragment, height, size, position, None);
 }
 
+// The principal index is captured when the root geometry is appended, after
+// its descendants. Validate its identity instead of scanning on every stretch.
+fn stretch_fragment_geometry(fragment: &mut Fragment, height: f32) -> (f32, Option<BoxGeometry>) {
+    let height = extent(height).max(fragment.size.height);
+    let delta = height - fragment.size.height;
+    let node = fragment.hits.first().map(|hit| hit.node);
+    if let Some(hit) = fragment.hits.first_mut() {
+        hit.rect.height = height;
+    }
+    let geometry = fragment
+        .boxes
+        .get_mut(fragment.principal_box as usize)
+        .filter(|geometry| Some(geometry.node) == node && !geometry.inline)
+        .map(|geometry| {
+            geometry.border.height += delta;
+            geometry.padding.height += delta;
+            geometry.content.height += delta;
+            *geometry
+        });
+    if fragment.paint_slots.overflow()
+        && let Some(DrawCommand::PushClip { rect }) =
+            fragment.commands.get_mut(fragment.paint_slots.len())
+    {
+        rect.height += delta;
+    }
+    fragment.size.height = height;
+    (delta, geometry)
+}
+
+fn stretch_rect_role(command: &mut DrawCommand, role: PaintRole, height: f32, delta: f32) {
+    if let DrawCommand::Rect { rect, .. } = command {
+        match role {
+            PaintRole::Color | PaintRole::Right | PaintRole::Left | PaintRole::RoundOuter => {
+                rect.height = height
+            }
+            PaintRole::RoundInner => rect.height += delta,
+            PaintRole::Bottom => rect.y += delta,
+            _ => {}
+        }
+    }
+}
+
+#[cfg(test)]
 fn stretch_fragment_background_with_raster(
     fragment: &mut Fragment,
     height: f32,
@@ -5549,58 +5696,30 @@ fn stretch_fragment_background_with_raster(
     position: BackgroundPosition,
     natural: Option<RasterNaturalSize>,
 ) {
-    let height = extent(height).max(fragment.size.height);
-    if let Some(hit) = fragment.hits.first_mut() {
-        hit.rect.height = height;
-    }
-    let old_height = fragment.size.height;
-    let mut padding = None;
-    if let Some(node) = fragment.hits.first().map(|hit| hit.node)
-        && let Some(g) = fragment.boxes.iter_mut().find(|g| g.node == node)
-    {
-        let extra = height - old_height;
-        g.border.height += extra;
-        g.padding.height += extra;
-        g.content.height += extra;
-        padding = Some(g.padding);
-    }
-    let paint_slots = PaintSlots::new(fragment.gradient, fragment.rounded_border).len();
-    let slots = PaintSlots::new(fragment.gradient, fragment.rounded_border);
-    for (index, command) in fragment.commands.iter_mut().take(paint_slots).enumerate() {
+    let (delta, geometry) = stretch_fragment_geometry(fragment, height);
+    let padding = geometry.map(|geometry| geometry.padding);
+    let slots = fragment.paint_slots;
+    for (index, command) in fragment.commands.iter_mut().take(slots.len()).enumerate() {
         match command {
-            DrawCommand::LinearGradient { rect, tile, .. } if fragment.gradient => {
-                rect.height += height - old_height;
+            DrawCommand::LinearGradient { rect, tile, .. } => {
+                rect.height += delta;
                 *tile = padding
                     .and_then(|area| background_tile(area, size, position))
                     .unwrap_or_default();
             }
-            DrawCommand::BackgroundImage { rect, tile, .. } if fragment.gradient => {
-                rect.height += height - old_height;
+            DrawCommand::BackgroundImage { rect, tile, .. } => {
+                rect.height += delta;
                 *tile = padding
                     .zip(natural)
-                    .and_then(|(area, natural)| {
-                        background_tile_with_raster(area, size, position, natural)
-                    })
+                    .and_then(|(area, n)| background_tile_with_raster(area, size, position, n))
                     .unwrap_or_default();
             }
-            DrawCommand::Rect { rect, .. } => match slots.role(index) {
-                PaintRole::Color | PaintRole::Right | PaintRole::Left | PaintRole::RoundOuter => {
-                    rect.height = height
-                }
-                PaintRole::RoundInner => rect.height += height - old_height,
-                PaintRole::Bottom => rect.y += height - old_height,
-                _ => {}
-            },
-            _ => {}
+            _ => stretch_rect_role(command, slots.role(index), fragment.size.height, delta),
         }
     }
-    if let Some(DrawCommand::PushClip { rect }) = fragment.commands.get_mut(paint_slots) {
-        rect.height += height - old_height;
-    }
-    fragment.size.height = height;
 }
 
-/// New box selections and ring payloads retain compact slots and paid keys.
+#[cfg(test)]
 fn stretch_fragment_background_boxes(
     fragment: &mut Fragment,
     height: f32,
@@ -5609,121 +5728,151 @@ fn stretch_fragment_background_boxes(
     natural: Option<RasterNaturalSize>,
     work: &mut usize,
 ) -> bool {
-    let slots = PaintSlots::new(fragment.gradient, fragment.rounded_border);
-    let shaped = fragment
-        .commands
-        .iter()
-        .take(slots.len())
-        .any(|c| matches!(c, DrawCommand::BoxDecoration(_)));
-    if !shaped && !background_boxes::nondefault(style) {
-        stretch_fragment_background_with_raster(
-            fragment,
-            height,
-            style.background_size,
-            style.background_position,
-            natural,
-        );
-        return true;
-    }
-    let Some(cost) = fragment
-        .boxes
-        .len()
-        .checked_add(background_boxes::SHAPE_WORK)
-    else {
-        return false;
-    };
-    if !background_boxes::spend(work, cost) {
-        return false;
-    }
-    let Some(node) = fragment.hits.first().map(|hit| hit.node) else {
-        return false;
-    };
-    let Some(mut geometry) = fragment.boxes.iter().find(|g| g.node == node).copied() else {
-        return false;
-    };
-    let delta = extent(height).max(fragment.size.height) - fragment.size.height;
-    geometry.border.height += delta;
-    geometry.padding.height += delta;
-    geometry.content.height += delta;
-    // Retain the original available width: a forced border width can clamp
-    // at MAX_EXTENT while percentage padding used the larger track span.
-    let Some(boxes) = BackgroundBoxes::from_style(
-        crate::graphics::box_decoration::RoundedBox {
-            rect: geometry.border,
-            radii: [[style.border_radius; 2]; 4],
-        },
-        style,
-        available,
-    ) else {
-        return false;
-    };
-    let clip = boxes.select(style.background_clip);
-    let origin = boxes.select(style.background_origin).rect;
-    stretch_fragment_background_with_raster(
+    stretch_fragment_background_layers_with(fragment, height, style, available, |_| natural, work)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn stretch_fragment_background_layers(
+    fragment: &mut Fragment,
+    height: f32,
+    style: &ComputedStyle,
+    available: f32,
+    backgrounds: BackgroundBindings<'_>,
+    node: NodeId,
+    work: &mut usize,
+) -> bool {
+    stretch_fragment_background_layers_with(
         fragment,
         height,
-        style.background_size,
-        style.background_position,
-        natural,
-    );
-    for command in fragment.commands.iter_mut().take(slots.len()) {
-        match command {
-            DrawCommand::LinearGradient { tile, .. } => {
-                *tile = background_tile(origin, style.background_size, style.background_position)
-                    .unwrap_or_default()
+        style,
+        available,
+        |index| backgrounds.get(node, index).map(|loaded| loaded.natural),
+        work,
+    )
+}
+
+// Update layout and overflow independently; only the decoration is omitted on
+// work refusal. Keys already paid during initial layout are mutated in place.
+#[inline(never)]
+fn stretch_fragment_background_layers_with(
+    fragment: &mut Fragment,
+    height: f32,
+    style: &ComputedStyle,
+    available: f32,
+    natural: impl Fn(usize) -> Option<RasterNaturalSize>,
+    work: &mut usize,
+) -> bool {
+    let slots = fragment.paint_slots;
+    let (delta, geometry) = stretch_fragment_geometry(fragment, height);
+    if slots.len() == 0 {
+        return true;
+    }
+    let widths = &style.border_width;
+    let border = Sides {
+        top: extent(widths.top),
+        right: extent(widths.right),
+        bottom: extent(widths.bottom),
+        left: extent(widths.left),
+    };
+    let selected = background_boxes::shape_path(style, border, slots.rounded())
+        || background_boxes::nondefault(style);
+    let boxes = if selected {
+        let shape_work = if slots.layered() {
+            background_boxes::layers_work(slots.images())
+        } else {
+            Some(background_boxes::SHAPE_WORK)
+        };
+        let cost = shape_work.and_then(|cost| fragment.boxes.len().checked_add(cost));
+        let prepared = cost
+            .filter(|cost| background_boxes::spend(work, *cost))
+            .and(geometry)
+            .and_then(|geometry| {
+                BackgroundBoxes::from_style(
+                    crate::graphics::box_decoration::RoundedBox {
+                        rect: geometry.border,
+                        radii: [[style.border_radius; 2]; 4],
+                    },
+                    style,
+                    available,
+                )
+            });
+        let Some(boxes) = prepared else {
+            for command in fragment.commands.iter_mut().take(slots.len()) {
+                *command = background_boxes::empty();
             }
-            DrawCommand::BackgroundImage { tile, .. } => {
-                *tile = natural
-                    .and_then(|n| {
-                        background_tile_with_raster(
-                            origin,
-                            style.background_size,
-                            style.background_position,
-                            n,
-                        )
-                    })
-                    .unwrap_or_default()
+            return false;
+        };
+        Some(boxes)
+    } else {
+        None
+    };
+    for (index, command) in fragment.commands.iter_mut().take(slots.len()).enumerate() {
+        let role = slots.role(index);
+        let image_index = match role {
+            PaintRole::Image(index) => Some(usize::from(index)),
+            _ => None,
+        };
+        let layer = image_index.and_then(|index| style.backgrounds.layer(index));
+        let origin = layer.and_then(|layer| {
+            boxes
+                .map(|boxes| boxes.select(layer.origin).rect)
+                .or_else(|| geometry.map(|geometry| geometry.padding))
+        });
+        let tile = |raster: bool| {
+            layer
+                .zip(origin)
+                .and_then(|(layer, area)| {
+                    if raster {
+                        natural(layer.index).and_then(|n| {
+                            background_tile_with_raster(area, layer.size, layer.position, n)
+                        })
+                    } else {
+                        background_tile(area, layer.size, layer.position)
+                    }
+                })
+                .unwrap_or_default()
+        };
+        match command {
+            DrawCommand::LinearGradient {
+                rect, tile: target, ..
+            } => {
+                rect.height += delta;
+                *target = tile(false);
+            }
+            DrawCommand::BackgroundImage {
+                rect, tile: target, ..
+            } => {
+                rect.height += delta;
+                *target = tile(true);
             }
             DrawCommand::BoxDecoration(shared) => {
-                // Fresh layout fragments uniquely own these payloads. Never
-                // copy a URL key through Arc::make_mut without its admission.
-                if let Some(decoration) = std::sync::Arc::get_mut(shared) {
-                    if decoration.cutout.is_some() {
-                        decoration.shape = boxes.border;
-                        decoration.cutout = Some(boxes.padding);
-                    } else {
-                        decoration.shape = clip;
-                    }
-                    match &mut decoration.paint {
-                        crate::graphics::box_decoration::BoxPaint::LinearGradient {
-                            tile, ..
-                        } => {
-                            *tile = background_tile(
-                                origin,
-                                style.background_size,
-                                style.background_position,
-                            )
-                            .unwrap_or_default()
-                        }
-                        crate::graphics::box_decoration::BoxPaint::Image { tile, .. } => {
-                            *tile = natural
-                                .and_then(|n| {
-                                    background_tile_with_raster(
-                                        origin,
-                                        style.background_size,
-                                        style.background_position,
-                                        n,
-                                    )
-                                })
-                                .unwrap_or_default()
-                        }
-                        _ => {}
-                    }
-                } else {
+                let Some(decoration) = std::sync::Arc::get_mut(shared) else {
                     *command = background_boxes::empty();
+                    continue;
+                };
+                let Some(boxes) = boxes else {
+                    *command = background_boxes::empty();
+                    continue;
+                };
+                if decoration.cutout.is_some() {
+                    decoration.shape = boxes.border;
+                    decoration.cutout = Some(boxes.padding);
+                } else {
+                    decoration.shape = boxes
+                        .select(layer.map_or(style.backgrounds.bottom_clip(), |layer| layer.clip));
+                }
+                match &mut decoration.paint {
+                    crate::graphics::box_decoration::BoxPaint::LinearGradient {
+                        tile: target,
+                        ..
+                    } => *target = tile(false),
+                    crate::graphics::box_decoration::BoxPaint::Image { tile: target, .. } => {
+                        *target = tile(true)
+                    }
+                    crate::graphics::box_decoration::BoxPaint::Color(_) => {}
                 }
             }
-            _ => {}
+            _ => stretch_rect_role(command, role, fragment.size.height, delta),
         }
     }
     true
@@ -8106,7 +8255,7 @@ mod object_fit_tests {
             doc,
             styles,
             fonts,
-            backgrounds: &[],
+            backgrounds: BackgroundBindings::default(),
             background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
             viewport: Size {
                 width: 100.0,
@@ -8123,6 +8272,7 @@ mod object_fit_tests {
                 inline_layer: InlineLayer::None,
                 inline_prefix: 0.0,
                 inline_sides: 0,
+                background_image_index: 0,
             },
             flow_height_reference: Some(100.0),
             content_height_measure: None,
@@ -8769,3 +8919,6 @@ mod tiled_image_tests;
 
 #[cfg(test)]
 mod box_decoration_tests;
+
+#[cfg(test)]
+mod layers_tests;

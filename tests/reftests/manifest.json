@@ -542,6 +542,30 @@
       "description": "Nominal parent/child heights, empty padding paint, and true rounded physical ends stay separate.",
       "test": "background-box-inline-nested-ends.html",
       "reference": "background-box-inline-nested-ends-ref.html"
+    },
+    {
+      "name": "background-layers-order",
+      "description": "Authored image order, empty slots, and a cycled size list against literal colored rectangles.",
+      "test": "background-layers-order.html",
+      "reference": "background-layers-order-ref.html"
+    },
+    {
+      "name": "background-layers-boxes",
+      "description": "Each layer uses its own positioning and clipping box; transparency exposes the lower layer.",
+      "test": "background-layers-boxes.html",
+      "reference": "background-layers-boxes-ref.html"
+    },
+    {
+      "name": "background-layers-canvas",
+      "description": "The selected singleton-none propagation rule keeps the body color local when the root has two none image slots.",
+      "test": "background-layers-canvas.html",
+      "reference": "background-layers-canvas-ref.html"
+    },
+    {
+      "name": "background-layers-inline",
+      "description": "Forced and soft line breaks preserve the virtual strip for three authored image slots with independent box selections.",
+      "test": "background-layers-inline.html",
+      "reference": "background-layers-inline-ref.html"
     }
   ]
 }

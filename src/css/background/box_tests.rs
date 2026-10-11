@@ -9,7 +9,7 @@ fn style(declarations: &str) -> ComputedStyle {
     css::compute_styles(&doc, &[], 80.0, 60.0)[doc.query_selector("#x").unwrap()].clone()
 }
 fn boxes(s: &ComputedStyle) -> (BackgroundBox, BackgroundBox) {
-    (s.background_origin, s.background_clip)
+    (s.backgrounds.origins()[0], s.backgrounds.clips()[0])
 }
 fn supported(property: &str, value: &str) {
     assert!(
@@ -62,9 +62,9 @@ fn longhands_accept_complete_decoded_identifiers() {
             let s = style(&format!("{name}:{value}"));
             assert_eq!(
                 if name.ends_with("origin") {
-                    s.background_origin
+                    s.backgrounds.origins()[0]
                 } else {
-                    s.background_clip
+                    s.backgrounds.clips()[0]
                 },
                 expected
             );
@@ -128,19 +128,19 @@ fn maximum_thirteen_components_preserve_all_seven_slices() {
     assert_eq!(boxes(&s), (BackgroundBox::Content, BackgroundBox::Padding));
     assert_eq!(s.background_color, Color::rgb(255, 0, 0));
     assert!(matches!(
-        s.background_image,
+        s.backgrounds.image_slots()[0],
         Some(BackgroundImage::Gradient(_))
     ));
     assert_eq!(
-        s.background_size,
+        s.backgrounds.sizes()[0],
         BackgroundSize::Explicit {
             width: Length::Px(4.0),
             height: Length::Px(5.0)
         }
     );
-    assert_eq!(s.background_repeat, [false, true]);
+    assert_eq!(s.backgrounds.repeats()[0], [false, true]);
     assert_eq!(
-        s.background_position,
+        s.backgrounds.positions()[0],
         BackgroundPosition {
             x: PositionComponent {
                 from_end: true,
@@ -162,7 +162,7 @@ fn invalid_longhands_preserve_earlier_winners_and_reject_syntax_normally() {
         "border-area",
         "margin-box",
         "content-box padding-box",
-        "content-box, padding-box",
+        "content-box,, padding-box",
         "calc(1px)",
         "padd/**/ing-box",
         "padding-box!",
@@ -197,7 +197,7 @@ fn invalid_shorthands_never_publish_partial_box_or_color_state() {
         "text",
         "border-area",
         "margin-box",
-        "content-box, padding-box",
+        "content-box,, padding-box",
         "content-box junk",
         "left / content-box",
         "content-box / 2px",
@@ -285,10 +285,10 @@ fn pending_invalid_values_default_instead_of_resurrecting_old_boxes() {
     );
     assert_eq!(boxes(&s), (Padding, Border));
     assert_eq!(s.background_color, Color::TRANSPARENT);
-    assert!(s.background_image.is_none());
-    assert_eq!(s.background_size, BackgroundSize::default());
-    assert_eq!(s.background_position, BackgroundPosition::default());
-    assert_eq!(s.background_repeat, [true, true]);
+    assert!(s.backgrounds.image_slots()[0].is_none());
+    assert_eq!(s.backgrounds.sizes()[0], BackgroundSize::default());
+    assert_eq!(s.backgrounds.positions()[0], BackgroundPosition::default());
+    assert_eq!(s.backgrounds.repeats()[0], [true, true]);
 }
 
 #[test]
@@ -325,10 +325,10 @@ fn pending_shorthand_emits_seven_targets_and_valid_substitution() {
     );
     assert_eq!(boxes(&s), (BackgroundBox::Content, BackgroundBox::Padding));
     assert!(matches!(
-        s.background_image,
+        s.backgrounds.image_slots()[0],
         Some(BackgroundImage::Gradient(_))
     ));
-    assert_eq!(s.background_repeat, [false, false]);
+    assert_eq!(s.backgrounds.repeats()[0], [false, false]);
 }
 
 #[test]
@@ -379,14 +379,14 @@ fn url_payload_consuming_base_and_inherited_identity_survive_box_selection() {
     assert_eq!(boxes(p), (Content, Padding));
     assert_eq!(boxes(c), (Content, Padding));
     assert_eq!(boxes(g), (Padding, Padding));
-    assert!(g.background_image.is_none());
-    let Some(BackgroundImage::Url(a)) = &p.background_image else {
+    assert!(g.backgrounds.image_slots()[0].is_none());
+    let Some(BackgroundImage::Url(a)) = &p.backgrounds.image_slots()[0] else {
         panic!("parent URL")
     };
-    let Some(BackgroundImage::Url(b)) = &c.background_image else {
+    let Some(BackgroundImage::Url(b)) = &c.backgrounds.image_slots()[0] else {
         panic!("inherited URL")
     };
-    let Some(BackgroundImage::Url(d)) = &same.background_image else {
+    let Some(BackgroundImage::Url(d)) = &same.backgrounds.image_slots()[0] else {
         panic!("same URL")
     };
     assert!(Arc::ptr_eq(a, b));
@@ -488,11 +488,11 @@ fn a_single_calculation_is_a_valid_background_position_not_a_visual_box() {
     let s = style("background:lime content-box;padding:2px;background:calc(1px)");
     assert_eq!(boxes(&s), (BackgroundBox::Padding, BackgroundBox::Border));
     assert_eq!(s.background_color, Color::TRANSPARENT);
-    assert!(s.background_image.is_none());
-    assert_eq!(s.background_size, BackgroundSize::default());
-    assert_eq!(s.background_repeat, [true, true]);
+    assert!(s.backgrounds.image_slots()[0].is_none());
+    assert_eq!(s.backgrounds.sizes()[0], BackgroundSize::default());
+    assert_eq!(s.backgrounds.repeats()[0], [true, true]);
     assert_eq!(
-        s.background_position,
+        s.backgrounds.positions()[0],
         BackgroundPosition {
             x: PositionComponent {
                 from_end: false,

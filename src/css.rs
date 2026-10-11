@@ -7,7 +7,10 @@ mod background;
 mod gradient;
 mod image;
 pub mod url;
-pub use background::{BackgroundBox, BackgroundPosition, BackgroundSize};
+pub use background::{
+    BackgroundBox, BackgroundData, BackgroundPosition, BackgroundSize, MAX_BACKGROUND_LAYERS,
+    UsedBackgroundLayer,
+};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::{Arc, LazyLock};
 
@@ -274,12 +277,7 @@ pub struct ComputedStyle {
     pub border_width: Edges<f32>,
     pub color: Color,
     pub background_color: Color,
-    pub background_image: Option<BackgroundImage>,
-    pub background_size: BackgroundSize,
-    pub background_position: BackgroundPosition,
-    pub background_repeat: [bool; 2],
-    pub background_origin: BackgroundBox,
-    pub background_clip: BackgroundBox,
+    pub backgrounds: Arc<BackgroundData>,
     pub border_color: Color,
     pub font_size: f32,
     pub line_height: f32,
@@ -348,12 +346,7 @@ impl Default for ComputedStyle {
             border_width: Edges::all(0.0),
             color: Color::BLACK,
             background_color: Color::TRANSPARENT,
-            background_image: None,
-            background_size: BackgroundSize::default(),
-            background_position: BackgroundPosition::default(),
-            background_repeat: [true, true],
-            background_origin: BackgroundBox::Padding,
-            background_clip: BackgroundBox::Border,
+            backgrounds: BackgroundData::initial(),
             border_color: Color::BLACK,
             font_size: 16.0,
             line_height: 19.2,
@@ -2547,12 +2540,9 @@ pub(crate) fn expand_declaration_with_budget(
     work: &mut usize,
 ) -> Result<(), crate::selectors::Error> {
     if name == "background" && !css_wide(value) && !contains_var_function(value) {
-        if let Some(parts) = background::parts(value, work)? {
-            crate::selectors::spend(
-                work,
-                parts.iter().map(|value| value.len()).sum::<usize>() + parts.len() * 64,
-            )?;
-            for (name, value) in [
+        if let Some(parts) = background::expanded_parts(value, work)? {
+            parts.debit(work)?;
+            for (index, name) in [
                 "background-color",
                 "background-image",
                 "background-size",
@@ -2562,11 +2552,11 @@ pub(crate) fn expand_declaration_with_budget(
                 "background-clip",
             ]
             .into_iter()
-            .zip(parts)
+            .enumerate()
             {
                 out.push(Declaration {
                     name: name.into(),
-                    value: value.into(),
+                    value: parts.value(index),
                     important,
                     pending_shorthand: None,
                 });
@@ -3271,7 +3261,7 @@ pub fn compute_styles_with_rules(
     let mut visited = vec![false; doc.nodes.len()];
     let mut retained_variable_bytes = 0usize;
     let mut grid_tracks = GridTrackPool::default();
-    let mut images = image::ImagePool::default();
+    let mut backgrounds = background::BackgroundStorage::default();
     let mut root_font = 16.0;
     while let Some(id) = pending.pop() {
         let Some(node) = doc.nodes.get(id) else {
@@ -3283,6 +3273,7 @@ pub fn compute_styles_with_rules(
         visited[id] = true;
         let parent = node.parent.and_then(|p| styles.get(p));
         let mut style = ComputedStyle::inherited(parent);
+        let mut background_builder = background::BackgroundBuilder::default();
         if matches!(node.kind, NodeKind::Document) {
             style.display = Display::Block;
         } else if matches!(
@@ -3449,26 +3440,38 @@ pub fn compute_styles_with_rules(
                 style.border_color = style.color;
             }
             for (name, value) in &resolved {
-                if name == "background-image" && !css_wide(value) {
-                    // Parse and admit immutable storage before publishing the
-                    // computed image. Refusal leaves the initial none value.
-                    style.background_image = match gradient::parse_image(
-                        value,
-                        [style.font_size, root_font, width, height],
-                        &mut work,
-                    ) {
-                        Ok(Some(gradient::ParsedImage::Gradient(parsed))) => images
-                            .gradient(&parsed, &mut work)
-                            .ok()
-                            .flatten()
-                            .map(BackgroundImage::Gradient),
-                        Ok(Some(gradient::ParsedImage::Url(raw))) => images
-                            .url(raw, image_source, rules, doc.base_url(), &mut work)
-                            .ok()
-                            .flatten()
-                            .map(BackgroundImage::Url),
-                        _ => None,
-                    };
+                if matches!(
+                    name.as_str(),
+                    "background-image"
+                        | "background-size"
+                        | "background-position"
+                        | "background-repeat"
+                        | "background-origin"
+                        | "background-clip"
+                ) {
+                    if css_wide(value) {
+                        let initial = BackgroundData::initial();
+                        let from = if value.eq_ignore_ascii_case("inherit") {
+                            parent
+                                .map(|p| p.backgrounds.as_ref())
+                                .unwrap_or(initial.as_ref())
+                        } else {
+                            initial.as_ref()
+                        };
+                        let _ = background_builder.copy_property(name, from, &mut work);
+                    } else {
+                        let _ = background::apply(
+                            name,
+                            value,
+                            [style.font_size, root_font, width, height],
+                            &mut background_builder,
+                            &mut backgrounds,
+                            image_source,
+                            rules,
+                            doc.base_url(),
+                            &mut work,
+                        );
+                    }
                 } else if name != "font-size" && name != "color" {
                     apply_property(
                         &mut style,
@@ -3522,6 +3525,9 @@ pub fn compute_styles_with_rules(
         {
             // CSS2 section 9.7 blockifies floating inline boxes.
             style.display = Display::Block;
+        }
+        if let Ok(Some(value)) = backgrounds.finish(background_builder, &mut work) {
+            style.backgrounds = value;
         }
         variables[id] = vars;
         grid_tracks.style(&mut style);
@@ -4650,35 +4656,6 @@ fn apply_property(
                 s.background_color = v;
             }
         }
-        "background-size" => {
-            if let Ok(Some(size)) =
-                background::parse_size(value, [s.font_size, root_font, width, height], work)
-            {
-                s.background_size = size;
-            }
-        }
-        "background-position" => {
-            if let Ok(Some(position)) =
-                background::parse_position(value, [s.font_size, root_font, width, height], work)
-            {
-                s.background_position = position;
-            }
-        }
-        "background-repeat" => {
-            if let Ok(Some(repeat)) = background::parse_repeat(value, work) {
-                s.background_repeat = repeat;
-            }
-        }
-        "background-origin" => {
-            if let Ok(Some(value)) = background::parse_box(value, work) {
-                s.background_origin = value;
-            }
-        }
-        "background-clip" => {
-            if let Ok(Some(value)) = background::parse_box(value, work) {
-                s.background_clip = value;
-            }
-        }
         "border-top-color" | "border-right-color" | "border-bottom-color" | "border-left-color" => {
             if let Some(v) = color() {
                 s.border_color = v;
@@ -4984,12 +4961,6 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "max-height" => s.max_height = p.max_height,
         "color" => s.color = p.color,
         "background-color" => s.background_color = p.background_color,
-        "background-image" => s.background_image = p.background_image.clone(),
-        "background-size" => s.background_size = p.background_size,
-        "background-position" => s.background_position = p.background_position,
-        "background-repeat" => s.background_repeat = p.background_repeat,
-        "background-origin" => s.background_origin = p.background_origin,
-        "background-clip" => s.background_clip = p.background_clip,
         "font-size" => s.font_size = p.font_size,
         "font-weight" => s.font_weight = p.font_weight,
         "font-family" => s.font_family = p.font_family.clone(),
@@ -8725,3 +8696,10 @@ mod tests {
 
 #[cfg(test)]
 mod url_background_tests;
+
+pub(crate) fn serialize_background_shorthand(
+    values: &[&str],
+    work: &mut usize,
+) -> Result<String, crate::selectors::Error> {
+    background::serialize(values, work)
+}

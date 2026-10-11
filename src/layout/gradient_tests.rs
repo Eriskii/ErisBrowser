@@ -76,7 +76,7 @@ fn engine<'a>(doc: &'a Document, styles: &'a [ComputedStyle], fonts: &'a Fonts) 
         doc,
         styles,
         fonts,
-        backgrounds: &[],
+        backgrounds: BackgroundBindings::default(),
         background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
         viewport: Size {
             width: 100.0,
@@ -93,6 +93,7 @@ fn engine<'a>(doc: &'a Document, styles: &'a [ComputedStyle], fonts: &'a Fonts) 
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
+            background_image_index: 0,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,
@@ -126,10 +127,13 @@ fn padding_tile_repeats_under_transparent_borders_and_keeps_color_below_image() 
         6.0,
     );
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let result = layout(&doc, &styles, 8.0, 6.0, &Fonts::new());
     let g = gradients(&result);
     assert_eq!(
@@ -144,10 +148,13 @@ fn padding_tile_repeats_under_transparent_borders_and_keeps_color_below_image() 
     styles[a].padding = crate::css::Edges::all(Length::Px(0.0));
     styles[a].border_width = crate::css::Edges::all(0.0);
     styles[a].background_color = Color::rgb(0, 255, 0);
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::TRANSPARENT,
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::TRANSPARENT,
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let result = layout(&doc, &styles, 4.0, 2.0, &Fonts::new());
     assert_eq!(
         pixels(&result, 4, 2),
@@ -163,10 +170,13 @@ fn rounded_shortcut_requires_opaque_border_and_combined_interior() {
         12.0,
     );
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(0, 255, 0),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(0, 255, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let fonts = Fonts::new();
     assert!(engine(&doc, &styles, &fonts).rounded_border(a));
     let result = layout(&doc, &styles, 12.0, 12.0, &fonts);
@@ -180,10 +190,13 @@ fn rounded_shortcut_requires_opaque_border_and_combined_interior() {
         [p[0], p[6], p[6 * 12 + 4], p[6 * 12 + 8]],
         [0xffffff, 0xff0000, 0x00ff00, 0x0000ff]
     );
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::TRANSPARENT,
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::TRANSPARENT,
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     assert!(!engine(&doc, &styles, &fonts).rounded_border(a));
     styles[a].background_color = Color::rgb(0, 255, 0);
     assert!(engine(&doc, &styles, &fonts).rounded_border(a));
@@ -205,10 +218,13 @@ fn canvas_uses_root_padding_tile_and_transparent_root_image_blocks_body_propagat
     );
     let html = doc.query_selector("html").unwrap();
     let body = doc.query_selector("body").unwrap();
-    styles[body].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[body].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let result = layout(&doc, &styles, 12.0, 8.0, &Fonts::new());
     let g = gradients(&result);
     assert_eq!(g.len(), 1);
@@ -223,19 +239,25 @@ fn canvas_uses_root_padding_tile_and_transparent_root_image_blocks_body_propagat
             0xff0000, 0xff0000, 0x0000ff, 0x0000ff
         ]
     );
-    styles[html].background_image = Some(BackgroundImage::Gradient(split(
-        Color::TRANSPARENT,
-        Color::TRANSPARENT,
-    )));
-    styles[body].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(0, 0, 255),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[html].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::TRANSPARENT,
+            Color::TRANSPARENT,
+        ))),
+    );
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[body].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(0, 0, 255),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let result = layout(&doc, &styles, 12.0, 8.0, &Fonts::new());
     assert_eq!(gradients(&result).len(), 2);
     let p = pixels(&result, 12, 8);
     assert_eq!((p[10], p[2 * 12 + 2]), (0xffffff, 0x0000ff));
-    styles[html].background_image = None;
+    crate::css::BackgroundData::test_replace_image(&mut styles[html].backgrounds, None);
     styles[html].opacity = 0.5;
     styles[body].opacity = 0.0;
     let result = layout(&doc, &styles, 12.0, 8.0, &Fonts::new());
@@ -245,11 +267,14 @@ fn canvas_uses_root_padding_tile_and_transparent_root_image_blocks_body_propagat
     styles[html].border_width = crate::css::Edges::all(0.0);
     styles[html].height = Length::Px(0.0);
     styles[html].background_color = Color::rgb(0, 255, 0);
-    styles[html].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
-    styles[body].background_image = None;
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[html].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
+    crate::css::BackgroundData::test_replace_image(&mut styles[body].backgrounds, None);
     let result = layout(&doc, &styles, 12.0, 8.0, &Fonts::new());
     assert!(gradients(&result).is_empty());
     assert_eq!(pixels(&result, 12, 8), vec![0x00ff00; 96]);
@@ -266,9 +291,11 @@ fn propagated_body_gradient_resolves_current_color_on_root_with_root_padding_til
     let body = doc.query_selector("body").unwrap();
     assert_eq!(styles[html].color, Color::rgb(255, 0, 0));
     assert_eq!(styles[body].color, Color::rgb(0, 0, 255));
-    assert!(styles[html].background_image.is_none());
+    assert!(styles[html].backgrounds.image_slots()[0].is_none());
     assert_eq!(styles[html].background_color.a, 0);
-    let Some(BackgroundImage::Gradient(source)) = styles[body].background_image.as_ref() else {
+    let Some(BackgroundImage::Gradient(source)) =
+        styles[body].backgrounds.image_slots()[0].as_ref()
+    else {
         panic!("expected gradient")
     };
     assert!(matches!(source.stops[0].color, GradientColor::CurrentColor));
@@ -284,7 +311,7 @@ fn propagated_body_gradient_resolves_current_color_on_root_with_root_padding_til
     );
     // The body's computed image remains intact but has no local used image.
     // Root tile repeats across the canvas, including through the body box.
-    assert!(styles[body].background_image.is_some());
+    assert!(styles[body].backgrounds.image_slots()[0].is_some());
     let row = [
         0x00ff00, 0xff0000, 0xff0000, 0xff0000, 0x00ff00, 0x00ff00, 0x00ff00, 0xff0000, 0xff0000,
         0xff0000, 0x00ff00, 0x00ff00,
@@ -300,10 +327,13 @@ fn inline_slice_continues_through_three_atomic_fragments_and_wrapping() {
         4.0,
     );
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let result = layout(&doc, &styles, 4.0, 4.0, &Fonts::new());
     let g = gradients(&result);
     assert_eq!(
@@ -327,14 +357,17 @@ fn nested_inline_uses_ancestor_color_and_nominal_owner_height() {
         2.0,
     );
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(BackgroundImage::Gradient(Arc::new(LinearGradient {
-        direction: GradientDirection::Angle(0.0),
-        stops: [GradientStop {
-            color: GradientColor::CurrentColor,
-            position: None,
-        }]
-        .into(),
-    })));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(Arc::new(LinearGradient {
+            direction: GradientDirection::Angle(0.0),
+            stops: [GradientStop {
+                color: GradientColor::CurrentColor,
+                position: None,
+            }]
+            .into(),
+        }))),
+    );
     let result = layout(&doc, &styles, 6.0, 2.0, &Fonts::new());
     assert_eq!(gradients(&result).len(), 1);
     assert!(
@@ -347,10 +380,13 @@ fn nested_inline_uses_ancestor_color_and_nominal_owner_height() {
         [vec![0xffffff; 6], vec![0xff0000; 6]].concat()
     );
     let nested = doc.query_selector("b").unwrap();
-    styles[nested].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(0, 0, 255),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[nested].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(0, 0, 255),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let result = layout(&doc, &styles, 6.0, 2.0, &Fonts::new());
     assert_eq!(
         pixels(&result, 6, 2),
@@ -389,14 +425,20 @@ fn table_cell_background_stretches_while_bottom_aligned_child_moves() {
             expected
         );
     }
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
-    styles[row].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(0, 255, 0),
-        Color::rgb(0, 255, 0),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[row].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(0, 255, 0),
+            Color::rgb(0, 255, 0),
+        ))),
+    );
     let result = layout(&doc, &styles, 14.0, 10.0, &Fonts::new());
     let g = gradients(&result);
     assert!(
@@ -429,14 +471,17 @@ fn gradient_fragment_translation_stretch_and_overflow_slots_are_explicit() {
         10.0,
     );
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let fonts = Fonts::new();
     let mut e = engine(&doc, &styles, &fonts);
     let mut f = e.fragment(a, 4.0, 4.0, 0);
-    assert!(f.gradient);
+    assert_eq!(f.paint_slots.images(), 1);
     assert!(matches!(f.commands[6], DrawCommand::PushClip { .. }));
     stretch_fragment(&mut f, 6.0);
     translate_fragment(&mut f, 3.0, 5.0);
@@ -454,10 +499,13 @@ fn fixed_gradient_keeps_tile_origin_while_escaping_clip_inside_opacity() {
         10.0,
     );
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     let result = layout(&doc, &styles, 10.0, 10.0, &Fonts::new());
     let mut canvas = Canvas::new(10, 10).unwrap();
     canvas.paint_with_viewport(
@@ -482,8 +530,14 @@ fn pending_inline_admission_is_atomic_and_zero_positioning_boxes_are_not_pending
     let a = doc.query_selector("#a").unwrap();
     let z = doc.query_selector("#z").unwrap();
     let image = split(Color::rgb(255, 0, 0), Color::rgb(0, 0, 255));
-    styles[a].background_image = Some(BackgroundImage::Gradient(Arc::clone(&image)));
-    styles[z].background_image = Some(BackgroundImage::Gradient(image));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(Arc::clone(&image))),
+    );
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[z].backgrounds,
+        Some(BackgroundImage::Gradient(image)),
+    );
     let fonts = Fonts::new();
     let area = rect(0.0, 0.0, 2.0, 2.0);
     let geometry = BoxGeometry {
@@ -538,12 +592,13 @@ fn pending_inline_admission_is_atomic_and_zero_positioning_boxes_are_not_pending
         inline_layer: InlineLayer::None,
         inline_prefix: 0.0,
         inline_sides: 0,
+        background_image_index: 0,
     };
     e.push(DrawCommand::LinearGradient {
         rect: rect(0.0, 0.0, 4.0, 4.0),
         tile: rect(2.0, 2.0, 0.0, 0.0),
         radius: 0.0,
-        gradient: match styles[z].background_image.clone().unwrap() {
+        gradient: match styles[z].backgrounds.image_slots()[0].clone().unwrap() {
             BackgroundImage::Gradient(value) => value,
             _ => panic!("expected gradient"),
         },
@@ -562,10 +617,13 @@ fn pending_inline_admission_is_atomic_and_zero_positioning_boxes_are_not_pending
 fn principal_gradient_slots_fit_the_existing_entry_reservation() {
     let (doc, mut styles) = prepare("<div id=a><div id=child></div></div>", 10.0, 10.0);
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(BackgroundImage::Gradient(split(
-        Color::rgb(255, 0, 0),
-        Color::rgb(0, 0, 255),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[a].backgrounds,
+        Some(BackgroundImage::Gradient(split(
+            Color::rgb(255, 0, 0),
+            Color::rgb(0, 0, 255),
+        ))),
+    );
     styles[a].height = Length::Px(2.0);
     let fonts = Fonts::new();
     for (remaining, expected) in [(8, 0), (9, 6)] {
@@ -607,12 +665,24 @@ fn canvas_geometry_scan_exact_and_one_short_preserve_remaining_paint_work() {
         });
     }
     e.position_work_left = 2;
-    assert_eq!(e.canvas_gradient_tile(a), None);
+    assert_eq!(
+        e.canvas_background_geometry(a)
+            .map(|geometry| geometry.padding),
+        None
+    );
     assert_eq!(e.position_work_left, 2);
     e.position_work_left = 3;
-    assert_eq!(e.canvas_gradient_tile(a), Some(rect(2.0, 3.0, 4.0, 5.0)));
+    assert_eq!(
+        e.canvas_background_geometry(a)
+            .map(|geometry| geometry.padding),
+        Some(rect(2.0, 3.0, 4.0, 5.0))
+    );
     assert_eq!(e.position_work_left, 0);
     e.position_work_left = 3;
-    assert_eq!(e.canvas_gradient_tile(usize::MAX), None);
+    assert_eq!(
+        e.canvas_background_geometry(usize::MAX)
+            .map(|geometry| geometry.padding),
+        None
+    );
     assert_eq!(e.position_work_left, 0);
 }

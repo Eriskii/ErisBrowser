@@ -119,9 +119,9 @@ fn malformed_and_out_of_scope_values_are_rejected_wholly() {
         "linear-gradient(red 0 10% 20%,blue)",
         "linear-gradient(red calc(10%+ 1px),blue)",
         "linear-gradient(red calc(10%/**/+/**/1px),blue)",
-        "linear-gradient(red),linear-gradient(blue)",
+        "linear-gradient(red),,linear-gradient(blue)",
         "repeating-linear-gradient(red,blue)",
-        "url(x),url(y)",
+        "url(x),,url(y)",
         "none red",
         "linear-gradient(red) junk",
     ] {
@@ -177,15 +177,15 @@ fn cascade_resets_both_background_longhands_and_never_revives_old_winners() {
     );
     let styles = super::super::compute_styles(&doc, &doc.stylesheets(), 800.0, 600.0);
     let at = |id| &styles[doc.query_selector(id).unwrap()];
-    assert!(at("#reset").background_image.is_none());
+    assert!(at("#reset").backgrounds.image_slots()[0].is_none());
     assert_eq!(at("#reset").background_color, Color::rgb(255, 165, 0));
-    assert!(at("#bad").background_image.is_some());
+    assert!(at("#bad").backgrounds.image_slots()[0].is_some());
     assert_eq!(at("#bad").background_color, Color::rgb(0, 255, 0));
     for id in ["#var", "#none"] {
-        assert!(at(id).background_image.is_none());
+        assert!(at(id).backgrounds.image_slots()[0].is_none());
         assert_eq!(at(id).background_color, Color::TRANSPARENT);
     }
-    assert!(at("#image").background_image.is_some());
+    assert!(at("#image").backgrounds.image_slots()[0].is_some());
     assert_eq!(at("#image").background_color, Color::TRANSPARENT);
 }
 
@@ -201,7 +201,7 @@ fn inherited_images_share_storage_without_resolving_current_color_early() {
     assert!(Arc::ptr_eq(parent, gradient_handle(at("#same"))));
     assert_eq!(at("#child").color, Color::rgb(0, 255, 0));
     assert_eq!(parent.stops[0].color, GradientColor::CurrentColor);
-    assert!(at("#plain").background_image.is_none());
+    assert!(at("#plain").backgrounds.image_slots()[0].is_none());
 }
 
 #[test]
@@ -264,7 +264,8 @@ fn comments_preserve_token_boundaries_across_supports_and_declarations() {
         let styles = super::super::compute_styles(&doc, &[], 800.0, 600.0);
         assert!(
             styles[doc.query_selector("#x").unwrap()]
-                .background_image
+                .backgrounds
+                .image_slots()[0]
                 .is_some()
         );
     }
@@ -275,7 +276,7 @@ fn comments_preserve_token_boundaries_across_supports_and_declarations() {
 }
 
 fn gradient_handle(style: &super::super::ComputedStyle) -> &Arc<LinearGradient> {
-    match style.background_image.as_ref().unwrap() {
+    match style.backgrounds.image_slots()[0].as_ref().unwrap() {
         super::super::BackgroundImage::Gradient(value) => value,
         super::super::BackgroundImage::Url(_) => panic!("expected gradient"),
     }

@@ -147,14 +147,16 @@ fn provenance_preserves_cascade_and_resolves_url_backgrounds_at_consumption() {
     let external = compute_styles_from_sources(&doc, &[sheet(text, &url)], 100.0, 100.0);
     assert_eq!(document[id].color, Color::rgb(255, 0, 0));
     assert_eq!(doc.base_url().as_str(), "about:blank");
-    let Some(BackgroundImage::Url(document_image)) = &document[id].background_image else {
+    let Some(BackgroundImage::Url(document_image)) = &document[id].backgrounds.image_slots()[0]
+    else {
         panic!("expected document URL image");
     };
     assert_eq!(
         document_image.as_ref(),
         &url::ResolvedUrl::Unresolved("../Images/Logo.png?Q=é#Mark".into())
     );
-    let Some(BackgroundImage::Url(external_image)) = &external[id].background_image else {
+    let Some(BackgroundImage::Url(external_image)) = &external[id].backgrounds.image_slots()[0]
+    else {
         panic!("expected external URL image");
     };
     let url::ResolvedUrl::Absolute(external_url) = external_image.as_ref() else {
@@ -166,8 +168,8 @@ fn provenance_preserves_cascade_and_resolves_url_backgrounds_at_consumption() {
     );
     let mut document_without_image = document[id].clone();
     let mut external_without_image = external[id].clone();
-    document_without_image.background_image = None;
-    external_without_image.background_image = None;
+    document_without_image.backgrounds = BackgroundData::initial();
+    external_without_image.backgrounds = BackgroundData::initial();
     assert_eq!(
         format!("{document_without_image:?}"),
         format!("{external_without_image:?}")

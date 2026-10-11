@@ -119,8 +119,8 @@ fn tiled_fragment_translation_leaves_fixed_scope_untouched_and_restores_document
         hits: Vec::new(),
         boxes: Vec::new(),
         positioned: Vec::new(),
-        rounded_border: false,
-        gradient: false,
+        paint_slots: PaintSlots::new(false, false),
+        principal_box: 0,
     };
     translate_fragment(&mut fragment, 3.0, 4.0);
     for (index, expected_rect, expected_tile) in [
@@ -159,7 +159,7 @@ fn tiled_restack_keeps_only_positive_paint_and_tile_boxes() {
         doc: &doc,
         styles: &styles,
         fonts: &fonts,
-        backgrounds: &[],
+        backgrounds: BackgroundBindings::default(),
         background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
         viewport: Size {
             width: 100.0,
@@ -176,6 +176,7 @@ fn tiled_restack_keeps_only_positive_paint_and_tile_boxes() {
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
+            background_image_index: 0,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,

@@ -48,8 +48,8 @@ fn background_cssom_keeps_both_components_and_rejects_invalid_later_values() {
     for value in [
         "linear-gradient(red,) orange",
         "linear-gradient(red) space",
-        "url(x),url(y) lime",
-        "linear-gradient(red),blue",
+        "url(x),,url(y) lime",
+        "linear-gradient(red),,blue",
     ] {
         assert!(
             !style

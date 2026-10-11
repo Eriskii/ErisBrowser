@@ -49,6 +49,29 @@ fn bytes(budget: &mut url::UrlBudget, cost: usize) -> Result<(), Error> {
 }
 
 impl ImagePool {
+    pub(super) fn bytes(&self) -> usize {
+        self.gradients
+            .bytes()
+            .saturating_add(self.urls.charged_bytes)
+    }
+
+    pub(super) fn gradient_with_reserved(
+        &mut self,
+        parsed: &gradient::ParsedGradient,
+        work: &mut usize,
+        reserved_external: usize,
+    ) -> Result<Option<Arc<LinearGradient>>, Error> {
+        if reserved_external == 0 {
+            self.gradient(parsed, work)
+        } else {
+            self.gradients.intern_with_reserved(
+                parsed,
+                work,
+                self.urls.charged_bytes.saturating_add(reserved_external),
+            )
+        }
+    }
+
     pub(super) fn gradient(
         &mut self,
         parsed: &gradient::ParsedGradient,
@@ -69,6 +92,34 @@ impl ImagePool {
         rules: &[Rule],
         document_base: &::url::Url,
         work: &mut usize,
+    ) -> Result<Option<Arc<url::ResolvedUrl>>, Error> {
+        self.url_impl(raw, origin, rules, document_base, work, 0)
+    }
+
+    pub(super) fn url_with_reserved(
+        &mut self,
+        raw: &str,
+        origin: WinningSource,
+        rules: &[Rule],
+        document_base: &::url::Url,
+        work: &mut usize,
+        reserved_external: usize,
+    ) -> Result<Option<Arc<url::ResolvedUrl>>, Error> {
+        if reserved_external == 0 {
+            self.url(raw, origin, rules, document_base, work)
+        } else {
+            self.url_impl(raw, origin, rules, document_base, work, reserved_external)
+        }
+    }
+
+    fn url_impl(
+        &mut self,
+        raw: &str,
+        origin: WinningSource,
+        rules: &[Rule],
+        document_base: &::url::Url,
+        work: &mut usize,
+        reserved_external: usize,
     ) -> Result<Option<Arc<url::ResolvedUrl>>, Error> {
         selectors::spend(work, 8)?;
         if raw.len() > 4096 {
@@ -123,7 +174,8 @@ impl ImagePool {
         )?;
         let free = MAX_IMAGE_BYTES
             .saturating_sub(self.gradients.bytes())
-            .saturating_sub(self.urls.charged_bytes);
+            .saturating_sub(self.urls.charged_bytes)
+            .saturating_sub(reserved_external);
         let mut budget = url::UrlBudget {
             work: *work,
             bytes: free,

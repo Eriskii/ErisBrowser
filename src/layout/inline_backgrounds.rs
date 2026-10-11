@@ -197,15 +197,16 @@ impl Engine<'_> {
         }
         let style = self.style(node);
         if style.background_color.a == 0
-            && style.background_image.is_none()
+            && style.backgrounds.image_slots().iter().all(Option::is_none)
             && (style.border_color.a == 0
                 || self.borders(node).horizontal() + self.borders(node).vertical() == 0.0)
         {
             return;
         }
-        // The opener, three explicit layer slots and closer are one admission.
-        // Geometry and prefix were retained before this paint-only decision.
-        if self.commands_created + self.open_clips + 5 > MAX_COMMANDS {
+        // Color, authored image slots, border and the balanced clip pair are
+        // one admission. None slots preserve authored indexing and geometry.
+        let image_count = style.backgrounds.image_slots().len();
+        if !self.admit_decoration_slots(image_count + 4) {
             return;
         }
         let saved = self.paint_owner;
@@ -215,18 +216,33 @@ impl Engine<'_> {
             inline_layer: InlineLayer::Clip,
             inline_prefix: prefix,
             inline_sides: physical_sides,
+            background_image_index: 0,
         };
         self.push(DrawCommand::PushClip {
             rect: geometry.border,
         });
-        for layer in [InlineLayer::Color, InlineLayer::Image, InlineLayer::Border] {
-            self.paint_owner.inline_layer = layer;
+        self.paint_owner.inline_layer = InlineLayer::Color;
+        self.push(DrawCommand::Rect {
+            rect: geometry.border,
+            color: Color::TRANSPARENT,
+            radius: 0.0,
+        });
+        for image_index in (0..image_count).rev() {
+            self.paint_owner.inline_layer = InlineLayer::Image;
+            self.paint_owner.background_image_index = image_index as u8;
             self.push(DrawCommand::Rect {
                 rect: geometry.border,
                 color: Color::TRANSPARENT,
                 radius: 0.0,
             });
         }
+        self.paint_owner.background_image_index = 0;
+        self.paint_owner.inline_layer = InlineLayer::Border;
+        self.push(DrawCommand::Rect {
+            rect: geometry.border,
+            color: Color::TRANSPARENT,
+            radius: 0.0,
+        });
         self.paint_owner.inline_layer = InlineLayer::None;
         self.push(DrawCommand::PopClip);
         self.paint_owner = saved;
@@ -243,18 +259,27 @@ impl Engine<'_> {
         {
             return;
         }
-        let pending = self
-            .owners
-            .iter()
-            .filter(|owner| owner.inline_layer != InlineLayer::None)
-            .count();
+        let (pending, extra_images) =
+            self.owners
+                .iter()
+                .fold((0usize, 0usize), |(pending, extra), owner| {
+                    (
+                        pending + usize::from(owner.inline_layer != InlineLayer::None),
+                        extra
+                            + usize::from(
+                                owner.inline_layer == InlineLayer::Image
+                                    && owner.background_image_index != 0,
+                            ),
+                    )
+                });
         let cost = self
             .doc
             .nodes
             .len()
             .saturating_add(self.boxes.len().saturating_mul(8))
             .saturating_add(self.commands.len())
-            .saturating_add(pending.saturating_mul(background_boxes::SHAPE_WORK));
+            .saturating_add(pending.saturating_mul(background_boxes::SHAPE_WORK))
+            .saturating_add(extra_images.saturating_mul(background_boxes::LAYER_WORK));
         if !background_boxes::spend(&mut self.position_work_left, cost) {
             return;
         }
@@ -274,6 +299,7 @@ impl Engine<'_> {
                 );
             }
         }
+        let mut group_boxes = None;
         for index in 0..self.commands.len() {
             let owner = self.owners[index];
             if owner.inline_layer == InlineLayer::None {
@@ -285,27 +311,41 @@ impl Engine<'_> {
                 _ => continue,
             };
             if owner.inline_layer == InlineLayer::Clip {
+                group_boxes = None;
                 self.commands[index] = DrawCommand::PushClip {
                     rect: fragment_clip(area, owner.inline_sides).unwrap_or_default(),
                 };
                 continue;
             }
             let style = self.style(owner.node);
-            let Some(boxes) = metrics
-                .get(owner.node)
-                .copied()
-                .and_then(|metric| metric.boxes(area, owner.inline_prefix, style.border_radius))
-            else {
-                continue;
+            let boxes = if let Some(boxes) = group_boxes {
+                boxes
+            } else {
+                let Some(boxes) = metrics.get(owner.node).copied().and_then(|metric| {
+                    metric.boxes(area, owner.inline_prefix, style.border_radius)
+                }) else {
+                    continue;
+                };
+                group_boxes = Some(boxes);
+                boxes
             };
-            let shape = boxes.select(style.background_clip);
             let command = match owner.inline_layer {
-                InlineLayer::Color => background_boxes::color(shape, style.background_color, None),
+                InlineLayer::Color => background_boxes::color(
+                    boxes.select(style.backgrounds.bottom_clip()),
+                    style.background_color,
+                    None,
+                ),
                 InlineLayer::Image => {
-                    let origin = boxes.select(style.background_origin).rect;
+                    let image_index = usize::from(owner.background_image_index);
+                    let Some(layer) = style.backgrounds.layer(image_index) else {
+                        continue;
+                    };
+                    let origin = boxes.select(layer.origin).rect;
+                    let shape = boxes.select(layer.clip);
                     let current_color = style.color;
                     self.background_command(
                         owner.node,
+                        image_index,
                         shape.rect,
                         origin,
                         0.0,

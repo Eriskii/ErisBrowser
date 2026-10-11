@@ -135,16 +135,22 @@ fn loaded() -> LoadedBackground<'static> {
     }
 }
 fn url(style: &mut ComputedStyle) {
-    style.background_image = Some(BackgroundImage::Url(Arc::new(
-        crate::css::url::ResolvedUrl::Absolute(
-            ::url::Url::parse("https://example.test/tile.png").unwrap(),
-        ),
-    )));
-    style.background_size = BackgroundSize::Explicit {
-        width: Length::Percent(100.0),
-        height: Length::Auto,
-    };
-    style.background_repeat = [false; 2];
+    crate::css::BackgroundData::test_replace_image(
+        &mut style.backgrounds,
+        Some(BackgroundImage::Url(Arc::new(
+            crate::css::url::ResolvedUrl::Absolute(
+                ::url::Url::parse("https://example.test/tile.png").unwrap(),
+            ),
+        ))),
+    );
+    crate::css::BackgroundData::test_replace_size(
+        &mut style.backgrounds,
+        BackgroundSize::Explicit {
+            width: Length::Percent(100.0),
+            height: Length::Auto,
+        },
+    );
+    crate::css::BackgroundData::test_replace_repeat(&mut style.backgrounds, [false; 2]);
 }
 
 #[test]
@@ -419,12 +425,16 @@ fn engine<'a>(
     styles: &'a [ComputedStyle],
     fonts: &'a Fonts,
     backgrounds: &'a [Option<LoadedBackground<'a>>],
+    ranges: &'a [BackgroundBindingRange],
 ) -> Engine<'a> {
     Engine {
         doc,
         styles,
         fonts,
-        backgrounds,
+        backgrounds: BackgroundBindings {
+            ranges,
+            slots: backgrounds,
+        },
         background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
         viewport: Size {
             width: 40.0,
@@ -441,6 +451,7 @@ fn engine<'a>(
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
+            background_image_index: 0,
         },
         flow_height_reference: Some(90.0),
         content_height_measure: None,
@@ -546,7 +557,9 @@ fn command_and_key_refusal_do_not_shorten_strips_or_advance_from_paint_slots() {
     let fonts = Fonts::new();
     let geometry = three_boxes(a);
 
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.boxes.extend(geometry);
     e.commands_created = MAX_COMMANDS - 4;
     publish(&mut e, geometry[0]);
@@ -557,7 +570,8 @@ fn command_and_key_refusal_do_not_shorten_strips_or_advance_from_paint_slots() {
 
     // Fresh exact boundary: the first group fits; both later groups refuse.
     // Their already completed geometry still determines the full16px origin.
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.boxes.extend(geometry);
     e.commands_created = MAX_COMMANDS - 5;
     for g in geometry {
@@ -590,7 +604,8 @@ fn command_and_key_refusal_do_not_shorten_strips_or_advance_from_paint_slots() {
 
     // Synthetic nonadjacent publication checks metadata, without replenishing
     // any budget: all geometry exists, but no call publishes the middle slot.
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.boxes.extend(geometry);
     publish(&mut e, geometry[0]);
     publish(&mut e, geometry[2]);
@@ -619,11 +634,13 @@ fn command_and_key_refusal_do_not_shorten_strips_or_advance_from_paint_slots() {
 
     for missing in [false, true] {
         let unavailable = vec![None; doc.nodes.len()];
+        let background_ranges = singleton_ranges(doc.nodes.len());
         let mut e = engine(
             &doc,
             &styles,
             &fonts,
             if missing { &unavailable } else { &bindings },
+            &background_ranges,
         );
         e.boxes.extend(geometry);
         if !missing {
@@ -653,7 +670,10 @@ fn fractional_shape_y_and_physical_ends_keep_their_independent_grid_coverage() {
     let (doc, mut styles) = prepare("<span id=a></span>", 4.0, 4.0);
     let a = doc.query_selector("#a").unwrap();
     styles[a].background_color = Color::rgb(0, 0, 255);
-    styles[a].background_clip = BackgroundBox::Border;
+    crate::css::BackgroundData::test_replace_clip(
+        &mut styles[a].backgrounds,
+        BackgroundBox::Border,
+    );
     let fonts = Fonts::new();
     let bindings = vec![None; doc.nodes.len()];
     for (area, sides, expected_clip, rows) in [
@@ -688,7 +708,8 @@ fn fractional_shape_y_and_physical_ends_keep_their_independent_grid_coverage() {
             inline_sides: sides,
             inline_basis: 4.0,
         };
-        let mut e = engine(&doc, &styles, &fonts, &bindings);
+        let background_ranges = singleton_ranges(bindings.len());
+        let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
         e.boxes.push(g);
         publish(&mut e, g);
         e.finish_inline_backgrounds();
@@ -705,4 +726,35 @@ fn fractional_shape_y_and_physical_ends_keep_their_independent_grid_coverage() {
         );
         assert_eq!(e.open_clips, 0);
     }
+}
+
+// Adapt legacy singleton fixtures to the borrowed, layer-indexed binding view.
+fn singleton_ranges(count: usize) -> Vec<BackgroundBindingRange> {
+    (0..count)
+        .map(|index| BackgroundBindingRange {
+            start: u32::try_from(index).unwrap(),
+            len: 1,
+        })
+        .collect()
+}
+fn layout_with_backgrounds(
+    doc: &Document,
+    styles: &[ComputedStyle],
+    width: f32,
+    height: f32,
+    fonts: &Fonts,
+    slots: &[Option<LoadedBackground<'_>>],
+) -> LayoutResult {
+    let ranges = singleton_ranges(slots.len());
+    crate::layout::layout_with_backgrounds(
+        doc,
+        styles,
+        width,
+        height,
+        fonts,
+        BackgroundBindings {
+            ranges: &ranges,
+            slots,
+        },
+    )
 }

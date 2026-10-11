@@ -164,7 +164,8 @@ fn stylesheet_provenance_survives_redirects_imports_and_document_base_changes() 
         );
         let styles = css::compute_styles_from_sources(&page.document, &recollected, 160.0, 60.0);
         assert_eq!(styles[probe].color, crate::graphics::Color::rgb(255, 0, 0));
-        let Some(css::BackgroundImage::Url(value)) = &styles[probe].background_image else {
+        let Some(css::BackgroundImage::Url(value)) = &styles[probe].backgrounds.image_slots()[0]
+        else {
             panic!("computed URL presence survives without preparation");
         };
         let css_url::ResolvedUrl::Absolute(value) = value.as_ref() else {

@@ -17,7 +17,7 @@ fn urls_preserve_authored_payload_case_and_atomic_five_longhand_roundtrip() {
     assert_eq!(InlineStyle::parse(&text, &mut WORK.clone()).unwrap(), s);
     let before = s.clone();
     for value in [
-        "url(A),url(B)",
+        "url(A),,url(B)",
         "url(A) url(B)",
         "url(A B)",
         "url(A);color:blue",

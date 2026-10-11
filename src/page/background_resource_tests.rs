@@ -70,6 +70,10 @@ fn keys(result: &LayoutResult) -> Vec<&str> {
         .iter()
         .filter_map(|c| match c {
             DrawCommand::BackgroundImage { key, .. } => Some(key.as_str()),
+            DrawCommand::BoxDecoration(value) => match &value.paint {
+                crate::graphics::box_decoration::BoxPaint::Image { key, .. } => Some(key.as_str()),
+                _ => None,
+            },
             _ => None,
         })
         .collect()
@@ -355,3 +359,6 @@ fn key_work_cut_keeps_decoded_admission_but_does_not_publish_partial_alias() {
         );
     }
 }
+
+#[path = "background_resource_layers_tests.rs"]
+mod layers;

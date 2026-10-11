@@ -248,6 +248,9 @@ impl InlineStyle {
                 .saturating_mul(4)
                 + 1,
         )?;
+        if property == "background" && !raw.iter().all(|v| *v == raw[0] && wide(v)) {
+            return css::serialize_background_shorthand(&raw, work).map_err(|_| Error::Limit);
+        }
         Ok(shorthand_value(&property, &raw))
     }
     pub(crate) fn get_property_priority(
@@ -1602,3 +1605,6 @@ mod url_background_tests;
 
 #[cfg(test)]
 mod background_box_tests;
+
+#[cfg(test)]
+mod background_layers_tests;

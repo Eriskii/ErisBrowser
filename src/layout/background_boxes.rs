@@ -69,47 +69,99 @@ impl BackgroundBoxes {
 #[derive(Clone, Copy)]
 pub(super) enum PaintRole {
     Color,
-    Image,
+    Image(u8),
     Top,
     Right,
     Bottom,
     Left,
     RoundOuter,
     RoundInner,
+    Ring,
     Unused,
 }
-#[derive(Clone, Copy)]
+// Two bytes replace Fragment's former image/rounded booleans. The overflow
+// bit records the cell's own opener even when its decoration was refused.
+#[derive(Clone, Copy, Default)]
 pub(super) struct PaintSlots {
-    image: bool,
-    rounded: bool,
+    image_count: u8,
+    flags: u8,
 }
 impl PaintSlots {
+    const ADMITTED: u8 = 4;
+    const OVERFLOW: u8 = 8;
     pub(super) fn new(image: bool, rounded: bool) -> Self {
-        Self { image, rounded }
+        Self {
+            image_count: u8::from(image),
+            flags: Self::ADMITTED | u8::from(rounded),
+        }
+    }
+    pub(super) fn layers(count: usize, rounded: bool) -> Self {
+        debug_assert!(count <= 8);
+        Self {
+            image_count: count as u8,
+            flags: Self::ADMITTED | 2 | u8::from(rounded),
+        }
+    }
+    pub(super) fn images(self) -> usize {
+        usize::from(self.image_count)
+    }
+    pub(super) fn layered(self) -> bool {
+        self.flags & 2 != 0
+    }
+    pub(super) fn rounded(self) -> bool {
+        self.flags & 1 != 0
+    }
+    pub(super) fn omitted(mut self) -> Self {
+        self.flags &= !Self::ADMITTED;
+        self
+    }
+    pub(super) fn with_overflow(mut self, value: bool) -> Self {
+        if value {
+            self.flags |= Self::OVERFLOW;
+        } else {
+            self.flags &= !Self::OVERFLOW;
+        }
+        self
+    }
+    pub(super) fn overflow(self) -> bool {
+        self.flags & Self::OVERFLOW != 0
     }
     pub(super) fn len(self) -> usize {
-        5 + usize::from(self.image)
+        if self.flags & Self::ADMITTED == 0 {
+            0
+        } else {
+            5 + self.images()
+        }
     }
     pub(super) fn role(self, index: usize) -> PaintRole {
-        if self.rounded {
+        if index >= self.len() {
+            return PaintRole::Unused;
+        }
+        if self.rounded() && !self.layered() {
             return match index {
                 0 => PaintRole::RoundOuter,
                 1 => PaintRole::RoundInner,
-                2 if self.image => PaintRole::Image,
-                // Keep legacy motion even for its transparent zero-width slots.
-                2 if !self.image => PaintRole::Right,
-                3 if !self.image => PaintRole::Bottom,
-                4 if !self.image => PaintRole::Left,
+                2 if self.image_count != 0 => PaintRole::Image(0),
+                2 => PaintRole::Right,
+                3 if self.image_count == 0 => PaintRole::Bottom,
+                4 if self.image_count == 0 => PaintRole::Left,
                 _ => PaintRole::Unused,
             };
         }
         if index == 0 {
             return PaintRole::Color;
         }
-        if self.image && index == 1 {
-            return PaintRole::Image;
+        if index <= self.images() {
+            return PaintRole::Image((self.images() - index) as u8);
         }
-        match index - usize::from(self.image) {
+        if self.layered() && self.rounded() {
+            return if index == self.images() + 1 {
+                PaintRole::Ring
+            } else {
+                PaintRole::Unused
+            };
+        }
+        match index - self.images() {
             1 => PaintRole::Top,
             2 => PaintRole::Right,
             3 => PaintRole::Bottom,
@@ -117,6 +169,10 @@ impl PaintSlots {
             _ => PaintRole::Unused,
         }
     }
+}
+pub(super) const LAYER_WORK: usize = 16;
+pub(super) fn layers_work(count: usize) -> Option<usize> {
+    count.checked_mul(LAYER_WORK)?.checked_add(SHAPE_WORK)
 }
 pub(super) fn empty() -> DrawCommand {
     DrawCommand::Rect {
@@ -163,14 +219,15 @@ pub(super) fn image(command: DrawCommand, shape: RoundedBox) -> DrawCommand {
     }))
 }
 pub(super) fn shape_path(style: &ComputedStyle, border: Sides, legacy_rounded: bool) -> bool {
-    style.background_clip != BackgroundBox::Border
+    style.backgrounds.bottom_clip() != BackgroundBox::Border
         || style.border_radius > 0.0
             && border.horizontal() + border.vertical() > 0.0
             && !legacy_rounded
 }
 pub(super) fn nondefault(style: &ComputedStyle) -> bool {
-    style.background_origin != BackgroundBox::Padding
-        || style.background_clip != BackgroundBox::Border
+    style.backgrounds.image_slots().len() > 1
+        || style.backgrounds.layer(0).unwrap().origin != BackgroundBox::Padding
+        || style.backgrounds.bottom_clip() != BackgroundBox::Border
 }
 pub(super) fn spend(work: &mut usize, cost: usize) -> bool {
     if cost > *work {
@@ -197,8 +254,16 @@ impl Engine<'_> {
         border: Sides,
         padding: Sides,
         paint_start: usize,
-        has_image: bool,
+        slots: PaintSlots,
     ) {
+        if slots.len() == 0 {
+            return;
+        }
+        if slots.layered() {
+            self.paint_layered_principal(id, style, area, border, padding, paint_start, slots);
+            return;
+        }
+        let has_image = slots.images() != 0;
         let Rect {
             x,
             y,
@@ -282,13 +347,22 @@ impl Engine<'_> {
                     })
                     .flatten();
             if let Some(boxes) = boxes {
-                let clip = boxes.select(style.background_clip);
-                let origin = boxes.select(style.background_origin).rect;
+                let clip = boxes.select(style.backgrounds.bottom_clip());
+                let origin = boxes
+                    .select(style.backgrounds.layer(0).unwrap().origin)
+                    .rect;
                 if shaped {
                     commands[0] = background_boxes::color(clip, background, None);
                     if has_image
-                        && let Some(command) =
-                            self.background_command(id, clip.rect, origin, 0.0, style.color, true)
+                        && let Some(command) = self.background_command(
+                            id,
+                            0,
+                            clip.rect,
+                            origin,
+                            0.0,
+                            style.color,
+                            true,
+                        )
                     {
                         commands[1] = background_boxes::image(command, clip);
                     }
@@ -315,6 +389,7 @@ impl Engine<'_> {
                         let command = self
                             .background_command(
                                 id,
+                                0,
                                 if legacy_rounded {
                                     area
                                 } else {
@@ -363,6 +438,7 @@ impl Engine<'_> {
             let command = self
                 .background_command(
                     id,
+                    0,
                     if rounded {
                         area
                     } else {
@@ -401,6 +477,97 @@ impl Engine<'_> {
                     *slot = command;
                 }
             }
+        }
+    }
+    #[inline(never)]
+    #[allow(clippy::too_many_arguments)]
+    fn paint_layered_principal(
+        &mut self,
+        id: NodeId,
+        style: &ComputedStyle,
+        area: Rect,
+        border: Sides,
+        padding: Sides,
+        start: usize,
+        slots: PaintSlots,
+    ) {
+        let Some(cost) = layers_work(slots.images()) else {
+            return;
+        };
+        if !spend(&mut self.position_work_left, cost) {
+            return;
+        }
+        let Some(boxes) = BackgroundBoxes::new(
+            RoundedBox {
+                rect: area,
+                radii: [[style.border_radius; 2]; 4],
+            },
+            border,
+            padding,
+        ) else {
+            return;
+        };
+        for offset in 0..slots.len() {
+            let command = match slots.role(offset) {
+                PaintRole::Color => color(
+                    boxes.select(style.backgrounds.bottom_clip()),
+                    if self.canvas_background_node == Some(id) {
+                        Color::TRANSPARENT
+                    } else {
+                        style.background_color
+                    },
+                    None,
+                ),
+                PaintRole::Image(index) => {
+                    let layer = style.backgrounds.layer(usize::from(index)).unwrap();
+                    let shape = boxes.select(layer.clip);
+                    let origin = boxes.select(layer.origin).rect;
+                    self.background_command(
+                        id,
+                        usize::from(index),
+                        shape.rect,
+                        origin,
+                        0.0,
+                        style.color,
+                        true,
+                    )
+                    .map(|command| image(command, shape))
+                    .unwrap_or_else(empty)
+                }
+                PaintRole::Ring => color(boxes.border, style.border_color, Some(boxes.padding)),
+                PaintRole::Top => DrawCommand::Rect {
+                    rect: rect(area.x, area.y, area.width, border.top),
+                    color: style.border_color,
+                    radius: 0.0,
+                },
+                PaintRole::Right => DrawCommand::Rect {
+                    rect: rect(
+                        area.x + area.width - border.right,
+                        area.y,
+                        border.right,
+                        area.height,
+                    ),
+                    color: style.border_color,
+                    radius: 0.0,
+                },
+                PaintRole::Bottom => DrawCommand::Rect {
+                    rect: rect(
+                        area.x,
+                        area.y + area.height - border.bottom,
+                        area.width,
+                        border.bottom,
+                    ),
+                    color: style.border_color,
+                    radius: 0.0,
+                },
+                PaintRole::Left => DrawCommand::Rect {
+                    rect: rect(area.x, area.y, border.left, area.height),
+                    color: style.border_color,
+                    radius: 0.0,
+                },
+                _ => empty(),
+            };
+            self.commands[start + offset] = command;
         }
     }
 }

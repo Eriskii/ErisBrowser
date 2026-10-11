@@ -9,6 +9,7 @@ fn owner(layer: InlineLayer) -> PaintOwner {
         inline_layer: layer,
         inline_prefix: 8.0,
         inline_sides: LAST,
+        background_image_index: 0,
     }
 }
 fn pending(area: Rect, fixed: bool) -> Fragment {
@@ -65,8 +66,8 @@ fn pending(area: Rect, fixed: bool) -> Fragment {
         }],
         boxes: vec![geometry(first, 0.0, FIRST), geometry(area, 8.0, LAST)],
         positioned: Vec::new(),
-        rounded_border: false,
-        gradient: false,
+        paint_slots: PaintSlots::new(false, false),
+        principal_box: 0,
     }
 }
 fn command_rect(command: &DrawCommand) -> Rect {

@@ -156,7 +156,7 @@ fn invalid_box_values_preserve_all_records_text_and_priority() {
         ("background-origin", "text"),
         ("background-clip", "border-area"),
         ("background-origin", "content-box padding-box"),
-        ("background-clip", "content-box, padding-box"),
+        ("background-clip", "content-box,, padding-box"),
         ("background-origin", "calc(1px)"),
         ("background-clip", "content-box junk"),
         ("background", "content-box padding-box border-box"),
@@ -164,7 +164,7 @@ fn invalid_box_values_preserve_all_records_text_and_priority() {
         ("background", "content-box / 2px"),
         ("background", "inherit content-box"),
         ("background", "red content-box; color:lime"),
-        ("background", "url(A) content-box, blue"),
+        ("background", "url(A) content-box,, blue"),
         ("background-origin", "border-box\\"),
         ("background-clip", "content-box\0"),
     ] {
@@ -290,7 +290,10 @@ fn cssom_wide_and_var_records_reach_computed_box_values() {
         ));
         let styles = css::compute_styles(&doc, &[], 100.0, 100.0);
         let child = &styles[doc.query_selector("#x").unwrap()];
-        assert_eq!((child.background_origin, child.background_clip), expected);
+        assert_eq!(
+            (child.backgrounds.origins()[0], child.backgrounds.clips()[0]),
+            expected
+        );
     }
     let all = parse("background:red content-box;all:initial");
     assert_eq!(get(&all, "background-origin"), "initial");

@@ -335,16 +335,14 @@ pub(super) fn parse_image<'a>(
     }
 }
 
-/// Returns borrowed image/color components only after validating the entire
-/// single-layer shorthand. No longhand is emitted from a malformed prefix.
+/// Validate the complete bounded image list. Individual atom parsing above
+/// remains the single-image grammar used by the list dispatcher.
 pub(crate) fn valid(name: &str, value: &str, work: &mut usize) -> Result<bool, Error> {
     if css_wide(value) {
         return Ok(true);
     }
     let result = match name {
-        "background-image" => {
-            parse_image(value, [16.0, 16.0, 800.0, 600.0], work).map(|value| value.is_some())
-        }
+        "background-image" => super::background::valid_list(name, value, work),
         _ => Ok(false),
     };
     match result {

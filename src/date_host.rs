@@ -442,7 +442,15 @@ fn run_capture(request: &CaptureRequest) -> Result<CapturedTimeZone, HostZoneErr
         .process_group(0);
     // Command::spawn may block. This service thread retains its busy state; the
     // caller deadline does not imply the underlying kernel operation completed.
-    let mut child = command.spawn().map_err(|_| HostZoneError::Unavailable)?;
+    let mut child = command.spawn().map_err(|_error| {
+        #[cfg(test)]
+        eprintln!(
+            "timezone helper spawn failed: kind={:?}, os={:?}: {_error}",
+            _error.kind(),
+            _error.raw_os_error()
+        );
+        HostZoneError::Unavailable
+    })?;
     let result = (|| {
         stopped(request)?;
         let input = child.stdin.take().ok_or(HostZoneError::Unavailable)?;

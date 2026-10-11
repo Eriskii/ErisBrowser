@@ -1,4 +1,13 @@
-//! Bounded single-layer background geometry and shorthand grammar.
+//! Bounded background geometry, authored layer lists and shorthand grammar.
+mod storage;
+pub(super) use storage::{BackgroundBuilder, BackgroundStorage};
+pub use storage::{BackgroundData, UsedBackgroundLayer};
+mod layers;
+pub(crate) use layers::serialize;
+pub(super) use layers::{apply, expanded_parts, valid_list};
+
+/// Fixed author-facing maximum; empty/none image slots count as layers.
+pub const MAX_BACKGROUND_LAYERS: usize = 8;
 use super::{CalculationParser, Length, PositionComponent, css_wide, gradient};
 use crate::selectors::{self, Error, Kind, Token, spend};
 
@@ -395,6 +404,13 @@ fn repeat_start(token: Token<'_>) -> bool {
 /// Borrowed authored slices, in the stable shorthand target order. Defaults
 /// are static strings; no computed style or gradient allocation occurs here.
 pub(super) fn parts<'s>(value: &'s str, work: &mut usize) -> Result<Option<[&'s str; 7]>, Error> {
+    Ok(parts_with_color(value, work)?.map(|(parts, _)| parts))
+}
+
+fn parts_with_color<'s>(
+    value: &'s str,
+    work: &mut usize,
+) -> Result<Option<([&'s str; 7], bool)>, Error> {
     if value.len() > 4096 {
         return Err(Error::Limit);
     }
@@ -545,7 +561,7 @@ pub(super) fn parts<'s>(value: &'s str, work: &mut usize) -> Result<Option<[&'s 
         if !seen.iter().any(|v| *v) {
             return Err(Error::Invalid);
         }
-        Ok(out)
+        Ok((out, seen[0]))
     })())
 }
 
@@ -553,15 +569,10 @@ pub(super) fn valid(name: &str, value: &str, work: &mut usize) -> Result<bool, E
     if css_wide(value) {
         return Ok(true);
     }
-    let units = [16.0, 16.0, 800.0, 600.0];
-    match name {
-        "background" => Ok(parts(value, work)?.is_some()),
-        "background-image" => gradient::valid(name, value, work),
-        "background-size" => Ok(parse_size(value, units, work)?.is_some()),
-        "background-position" => Ok(parse_position(value, units, work)?.is_some()),
-        "background-repeat" => Ok(parse_repeat(value, work)?.is_some()),
-        "background-origin" | "background-clip" => Ok(parse_box(value, work)?.is_some()),
-        _ => Ok(false),
+    if name == "background-image" {
+        gradient::valid(name, value, work)
+    } else {
+        valid_list(name, value, work)
     }
 }
 
@@ -570,3 +581,6 @@ mod tests;
 
 #[cfg(test)]
 mod box_tests;
+
+#[cfg(test)]
+mod layers_tests;

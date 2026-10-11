@@ -4,18 +4,18 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
-[Linear gradient backgrounds](docs/linear-gradients.md) add one bounded
+[Linear gradient backgrounds](docs/linear-gradients.md) introduced one bounded
 `linear-gradient()` layer with legacy sRGB colors, alpha, physical directions
 and length/percentage stops. The software painter evaluates it directly, with
 shared CSS/supports/style validation. The [native-gradient follow-up](docs/vulkan-gradients.md)
 prepares opaque square-corner fragments on the CPU for the existing GPU image
 shader; alpha, rounded gradients and gradients inside opacity scopes retain
 whole-scene fallback. Try the [native example](examples/vulkan-gradients.html).
-The [background geometry follow-up](docs/background-geometry.md) adds single-layer
+The [background geometry follow-up](docs/background-geometry.md) added single-layer
 size, physical position and independent repeat axes, including atomic shorthand
 resets. Try the [positioned stripe example](examples/background-geometry.html).
 
-[CSS URL backgrounds](docs/css-url-backgrounds.md) add one loaded `url()` layer
+[CSS URL backgrounds](docs/css-url-backgrounds.md) introduced one loaded `url()` layer
 with natural raster sizing, position and repeat controls. Winning declarations
 use their [stylesheet or document base](docs/css-url-provenance.md), including
 variable substitution and inheritance. Explicit resource preparation uses the
@@ -51,7 +51,7 @@ and positioned descendants. Those retained rectangles prepared the
 [background box integration](docs/background-boxes.md) below; full line layout
 remains outside this subset.
 
-[Background box selection](docs/background-boxes.md) connects those two
+[Background box selection](docs/background-boxes.md) connected those two
 prerequisites to single-layer `background-origin` and `background-clip`.
 Border, padding and content boxes independently control image placement and
 background painting; ordinary wrapped inlines use joined owner geometry with
@@ -89,6 +89,15 @@ color, image and gradient boxes in one confined page. On the tested NVIDIA adapt
 one acquired Vulkan texture matched all 4,505,600 Canvas bytes before compositor
 output; a separate rounded-image case confirmed whole-frame CPU fallback.
 The evidence retains four earlier failed host attempts and the final successful run.
+
+[Layered backgrounds](docs/background-layers.md) extend those foundations to
+at most eight `none`, linear-gradient or URL image slots. Size, position, repeat,
+origin and clip lists retain their own lengths and cycle only when used; the
+first image paints on top, with one color beneath the last layer. Principal,
+canvas, table and ordinary inline painting share the existing resource and
+rendering limits. CSSOM preserves authored cardinalities and conservatively
+returns an empty shorthand when it cannot represent them. Try the
+[layer-order demo](examples/background-layers.html).
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

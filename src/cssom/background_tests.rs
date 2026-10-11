@@ -129,17 +129,20 @@ fn pending_geometry_shorthand_serializes_and_resolves_all_five() {
     let doc = crate::dom::Document::parse(&format!("<div id=x style='{}'></div>", text(&current)));
     let styles = css::compute_styles(&doc, &[], 800.0, 600.0);
     let computed = &styles[doc.query_selector("#x").unwrap()];
-    assert!(computed.background_image.is_none());
+    assert!(computed.backgrounds.image_slots()[0].is_none());
     assert_eq!(
         computed.background_color,
         crate::graphics::Color::TRANSPARENT
     );
-    assert_eq!(computed.background_size, css::BackgroundSize::default());
     assert_eq!(
-        computed.background_position,
+        computed.backgrounds.sizes()[0],
+        css::BackgroundSize::default()
+    );
+    assert_eq!(
+        computed.backgrounds.positions()[0],
         css::BackgroundPosition::default()
     );
-    assert_eq!(computed.background_repeat, [true, true]);
+    assert_eq!(computed.backgrounds.repeats()[0], [true, true]);
 }
 
 #[test]

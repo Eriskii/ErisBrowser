@@ -11,7 +11,7 @@ fn document(text: &str) -> Document {
     doc
 }
 fn url_value(style: &ComputedStyle) -> &Arc<url::ResolvedUrl> {
-    match style.background_image.as_ref().unwrap() {
+    match style.backgrounds.image_slots()[0].as_ref().unwrap() {
         BackgroundImage::Url(value) => value,
         BackgroundImage::Gradient(_) => panic!("expected URL"),
     }
@@ -66,7 +66,7 @@ fn vars_pending_shorthand_and_computed_inheritance_distinguish_origins() {
     assert!(Arc::ptr_eq(url_value(at("#p")), url_value(at("#i"))));
     assert_eq!(absolute(at("#v")), "https://b.test/b/Tile.PNG");
     assert_eq!(absolute(at("#s")), "https://b.test/b/Tile.PNG");
-    assert_eq!(at("#s").background_repeat, [false, false]);
+    assert_eq!(at("#s").backgrounds.repeats()[0], [false, false]);
     assert_eq!(at("#s").background_color, Color::rgb(255, 0, 0));
 }
 #[test]
@@ -89,7 +89,7 @@ fn admitted_empty_local_unresolved_and_invalid_values_have_distinct_states() {
         &url::ResolvedUrl::Unresolved("http://[invalid".into())
     );
     assert_eq!(absolute(at("#bad")), "https://document.test/root/Kept.PNG");
-    assert!(at("#reset").background_image.is_none());
+    assert!(at("#reset").backgrounds.image_slots()[0].is_none());
 }
 #[test]
 fn token_payload_survives_declaration_post_var_and_supports_routes() {
@@ -113,7 +113,7 @@ fn token_payload_survives_declaration_post_var_and_supports_routes() {
     ] {
         assert_eq!(absolute(&styles[doc.query_selector(id).unwrap()]), expected);
     }
-    for value in ["url(A);color:red", "url(A)!important", "url(A),url(B)"] {
+    for value in ["url(A);color:red", "url(A)!important", "url(A),,url(B)"] {
         assert!(!supports_declaration("background-image", value));
     }
 }

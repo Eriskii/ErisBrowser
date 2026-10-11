@@ -253,12 +253,16 @@ fn engine<'a>(
     styles: &'a [ComputedStyle],
     fonts: &'a Fonts,
     backgrounds: &'a [Option<LoadedBackground<'a>>],
+    ranges: &'a [BackgroundBindingRange],
 ) -> Engine<'a> {
     Engine {
         doc,
         styles,
         fonts,
-        backgrounds,
+        backgrounds: BackgroundBindings {
+            ranges,
+            slots: backgrounds,
+        },
         background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
         viewport: Size {
             width: 64.0,
@@ -275,6 +279,7 @@ fn engine<'a>(
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
+            background_image_index: 0,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,
@@ -311,7 +316,7 @@ fn stretching_revives_zero_content_gradient_and_recomputes_selected_clip() {
     let styles = crate::css::compute_styles(&doc, &doc.stylesheets(), 32.0, 24.0);
     let id = doc.query_selector("#box").unwrap();
     let fonts = Fonts::new();
-    let mut e = engine(&doc, &styles, &fonts, &[]);
+    let mut e = engine(&doc, &styles, &fonts, &[], &[]);
     let mut f = e.fragment(id, 8.0, 8.0, 0);
     assert_eq!(f.size.height, 4.0);
     let before: Vec<_> = f.commands.iter().filter_map(image_geometry).collect();
@@ -351,7 +356,8 @@ fn stretching_loaded_url_reuses_the_once_paid_key() {
         key: "abc",
         natural,
     });
-    let mut e = engine(&doc, &styles, &fonts, &loaded);
+    let background_ranges = singleton_ranges(loaded.len());
+    let mut e = engine(&doc, &styles, &fonts, &loaded, &background_ranges);
     let mut f = e.fragment(id, 8.0, 8.0, 0);
     assert_eq!(e.background_key_bytes_left, MAX_BACKGROUND_KEY_BYTES - 3);
     let key_ptr = f
@@ -403,16 +409,15 @@ fn stretching_loaded_url_reuses_the_once_paid_key() {
     assert_eq!(e.background_key_bytes_left, MAX_BACKGROUND_KEY_BYTES - 3);
 }
 #[test]
-fn new_stretch_shape_work_is_admitted_before_any_publication() {
+fn retile_paint_refusal_preserves_completed_geometry() {
     let doc = Document::parse(&stretch_source("linear-gradient(red,blue)"));
     let styles = crate::css::compute_styles(&doc, &doc.stylesheets(), 32.0, 24.0);
     let id = doc.query_selector("#box").unwrap();
     let fonts = Fonts::new();
     for budget in [16, 17] {
-        let mut e = engine(&doc, &styles, &fonts, &[]);
+        let mut e = engine(&doc, &styles, &fonts, &[], &[]);
         let mut f = e.fragment(id, 8.0, 8.0, 0);
         assert_eq!(f.boxes.len(), 1);
-        let before: Vec<_> = f.commands.iter().filter_map(image_geometry).collect();
         let mut work = budget;
         assert_eq!(
             stretch_fragment_background_boxes(&mut f, 10.0, &styles[id], 8.0, None, &mut work),
@@ -420,15 +425,15 @@ fn new_stretch_shape_work_is_admitted_before_any_publication() {
         );
         if budget == 16 {
             assert_eq!(work, 16);
-            assert_eq!(f.size.height, 4.0);
-            assert_eq!(f.hits[0].rect.height, 4.0);
-            assert_eq!(f.boxes[0].border.height, 4.0);
+            assert_eq!(f.size.height, 10.0);
+            assert_eq!(f.hits[0].rect.height, 10.0);
+            assert_eq!(f.boxes[0].border.height, 10.0);
             assert_eq!(
                 f.commands
                     .iter()
                     .filter_map(image_geometry)
                     .collect::<Vec<_>>(),
-                before
+                Vec::new()
             );
         } else {
             assert_eq!(work, 0);
@@ -447,7 +452,7 @@ fn translated_fractional_table_retile_uses_forward_insets() {
     let styles = crate::css::compute_styles(&doc, &doc.stylesheets(), 32.0, 24.0);
     let id = doc.query_selector("#box").unwrap();
     let fonts = Fonts::new();
-    let mut e = engine(&doc, &styles, &fonts, &[]);
+    let mut e = engine(&doc, &styles, &fonts, &[], &[]);
     let mut f = e.fragment(id, 0.3, 0.3, 0);
     let g = f.boxes.iter().find(|g| g.node == id).unwrap();
     assert_eq!(g.border, rect(0.1, 0.0, 0.3, 2.0));
@@ -535,7 +540,7 @@ fn oversized_table_available_width_survives_the_forced_border_clamp() {
     let styles = crate::css::compute_styles(&doc, &doc.stylesheets(), 32.0, 24.0);
     let id = doc.query_selector("#box").unwrap();
     let fonts = Fonts::new();
-    let mut e = engine(&doc, &styles, &fonts, &[]);
+    let mut e = engine(&doc, &styles, &fonts, &[], &[]);
     let mut f = e.fragment(id, 2_000_000.0, 2_000_000.0, 0);
     assert_eq!(f.size.width, 1_000_000.0);
     assert_eq!(
@@ -651,12 +656,12 @@ fn principal_extraction_preserves_raw_origin_until_each_original_rect_call() {
     );
     let styles = crate::css::compute_styles(&doc, &doc.stylesheets(), 10.0, 4.0);
     let id = doc.query_selector("#box").unwrap();
-    assert_eq!(styles[id].background_origin, BackgroundBox::Padding);
-    assert_eq!(styles[id].background_clip, BackgroundBox::Border);
+    assert_eq!(styles[id].backgrounds.origins()[0], BackgroundBox::Padding);
+    assert_eq!(styles[id].backgrounds.clips()[0], BackgroundBox::Border);
     let fonts = Fonts::new();
-    let mut e = engine(&doc, &styles, &fonts, &[]);
+    let mut e = engine(&doc, &styles, &fonts, &[], &[]);
     let size = e.layout_box_sized(id, -1_000_001.0, 0.0, 10.0, (Some(10.0), Some(4.0)), 0);
-    assert_eq!((size.width, size.height), (10.0, 4.0));
+    assert_eq!((size.size.width, size.size.height), (10.0, 4.0));
     let gradients: Vec<_> = e
         .commands
         .iter()
@@ -701,4 +706,35 @@ fn principal_extraction_preserves_raw_origin_until_each_original_rect_call() {
             .iter()
             .any(|command| matches!(command, DrawCommand::BoxDecoration(_)))
     );
+}
+
+// Adapt legacy singleton fixtures to the borrowed, layer-indexed binding view.
+fn singleton_ranges(count: usize) -> Vec<BackgroundBindingRange> {
+    (0..count)
+        .map(|index| BackgroundBindingRange {
+            start: u32::try_from(index).unwrap(),
+            len: 1,
+        })
+        .collect()
+}
+fn layout_with_backgrounds(
+    doc: &Document,
+    styles: &[ComputedStyle],
+    width: f32,
+    height: f32,
+    fonts: &Fonts,
+    slots: &[Option<LoadedBackground<'_>>],
+) -> LayoutResult {
+    let ranges = singleton_ranges(slots.len());
+    crate::layout::layout_with_backgrounds(
+        doc,
+        styles,
+        width,
+        height,
+        fonts,
+        BackgroundBindings {
+            ranges: &ranges,
+            slots,
+        },
+    )
 }

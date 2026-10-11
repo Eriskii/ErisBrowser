@@ -25,9 +25,9 @@ fn style(declarations: &str) -> ComputedStyle {
 }
 fn geometry(style: &ComputedStyle) -> (BackgroundSize, BackgroundPosition, [bool; 2]) {
     (
-        style.background_size,
-        style.background_position,
-        style.background_repeat,
+        style.backgrounds.sizes()[0],
+        style.backgrounds.positions()[0],
+        style.backgrounds.repeats()[0],
     )
 }
 
@@ -65,7 +65,9 @@ fn positions_have_independent_one_two_three_four_value_literals() {
             "{value}"
         );
         assert_eq!(
-            style(&format!("background-position:{value}")).background_position,
+            style(&format!("background-position:{value}"))
+                .backgrounds
+                .positions()[0],
             BackgroundPosition { x, y }
         );
     }
@@ -154,7 +156,9 @@ fn sizes_preserve_auto_axes_and_calculated_range_semantics() {
         );
         assert!(supports_declaration("background-size", value));
         assert_eq!(
-            style(&format!("background-size:{value}")).background_size,
+            style(&format!("background-size:{value}"))
+                .backgrounds
+                .sizes()[0],
             expected
         );
     }
@@ -162,7 +166,7 @@ fn sizes_preserve_auto_axes_and_calculated_range_semantics() {
         "font-size:20px;background-size:calc(2em + 10%) 1rem;background-position:right calc(2em + 10%) bottom -5px",
     );
     assert_eq!(
-        computed.background_size,
+        computed.backgrounds.sizes()[0],
         BackgroundSize::Explicit {
             width: Calc {
                 px: 40.0,
@@ -173,7 +177,7 @@ fn sizes_preserve_auto_axes_and_calculated_range_semantics() {
         }
     );
     assert_eq!(
-        computed.background_position,
+        computed.backgrounds.positions()[0],
         BackgroundPosition {
             x: end(Calc {
                 px: 40.0,
@@ -200,7 +204,9 @@ fn repeat_axes_and_aliases_are_exact() {
         assert_eq!(parse_repeat(value, &mut 100_000), Ok(Some(expected)));
         assert!(supports_declaration("background-repeat", value));
         assert_eq!(
-            style(&format!("background-repeat:{value}")).background_repeat,
+            style(&format!("background-repeat:{value}"))
+                .backgrounds
+                .repeats()[0],
             expected
         );
     }
@@ -224,7 +230,7 @@ fn invalid_geometry_is_rejected_across_shared_entrypoints() {
                 "center 2px bottom",
                 "left center 3px",
                 "left 2px top 3px junk",
-                "left,top",
+                "left,,top",
                 "calc(1px/**/+/**/2px)",
             ][..],
         ),
@@ -242,7 +248,7 @@ fn invalid_geometry_is_rejected_across_shared_entrypoints() {
                 "cover auto",
                 "auto contain",
                 "auto auto auto",
-                "1px,2px",
+                "1px,,2px",
                 "calc(1px+ 2px)",
                 "calc(1px * 2)",
                 "calc(infinity * 1px)",
@@ -256,7 +262,7 @@ fn invalid_geometry_is_rejected_across_shared_entrypoints() {
                 "repeat-x repeat",
                 "repeat repeat-y",
                 "repeat repeat repeat",
-                "repeat,no-repeat",
+                "repeat,,no-repeat",
             ][..],
         ),
     ] {
@@ -374,7 +380,7 @@ fn shorthand_resets_all_geometry_and_invalid_variables_never_resurrect() {
     ));
     assert_eq!(geometry(&late), initial);
     assert_eq!(late.background_color, Color::TRANSPARENT);
-    assert!(late.background_image.is_none());
+    assert!(late.backgrounds.image_slots()[0].is_none());
     for (property, invalid) in [
         ("background-size", "-1px"),
         ("background-position", "top 20%"),
@@ -382,9 +388,9 @@ fn shorthand_resets_all_geometry_and_invalid_variables_never_resurrect() {
     ] {
         let late = style(&format!("{prefix}--bad:{invalid};{property}:var(--bad)"));
         match property {
-            "background-size" => assert_eq!(late.background_size, initial.0),
-            "background-position" => assert_eq!(late.background_position, initial.1),
-            _ => assert_eq!(late.background_repeat, initial.2),
+            "background-size" => assert_eq!(late.backgrounds.sizes()[0], initial.0),
+            "background-position" => assert_eq!(late.backgrounds.positions()[0], initial.1),
+            _ => assert_eq!(late.backgrounds.repeats()[0], initial.2),
         }
     }
 }
@@ -485,7 +491,7 @@ fn parser_work_bounds_and_fixed_style_storage_are_explicit() {
 }
 
 fn gradient_handle(style: &ComputedStyle) -> &Arc<crate::graphics::gradient::LinearGradient> {
-    match style.background_image.as_ref().unwrap() {
+    match style.backgrounds.image_slots()[0].as_ref().unwrap() {
         crate::css::BackgroundImage::Gradient(value) => value,
         crate::css::BackgroundImage::Url(_) => panic!("expected gradient"),
     }

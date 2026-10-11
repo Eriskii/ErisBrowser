@@ -2,12 +2,21 @@
 use super::*;
 use crate::{
     css::BackgroundImage,
-    layout::{LoadedBackground, RasterNaturalSize},
+    layout::{BackgroundBindingRange, BackgroundBindings, LoadedBackground, RasterNaturalSize},
 };
 use std::mem::size_of;
 
 const PASS_WORK: usize = 16 * 1024 * 1024;
 const PASS_METADATA: usize = 16 * 1024 * 1024;
+
+fn admit_slots(metadata: usize, count: usize, work: &mut usize) -> bool {
+    let complete = count
+        .checked_mul(size_of::<Option<LoadedBackground<'_>>>())
+        .and_then(|bytes| metadata.checked_add(bytes))
+        .and_then(|bytes| bytes.checked_add(64));
+    complete.is_some_and(|bytes| bytes <= PASS_METADATA)
+        && spend(work, count.saturating_mul(16).saturating_add(64))
+}
 
 fn spend(left: &mut usize, cost: usize) -> bool {
     if cost > *left {
@@ -26,13 +35,40 @@ fn requested(url: &Url) -> &str {
         .map_or(url.as_str(), |(request, _)| request)
 }
 
-fn absolute(style: &css::ComputedStyle) -> Option<&Url> {
-    match style.background_image.as_ref()? {
+fn absolute(image: &Option<BackgroundImage>) -> Option<&Url> {
+    match image.as_ref()? {
         BackgroundImage::Url(value) => match value.as_ref() {
             css::url::ResolvedUrl::Absolute(url) => Some(url),
             _ => None,
         },
         _ => None,
+    }
+}
+
+fn has_urls(style: &css::ComputedStyle, work: &mut usize) -> Option<bool> {
+    let images = style.backgrounds.image_slots();
+    if images.is_empty()
+        || images.len() > css::MAX_BACKGROUND_LAYERS
+        || !spend(work, images.len().saturating_mul(8).saturating_add(8))
+    {
+        return None;
+    }
+    Some(images.iter().any(|image| absolute(image).is_some()))
+}
+
+struct BackgroundSelection {
+    nodes: Vec<NodeId>,
+    ranges: Vec<BackgroundBindingRange>,
+    slot_count: usize,
+}
+impl BackgroundSelection {
+    // Allocation is admitted during selection. Allocate before mutable fetch,
+    // then populate borrowed values only after resource mutations are complete.
+    fn empty_slots<'a>(&self) -> Option<Vec<Option<LoadedBackground<'a>>>> {
+        let mut slots = Vec::new();
+        slots.try_reserve_exact(self.slot_count).ok()?;
+        slots.resize(self.slot_count, None);
+        Some(slots)
     }
 }
 
@@ -54,7 +90,10 @@ impl Page {
         let styles =
             css::compute_styles_from_sources(&self.document, &self.stylesheets(), width, height);
         let mut work = PASS_WORK;
-        let Some(nodes) = self.background_nodes(&styles, &mut work) else {
+        let Some(selected) = self.background_nodes(&styles, &mut work) else {
+            return layout::layout(&self.document, &styles, width, height, fonts);
+        };
+        let Some(mut bindings) = selected.empty_slots() else {
             return layout::layout(&self.document, &styles, width, height, fonts);
         };
         // Prepay the existing Arc-identity union before its temporary hash set.
@@ -67,15 +106,23 @@ impl Page {
             return layout::layout(&self.document, &styles, width, height, fonts);
         }
         let mut live_bytes = self.retained_image_bytes();
-        for &id in &nodes {
-            if let Some(url) = styles.get(id).and_then(absolute) {
-                self.prepare_background(url, &mut live_bytes, &mut work);
-            }
-            if work == 0 {
-                break;
+        'nodes: for &id in &selected.nodes {
+            for image in styles[id].backgrounds.image_slots() {
+                if let Some(url) = absolute(image) {
+                    self.prepare_background(url, &mut live_bytes, &mut work);
+                }
+                if work == 0 {
+                    break 'nodes;
+                }
             }
         }
-        self.layout_with_background_nodes(&styles, &nodes, &mut work, width, height, fonts)
+        self.layout_with_background_nodes(
+            &styles,
+            (&selected, &mut bindings),
+            &mut work,
+            [width, height],
+            fonts,
+        )
     }
 
     pub(super) fn layout_with_background_resources(
@@ -86,38 +133,52 @@ impl Page {
         fonts: &Fonts,
     ) -> LayoutResult {
         let mut work = PASS_WORK;
-        let Some(nodes) = self.background_nodes(styles, &mut work) else {
+        let Some(selected) = self.background_nodes(styles, &mut work) else {
             return layout::layout(&self.document, styles, width, height, fonts);
         };
-        self.layout_with_background_nodes(styles, &nodes, &mut work, width, height, fonts)
+        let Some(mut bindings) = selected.empty_slots() else {
+            return layout::layout(&self.document, styles, width, height, fonts);
+        };
+        self.layout_with_background_nodes(
+            styles,
+            (&selected, &mut bindings),
+            &mut work,
+            [width, height],
+            fonts,
+        )
     }
 
-    fn layout_with_background_nodes(
-        &self,
+    fn layout_with_background_nodes<'a>(
+        &'a self,
         styles: &[css::ComputedStyle],
-        nodes: &[NodeId],
+        table: (&BackgroundSelection, &mut [Option<LoadedBackground<'a>>]),
         work: &mut usize,
-        width: f32,
-        height: f32,
+        viewport: [f32; 2],
         fonts: &Fonts,
     ) -> LayoutResult {
-        let mut bindings = Vec::new();
-        if bindings
-            .try_reserve_exact(self.document.nodes.len())
-            .is_err()
-        {
-            return layout::layout(&self.document, styles, width, height, fonts);
-        }
-        bindings.resize(self.document.nodes.len(), None);
-        for &id in nodes {
-            if let Some(url) = styles.get(id).and_then(absolute) {
-                bindings[id] = self.cached_background(url, work);
-            }
-            if *work == 0 {
-                break;
+        let (selected, bindings) = table;
+        'nodes: for &id in &selected.nodes {
+            let start = selected.ranges[id].start as usize;
+            for (layer, image) in styles[id].backgrounds.image_slots().iter().enumerate() {
+                if let Some(url) = absolute(image) {
+                    bindings[start + layer] = self.cached_background(url, work);
+                }
+                if *work == 0 {
+                    break 'nodes;
+                }
             }
         }
-        layout::layout_with_backgrounds(&self.document, styles, width, height, fonts, &bindings)
+        layout::layout_with_backgrounds(
+            &self.document,
+            styles,
+            viewport[0],
+            viewport[1],
+            fonts,
+            BackgroundBindings {
+                ranges: &selected.ranges,
+                slots: bindings,
+            },
+        )
     }
 
     // One bounded connected-tree preorder, including hidden nodes for the
@@ -126,7 +187,7 @@ impl Page {
         &self,
         styles: &[css::ComputedStyle],
         work: &mut usize,
-    ) -> Option<Vec<NodeId>> {
+    ) -> Option<BackgroundSelection> {
         if self.resources.is_none() || self.policy_blocks_styles {
             return None;
         }
@@ -135,7 +196,7 @@ impl Page {
             .images
             .len()
             .saturating_add(self.resources.as_ref()?.image_cache.len());
-        let slot = size_of::<Option<LoadedBackground<'_>>>()
+        let slot = size_of::<BackgroundBindingRange>()
             + size_of::<NodeId>()
             + size_of::<(NodeId, usize, bool)>()
             + size_of::<bool>();
@@ -149,7 +210,14 @@ impl Page {
         {
             return None;
         }
-        if !styles.iter().take(count).any(|s| absolute(s).is_some()) {
+        let mut any_url = false;
+        for style in styles.iter().take(count) {
+            if has_urls(style, work)? {
+                any_url = true;
+                break;
+            }
+        }
+        if !any_url {
             return None;
         }
         let mut seen = Vec::new();
@@ -160,7 +228,7 @@ impl Page {
         selected.try_reserve_exact(count).ok()?;
         seen.resize(count, false);
         if count == 0 {
-            return Some(selected);
+            return None;
         }
         pending.push((self.document.root, 0usize, false));
         let mut edges = count;
@@ -193,7 +261,7 @@ impl Page {
                         .document
                         .attr(id, "type")
                         .is_some_and(|t| t.eq_ignore_ascii_case("hidden"));
-            if !hidden && style.and_then(absolute).is_some() {
+            if !hidden && has_urls(style?, work)? {
                 selected.push(id);
             }
             if depth >= 128 {
@@ -216,25 +284,43 @@ impl Page {
                     .map(|&child| (child, depth + 1, hidden || closed && Some(child) != summary)),
             );
         }
-        let has_background = |id: &NodeId| {
-            styles
-                .get(*id)
-                .is_some_and(|s| s.background_color.a > 0 || s.background_image.is_some())
-        };
-        let owner = html.filter(has_background).or_else(|| {
-            body.filter(|id| {
-                styles
-                    .get(*id)
-                    .is_some_and(|s| s.display != css::Display::None)
-                    && has_background(id)
-            })
-        });
-        if let Some(id) = owner.filter(|&id| styles.get(id).and_then(absolute).is_some())
-            && !selected.contains(&id)
+        if let Some(id) = layout::canvas_background_owner(styles, html, body)
+            && has_urls(styles.get(id)?, work)?
         {
-            selected.push(id);
+            if !spend(work, selected.len().saturating_mul(4).saturating_add(4)) {
+                return None;
+            }
+            if !selected.contains(&id) {
+                selected.push(id);
+            }
         }
-        Some(selected)
+        if selected.is_empty() || !spend(work, selected.len().saturating_mul(16).saturating_add(64))
+        {
+            return None;
+        }
+        let mut ranges = Vec::new();
+        ranges.try_reserve_exact(count).ok()?;
+        ranges.resize(count, BackgroundBindingRange::default());
+        let mut slot_count = 0usize;
+        for &id in &selected {
+            let len = styles.get(id)?.backgrounds.image_count();
+            if !(1..=css::MAX_BACKGROUND_LAYERS).contains(&len) {
+                return None;
+            }
+            ranges[id] = BackgroundBindingRange {
+                start: u32::try_from(slot_count).ok()?,
+                len: u8::try_from(len).ok()?,
+            };
+            slot_count = slot_count.checked_add(len)?;
+        }
+        if !admit_slots(metadata, slot_count, work) {
+            return None;
+        }
+        Some(BackgroundSelection {
+            nodes: selected,
+            ranges,
+            slot_count,
+        })
     }
 
     fn cached_background<'a>(
@@ -410,3 +496,7 @@ impl Page {
         resources.background_keys.insert(request, key);
     }
 }
+
+#[cfg(test)]
+#[path = "background_slot_admission_tests.rs"]
+mod slot_admission_tests;

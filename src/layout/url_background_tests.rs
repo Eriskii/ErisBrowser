@@ -9,11 +9,14 @@ fn prepare(source: &str, width: f32, height: f32) -> (Document, Vec<ComputedStyl
     (doc, styles)
 }
 fn url(style: &mut ComputedStyle) {
-    style.background_image = Some(BackgroundImage::Url(Arc::new(
-        crate::css::url::ResolvedUrl::Absolute(
-            ::url::Url::parse("https://example.test/tile.png").unwrap(),
-        ),
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut style.backgrounds,
+        Some(BackgroundImage::Url(Arc::new(
+            crate::css::url::ResolvedUrl::Absolute(
+                ::url::Url::parse("https://example.test/tile.png").unwrap(),
+            ),
+        ))),
+    );
 }
 fn natural() -> RasterNaturalSize {
     RasterNaturalSize {
@@ -100,12 +103,16 @@ fn engine<'a>(
     styles: &'a [ComputedStyle],
     fonts: &'a Fonts,
     backgrounds: &'a [Option<LoadedBackground<'a>>],
+    ranges: &'a [BackgroundBindingRange],
 ) -> Engine<'a> {
     Engine {
         doc,
         styles,
         fonts,
-        backgrounds,
+        backgrounds: BackgroundBindings {
+            ranges,
+            slots: backgrounds,
+        },
         background_key_bytes_left: 65_536,
         viewport: Size {
             width: 100.0,
@@ -122,6 +129,7 @@ fn engine<'a>(
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
+            background_image_index: 0,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,
@@ -420,9 +428,12 @@ fn canvas_uses_root_area_and_unavailable_root_keeps_body_local() {
         ]
         .repeat(8)
     );
-    styles[html].background_image = Some(BackgroundImage::Url(Arc::new(
-        crate::css::url::ResolvedUrl::Empty,
-    )));
+    crate::css::BackgroundData::test_replace_image(
+        &mut styles[html].backgrounds,
+        Some(BackgroundImage::Url(Arc::new(
+            crate::css::url::ResolvedUrl::Empty,
+        ))),
+    );
     let result = layout_with_backgrounds(&doc, &styles, 12.0, 8.0, &Fonts::new(), &bindings);
     assert_eq!(
         rasters(&result),
@@ -526,7 +537,8 @@ fn inline_pending_slots_are_private_balanced_and_budget_refusal_keeps_color() {
         inline_sides: 3,
         inline_basis: 4.0,
     };
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.boxes.push(geometry);
     e.commands_created = MAX_COMMANDS - 4;
     e.paint_inline_background(geometry, 0.0, 3);
@@ -546,7 +558,8 @@ fn inline_pending_slots_are_private_balanced_and_budget_refusal_keeps_color() {
     assert!(!e.inline_gradients);
 
     // One-shot failure uses a fresh preparation, not a runtime budget refill.
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.boxes.push(geometry);
     e.paint_inline_background(geometry, 0.0, 3);
     e.position_work_left = scan + 4;
@@ -555,7 +568,8 @@ fn inline_pending_slots_are_private_balanced_and_budget_refusal_keeps_color() {
     assert_eq!(e.background_key_bytes_left, 65_536);
     assert!(matches!(e.commands[2], DrawCommand::Rect { .. }));
     // A fresh preparation with exact scan+key work resolves one real image.
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.boxes.push(geometry);
     e.paint_inline_background(geometry, 0.0, 3);
     e.position_work_left = scan + 5;
@@ -566,7 +580,8 @@ fn inline_pending_slots_are_private_balanced_and_budget_refusal_keeps_color() {
     );
     assert!(matches!(&e.commands[2], DrawCommand::BoxDecoration(value)
         if matches!(&value.paint, crate::graphics::box_decoration::BoxPaint::Image {key,..} if key == "tile")));
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.boxes.push(geometry);
     e.paint_inline_background(geometry, 0.0, 3);
     e.background_key_bytes_left = 0;
@@ -615,11 +630,13 @@ fn background_key_utf8_caps_work_cuts_and_no_refund_are_exact() {
     let mut bindings = vec![None; doc.nodes.len()];
     bindings[a] = Some(loaded("tile"));
     let fonts = Fonts::new();
-    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    let background_ranges = singleton_ranges(bindings.len());
+    let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
     e.commands_created = MAX_COMMANDS;
     let command = e
         .background_command(
             a,
+            0,
             rect(0.0, 0.0, 4.0, 2.0),
             rect(0.0, 0.0, 4.0, 2.0),
             0.0,
@@ -651,8 +668,11 @@ fn table_row_and_stretched_cell_recompute_raster_tile_from_final_height() {
     let baseline = layout(&doc, &styles, 14.0, 10.0, &Fonts::new());
     url(&mut styles[a]);
     url(&mut styles[r]);
-    styles[a].background_size = size(Length::Auto, Length::Percent(100.0));
-    styles[a].background_position = center();
+    crate::css::BackgroundData::test_replace_size(
+        &mut styles[a].backgrounds,
+        size(Length::Auto, Length::Percent(100.0)),
+    );
+    crate::css::BackgroundData::test_replace_position(&mut styles[a].backgrounds, center());
     let mut bindings = vec![None; doc.nodes.len()];
     bindings[a] = Some(loaded("tile"));
     bindings[r] = Some(loaded("blue"));
@@ -711,9 +731,12 @@ fn flex_and_grid_reflow_use_final_geometry_without_moving_hits() {
         let a = doc.query_selector("#a").unwrap();
         let baseline = layout(&doc, &styles, 12.0, 6.0, &Fonts::new());
         url(&mut styles[a]);
-        styles[a].background_size = BackgroundSize::Contain;
-        styles[a].background_position = center();
-        styles[a].background_repeat = [false, false];
+        crate::css::BackgroundData::test_replace_size(
+            &mut styles[a].backgrounds,
+            BackgroundSize::Contain,
+        );
+        crate::css::BackgroundData::test_replace_position(&mut styles[a].backgrounds, center());
+        crate::css::BackgroundData::test_replace_repeat(&mut styles[a].backgrounds, [false, false]);
         let mut bindings = vec![None; doc.nodes.len()];
         bindings[a] = Some(loaded("tile"));
         let result = layout_with_backgrounds(&doc, &styles, 12.0, 6.0, &Fonts::new(), &bindings);
@@ -751,13 +774,34 @@ fn url_pixels_do_not_prove_opaque_rounded_interior() {
     let mut bindings = vec![None; doc.nodes.len()];
     bindings[a] = Some(loaded("tile"));
     let fonts = Fonts::new();
-    assert!(!engine(&doc, &styles, &fonts, &bindings).rounded_border(a));
+    assert!(
+        !engine(
+            &doc,
+            &styles,
+            &fonts,
+            &bindings,
+            &singleton_ranges(bindings.len())
+        )
+        .rounded_border(a)
+    );
     let result = layout_with_backgrounds(&doc, &styles, 12.0, 12.0, &fonts, &bindings);
     assert!(rasters(&result).is_empty());
     assert_eq!(pixels(&result, 12, 12)[6 * 12 + 6], 0xffffff);
     styles[a].background_color = Color::rgb(0, 255, 0);
-    styles[a].background_size = BackgroundSize::default();
-    assert!(engine(&doc, &styles, &fonts, &bindings).rounded_border(a));
+    crate::css::BackgroundData::test_replace_size(
+        &mut styles[a].backgrounds,
+        BackgroundSize::default(),
+    );
+    assert!(
+        engine(
+            &doc,
+            &styles,
+            &fonts,
+            &bindings,
+            &singleton_ranges(bindings.len())
+        )
+        .rounded_border(a)
+    );
     let result = layout_with_backgrounds(&doc, &styles, 12.0, 12.0, &fonts, &bindings);
     assert_eq!(
         rasters(&result),
@@ -821,7 +865,8 @@ fn url_principal_entry_reservation_and_missing_binding_are_color_safe() {
     let mut bindings = vec![None; doc.nodes.len()];
     bindings[a] = Some(loaded("tile"));
     for (remaining, count) in [(8, 0), (9, 6)] {
-        let mut e = engine(&doc, &styles, &fonts, &bindings);
+        let background_ranges = singleton_ranges(bindings.len());
+        let mut e = engine(&doc, &styles, &fonts, &bindings, &background_ranges);
         e.commands_created = MAX_COMMANDS - remaining;
         e.layout_box(a, 0.0, 0.0, 4.0, Some(4.0), 0);
         assert_eq!(e.commands.len(), count);
@@ -841,4 +886,35 @@ fn url_principal_entry_reservation_and_missing_binding_are_color_safe() {
     let result = layout_with_backgrounds(&doc, &styles, 4.0, 2.0, &fonts, &bindings);
     assert!(rasters(&result).is_empty());
     assert_eq!(pixels(&result, 4, 2), vec![0x00ff00; 8]);
+}
+
+// Adapt legacy singleton fixtures to the borrowed, layer-indexed binding view.
+fn singleton_ranges(count: usize) -> Vec<BackgroundBindingRange> {
+    (0..count)
+        .map(|index| BackgroundBindingRange {
+            start: u32::try_from(index).unwrap(),
+            len: 1,
+        })
+        .collect()
+}
+fn layout_with_backgrounds(
+    doc: &Document,
+    styles: &[ComputedStyle],
+    width: f32,
+    height: f32,
+    fonts: &Fonts,
+    slots: &[Option<LoadedBackground<'_>>],
+) -> LayoutResult {
+    let ranges = singleton_ranges(slots.len());
+    crate::layout::layout_with_backgrounds(
+        doc,
+        styles,
+        width,
+        height,
+        fonts,
+        BackgroundBindings {
+            ranges: &ranges,
+            slots,
+        },
+    )
 }

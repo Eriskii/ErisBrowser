@@ -32,11 +32,11 @@ Later symbols can increase charged scratch storage, and late numeric fallback
 still pays for discarded work. The local benchmark has small mixed median
 changes and several p95 regressions; broader interpreter performance remains open.
 
-[Linear gradient backgrounds](linear-gradients.md) now have a bounded software
-implementation for one legacy-sRGB layer. CSS declarations/supports/style setters,
+The initial [linear-gradient checkpoint](linear-gradients.md) provided a bounded
+software implementation for one legacy-sRGB layer. CSS declarations/supports/style setters,
 default background geometry, worker transport and explicit whole-scene native
-fallback are included. Broader gradient syntax, origin/clip/attachment controls,
-color spaces and GPU gradient interpolation remain open. All
+fallback were included. Broader gradient syntax, attachment controls, color
+spaces and GPU gradient interpolation remain open. At that checkpoint, all
 68 self-authored references pass after the canvas currentColor correction; the
 full Rust suites and strict checks also pass. The [native-gradient follow-up](vulkan-gradients.md)
 adds CPU-prepared opaque square-corner fragments outside opacity scopes to the
@@ -44,11 +44,19 @@ existing GPU image path; interpolation stays on the CPU. All three frozen
 fixtures pass in both output formats on NVIDIA, AMD RADV and llvmpipe, and all
 68 browser references pass. Native alpha/rounded/opacity-gradient paths and
 timing remain open. The [background geometry follow-up](background-geometry.md)
-adds size, physical position and repeat/no-repeat axes to that same single layer,
+added size, physical position and repeat/no-repeat axes to that same single layer,
 with five-property shorthand resets and final root/inline/table tile resolution.
 Its complete suites pass 2,568 Rust 1.88 native-feature tests and 2,370 Rust 1.98
 default-feature tests, with all 71 browser references pixel-exact and strict checks passing.
-`space`/`round`, author box controls, URL backgrounds and multiple layers remain open.
+Later [URL backgrounds](css-url-backgrounds.md) and
+[box selection](background-boxes.md) added retained-session URL preparation and
+origin/clip controls. [Layered backgrounds](background-layers.md) now extend
+those paths to at most eight existing image slots, with independent geometry
+lists, seven-longhand atomic resets and stable resource bindings. Their shared
+budgets and conservative CSSOM getter remain explicit limits. Attachment modes,
+`space`/`round`, blending, clip-to-text and broader gradient/color support remain
+open. The earlier test totals above belong to their named checkpoints; layered
+validation is recorded separately in its chapter.
 
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four
