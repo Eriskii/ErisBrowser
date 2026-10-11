@@ -21,6 +21,11 @@ fixed storage, including empty and resized sources. Its complete profile records
 eight passes, eight work-limit stops and two host exclusions; the resource
 outcomes still prevent an upstream baseline. Remaining methods, BigInt views,
 shared memory and broader interpreter accounting remain open work.
+The [one-pass own-key snapshot](own-keys-one-pass.md) removes a duplicate
+creation-order scan without changing any of the 45 compatibility reports.
+Later symbols can increase charged scratch storage, and late numeric fallback
+still pays for discarded work. The local benchmark has small mixed median
+changes and several p95 regressions; broader interpreter performance remains open.
 
 [Native rectangle accounting](native-rect-accounting.md) reserves the actual
 clipped pre-blend loop area for each Rect instead of a complete viewport. Small

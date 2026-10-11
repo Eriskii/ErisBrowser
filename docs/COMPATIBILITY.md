@@ -218,6 +218,13 @@ remain unmet. This does not extend custom species handling in map/filter/slice.
 17,822 historical case observations and 3,900 controls with unchanged quotas and
 baselines. String-key snapshots and for-in visited-name work are now charged;
 this adds no new conformance passes or unsupported-feature coverage.
+The [one-pass own-key snapshot follow-up](own-keys-one-pass.md) removes the
+second creation-order scan for the existing ordinary-string path. All 45
+reports retain their **18,298 case rows and 4,284 control rows exactly**,
+including existing failures and resource stops; all 38 historical gates pass.
+Quotas, policies and baselines remain unchanged. It can use more scratch
+storage when symbols follow strings. Local timing changes are small and mixed,
+with four p95 regressions, so this establishes no general browser speedup.
 
 [Array.from](../tests/conformance/array-from.md) supports synchronous iterable
 and array-like inputs, generic constructors, live mapping, own indexed data

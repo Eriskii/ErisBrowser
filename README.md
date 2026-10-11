@@ -32,6 +32,9 @@ profile records 22 passes, four work-limit stops and 18 exclusions.
 with independent fixed storage and leaves its source unchanged. Its complete
 18-mode upstream profile records eight passes, eight work-limit stops and two
 exclusions. Remaining bulk methods, BigInt codecs and shared memory remain unfinished.
+The [one-pass own-key snapshot](docs/own-keys-one-pass.md) removes a duplicate
+scan while preserving all 45 conformance reports. Its local timings show small
+mixed changes, including p95 regressions; no general speedup is established.
 [Reflect property operations](docs/reflect-properties.md) add nine methods,
 including receiver-aware `get`/`set`, descriptors, prototype changes and Boolean
 integrity checks. Their frozen upstream profile passes 200 modes and retains

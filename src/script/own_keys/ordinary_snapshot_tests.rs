@@ -68,7 +68,7 @@ fn ordinary_snapshot_preserves_literal_creation_order_symbols_and_utf16_handles(
     assert_eq!(result, expected);
     assert_eq!(
         (before.0 - runtime.steps, runtime.allocated - before.1),
-        (132, 8 * std::mem::size_of::<JsString>())
+        (108, 10 * std::mem::size_of::<JsString>())
     );
     assert_eq!(
         result
@@ -104,7 +104,7 @@ fn ordinary_snapshot_long_names_read_only_first_unit_and_share_payloads() {
             assert_eq!(actual.units().as_ptr(), original.units().as_ptr());
         }
     }
-    assert_eq!(costs, vec![(112, 8 * std::mem::size_of::<JsString>()); 3]);
+    assert_eq!(costs, vec![(96, 8 * std::mem::size_of::<JsString>()); 3]);
 }
 
 #[test]
@@ -120,7 +120,7 @@ fn ordinary_snapshot_small_orders_keep_generic_builder_and_symbols_stay_absent()
         (
             "var a={};for(var i=0;i<8;i++)a[Symbol('s')]=i;a;",
             Vec::new(),
-            96,
+            56,
             0,
         ),
     ] {
@@ -151,7 +151,7 @@ fn ordinary_snapshot_digit_leading_names_use_original_numeric_ordering() {
     assert!(runtime.own_key_stored_strings(id).unwrap().is_none());
     assert_eq!(
         (before.0 - runtime.steps, runtime.allocated - before.1),
-        (16, 0)
+        (28, 8 * std::mem::size_of::<JsString>())
     );
     assert_eq!(runtime.own_keys(&value).unwrap(), expected);
     // Both are ordinary property names, yet the conservative first-unit proof
@@ -239,8 +239,17 @@ fn ordinary_snapshot_reproves_after_mutation_and_for_in_keeps_live_descriptors()
 fn ordinary_snapshot_exact_and_one_short_admission_preserves_all_input_state() {
     let expected = names(&["z", "a", "m", "b", "y", "c", "x", "d"]);
     let heap = 8 * std::mem::size_of::<JsString>();
-    // Literal schedule: route4 + setup4 + 8*probe6 + (8+8*4+8*2).
-    for steps in [0, 3, 4, 7, 8, 13, 55, 56, 111, 112] {
+    // Literal schedule: route4 + setup4 + first probe6 + reserve8,
+    // then reacquire/clone4; each remaining entry pays probe6 + copy4.
+    // Test zero and the exact/one-short allowance at every reached debit.
+    let boundaries = [
+        4, 8, 14, 22, 26, 32, 36, 42, 46, 52, 56, 62, 66, 72, 76, 82, 86, 92, 96,
+    ];
+    for steps in std::iter::once(0).chain(
+        boundaries
+            .into_iter()
+            .flat_map(|boundary| [boundary - 1, boundary]),
+    ) {
         let (mut runtime, _) = fresh();
         let value = eight(&mut runtime);
         let id = runtime.property_object(&value).unwrap();
@@ -249,12 +258,18 @@ fn ordinary_snapshot_exact_and_one_short_admission_preserves_all_input_state() {
         let allocated = runtime.allocated;
         runtime.steps = steps;
         let result = runtime.own_keys(&value);
-        if steps == 112 {
+        if steps == 96 {
             assert_eq!(result.unwrap(), expected);
             assert_eq!((runtime.steps, runtime.allocated - allocated), (0, heap));
         } else {
             assert!(result.unwrap_err().is_resource_limit());
-            assert_eq!(runtime.allocated, allocated);
+            // The local result is retired on failure, but its admitted bytes
+            // remain charged after the first reserve stage at work22.
+            assert_eq!(
+                runtime.allocated,
+                allocated + if steps >= 22 { heap } else { 0 }
+            );
+            assert_eq!(runtime.steps, 0);
         }
         assert_eq!(runtime.objects[id].order, order);
         assert_eq!(format!("{:?}", runtime.objects[id].values), original);
@@ -265,16 +280,20 @@ fn ordinary_snapshot_exact_and_one_short_admission_preserves_all_input_state() {
         let value = eight(&mut runtime);
         let id = runtime.property_object(&value).unwrap();
         let order = runtime.objects[id].order.clone();
-        runtime.steps = 112;
+        runtime.steps = 96;
         runtime.allocated = MAX_HEAP - room;
         let result = runtime.own_keys(&value);
         if room == heap {
             assert_eq!(result.unwrap(), expected);
             assert_eq!(runtime.allocated, MAX_HEAP);
+            assert_eq!(runtime.steps, 0);
         } else {
             assert!(result.unwrap_err().is_resource_limit());
+            // charge() records the requested suffix capacity before refusal;
+            // no later probe or retained-handle clone has run at this point.
+            assert_eq!(runtime.allocated, MAX_HEAP - room + heap);
+            assert_eq!(runtime.steps, 74);
         }
-        assert_eq!(runtime.steps, 0);
         assert_eq!(runtime.objects[id].order, order);
         clean(&runtime);
     }

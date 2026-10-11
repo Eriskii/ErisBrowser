@@ -288,9 +288,10 @@ impl Runtime {
     fn own_key_stored_strings(&mut self, object: usize) -> Result<Option<Vec<JsString>>> {
         self.work(4)?;
         let order_len = self.objects[object].order.len();
-        let mut stored = 0usize;
+        let mut result = Vec::new();
         for ordinal in 0..order_len {
-            // Tag/count, first-unit access, digit bounds and loop control.
+            // Retain the paid tag/first-unit/branch/loop envelope. The old
+            // string counter is replaced by the first-output selection below.
             // Empty, non-ASCII and nonscalar strings cannot be Array indices.
             self.work(6)?;
             let Some(key) = self.objects[object].order[ordinal].as_string() else {
@@ -301,31 +302,32 @@ impl Runtime {
                 .first()
                 .is_some_and(|unit| (48..=57).contains(unit))
             {
+                // Earlier accepted handles are retired with this local Vec.
+                // Their work and reserved bytes stay charged before fallback.
                 return Ok(None);
             }
-            stored = stored.checked_add(1).ok_or_else(overflow)?;
-        }
-        // Pay the checked size/reserve, second tag/iteration pass and retained
-        // handle copy/move/retirement before allocating the sole result vector.
-        let work = order_len
-            .checked_mul(4)
-            .and_then(|work| work.checked_add(stored.checked_mul(2)?))
-            .and_then(|work| work.checked_add(8))
-            .ok_or_else(overflow)?;
-        self.work(work)?;
-        self.charge(
-            stored
-                .checked_mul(std::mem::size_of::<JsString>())
-                .ok_or_else(overflow)?,
-        )?;
-        let mut result = Vec::new();
-        result
-            .try_reserve_exact(stored)
-            .map_err(|_| ScriptError::resource("own-key string allocation failed"))?;
-        for key in &self.objects[object].order {
-            if let Some(key) = key.as_string() {
-                result.push(key.clone());
+            if result.is_empty() {
+                // Earlier entries were symbols. Reserve the remaining suffix
+                // once, including any later symbols, before the first clone.
+                self.work(8)?;
+                let capacity = order_len.checked_sub(ordinal).ok_or_else(overflow)?;
+                self.charge(
+                    capacity
+                        .checked_mul(std::mem::size_of::<JsString>())
+                        .ok_or_else(overflow)?,
+                )?;
+                result
+                    .try_reserve_exact(capacity)
+                    .map_err(|_| ScriptError::resource("own-key string allocation failed"))?;
             }
+            // Admit ordinal/tag reacquisition after the mutable admission
+            // calls (2), then the unchanged handle clone/push/retirement (2).
+            // No author code runs here, so the accepted source key is stable.
+            self.work(4)?;
+            let Some(key) = self.objects[object].order[ordinal].as_string() else {
+                unreachable!("accepted own key remains a string without callbacks")
+            };
+            result.push(key.clone());
         }
         Ok(Some(result))
     }
@@ -572,3 +574,9 @@ impl Runtime {
         self.read_ordinary_own_property(object, key)
     }
 }
+
+#[cfg(test)]
+mod one_pass_diagnostic_tests;
+
+#[cfg(test)]
+mod one_pass_tests;

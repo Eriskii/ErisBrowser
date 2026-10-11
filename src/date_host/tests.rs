@@ -525,10 +525,59 @@ fn host_poll_fragmented_response_and_final_hangup_preserve_all_bytes() {
     }
 }
 
+#[cfg(target_os = "linux")]
+fn complete_eof_marker_pid(text: &str) -> Option<u32> {
+    // The trailing newline commits the whole PID. An in-progress decimal
+    // prefix is itself a valid integer, so parsing unframed text is unsafe.
+    let digits = text.strip_suffix('\n')?;
+    if digits.is_empty() || digits.len() > 10 || !digits.bytes().all(|byte| byte.is_ascii_digit()) {
+        return None;
+    }
+    let pid = digits.parse().ok()?;
+    (pid != 0).then_some(pid)
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn host_eof_marker_requires_a_complete_positive_pid() {
+    for text in ["1\n", "42\n", "4294967295\n"] {
+        for end in 0..text.len() {
+            assert_eq!(
+                complete_eof_marker_pid(&text[..end]),
+                None,
+                "{text:?}/{end}"
+            );
+        }
+    }
+    assert_eq!(complete_eof_marker_pid("1\n"), Some(1));
+    assert_eq!(complete_eof_marker_pid("42\n"), Some(42));
+    assert_eq!(complete_eof_marker_pid("4294967295\n"), Some(u32::MAX));
+    for text in [
+        "",
+        "\n",
+        "0\n",
+        "42",
+        "+42\n",
+        "-42\n",
+        " 42\n",
+        "42 \n",
+        "42\r\n",
+        "42\n7\n",
+        "4294967296\n",
+        "１２\n",
+    ] {
+        assert_eq!(complete_eof_marker_pid(text), None, "{text:?}");
+    }
+}
+
 #[test]
 #[cfg(target_os = "linux")]
 fn host_eof_before_exit_waits_for_exit_status_or_cancellation_and_deadline() {
-    use std::cell::Cell;
+    use rustix::fs::{CWD, FileType, Mode, OFlags, mknodat, open};
+    use std::{
+        cell::{Cell, RefCell},
+        io::Write,
+    };
     for action in ["success", "nonzero", "cancel", "timeout"] {
         let base =
             std::env::temp_dir().join(format!("eris-zone-eof-{}-{action}", std::process::id()));
@@ -536,34 +585,81 @@ fn host_eof_before_exit_waits_for_exit_status_or_cancellation_and_deadline() {
         let gate = base.with_extension("gate");
         let _ = std::fs::remove_file(&marker);
         let _ = std::fs::remove_file(&gate);
+        mknodat(CWD, &gate, FileType::Fifo, Mode::RUSR | Mode::WUSR, 0).unwrap();
         let status = if action == "nonzero" { 7 } else { 0 };
-        // Explicitly close stdout while still alive. A valid response plus EOF
-        // must not succeed until the separate non-reaping exit observation.
+        // Explicitly close stdout while still alive, commit a complete PID,
+        // then block in the FIFO instead of burning CPU while the test polls.
+        // EOF alone must not succeed before the separate exit observation.
         let script = format!(
-            "while read line; do :; done; printf 'ETZ1\\001\\002UTC0'; exec 1>&-; printf '%s' $$ > '{}'; while [ ! -f '{}' ]; do :; done; exit {status}",
+            "while read line; do :; done; printf 'ETZ1\\001\\002UTC0'; exec 1>&-; printf '%s\\n' $$ > '{}'; read release < '{}'; [ \"$release\" = exit ] || exit 9; exit {status}",
             marker.display(),
             gate.display()
         );
         let path = shell_fixture(&format!("eof-{action}"), &script);
         let mut supervisor = ZoneDiscoverySupervisor::new();
         let observed_alive = Cell::new(false);
+        let gate_writer = RefCell::new(None::<std::fs::File>);
+        let gate_written = Cell::new(0usize);
+        let release = b"exit\n";
         let result = supervisor.capture(&path, config(), || {
-            if let Some(pid) = marker_pid(&marker) {
-                observed_alive
-                    .set(observed_alive.get() || Path::new(&format!("/proc/{pid}")).exists());
-                match action {
-                    "success" | "nonzero" => {
-                        std::fs::write(&gate, b"exit").unwrap();
+            let Some(pid) = std::fs::read_to_string(&marker)
+                .ok()
+                .and_then(|text| complete_eof_marker_pid(&text))
+            else {
+                return false;
+            };
+            if !Path::new(&format!("/proc/{pid}")).exists() {
+                return false;
+            }
+            observed_alive.set(true);
+            match action {
+                "success" | "nonzero" if gate_written.get() < release.len() => {
+                    // The callback must never block: a live helper can exit
+                    // before this open. Retry the handshake on the next poll.
+                    let mut writer = gate_writer.borrow_mut();
+                    if writer.is_none() {
+                        match open(
+                            &gate,
+                            OFlags::WRONLY | OFlags::NONBLOCK | OFlags::CLOEXEC,
+                            Mode::empty(),
+                        ) {
+                            Ok(fd) => *writer = Some(std::fs::File::from(fd)),
+                            Err(
+                                rustix::io::Errno::NXIO
+                                | rustix::io::Errno::AGAIN
+                                | rustix::io::Errno::INTR,
+                            ) => return false,
+                            Err(error) => panic!("open EOF gate for {action}: {error}"),
+                        }
                     }
-                    "cancel" => return true,
-                    _ => {}
+                    // Retain the writer and exact progress across a short or
+                    // interrupted write, so the reader cannot see false EOF.
+                    match writer
+                        .as_mut()
+                        .unwrap()
+                        .write(&release[gate_written.get()..])
+                    {
+                        Ok(0) => panic!("EOF gate made no progress for {action}"),
+                        Ok(written) => gate_written.set(gate_written.get() + written),
+                        Err(error)
+                            if matches!(
+                                error.kind(),
+                                std::io::ErrorKind::WouldBlock
+                                    | std::io::ErrorKind::Interrupted
+                                    | std::io::ErrorKind::BrokenPipe
+                            ) => {}
+                        Err(error) => panic!("write EOF gate for {action}: {error}"),
+                    }
                 }
+                "cancel" => return true,
+                _ => {}
             }
             false
         });
         assert!(
             observed_alive.get(),
-            "test must reach the still-live EOF state: {action}"
+            "test must reach the still-live EOF state: {action}; result={result:?}; marker={:?}",
+            std::fs::read_to_string(&marker)
         );
         match action {
             "success" => assert!(result.is_ok()),
@@ -572,9 +668,16 @@ fn host_eof_before_exit_waits_for_exit_status_or_cancellation_and_deadline() {
             "timeout" => assert!(matches!(result, Err(HostZoneError::TimedOut))),
             _ => unreachable!(),
         }
+        if matches!(action, "success" | "nonzero") {
+            assert_eq!(gate_written.get(), release.len());
+        } else {
+            assert!(gate_writer.borrow().is_none());
+            assert_eq!(gate_written.get(), 0);
+        }
         wait_for_capture_cleanup(&supervisor);
-        // The retained supervisor reaches idle only after its owned Child is reaped;
-        // a post-reap numeric PID lookup would not prove ownership (PID reuse).
+        drop(gate_writer);
+        // The supervisor reaches idle only after its owned Child is reaped.
+        // A post-reap numeric PID lookup would not prove ownership (PID reuse).
         for path in [path, marker, gate] {
             let _ = std::fs::remove_file(path);
         }
