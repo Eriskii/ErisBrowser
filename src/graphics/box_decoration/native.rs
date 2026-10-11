@@ -49,6 +49,38 @@ pub(crate) struct BoxMaskInfo {
     pub packed_input_bytes: usize,
 }
 
+/// Validated all-covered candidate metadata, before paint-specific funding.
+/// Construction stays private; no caller can invent a proof by filling fields.
+pub(crate) struct BoxRectProof {
+    candidate_pixels: u64,
+    classification_work: u64,
+}
+
+impl BoxRectProof {
+    fn new(candidate_pixels: u64) -> Result<Self, BoxMaskError> {
+        let classification_work = if candidate_pixels == 0 {
+            0
+        } else {
+            candidate_pixels
+                .checked_mul(2)
+                .and_then(|work| work.checked_add(SETUP_WORK))
+                .ok_or(BoxMaskError::WorkLimit)?
+        };
+        Ok(Self {
+            candidate_pixels,
+            classification_work,
+        })
+    }
+
+    pub(crate) fn candidate_pixels(&self) -> u64 {
+        self.candidate_pixels
+    }
+
+    pub(crate) fn classification_work(&self) -> u64 {
+        self.classification_work
+    }
+}
+
 pub(crate) struct BoxMaskWindow {
     mask: ShapeMask,
     candidate: PixelWindow,
@@ -86,10 +118,8 @@ fn debit(remaining: &mut u64, work: u64) -> Result<(), BoxMaskError> {
 }
 
 impl BoxMaskWindow {
-    /// Prove that one raw core Rect has exactly the Color box's coverage.
-    /// Inputs are already translated. Some(work) is a proof, not a debit: the
-    /// adapter must prepay it before retaining the rectangle route. None keeps
-    /// the existing mask path. No pixel scan or payload allocation occurs here.
+    /// Preserve the Color route's conservative software tariff, 8 + 3P.
+    /// The caller prepays this result before retaining the selected route.
     pub(crate) fn rect_work(
         width: u32,
         height: u32,
@@ -97,6 +127,27 @@ impl BoxMaskWindow {
         cutout: Option<RoundedBox>,
         clip: Rect,
     ) -> Result<Option<u64>, BoxMaskError> {
+        Self::rect_proof(width, height, outer, cutout, clip)?
+            .map(|proof| {
+                proof
+                    .classification_work()
+                    .checked_add(proof.candidate_pixels())
+                    .ok_or(BoxMaskError::WorkLimit)
+            })
+            .transpose()
+    }
+
+    /// Prove all-covered original Box candidates and exact raw Rect clipping.
+    /// Inputs are already translated. The immutable proof exposes the full
+    /// outer candidate count, before an image's later no-repeat narrowing.
+    /// No pixel scan, payload allocation or work debit occurs here.
+    pub(crate) fn rect_proof(
+        width: u32,
+        height: u32,
+        outer: RoundedBox,
+        cutout: Option<RoundedBox>,
+        clip: Rect,
+    ) -> Result<Option<BoxRectProof>, BoxMaskError> {
         // Keep invalid input observable before empty/ineligible early returns.
         if width == 0
             || height == 0
@@ -128,19 +179,19 @@ impl BoxMaskWindow {
             || clip.width <= 0.0
             || clip.height <= 0.0
         {
-            return Ok(Some(0));
+            return BoxRectProof::new(0).map(Some);
         }
         // Preserve the original Canvas/core f32 candidate-window expression.
         let visible = outer.rect.intersect(clip);
         if visible.width <= 0.0 || visible.height <= 0.0 {
-            return Ok(Some(0));
+            return BoxRectProof::new(0).map(Some);
         }
         let x0 = visible.x.floor().max(clip.x.ceil()).max(0.0) as i32;
         let y0 = visible.y.floor().max(clip.y.ceil()).max(0.0) as i32;
         let x1 = (visible.x + visible.width).ceil().min(width as f32) as i32;
         let y1 = (visible.y + visible.height).ceil().min(height as f32) as i32;
         if x1 <= x0 || y1 <= y0 {
-            return Ok(Some(0));
+            return BoxRectProof::new(0).map(Some);
         }
         // Box always blends through its mask. Opaque root Rect omits blend's
         // upper clip check, so prove that all candidate cells pass it anyway.
@@ -154,14 +205,10 @@ impl BoxMaskWindow {
         {
             return Ok(None);
         }
-        // Retain software setup, both classification tariffs and its Rect
-        // loop: A=0 and S=1. There are no native mask bytes or rows to prepare.
-        let work = ((x1 - x0) as u64)
+        let pixels = ((x1 - x0) as u64)
             .checked_mul((y1 - y0) as u64)
-            .and_then(|p| p.checked_mul(3))
-            .and_then(|work| work.checked_add(SETUP_WORK))
             .ok_or(BoxMaskError::WorkLimit)?;
-        Ok(Some(work))
+        BoxRectProof::new(pixels).map(Some)
     }
 
     /// Constant-size metadata only. Inputs are already in framebuffer space;
@@ -418,3 +465,6 @@ mod tests;
 
 #[cfg(test)]
 mod rect_tests;
+
+#[cfg(test)]
+mod proof_tests;

@@ -62,12 +62,19 @@ whole-frame software fallback. Try the [interactive box example](examples/backgr
 [Native color box decorations](docs/native-box-color.md) now prepare bounded
 coverage masks on the CPU for the existing Vulkan color and opacity-group
 composition paths, including translucent fills and correlated border rings.
-Image and gradient box paints, or scenes beyond the shared limits, retain
-whole-frame software fallback. The recorded comparisons are offscreen;
-this increment establishes no acquired-window or performance result.
+That checkpoint left image and gradient box paints on whole-frame software
+fallback. Its recorded comparisons are offscreen and establish no
+acquired-window or performance result.
 The [rectangle follow-up](docs/native-box-fastpath.md) avoids mask allocation
 for proven integer-aligned solid fills, allowing full-viewport backgrounds
 through the same Vulkan rectangle shader and existing resource limits.
+
+The [image box follow-up](docs/native-box-image.md) sends proven integer-aligned,
+square image boxes through the existing Vulkan image kernel. Background origin
+and clip remain independent; repeat phase, source alpha and opacity groups use
+the existing sampling path. Rounded or fractional image boxes, cutouts and
+gradient box paints retain whole-frame fallback. No fetching or shader change
+is introduced.
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

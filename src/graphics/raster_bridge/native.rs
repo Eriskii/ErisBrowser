@@ -5,7 +5,8 @@ use super::*;
 use crate::graphics::{
     Fonts, Rect as BrowserRect,
     box_decoration::{
-        BoxMaskError, BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow, BoxPaint,
+        BoxDecoration, BoxMaskError, BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow,
+        BoxPaint, BoxRectProof,
     },
     gradient::{OpaqueGradient, OpaqueGradientError, OpaqueGradientInfo},
     text_masks::{self, MaskInfo, MaskKey, Session, TextRun},
@@ -78,6 +79,8 @@ pub struct NativeSceneStats {
     pub box_masks: usize,
     /// Eligible Color box commands lowered without coverage or row payloads.
     pub box_rectangles: usize,
+    /// Eligible image boxes, including missing sources and empty windows.
+    pub box_background_images: usize,
     pub box_loop_work: u64,
     pub mask_sources: usize,
     pub coverage_bytes: usize,
@@ -193,6 +196,7 @@ struct InputCounts {
     scalars: usize,
     command_key_bytes: usize,
     image_commands: usize,
+    box_images: usize,
 }
 
 #[derive(Clone, Copy)]
@@ -248,10 +252,26 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                     if let Some(cutout) = &decoration.cutout {
                         validate_box_shape(cutout, location).map_err(leaf)?;
                     }
-                    // Unsupported paints remain a complete-scene refusal before
-                    // source or mask preparation, even when hidden/suppressed.
-                    if !matches!(decoration.paint, BoxPaint::Color(_)) {
-                        return Err(at(FallbackKind::UnsupportedBoxDecoration, phase, index));
+                    match &decoration.paint {
+                        BoxPaint::Color(_) => {}
+                        BoxPaint::Image { tile, key, .. } => {
+                            validate_rect(convert_rect(*tile), location).map_err(leaf)?;
+                            if tile.width <= 0.0 || tile.height <= 0.0 {
+                                return Err(at(FallbackKind::InvalidGeometry, phase, index));
+                            }
+                            add_key(
+                                key.len(),
+                                &mut counts.command_key_bytes,
+                                MAX_COMMAND_KEY_BYTES,
+                                location,
+                            )
+                            .map_err(leaf)?;
+                            counts.image_commands += 1;
+                            counts.box_images += 1;
+                        }
+                        BoxPaint::LinearGradient { .. } => {
+                            return Err(at(FallbackKind::UnsupportedBoxDecoration, phase, index));
+                        }
                     }
                 }
                 DrawCommand::BackgroundImage {
@@ -442,6 +462,76 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
     Ok(counts)
 }
 
+// The input validator has checked all raw geometry and balanced scopes. This
+// proof uses the current coordinate state without looking up or preparing images.
+fn box_image_proof(
+    target: Frame,
+    decoration: &BoxDecoration,
+    state: &CoordinateState,
+    phase: usize,
+    index: usize,
+) -> NativeResult<BoxRectProof> {
+    let offset = state.offset();
+    BoxMaskWindow::rect_proof(
+        target.width,
+        target.height,
+        decoration.shape.translated(offset.0, offset.1),
+        decoration
+            .cutout
+            .map(|shape| shape.translated(offset.0, offset.1)),
+        browser_rect(state.clip()),
+    )
+    .map_err(|error| box_error(error, phase, index))?
+    .ok_or_else(|| at(FallbackKind::UnsupportedBoxDecoration, phase, index))
+}
+
+// Complete this metadata-only pass before any Color mask classification or
+// source preparation. Each bounded scope Vec is dropped before the paid pass.
+fn preflight_box_images(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<()> {
+    for (phase, input) in phases.iter().enumerate() {
+        if !input.commands.iter().any(|command| matches!(command,
+            DrawCommand::BoxDecoration(decoration) if matches!(decoration.paint, BoxPaint::Image { .. }))) {
+            continue;
+        }
+        let mut state = CoordinateState::new_for_profile(Profile::Native, input.frame)
+            .map_err(|_| NativeFallback::new(FallbackKind::AllocationFailure, Some(phase), None))?;
+        for (index, command) in input.commands.iter().enumerate() {
+            if let DrawCommand::BoxDecoration(decoration) = command
+                && matches!(decoration.paint, BoxPaint::Image { .. })
+            {
+                box_image_proof(target, decoration, &state, phase, index)?;
+            }
+            let scope = match command {
+                DrawCommand::PushClip { rect } => Command::PushClip(convert_rect(*rect)),
+                DrawCommand::PopClip => Command::PopClip,
+                DrawCommand::PushFixed => Command::PushFixed,
+                DrawCommand::PopFixed => Command::PopFixed,
+                DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
+                DrawCommand::PopOpacity => Command::PopOpacity,
+                _ => continue,
+            };
+            state
+                .apply(&scope)
+                .map_err(|_| at(FallbackKind::InvalidScope, phase, index))?;
+        }
+        state
+            .finish()
+            .map_err(|_| NativeFallback::new(FallbackKind::InvalidScope, Some(phase), None))?;
+    }
+    Ok(())
+}
+
+fn native_image_key(command: &DrawCommand) -> Option<&str> {
+    match command {
+        DrawCommand::Image { key, .. } | DrawCommand::BackgroundImage { key, .. } => Some(key),
+        DrawCommand::BoxDecoration(decoration) => match &decoration.paint {
+            BoxPaint::Image { key, .. } => Some(key),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
 /// Canvas::image's destination loop, before blend rejects fractional clip
 /// edges. Inputs come from validated commands and the current coordinate state;
 /// neither source-image lookup nor opacity/alpha inspection changes this bound.
@@ -496,6 +586,7 @@ impl GradientReservation {
 #[allow(clippy::large_enum_variant)]
 enum BoxReservation {
     Rectangle { work: u64 },
+    BackgroundImage { work: u64 },
     Mask(BoxMaskReservation),
 }
 
@@ -534,6 +625,31 @@ fn geometry_pixel_work(
             ordinal += 1;
             let scope = match command {
                 DrawCommand::BoxDecoration(decoration) => {
+                    if let BoxPaint::Image { tile, repeat, .. } = &decoration.paint {
+                        let proof = box_image_proof(target, decoration, &state, phase, index)?;
+                        let geometry = BackgroundImageGeometry::new(
+                            target,
+                            convert_rect(decoration.shape.rect),
+                            convert_rect(*tile),
+                            *repeat,
+                            &state,
+                        )
+                        .map_err(|_| at(FallbackKind::InvalidGeometry, phase, index))?;
+                        // Keep the full outer classification tariff before
+                        // no-repeat narrowing or missing-source elision. All
+                        // terms are constant-size metadata; pay once before
+                        // retaining the route, without allocating a mask/LUT.
+                        let work = proof
+                            .classification_work()
+                            .checked_add(geometry.loop_work)
+                            .and_then(|work| work.checked_add(geometry.lut_work))
+                            .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                        *remaining = remaining
+                            .checked_sub(work)
+                            .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                        boxes[slot] = Some(BoxReservation::BackgroundImage { work });
+                        continue;
+                    }
                     let offset = state.offset();
                     let outer = decoration.shape.translated(offset.0, offset.1);
                     let cutout = decoration
@@ -942,6 +1058,7 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
         // Background geometry is stack metadata, never a generated raster.
         // Bound both return-value/caller copies during the charged prepass.
         (2, size_of::<BackgroundImageGeometry>()),
+        (2, size_of::<BoxRectProof>()),
         // ResolvedGradient: <=32 five-f64 stops plus bounded geometry/header.
         (32, 5 * size_of::<f64>()),
         (1, 256),
@@ -1011,6 +1128,9 @@ pub fn plan_native_scene(
     fonts: &Fonts,
 ) -> NativeResult<NativeScenePlan> {
     let counts = preflight(target, phases)?;
+    if counts.box_images > 0 {
+        preflight_box_images(target, phases)?;
+    }
     let preparation_peak_bytes = preparation_peak_bytes(target, false)?;
     if images.len() > MAX_SOURCE_ENTRIES || images.capacity() > MAX_STORE_CAPACITY {
         return Err(NativeFallback::new(
@@ -1056,9 +1176,7 @@ pub fn plan_native_scene(
     let mut missing_images = 0;
     for phase in phases {
         for command in phase.commands {
-            if let DrawCommand::Image { key, .. } | DrawCommand::BackgroundImage { key, .. } =
-                command
-            {
+            if let Some(key) = native_image_key(command) {
                 if let Some(image) = find_image(&entries, key) {
                     image_ids[ordinal] = Some(source_id(&mut unique, image));
                 } else {
@@ -1137,6 +1255,7 @@ pub fn plan_native_scene(
     let mut rounded = reserve_native::<RoundedTile>(MAX_COMMANDS)?;
     let mut box_tiles = reserve_native::<BoxMaskTile>(MAX_COMMANDS)?;
     let mut box_rectangles = 0;
+    let mut box_background_images = 0;
     let mut ranges = [(0, 0); MAX_NATIVE_PHASES];
     ordinal = 0;
     for (phase_index, phase) in phases.iter().enumerate() {
@@ -1152,13 +1271,29 @@ pub fn plan_native_scene(
             ordinal += 1;
             let lowered_command = match command {
                 DrawCommand::BoxDecoration(decoration) => {
-                    let BoxPaint::Color(color) = decoration.paint else {
-                        unreachable!("complete preflight refused unsupported box paint");
-                    };
                     let reservation = box_window
                         .ok_or_else(|| at(FallbackKind::MaskPreparation, phase_index, index))?;
-                    match reservation {
-                        BoxReservation::Rectangle { work } => {
+                    match (reservation, &decoration.paint) {
+                        (
+                            BoxReservation::BackgroundImage { work },
+                            BoxPaint::Image { tile, repeat, .. },
+                        ) => {
+                            ledger.box_loop_work =
+                                ledger.box_loop_work.checked_add(work).ok_or_else(|| {
+                                    at(FallbackKind::CpuPaintBudget, phase_index, index)
+                                })?;
+                            box_background_images += 1;
+                            let Some(source) = source_image else {
+                                continue;
+                            };
+                            Command::BackgroundImage {
+                                rect: convert_rect(decoration.shape.rect),
+                                tile: convert_rect(*tile),
+                                repeat: *repeat,
+                                source,
+                            }
+                        }
+                        (BoxReservation::Rectangle { work }, BoxPaint::Color(color)) => {
                             ledger.box_loop_work =
                                 ledger.box_loop_work.checked_add(work).ok_or_else(|| {
                                     at(FallbackKind::CpuPaintBudget, phase_index, index)
@@ -1172,7 +1307,7 @@ pub fn plan_native_scene(
                                 radius: 0.0,
                             }
                         }
-                        BoxReservation::Mask(reservation) => {
+                        (BoxReservation::Mask(reservation), BoxPaint::Color(color)) => {
                             let coverage = reservation.materialize(
                                 |shape| ledger.box_mask(shape, phase_index, index),
                                 |error| box_error(error, phase_index, index),
@@ -1190,6 +1325,7 @@ pub fn plan_native_scene(
                             }
                             continue;
                         }
+                        _ => unreachable!("validated paint and funded box route must agree"),
                     }
                 }
                 DrawCommand::BackgroundImage {
@@ -1537,6 +1673,7 @@ pub fn plan_native_scene(
         rounded_loop_work: ledger.rounded_loop_work,
         box_masks: box_tiles.len(),
         box_rectangles,
+        box_background_images,
         box_loop_work: ledger.box_loop_work,
         mask_sources: masks.len(),
         coverage_bytes: ledger.coverage,
@@ -1565,3 +1702,6 @@ mod box_prepass_tests;
 
 #[cfg(test)]
 mod box_fastpath_tests;
+
+#[cfg(test)]
+mod box_image_tests;

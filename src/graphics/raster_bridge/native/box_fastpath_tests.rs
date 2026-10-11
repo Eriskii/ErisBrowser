@@ -433,7 +433,11 @@ fn native_box_fastpath_validates_hidden_shape_and_refuses_other_paints_first() {
             eligible.clone(),
             DrawCommand::PushOpacity { opacity: 0.0 },
             DrawCommand::BoxDecoration(Arc::new(BoxDecoration {
-                shape: square(5.0, 0.0, 0.0, 1.0),
+                // True corners preserve the unsupported Image control after square admission.
+                shape: RoundedBox {
+                    radii: [[0.125; 2]; 4],
+                    ..square(5.0, 0.0, 0.0, 1.0)
+                },
                 cutout: None,
                 paint,
             })),

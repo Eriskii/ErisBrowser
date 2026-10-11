@@ -10,7 +10,7 @@ use std::sync::Arc;
 mod native;
 #[cfg(feature = "raster-bridge")]
 pub(crate) use native::{
-    BoxMaskError, BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow,
+    BoxMaskError, BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow, BoxRectProof,
 };
 
 const MAX_COORDINATE: f64 = 16_000_000.0;

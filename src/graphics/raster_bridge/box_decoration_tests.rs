@@ -48,7 +48,7 @@ fn poison() -> ImageStore {
     );
     store
 }
-// Native now admits Color only; both Probe routes retain their old refusal.
+// Native admits Color and proven square Images; both Probe routes still refuse.
 fn probe_routes(commands: &[DrawCommand], images: &ImageStore, kind: FallbackKind, index: usize) {
     let frame = Frame::new(4, 2, 0xffffff);
     let fonts = Fonts::new();
@@ -219,13 +219,16 @@ fn box_decoration_hidden_empty_offscreen_and_fixed_commands_still_refuse() {
             2,
         );
         native_color_admitted(&commands);
-        // Hidden unsupported image payload still refuses before poison validation.
+        // A hidden genuinely rounded Image stays unsupported before poison validation.
         let mut unsupported = commands.clone();
         let DrawCommand::BoxDecoration(payload) = &commands[2] else {
             unreachable!()
         };
         unsupported[2] = DrawCommand::BoxDecoration(Arc::new(BoxDecoration {
-            shape: payload.shape,
+            shape: RoundedBox {
+                radii: [[0.125; 2]; 4],
+                ..payload.shape
+            },
             cutout: payload.cutout,
             paint: BoxPaint::Image {
                 tile: rect(0.0, 0.0, 1.0, 1.0),
@@ -636,12 +639,33 @@ fn box_decoration_keys_and_alias_payloads_are_not_prepared_on_refusal() {
         image(&key),
     ];
     let refs = Arc::strong_count(&alias);
-    all_routes(
+    probe_routes(
         &commands,
         &images,
         FallbackKind::UnsupportedBoxDecoration,
         1,
     );
+    // Native validates raw Image keys before its separate eligibility pass.
+    let frame = Frame::new(4, 2, 0xffffff);
+    let fonts = Fonts::new();
+    assert_eq!(
+        native::plan_native_scene(
+            frame,
+            &[native::NativePhase {
+                frame,
+                commands: &commands,
+            }],
+            &images,
+            &fonts,
+        )
+        .unwrap_err(),
+        native::NativeFallback {
+            kind: FallbackKind::KeyBudget,
+            phase_index: Some(0),
+            command_index: Some(1),
+        }
+    );
+    assert!(fonts.cache.borrow().is_empty());
     assert_eq!(Arc::strong_count(&alias), refs);
     assert_eq!(images.len(), 2);
     assert!(alias.rgba.is_empty());

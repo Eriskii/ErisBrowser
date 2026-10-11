@@ -32,3 +32,6 @@ pub mod native_box_fixtures;
 
 #[cfg(feature = "browser-bridge")]
 pub mod box_rect_fixtures;
+
+#[cfg(feature = "browser-bridge")]
+pub mod box_image_fixtures;

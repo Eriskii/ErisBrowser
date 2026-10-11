@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Box image origin and clip</title>
+<style>
+html,body{margin:0;padding:0;background:white}
+#board{box-sizing:content-box;width:4px;height:2px;padding:1px;border:1px solid transparent;
+background-image:url(tile.png);background-origin:padding-box;background-clip:content-box;
+background-size:4px 2px;background-position:right bottom;background-repeat:no-repeat}
+</style>
+<div id="board"></div>
