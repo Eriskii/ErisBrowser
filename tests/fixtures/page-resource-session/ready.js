@@ -1,0 +1,1 @@
+document.title='Resource ready'; document.getElementById('status').textContent='ready'; document.getElementById('mutate').addEventListener('click',function(){document.getElementById('first').setAttribute('src','/later.png'); document.title='Resource clicked';});

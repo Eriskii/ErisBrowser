@@ -43,6 +43,27 @@ impl Navigation {
     }
 }
 
+// The original navigation fetcher and image ledgers survive initial loading.
+// Cache entries retain pixels and redirect taint; aliases share their Arc.
+struct PageResources {
+    fetcher: Fetcher,
+    image_cache: HashMap<String, (Arc<RasterImage>, bool)>,
+    failed: HashSet<(ResourceKind, String)>,
+    decoded_image_bytes: usize,
+    resource_url_work_left: usize,
+}
+impl PageResources {
+    fn new(fetcher: Fetcher) -> Self {
+        Self {
+            fetcher,
+            image_cache: HashMap::new(),
+            failed: HashSet::new(),
+            decoded_image_bytes: 0,
+            resource_url_work_left: 32 * 1024 * 1024,
+        }
+    }
+}
+
 pub struct Page {
     pub url: Url,
     pub document: Document,
@@ -51,6 +72,7 @@ pub struct Page {
     pub diagnostics: Vec<String>,
     pub load_ms: f64,
     pub scripts_enabled: bool,
+    resources: Option<PageResources>,
     image_origins: HashMap<String, bool>,
     external_styles: HashMap<NodeId, crate::stylesheet_loading::Sources>,
     inline_styles: HashMap<NodeId, (Arc<str>, crate::stylesheet_loading::Sources)>,
@@ -205,11 +227,8 @@ impl Page {
         let mut script_sources: HashMap<NodeId, Arc<str>> = HashMap::new();
         let mut text_cache: HashMap<(ResourceKind, String, &'static str), Arc<str>> =
             HashMap::new();
-        let mut image_cache: HashMap<String, (Arc<RasterImage>, bool)> = HashMap::new();
-        let mut failed = HashSet::new();
-        let mut decoded_bytes = 0usize;
+        let mut resources = PageResources::new(fetcher);
         let mut script_bytes = 0usize;
-        let mut resource_url_work = 32usize * 1024 * 1024;
         let mut style_text_left = MAX_STYLE_BYTES;
         let mut style_child_visits_left = crate::dom::MAX_STYLE_CHILD_VISITS;
         let mut inline_style_count = 0usize;
@@ -245,7 +264,12 @@ impl Page {
                 };
                 inline_style_count += 1;
                 let original: Arc<str> = original.into();
-                match styles.inline(&mut fetcher, &original, &base, &mut page.diagnostics) {
+                match styles.inline(
+                    &mut resources.fetcher,
+                    &original,
+                    &base,
+                    &mut page.diagnostics,
+                ) {
                     Ok(expanded) => {
                         page.inline_styles.insert(id, (original, expanded));
                     }
@@ -285,12 +309,12 @@ impl Page {
                 .len()
                 .saturating_add(href.len().saturating_mul(8))
                 .saturating_add(1);
-            if work > resource_url_work {
+            if work > resources.resource_url_work_left {
                 page.diagnostics
                     .push("resource URL work budget exceeded".into());
                 break;
             }
-            resource_url_work -= work;
+            resources.resource_url_work_left -= work;
             let mut target = match crate::document_url::parse(&page.document, &base, &href) {
                 Ok(url) => url,
                 Err(error) => {
@@ -300,7 +324,7 @@ impl Page {
             };
             target.set_fragment(None);
             if kind == ResourceKind::Style {
-                match styles.external(&mut fetcher, &target, &mut page.diagnostics) {
+                match styles.external(&mut resources.fetcher, &target, &mut page.diagnostics) {
                     Ok(source) => {
                         page.external_styles.insert(id, source);
                     }
@@ -318,11 +342,11 @@ impl Page {
                 environment_encoding
             };
             let text_key = (kind, key.clone(), fallback_encoding.name());
-            if failed.contains(&(kind, key.clone())) {
+            if resources.failed.contains(&(kind, key.clone())) {
                 continue;
             }
             if kind == ResourceKind::Image {
-                if let Some((image, origin_clean)) = image_cache.get(&key).cloned() {
+                if let Some((image, origin_clean)) = resources.image_cache.get(&key).cloned() {
                     page.attach_image(id, href, image, origin_clean);
                     continue;
                 }
@@ -330,10 +354,10 @@ impl Page {
                 script_sources.insert(id, source);
                 continue;
             }
-            let mut resource = match fetcher.fetch(&target, Some(&page.url), kind) {
+            let mut resource = match resources.fetcher.fetch(&target, Some(&page.url), kind) {
                 Ok(resource) => resource,
                 Err(error) => {
-                    failed.insert((kind, key));
+                    resources.failed.insert((kind, key));
                     page.diagnostics
                         .push(format!("resource {}: {error}", diagnostic_url(&href)));
                     continue;
@@ -349,7 +373,7 @@ impl Page {
                     );
                     let source = crate::text_encoding::decode(&resource.bytes, encoding);
                     if source.len() > MAX_SCRIPT_BYTES.saturating_sub(script_bytes) {
-                        failed.insert((kind, key));
+                        resources.failed.insert((kind, key));
                         page.diagnostics
                             .push("script source budget exceeded".into());
                         continue;
@@ -360,7 +384,8 @@ impl Page {
                     script_sources.insert(id, source);
                 }
                 ResourceKind::Image => {
-                    let remaining = MAX_DECODED_IMAGE_BYTES.saturating_sub(decoded_bytes);
+                    let remaining =
+                        MAX_DECODED_IMAGE_BYTES.saturating_sub(resources.decoded_image_bytes);
                     let result = if let Some(image) = resource.decoded_image.take() {
                         Ok(image)
                     } else if resource
@@ -378,20 +403,23 @@ impl Page {
                     match result {
                         Ok(image) => {
                             if image.rgba.len()
-                                > MAX_DECODED_IMAGE_BYTES.saturating_sub(decoded_bytes)
+                                > MAX_DECODED_IMAGE_BYTES
+                                    .saturating_sub(resources.decoded_image_bytes)
                             {
-                                failed.insert((kind, key));
+                                resources.failed.insert((kind, key));
                                 page.diagnostics
                                     .push("decoded image budget exceeded".into());
                                 continue;
                             }
-                            decoded_bytes += image.rgba.len();
+                            resources.decoded_image_bytes += image.rgba.len();
                             let image = Arc::new(image);
-                            image_cache.insert(key, (image.clone(), resource.origin_clean));
+                            resources
+                                .image_cache
+                                .insert(key, (image.clone(), resource.origin_clean));
                             page.attach_image(id, href, image, resource.origin_clean);
                         }
                         Err(error) => {
-                            failed.insert((kind, key));
+                            resources.failed.insert((kind, key));
                             page.diagnostics
                                 .push(format!("image {}: {error}", diagnostic_url(&href)));
                         }
@@ -400,6 +428,9 @@ impl Page {
                 ResourceKind::Document | ResourceKind::Style => {}
             }
         }
+        // No author callbacks have run. Publish the same owned state before
+        // scripts and SVG refresh so live memory includes retained cache pixels.
+        page.resources = Some(resources);
         page.run_scripts(&script_sources);
         page.refresh_inline_svg();
         page.load_ms = start.elapsed().as_secs_f64() * 1000.0;
@@ -421,6 +452,7 @@ impl Page {
             diagnostics: Vec::new(),
             load_ms: 0.0,
             scripts_enabled,
+            resources: None,
             image_origins: HashMap::new(),
             external_styles: HashMap::new(),
             inline_styles: HashMap::new(),
@@ -518,19 +550,27 @@ impl Page {
         self.image_origins.insert(key.clone(), origin_clean);
         self.images.insert(key, image);
     }
+    fn retained_image_bytes(&self) -> usize {
+        let cached = self
+            .resources
+            .iter()
+            .flat_map(|resources| resources.image_cache.values().map(|(image, _)| image));
+        let mut seen = HashSet::new();
+        self.images
+            .values()
+            .chain(cached)
+            .filter(|image| seen.insert(Arc::as_ptr(image)))
+            .fold(0usize, |bytes, image| {
+                bytes.saturating_add(image.rgba.len())
+            })
+    }
     pub fn refresh_inline_svg(&mut self) {
         // A DOM replacement must release rasters belonging to removed or now-inert SVG nodes.
         self.images
             .retain(|key, _| !key.starts_with("eris-inline-svg:"));
         self.image_origins
             .retain(|key, _| !key.starts_with("eris-inline-svg:"));
-        let mut seen = HashSet::new();
-        let mut image_bytes = self
-            .images
-            .values()
-            .filter(|image| seen.insert(Arc::as_ptr(image)))
-            .map(|image| image.rgba.len())
-            .sum::<usize>();
+        let mut image_bytes = self.retained_image_bytes();
         let mut source_bytes = 0usize;
         let mut count = 0usize;
         for id in self.document.query_selector_all("svg") {
@@ -2058,3 +2098,13 @@ mod tests {
 #[cfg(test)]
 #[path = "page/css_url_tests.rs"]
 mod css_url_tests;
+
+#[cfg(test)]
+#[path = "page/resource_bridge_tests.rs"]
+mod resource_bridge_tests;
+#[cfg(test)]
+#[path = "page/resource_loading_tests.rs"]
+mod resource_loading_tests;
+#[cfg(test)]
+#[path = "page/resource_tests.rs"]
+mod resource_tests;

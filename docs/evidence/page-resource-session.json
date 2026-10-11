@@ -1,0 +1,533 @@
+{
+  "archive": {
+    "bytes": 533277,
+    "members": 265,
+    "path": "page-resource-session.tar.gz",
+    "sha256": "df36ea6f1ec97aed853cfe987060aaa93f1a38c4b01e94acd14e3fdc328b9d10"
+  },
+  "base": "63eb8ed1cde35d84e2a8d0237552aa158adb680d",
+  "browser": {
+    "build_receipt": "/tmp/eris-page-resources-1/validation/candidate-browser-build-1.json",
+    "bytes": 62095568,
+    "path": "/tmp/eris-page-resources-1/eris-browser-final",
+    "sha256": "60923fa604b6ff59ab2270c0b318e79c65f042fe8337cec6c3458f00d9e7d52e",
+    "source": "/tmp/eris-page-resources-1/compiled-source-1.json",
+    "source_sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f",
+    "strip_receipt": "/tmp/eris-page-resources-1/validation/candidate-browser-strip-1.json"
+  },
+  "checks": {
+    "candidate-browser-build-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-page-resources-1/validation/candidate-browser-build-1.log",
+        "sha256": "22e0df986057b9ba5be07526ac5fb348862a3dedef42108383cc3e088acbb889"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-page-resources-1/validation/candidate-browser-build-1.json",
+        "sha256": "0befd371f50eb427b430c6ee88bf3d658f9a219012c159a343380bbacf31e68a"
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "candidate-browser-strip-1": {
+      "command": [
+        "strip",
+        "--strip-debug",
+        "/tmp/eris-page-resources-1/eris-browser-final"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-page-resources-1/validation/candidate-browser-strip-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 286,
+        "path": "/tmp/eris-page-resources-1/validation/candidate-browser-strip-1.json",
+        "sha256": "d589ec49196487fb37acea4c91dfbf37fc6d0113e296b620d81b53a63d0156f5"
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "default-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 143,
+        "path": "/tmp/eris-page-resources-1/validation/default-clippy-198-1.log",
+        "sha256": "0d696dc2ba28b1afbece3bfb391ff8a34e663773b1c942a35dec65f345df0c70"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-page-resources-1/validation/default-clippy-198-1.json",
+        "sha256": "53ce32ef65ed2390a97d4024e60350c1ac4f0a47228a80491bb893e7b21b9c49"
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "focused-resources-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "page::resource",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 1902,
+        "path": "/tmp/eris-page-resources-1/validation/focused-resources-1.log",
+        "sha256": "482cfbb2bb729df48adb7ce95043774e6df07570c1e484ecb63b30ce8ef53da1"
+      },
+      "receipt": {
+        "bytes": 439,
+        "path": "/tmp/eris-page-resources-1/validation/focused-resources-1.json",
+        "sha256": "a3615e29ebff7aebef6f291a8e7c43c221fff11acb908645ce2e640f2ccf0d8a"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 13,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "format-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-page-resources-1/validation/format-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 369,
+        "path": "/tmp/eris-page-resources-1/validation/format-1.json",
+        "sha256": "1f5399f5637b446c6097d6c78d80363c4687f9b0f4e2a1e231505d35d97d47d7"
+      }
+    },
+    "format-check-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-page-resources-1/validation/format-check-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 390,
+        "path": "/tmp/eris-page-resources-1/validation/format-check-1.json",
+        "sha256": "d28a9a1b1b9ce1d8cabcf191b1e333688623d3cd72bd79f3ecffb263b871ab97"
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "full-default-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 240583,
+        "path": "/tmp/eris-page-resources-1/validation/full-default-198-1.log",
+        "sha256": "ae3235be714799b4d23a820ceb5a5442b204c547707f5c8aa9c3dba5b50dd437"
+      },
+      "receipt": {
+        "bytes": 363,
+        "path": "/tmp/eris-page-resources-1/validation/full-default-198-1.json",
+        "sha256": "c768d5afdc61a0f61d43cb3cbc785c5f0180709c2009ef137bdf45d9307722fe"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2408,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "full-native-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 264040,
+        "path": "/tmp/eris-page-resources-1/validation/full-native-1.log",
+        "sha256": "7fe8dab16dd7743b35275e99d211ea17a0334ca0e6cd3f67efff1397e8f2290f"
+      },
+      "receipt": {
+        "bytes": 397,
+        "path": "/tmp/eris-page-resources-1/validation/full-native-1.json",
+        "sha256": "4895d7395f0f8006cee5bd1811139a0bd9d8b8a855ce9540c3e6acaa36c477c8"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2606,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "native-clippy-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 238,
+        "path": "/tmp/eris-page-resources-1/validation/native-clippy-188-1.log",
+        "sha256": "6ec7a8b07df57e70f0cf0986ab2ef460603b96eb61d6a7313571de98ae5ac69f"
+      },
+      "receipt": {
+        "bytes": 403,
+        "path": "/tmp/eris-page-resources-1/validation/native-clippy-188-1.json",
+        "sha256": "12ec99204c270f7645c2e68882e48560ad3afec391b6116cb7fd3f7f97efeeee"
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "native-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 238,
+        "path": "/tmp/eris-page-resources-1/validation/native-clippy-198-1.log",
+        "sha256": "7ab991593bae18d1709a528fb9313b7ad314c3cc3b829153e4f44faaaf568d27"
+      },
+      "receipt": {
+        "bytes": 404,
+        "path": "/tmp/eris-page-resources-1/validation/native-clippy-198-1.json",
+        "sha256": "518051d2a1827c19b60d2e505626e43b08d58f80e8dce5578e208a7773c3129f"
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    },
+    "parent-ci-1": {
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "38125901665",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--json",
+        "status,conclusion,jobs,url,headSha"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 26970,
+        "path": "/tmp/eris-page-resources-1/validation/parent-ci-1.log",
+        "sha256": "27ea7aca1e7c16d2fbdd57e105d32ade2fd9ed51c212388591bbf609f6955de9"
+      },
+      "receipt": {
+        "bytes": 333,
+        "path": "/tmp/eris-page-resources-1/validation/parent-ci-1.json",
+        "sha256": "09df2cabe8dd76be9caf536167ce3ae2d199ab2046dbcca2ad70a35fb471f420"
+      }
+    },
+    "parent-ci-list-1": {
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--commit",
+        "63eb8ed1cde35d84e2a8d0237552aa158adb680d",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,status,conclusion,headSha,url"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 193,
+        "path": "/tmp/eris-page-resources-1/validation/parent-ci-list-1.log",
+        "sha256": "f3cdf87eeaf25795f325aee8f3e8c8dadb42454a39a5d8f1051a46482905ca01"
+      },
+      "receipt": {
+        "bytes": 413,
+        "path": "/tmp/eris-page-resources-1/validation/parent-ci-list-1.json",
+        "sha256": "fbc7b6410aa9881670620797b4ba05bf8fd5b11964b61e02b073a0faa9a97001"
+      }
+    },
+    "reftests-final-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-page-resources-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-page-resources-1/eris-browser-final",
+        "--output-dir",
+        "/tmp/eris-page-resources-1/reftests-final"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 25478,
+        "path": "/tmp/eris-page-resources-1/validation/reftests-final-1.log",
+        "sha256": "d68999b100df76d65027f672aa7e876477159e1fcb310daa9d1b3c5547a1b9de"
+      },
+      "receipt": {
+        "bytes": 402,
+        "path": "/tmp/eris-page-resources-1/validation/reftests-final-1.json",
+        "sha256": "c39d52c7a42e55d6df5e7b8cb5583670b42d33870f0c8130da2d9732e7d280b6"
+      },
+      "source": {
+        "bytes": 61400,
+        "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+        "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+      }
+    }
+  },
+  "failed_attempts": 0,
+  "limitations": [
+    "CSS URL backgrounds and dynamic image fetching remain unsupported.",
+    "Fake bridge tests prove local routing and cache behavior; existing real confined-worker regressions provide separate bounded evidence.",
+    "Cache retention extends image and direct HTTP agent lifetime to Page drop; clearing public aliases does not refund cumulative decoder accounting.",
+    "No new GPU execution, probe execution, Chromium performance measurement, full compatibility or production-security claim."
+  ],
+  "parent_ci": "parent-ci-1",
+  "published": {
+    "README.md": {
+      "bytes": 51080,
+      "sha256": "324b225cc6fcb68177a7a2cc2d42fd35be69cad1b752e8c5f5ddad59991b9414"
+    },
+    "docs/SECURITY.md": {
+      "bytes": 78016,
+      "sha256": "80106962fbc19c82edeb2464622200afd3ce83324dde91ef36905c7675e4b0bf"
+    },
+    "docs/page-resource-session.md": {
+      "bytes": 6054,
+      "sha256": "58d069176c9a67e642ae736b2dcbdcfe1ff0859804b1219d56b2dab4e0116599"
+    },
+    "src/net.rs": {
+      "bytes": 24302,
+      "sha256": "1eb524d602eaa6e13c3eb07f751024e74accb629c64726d34f6a85d31dbb743c"
+    },
+    "src/page.rs": {
+      "bytes": 90930,
+      "sha256": "78db5ac58e65b23d89722378f80c3890f25d6dde16ca587607e8f938f02cf84e"
+    },
+    "src/page/resource_bridge_tests.rs": {
+      "bytes": 8146,
+      "sha256": "17ef7fdfa3781a1a8bb9902e206143aa3c346620a46830c39753ca6b2dc57aa8"
+    },
+    "src/page/resource_loading_tests.rs": {
+      "bytes": 17315,
+      "sha256": "cd1567a69f5a439ca4be79069ea9b0588f47742b8d70b619bb09b53b4858e306"
+    },
+    "src/page/resource_tests.rs": {
+      "bytes": 8777,
+      "sha256": "5dc0f864fde7062e69ad97b84788f5950335a71c45794b4de6e8002b9b46eae6"
+    },
+    "tests/fixtures/page-resource-session/cap.html": {
+      "bytes": 1631,
+      "sha256": "c638aef30954ac3cb56533b89c3963030940023eb06f697589c3d6b516e8227d"
+    },
+    "tests/fixtures/page-resource-session/document.html": {
+      "bytes": 253,
+      "sha256": "d46d07b4efcd3bdaccbb412890ef0500735f0c60510ca9940b3a1826648e348f"
+    },
+    "tests/fixtures/page-resource-session/negative.html": {
+      "bytes": 421,
+      "sha256": "2b3d8b6b61e1291370251d0963dd07256df76da6520a3f1da7faa3f2446711a6"
+    },
+    "tests/fixtures/page-resource-session/one-pixel.png": {
+      "bytes": 70,
+      "sha256": "194bdb273fa55018b8e0e248714246a196283bab5b8cd20a1dedd0b74ec206fd"
+    },
+    "tests/fixtures/page-resource-session/ready.js": {
+      "bytes": 263,
+      "sha256": "7fbdd44bfc3ca01dda6f6520c25d901de1499972693506861169789d8c9030ae"
+    },
+    "tests/fixtures/page-resource-session/redirects.html": {
+      "bytes": 152,
+      "sha256": "fa75e489b18d595975747501dbab954df7b40d544681dd7975523c5a9bc230f5"
+    },
+    "tests/fixtures/page-resource-session/sheet.css": {
+      "bytes": 33,
+      "sha256": "5f7329648a5cfcf09e7492e3f2fd74e5e7dab15afc1e74c8c8219dd2f5537d5d"
+    },
+    "tests/fixtures/page-resource-session/two-pixels.png": {
+      "bytes": 71,
+      "sha256": "0b8552e25c78b27dbcce4a1c391ff3bb3942509fb79c565e12f16f7a0a58604d"
+    }
+  },
+  "reftests": {
+    "check": "reftests-final-1",
+    "manifest": {
+      "bytes": 19928,
+      "path": "/tmp/eris-page-resources-1/worktree/tests/reftests/manifest.json",
+      "sha256": "1b62c990295b4d04c31d75c77196fa6cdcdeac3f0ca57413d40cf76086a49136"
+    },
+    "report": {
+      "bytes": 25478,
+      "path": "/tmp/eris-page-resources-1/reftests-final/report.json",
+      "sha256": "d68999b100df76d65027f672aa7e876477159e1fcb310daa9d1b3c5547a1b9de"
+    }
+  },
+  "results": {
+    "default_rust_1_98": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2408,
+      "rows": 30
+    },
+    "focused": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 13,
+      "rows": 1
+    },
+    "native_rust_1_88": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2606,
+      "rows": 30
+    },
+    "new_groups": {
+      "bridge": 2,
+      "http": 5,
+      "private": 6
+    },
+    "unchanged_references": 71
+  },
+  "scope": "Move the original navigation Fetcher, image cache, failure keys, successful external decode debit and URL work into private Page ownership. Count live cache/alias/SVG pixels once per shared Arc allocation; no new fetch trigger or public network API.",
+  "source": {
+    "bytes": 61400,
+    "path": "/tmp/eris-page-resources-1/compiled-source-1.json",
+    "sha256": "81afe23ce808e122c785781d9eca0b608634076961b8af389cd0c2fdebd6d47f"
+  },
+  "source_count": 546,
+  "status": "private page resource session retained and regression-tested; full browser goal remains open"
+}

@@ -93,6 +93,31 @@ pub struct Fetcher {
     count: usize,
     started: Instant,
 }
+
+/// Test-only snapshot for proving that page resource state retains its original
+/// fetcher. Bridged calls are accounted by the parent and broker, not these local
+/// counters. Reading this value does not reset or transfer any authority.
+#[cfg(test)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct FetcherAccounting {
+    pub(crate) count: usize,
+    pub(crate) total: usize,
+    pub(crate) started: Instant,
+    pub(crate) bridge_present: bool,
+}
+
+#[cfg(test)]
+impl Fetcher {
+    pub(crate) fn accounting_snapshot(&self) -> FetcherAccounting {
+        FetcherAccounting {
+            count: self.count,
+            total: self.total,
+            started: self.started,
+            bridge_present: self.bridge.is_some(),
+        }
+    }
+}
+
 impl Default for Fetcher {
     fn default() -> Self {
         Self::new(None)

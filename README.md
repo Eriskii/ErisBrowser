@@ -20,6 +20,11 @@ final URL through imports and parsing, while inline sources keep a document-base
 marker. A bounded, pure CSS `url()` decoder and resolver supports this foundation;
 URL background images and resource fetching from CSS properties remain unsupported.
 
+[Page resource sessions](docs/page-resource-session.md) retain the original navigation
+fetcher and image caches for the page lifetime. Request and decode allowances
+remain cumulative, and inline SVG accounting includes cache-only rasters. This
+adds no fetch trigger for layout, image-source mutations or CSS backgrounds.
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;
