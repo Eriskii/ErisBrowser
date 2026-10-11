@@ -15,6 +15,7 @@ fn rect(x: f32, y: f32, width: f32, height: f32) -> BrowserRect {
 }
 fn gradient(bounds: BrowserRect, tile: BrowserRect, stops: &[GradientStop]) -> DrawCommand {
     DrawCommand::LinearGradient {
+        repeat: [true, true],
         rect: bounds,
         tile,
         radius: 0.0,

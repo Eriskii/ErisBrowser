@@ -35,15 +35,20 @@ changes and several p95 regressions; broader interpreter performance remains ope
 [Linear gradient backgrounds](linear-gradients.md) now have a bounded software
 implementation for one legacy-sRGB layer. CSS declarations/supports/style setters,
 default background geometry, worker transport and explicit whole-scene native
-fallback are included. Broader gradient syntax, author background geometry
-controls, color spaces and GPU gradient interpolation remain open. All
+fallback are included. Broader gradient syntax, origin/clip/attachment controls,
+color spaces and GPU gradient interpolation remain open. All
 68 self-authored references pass after the canvas currentColor correction; the
 full Rust suites and strict checks also pass. The [native-gradient follow-up](vulkan-gradients.md)
 adds CPU-prepared opaque square-corner fragments outside opacity scopes to the
 existing GPU image path; interpolation stays on the CPU. All three frozen
 fixtures pass in both output formats on NVIDIA, AMD RADV and llvmpipe, and all
 68 browser references pass. Native alpha/rounded/opacity-gradient paths and
-timing remain open.
+timing remain open. The [background geometry follow-up](background-geometry.md)
+adds size, physical position and repeat/no-repeat axes to that same single layer,
+with five-property shorthand resets and final root/inline/table tile resolution.
+Its complete suites pass 2,568 Rust 1.88 native-feature tests and 2,370 Rust 1.98
+default-feature tests, with all 71 browser references pixel-exact and strict checks passing.
+`space`/`round`, author box controls, URL backgrounds and multiple layers remain open.
 
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four

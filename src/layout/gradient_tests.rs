@@ -455,6 +455,7 @@ fn pending_inline_admission_is_atomic_and_zero_positioning_boxes_are_not_pending
         gradient: styles[z].background_image.clone().unwrap(),
         current_color: Color::BLACK,
         stop_scale: 1.0,
+        repeat: [true; 2],
     });
     e.position_work_left = MAX_POSITION_WORK;
     e.finish_inline_gradients();

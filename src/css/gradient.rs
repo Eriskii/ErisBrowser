@@ -327,76 +327,11 @@ pub(super) fn parse_image(
 
 /// Returns borrowed image/color components only after validating the entire
 /// single-layer shorthand. No longhand is emitted from a malformed prefix.
-pub(super) fn background_parts<'s>(
-    value: &'s str,
-    work: &mut usize,
-) -> Result<Option<(&'s str, &'s str)>, Error> {
-    if value.len() > 4096 {
-        return Err(Error::Limit);
-    }
-    spend(work, value.len().saturating_mul(32) + 32)?;
-    let tokens = selectors::tokens(value, work)?;
-    let (mut at, mut image, mut color) = (0, None, None);
-    while at < tokens.len() {
-        if tokens[at].kind == Kind::Whitespace {
-            at += 1;
-            continue;
-        }
-        if image.is_some() && color.is_some() {
-            return Ok(None);
-        }
-        let start = at;
-        let first = tokens[at];
-        at += 1;
-        if first.kind == Kind::Function {
-            let mut depth = 1;
-            while at < tokens.len() && depth != 0 {
-                let token = tokens[at];
-                if token.open().is_some() {
-                    depth += 1;
-                }
-                if matches!(token.kind, Kind::Close(')')) {
-                    depth -= 1;
-                }
-                if depth > super::MAX_CALC_DEPTH + 2 {
-                    return Err(Error::Limit);
-                }
-                at += 1;
-            }
-            if depth != 0 {
-                return Ok(None);
-            }
-        }
-        let raw = &value[tokens[start].start..tokens[at - 1].end];
-        if first.kind == Kind::Function && first.is_name("linear-gradient")
-            || first.kind == Kind::Ident && first.is_name("none")
-        {
-            if image.is_some() || parse_image(raw, [16.0, 16.0, 800.0, 600.0], work)?.is_none() {
-                return Ok(None);
-            }
-            image = Some(raw);
-        } else {
-            if color.is_some() || !supports_color(&super::strip_comments(raw)) {
-                return Ok(None);
-            }
-            color = Some(raw);
-        }
-    }
-    if image.is_none() && color.is_none() {
-        return Ok(None);
-    }
-    Ok(Some((
-        image.unwrap_or("none"),
-        color.unwrap_or("transparent"),
-    )))
-}
-
 pub(crate) fn valid(name: &str, value: &str, work: &mut usize) -> Result<bool, Error> {
     if css_wide(value) {
         return Ok(true);
     }
     let result = match name {
-        "background" => background_parts(value, work).map(|value| value.is_some()),
         "background-image" => {
             parse_image(value, [16.0, 16.0, 800.0, 600.0], work).map(|value| value.is_some())
         }

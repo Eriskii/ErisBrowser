@@ -201,7 +201,9 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
             DrawCommand::Text { .. } => (7, None, None),
             DrawCommand::Image { .. } => (8, None, None),
             DrawCommand::Line { .. } => (9, None, None),
-            DrawCommand::LinearGradient { .. } => (10, None, None),
+            DrawCommand::LinearGradient { repeat, .. } => {
+                (if *repeat == [true, true] { 10 } else { 11 }, None, None)
+            }
         };
         if let Some(scope) = push {
             let slot = scopes
@@ -276,6 +278,7 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
                 gradient,
                 current_color,
                 stop_scale,
+                repeat,
             } => {
                 if !gradient.valid()
                     || *radius < 0.0
@@ -284,6 +287,9 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
                     || tile.height <= 0.0
                 {
                     return Err("benchmark identity invalid gradient".into());
+                }
+                if *repeat != [true, true] {
+                    bytes.byte(u8::from(repeat[0]) | (u8::from(repeat[1]) << 1))?;
                 }
                 bytes.rect(*rect)?;
                 bytes.rect(*tile)?;
@@ -395,6 +401,8 @@ fn images(bytes: &mut Bytes, images: &ImageStore) -> Result<(), String> {
     Ok(())
 }
 
+#[cfg(test)]
+mod background_geometry_tests;
 #[cfg(test)]
 mod gradient_tests;
 

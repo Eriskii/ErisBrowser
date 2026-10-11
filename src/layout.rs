@@ -3,8 +3,8 @@
 //! This implements the useful core of block, inline, flex and grid layout. It is
 //! deliberately explicit about its limits: it is not a complete CSS formatter.
 use crate::css::{
-    ComputedStyle, Display, GridBreadth, GridLine, GridTrack, Length, ObjectFit, ObjectPosition,
-    PositionComponent,
+    BackgroundPosition, BackgroundSize, ComputedStyle, Display, GridBreadth, GridLine, GridTrack,
+    Length, ObjectFit, ObjectPosition, PositionComponent,
 };
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
@@ -1131,7 +1131,12 @@ pub fn layout(
     }
     if let (Some(index), Some(source)) = (canvas_gradient, canvas_background_node) {
         let root = html.unwrap_or(source);
-        if let Some(tile) = engine.canvas_gradient_tile(root)
+        if let Some(area) = engine.canvas_gradient_tile(root)
+            && let Some(tile) = background_tile(
+                area,
+                engine.style(source).background_size,
+                engine.style(source).background_position,
+            )
             && let Some(gradient) = engine.style(source).background_image.clone()
         {
             engine.commands[index] = DrawCommand::LinearGradient {
@@ -1141,6 +1146,7 @@ pub fn layout(
                 gradient,
                 current_color: engine.style(root).color,
                 stop_scale: 1.0,
+                repeat: engine.style(source).background_repeat,
             };
         }
     }
@@ -1775,7 +1781,7 @@ impl Engine<'_> {
             }
         }
         if let Some(gradient) = gradient {
-            let tile = rect(
+            let area = rect(
                 x + border.left,
                 y + border.top,
                 width - border.horizontal(),
@@ -1784,11 +1790,14 @@ impl Engine<'_> {
             let rounded = self.rounded_border(id);
             let command = DrawCommand::LinearGradient {
                 rect: if rounded {
-                    tile
+                    area
                 } else {
                     rect(x, y, width, height)
                 },
-                tile,
+                // Keep the private zero tile until final restacking: a table
+                // cell can acquire a positive used size after row stretching.
+                tile: background_tile(area, style.background_size, style.background_position)
+                    .unwrap_or_default(),
                 radius: if rounded {
                     (style.border_radius - border.top).max(0.0)
                 } else {
@@ -1797,6 +1806,7 @@ impl Engine<'_> {
                 gradient,
                 current_color: style.color,
                 stop_scale: 1.0,
+                repeat: style.background_repeat,
             };
             let [background, top, right, bottom, left] = replacements;
             let commands = if rounded {
@@ -2561,7 +2571,10 @@ impl Engine<'_> {
             && if let Some(gradient) = &style.background_image {
                 style.border_color.a == 255
                     && (style.background_color.a == 255
-                        || !gradient.stops.is_empty()
+                        || style.background_size == BackgroundSize::default()
+                            && style.background_position == BackgroundPosition::default()
+                            && style.background_repeat == [true; 2]
+                            && !gradient.stops.is_empty()
                             && gradient.stops.iter().all(|stop| {
                                 use crate::graphics::gradient::GradientColor;
                                 match stop.color {
@@ -3181,8 +3194,12 @@ impl Engine<'_> {
         let Some(gradient) = style.background_image.clone() else {
             return;
         };
-        let (color, current_color, radius) =
-            (style.background_color, style.color, style.border_radius);
+        let (color, current_color, radius, repeat) = (
+            style.background_color,
+            style.color,
+            style.border_radius,
+            style.background_repeat,
+        );
         // Reserve the real fragment clip, both background layers and its closer
         // together. The full sliced strip is resolved after all fragment moves.
         if self.commands_created + self.open_clips + 4 > MAX_COMMANDS {
@@ -3211,6 +3228,7 @@ impl Engine<'_> {
             gradient,
             current_color,
             stop_scale: 1.0,
+            repeat,
         });
         self.push(DrawCommand::PopClip);
         self.inline_gradients = true;
@@ -3267,9 +3285,12 @@ impl Engine<'_> {
                 width: *width as f32,
                 height: area.height,
             };
+            let style = self.style(self.owners[index].node);
+            let resolved = background_tile(strip, style.background_size, style.background_position)
+                .unwrap_or_default();
             if let DrawCommand::LinearGradient { rect, tile, .. } = &mut self.commands[index] {
                 *rect = strip;
-                *tile = strip;
+                *tile = resolved;
             }
             if let Some(DrawCommand::Rect { rect, .. }) =
                 index.checked_sub(1).and_then(|i| self.commands.get_mut(i))
@@ -4270,14 +4291,18 @@ impl Engine<'_> {
                 color: background,
                 radius: 0.0,
             });
-            if let Some(gradient) = style.background_image.clone() {
+            if let Some(gradient) = style.background_image.clone()
+                && let Some(tile) =
+                    background_tile(row_rect, style.background_size, style.background_position)
+            {
                 self.push(DrawCommand::LinearGradient {
                     rect: row_rect,
-                    tile: row_rect,
+                    tile,
                     radius: 0.0,
                     gradient,
                     current_color: style.color,
                     stop_scale: 1.0,
+                    repeat: style.background_repeat,
                 });
             }
             self.paint_owner = saved_owner;
@@ -4316,7 +4341,13 @@ impl Engine<'_> {
             for hit in fragment.hits.iter_mut().skip(1) {
                 hit.rect.y += offset;
             }
-            stretch_fragment(&mut fragment, cell_height);
+            let style = self.style(cell.node);
+            stretch_fragment_background(
+                &mut fragment,
+                cell_height,
+                style.background_size,
+                style.background_position,
+            );
             let cell_x = x
                 + spacing
                 + tracks[..cell.column].iter().sum::<f32>()
@@ -4854,6 +4885,72 @@ fn fitted_image_rect(
     (result.width > 0.0 && result.height > 0.0).then_some(result)
 }
 
+/// Gradients have no intrinsic size or ratio. Resolve against the final
+/// padding area (or virtual inline strip), without enumerating repeated tiles.
+fn background_tile(area: Rect, size: BackgroundSize, position: BackgroundPosition) -> Option<Rect> {
+    let (aw, ah) = (f64::from(area.width), f64::from(area.height));
+    if ![f64::from(area.x), f64::from(area.y), aw, ah]
+        .iter()
+        .all(|v| v.is_finite())
+        || aw < 0.0
+        || ah < 0.0
+    {
+        return None;
+    }
+    let (width, height) = match size {
+        BackgroundSize::Cover | BackgroundSize::Contain => (aw, ah),
+        BackgroundSize::Explicit { width, height } => (
+            background_size_axis(width, aw)?,
+            background_size_axis(height, ah)?,
+        ),
+    };
+    let x = f64::from(area.x) + object_position_offset(position.x, aw - width)?;
+    let y = f64::from(area.y) + object_position_offset(position.y, ah - height)?;
+    let limit = f64::from(MAX_EXTENT);
+    if ![x, y, width, height].iter().all(|v| v.is_finite())
+        || x.abs() > limit
+        || y.abs() > limit
+        || width > limit
+        || height > limit
+        || width <= 0.0
+        || height <= 0.0
+    {
+        return None;
+    }
+    let tile = Rect {
+        x: x as f32,
+        y: y as f32,
+        width: width as f32,
+        height: height as f32,
+    };
+    // Narrowing a positive f64 calculation must not publish a zero f32 axis.
+    (tile.width > 0.0 && tile.height > 0.0).then_some(tile)
+}
+
+fn background_size_axis(length: Length, area: f64) -> Option<f64> {
+    let value = match length {
+        Length::Auto => area,
+        Length::Px(value) if value.is_finite() => f64::from(value),
+        Length::Percent(value) if value.is_finite() => area * f64::from(value) / 100.0,
+        Length::Calc {
+            px,
+            percent,
+            has_percent,
+        } if px.is_finite() && percent.is_finite() => {
+            f64::from(px)
+                + if has_percent {
+                    area * f64::from(percent) / 100.0
+                } else {
+                    0.0
+                }
+        }
+        _ => return None,
+    };
+    // Valid calculated sizes clamp after percentage resolution; clamping each
+    // coefficient or Length::resolve's extent clamp would distort the image.
+    value.is_finite().then_some(value.max(0.0))
+}
+
 fn object_position_offset(component: PositionComponent, gap: f64) -> Option<f64> {
     // Length::resolve clamps calc results and narrows to f32. Resolve the fixed
     // typed coefficients here, retaining signed free space until the final bound.
@@ -5173,9 +5270,18 @@ fn translate_fragment(fragment: &mut Fragment, dx: f32, dy: f32) {
 fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
     match command {
         DrawCommand::LinearGradient { rect, tile, .. } => {
-            for area in [rect, tile] {
-                area.x = finite(area.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
-                area.y = finite(area.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            rect.x = finite(rect.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            rect.y = finite(rect.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
+            // A tile can be locally valid before fragment placement. Clamping
+            // its translated origin changes repetition phase; omit it instead.
+            let x = f64::from(tile.x) + f64::from(dx);
+            let y = f64::from(tile.y) + f64::from(dy);
+            let limit = f64::from(MAX_EXTENT);
+            if x.is_finite() && y.is_finite() && x.abs() <= limit && y.abs() <= limit {
+                tile.x = x as f32;
+                tile.y = y as f32;
+            } else {
+                *tile = Rect::default();
             }
         }
         DrawCommand::Rect { rect, .. }
@@ -5203,12 +5309,28 @@ fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
 }
 
 /// Stretch the principal box paint, keeping child content at its start edge.
+#[cfg(test)]
 fn stretch_fragment(fragment: &mut Fragment, height: f32) {
+    stretch_fragment_background(
+        fragment,
+        height,
+        BackgroundSize::default(),
+        BackgroundPosition::default(),
+    );
+}
+
+fn stretch_fragment_background(
+    fragment: &mut Fragment,
+    height: f32,
+    size: BackgroundSize,
+    position: BackgroundPosition,
+) {
     let height = extent(height).max(fragment.size.height);
     if let Some(hit) = fragment.hits.first_mut() {
         hit.rect.height = height;
     }
     let old_height = fragment.size.height;
+    let mut padding = None;
     if let Some(node) = fragment.hits.first().map(|hit| hit.node)
         && let Some(g) = fragment.boxes.iter_mut().find(|g| g.node == node)
     {
@@ -5216,6 +5338,7 @@ fn stretch_fragment(fragment: &mut Fragment, height: f32) {
         g.border.height += extra;
         g.padding.height += extra;
         g.content.height += extra;
+        padding = Some(g.padding);
     }
     let paint_slots = 5 + usize::from(fragment.gradient);
     for (index, command) in fragment.commands.iter_mut().take(paint_slots).enumerate() {
@@ -5223,7 +5346,9 @@ fn stretch_fragment(fragment: &mut Fragment, height: f32) {
             match command {
                 DrawCommand::LinearGradient { rect, tile, .. } => {
                     rect.height += height - old_height;
-                    tile.height += height - old_height;
+                    *tile = padding
+                        .and_then(|area| background_tile(area, size, position))
+                        .unwrap_or_default();
                 }
                 DrawCommand::Rect { rect, .. } if fragment.rounded_border => {
                     if index == 0 {
@@ -5282,6 +5407,9 @@ fn fit_text(text: &str, width: f32, measure: impl Fn(&str) -> f32) -> String {
 
 #[cfg(test)]
 mod gradient_tests;
+
+#[cfg(test)]
+mod background_tests;
 
 #[cfg(test)]
 mod tests {

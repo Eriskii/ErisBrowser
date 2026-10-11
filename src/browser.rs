@@ -2229,6 +2229,7 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
             gradient,
             current_color,
             stop_scale,
+            repeat,
         } => DrawCommand::LinearGradient {
             rect: rect(r),
             tile: rect(tile),
@@ -2236,6 +2237,7 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
             gradient: Arc::clone(gradient),
             current_color: *current_color,
             stop_scale: stop_scale * z,
+            repeat: *repeat,
         },
         DrawCommand::Line {
             x1,
@@ -2255,6 +2257,8 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
     }
 }
 
+#[cfg(test)]
+mod background_geometry_tests;
 #[cfg(test)]
 mod gradient_tests;
 

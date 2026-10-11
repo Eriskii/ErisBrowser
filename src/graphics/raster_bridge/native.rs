@@ -229,6 +229,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                 DrawCommand::LinearGradient {
                     rect,
                     tile,
+                    repeat,
                     radius,
                     gradient,
                     current_color,
@@ -252,7 +253,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                     // Structural validation is bounded by 32 stops. The helper
                     // checks alpha before its empty-window return and allocates
                     // neither a resolved stop array nor source pixels here.
-                    OpaqueGradient::new(
+                    OpaqueGradient::new_with_repeat(
                         target.width,
                         target.height,
                         *rect,
@@ -261,6 +262,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                         gradient,
                         *current_color,
                         *stop_scale,
+                        *repeat,
                     )
                     .map_err(|error| gradient_error(error, phase, index))?;
                 }
@@ -504,13 +506,14 @@ fn geometry_pixel_work(
                 DrawCommand::LinearGradient {
                     rect,
                     tile,
+                    repeat,
                     gradient,
                     current_color,
                     stop_scale,
                     ..
                 } => {
                     let offset = state.offset();
-                    let Some(prepared) = OpaqueGradient::new(
+                    let Some(prepared) = OpaqueGradient::new_with_repeat(
                         target.width,
                         target.height,
                         rect.translated(offset.0, offset.1),
@@ -519,6 +522,7 @@ fn geometry_pixel_work(
                         gradient,
                         *current_color,
                         *stop_scale,
+                        *repeat,
                     )
                     .map_err(|error| gradient_error(error, phase, index))?
                     else {
@@ -1145,6 +1149,7 @@ pub fn plan_native_scene(
                 DrawCommand::LinearGradient {
                     rect,
                     tile,
+                    repeat,
                     gradient,
                     current_color,
                     stop_scale,
@@ -1154,7 +1159,7 @@ pub fn plan_native_scene(
                         continue;
                     };
                     let offset = state.offset();
-                    let prepared = OpaqueGradient::new(
+                    let prepared = OpaqueGradient::new_with_repeat(
                         target.width,
                         target.height,
                         rect.translated(offset.0, offset.1),
@@ -1163,6 +1168,7 @@ pub fn plan_native_scene(
                         gradient,
                         *current_color,
                         *stop_scale,
+                        *repeat,
                     )
                     .map_err(|error| gradient_error(error, phase_index, index))?
                     .ok_or_else(|| at(FallbackKind::InvalidGeometry, phase_index, index))?;

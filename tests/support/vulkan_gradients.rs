@@ -58,6 +58,7 @@ fn gradient(
     stop_scale: f32,
 ) -> DrawCommand {
     DrawCommand::LinearGradient {
+        repeat: [true, true],
         rect,
         tile,
         radius: 0.0,

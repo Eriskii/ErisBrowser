@@ -6,6 +6,7 @@ use crate::graphics::{
 
 fn gradient() -> DrawCommand {
     DrawCommand::LinearGradient {
+        repeat: [true, true],
         rect: BrowserRect {
             x: 0.0,
             y: 0.0,

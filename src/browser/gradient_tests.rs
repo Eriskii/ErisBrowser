@@ -39,6 +39,7 @@ pub(super) fn command() -> DrawCommand {
         }),
         current_color: Color::rgba(12, 34, 56, 78),
         stop_scale: 1.25,
+        repeat: [true, true],
     }
 }
 
@@ -53,10 +54,12 @@ fn gradient_zoom_scales_both_boxes_radius_and_px_multiplier_once() {
         gradient,
         current_color,
         stop_scale,
+        repeat,
     } = scaled
     else {
         panic!()
     };
+    assert_eq!(repeat, [true, true]);
     assert_eq!(
         rect,
         Rect {

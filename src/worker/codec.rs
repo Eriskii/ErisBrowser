@@ -763,8 +763,15 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
                 gradient,
                 current_color,
                 stop_scale,
+                repeat,
             } => {
-                e.byte(10);
+                // Keep the original payload exact for repeating gradients.
+                if *repeat == [true, true] {
+                    e.byte(10);
+                } else {
+                    e.byte(11);
+                    e.byte(u8::from(repeat[0]) | (u8::from(repeat[1]) << 1));
+                }
                 e.rect(*rect);
                 e.rect(*tile);
                 e.f32(*radius);
@@ -1122,7 +1129,16 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                 }
                 DrawCommand::PopOpacity
             }
-            10 => {
+            tag @ (10 | 11) => {
+                let repeat = if tag == 11 {
+                    let flags = d.byte()?;
+                    if flags & !3 != 0 {
+                        return Err("unknown IPC gradient repeat flags".into());
+                    }
+                    [flags & 1 != 0, flags & 2 != 0]
+                } else {
+                    [true, true]
+                };
                 let rect = d.rect()?;
                 let tile = d.rect()?;
                 let radius = d.f32()?;
@@ -1139,6 +1155,7 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                     gradient,
                     current_color,
                     stop_scale,
+                    repeat,
                 }
             }
             _ => return Err("unknown IPC display command".into()),
@@ -1421,6 +1438,8 @@ pub(super) fn decode_image_result(bytes: &[u8], budget: usize) -> Result<Result<
     Ok(result)
 }
 
+#[cfg(test)]
+mod background_geometry_tests;
 #[cfg(test)]
 mod gradient_tests;
 

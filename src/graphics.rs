@@ -101,10 +101,11 @@ pub enum DrawCommand {
         rect: Rect,
         key: String,
     },
-    /// A background tile repeated in both axes and clipped to its paint box.
+    /// A background tile with independent axis repetition and a paint outline.
     LinearGradient {
         rect: Rect,
         tile: Rect,
+        repeat: [bool; 2],
         radius: f32,
         gradient: Arc<gradient::LinearGradient>,
         current_color: Color,
@@ -870,17 +871,19 @@ impl Canvas {
                 DrawCommand::LinearGradient {
                     rect,
                     tile,
+                    repeat,
                     radius,
                     gradient,
                     current_color,
                     stop_scale,
-                } => self.linear_gradient(
+                } => self.linear_gradient_with_repeat(
                     rect.translated(dx, dy),
                     tile.translated(dx, dy),
                     *radius,
                     gradient,
                     *current_color,
                     *stop_scale,
+                    *repeat,
                 ),
                 DrawCommand::Line {
                     x1,

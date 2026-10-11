@@ -13,10 +13,12 @@ fn gradient_native_zoom_copy_shares_payload_and_matches_literal_geometry() {
         gradient,
         current_color,
         stop_scale,
+        repeat,
     } = &scaled[0]
     else {
         panic!()
     };
+    assert_eq!(*repeat, [true, true]);
     assert_eq!(
         *rect,
         Rect {

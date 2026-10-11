@@ -36,6 +36,7 @@ fn gray() -> LinearGradient {
 
 fn command(rect: Rect, tile: Rect, gradient: LinearGradient) -> DrawCommand {
     DrawCommand::LinearGradient {
+        repeat: [true, true],
         rect,
         tile,
         radius: 0.0,

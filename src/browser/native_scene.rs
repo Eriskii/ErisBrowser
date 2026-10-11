@@ -146,6 +146,7 @@ fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawComma
                 gradient,
                 current_color,
                 stop_scale,
+                repeat,
             } => DrawCommand::LinearGradient {
                 rect: rect(r),
                 tile: rect(tile),
@@ -153,6 +154,7 @@ fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawComma
                 gradient: Arc::clone(gradient),
                 current_color: *current_color,
                 stop_scale: stop_scale * zoom,
+                repeat: *repeat,
             },
             DrawCommand::Line {
                 x1,
@@ -580,6 +582,8 @@ pub(super) fn prepare(
     })
 }
 
+#[cfg(test)]
+mod background_geometry_tests;
 #[cfg(test)]
 mod gradient_tests;
 

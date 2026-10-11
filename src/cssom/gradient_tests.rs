@@ -47,7 +47,7 @@ fn background_cssom_keeps_both_components_and_rejects_invalid_later_values() {
     assert!(combined.contains("linear-gradient(red,blue)") && combined.contains("lime"));
     for value in [
         "linear-gradient(red,) orange",
-        "linear-gradient(red) repeat",
+        "linear-gradient(red) space",
         "url(x) lime",
         "linear-gradient(red),blue",
     ] {

@@ -3,7 +3,9 @@ use crate::dom::{
     Document, Namespace, NodeId, NodeKind, matches_compiled_selector, split_top_level,
 };
 use crate::graphics::{Color, gradient::LinearGradient};
+mod background;
 mod gradient;
+pub use background::{BackgroundPosition, BackgroundSize};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::{Arc, LazyLock};
 
@@ -271,6 +273,9 @@ pub struct ComputedStyle {
     pub color: Color,
     pub background_color: Color,
     pub background_image: Option<Arc<LinearGradient>>,
+    pub background_size: BackgroundSize,
+    pub background_position: BackgroundPosition,
+    pub background_repeat: [bool; 2],
     pub border_color: Color,
     pub font_size: f32,
     pub line_height: f32,
@@ -340,6 +345,9 @@ impl Default for ComputedStyle {
             color: Color::BLACK,
             background_color: Color::TRANSPARENT,
             background_image: None,
+            background_size: BackgroundSize::default(),
+            background_position: BackgroundPosition::default(),
+            background_repeat: [true, true],
             border_color: Color::BLACK,
             font_size: 16.0,
             line_height: 19.2,
@@ -1518,7 +1526,13 @@ pub(crate) fn supports_declaration_with_budget(
         let property = property.to_ascii_lowercase();
         if matches!(
             property.as_str(),
-            "object-fit" | "object-position" | "background" | "background-image"
+            "object-fit"
+                | "object-position"
+                | "background"
+                | "background-image"
+                | "background-size"
+                | "background-position"
+                | "background-repeat"
         ) {
             if css_wide(clean) {
                 return Ok(true);
@@ -1694,7 +1708,13 @@ impl SupportsEvaluator {
         let name = name.to_ascii_lowercase();
         if matches!(
             name.as_str(),
-            "object-fit" | "object-position" | "background" | "background-image"
+            "object-fit"
+                | "object-position"
+                | "background"
+                | "background-image"
+                | "background-size"
+                | "background-position"
+                | "background-repeat"
         ) {
             // Comments must not supply the mandatory whitespace around calc
             // operators when the supports condition normalizes its input.
@@ -1819,7 +1839,14 @@ fn supports_color(value: &str) -> bool {
     valid && parse_color(value).is_some()
 }
 pub(crate) fn supports_property(name: &str, value: &str) -> bool {
-    if matches!(name, "background" | "background-image") {
+    if matches!(
+        name,
+        "background"
+            | "background-image"
+            | "background-size"
+            | "background-position"
+            | "background-repeat"
+    ) {
         let mut work = MAX_SUPPORTS_WORK;
         return valid_background_property(name, value, &mut work).unwrap_or(false);
     }
@@ -2306,7 +2333,13 @@ pub(crate) fn shorthand_properties(name: &str) -> Option<Vec<String>> {
         "place-self" => &["align-self", "justify-self"],
         "place-content" => &["align-content", "justify-content"],
         "inset" => &["top", "right", "bottom", "left"],
-        "background" => &["background-color", "background-image"],
+        "background" => &[
+            "background-color",
+            "background-image",
+            "background-size",
+            "background-position",
+            "background-repeat",
+        ],
         "list-style" => &["list-style-type", "list-style-position"],
         "flex" => &["flex-grow", "flex-shrink", "flex-basis"],
         "flex-flow" => &["flex-direction", "flex-wrap"],
@@ -2374,9 +2407,21 @@ pub(crate) fn expand_declaration_with_budget(
     work: &mut usize,
 ) -> Result<(), crate::selectors::Error> {
     if name == "background" && !css_wide(value) && !contains_var_function(value) {
-        if let Some((image, color)) = gradient::background_parts(value, work)? {
-            crate::selectors::spend(work, image.len() + color.len() + 128)?;
-            for (name, value) in [("background-color", color), ("background-image", image)] {
+        if let Some(parts) = background::parts(value, work)? {
+            crate::selectors::spend(
+                work,
+                parts.iter().map(|value| value.len()).sum::<usize>() + 320,
+            )?;
+            for (name, value) in [
+                "background-color",
+                "background-image",
+                "background-size",
+                "background-position",
+                "background-repeat",
+            ]
+            .into_iter()
+            .zip(parts)
+            {
                 out.push(Declaration {
                     name: name.into(),
                     value: value.into(),
@@ -3341,6 +3386,9 @@ const SUPPORTED_PROPERTIES: &[&str] = &[
     "color",
     "background-color",
     "background-image",
+    "background-size",
+    "background-position",
+    "background-repeat",
     "font-size",
     "font-family",
     "font-style",
@@ -4421,6 +4469,25 @@ fn apply_property(
                 s.background_color = v;
             }
         }
+        "background-size" => {
+            if let Ok(Some(size)) =
+                background::parse_size(value, [s.font_size, root_font, width, height], work)
+            {
+                s.background_size = size;
+            }
+        }
+        "background-position" => {
+            if let Ok(Some(position)) =
+                background::parse_position(value, [s.font_size, root_font, width, height], work)
+            {
+                s.background_position = position;
+            }
+        }
+        "background-repeat" => {
+            if let Ok(Some(repeat)) = background::parse_repeat(value, work) {
+                s.background_repeat = repeat;
+            }
+        }
         "border-top-color" | "border-right-color" | "border-bottom-color" | "border-left-color" => {
             if let Some(v) = color() {
                 s.border_color = v;
@@ -4727,6 +4794,9 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "color" => s.color = p.color,
         "background-color" => s.background_color = p.background_color,
         "background-image" => s.background_image = p.background_image.clone(),
+        "background-size" => s.background_size = p.background_size,
+        "background-position" => s.background_position = p.background_position,
+        "background-repeat" => s.background_repeat = p.background_repeat,
         "font-size" => s.font_size = p.font_size,
         "font-weight" => s.font_weight = p.font_weight,
         "font-family" => s.font_family = p.font_family.clone(),
@@ -5305,7 +5375,7 @@ pub(crate) fn valid_background_property(
     value: &str,
     work: &mut usize,
 ) -> Result<bool, crate::selectors::Error> {
-    gradient::valid(name, value, work)
+    background::valid(name, value, work)
 }
 fn valid_declaration_value(
     name: &str,
@@ -5314,7 +5384,14 @@ fn valid_declaration_value(
 ) -> Result<bool, crate::selectors::Error> {
     if matches!(name, "object-fit" | "object-position") {
         valid_object_property(name, value, work)
-    } else if matches!(name, "background" | "background-image") {
+    } else if matches!(
+        name,
+        "background"
+            | "background-image"
+            | "background-size"
+            | "background-position"
+            | "background-repeat"
+    ) {
         valid_background_property(name, value, work)
     } else {
         Ok(valid_math_property(name, value))

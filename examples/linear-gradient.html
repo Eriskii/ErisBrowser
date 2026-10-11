@@ -17,6 +17,7 @@ var first=document.getElementById('switch');
 var supported=CSS.supports('background-image','linear-gradient(to right,#000,#f8f8f8)')&&CSS.supports('background','yellow linear-gradient(in srgb,red,transparent)')&&CSS.supports('background-image','linear-gradient(currentColor)')&&!CSS.supports('background-image','linear-gradient(red,)')&&!CSS.supports('background','linear-gradient(red,blue) nonsense')&&!CSS.supports('background-image','linear-gradient(in oklab,red,blue)');
 document.body.setAttribute('data-supports',supported?'yes':'no');
 first.addEventListener('click',function(){
+first.style.background='none';
 first.style.color='lime';
 first.style.backgroundColor='yellow';
 first.style.setProperty('background-image','linear-gradient(to right,currentColor 50%,transparent 50%)');

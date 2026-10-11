@@ -410,6 +410,24 @@
       "description": "The root image suppresses body propagation and repeats its forty-pixel tile across the viewport canvas.",
       "test": "linear-gradient-canvas.html",
       "reference": "linear-gradient-canvas-ref.html"
+    },
+    {
+      "name": "background-geometry-position",
+      "description": "Single-layer size and physical/percentage position resolve after sizing; auto, oversized, cover, calc and zero values use independent rectangle references.",
+      "test": "background-geometry-position.html",
+      "reference": "background-geometry-position-ref.html"
+    },
+    {
+      "name": "background-geometry-repeat",
+      "description": "Independent repeat axes and aliases preserve tile phase through the border painting area.",
+      "test": "background-geometry-repeat.html",
+      "reference": "background-geometry-repeat-ref.html"
+    },
+    {
+      "name": "background-geometry-fractional",
+      "description": "Nonrepeat accepts half-open pixel centers, keeps the original rounded outline and preserves premultiplied transparent-stop blending.",
+      "test": "background-geometry-fractional.html",
+      "reference": "background-geometry-fractional-ref.html"
     }
   ]
 }

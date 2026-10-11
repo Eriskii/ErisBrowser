@@ -20,6 +20,7 @@ fn gradient_identity_binds_every_paint_field_and_keeps_arc_addresses_out() {
             gradient,
             current_color,
             stop_scale,
+            ..
         } = &mut value
         else {
             panic!()

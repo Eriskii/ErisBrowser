@@ -94,6 +94,7 @@ fn command() -> DrawCommand {
         gradient: Arc::new(gradient()),
         current_color: Color::rgba(12, 34, 56, 78),
         stop_scale: 1.5,
+        repeat: [true, true],
     }
 }
 
@@ -270,10 +271,12 @@ fn gradient_snapshot_preserves_geometry_scopes_and_independent_data_without_imag
         gradient,
         current_color,
         stop_scale,
+        repeat,
     } = &decoded.layout.commands[2]
     else {
         panic!("gradient command missing")
     };
+    assert_eq!(*repeat, [true, true]);
     assert_eq!(
         *rect,
         Rect {

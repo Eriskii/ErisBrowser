@@ -1,0 +1,1206 @@
+{
+  "archive": {
+    "bytes": 2166083,
+    "members": 467,
+    "path": "background-geometry.tar.gz",
+    "sha256": "234f73bf3fbe267f7208d91d1d01fa1761a24ca3588728bcd9b77a605e255fb4"
+  },
+  "base": "c9231785978b6669055fea2684749084ddddec9b",
+  "browser": {
+    "build_receipt": "/tmp/eris-background-geometry-1/validation/candidate-browser-build-1.json",
+    "bytes": 62072392,
+    "path": "/tmp/eris-background-geometry-1/eris-browser-final",
+    "sha256": "00d00f91f7f08f84013d3511735a14f1290e52e2915f200b298f22a559058137",
+    "source": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+    "source_sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff",
+    "strip_receipt": "/tmp/eris-background-geometry-1/validation/candidate-browser-strip-1.json"
+  },
+  "checks": {
+    "bridge-roster-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "graphics::raster_bridge",
+        "--",
+        "--list"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 12972,
+        "path": "/tmp/eris-background-geometry-1/validation/bridge-roster-1.log",
+        "sha256": "1d57a24caf3b614e9e3b66ba621a8d529c26a7515ab8e1da6237760eef5a695b"
+      },
+      "receipt": {
+        "bytes": 409,
+        "path": "/tmp/eris-background-geometry-1/validation/bridge-roster-1.json",
+        "sha256": "40a882472ec973814f681d79d47f9c0faf9a5c264cf42030fd8e412df6b15926"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "bridge-roster-guard-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-background-geometry-1/check-bridge-roster.py",
+        "/tmp/eris-background-geometry-1/validation/bridge-roster-1.log"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 183,
+        "path": "/tmp/eris-background-geometry-1/validation/bridge-roster-guard-1.log",
+        "sha256": "db0daed7821e125f644454cd6ebd7845fa941b33f5b3f463aab1b2ec7cc48391"
+      },
+      "receipt": {
+        "bytes": 341,
+        "path": "/tmp/eris-background-geometry-1/validation/bridge-roster-guard-1.json",
+        "sha256": "fe123a045b152ebc95526d40ed6dd4b1bda3404256c8ef3a8b41e92ad3619d4a"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "candidate-browser-build-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-background-geometry-1/validation/candidate-browser-build-1.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-background-geometry-1/validation/candidate-browser-build-1.json",
+        "sha256": "441980cef51f5d9dcc5ec1e518ce91604ff3154468f38fbce78e50fc637807a1"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "candidate-browser-strip-1": {
+      "command": [
+        "strip",
+        "--strip-debug",
+        "/tmp/eris-background-geometry-1/eris-browser-final"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-background-geometry-1/validation/candidate-browser-strip-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 291,
+        "path": "/tmp/eris-background-geometry-1/validation/candidate-browser-strip-1.json",
+        "sha256": "28cb6e9f96787f87c831c8a1a8f14e7a78e224f37682d4193cd9055de2b23473"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "clippy-default-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 149,
+        "path": "/tmp/eris-background-geometry-1/validation/clippy-default-198-1.log",
+        "sha256": "d50d170b6164fc3aa5f6461c38575db3cbc0aef781265701d96f3e1ff7647511"
+      },
+      "receipt": {
+        "bytes": 366,
+        "path": "/tmp/eris-background-geometry-1/validation/clippy-default-198-1.json",
+        "sha256": "703765371094b85b96ceb3240d2910cd9328046cc21c2e6dcfb3039b652ac156"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "clippy-native-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 248,
+        "path": "/tmp/eris-background-geometry-1/validation/clippy-native-198-1.log",
+        "sha256": "26d61bf0e09ff18e7917f12932ce97d6f26a29d84419e09f6a30fbdfc8aa2b1e"
+      },
+      "receipt": {
+        "bytes": 404,
+        "path": "/tmp/eris-background-geometry-1/validation/clippy-native-198-1.json",
+        "sha256": "6aa34db96aa853aa68d144b896a6aaea3a08b320cb593baceb449ba1ea6dba74"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "clippy-native-msrv-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 248,
+        "path": "/tmp/eris-background-geometry-1/validation/clippy-native-msrv-1.log",
+        "sha256": "6fecc9a4b75be5965f3447685d772d0473b794e4c6e482d74c93fcbaf5ea95ad"
+      },
+      "receipt": {
+        "bytes": 404,
+        "path": "/tmp/eris-background-geometry-1/validation/clippy-native-msrv-1.json",
+        "sha256": "f60e7fbada6735409e8d959eb6299913e801cd3e42987f786bb4ff4ed7f31fda"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "focused-cssom-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--lib",
+        "cssom::background_tests",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 1197,
+        "path": "/tmp/eris-background-geometry-1/validation/focused-cssom-1.log",
+        "sha256": "4b52ca495d37d0ed22c0f4ba3bfd230029328b75c77032a31c119d24babc7582"
+      },
+      "receipt": {
+        "bytes": 404,
+        "path": "/tmp/eris-background-geometry-1/validation/focused-cssom-1.json",
+        "sha256": "2a5bd12e7f6e0083a86666a4af01b293362a9619efab6d3d420d1a92abfdcd0b"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 8,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "focused-linear-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--test",
+        "linear_gradient",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 567,
+        "path": "/tmp/eris-background-geometry-1/validation/focused-linear-1.log",
+        "sha256": "45a103d8578d0ac99f32877a43b4ab722b6735e440f789f75ea9f61379e9438d"
+      },
+      "receipt": {
+        "bytes": 438,
+        "path": "/tmp/eris-background-geometry-1/validation/focused-linear-1.json",
+        "sha256": "4f4c4e52b7fc9213526f0f694d5952b94883815f7b66ea89be98e81989f70cd4"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "format-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-background-geometry-1/validation/format-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 369,
+        "path": "/tmp/eris-background-geometry-1/validation/format-1.json",
+        "sha256": "994915b6da1bd3ca39e20541409000f0e52dab9aac6ca5c9b80699f23de081be"
+      }
+    },
+    "format-2": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-background-geometry-1/validation/format-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 369,
+        "path": "/tmp/eris-background-geometry-1/validation/format-2.json",
+        "sha256": "51006cb6b674b0aee8ac97ca3ccb72cdb2bad8b945bad62020f0f70a5b7dda25"
+      }
+    },
+    "format-3": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-background-geometry-1/validation/format-3.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 369,
+        "path": "/tmp/eris-background-geometry-1/validation/format-3.json",
+        "sha256": "778d910dc58dc20c6b0a49fb1d5599eeeadf64bae8083ae06e9e19c26020d280"
+      }
+    },
+    "format-4": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-background-geometry-1/validation/format-4.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 369,
+        "path": "/tmp/eris-background-geometry-1/validation/format-4.json",
+        "sha256": "16f887150a98b50c881e0d0872343f07c3a362d79f567535fe5b7fb3224d90af"
+      }
+    },
+    "format-check-1": {
+      "command": [
+        "env",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-background-geometry-1/validation/format-check-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 400,
+        "path": "/tmp/eris-background-geometry-1/validation/format-check-1.json",
+        "sha256": "f182e716032aa2d3ad94ec08c4a127074752785a4b28ccf581d210c5ddbaafdf"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "full-default-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 2627,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-1.log",
+        "sha256": "cd37cf96bb2765b67b4066c52c9fb5371f008f174a6a3e859b612cc67763d746"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-1.json",
+        "sha256": "165f06c049fefc0f238fd4238b73817da0a8b6c32c73ccdfddb8b58167785bb9"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-1.json",
+        "sha256": "0571a90fb5f0377ef085a2e402aeaa9143898679a328b2484bb4049c9759bc4f"
+      }
+    },
+    "full-default-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 216239,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-2.log",
+        "sha256": "b3cf5a3d732f0d8ba19fe629e623257e5c855a9e4cfd859db337ad9946a58d06"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-2.json",
+        "sha256": "c6e4bee2b4ff5e2f2109c7c0177b22e8d285b561ef8610460779876c7e902a2e"
+      },
+      "rust": {
+        "failed": 2,
+        "ignored": 0,
+        "passed": 2162,
+        "rows": 8
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-2.json",
+        "sha256": "354130c3db42e0801a92a88612f541e8228fa25cb6f6b2dcc373ff2b101404da"
+      }
+    },
+    "full-default-198-3": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 208054,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-3.log",
+        "sha256": "2cb32b13b76b38adf75904b6dd9da0cc396a1823c9b107994834cdc5bcef775a"
+      },
+      "receipt": {
+        "bytes": 328,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-3.json",
+        "sha256": "5e5b49b47a06daed4bc2e918fa3dda8b1264abc9cd9b7cb10222d0930fee800e"
+      },
+      "rust": {
+        "failed": 1,
+        "ignored": 2,
+        "passed": 2088,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-3.json",
+        "sha256": "f53a8908203b278679d5d37f0711937faaf4c82528cfeeff93a169015ee54db7"
+      }
+    },
+    "full-default-198-4": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 216536,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-4.log",
+        "sha256": "384367a6bae57e111846f9bd44fe9573a33b51e80ee7255b03bf9673237de040"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-4.json",
+        "sha256": "3cd7250879b2efa01db28182de26e45aacaaf98732df50468cc12449b3283412"
+      },
+      "rust": {
+        "failed": 2,
+        "ignored": 0,
+        "passed": 2165,
+        "rows": 8
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-4.json",
+        "sha256": "220e1ba3e7842c399bdef5d601b1cc0b9200d0fe784d2bfa7cedc55231a16a15"
+      }
+    },
+    "full-default-198-5": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 236846,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-5.log",
+        "sha256": "a0ea91738e44045f9eda2ae3e4da97f229a3e475f7e2b163e3fa19cb9878f158"
+      },
+      "receipt": {
+        "bytes": 363,
+        "path": "/tmp/eris-background-geometry-1/validation/full-default-198-5.json",
+        "sha256": "aed8ecf6353e5304201df757eb58b60d4a9e16ea7cf15c7204bdc87946fbfbf5"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2370,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "full-native-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 2726,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-1.log",
+        "sha256": "aa0ed3df3ce85fce46dfae55b234805324bdd5e25f7559e8fcb76fa234e8458e"
+      },
+      "receipt": {
+        "bytes": 400,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-1.json",
+        "sha256": "d135bd5605924078e485a86c88579282a5c396a20239c1813b83eee6c8d85ce4"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-1.json",
+        "sha256": "0571a90fb5f0377ef085a2e402aeaa9143898679a328b2484bb4049c9759bc4f"
+      }
+    },
+    "full-native-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 238930,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-2.log",
+        "sha256": "6e782c152146b01cc310bcca7a109a864f4537e6b0683f5f7abb3ce9eeff1fd5"
+      },
+      "receipt": {
+        "bytes": 398,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-2.json",
+        "sha256": "9fafc574da381dc751611d545683daccd64d1dfc36a9c7266f3f9eca7fe9c41f"
+      },
+      "rust": {
+        "failed": 2,
+        "ignored": 0,
+        "passed": 2351,
+        "rows": 8
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-2.json",
+        "sha256": "354130c3db42e0801a92a88612f541e8228fa25cb6f6b2dcc373ff2b101404da"
+      }
+    },
+    "full-native-3": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "native-vulkan",
+        "--all-targets"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 79,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-3.log",
+        "sha256": "4643e48670652ab9ec15b61ef793a959b279955242e757ac6382917d80a0b2b0"
+      },
+      "receipt": {
+        "bytes": 364,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-3.json",
+        "sha256": "6ff2fa9b67186e950d07cc346961c0fd6694a7a97071912cc53257f90712fef8"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-3.json",
+        "sha256": "f53a8908203b278679d5d37f0711937faaf4c82528cfeeff93a169015ee54db7"
+      }
+    },
+    "full-native-4": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 221997,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-4.log",
+        "sha256": "77d35d73d0038286a2dbf245f521c060b1c91c9a39ffd5bfba28ccef2298abfc"
+      },
+      "receipt": {
+        "bytes": 400,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-4.json",
+        "sha256": "cd40bd680c3f52043afa48c1c41ccd088d878edca3e84926fde3cf72dd43669f"
+      },
+      "rust": {
+        "failed": 1,
+        "ignored": 0,
+        "passed": 2203,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-3.json",
+        "sha256": "f53a8908203b278679d5d37f0711937faaf4c82528cfeeff93a169015ee54db7"
+      }
+    },
+    "full-native-5": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 239227,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-5.log",
+        "sha256": "8ee873bd7991b62dbe15ac66b13bd04d09c56403d8e55fab51f2b367c1e7db6a"
+      },
+      "receipt": {
+        "bytes": 399,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-5.json",
+        "sha256": "ed56fa82c50a903a7ab0d07cea78bdc331a68866822fb2eaf7ce375872a7b35e"
+      },
+      "rust": {
+        "failed": 2,
+        "ignored": 0,
+        "passed": 2354,
+        "rows": 8
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-4.json",
+        "sha256": "220e1ba3e7842c399bdef5d601b1cc0b9200d0fe784d2bfa7cedc55231a16a15"
+      }
+    },
+    "full-native-6": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 260304,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-6.log",
+        "sha256": "c47c7fe5bb9e8a843663e7451aa8a4f542bcb05e41dccff70b9e90b3aaf525b4"
+      },
+      "receipt": {
+        "bytes": 398,
+        "path": "/tmp/eris-background-geometry-1/validation/full-native-6.json",
+        "sha256": "255e530b9e1e1791baf5a2b4a8794794739a1aae89dd8fd5251e3cc0e45cefe3"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2568,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "parent-ci-1": {
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "38122642217",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--json",
+        "status,conclusion,jobs,url"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 26425,
+        "path": "/tmp/eris-background-geometry-1/validation/parent-ci-1.log",
+        "sha256": "d029bf66b1ffb2a5a6f7bb363db55761fe493b8eba21e3d88223f66499260350"
+      },
+      "receipt": {
+        "bytes": 325,
+        "path": "/tmp/eris-background-geometry-1/validation/parent-ci-1.json",
+        "sha256": "05e3b12dfc789fdfb1578066b3396e815d74b22ef65a9d52598bbfcb16f7350a"
+      }
+    },
+    "parent-ci-2": {
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "38122642217",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--json",
+        "status,conclusion,jobs,url,headSha"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 26970,
+        "path": "/tmp/eris-background-geometry-1/validation/parent-ci-2.log",
+        "sha256": "80beafab722fed173ea6b827f18c871b4f16f862862ad41048c4acc80b177b30"
+      },
+      "receipt": {
+        "bytes": 333,
+        "path": "/tmp/eris-background-geometry-1/validation/parent-ci-2.json",
+        "sha256": "81bae0d6f7916a90bf158bc45da939f40fe2169a169e175fb4aac5b0a6d63a36"
+      }
+    },
+    "probe-clippy-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 353,
+        "path": "/tmp/eris-background-geometry-1/validation/probe-clippy-1.log",
+        "sha256": "bf8bf896a2a832615e5298929b3177cd2d05d896fb10f780aa33d37e592ba81a"
+      },
+      "receipt": {
+        "bytes": 425,
+        "path": "/tmp/eris-background-geometry-1/validation/probe-clippy-1.json",
+        "sha256": "80d27d9e83a0e63b54e64379cb4524a3244125945078f3ca46fbdd2c72173d25"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "probe-test-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 4662,
+        "path": "/tmp/eris-background-geometry-1/validation/probe-test-1.log",
+        "sha256": "414b8206e88ba9acc5184e1eeb563d6d71f23b739216bf05d186719e41dd1e12"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-background-geometry-1/validation/probe-test-1.json",
+        "sha256": "3a1c9145ebba5b93817bac26ca2397ac55c4b02689c1e29d13bca581d4f0c1eb"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 15,
+        "rows": 12
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    },
+    "reftests-final-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-background-geometry-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-background-geometry-1/eris-browser-final",
+        "--output-dir",
+        "/tmp/eris-background-geometry-1/reftests-final"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 26192,
+        "path": "/tmp/eris-background-geometry-1/validation/reftests-final-1.log",
+        "sha256": "ec0eaf0a6acfeee153228ed8912051d72df27eea167c118db686ca7836898585"
+      },
+      "receipt": {
+        "bytes": 416,
+        "path": "/tmp/eris-background-geometry-1/validation/reftests-final-1.json",
+        "sha256": "29deb0c5615a19e5bba34ae403981cac33bf685fdde6af6cf9b63db15b54349a"
+      },
+      "source": {
+        "bytes": 59192,
+        "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+        "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+      }
+    }
+  },
+  "corrections": [
+    "Test-only Option<PaintBudget> setup fixed; failed compilations retained.",
+    "Old example initializes all five inline longhands before requiring shorthand serialization; prior pixels and hits unchanged.",
+    "Final tile translation omits out-of-range images rather than changing repetition phase through clamping.",
+    "New CSSOM expected identifier spelling corrected to existing lowercase serialization.",
+    "Normalized background longhands retain their first complete validation and skip duplicate unchanged expansion/validation, recovering the original click within unchanged work limit.",
+    "One incorrect native-vulkan CLI feature invocation is retained separately from compilation or test results."
+  ],
+  "limitations": [
+    "Single gradient layer; no URL images, space/round, author origin/clip/attachment or logical positions.",
+    "Native interpolation stays on CPU; eligibility remains opaque square corners outside opacity scopes.",
+    "References are self-authored, not WPT conformance evidence.",
+    "No new GPU execution, acquired-window or timing claim; all-standards compatibility, production security and Chromium performance target remain unmet."
+  ],
+  "parent_ci": "parent-ci-2",
+  "published": {
+    "README.md": {
+      "bytes": 50425,
+      "sha256": "3158437d9e3e301a91e84297532554993e2b6245c70f0a59f30494f945d588e7"
+    },
+    "docs/COMPATIBILITY.md": {
+      "bytes": 71351,
+      "sha256": "1830f8ee1c22d31d5f51a4e8054e5f73ae1697264356972ac46177b2d9e55ca0"
+    },
+    "docs/ROADMAP.md": {
+      "bytes": 31829,
+      "sha256": "13bc68b34e6d4813e9266d928a1f3d3221f5f3d57224f3612ce25b8f7ebc541e"
+    },
+    "docs/background-geometry.md": {
+      "bytes": 11799,
+      "sha256": "3db1af092c76c99915fe9d085925523000ecd9fb0eabc6c0b32869275be1208e"
+    },
+    "docs/linear-gradients.md": {
+      "bytes": 8293,
+      "sha256": "e2f6aaedfbae72e81f39a595dc25a26a52eedb9718fb65ef79bb832edb3defa9"
+    },
+    "examples/background-geometry.html": {
+      "bytes": 3965,
+      "sha256": "4301f65cde9eae6b7a3f1b0222aeae0a1e9efdfcbbc59326d9af00b5273311db"
+    },
+    "examples/linear-gradient.html": {
+      "bytes": 2308,
+      "sha256": "e7cfff302dfff8683b29377169e70ec86c0605f461f6b331b7273dc68e4c57e7"
+    },
+    "src/browser.rs": {
+      "bytes": 126251,
+      "sha256": "38129fca5e73c791e20ff22fd2689809e68ec9a6c69e03ca4b7a534a515f014e"
+    },
+    "src/browser/background_geometry_tests.rs": {
+      "bytes": 1368,
+      "sha256": "193a7128b01e5f2610174f534e3321c4e91c8b368c7e1da981c9282edfe8e30d"
+    },
+    "src/browser/gradient_tests.rs": {
+      "bytes": 2483,
+      "sha256": "34ac78f8bf080aee69661fb7501f75387fe5c0cbc6f0f24549a1cdeb65ef6ad6"
+    },
+    "src/browser/native_benchmark_identity.rs": {
+      "bytes": 27879,
+      "sha256": "5df786bbeabf6c7ebae4322951e37e1579a96b7c21a6428ec5653f0a74a624f6"
+    },
+    "src/browser/native_benchmark_identity/background_geometry_tests.rs": {
+      "bytes": 1553,
+      "sha256": "e3cdcc99a14e932075862cdb0c0af0dc9713240a84fdd7a3c55deb702e126200"
+    },
+    "src/browser/native_benchmark_identity/gradient_tests.rs": {
+      "bytes": 3619,
+      "sha256": "38ea85b4ef8b7577f4ae663ca0bfb122598191f3f128c10bf631ebd8c7efc05d"
+    },
+    "src/browser/native_scene.rs": {
+      "bytes": 36998,
+      "sha256": "63bb954e93f0795c36ceac0f1521997514f3bc21dfb554f376f3c05a3c7e5366"
+    },
+    "src/browser/native_scene/background_geometry_tests.rs": {
+      "bytes": 1356,
+      "sha256": "75648a40bf8b58250cc9a957a60db98519fa6b2afe046f8ad2f8b019396b6173"
+    },
+    "src/browser/native_scene/gradient_tests.rs": {
+      "bytes": 1244,
+      "sha256": "7d14a434e191d88d7a1addcee0559f1fdec34afb9212b8e93ff817e555d73670"
+    },
+    "src/css.rs": {
+      "bytes": 312295,
+      "sha256": "e04f64b9d5664a7535bef267e20005b3d9c2a0c5e2c938915e34f4b44f74bda7"
+    },
+    "src/css/background.rs": {
+      "bytes": 17333,
+      "sha256": "9e1b2d007d48ca53cb4813361ebe9818ed8dc753c53771e7468350a3015ae548"
+    },
+    "src/css/background/tests.rs": {
+      "bytes": 16086,
+      "sha256": "b598c587f3030702e393ca8b39d01d606a4b05b9bceb219a27c6d6a5ca91d196"
+    },
+    "src/css/gradient.rs": {
+      "bytes": 15079,
+      "sha256": "2225e9a4b93bab7e26470bf0284d0d41c34606c9975b8353b816aa688340971f"
+    },
+    "src/cssom.rs": {
+      "bytes": 58116,
+      "sha256": "bd3dabdbcdad3141d30a7b04f2bba0e5d5f6ba9e3685ce8ba3e26f09ccfd3879"
+    },
+    "src/cssom/background_tests.rs": {
+      "bytes": 12768,
+      "sha256": "f676177b278b1145a4a1bca665dfe98a8cf2f632cf4c1297b63b2cd82f323824"
+    },
+    "src/cssom/gradient_tests.rs": {
+      "bytes": 4663,
+      "sha256": "2363b0ef1615d39b96b071352c27a0941ed7ccfcc6a4d9f019fac2d6168b7d15"
+    },
+    "src/graphics.rs": {
+      "bytes": 69442,
+      "sha256": "49b7a63fc155ef5a77ae1714542677200ace4a65e4c97467c9b6fe4f85f0b840"
+    },
+    "src/graphics/gradient.rs": {
+      "bytes": 21525,
+      "sha256": "72199a5a309ed97e0964edee143f0a172850e77dc81dfba0c6f29c6d38cdfae7"
+    },
+    "src/graphics/gradient/tests.rs": {
+      "bytes": 11335,
+      "sha256": "2608915ac56caeeaa44b871d24c6315db749df45d2ec706a638e85bad3e672c4"
+    },
+    "src/graphics/gradient/tiling_tests.rs": {
+      "bytes": 8977,
+      "sha256": "ea5347bef94a1f22a7a95415d56988775786ff133ed9e0ed1a2c45eaa3d08e0e"
+    },
+    "src/graphics/raster_bridge/gradient_tests.rs": {
+      "bytes": 4787,
+      "sha256": "ba2d9686607b7815f4c06e6968e3a068651765e82c44c54250ab3d96bd45d504"
+    },
+    "src/graphics/raster_bridge/native.rs": {
+      "bytes": 53184,
+      "sha256": "93ae3f45f57f0355a2d980a3d258471848bee791644e5547f5118d66e6c5762a"
+    },
+    "src/graphics/raster_bridge/native/gradient_tests.rs": {
+      "bytes": 16838,
+      "sha256": "2cc01735db5ffa7cda0b3945cbad513f5150f4e585a4d6f2e4dcc6e4146a80bc"
+    },
+    "src/layout.rs": {
+      "bytes": 330439,
+      "sha256": "0fd4dc1d602262ae055f3d010c08c6d19de47b883e80fe70646ac97a172f294d"
+    },
+    "src/layout/background_tests.rs": {
+      "bytes": 21404,
+      "sha256": "487580612a6abf58c96151043db5ffe34e6ead5aad3d8d902ee18601cfdd3533"
+    },
+    "src/layout/gradient_tests.rs": {
+      "bytes": 19884,
+      "sha256": "1a644d32105b105144014f99d7f441c978b03cf0b120cf93d33d06c8ee35fedf"
+    },
+    "src/worker/codec.rs": {
+      "bytes": 93136,
+      "sha256": "dcdfeb1f5c65c6ac6f8427c60157eb335c4ba08b5c0f1d3438e4e1442cdd2c41"
+    },
+    "src/worker/codec/background_geometry_tests.rs": {
+      "bytes": 7460,
+      "sha256": "c09cf706cfeb8a4f66bcced54a628ddfe6328f724f1e2f534e650de878fea7dc"
+    },
+    "src/worker/codec/gradient_tests.rs": {
+      "bytes": 10962,
+      "sha256": "769263cb88c08ac1ce2ee7906ad2106a2285db1fa60aa38547597497b45ff14b"
+    },
+    "tests/background_geometry.rs": {
+      "bytes": 4407,
+      "sha256": "826bbc4066f645083dac94773e21302f1d8a5d67fc7ce4b9c59f28009907d3fc"
+    },
+    "tests/reftests/background-geometry-fractional-ref.html": {
+      "bytes": 1107,
+      "sha256": "2aeb9953784a647a99d4a53ded79eff46acb01ec4d0230bbd69c9ad33e197976"
+    },
+    "tests/reftests/background-geometry-fractional.html": {
+      "bytes": 1348,
+      "sha256": "df3ac70c359524b8165dd52f3d71ca9dd0da4ac1e472417083c2cfbad0aacf99"
+    },
+    "tests/reftests/background-geometry-position-ref.html": {
+      "bytes": 1417,
+      "sha256": "dd35fe788e7571cfc93bf18dd69fa84f32f33f0f3a3614ef3f9a2a1cd771c0ed"
+    },
+    "tests/reftests/background-geometry-position.html": {
+      "bytes": 2197,
+      "sha256": "b01c6c84ec6b49b4fee420908ce246d524150e1f3cd5a9d471103cd450d6e6fc"
+    },
+    "tests/reftests/background-geometry-repeat-ref.html": {
+      "bytes": 1797,
+      "sha256": "7438ec8aa243f86fb97578fd3e754a485d8c76bdac39e027b654be809bdf913f"
+    },
+    "tests/reftests/background-geometry-repeat.html": {
+      "bytes": 1310,
+      "sha256": "fbe38f8c1dea30e10e297522b74b7918f7cf04dbba86fa9c317c8b63abf2b56e"
+    },
+    "tests/reftests/manifest.json": {
+      "bytes": 19928,
+      "sha256": "1b62c990295b4d04c31d75c77196fa6cdcdeac3f0ca57413d40cf76086a49136"
+    },
+    "tests/support/background_geometry.rs": {
+      "bytes": 7760,
+      "sha256": "e69b883143c8b1474023815cb40164cb739a49979975b33ce932596a09270bc5"
+    },
+    "tests/support/vulkan_gradients.rs": {
+      "bytes": 14468,
+      "sha256": "97b22a1a1f35716a2a1daa9f880c1774cfa7acd93e4155b9d73246b13921efcf"
+    }
+  },
+  "reftests": {
+    "check": "reftests-final-1",
+    "hold": {
+      "bytes": 1445,
+      "path": "/tmp/eris-background-geometry-1/root/reftests/source-ready.json",
+      "sha256": "0cd004c8771b57bc95b121db6683b43549f3dbebf545c9e1781703f72a74c219"
+    },
+    "manifest": {
+      "bytes": 19928,
+      "path": "/tmp/eris-background-geometry-1/worktree/tests/reftests/manifest.json",
+      "sha256": "1b62c990295b4d04c31d75c77196fa6cdcdeac3f0ca57413d40cf76086a49136"
+    },
+    "report": {
+      "bytes": 26192,
+      "path": "/tmp/eris-background-geometry-1/reftests-final/report.json",
+      "sha256": "ec0eaf0a6acfeee153228ed8912051d72df27eea167c118db686ca7836898585"
+    }
+  },
+  "scope": "Single linear-gradient background size, physical position and independent repeat axes through CSS/CSSOM, layout, software sampling, confined-worker transport, zoom and existing opaque Native preparation.",
+  "source": {
+    "bytes": 59192,
+    "path": "/tmp/eris-background-geometry-1/compiled-source-5.json",
+    "sha256": "213e9039ad11a6706c7fe660eb2ea1b41e5caa4b0dafb7e11daf9535f9a260ff"
+  },
+  "source_count": 527,
+  "validation": {
+    "default_rust_1_98": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2370,
+      "result_groups": 30
+    },
+    "native_rust_1_88": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2568,
+      "result_groups": 30
+    },
+    "parent_ci": {
+      "conclusion": "success",
+      "head": "c9231785978b6669055fea2684749084ddddec9b",
+      "jobs": 9,
+      "status": "completed"
+    },
+    "probe_unit_tests": 15,
+    "retained_raster_bridge_test_roster": 107,
+    "self_authored_references": {
+      "failed": 0,
+      "passed": 71,
+      "pixel_exact": true
+    }
+  }
+}

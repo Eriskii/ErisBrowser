@@ -1,0 +1,51 @@
+<!doctype html><meta charset=utf-8>
+<title id=heading>Background geometry ready</title>
+<style>
+html,body{margin:0;background:white}
+#board{position:relative;width:72px;height:44px}
+.sample{position:absolute;width:12px;height:6px;background-image:linear-gradient(to right,red 50%,blue 50%);background-size:4px 2px;background-position:center;background-repeat:no-repeat}
+#switch{left:4px;top:4px}
+#percent{left:20px;top:4px;background-position:25% 75%}
+#oversize{left:36px;top:4px;background-size:16px 2px}
+#repeatx{left:52px;top:4px;background-repeat:repeat-x}
+#repeaty{left:4px;top:14px;background-repeat:repeat-y}
+#edge3{left:20px;top:14px;background-position:right 2px bottom}
+#edge4{left:36px;top:14px;background-position:bottom 1px right 2px}
+#calc{left:52px;top:14px;background-size:calc(50% - 2px) 2px}
+#autow{left:4px;top:24px;background-size:4px auto}
+#autoh{left:20px;top:24px;background-size:auto 2px}
+#cover{left:36px;top:24px;background-size:cover}
+#contain{left:52px;top:24px;background-size:contain}
+#zero{left:4px;top:34px;background-color:yellow;background-size:calc(50% - 20px) 2px}
+#reset{left:20px;top:34px;background:lime}
+#padded{left:36px;top:34px;width:8px;height:2px;padding:2px}
+#clip{position:absolute;left:52px;top:34px;width:8px;height:6px;overflow:hidden}
+#clipped{left:0;top:0;background-size:16px 2px}
+#following{width:64px;height:2px;background:lime}
+</style><body data-phase=ready data-style-kept=ready>
+<div id=board><div id=switch class=sample></div><div id=percent class=sample></div><div id=oversize class=sample></div><div id=repeatx class=sample></div><div id=repeaty class=sample></div><div id=edge3 class=sample></div><div id=edge4 class=sample></div><div id=calc class=sample></div><div id=autow class=sample></div><div id=autoh class=sample></div><div id=cover class=sample></div><div id=contain class=sample></div><div id=zero class=sample></div><div id=reset class=sample></div><div id=padded class=sample></div><div id=clip><div id=clipped class=sample></div></div></div><div id=following></div>
+<script>
+var first=document.getElementById('switch');
+var supported=CSS.supports('background-size','calc(50% - 2px) 2px')&&CSS.supports('background-position','right 2px bottom')&&CSS.supports('background-position','bottom 1px right 2px')&&CSS.supports('background-repeat','repeat no-repeat')&&CSS.supports('background','linear-gradient(red,blue) center / 4px 2px no-repeat')&&!CSS.supports('background-size','-1px 2px')&&!CSS.supports('background-repeat','space')&&!CSS.supports('background-position','50% left');
+document.body.setAttribute('data-supports',supported?'yes':'no');
+first.addEventListener('click',function(){
+first.style.setProperty('background-size','6px 2px');
+first.style.setProperty('background-position','left top');
+first.style.setProperty('background-repeat','repeat-x');
+var size=first.style.getPropertyValue('background-size');
+var position=first.style.getPropertyValue('background-position');
+var repeat=first.style.getPropertyValue('background-repeat');
+first.style.setProperty('background-size','-1px 2px');
+first.style.setProperty('background-position','50% left');
+first.style.setProperty('background-repeat','space');
+first.style.background='linear-gradient(red,blue) / nonsense';
+document.body.setAttribute('data-style-kept',size!==''&&position!==''&&repeat!==''&&first.style.getPropertyValue('background-size')===size&&first.style.getPropertyValue('background-position')===position&&first.style.getPropertyValue('background-repeat')===repeat?'yes':'no');
+var reset=document.getElementById('reset');
+reset.style.setProperty('background-size','1px 1px');
+reset.style.setProperty('background-position','right bottom');
+reset.style.setProperty('background-repeat','no-repeat');
+reset.style.background='linear-gradient(to right,red 50%,blue 50%)';
+document.body.setAttribute('data-phase','changed');
+document.getElementById('heading').firstChild.data='Background geometry changed';
+});
+</script>

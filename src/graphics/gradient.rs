@@ -65,6 +65,7 @@ struct ResolvedGradient {
     dy: f64,
     length: f64,
     tile: Rect,
+    repeat: [bool; 2],
     stops: [ResolvedStop; MAX_GRADIENT_STOPS],
     count: usize,
 }
@@ -115,6 +116,7 @@ impl ResolvedGradient {
             dy,
             length,
             tile,
+            repeat: [true, true],
             stops: [ResolvedStop::default(); MAX_GRADIENT_STOPS],
             count: source.stops.len(),
         };
@@ -181,8 +183,18 @@ impl ResolvedGradient {
         }
         let width = f64::from(self.tile.width);
         let height = f64::from(self.tile.height);
-        let x = (x - f64::from(self.tile.x)).rem_euclid(width) - width * 0.5;
-        let y = (y - f64::from(self.tile.y)).rem_euclid(height) - height * 0.5;
+        let local_x = x - f64::from(self.tile.x);
+        let local_y = y - f64::from(self.tile.y);
+        let x = if self.repeat[0] {
+            local_x.rem_euclid(width)
+        } else {
+            local_x
+        } - width * 0.5;
+        let y = if self.repeat[1] {
+            local_y.rem_euclid(height)
+        } else {
+            local_y
+        } - height * 0.5;
         let position = x * self.dx + y * self.dy + self.length * 0.5;
         let stops = &self.stops[..self.count];
         // The last stop at an equal position wins. This also avoids division
@@ -241,6 +253,68 @@ fn gradient_loop(
     })
 }
 
+// Repetition changes the sampling window, never the rounded paint outline.
+// A nonrepeated image contributes exactly where a pixel center lies in its
+// half-open tile interval. Use f64 here like ResolvedGradient's local samples;
+// a fractional tile edge is not the integer-containment Canvas clip rule.
+fn gradient_loop_with_repeat(
+    width: u32,
+    height: u32,
+    rect: Rect,
+    tile: Rect,
+    clip: Rect,
+    stops: usize,
+    repeat: [bool; 2],
+) -> Option<GradientLoop> {
+    let mut bounds = gradient_loop(width, height, rect, clip, stops)?;
+    if repeat == [true, true] {
+        return Some(bounds);
+    }
+    if ![tile.x, tile.y, tile.width, tile.height]
+        .into_iter()
+        .all(f32::is_finite)
+        || tile.width <= 0.0
+        || tile.height <= 0.0
+    {
+        return None;
+    }
+    if !repeat[0] {
+        (bounds.x0, bounds.x1) = nonrepeated_axis(bounds.x0, bounds.x1, tile.x, tile.width);
+    }
+    if !repeat[1] {
+        (bounds.y0, bounds.y1) = nonrepeated_axis(bounds.y0, bounds.y1, tile.y, tile.height);
+    }
+    if bounds.x1 <= bounds.x0 || bounds.y1 <= bounds.y0 {
+        return None;
+    }
+    let pixels = (bounds.x1 - bounds.x0) as u64 * (bounds.y1 - bounds.y0) as u64;
+    let search = u64::from(usize::BITS - (stops - 1).leading_zeros()) + 1;
+    let disabled_axes = u64::from(!repeat[0]) + u64::from(!repeat[1]);
+    bounds.work = 16 + stops as u64 * 4 + pixels * (search + 1 + disabled_axes);
+    Some(bounds)
+}
+
+fn nonrepeated_axis(low: i32, high: i32, origin: f32, extent: f32) -> (i32, i32) {
+    let origin = f64::from(origin);
+    let extent = f64::from(extent);
+    let low = low.max((origin - 0.5).ceil() as i32);
+    let mut end = high.min((origin + extent - 0.5).ceil() as i32);
+    // The sum can round away a subnormal extent at an exact pixel center.
+    // Refine the adjacent candidate against the same local coordinates used
+    // by the sampler, instead of manufacturing an epsilon or expanding tiles.
+    let inside = |pixel: i32| {
+        let local = (f64::from(pixel) + 0.5) - origin;
+        local >= 0.0 && local < extent
+    };
+    if end >= low && end < high && inside(end) {
+        end += 1;
+    }
+    if end > low && !inside(end - 1) {
+        end -= 1;
+    }
+    (low, end)
+}
+
 #[cfg(feature = "raster-bridge")]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum OpaqueGradientError {
@@ -276,12 +350,14 @@ pub(crate) struct OpaqueGradient<'a> {
     info: OpaqueGradientInfo,
     gradient: &'a LinearGradient,
     tile: Rect,
+    repeat: [bool; 2],
     current_color: Color,
     stop_scale: f32,
 }
 
 #[cfg(feature = "raster-bridge")]
 impl<'a> OpaqueGradient<'a> {
+    #[cfg(test)]
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         width: u32,
@@ -292,6 +368,31 @@ impl<'a> OpaqueGradient<'a> {
         gradient: &'a LinearGradient,
         current_color: Color,
         stop_scale: f32,
+    ) -> Result<Option<Self>, OpaqueGradientError> {
+        Self::new_with_repeat(
+            width,
+            height,
+            rect,
+            tile,
+            clip,
+            gradient,
+            current_color,
+            stop_scale,
+            [true, true],
+        )
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn new_with_repeat(
+        width: u32,
+        height: u32,
+        rect: Rect,
+        tile: Rect,
+        clip: Rect,
+        gradient: &'a LinearGradient,
+        current_color: Color,
+        stop_scale: f32,
+        repeat: [bool; 2],
     ) -> Result<Option<Self>, OpaqueGradientError> {
         // This helper ceiling makes integer-to-f32 placement exact and keeps
         // the RGBA byte product representable on 32-bit hosts. The Native
@@ -343,7 +444,15 @@ impl<'a> OpaqueGradient<'a> {
         if rect.width <= 0.0 || rect.height <= 0.0 || clip.width <= 0.0 || clip.height <= 0.0 {
             return Ok(None);
         }
-        let Some(bounds) = gradient_loop(width, height, rect, clip, gradient.stops.len()) else {
+        let Some(bounds) = gradient_loop_with_repeat(
+            width,
+            height,
+            rect,
+            tile,
+            clip,
+            gradient.stops.len(),
+            repeat,
+        ) else {
             return Ok(None);
         };
         // Retain the full loop tariff above, while storing only pixels that
@@ -363,6 +472,7 @@ impl<'a> OpaqueGradient<'a> {
             },
             gradient,
             tile,
+            repeat,
             current_color,
             stop_scale,
         }))
@@ -373,13 +483,14 @@ impl<'a> OpaqueGradient<'a> {
     }
 
     pub fn materialize(self) -> Result<Vec<u8>, OpaqueGradientError> {
-        let resolved = ResolvedGradient::new(
+        let mut resolved = ResolvedGradient::new(
             self.gradient,
             self.tile,
             self.current_color,
             self.stop_scale,
         )
         .ok_or(OpaqueGradientError::Geometry)?;
+        resolved.repeat = self.repeat;
         let mut rgba = Vec::new();
         rgba.try_reserve_exact(self.info.rgba_bytes())
             .map_err(|_| OpaqueGradientError::Allocation)?;
@@ -409,6 +520,28 @@ impl super::Canvas {
         current_color: Color,
         stop_scale: f32,
     ) {
+        self.linear_gradient_with_repeat(
+            rect,
+            tile,
+            radius,
+            gradient,
+            current_color,
+            stop_scale,
+            [true, true],
+        );
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn linear_gradient_with_repeat(
+        &mut self,
+        rect: Rect,
+        tile: Rect,
+        radius: f32,
+        gradient: &LinearGradient,
+        current_color: Color,
+        stop_scale: f32,
+        repeat: [bool; 2],
+    ) {
         if self.suppressed()
             || ![rect.x, rect.y, rect.width, rect.height, radius]
                 .iter()
@@ -420,12 +553,14 @@ impl super::Canvas {
         {
             return;
         }
-        let Some(bounds) = gradient_loop(
+        let Some(bounds) = gradient_loop_with_repeat(
             self.width,
             self.height,
             rect,
+            tile,
             self.clip,
             gradient.stops.len(),
+            repeat,
         ) else {
             return;
         };
@@ -434,10 +569,11 @@ impl super::Canvas {
         if !self.consume_pixels(bounds.work) {
             return;
         }
-        let Some(resolved) = ResolvedGradient::new(gradient, tile, current_color, stop_scale)
+        let Some(mut resolved) = ResolvedGradient::new(gradient, tile, current_color, stop_scale)
         else {
             return;
         };
+        resolved.repeat = repeat;
         let radius = radius.min(rect.width / 2.0).min(rect.height / 2.0);
         for y in bounds.y0..bounds.y1 {
             for x in bounds.x0..bounds.x1 {
@@ -519,3 +655,6 @@ mod tests;
 
 #[cfg(all(test, feature = "raster-bridge"))]
 mod opaque_tests;
+
+#[cfg(test)]
+mod tiling_tests;

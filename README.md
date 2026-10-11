@@ -11,6 +11,9 @@ shared CSS/supports/style validation. The [native-gradient follow-up](docs/vulka
 prepares opaque square-corner fragments on the CPU for the existing GPU image
 shader; alpha, rounded gradients and gradients inside opacity scopes retain
 whole-scene fallback. Try the [native example](examples/vulkan-gradients.html).
+The [background geometry follow-up](docs/background-geometry.md) adds single-layer
+size, physical position and independent repeat axes, including atomic shorthand
+resets. Try the [positioned stripe example](examples/background-geometry.html).
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

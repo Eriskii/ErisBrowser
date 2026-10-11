@@ -477,12 +477,21 @@ fn shorthand_value(name: &str, values: &[&str]) -> String {
             if values.iter().any(|value| wide(value)) {
                 return String::new();
             }
-            if values[1] == "none" {
-                values[0].into()
-            } else if values[0] == "transparent" {
-                values[1].into()
+            if values[2] == "auto auto" && values[3] == "0% 0%" && values[4] == "repeat" {
+                if values[1] == "none" {
+                    values[0].into()
+                } else if values[0] == "transparent" {
+                    values[1].into()
+                } else {
+                    format!("{} {}", values[1], values[0])
+                }
             } else {
-                format!("{} {}", values[1], values[0])
+                // A size always follows a position and slash. Keep authored
+                // longhand syntax while emitting an unambiguous complete layer.
+                format!(
+                    "{} {} / {} {} {}",
+                    values[1], values[3], values[2], values[4], values[0]
+                )
             }
         }
         "border"
@@ -632,6 +641,20 @@ fn records(
     }
     let count = css::shorthand_properties(property).map_or(1, |names| names.len());
     spend(work, count.saturating_mul(value.len() + 64) + 1)?;
+    if matches!(
+        property,
+        "background-image" | "background-size" | "background-position" | "background-repeat"
+    ) {
+        // These normalized longhands expand unchanged. Their complete value
+        // was just validated; retain it without a Declaration roundtrip and
+        // another identical parser pass. Pending var() values returned above.
+        return Ok(Some(vec![Record {
+            name: property.into(),
+            value: normalized,
+            important,
+            pending: None,
+        }]));
+    }
     let mut expanded = Vec::new();
     css::expand_declaration_with_budget(property, value, important, &mut expanded, work)
         .map_err(|_| Error::Limit)?;
@@ -865,7 +888,10 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
     if wide(value) {
         return Ok(true);
     }
-    if property == "background-image" {
+    if matches!(
+        property,
+        "background-image" | "background-size" | "background-position" | "background-repeat"
+    ) {
         return css::valid_background_property(property, value, work).map_err(|_| Error::Limit);
     }
     if matches!(property, "object-fit" | "object-position") {
@@ -1545,3 +1571,6 @@ mod tests {
 
 #[cfg(test)]
 mod gradient_tests;
+
+#[cfg(test)]
+mod background_tests;
