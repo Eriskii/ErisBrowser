@@ -413,7 +413,9 @@ pub(super) fn parts<'s>(value: &'s str, work: &mut usize) -> Result<Option<[&'s 
             let first = component(index).first;
             let start = index;
             index += 1;
-            if first.kind == Kind::Function && first.is_name("linear-gradient")
+            if first.kind == Kind::Function
+                && (first.is_name("linear-gradient") || first.is_name("url"))
+                || first.kind == Kind::Url
                 || first.kind == Kind::Ident && first.is_name("none")
             {
                 if seen[1]

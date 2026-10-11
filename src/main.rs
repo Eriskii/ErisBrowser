@@ -253,7 +253,7 @@ fn run() -> Result<(), String> {
             fragment = page.url.fragment().map(str::to_owned);
         }
     }
-    let layout = page.layout(width as f32, height as f32, &fonts);
+    let layout = page.prepare_layout(width as f32, height as f32, &fonts);
     let scroll = fragment
         .and_then(|fragment| eris::page::find_fragment(&page.document, &fragment))
         .and_then(|node| layout.hit_regions.iter().find(|hit| hit.node == node))
@@ -308,18 +308,12 @@ fn run() -> Result<(), String> {
         }
     }
     if iterations > 0 {
-        let stylesheets = page.stylesheets();
         let mut samples = Vec::with_capacity(iterations);
         for _ in 0..iterations {
             let start = Instant::now();
-            let styles = eris::css::compute_styles_from_sources(
-                &page.document,
-                &stylesheets,
-                width as f32,
-                height as f32,
-            );
-            let layout =
-                eris::layout::layout(&page.document, &styles, width as f32, height as f32, &fonts);
+            // The initial preparation warms selected assets. Timed iterations
+            // recollect styles and use authenticated cache bindings without I/O.
+            let layout = page.layout(width as f32, height as f32, &fonts);
             canvas.clear(Color::WHITE);
             canvas.paint_with_viewport(
                 &layout.commands,

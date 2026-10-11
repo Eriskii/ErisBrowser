@@ -136,7 +136,7 @@ fn adjacent_sources_keep_distinct_handles_and_independent_eof() {
 }
 
 #[test]
-fn provenance_does_not_change_cascade_or_enable_url_backgrounds() {
+fn provenance_preserves_cascade_and_resolves_url_backgrounds_at_consumption() {
     let text = "@layer first {#a{color:red;--paint:url(../Images/Logo.png?Q=é#Mark)}}\
                 @layer second {#a{color:blue;color:revert-layer}}\
                 #a{background-image:var(--paint)}";
@@ -146,12 +146,36 @@ fn provenance_does_not_change_cascade_or_enable_url_backgrounds() {
     let document = compute_styles_from_sources(&doc, &[StyleSource::new(text)], 100.0, 100.0);
     let external = compute_styles_from_sources(&doc, &[sheet(text, &url)], 100.0, 100.0);
     assert_eq!(document[id].color, Color::rgb(255, 0, 0));
-    assert!(document[id].background_image.is_none());
-    assert_eq!(format!("{:?}", document[id]), format!("{:?}", external[id]));
+    assert_eq!(doc.base_url().as_str(), "about:blank");
+    let Some(BackgroundImage::Url(document_image)) = &document[id].background_image else {
+        panic!("expected document URL image");
+    };
+    assert_eq!(
+        document_image.as_ref(),
+        &url::ResolvedUrl::Unresolved("../Images/Logo.png?Q=é#Mark".into())
+    );
+    let Some(BackgroundImage::Url(external_image)) = &external[id].background_image else {
+        panic!("expected external URL image");
+    };
+    let url::ResolvedUrl::Absolute(external_url) = external_image.as_ref() else {
+        panic!("expected absolute stylesheet URL");
+    };
+    assert_eq!(
+        external_url.as_str(),
+        "https://example.test/Images/Logo.png?Q=%C3%A9#Mark"
+    );
+    let mut document_without_image = document[id].clone();
+    let mut external_without_image = external[id].clone();
+    document_without_image.background_image = None;
+    external_without_image.background_image = None;
+    assert_eq!(
+        format!("{document_without_image:?}"),
+        format!("{external_without_image:?}")
+    );
     let mut work = 100_000;
     assert_eq!(
         valid_background_property("background-image", "url(../Images/Logo.png)", &mut work),
-        Ok(false)
+        Ok(true)
     );
 }
 

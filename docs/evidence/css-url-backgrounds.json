@@ -1,0 +1,933 @@
+{
+  "archive": {
+    "bytes": 1347529,
+    "members": 420,
+    "path": "css-url-backgrounds.tar.gz",
+    "sha256": "792c9c7bc4a778df7cce848bd9bd74baa22bc3ba3855724f0b51457f0f6af4b4"
+  },
+  "base": "e827bdddad4041cf0788419325f63891ee616132",
+  "browser": {
+    "build_receipt": "/tmp/eris-url-backgrounds-1/validation/candidate-browser-build-1.json",
+    "bytes": 62268400,
+    "path": "/tmp/eris-url-backgrounds-1/eris-browser-final-1",
+    "sha256": "b6815bed659b75d075cb4a499f7ffdb5460f4ce84275abed136c8c02271e1b1b",
+    "source": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+    "source_sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792",
+    "strip_receipt": "/tmp/eris-url-backgrounds-1/validation/candidate-browser-strip-1.json"
+  },
+  "checks": {
+    "candidate-browser-build-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-url-backgrounds-1/validation/candidate-browser-build-1.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-url-backgrounds-1/validation/candidate-browser-build-1.json",
+        "sha256": "365cd1b66dc133e7d2b95e2f693cddb99694be76eb5da967a1e71a8ee315043b"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "candidate-browser-strip-1": {
+      "command": [
+        "strip",
+        "--strip-debug",
+        "/tmp/eris-url-backgrounds-1/eris-browser-final-1"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-url-backgrounds-1/validation/candidate-browser-strip-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 289,
+        "path": "/tmp/eris-url-backgrounds-1/validation/candidate-browser-strip-1.json",
+        "sha256": "688dbf2a8254637c35ddb454d9c6bd0985a1bd871c1af5a21bb822cc31e570f9"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "date-helper-rerun-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "date_host::tests::host_actual_helper_success_nonzero_malformed_and_flood_are_distinguished",
+        "--",
+        "--exact",
+        "--include-ignored",
+        "--nocapture"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 400,
+        "path": "/tmp/eris-url-backgrounds-1/validation/date-helper-rerun-1.log",
+        "sha256": "08a06dadbd5a60abbd5ed7687615091616b7c95aa4da75d6b4d4d30d7a1d80c4"
+      },
+      "receipt": {
+        "bytes": 526,
+        "path": "/tmp/eris-url-backgrounds-1/validation/date-helper-rerun-1.json",
+        "sha256": "32745e7af51cadf02c8da3b56bea48446737748d37f6fcc407045656e4357f69"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 1,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "default-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 144,
+        "path": "/tmp/eris-url-backgrounds-1/validation/default-clippy-198-1.log",
+        "sha256": "43de8bddad9598d7821c617849f8b98bc336b546d6cae85752593a786a6cb386"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-url-backgrounds-1/validation/default-clippy-198-1.json",
+        "sha256": "683c46600a4c90271c0785a99bd547dd1c3a8a9af0db8f961f88c393fc562ec0"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "focused-background-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--lib",
+        "background",
+        "--",
+        "--include-ignored"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 12504,
+        "path": "/tmp/eris-url-backgrounds-1/validation/focused-background-1.log",
+        "sha256": "69666ba50cb70c8c125dc5e1a85422b8144a5a6df952c3e12374ddd66c6a6917"
+      },
+      "receipt": {
+        "bytes": 412,
+        "path": "/tmp/eris-url-backgrounds-1/validation/focused-background-1.json",
+        "sha256": "dc3352644b540d9bc70e8142bf183cad54cf281f3e4455b3e1d1035abd91b439"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 112,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "format-1": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-url-backgrounds-1/validation/format-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 341,
+        "path": "/tmp/eris-url-backgrounds-1/validation/format-1.json",
+        "sha256": "da697c59c29b2265313fbef56d9a7a6db4e8a26fe66280e214f5e30ade5749f0"
+      }
+    },
+    "format-2": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-url-backgrounds-1/validation/format-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 341,
+        "path": "/tmp/eris-url-backgrounds-1/validation/format-2.json",
+        "sha256": "506a39a9801dc494eb3c7e8bcc2ccb8fdfd53778ee98dda722b08d0ec09cd87e"
+      }
+    },
+    "format-check-1": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-url-backgrounds-1/validation/format-check-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 371,
+        "path": "/tmp/eris-url-backgrounds-1/validation/format-check-1.json",
+        "sha256": "c3df14258e37608c409c52d013e966b72b2fdab8d1d731ca39536251db07856a"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "full-default-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 248848,
+        "path": "/tmp/eris-url-backgrounds-1/validation/full-default-198-1.log",
+        "sha256": "c655a9dec527dbf62edd17cc38e41dd290a6dd77d3421d4363d83e976282d85d"
+      },
+      "receipt": {
+        "bytes": 340,
+        "path": "/tmp/eris-url-backgrounds-1/validation/full-default-198-1.json",
+        "sha256": "434ce1fdbab0f148e151dc2b946b66e33fc562bc4bc874916406e8b4d2c03d0a"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2483,
+        "rows": 31
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "full-native-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 234428,
+        "path": "/tmp/eris-url-backgrounds-1/validation/full-native-1.log",
+        "sha256": "96b04ec5d234e56c8b69b173fe0c3373d417e26a8ce2f5e516a4da3b8c964b35"
+      },
+      "receipt": {
+        "bytes": 375,
+        "path": "/tmp/eris-url-backgrounds-1/validation/full-native-1.json",
+        "sha256": "284c8c977be879522d21fb0617bf98e69d3bbd8d9dcdca7cf1624d4367c6a899"
+      },
+      "rust": {
+        "failed": 1,
+        "ignored": 0,
+        "passed": 2320,
+        "rows": 1
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "full-native-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 273701,
+        "path": "/tmp/eris-url-backgrounds-1/validation/full-native-2.log",
+        "sha256": "dbd04738e812a9ac3c64266677b2a0e131bca8b3922926799650ef36454877b3"
+      },
+      "receipt": {
+        "bytes": 397,
+        "path": "/tmp/eris-url-backgrounds-1/validation/full-native-2.json",
+        "sha256": "d1d799573cb05a14d530d6ec6cc47bc7264595c590f9ff39385e7805b4085cc7"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2692,
+        "rows": 31
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "native-clippy-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 240,
+        "path": "/tmp/eris-url-backgrounds-1/validation/native-clippy-188-1.log",
+        "sha256": "0c2109eba1bfb9c5e373bed162e5c31d20c9a0df1b95906826ceb7094d739b67"
+      },
+      "receipt": {
+        "bytes": 403,
+        "path": "/tmp/eris-url-backgrounds-1/validation/native-clippy-188-1.json",
+        "sha256": "1a9aed8feca431dc2b761655b00b50da876a2d5b0710121057bd48807a32f29d"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "native-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 240,
+        "path": "/tmp/eris-url-backgrounds-1/validation/native-clippy-198-1.log",
+        "sha256": "2b9ac59be65b68d9eb0e1718b638a0621097ba6e1de4f03120119064378f19c9"
+      },
+      "receipt": {
+        "bytes": 403,
+        "path": "/tmp/eris-url-backgrounds-1/validation/native-clippy-198-1.json",
+        "sha256": "636a897cd7d3a0972bd408f987831166a546c41097058cab62ec0acc5a7c7fbf"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "parent-ci-1": {
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "38129148674",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--json",
+        "status,conclusion,jobs,url,headSha"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 26970,
+        "path": "/tmp/eris-url-backgrounds-1/validation/parent-ci-1.log",
+        "sha256": "15eedf07642972a3cd40d3c71a5ce03ec926f46c7ee23021eadd541e499ab954"
+      },
+      "receipt": {
+        "bytes": 333,
+        "path": "/tmp/eris-url-backgrounds-1/validation/parent-ci-1.json",
+        "sha256": "139487cb2c410fc419890b36817f8196235bef2af80bc63e643c3dbbdad733ab"
+      }
+    },
+    "parent-ci-list-1": {
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--commit",
+        "e827bdddad4041cf0788419325f63891ee616132",
+        "--limit",
+        "3",
+        "--json",
+        "databaseId,status,conclusion,url,headSha"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 198,
+        "path": "/tmp/eris-url-backgrounds-1/validation/parent-ci-list-1.log",
+        "sha256": "8d66602e86f8a713bbccba85b8651f350be9ed9522fac62753d907ac4cd19c45"
+      },
+      "receipt": {
+        "bytes": 412,
+        "path": "/tmp/eris-url-backgrounds-1/validation/parent-ci-list-1.json",
+        "sha256": "2460eb046dd2f66e47105c8639c619b278f4da9a391ed16ca3e9189d0e1838f4"
+      }
+    },
+    "probe-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 341,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-clippy-198-1.log",
+        "sha256": "61c3c14c7fadce7efd72119b8dc21053b63569299a82620ffbd17ee45d8d8431"
+      },
+      "receipt": {
+        "bytes": 429,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-clippy-198-1.json",
+        "sha256": "b526976d540cc2b74f527e2e0558d54e3e2e5dd6bacc7f53f315211b667d9bcd"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "probe-format-check-1": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.98.0",
+        "fmt",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-format-check-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 433,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-format-check-1.json",
+        "sha256": "b7eef2c11522b51f1f526f45d914175b41480e04d01e2bf48e8191152c21e920"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "probe-tests-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--",
+        "--include-ignored"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 4606,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-tests-188-1.log",
+        "sha256": "7aa2605c943573652c46ad490790c73d28a5e7517979f5503669ae48cf45d864"
+      },
+      "receipt": {
+        "bytes": 405,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-tests-188-1.json",
+        "sha256": "12339e8636378c789ba0709b77496c625796078339489b26db03d82149677a08"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 15,
+        "rows": 12
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "probe-tests-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--",
+        "--include-ignored"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 4594,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-tests-198-1.log",
+        "sha256": "fb80688015c8553f7e2f6d3f8c6866817ce47fecea9bbfd3d8c2a0eb53e092a9"
+      },
+      "receipt": {
+        "bytes": 403,
+        "path": "/tmp/eris-url-backgrounds-1/validation/probe-tests-198-1.json",
+        "sha256": "e6cd04317e0c7a835dea2720028b333b624cd1d6b911cbd057b824691fe9e139"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 15,
+        "rows": 12
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    },
+    "reftests-final-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-url-backgrounds-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-url-backgrounds-1/eris-browser-final-1",
+        "--output-dir",
+        "/tmp/eris-url-backgrounds-1/reftests-final-1"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 27781,
+        "path": "/tmp/eris-url-backgrounds-1/validation/reftests-final-1.log",
+        "sha256": "cef43ac774212454c19c4b67579d8a75ed49e9083e8c7d2fdfcd88c9aba3b1f0"
+      },
+      "receipt": {
+        "bytes": 409,
+        "path": "/tmp/eris-url-backgrounds-1/validation/reftests-final-1.json",
+        "sha256": "f5898eca50c78800a5fefa8cb08f2d6caa983f4dabe083263f42e608da106d60"
+      },
+      "source": {
+        "bytes": 65915,
+        "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+        "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+      }
+    }
+  },
+  "corrections": [
+    "Pre-execution peer review corrected full serialized URL metadata charging and retained independent fragment/alias boundary tests.",
+    "Legacy provenance tests now assert actual computed URL values while retaining unrelated style and no-I/O assertions."
+  ],
+  "failed_attempts": 1,
+  "failure_observation": "Initial full-native-1 had one unchanged date_host helper test failure (Unavailable). Cause unconfirmed. Same exact isolated test passed, then unchanged complete native suite passed with --test-threads=4, with no skips or source changes.",
+  "limitations": [
+    "One supported URL background layer; unsupported CSS syntax remains outside this increment.",
+    "Work and metadata admission tariffs are conservative bounds, not allocator or instruction measurements.",
+    "Native background-image lowering remains deferred; entire scene falls back to software.",
+    "No new GPU execution, Chromium performance measurement, complete compatibility or production-security claim."
+  ],
+  "parent_ci": "parent-ci-1",
+  "parent_ci_observation": "Published parent e827bdddad4041cf0788419325f63891ee616132 completed all nine jobs successfully.",
+  "published": {
+    "README.md": {
+      "bytes": 51669,
+      "sha256": "866a7a439c5c3e93d56ac0bc23e817614157c0b38938bac7fc870a4c093b80d2"
+    },
+    "docs/SECURITY.md": {
+      "bytes": 80878,
+      "sha256": "5599a701b32f8ab99828226cad852733d74254809a1db243d6c31752e37c004f"
+    },
+    "docs/css-url-backgrounds.md": {
+      "bytes": 7219,
+      "sha256": "7558b37d291522dc4bcd47c1efd970e209f402b82e877cc5909edada4e937916"
+    },
+    "src/css.rs": {
+      "bytes": 318098,
+      "sha256": "520bf44e6eeb1051612aff8f5946b17a4ee405d166825657c94586e3efd5450d"
+    },
+    "src/css/background.rs": {
+      "bytes": 17418,
+      "sha256": "c735ab5c5c1c7669d07393502b32c076232c089f24218c2a712315f0ac146aca"
+    },
+    "src/css/background/tests.rs": {
+      "bytes": 16284,
+      "sha256": "6bb341740108d33e444284e1b5575419c8a3e556fe147156b0958f250a81dc47"
+    },
+    "src/css/gradient.rs": {
+      "bytes": 15902,
+      "sha256": "38b93b75d688fa88571efa65006fed3d289baee547def8e37366fbacb0a46fa5"
+    },
+    "src/css/gradient/tests.rs": {
+      "bytes": 10106,
+      "sha256": "650865528f3cf3e2ffe2b1e44d0c58453a92ebbf4bd453a6be6558a3f7754159"
+    },
+    "src/css/image.rs": {
+      "bytes": 6904,
+      "sha256": "1cd5504628889d9a6ac505da84fa7faab52551dfc4eac5b012be3dac840a2c69"
+    },
+    "src/css/image/tests.rs": {
+      "bytes": 5174,
+      "sha256": "0e47c8a32eaf0d66d514f5f0193921c09e096fc188390f2f8c78cb09e51eeafe"
+    },
+    "src/css/provenance_tests.rs": {
+      "bytes": 9930,
+      "sha256": "aeaa2ce97f23b292a1328fea4848b3aa70ee3cc5778b29154c4f25b55d763d8b"
+    },
+    "src/css/url.rs": {
+      "bytes": 10818,
+      "sha256": "5d7e3e8d21d58bae9a1af8782c80a1011753bbf4736f9dad3d4e2ebcab8ae6d3"
+    },
+    "src/css/url/tests.rs": {
+      "bytes": 9467,
+      "sha256": "54c5105ee477ab4105576528ee07b7cb0a9bea0124c875a7644bc32fe47674ce"
+    },
+    "src/css/url/validator_tests.rs": {
+      "bytes": 4317,
+      "sha256": "2345c292128859515e2adacf0e148b1800e6d32ecfe9f8d72b8576ac24297925"
+    },
+    "src/css/url_background_tests.rs": {
+      "bytes": 6843,
+      "sha256": "124049d42b0fbcc3bedcfdcae3f89ff6d4026008c17eb8e99410d6c1ab662d11"
+    },
+    "src/cssom.rs": {
+      "bytes": 58156,
+      "sha256": "51bb43e068e500bf9e0a0362fd18313a6574bbf659442aa63c276b8f5108bbbf"
+    },
+    "src/cssom/gradient_tests.rs": {
+      "bytes": 4670,
+      "sha256": "e60e4e931115331d3059fa280d2833b470aca891a8f5c8603d64e340e62f22db"
+    },
+    "src/cssom/url_background_tests.rs": {
+      "bytes": 2460,
+      "sha256": "037b901b43c03cee975d703efaca7de09ce7c3d17af84218b109c43f196fd289"
+    },
+    "src/layout.rs": {
+      "bytes": 340170,
+      "sha256": "41d7dccf0d19e5de7133bf5388c1a2659940ff2a9e8a3f79afe190fad616e2a1"
+    },
+    "src/layout/background_tests.rs": {
+      "bytes": 21620,
+      "sha256": "6e581ab7693a91d6828bade47ce3e6f3af6eb5b3f4e6d8d13c6a41d80e9a9c4b"
+    },
+    "src/layout/gradient_tests.rs": {
+      "bytes": 21058,
+      "sha256": "8103114a097d200bec0019d1063688828a9efb0f0129151b3eca348d8ae6f2c0"
+    },
+    "src/layout/tiled_image_tests.rs": {
+      "bytes": 6328,
+      "sha256": "2757a42772a90a9802e720e4bab99417abf93035d91451deaa2d708dac37a309"
+    },
+    "src/layout/url_background_tests.rs": {
+      "bytes": 25937,
+      "sha256": "65d46351d8e531b59adf4b6107e9fc5b61ec41bb6b072ac70892d90be0b903d8"
+    },
+    "src/main.rs": {
+      "bytes": 14733,
+      "sha256": "f21161c227d0c9be973c014d42cbd31bde888618d80fc5d7979fd696b97a621d"
+    },
+    "src/net.rs": {
+      "bytes": 24942,
+      "sha256": "80c69627e4d9fe8b726c04fd66c8ad12478d35fe11827a8e15db5bf17d261839"
+    },
+    "src/net/bridge_budget_tests.rs": {
+      "bytes": 2112,
+      "sha256": "95c64bb2b5f6b6faea40ea1fc4929a124563d7522971356b45f981eb7c3e8e79"
+    },
+    "src/page.rs": {
+      "bytes": 91379,
+      "sha256": "73a595b769347af21cbbf023efee326ef830be0838088960bbac1cf662c2c75d"
+    },
+    "src/page/background_resource_tests.rs": {
+      "bytes": 13899,
+      "sha256": "ad084854909968458f20bcc63553892df21a45f9e4a52d204bcb6836ae31493d"
+    },
+    "src/page/background_resources.rs": {
+      "bytes": 15523,
+      "sha256": "fba80c94481629f0a303f666e74a8b20f34fd9f427635922592dd297b4f2d8a0"
+    },
+    "src/page/css_url_tests.rs": {
+      "bytes": 10247,
+      "sha256": "909a3b6699804beee768c91c0522648b8c0f8314bcdd37393b45fd85f4888ba4"
+    },
+    "src/worker.rs": {
+      "bytes": 28624,
+      "sha256": "21247876928a1424e14cb6825028588b2b9bc5b04ba41eba2d137a85e4740f6a"
+    },
+    "tests/reftests/manifest.json": {
+      "bytes": 21401,
+      "sha256": "b754d12d56c151d32b99185e05143cf5f092a369450919d344ec0d5615c0da2a"
+    },
+    "tests/reftests/url-background-assets/alpha.png": {
+      "bytes": 74,
+      "sha256": "729545f41c16376f4d2c711c50025dc4013b8fbfccde34c46199a7ecee291f59"
+    },
+    "tests/reftests/url-background-assets/black.png": {
+      "bytes": 70,
+      "sha256": "dc5687b50f70cb95379bfced5a0eae768dd4382cd6b393ee77d65bbdd6373fbf"
+    },
+    "tests/reftests/url-background-assets/blue.png": {
+      "bytes": 70,
+      "sha256": "e4de9adb10f197cd553b011440c25c4cc0989ad642a0011c0006cd955d32be0c"
+    },
+    "tests/reftests/url-background-assets/cyan.png": {
+      "bytes": 70,
+      "sha256": "f384a400cb9cb293e55c3ed38764d2d37de774282f09a6986a954d791ec77cbc"
+    },
+    "tests/reftests/url-background-assets/green.png": {
+      "bytes": 70,
+      "sha256": "194bdb273fa55018b8e0e248714246a196283bab5b8cd20a1dedd0b74ec206fd"
+    },
+    "tests/reftests/url-background-assets/magenta.png": {
+      "bytes": 70,
+      "sha256": "d1e180227ac2f063d95895752ff464899bd89a03f521bf0f4f04a40b4860e044"
+    },
+    "tests/reftests/url-background-assets/pattern.png": {
+      "bytes": 85,
+      "sha256": "ecf7586a9a4bea1cee53d49b09639a9915b5a49f1c12b75152bd97236286b80e"
+    },
+    "tests/reftests/url-background-assets/red.png": {
+      "bytes": 70,
+      "sha256": "49e1dad481e94dfab7c9573a9a81d56aa2ca629fe15a3f7a910aa4f47601c00d"
+    },
+    "tests/reftests/url-background-assets/yellow.png": {
+      "bytes": 70,
+      "sha256": "2fbb398aa5d2614298905c0e19e2c0a3534de1cc3d0392119ab37ac94aad274b"
+    },
+    "tests/reftests/url-background-canvas-ref.html": {
+      "bytes": 727,
+      "sha256": "11c037c9df0405aab64607665a208607233613d30cf69a391de113be72fe487c"
+    },
+    "tests/reftests/url-background-canvas.html": {
+      "bytes": 298,
+      "sha256": "39332c452df510149335de4b9d6817b62ff2b66d4d365250fe46cc8e8da66456"
+    },
+    "tests/reftests/url-background-inline-table-ref.html": {
+      "bytes": 1691,
+      "sha256": "08ee2023f220f80fe2e3deb8d22828b6e11fd43a1e8d2de132e3a9ba2845f166"
+    },
+    "tests/reftests/url-background-inline-table.html": {
+      "bytes": 905,
+      "sha256": "50a9e01631318d542e03a87c43442a90fa10ce6467545550af0acefbce5315bd"
+    },
+    "tests/reftests/url-background-repeat-position-ref.html": {
+      "bytes": 7695,
+      "sha256": "019ea58c6596d857b270079fce5460c64bab0893171587ded691083ac31f1a03"
+    },
+    "tests/reftests/url-background-repeat-position.html": {
+      "bytes": 1049,
+      "sha256": "724d314674c84a7acb6643f9db19dcffd42b9ef276ac5b2bb77f8c9990c62657"
+    },
+    "tests/reftests/url-background-sizing-ref.html": {
+      "bytes": 10287,
+      "sha256": "9ebd2f635410b638c2037d8f0acfee2d3327a3db0fb39ee9c2b241239bdd3a42"
+    },
+    "tests/reftests/url-background-sizing.html": {
+      "bytes": 1287,
+      "sha256": "5145bdfd7ad127e70ad5328d957d16969f4aaeb8fc8882f4baae9f976e6969dd"
+    },
+    "tests/reftests/url-background-unavailable-root-ref.html": {
+      "bytes": 727,
+      "sha256": "eb691cb9becef6bf88b723e057d811022e446f6c064d1b348ad493bb8635f6ad"
+    },
+    "tests/reftests/url-background-unavailable-root.html": {
+      "bytes": 295,
+      "sha256": "d91947e6b05e9eab5183769107d53f88120e1c3b9c450eb69194b66d5d737313"
+    },
+    "tests/url_backgrounds.rs": {
+      "bytes": 15836,
+      "sha256": "d9f24daf01cd30e2ae3ebd9b469cf4336d6f9970ac8e673db45c48c3a3c841af"
+    },
+    "tests/worker.rs": {
+      "bytes": 108462,
+      "sha256": "2d9cfc4eb74a9745f82da8048dce4e539a8457f5d556ddfac4f3616d7449079a"
+    },
+    "tests/worker/url_backgrounds.rs": {
+      "bytes": 3014,
+      "sha256": "5b528731ddf926e5cf6560eb57fb4863d890617b2d51b9e1a428493de9593eb7"
+    }
+  },
+  "reftests": {
+    "check": "reftests-final-1",
+    "hold": {
+      "bytes": 13960,
+      "path": "/tmp/eris-url-backgrounds-1/fixtures/source-ready.json",
+      "sha256": "98d189d07f9e1f3ae7eb5cc404a2de7d1b5dbb6d4e8287d7a6975f77d09ee538"
+    },
+    "manifest": {
+      "bytes": 21401,
+      "path": "/tmp/eris-url-backgrounds-1/worktree/tests/reftests/manifest.json",
+      "sha256": "b754d12d56c151d32b99185e05143cf5f092a369450919d344ec0d5615c0da2a"
+    },
+    "report": {
+      "bytes": 27781,
+      "path": "/tmp/eris-url-backgrounds-1/reftests-final-1/report.json",
+      "sha256": "cef43ac774212454c19c4b67579d8a75ed49e9083e8c7d2fdfcd88c9aba3b1f0"
+    }
+  },
+  "results": {
+    "default_rust_1_98": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2483,
+      "rows": 31
+    },
+    "exact_references": 76,
+    "native_rust_1_88": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2692,
+      "rows": 31
+    },
+    "new_groups": {
+      "css": 19,
+      "integration": 2,
+      "layout": 13,
+      "private_page_net": 12,
+      "worker": 1
+    },
+    "probe_each_toolchain": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 15,
+      "rows": 12
+    },
+    "unchanged_parent_references": 71
+  },
+  "scope": "Declaration-source URL resolution, bounded computed image interning, persistent resource preparation, authenticated raster geometry, and software/frame transport rendering. Native retains whole-frame fallback.",
+  "source": {
+    "bytes": 65915,
+    "path": "/tmp/eris-url-backgrounds-1/compiled-source-1.json",
+    "sha256": "275acfa0c2b1fd364510894c165585aebafc23a662f3fac175be7e4af84f4792"
+  },
+  "source_count": 585,
+  "status": "Single-layer CSS URL backgrounds validated; complete browser goal remains open"
+}

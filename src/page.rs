@@ -20,6 +20,8 @@ const MAX_SCRIPT_BYTES: usize = 1024 * 1024;
 const MAX_FORM_BYTES: usize = net::MAX_FORM_BODY_BYTES;
 use url::Url;
 
+mod background_resources;
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Navigation {
     pub address: String,
@@ -51,6 +53,10 @@ struct PageResources {
     failed: HashSet<(ResourceKind, String)>,
     decoded_image_bytes: usize,
     resource_url_work_left: usize,
+    background_keys: HashMap<String, String>,
+    background_key_serial: u64,
+    background_metadata_left: usize,
+    background_diagnostics: u8,
 }
 impl PageResources {
     fn new(fetcher: Fetcher) -> Self {
@@ -60,6 +66,10 @@ impl PageResources {
             failed: HashSet::new(),
             decoded_image_bytes: 0,
             resource_url_work_left: 32 * 1024 * 1024,
+            background_keys: HashMap::new(),
+            background_key_serial: 0,
+            background_metadata_left: 4 * 1024 * 1024,
+            background_diagnostics: 0,
         }
     }
 }
@@ -822,7 +832,7 @@ impl Page {
     pub fn layout(&self, width: f32, height: f32, fonts: &Fonts) -> LayoutResult {
         let styles =
             css::compute_styles_from_sources(&self.document, &self.stylesheets(), width, height);
-        layout::layout(&self.document, &styles, width, height, fonts)
+        self.layout_with_background_resources(&styles, width, height, fonts)
     }
     pub fn title(&self) -> String {
         let title = self.document.title();
@@ -2108,3 +2118,7 @@ mod resource_loading_tests;
 #[cfg(test)]
 #[path = "page/resource_tests.rs"]
 mod resource_tests;
+
+#[cfg(test)]
+#[path = "page/background_resource_tests.rs"]
+mod background_resource_tests;

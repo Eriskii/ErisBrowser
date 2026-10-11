@@ -15,21 +15,23 @@ The [background geometry follow-up](docs/background-geometry.md) adds single-lay
 size, physical position and independent repeat axes, including atomic shorthand
 resets. Try the [positioned stripe example](examples/background-geometry.html).
 
-[CSS URL provenance](docs/css-url-provenance.md) retains each external stylesheet's
-final URL through imports and parsing, while inline sources keep a document-base
-marker. A bounded, pure CSS `url()` decoder and resolver supports this foundation;
-URL background images and resource fetching from CSS properties remain unsupported.
+[CSS URL backgrounds](docs/css-url-backgrounds.md) add one loaded `url()` layer
+with natural raster sizing, position and repeat controls. Winning declarations
+use their [stylesheet or document base](docs/css-url-provenance.md), including
+variable substitution and inheritance. Explicit resource preparation uses the
+page's retained loader; read-only layout paints authenticated cached images.
 
 [Page resource sessions](docs/page-resource-session.md) retain the original navigation
 fetcher and image caches for the page lifetime. Request and decode allowances
-remain cumulative, and inline SVG accounting includes cache-only rasters. This
-adds no fetch trigger for layout, image-source mutations or CSS backgrounds.
+remain cumulative, and inline SVG accounting includes cache-only rasters.
+Background preparation consumes this same session without resetting its limits;
+read-only layout and image-source mutations add no fetching.
 
 [Bounded tiled raster painting](docs/tiled-image-raster.md) adds a display-list
 primitive for already decoded images, with independent axis repetition,
 positioned tiles and rounded clipping. It uses center-based nearest sampling
-and whole-frame software fallback. CSS URL backgrounds remain unsupported;
-this primitive adds no fetching or decoding.
+and whole-frame software fallback. URL backgrounds now consume this primitive;
+the paint command itself performs no fetching or decoding.
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
@@ -248,7 +250,7 @@ The native UI loads each document in a fresh child process. Its address bar, cli
 
 For a JSON report covering the home, gallery, form, template/Grid, positioning, event/compositing, responsive and disclosure fixtures, including a scrolled view with visible opacity, run `python3 tools/benchmark.py`.
 
-The benchmark measures **warm-cache CSS computation + layout + software painting of the loaded page**. It excludes parsing, scripts, network, image decoding, PNG encoding, and native presentation. It is not a Chromium comparison or a general web-performance score. See [performance](docs/PERFORMANCE.md).
+The benchmark measures **warm-cache CSS computation + cache binding + layout + software painting of the loaded page**. URL backgrounds are prepared once before timed iterations. The samples exclude that preparation, parsing, scripts, network, image decoding, PNG encoding, and native presentation. It is not a Chromium comparison or a general web-performance score. See [performance](docs/PERFORMANCE.md).
 
 `python3 tools/benchmark_worker.py` separately measures fresh confined process startup, document loading, validated snapshot round trips, software painting and teardown. It saves raw samples and environment/build hashes. It does not open a window or measure native presentation.
 

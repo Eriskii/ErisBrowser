@@ -42,9 +42,10 @@ impl ParsedGradient {
 // Deliberately stack-backed until pool admission; boxing would allocate before
 // the retained-storage check for every validation-only parse.
 #[allow(clippy::large_enum_variant)]
-pub(super) enum ParsedImage {
+pub(super) enum ParsedImage<'a> {
     None,
     Gradient(ParsedGradient),
+    Url(&'a str),
 }
 
 struct Parser<'a, 's, 'w> {
@@ -281,11 +282,11 @@ impl Parser<'_, '_, '_> {
     }
 }
 
-pub(super) fn parse_image(
-    value: &str,
+pub(super) fn parse_image<'a>(
+    value: &'a str,
     units: [f32; 4],
     work: &mut usize,
-) -> Result<Option<ParsedImage>, Error> {
+) -> Result<Option<ParsedImage<'a>>, Error> {
     if value.len() > 4096 {
         return Err(Error::Limit);
     }
@@ -309,6 +310,15 @@ pub(super) fn parse_image(
         let image = if parser.name("none") {
             parser.cursor.take()?;
             ParsedImage::None
+        } else if parser.kind() == Some(Kind::Url)
+            || parser.kind() == Some(Kind::Function)
+                && parser.cursor.tokens[parser.cursor.at].is_name("url")
+        {
+            if !super::url::valid(value, parser.cursor.work)? {
+                return Err(Error::Invalid);
+            }
+            parser.cursor.at = tokens.len();
+            ParsedImage::Url(value)
         } else {
             ParsedImage::Gradient(parser.gradient()?)
         };
@@ -354,6 +364,17 @@ impl GradientPool {
         &mut self,
         parsed: &ParsedGradient,
         work: &mut usize,
+    ) -> Result<Option<Arc<LinearGradient>>, Error> {
+        self.intern_with_reserved(parsed, work, 0)
+    }
+    pub(super) fn bytes(&self) -> usize {
+        self.bytes
+    }
+    pub(super) fn intern_with_reserved(
+        &mut self,
+        parsed: &ParsedGradient,
+        work: &mut usize,
+        reserved: usize,
     ) -> Result<Option<Arc<LinearGradient>>, Error> {
         // Fixed stack key, including explicit missing-position/currentColor tags.
         // Each B-tree probe has at most 11 comparisons per level, each bounded
@@ -410,7 +431,11 @@ impl GradientPool {
             + std::mem::size_of::<LinearGradient>()
             + std::mem::size_of_val(parsed.stops())
             + 64;
-        if bytes > MAX_RETAINED_GRADIENT_BYTES.saturating_sub(self.bytes) {
+        if bytes
+            > MAX_RETAINED_GRADIENT_BYTES
+                .saturating_sub(self.bytes)
+                .saturating_sub(reserved)
+        {
             return Ok(None);
         }
         let value = Arc::new(LinearGradient {

@@ -159,6 +159,8 @@ fn tiled_restack_keeps_only_positive_paint_and_tile_boxes() {
         doc: &doc,
         styles: &styles,
         fonts: &fonts,
+        backgrounds: &[],
+        background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
         viewport: Size {
             width: 100.0,
             height: 100.0,
@@ -171,6 +173,7 @@ fn tiled_restack_keeps_only_positive_paint_and_tile_boxes() {
         paint_owner: PaintOwner {
             node: doc.root,
             background: true,
+            inline_raster: false,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,

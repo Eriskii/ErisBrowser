@@ -578,6 +578,7 @@ pub fn serve() -> Result<(), String> {
                     return Err("invalid viewport".into());
                 }
                 let page = page.as_mut().ok_or("no page")?;
+                let layout = page.prepare_layout(width, height, &fonts);
                 page.diagnostics.truncate(255);
                 let mut diagnostics: Vec<String> = page
                     .diagnostics
@@ -592,7 +593,7 @@ pub fn serve() -> Result<(), String> {
                     generation: init.generation,
                     processed_edit_sequence,
                     task_state: page.task_state(),
-                    layout: page.layout(width, height, &fonts),
+                    layout,
                     images: page.images.clone(),
                     document: page.document.clone(),
                     title: page.title().chars().take(512).collect(),

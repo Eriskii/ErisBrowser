@@ -288,10 +288,10 @@ fn resolver_has_literal_dispatch_and_parse_admission_boundaries() {
 }
 
 #[test]
-fn pure_decoding_does_not_enable_url_background_acceptance() {
+fn pure_decoding_agrees_with_the_installed_url_background_consumer() {
     for value in ["url(A.png)", "url('A.png')", "url(#Icon)"] {
         assert!(decode(value, &mut generous()).unwrap().is_some());
-        assert!(!crate::css::supports_property("background-image", value));
-        assert!(!crate::css::supports_property("background", value));
+        assert!(crate::css::supports_property("background-image", value));
+        assert!(crate::css::supports_property("background", value));
     }
 }

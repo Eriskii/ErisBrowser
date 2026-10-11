@@ -88,6 +88,9 @@ impl Resource {
 pub struct Fetcher {
     agent: Option<ureq::Agent>,
     bridge: Option<FetchBridge>,
+    // Honest-renderer precheck only. The parent and broker independently retain
+    // authority and still reject a renderer that bypasses this lifetime cap.
+    bridge_attempts: usize,
     local_root: Option<PathBuf>,
     total: usize,
     count: usize,
@@ -95,8 +98,9 @@ pub struct Fetcher {
 }
 
 /// Test-only snapshot for proving that page resource state retains its original
-/// fetcher. Bridged calls are accounted by the parent and broker, not these local
-/// counters. Reading this value does not reset or transfer any authority.
+/// fetcher. Direct count/body fields do not account bridged traffic; the local
+/// bridge attempt precheck supplements the parent and broker's independent caps.
+/// Reading this value does not reset or transfer any authority.
 #[cfg(test)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct FetcherAccounting {
@@ -104,6 +108,7 @@ pub(crate) struct FetcherAccounting {
     pub(crate) total: usize,
     pub(crate) started: Instant,
     pub(crate) bridge_present: bool,
+    pub(crate) bridge_attempts: usize,
 }
 
 #[cfg(test)]
@@ -114,6 +119,7 @@ impl Fetcher {
             total: self.total,
             started: self.started,
             bridge_present: self.bridge.is_some(),
+            bridge_attempts: self.bridge_attempts,
         }
     }
 }
@@ -146,6 +152,7 @@ impl Fetcher {
         Self {
             agent,
             bridge,
+            bridge_attempts: 0,
             local_root,
             total: 0,
             count: 0,
@@ -195,6 +202,10 @@ impl Fetcher {
         mut form_body: Option<&str>,
     ) -> Result<Resource, String> {
         if let Some(bridge) = self.bridge {
+            if self.bridge_attempts >= MAX_RESOURCES {
+                return Err("page resource or time budget exceeded".into());
+            }
+            self.bridge_attempts += 1;
             return bridge(url, initiator, kind, form_body);
         }
         self.count += 1;
@@ -534,6 +545,10 @@ fn percent_decode_with_limit(input: &str, limit: usize) -> Result<Vec<u8>, Strin
     }
     Ok(bytes)
 }
+
+#[cfg(test)]
+#[path = "net/bridge_budget_tests.rs"]
+mod bridge_budget_tests;
 
 #[cfg(test)]
 mod tests {

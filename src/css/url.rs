@@ -107,15 +107,15 @@ enum Body<'a> {
 
 /// Decode exactly one complete quoted or unquoted `url()` value. `None` is
 /// ordinary invalid/unsupported syntax; strict EOF refusal is intentional.
-pub fn decode(value: &str, budget: &mut UrlBudget) -> Result<Option<DecodedUrl>, UrlError> {
+fn body<'a>(value: &'a str, work: &mut usize) -> Result<Option<Body<'a>>, selectors::Error> {
     let len = value.len();
     if len > MAX_RAW_BYTES {
-        return Err(UrlError::Limit);
+        return Err(selectors::Error::Limit);
     }
     // Existing tokenizer tariff, without allocating its optional token Vec.
-    budget.work(len.saturating_mul(2).saturating_add(1))?;
+    selectors::spend(work, len.saturating_mul(2).saturating_add(1))?;
     // Independently covers trivia, name recheck, strict closure and escape scans.
-    budget.work(len.saturating_mul(8).saturating_add(32))?;
+    selectors::spend(work, len.saturating_mul(8).saturating_add(32))?;
     let mut cursor = Cursor {
         source: value,
         at: 0,
@@ -155,15 +155,33 @@ pub fn decode(value: &str, budget: &mut UrlBudget) -> Result<Option<DecodedUrl>,
     if !cursor.trivia() || cursor.at != value.len() {
         return Ok(None);
     }
-    let capacity = len.saturating_mul(3);
+    Ok(Some(body))
+}
+
+impl Body<'_> {
+    fn emit(self, mut sink: impl FnMut(char)) -> bool {
+        match self {
+            Self::Quoted(raw) => quoted(raw, &mut sink),
+            Self::Unquoted(raw) => unquoted(raw, &mut sink),
+        }
+    }
+}
+
+/// Syntax only: the shared strict walker emits no owned decoded storage.
+pub(crate) fn valid(value: &str, work: &mut usize) -> Result<bool, selectors::Error> {
+    Ok(body(value, work)?.is_some_and(|body| body.emit(|_| {})))
+}
+
+pub fn decode(value: &str, budget: &mut UrlBudget) -> Result<Option<DecodedUrl>, UrlError> {
+    let Some(body) = body(value, &mut budget.work).map_err(|_| UrlError::Limit)? else {
+        return Ok(None);
+    };
+    let capacity = value.len().saturating_mul(3);
     budget.bytes(capacity.saturating_add(size_of::<String>()))?;
     let mut text = String::new();
     text.try_reserve_exact(capacity)
         .map_err(|_| UrlError::Limit)?;
-    let valid = match body {
-        Body::Quoted(raw) => quoted(raw, &mut text),
-        Body::Unquoted(raw) => unquoted(raw, &mut text),
-    };
+    let valid = body.emit(|ch| text.push(ch));
     Ok(valid.then_some(DecodedUrl { text }))
 }
 
@@ -201,7 +219,7 @@ fn escaped(raw: &str, at: &mut usize) -> Option<char> {
     Some(char::from_u32(code).map_or('\u{fffd}', replacement))
 }
 
-fn quoted(raw: &str, out: &mut String) -> bool {
+fn quoted(raw: &str, out: &mut impl FnMut(char)) -> bool {
     let quote = char::from(raw.as_bytes()[0]);
     let mut at = 1;
     while let Some(ch) = raw[at..].chars().next() {
@@ -218,18 +236,18 @@ fn quoted(raw: &str, out: &mut String) -> bool {
             } else if raw[at..].starts_with(['\n', '\r', '\x0c']) {
                 at += 1;
             } else if let Some(decoded) = escaped(raw, &mut at) {
-                out.push(decoded);
+                out(decoded);
             } else {
                 return false;
             }
         } else {
-            out.push(replacement(ch));
+            out(replacement(ch));
         }
     }
     false
 }
 
-fn unquoted(raw: &str, out: &mut String) -> bool {
+fn unquoted(raw: &str, out: &mut impl FnMut(char)) -> bool {
     let mut at = 0;
     while raw[at..].chars().next().is_some_and(selectors::space) {
         at += 1;
@@ -249,13 +267,13 @@ fn unquoted(raw: &str, out: &mut String) -> bool {
             let Some(decoded) = escaped(raw, &mut at) else {
                 return false;
             };
-            out.push(decoded);
+            out(decoded);
         } else if matches!(ch, '\'' | '"' | '(' | '\x01'..='\x08' | '\x0b' | '\x0e'..='\x1f' | '\x7f')
         {
             return false;
         } else {
             // Comments here are URL data, not tokenizer trivia.
-            out.push(replacement(ch));
+            out(replacement(ch));
         }
     }
     false
@@ -326,3 +344,6 @@ pub fn resolve(
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod validator_tests;

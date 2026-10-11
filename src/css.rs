@@ -5,6 +5,7 @@ use crate::dom::{
 use crate::graphics::{Color, gradient::LinearGradient};
 mod background;
 mod gradient;
+mod image;
 pub mod url;
 pub use background::{BackgroundPosition, BackgroundSize};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
@@ -273,7 +274,7 @@ pub struct ComputedStyle {
     pub border_width: Edges<f32>,
     pub color: Color,
     pub background_color: Color,
-    pub background_image: Option<Arc<LinearGradient>>,
+    pub background_image: Option<BackgroundImage>,
     pub background_size: BackgroundSize,
     pub background_position: BackgroundPosition,
     pub background_repeat: [bool; 2],
@@ -417,6 +418,13 @@ impl ComputedStyle {
         s
     }
 }
+/// One computed background image. URL values carry no fetch authority.
+#[derive(Debug, Clone)]
+pub enum BackgroundImage {
+    Gradient(Arc<LinearGradient>),
+    Url(Arc<url::ResolvedUrl>),
+}
+
 #[derive(Debug, Clone)]
 pub struct Declaration {
     pub name: String,
@@ -1565,11 +1573,13 @@ pub(crate) fn supports_declaration_with_budget(
         }
         let tokens = crate::selectors::tokens(value, &mut evaluator.work).map_err(|_| ())?;
         evaluator.tokens(&tokens)?;
+        let image_property = property.eq_ignore_ascii_case("background")
+            || property.eq_ignore_ascii_case("background-image");
         if tokens.iter().any(|token| {
             matches!(
                 token.kind,
                 Kind::Delim('!' | ';') | Kind::Open('{') | Kind::Close('}')
-            ) || token.raw.contains(['\\', '\0'])
+            ) || token.raw.contains(['\\', '\0']) && !(image_property && image::url_payload(*token))
         }) {
             return Ok(false);
         }
@@ -1747,6 +1757,45 @@ impl SupportsEvaluator {
         };
         if name.len() > 256 || value.len() > 4096 {
             return Ok(false);
+        }
+        if name.eq_ignore_ascii_case("background") || name.eq_ignore_ascii_case("background-image")
+        {
+            use crate::selectors::Kind;
+            let tokens = crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
+            self.spend(tokens.len() + 1)?;
+            let colon = tokens
+                .iter()
+                .position(|t| t.kind == Kind::Delim(':'))
+                .ok_or(())?;
+            let tail = crate::selectors::trim(&tokens[colon + 1..]);
+            let mut end = original.len();
+            let mut significant = tail.iter().rev().filter(|t| t.kind != Kind::Whitespace);
+            if let (Some(important), Some(bang)) = (significant.next(), significant.next())
+                && important.kind == Kind::Ident
+                && important.is_name("important")
+                && bang.kind == Kind::Delim('!')
+            {
+                end = bang.start;
+            }
+            if tail.iter().filter(|t| t.start < end).any(|t| {
+                matches!(
+                    t.kind,
+                    Kind::Delim('!' | ';') | Kind::Open('{') | Kind::Close('}')
+                ) || t.raw.contains(['\\', '\0']) && !image::url_payload(*t)
+            }) {
+                return Ok(false);
+            }
+            let raw = &original[tokens[colon].end..end];
+            if !valid_calculations(raw, &mut self.work).map_err(|_| ())? {
+                return Ok(false);
+            }
+            let clean = image::comments(raw, &mut self.work).map_err(|_| ())?;
+            return valid_declaration_value(
+                &name.to_ascii_lowercase(),
+                media_trim(&clean),
+                &mut self.work,
+            )
+            .map_err(|_| ());
         }
         if let Some((before, important)) = value.rsplit_once('!') {
             if !media_trim(important).eq_ignore_ascii_case("important") {
@@ -2219,7 +2268,18 @@ fn parse_declarations_with_limit(
         if !custom && !has_vars && !valid_calculations(value, work).unwrap_or(false) {
             continue;
         }
-        let clean = (!custom && !has_vars).then(|| strip_comments(value));
+        let clean = if !custom && !has_vars {
+            if matches!(name.as_str(), "background" | "background-image") {
+                let Ok(clean) = image::comments(value, work) else {
+                    continue;
+                };
+                Some(clean)
+            } else {
+                Some(strip_comments(value))
+            }
+        } else {
+            None
+        };
         let value = custom_wide
             .as_deref()
             .or(clean.as_deref())
@@ -3002,6 +3062,16 @@ impl CascadedProperties {
         );
     }
 }
+#[derive(Clone, Copy)]
+enum WinningSource {
+    Document,
+    Rule(u32),
+}
+struct SelectedValue {
+    value: String,
+    source: WinningSource,
+}
+
 // Rollback excludes every declaration between a layer's normal and important
 // positions. Inline important rollback is explicitly exempt: it removes just
 // the element-attached declarations and can expose stylesheet !important.
@@ -3010,7 +3080,7 @@ fn cascaded_value(
     candidates: &BTreeMap<CascadeBucket, Candidate>,
     variables: Option<&CustomProperties>,
     work: &mut usize,
-) -> Option<String> {
+) -> Option<SelectedValue> {
     let sort_cost = candidates
         .len()
         .saturating_mul(candidates.len().max(1).ilog2() as usize + 1);
@@ -3040,7 +3110,15 @@ fn cascaded_value(
                     valid_calculations(&value, work)
                         .ok()
                         .filter(|valid| *valid)
-                        .map(|_| strip_comments(&value))
+                        .and_then(|_| {
+                            if matches!(name, "background" | "background-image")
+                                || candidate.pending_shorthand.as_deref() == Some("background")
+                            {
+                                image::comments(&value, work).ok()
+                            } else {
+                                Some(strip_comments(&value))
+                            }
+                        })
                 })
                 .unwrap_or_else(|| "unset".into());
             // Empty custom values are valid, but an empty ordinary declaration
@@ -3093,7 +3171,14 @@ fn cascaded_value(
         } else if value == "revert" {
             return None;
         } else {
-            return Some(value);
+            return Some(SelectedValue {
+                value,
+                source: if candidate.priority.1 {
+                    WinningSource::Document
+                } else {
+                    WinningSource::Rule(candidate.priority.4)
+                },
+            });
         }
     }
     None
@@ -3161,7 +3246,7 @@ pub fn compute_styles_with_rules(
     let mut visited = vec![false; doc.nodes.len()];
     let mut retained_variable_bytes = 0usize;
     let mut grid_tracks = GridTrackPool::default();
-    let mut gradients = gradient::GradientPool::default();
+    let mut images = image::ImagePool::default();
     let mut root_font = 16.0;
     while let Some(id) = pending.pop() {
         let Some(node) = doc.nodes.get(id) else {
@@ -3292,17 +3377,21 @@ pub fn compute_styles_with_rules(
                 if name.starts_with("--")
                     && let Some(value) = cascaded_value(name, candidates, None, &mut work)
                 {
-                    custom.insert(name.clone(), value);
+                    custom.insert(name.clone(), value.value);
                 }
             }
             vars =
                 compute_custom_properties(&vars, custom, &mut retained_variable_bytes, &mut work);
             let mut resolved: BTreeMap<String, String> = BTreeMap::new();
+            let mut image_source = WinningSource::Document;
             for (name, candidates) in &cascade.properties {
                 if !name.starts_with("--")
                     && let Some(value) = cascaded_value(name, candidates, Some(&vars), &mut work)
                 {
-                    resolved.insert(name.clone(), value);
+                    if name == "background-image" {
+                        image_source = value.source;
+                    }
+                    resolved.insert(name.clone(), value.value);
                 }
             }
             // Font-relative units use the element's computed font size.
@@ -3343,9 +3432,16 @@ pub fn compute_styles_with_rules(
                         [style.font_size, root_font, width, height],
                         &mut work,
                     ) {
-                        Ok(Some(gradient::ParsedImage::Gradient(parsed))) => {
-                            gradients.intern(&parsed, &mut work).ok().flatten()
-                        }
+                        Ok(Some(gradient::ParsedImage::Gradient(parsed))) => images
+                            .gradient(&parsed, &mut work)
+                            .ok()
+                            .flatten()
+                            .map(BackgroundImage::Gradient),
+                        Ok(Some(gradient::ParsedImage::Url(raw))) => images
+                            .url(raw, image_source, rules, doc.base_url(), &mut work)
+                            .ok()
+                            .flatten()
+                            .map(BackgroundImage::Url),
                         _ => None,
                     };
                 } else if name != "font-size" && name != "color" {
@@ -8579,3 +8675,6 @@ mod tests {
         assert_eq!(specificity(":where(#x) div.a"), 1025);
     }
 }
+
+#[cfg(test)]
+mod url_background_tests;

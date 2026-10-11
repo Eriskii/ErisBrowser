@@ -3,8 +3,8 @@
 //! This implements the useful core of block, inline, flex and grid layout. It is
 //! deliberately explicit about its limits: it is not a complete CSS formatter.
 use crate::css::{
-    BackgroundPosition, BackgroundSize, ComputedStyle, Display, GridBreadth, GridLine, GridTrack,
-    Length, ObjectFit, ObjectPosition, PositionComponent,
+    BackgroundImage, BackgroundPosition, BackgroundSize, ComputedStyle, Display, GridBreadth,
+    GridLine, GridTrack, Length, ObjectFit, ObjectPosition, PositionComponent,
 };
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
@@ -18,6 +18,22 @@ const MAX_FLEX_WORK: usize = 1_000_000;
 const MAX_FLOAT_WORK: usize = 1_000_000;
 const MAX_FLOATS: usize = 4096;
 const MAX_EXTENT: f32 = 1_000_000.0;
+const MAX_BACKGROUND_KEY_BYTES: usize = 65_536;
+const MAX_BACKGROUND_KEY: usize = 4096;
+
+/// Authenticated decoded dimensions supplied by Page, never author attributes.
+#[derive(Clone, Copy)]
+pub(crate) struct RasterNaturalSize {
+    pub(crate) width: u32,
+    pub(crate) height: u32,
+}
+
+/// Page keeps this key and its verified ImageStore allocation stable for layout.
+#[derive(Clone, Copy)]
+pub(crate) struct LoadedBackground<'a> {
+    pub(crate) key: &'a str,
+    pub(crate) natural: RasterNaturalSize,
+}
 
 // Grid occupancy is bounded independently from DOM size. Signed line numbers
 // are clamped before arithmetic; excessive author grids have a finite UA limit.
@@ -803,6 +819,9 @@ const MAX_POSITION_WORK: usize = 2_000_000;
 struct PaintOwner {
     node: NodeId,
     background: bool,
+    // Private inline URL slot. A transparent Rect carries its fragment geometry
+    // until the complete sliced strip is known; no fabricated image key escapes.
+    inline_raster: bool,
 }
 #[derive(Clone, Copy)]
 struct BoxGeometry {
@@ -989,6 +1008,8 @@ struct InlineItem {
 }
 
 struct Engine<'a> {
+    backgrounds: &'a [Option<LoadedBackground<'a>>],
+    background_key_bytes_left: usize,
     doc: &'a Document,
     styles: &'a [ComputedStyle],
     fonts: &'a Fonts,
@@ -1033,6 +1054,19 @@ pub fn layout(
     height: f32,
     fonts: &Fonts,
 ) -> LayoutResult {
+    layout_with_backgrounds(doc, styles, width, height, fonts, &[])
+}
+
+/// Resource preparation belongs to Page. This entry only consumes the same
+/// computed styles and immutable, node-indexed loaded-image bindings.
+pub(crate) fn layout_with_backgrounds(
+    doc: &Document,
+    styles: &[ComputedStyle],
+    width: f32,
+    height: f32,
+    fonts: &Fonts,
+    backgrounds: &[Option<LoadedBackground<'_>>],
+) -> LayoutResult {
     let viewport = Size {
         width: finite(width, 800.0).clamp(1.0, 100_000.0),
         height: finite(height, 600.0).clamp(1.0, 100_000.0),
@@ -1056,6 +1090,8 @@ pub fn layout(
         doc,
         styles,
         fonts,
+        backgrounds,
+        background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
         viewport,
         commands: Vec::new(),
         owners: Vec::new(),
@@ -1065,6 +1101,7 @@ pub fn layout(
         paint_owner: PaintOwner {
             node: doc.root,
             background: true,
+            inline_raster: false,
         },
         flow_height_reference: Some(viewport.height),
         content_height_measure: None,
@@ -1132,22 +1169,16 @@ pub fn layout(
     if let (Some(index), Some(source)) = (canvas_gradient, canvas_background_node) {
         let root = html.unwrap_or(source);
         if let Some(area) = engine.canvas_gradient_tile(root)
-            && let Some(tile) = background_tile(
+            && let Some(command) = engine.background_command(
+                source,
+                rect(0.0, 0.0, viewport.width, content_height),
                 area,
-                engine.style(source).background_size,
-                engine.style(source).background_position,
+                0.0,
+                engine.style(root).color,
+                false,
             )
-            && let Some(gradient) = engine.style(source).background_image.clone()
         {
-            engine.commands[index] = DrawCommand::LinearGradient {
-                rect: rect(0.0, 0.0, viewport.width, content_height),
-                tile,
-                radius: 0.0,
-                gradient,
-                current_color: engine.style(root).color,
-                stop_scale: 1.0,
-                repeat: engine.style(source).background_repeat,
-            };
+            engine.commands[index] = command;
         }
     }
     engine.finish_inline_gradients();
@@ -1167,6 +1198,70 @@ pub fn layout(
 }
 
 impl Engine<'_> {
+    fn loaded_background(&self, node: NodeId) -> Option<LoadedBackground<'_>> {
+        self.backgrounds
+            .get(node)
+            .copied()
+            .flatten()
+            .filter(|loaded| loaded.natural.width > 0 && loaded.natural.height > 0)
+    }
+
+    fn background_command(
+        &mut self,
+        node: NodeId,
+        paint: Rect,
+        area: Rect,
+        radius: f32,
+        current_color: Color,
+        allow_pending_tile: bool,
+    ) -> Option<DrawCommand> {
+        let style = self.style(node);
+        let (size, position, repeat) = (
+            style.background_size,
+            style.background_position,
+            style.background_repeat,
+        );
+        match style.background_image.as_ref()? {
+            BackgroundImage::Gradient(gradient) => {
+                let tile = background_tile(area, size, position);
+                if tile.is_none() && !allow_pending_tile {
+                    return None;
+                }
+                Some(DrawCommand::LinearGradient {
+                    rect: paint,
+                    tile: tile.unwrap_or_default(),
+                    radius,
+                    gradient: gradient.clone(),
+                    current_color,
+                    stop_scale: 1.0,
+                    repeat,
+                })
+            }
+            BackgroundImage::Url(_) => {
+                let loaded = self.backgrounds.get(node).copied().flatten()?;
+                if loaded.natural.width == 0 || loaded.natural.height == 0 {
+                    return None;
+                }
+                let tile = background_tile_with_raster(area, size, position, loaded.natural);
+                if tile.is_none() && !allow_pending_tile {
+                    return None;
+                }
+                let key = clone_background_key(
+                    loaded.key,
+                    &mut self.background_key_bytes_left,
+                    &mut self.position_work_left,
+                )?;
+                Some(DrawCommand::BackgroundImage {
+                    rect: paint,
+                    tile: tile.unwrap_or_default(),
+                    radius,
+                    key,
+                    repeat,
+                })
+            }
+        }
+    }
+
     fn canvas_gradient_tile(&mut self, root: NodeId) -> Option<Rect> {
         // Root geometry is appended after its descendants. Pay the complete
         // possible scan, retaining other paint work when admission refuses.
@@ -1509,6 +1604,7 @@ impl Engine<'_> {
         self.paint_owner = PaintOwner {
             node: id,
             background: true,
+            inline_raster: false,
         };
         if style.position == "relative" {
             x += resolve(style.left, available)
@@ -1559,13 +1655,9 @@ impl Engine<'_> {
         });
         self.flow_height_reference = definite_height.map(|height| (height - extras).max(0.0));
         let paint_start = self.commands.len();
-        let gradient = if self.canvas_background_node == Some(id) {
-            None
-        } else {
-            style.background_image.clone()
-        };
+        let has_image = self.canvas_background_node != Some(id) && style.background_image.is_some();
         // Reserve paint slots before descendants, then fill in the height.
-        for _ in 0..5 + usize::from(gradient.is_some()) {
+        for _ in 0..5 + usize::from(has_image) {
             self.push(DrawCommand::Rect {
                 rect: rect(x, y, 0.0, 0.0),
                 color: rgba(0, 0, 0, 0),
@@ -1780,7 +1872,7 @@ impl Engine<'_> {
                 };
             }
         }
-        if let Some(gradient) = gradient {
+        if has_image {
             let area = rect(
                 x + border.left,
                 y + border.top,
@@ -1788,26 +1880,30 @@ impl Engine<'_> {
                 height - border.vertical(),
             );
             let rounded = self.rounded_border(id);
-            let command = DrawCommand::LinearGradient {
-                rect: if rounded {
-                    area
-                } else {
-                    rect(x, y, width, height)
-                },
-                // Keep the private zero tile until final restacking: a table
-                // cell can acquire a positive used size after row stretching.
-                tile: background_tile(area, style.background_size, style.background_position)
-                    .unwrap_or_default(),
-                radius: if rounded {
-                    (style.border_radius - border.top).max(0.0)
-                } else {
-                    style.border_radius
-                },
-                gradient,
-                current_color: style.color,
-                stop_scale: 1.0,
-                repeat: style.background_repeat,
-            };
+            let command = self
+                .background_command(
+                    id,
+                    if rounded {
+                        area
+                    } else {
+                        rect(x, y, width, height)
+                    },
+                    area,
+                    if rounded {
+                        (style.border_radius - border.top).max(0.0)
+                    } else {
+                        style.border_radius
+                    },
+                    style.color,
+                    // Table stretching may give a currently zero-sized tile a
+                    // positive used area. Real keys remain bounded and paid once.
+                    true,
+                )
+                .unwrap_or(DrawCommand::Rect {
+                    rect: Rect::default(),
+                    color: Color::TRANSPARENT,
+                    radius: 0.0,
+                });
             let [background, top, right, bottom, left] = replacements;
             let commands = if rounded {
                 [background, top, command, right, bottom, left]
@@ -2147,6 +2243,7 @@ impl Engine<'_> {
             let owner = PaintOwner {
                 node: job.node,
                 background: false,
+                inline_raster: false,
             };
             let mut commands = Vec::with_capacity(fragment.commands.len() + scope_cost);
             let mut owners = Vec::with_capacity(commands.capacity());
@@ -2569,7 +2666,7 @@ impl Engine<'_> {
         let border = self.borders(id);
         style.border_radius > 0.0
             && self.canvas_background_node != Some(id)
-            && if let Some(gradient) = &style.background_image {
+            && if let Some(BackgroundImage::Gradient(gradient)) = &style.background_image {
                 style.border_color.a == 255
                     && (style.background_color.a == 255
                         || style.background_size == BackgroundSize::default()
@@ -2583,6 +2680,9 @@ impl Engine<'_> {
                                     GradientColor::CurrentColor => style.color.a == 255,
                                 }
                             }))
+            } else if matches!(style.background_image, Some(BackgroundImage::Url(_))) {
+                // Unknown/transparent URL pixels cannot prove an opaque fill.
+                style.border_color.a == 255 && style.background_color.a == 255
             } else {
                 style.background_color.a == 255
             }
@@ -3192,7 +3292,7 @@ impl Engine<'_> {
             return;
         }
         let style = self.style(id);
-        let Some(gradient) = style.background_image.clone() else {
+        let Some(image) = style.background_image.clone() else {
             return;
         };
         let (color, current_color, radius, repeat) = (
@@ -3210,6 +3310,7 @@ impl Engine<'_> {
         self.paint_owner = PaintOwner {
             node: id,
             background: true,
+            inline_raster: false,
         };
         self.push(DrawCommand::PushClip { rect: area });
         self.push(DrawCommand::Rect {
@@ -3217,20 +3318,32 @@ impl Engine<'_> {
             color,
             radius,
         });
-        self.push(DrawCommand::LinearGradient {
-            rect: area,
-            // A negative width is private pending state, distinct from a real
-            // zero-width positioning box. It is never admitted to paint.
-            tile: Rect {
-                width: -1.0,
-                ..Rect::default()
-            },
-            radius,
-            gradient,
-            current_color,
-            stop_scale: 1.0,
-            repeat,
-        });
+        match image {
+            BackgroundImage::Gradient(gradient) => {
+                self.push(DrawCommand::LinearGradient {
+                    rect: area,
+                    // Existing private gradient pending state stays unchanged.
+                    tile: Rect {
+                        width: -1.0,
+                        ..Rect::default()
+                    },
+                    radius,
+                    gradient,
+                    current_color,
+                    stop_scale: 1.0,
+                    repeat,
+                });
+            }
+            BackgroundImage::Url(_) => {
+                self.paint_owner.inline_raster = true;
+                self.push(DrawCommand::Rect {
+                    rect: area,
+                    color: Color::TRANSPARENT,
+                    radius,
+                });
+                self.paint_owner.inline_raster = false;
+            }
+        }
         self.push(DrawCommand::PopClip);
         self.inline_gradients = true;
         self.paint_owner = old_owner;
@@ -3258,16 +3371,21 @@ impl Engine<'_> {
         }
         metrics.resize(self.doc.nodes.len(), (0.0f64, 0.0f64));
         for (command, owner) in self.commands.iter().zip(&self.owners) {
-            if let DrawCommand::LinearGradient { rect, tile, .. } = command
-                && tile.width < 0.0
+            let area = match command {
+                DrawCommand::LinearGradient { rect, tile, .. } if tile.width < 0.0 => Some(*rect),
+                DrawCommand::Rect { rect, .. } if owner.inline_raster => Some(*rect),
+                _ => None,
+            };
+            if let Some(area) = area
                 && let Some((width, _)) = metrics.get_mut(owner.node)
             {
-                *width += f64::from(rect.width);
+                *width += f64::from(area.width);
             }
         }
         for index in 0..self.commands.len() {
             let area = match &self.commands[index] {
                 DrawCommand::LinearGradient { rect, tile, .. } if tile.width < 0.0 => *rect,
+                DrawCommand::Rect { rect, .. } if self.owners[index].inline_raster => *rect,
                 _ => continue,
             };
             let (width, advance) = &mut metrics[self.owners[index].node];
@@ -3286,12 +3404,32 @@ impl Engine<'_> {
                 width: *width as f32,
                 height: area.height,
             };
-            let style = self.style(self.owners[index].node);
-            let resolved = background_tile(strip, style.background_size, style.background_position)
-                .unwrap_or_default();
-            if let DrawCommand::LinearGradient { rect, tile, .. } = &mut self.commands[index] {
-                *rect = strip;
-                *tile = resolved;
+            let node = self.owners[index].node;
+            if self.owners[index].inline_raster {
+                let radius = match &self.commands[index] {
+                    DrawCommand::Rect { radius, .. } => *radius,
+                    _ => unreachable!(),
+                };
+                if let Some(command) = self.background_command(
+                    node,
+                    strip,
+                    strip,
+                    radius,
+                    self.style(node).color,
+                    false,
+                ) {
+                    self.commands[index] = command;
+                }
+                self.owners[index].inline_raster = false;
+            } else {
+                let style = self.style(node);
+                let resolved =
+                    background_tile(strip, style.background_size, style.background_position)
+                        .unwrap_or_default();
+                if let DrawCommand::LinearGradient { rect, tile, .. } = &mut self.commands[index] {
+                    *rect = strip;
+                    *tile = resolved;
+                }
             }
             if let Some(DrawCommand::Rect { rect, .. }) =
                 index.checked_sub(1).and_then(|i| self.commands.get_mut(i))
@@ -3372,6 +3510,7 @@ impl Engine<'_> {
             self.paint_owner = PaintOwner {
                 node: item.node,
                 background: false,
+                inline_raster: false,
             };
             let style = self.style(item.node).clone();
             let is_space = matches!(item.kind, InlineKind::Space(_));
@@ -4286,25 +4425,17 @@ impl Engine<'_> {
             self.paint_owner = PaintOwner {
                 node: id,
                 background: true,
+                inline_raster: false,
             };
             self.push(DrawCommand::Rect {
                 rect: row_rect,
                 color: background,
                 radius: 0.0,
             });
-            if let Some(gradient) = style.background_image.clone()
-                && let Some(tile) =
-                    background_tile(row_rect, style.background_size, style.background_position)
+            if let Some(command) =
+                self.background_command(id, row_rect, row_rect, 0.0, style.color, false)
             {
-                self.push(DrawCommand::LinearGradient {
-                    rect: row_rect,
-                    tile,
-                    radius: 0.0,
-                    gradient,
-                    current_color: style.color,
-                    stop_scale: 1.0,
-                    repeat: style.background_repeat,
-                });
+                self.push(command);
             }
             self.paint_owner = saved_owner;
             self.push_hit(HitRegion {
@@ -4343,12 +4474,23 @@ impl Engine<'_> {
                 hit.rect.y += offset;
             }
             let style = self.style(cell.node);
-            stretch_fragment_background(
-                &mut fragment,
-                cell_height,
-                style.background_size,
-                style.background_position,
-            );
+            if matches!(style.background_image, Some(BackgroundImage::Url(_))) {
+                stretch_fragment_background_with_raster(
+                    &mut fragment,
+                    cell_height,
+                    style.background_size,
+                    style.background_position,
+                    self.loaded_background(cell.node)
+                        .map(|loaded| loaded.natural),
+                );
+            } else {
+                stretch_fragment_background(
+                    &mut fragment,
+                    cell_height,
+                    style.background_size,
+                    style.background_position,
+                );
+            }
             let cell_x = x
                 + spacing
                 + tracks[..cell.column].iter().sum::<f32>()
@@ -4928,6 +5070,98 @@ fn background_tile(area: Rect, size: BackgroundSize, position: BackgroundPositio
     (tile.width > 0.0 && tile.height > 0.0).then_some(tile)
 }
 
+/// Raster natural dimensions are independent of author img attributes and of
+/// gradient auto sizing. Resolve both axes in f64 before the final geometry cap.
+fn background_tile_with_raster(
+    area: Rect,
+    size: BackgroundSize,
+    position: BackgroundPosition,
+    natural: RasterNaturalSize,
+) -> Option<Rect> {
+    if natural.width == 0 || natural.height == 0 {
+        return None;
+    }
+    let (aw, ah) = (f64::from(area.width), f64::from(area.height));
+    if ![f64::from(area.x), f64::from(area.y), aw, ah]
+        .iter()
+        .all(|v| v.is_finite())
+        || aw < 0.0
+        || ah < 0.0
+    {
+        return None;
+    }
+    let (nw, nh) = (f64::from(natural.width), f64::from(natural.height));
+    let (width, height) = match size {
+        BackgroundSize::Contain | BackgroundSize::Cover => {
+            let scale = if size == BackgroundSize::Contain {
+                (aw / nw).min(ah / nh)
+            } else {
+                (aw / nw).max(ah / nh)
+            };
+            (nw * scale, nh * scale)
+        }
+        BackgroundSize::Explicit {
+            width: Length::Auto,
+            height: Length::Auto,
+        } => (nw, nh),
+        BackgroundSize::Explicit {
+            width: Length::Auto,
+            height,
+        } => {
+            let height = background_size_axis(height, ah)?;
+            (height * nw / nh, height)
+        }
+        BackgroundSize::Explicit {
+            width,
+            height: Length::Auto,
+        } => {
+            let width = background_size_axis(width, aw)?;
+            (width, width * nh / nw)
+        }
+        BackgroundSize::Explicit { width, height } => (
+            background_size_axis(width, aw)?,
+            background_size_axis(height, ah)?,
+        ),
+    };
+    let x = f64::from(area.x) + object_position_offset(position.x, aw - width)?;
+    let y = f64::from(area.y) + object_position_offset(position.y, ah - height)?;
+    let limit = f64::from(MAX_EXTENT);
+    if ![x, y, width, height].iter().all(|v| v.is_finite())
+        || x.abs() > limit
+        || y.abs() > limit
+        || width > limit
+        || height > limit
+        || width <= 0.0
+        || height <= 0.0
+    {
+        return None;
+    }
+    let tile = Rect {
+        x: x as f32,
+        y: y as f32,
+        width: width as f32,
+        height: height as f32,
+    };
+    (tile.width > 0.0 && tile.height > 0.0).then_some(tile)
+}
+
+fn clone_background_key(
+    key: &str,
+    bytes_left: &mut usize,
+    work_left: &mut usize,
+) -> Option<String> {
+    let bytes = key.len();
+    let work = bytes.checked_add(1)?;
+    if bytes == 0 || bytes > MAX_BACKGROUND_KEY || bytes > *bytes_left || work > *work_left {
+        return None;
+    }
+    // Prepay both guards before clone/publication. Subsequent command refusal
+    // never restores either allowance, including discarded sizing fragments.
+    *bytes_left -= bytes;
+    *work_left -= work;
+    Some(key.to_owned())
+}
+
 fn background_size_axis(length: Length, area: f64) -> Option<f64> {
     let value = match length {
         Length::Auto => area,
@@ -5327,6 +5561,16 @@ fn stretch_fragment_background(
     size: BackgroundSize,
     position: BackgroundPosition,
 ) {
+    stretch_fragment_background_with_raster(fragment, height, size, position, None);
+}
+
+fn stretch_fragment_background_with_raster(
+    fragment: &mut Fragment,
+    height: f32,
+    size: BackgroundSize,
+    position: BackgroundPosition,
+    natural: Option<RasterNaturalSize>,
+) {
     let height = extent(height).max(fragment.size.height);
     if let Some(hit) = fragment.hits.first_mut() {
         hit.rect.height = height;
@@ -5350,6 +5594,15 @@ fn stretch_fragment_background(
                     rect.height += height - old_height;
                     *tile = padding
                         .and_then(|area| background_tile(area, size, position))
+                        .unwrap_or_default();
+                }
+                DrawCommand::BackgroundImage { rect, tile, .. } => {
+                    rect.height += height - old_height;
+                    *tile = padding
+                        .zip(natural)
+                        .and_then(|(area, natural)| {
+                            background_tile_with_raster(area, size, position, natural)
+                        })
                         .unwrap_or_default();
                 }
                 DrawCommand::Rect { rect, .. } if fragment.rounded_border => {
@@ -5409,6 +5662,9 @@ fn fit_text(text: &str, width: f32, measure: impl Fn(&str) -> f32) -> String {
 
 #[cfg(test)]
 mod gradient_tests;
+
+#[cfg(test)]
+mod url_background_tests;
 
 #[cfg(test)]
 mod background_tests;
@@ -7729,6 +7985,8 @@ mod object_fit_tests {
             doc,
             styles,
             fonts,
+            backgrounds: &[],
+            background_key_bytes_left: MAX_BACKGROUND_KEY_BYTES,
             viewport: Size {
                 width: 100.0,
                 height: 100.0,
@@ -7741,6 +7999,7 @@ mod object_fit_tests {
             paint_owner: PaintOwner {
                 node: doc.root,
                 background: false,
+                inline_raster: false,
             },
             flow_height_reference: Some(100.0),
             content_height_measure: None,

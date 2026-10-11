@@ -21,6 +21,8 @@ use std::{
 use url::Url;
 
 const BINARY: &str = env!("CARGO_BIN_EXE_eris-browser");
+#[path = "worker/url_backgrounds.rs"]
+mod url_backgrounds;
 static NEXT_DIRECTORY: AtomicU64 = AtomicU64::new(0);
 
 struct Fixture {

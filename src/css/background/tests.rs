@@ -389,15 +389,9 @@ fn inheritance_rollback_and_pool_sharing_keep_geometry_independent() {
     assert_eq!(geometry(at("#inherit")), geometry(at("#parent")));
     assert_eq!(geometry(at("#plain")), geometry(&ComputedStyle::default()));
     assert_eq!(geometry(at("#rollback")), geometry(at("#parent")));
-    let parent = at("#parent").background_image.as_ref().unwrap();
-    assert!(Arc::ptr_eq(
-        parent,
-        at("#inherit").background_image.as_ref().unwrap()
-    ));
-    assert!(Arc::ptr_eq(
-        parent,
-        at("#same").background_image.as_ref().unwrap()
-    ));
+    let parent = gradient_handle(at("#parent"));
+    assert!(Arc::ptr_eq(parent, gradient_handle(at("#inherit"))));
+    assert!(Arc::ptr_eq(parent, gradient_handle(at("#same"))));
     assert_ne!(geometry(at("#same")), geometry(at("#parent")));
 }
 
@@ -478,4 +472,11 @@ fn parser_work_bounds_and_fixed_style_storage_are_explicit() {
     );
     assert!(std::mem::size_of::<BackgroundSize>() <= 64);
     assert!(std::mem::size_of::<BackgroundPosition>() <= 48);
+}
+
+fn gradient_handle(style: &ComputedStyle) -> &Arc<crate::graphics::gradient::LinearGradient> {
+    match style.background_image.as_ref().unwrap() {
+        crate::css::BackgroundImage::Gradient(value) => value,
+        crate::css::BackgroundImage::Url(_) => panic!("expected gradient"),
+    }
 }

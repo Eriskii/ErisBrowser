@@ -7,7 +7,7 @@ fn gradient(value: &str) -> ParsedGradient {
         .unwrap()
     {
         ParsedImage::Gradient(value) => value,
-        ParsedImage::None => panic!("expected gradient"),
+        ParsedImage::None | ParsedImage::Url(_) => panic!("expected gradient"),
     }
 }
 
@@ -121,7 +121,7 @@ fn malformed_and_out_of_scope_values_are_rejected_wholly() {
         "linear-gradient(red calc(10%/**/+/**/1px),blue)",
         "linear-gradient(red),linear-gradient(blue)",
         "repeating-linear-gradient(red,blue)",
-        "url(x)",
+        "url(x),url(y)",
         "none red",
         "linear-gradient(red) junk",
     ] {
@@ -196,15 +196,9 @@ fn inherited_images_share_storage_without_resolving_current_color_early() {
     );
     let styles = super::super::compute_styles(&doc, &doc.stylesheets(), 800.0, 600.0);
     let at = |id| &styles[doc.query_selector(id).unwrap()];
-    let parent = at("#parent").background_image.as_ref().unwrap();
-    assert!(Arc::ptr_eq(
-        parent,
-        at("#child").background_image.as_ref().unwrap()
-    ));
-    assert!(Arc::ptr_eq(
-        parent,
-        at("#same").background_image.as_ref().unwrap()
-    ));
+    let parent = gradient_handle(at("#parent"));
+    assert!(Arc::ptr_eq(parent, gradient_handle(at("#child"))));
+    assert!(Arc::ptr_eq(parent, gradient_handle(at("#same"))));
     assert_eq!(at("#child").color, Color::rgb(0, 255, 0));
     assert_eq!(parent.stops[0].color, GradientColor::CurrentColor);
     assert!(at("#plain").background_image.is_none());
@@ -278,4 +272,11 @@ fn comments_preserve_token_boundaries_across_supports_and_declarations() {
         "background-image",
         r"linear-gr\61 dient(red,blue)"
     ));
+}
+
+fn gradient_handle(style: &super::super::ComputedStyle) -> &Arc<LinearGradient> {
+    match style.background_image.as_ref().unwrap() {
+        super::super::BackgroundImage::Gradient(value) => value,
+        super::super::BackgroundImage::Url(_) => panic!("expected gradient"),
+    }
 }

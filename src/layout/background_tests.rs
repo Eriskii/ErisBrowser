@@ -240,7 +240,7 @@ fn repeat_axes_and_position_preserve_complete_literal_pixels_and_hits() {
     );
     let a = doc.query_selector("#a").unwrap();
     let baseline = layout(&doc, &styles, 12.0, 6.0, &Fonts::new());
-    styles[a].background_image = Some(image());
+    styles[a].background_image = Some(BackgroundImage::Gradient(image()));
     styles[a].background_size = explicit(Length::Px(4.0), Length::Px(2.0));
     styles[a].background_position = center();
     for (repeat, expected) in [
@@ -295,7 +295,7 @@ fn padding_positioning_and_border_paint_are_independent() {
     );
     let a = doc.query_selector("#a").unwrap();
     let baseline = layout(&doc, &styles, 12.0, 8.0, &Fonts::new());
-    styles[a].background_image = Some(image());
+    styles[a].background_image = Some(BackgroundImage::Gradient(image()));
     styles[a].background_size = explicit(Length::Px(4.0), Length::Px(2.0));
     styles[a].background_position = center();
     styles[a].background_repeat = [false; 2];
@@ -364,7 +364,7 @@ fn inline_size_and_position_resolve_once_against_the_complete_virtual_strip() {
     );
     let a = doc.query_selector("#a").unwrap();
     let baseline = layout(&doc, &styles, 4.0, 4.0, &Fonts::new());
-    styles[a].background_image = Some(image());
+    styles[a].background_image = Some(BackgroundImage::Gradient(image()));
     styles[a].background_size = explicit(Length::Px(2.0), Length::Px(2.0));
     styles[a].background_position = position(Length::Percent(75.0), Length::Percent(0.0));
     styles[a].background_repeat = [false; 2];
@@ -395,7 +395,7 @@ fn table_rows_and_late_stretched_cells_resolve_final_percentage_and_calc_sizes()
     let r = doc.query_selector("#r").unwrap();
     let baseline = layout(&doc, &styles, 14.0, 10.0, &Fonts::new());
     for id in [a, r] {
-        styles[id].background_image = Some(image());
+        styles[id].background_image = Some(BackgroundImage::Gradient(image()));
         styles[id].background_size = explicit(Length::Percent(50.0), Length::Percent(50.0));
         styles[id].background_position = center();
         styles[id].background_repeat = [false; 2];
@@ -455,7 +455,7 @@ fn flex_and_grid_reflow_use_final_stretched_positioning_dimensions() {
                 .rect,
             rect(0.0, 0.0, 12.0, 6.0)
         );
-        styles[a].background_image = Some(image());
+        styles[a].background_image = Some(BackgroundImage::Gradient(image()));
         styles[a].background_size = explicit(Length::Percent(50.0), Length::Percent(50.0));
         styles[a].background_position = center();
         styles[a].background_repeat = [false; 2];
@@ -480,7 +480,7 @@ fn transparent_rounded_interiors_keep_no_repeat_and_zero_size_holes() {
         8.0,
     );
     let a = doc.query_selector("#a").unwrap();
-    styles[a].background_image = Some(image());
+    styles[a].background_image = Some(BackgroundImage::Gradient(image()));
     styles[a].background_repeat = [false; 2];
     for width in [2.0, 0.0] {
         styles[a].background_size = explicit(Length::Px(width), Length::Px(2.0));
@@ -508,7 +508,7 @@ fn omitted_positioned_gradient_keeps_the_rounded_interior_transparent() {
     );
     let a = doc.query_selector("#a").unwrap();
     let baseline = layout(&doc, &styles, 12.0, 8.0, &Fonts::new());
-    styles[a].background_image = Some(image());
+    styles[a].background_image = Some(BackgroundImage::Gradient(image()));
     // Default size and repeat alone cannot prove coverage: adding a valid large
     // position to the 2px padding origin crosses the bounded command extent.
     styles[a].background_position = position(Length::Px(1_000_000.0), Length::Px(0.0));
@@ -597,7 +597,7 @@ fn table_placement_omits_out_of_range_tiles_and_preserves_exact_boundary_phase()
     let a = doc.query_selector("#a").unwrap();
     let baseline = layout(&doc, &styles, 14.0, 10.0, &Fonts::new());
     assert_eq!(paint(&baseline, 14, 10), vec![0xffffff; 140]);
-    styles[a].background_image = Some(image());
+    styles[a].background_image = Some(BackgroundImage::Gradient(image()));
     styles[a].background_size = explicit(Length::Px(4.0), Length::Px(2.0));
     styles[a].background_position = position(Length::Px(1_000_000.0), Length::Px(0.0));
     let omitted = layout(&doc, &styles, 14.0, 10.0, &Fonts::new());

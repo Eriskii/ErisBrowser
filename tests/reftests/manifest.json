@@ -428,6 +428,36 @@
       "description": "Nonrepeat accepts half-open pixel centers, keeps the original rounded outline and preserves premultiplied transparent-stop blending.",
       "test": "background-geometry-fractional.html",
       "reference": "background-geometry-fractional-ref.html"
+    },
+    {
+      "name": "url-background-sizing",
+      "description": "Decoded natural ratio, contain/cover and each auto axis against literal CSS rectangles.",
+      "test": "url-background-sizing.html",
+      "reference": "url-background-sizing-ref.html"
+    },
+    {
+      "name": "url-background-repeat-position",
+      "description": "Repeat axes, fractional and negative phase, original rounded outline and source alpha use independent pixel rectangles.",
+      "test": "url-background-repeat-position.html",
+      "reference": "url-background-repeat-position-ref.html"
+    },
+    {
+      "name": "url-background-canvas",
+      "description": "Body URL propagates using root padding positioning and suppresses its local used image.",
+      "test": "url-background-canvas.html",
+      "reference": "url-background-canvas-ref.html"
+    },
+    {
+      "name": "url-background-unavailable-root",
+      "description": "An empty root URL retains image presence, blocks body-to-canvas propagation, and leaves the body local image visible.",
+      "test": "url-background-unavailable-root.html",
+      "reference": "url-background-unavailable-root-ref.html"
+    },
+    {
+      "name": "url-background-inline-table",
+      "description": "A split inline uses a continuous virtual strip; a stretched table cell recomputes natural-ratio size from its final height.",
+      "test": "url-background-inline-table.html",
+      "reference": "url-background-inline-table-ref.html"
     }
   ]
 }
