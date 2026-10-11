@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These sixty-two self-authored cases compare Eris rendering against independently
+These sixty-five self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared
@@ -47,3 +47,9 @@ padding/borders, nested overflow/fixed/opacity scopes, and the Images 4 combined
 scale-down forms. Their references use literal rectangles rather than fitted
 images. [Image fitting](../../docs/image-fitting.md) records the syntax, clipping
 behavior and remaining scope limits.
+
+Three identity-image cases compare 240-pixel SVG/PNG bands against literal CSS
+rectangles, covering one-pixel rows and columns, offset clipping, and each
+identity axis beside a scaled axis. The
+[identity-sampling follow-up](../../docs/image-fitting.md#identity-sampling-follow-up)
+records the distinct sampling fix and retained predecessor failures.

@@ -452,8 +452,14 @@ fn append_table(
     source_extent: u32,
 ) -> Result<u32> {
     let base = u32::try_from(bytes.len() / 4).map_err(|_| "LUT offset overflow")?;
+    // Match Canvas's identity-axis path; classify once for the whole table.
+    let identity = f64::from(extent) == f64::from(source_extent);
     for destination in start..start.checked_add(count).ok_or("LUT extent overflow")? {
-        let index = sample_index(destination as i32, origin, extent, source_extent);
+        let index = if identity {
+            (destination as f32 - origin).clamp(0.0, source_extent.saturating_sub(1) as f32) as u32
+        } else {
+            sample_index(destination as i32, origin, extent, source_extent)
+        };
         if index >= source_extent {
             return Err("source index outside validated image".into());
         }
@@ -1062,3 +1068,6 @@ mod image_fixtures;
 #[cfg(test)]
 #[path = "../../../tools/vulkan-raster-probe/src/tests.rs"]
 mod tests;
+
+#[cfg(test)]
+mod identity_image_tests;

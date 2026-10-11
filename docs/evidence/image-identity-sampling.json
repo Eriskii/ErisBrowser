@@ -1,0 +1,786 @@
+{
+  "archive": "image-identity-sampling.tar.gz",
+  "archive_bytes": 386265,
+  "archive_members": 165,
+  "archive_sha256": "82ee89ebf07c9290a3b1e39bd3f1e9b47887e275cb3a4495b43417a59ab8fc46",
+  "base": "4472ce6b633a14cfcba767ec9331d079c8c8fa8c",
+  "binaries": {
+    "before_gpu": {
+      "bytes": 572,
+      "path": "/tmp/eris-image-identity-1/baseline-gpu-binary.json",
+      "sha256": "5a1166fc8b399e70601fd2d1427ad67e1d7497007880670e5cde58556b47ce36"
+    },
+    "candidate_browser": {
+      "bytes": 779,
+      "path": "/tmp/eris-image-identity-1/candidate-browser-binary.json",
+      "sha256": "772902a0c1033a9c50736d28fa88dbcb9859d307daa4e4023101181ae7994d6d"
+    },
+    "candidate_gpu": {
+      "bytes": 574,
+      "path": "/tmp/eris-image-identity-1/candidate-gpu-binary.json",
+      "sha256": "dd22198cfcc9499b45c7057874f715ee83da08f98ea8b5fbb3e31b70508dc127"
+    },
+    "prior_browser": {
+      "bytes": 980,
+      "path": "/tmp/eris-object-fit-position-1/candidate-binary.json",
+      "sha256": "3fb96e09c8c3048f3573a02b25e0b6b057e65b8c0f27845cb2dd75df2c5fa036"
+    }
+  },
+  "checks": {
+    "baseline-canvas-1": {
+      "exit": 101,
+      "log": {
+        "bytes": 2423,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-canvas-1.log",
+        "sha256": "97735c0ce302c64a55bbba56c8faa75440ea1f4a08f69f90db355158f3794756"
+      },
+      "receipt": {
+        "bytes": 421,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-canvas-1.json",
+        "sha256": "4b58b21eb0dd2fe2f6978677381f42395e0434e2f1711bdf282a614b0eb13031"
+      },
+      "results": [
+        3,
+        3,
+        1
+      ],
+      "source": "unit_baseline"
+    },
+    "baseline-core-1": {
+      "exit": 101,
+      "log": {
+        "bytes": 6147,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-core-1.log",
+        "sha256": "fa1a44081f85e86755b849bcf1040faf137b772864928c7314e35aff581d1935"
+      },
+      "receipt": {
+        "bytes": 399,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-core-1.json",
+        "sha256": "8f7f7aa97f7e59625fe075ee6e3f1bcb2f33a19a2ac11472d18575a07f155d66"
+      },
+      "results": [
+        3,
+        2,
+        1
+      ],
+      "source": "unit_baseline"
+    },
+    "baseline-gpu-adapter-1": {
+      "exit": 1,
+      "log": {
+        "bytes": 548,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-adapter-1.log",
+        "sha256": "4d576ffa9911f163e14f948122db83aa28927a1bdb446385814f60a1857582e3"
+      },
+      "receipt": {
+        "bytes": 391,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-adapter-1.json",
+        "sha256": "86541890e9002f8194c16468d686dbe9c4a293226d0232d963d61e0c634b3e6f"
+      },
+      "results": null,
+      "source": "before_gpu"
+    },
+    "baseline-gpu-adapter-2": {
+      "exit": 1,
+      "log": {
+        "bytes": 548,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-adapter-2.log",
+        "sha256": "4d576ffa9911f163e14f948122db83aa28927a1bdb446385814f60a1857582e3"
+      },
+      "receipt": {
+        "bytes": 392,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-adapter-2.json",
+        "sha256": "d127a3aa3f66adcb0042428c77fb2e2849e4d44e6dbb28fd746a9e9ae54dd2e3"
+      },
+      "results": null,
+      "source": "before_gpu"
+    },
+    "baseline-gpu-adapter-3": {
+      "exit": 1,
+      "log": {
+        "bytes": 548,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-adapter-3.log",
+        "sha256": "4d576ffa9911f163e14f948122db83aa28927a1bdb446385814f60a1857582e3"
+      },
+      "receipt": {
+        "bytes": 392,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-adapter-3.json",
+        "sha256": "a1642bef987741f93d07841c02cadb07d1852cfb5cdf8c476d866f668eb513ae"
+      },
+      "results": null,
+      "source": "before_gpu"
+    },
+    "baseline-gpu-build-1": {
+      "exit": 101,
+      "log": {
+        "bytes": 123,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-build-1.log",
+        "sha256": "6e2cba869b97149aeed2e8b8eb551413d4e3fd00aac379d87a2087e193245673"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-build-1.json",
+        "sha256": "15e03a97abbcf4c775d01d17cb8366e6cbba0e39316043551236d96cdcb9d974"
+      },
+      "results": null,
+      "source": "gpu_unsplit"
+    },
+    "baseline-gpu-build-2": {
+      "exit": 0,
+      "log": {
+        "bytes": 2119,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-build-2.log",
+        "sha256": "b3aff4d16991b8b96fe29e8879bd50baeec8dd6046a0d03004a5fe0e290af248"
+      },
+      "receipt": {
+        "bytes": 383,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-build-2.json",
+        "sha256": "0ac028f93f6d81b42977613ddccc5d9c74bce5ea8e712f75a691f5bf831f4e09"
+      },
+      "results": null,
+      "source": "gpu_unsplit"
+    },
+    "baseline-gpu-build-3": {
+      "exit": 0,
+      "log": {
+        "bytes": 173,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-build-3.log",
+        "sha256": "71be2c3f98c01d82b718f273766739a53cc64fa662937bc543a236bac698926a"
+      },
+      "receipt": {
+        "bytes": 381,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-build-3.json",
+        "sha256": "c449cafdf8f6692f5adbf400759b8ee238878fbbb7b324717984aadff96edd88"
+      },
+      "results": null,
+      "source": "before_gpu"
+    },
+    "baseline-gpu-list-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 465,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-list-1.log",
+        "sha256": "4d8be95f3e973d23cdcb0e9f4ccdf1863ce8fa1f2aecb673ecbec0b4645a77e9"
+      },
+      "receipt": {
+        "bytes": 377,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-gpu-list-1.json",
+        "sha256": "e452703eeab4b5c58fb3157e76a650e42fb7525006ea62106640fa8d9c1c8db5"
+      },
+      "results": null,
+      "source": "before_gpu"
+    },
+    "baseline-reftests-1": {
+      "exit": 1,
+      "log": {
+        "bytes": 2456,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-reftests-1.log",
+        "sha256": "9c4fb97aae0014cd192a4f09d5fa180f8ebc833f5e87f21521c467d0081026df"
+      },
+      "receipt": {
+        "bytes": 508,
+        "path": "/tmp/eris-image-identity-1/validation/baseline-reftests-1.json",
+        "sha256": "94a038c5cb4c6d35c6345bf3baf0465d52e97dc932faa36df7cb6b3ef04986e5"
+      },
+      "results": null,
+      "source": "prior_browser"
+    },
+    "candidate-browser-build-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-browser-build-1.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-browser-build-1.json",
+        "sha256": "a3ce2376315a6dbdf9daf0ab0a69d0f6c0169dd2d3ab4eb88f9f02b30877ee3f"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "candidate-browser-strip-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-browser-strip-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-browser-strip-1.json",
+        "sha256": "3069f240285d14449791f1e8e262373f4c72d79aa45b62b092f4d98825cbe5e4"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "candidate-gpu-adapter-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 894,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-adapter-1.log",
+        "sha256": "dbd67ff117b99e15433fc72343e5f71003a8efd330bb244954f7a34a3bef52ef"
+      },
+      "receipt": {
+        "bytes": 394,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-adapter-1.json",
+        "sha256": "43ce5fb5da4f7bafc88e6a7179a64946120a62d2a23492ba43bf5fd3db66abff"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "candidate-gpu-adapter-2": {
+      "exit": 0,
+      "log": {
+        "bytes": 894,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-adapter-2.log",
+        "sha256": "229795da71a8179bc684afb6ae7f9f5d27dcbd8b85cb7e048e255af7379ef73e"
+      },
+      "receipt": {
+        "bytes": 394,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-adapter-2.json",
+        "sha256": "de638d3772bb690b0ab4a97d5779ed0c2a4359fdcc99d7843af27dbe8f462552"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "candidate-gpu-adapter-3": {
+      "exit": 0,
+      "log": {
+        "bytes": 894,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-adapter-3.log",
+        "sha256": "5c345e47a7bf5dcdccc95de1afe6cd7ecfd5d807f4516736a1b34b2868f0715b"
+      },
+      "receipt": {
+        "bytes": 393,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-adapter-3.json",
+        "sha256": "a07088eebc2c0eb1a668a9530bcef4bece2776f25cc85ba08e018b92cfd28a07"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "candidate-gpu-build-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 267,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-build-1.log",
+        "sha256": "025c256d5b397a0ba35bcd56f265de96cec991e5079c044bd7391daa59acb79b"
+      },
+      "receipt": {
+        "bytes": 382,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-gpu-build-1.json",
+        "sha256": "8f5d5fbdc80962113050a2d1d8418e2d388c6d0c8eaf9c83e82e7511a296d7b8"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "candidate-reftests-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 24040,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-reftests-1.log",
+        "sha256": "45ac9392b12bfed573629e8d488ecb9026e3418a6d5824e98f553ef061063bbb"
+      },
+      "receipt": {
+        "bytes": 414,
+        "path": "/tmp/eris-image-identity-1/validation/candidate-reftests-1.json",
+        "sha256": "86a5f41835bcb82350d66b3bc284bc92144f90b6a7a8da06a7c59376cf545a76"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "clippy-198-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 237,
+        "path": "/tmp/eris-image-identity-1/validation/clippy-198-1.log",
+        "sha256": "a690ad8fb91844555e2413a4c42c50a2f73552b72f4ee74c1d21ea43fedee9e9"
+      },
+      "receipt": {
+        "bytes": 396,
+        "path": "/tmp/eris-image-identity-1/validation/clippy-198-1.json",
+        "sha256": "6d20f5c66067d0c2a741f533072e2a2facd1f8da253b039cf1a49c7de66d1544"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "clippy-msrv-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 238,
+        "path": "/tmp/eris-image-identity-1/validation/clippy-msrv-1.log",
+        "sha256": "f917ef4ae3a0112ccdec5a2692eb7fcf9957e73d027f8663c692c29b44e3d29e"
+      },
+      "receipt": {
+        "bytes": 398,
+        "path": "/tmp/eris-image-identity-1/validation/clippy-msrv-1.json",
+        "sha256": "fbd8e52d37b6f1c818f8308201b74d71450e2006db2d236b38744926a778c947"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "core-clippy-msrv-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 1659,
+        "path": "/tmp/eris-image-identity-1/validation/core-clippy-msrv-1.log",
+        "sha256": "b7b57cfb970e2a22170d3d366bd94dba58200f2f829613268fda03f67d98221a"
+      },
+      "receipt": {
+        "bytes": 411,
+        "path": "/tmp/eris-image-identity-1/validation/core-clippy-msrv-1.json",
+        "sha256": "6475c03f5d75c9cdc0451c257b6de312920f0ec07775451ac48dac400d57640f"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "core-gpu-198-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 16044,
+        "path": "/tmp/eris-image-identity-1/validation/core-gpu-198-1.log",
+        "sha256": "095ce3ce1cbf122caf418e74c74eda64f0c8b09400306f9b2f5476ce9e6c68da"
+      },
+      "receipt": {
+        "bytes": 384,
+        "path": "/tmp/eris-image-identity-1/validation/core-gpu-198-1.json",
+        "sha256": "9694163ebfa49d224ae8ee13d4cc92bcd78f20b883b648cb113f21372a46e8e3"
+      },
+      "results": [
+        151,
+        0,
+        2
+      ],
+      "source": "candidate"
+    },
+    "format-check-all-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 279,
+        "path": "/tmp/eris-image-identity-1/validation/format-check-all-1.log",
+        "sha256": "55e3fdd417cbb4354c3e016819c86189166d85b97e52e065531eb79911db410e"
+      },
+      "receipt": {
+        "bytes": 256,
+        "path": "/tmp/eris-image-identity-1/validation/format-check-all-1.json",
+        "sha256": "091ccad0464105274b8103b6633de528a61b17e9342fe49f55d793c8a528df5d"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "full-default-198-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 226485,
+        "path": "/tmp/eris-image-identity-1/validation/full-default-198-1.log",
+        "sha256": "1539c4d5fb711aaf8812a28b5514e25444c56ca2e3c6c14f4cd015c769c3703a"
+      },
+      "receipt": {
+        "bytes": 364,
+        "path": "/tmp/eris-image-identity-1/validation/full-default-198-1.json",
+        "sha256": "26416e20e49e273026e4d09a3dc539d430f543e18678e347d2a512298929dda3"
+      },
+      "results": [
+        2277,
+        0,
+        27
+      ],
+      "source": "candidate"
+    },
+    "full-native-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 246629,
+        "path": "/tmp/eris-image-identity-1/validation/full-native-1.log",
+        "sha256": "3b4ecc8c159f95f1994b2e65a719504175c7ca10b9132a7c0450a99fdab945b5"
+      },
+      "receipt": {
+        "bytes": 397,
+        "path": "/tmp/eris-image-identity-1/validation/full-native-1.json",
+        "sha256": "c3235fb9d52e5cbe570918ca8f1c2ae1ebcf1719c83730ea6fde61731ddbefb6"
+      },
+      "results": [
+        2447,
+        0,
+        27
+      ],
+      "source": "candidate"
+    },
+    "original-svg-regression-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 678,
+        "path": "/tmp/eris-image-identity-1/validation/original-svg-regression-1.log",
+        "sha256": "8ec573695a5e591cf5d4ed2c60f53a0e581fa0e6982caf06a239463097d794d5"
+      },
+      "receipt": {
+        "bytes": 515,
+        "path": "/tmp/eris-image-identity-1/validation/original-svg-regression-1.json",
+        "sha256": "f56c35bc7c4d8c7aec429e0ed56afd62a8616b52138d6271f7bc4026332c246f"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "prior-browser-build": {
+      "exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-object-fit-position-1/validation/candidate-build-1.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      "receipt": {
+        "bytes": 378,
+        "path": "/tmp/eris-object-fit-position-1/validation/candidate-build-1.json",
+        "sha256": "cc2ab3a05b8b5bb4cb50e7df1f28ba48ab1323c3a29a3805e41a9b613e9c63cb"
+      },
+      "results": null,
+      "source": "prior_browser"
+    },
+    "prior-browser-strip": {
+      "exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-object-fit-position-1/validation/candidate-strip-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 289,
+        "path": "/tmp/eris-object-fit-position-1/validation/candidate-strip-1.json",
+        "sha256": "cba8acc6536239339b27fa835d2ce3c5c349c3e97701332c30ee44dbd4b9c927"
+      },
+      "results": null,
+      "source": "prior_browser"
+    },
+    "probe-clippy-198-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 6026,
+        "path": "/tmp/eris-image-identity-1/validation/probe-clippy-198-1.log",
+        "sha256": "55860c8a291d96fc8254950a9d24d46b3b77ec87401aed0de21896be489dd3f0"
+      },
+      "receipt": {
+        "bytes": 430,
+        "path": "/tmp/eris-image-identity-1/validation/probe-clippy-198-1.json",
+        "sha256": "7cafdd4184c7624f9ea5f3be0f964fdf9b697a24a644efb0562887bf7a24581f"
+      },
+      "results": null,
+      "source": "candidate"
+    },
+    "probe-fetch-1": {
+      "exit": 0,
+      "log": {
+        "bytes": 691,
+        "path": "/tmp/eris-image-identity-1/validation/probe-fetch-1.log",
+        "sha256": "f29f3e3bc43d51ccdb6b418346e84463f31874aef0edf247dc9ff2ef0bad33f1"
+      },
+      "receipt": {
+        "bytes": 418,
+        "path": "/tmp/eris-image-identity-1/validation/probe-fetch-1.json",
+        "sha256": "c247533840754908bcf118aede7f67c00a39824e3e1d7f0037517bf7b57ce63e"
+      },
+      "results": null,
+      "source": "gpu_unsplit"
+    }
+  },
+  "gpu": {
+    "baseline-gpu-adapter-1": {
+      "adapter": 0,
+      "adapter_line": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+      "binary": "before_gpu",
+      "check": "baseline-gpu-adapter-1",
+      "failure": "FAIL image-identity-240-cross-125: pixel (125,0) actual=00808080 expected=0000ff00",
+      "passes": []
+    },
+    "baseline-gpu-adapter-2": {
+      "adapter": 1,
+      "adapter_line": "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+      "binary": "before_gpu",
+      "check": "baseline-gpu-adapter-2",
+      "failure": "FAIL image-identity-240-cross-125: pixel (125,0) actual=00808080 expected=0000ff00",
+      "passes": []
+    },
+    "baseline-gpu-adapter-3": {
+      "adapter": 2,
+      "adapter_line": "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"",
+      "binary": "before_gpu",
+      "check": "baseline-gpu-adapter-3",
+      "failure": "FAIL image-identity-240-cross-125: pixel (125,0) actual=00808080 expected=0000ff00",
+      "passes": []
+    },
+    "candidate-gpu-adapter-1": {
+      "adapter": 0,
+      "adapter_line": "ADAPTER 0 vendor=0x10de device=0x2783 type=DiscreteGpu backend=Vulkan name=\"NVIDIA GeForce RTX 4070 SUPER\" driver=\"NVIDIA\" info=\"595.99.02\"",
+      "binary": "candidate_gpu",
+      "check": "candidate-gpu-adapter-1",
+      "failure": null,
+      "passes": [
+        [
+          "image-identity-240-cross-125",
+          240,
+          240,
+          2,
+          115200,
+          693632,
+          230400
+        ],
+        [
+          "image-identity-fractional-clip-original-origin",
+          20,
+          8,
+          3,
+          384,
+          5936,
+          640
+        ],
+        [
+          "image-identity-y-only-with-x-upscale",
+          6,
+          240,
+          2,
+          3840,
+          14928,
+          5760
+        ]
+      ]
+    },
+    "candidate-gpu-adapter-2": {
+      "adapter": 1,
+      "adapter_line": "ADAPTER 1 vendor=0x1002 device=0x164e type=IntegratedGpu backend=Vulkan name=\"AMD Ryzen 7 7800X3D 8-Core Processor (RADV RAPHAEL_MENDOCINO)\" driver=\"radv\" info=\"Mesa 26.2.3\"",
+      "binary": "candidate_gpu",
+      "check": "candidate-gpu-adapter-2",
+      "failure": null,
+      "passes": [
+        [
+          "image-identity-240-cross-125",
+          240,
+          240,
+          2,
+          115200,
+          693632,
+          230400
+        ],
+        [
+          "image-identity-fractional-clip-original-origin",
+          20,
+          8,
+          3,
+          384,
+          5936,
+          640
+        ],
+        [
+          "image-identity-y-only-with-x-upscale",
+          6,
+          240,
+          2,
+          3840,
+          14928,
+          5760
+        ]
+      ]
+    },
+    "candidate-gpu-adapter-3": {
+      "adapter": 2,
+      "adapter_line": "ADAPTER 2 vendor=0x10005 device=0x0 type=Cpu backend=Vulkan name=\"llvmpipe (LLVM 21.1.8, 256 bits)\" driver=\"llvmpipe\" info=\"Mesa 26.2.3 (LLVM 21.1.8)\"",
+      "binary": "candidate_gpu",
+      "check": "candidate-gpu-adapter-3",
+      "failure": null,
+      "passes": [
+        [
+          "image-identity-240-cross-125",
+          240,
+          240,
+          2,
+          115200,
+          693632,
+          230400
+        ],
+        [
+          "image-identity-fractional-clip-original-origin",
+          20,
+          8,
+          3,
+          384,
+          5936,
+          640
+        ],
+        [
+          "image-identity-y-only-with-x-upscale",
+          6,
+          240,
+          2,
+          3840,
+          14928,
+          5760
+        ]
+      ]
+    }
+  },
+  "live_source": "candidate",
+  "published_bindings": {
+    "README.md": {
+      "bytes": 49623,
+      "sha256": "ef8f4cceaa358eb5e157b7d64cfacfd959170e2bc7fad79f40a9f4d35b51a909"
+    },
+    "crates/raster-core/src/identity_image_tests.rs": {
+      "bytes": 4021,
+      "sha256": "0c94479108f416334e7401e5b35797a9913398ae83218184ac6d1fe80da0ae59"
+    },
+    "crates/raster-core/src/lib.rs": {
+      "bytes": 37457,
+      "sha256": "7b2bc3c17e6ab9d5112a28e3312e3fca649953800b19af77c8c577aa2e044a1e"
+    },
+    "docs/COMPATIBILITY.md": {
+      "bytes": 69839,
+      "sha256": "7deb7aa479096e02902bd9b4252c6788e17e46438cbd311ba5025da2ad9f1ee9"
+    },
+    "docs/ROADMAP.md": {
+      "bytes": 30455,
+      "sha256": "54dcf084b6d890151982c7549526bd6a5ffa3dfcb028326cc34c690b51734e34"
+    },
+    "docs/image-fitting.md": {
+      "bytes": 9529,
+      "sha256": "a0970d96d24e78c3919d4106d4dbbd5b5d23bd6cf66ee1ff0711e023099c4c5a"
+    },
+    "src/graphics.rs": {
+      "bytes": 68476,
+      "sha256": "e956d2e8ba15a82ddbe3a9b082203e5fda5c0d7cf9b0ccd0acdc10ea2168fa40"
+    },
+    "tests/reftests/README.md": {
+      "bytes": 2885,
+      "sha256": "d801cb28958877a943ff5d8dc59838a3734073e23b1e371f2d3714be1e3b70c1"
+    },
+    "tests/reftests/image-identity-clipped-ref.html": {
+      "bytes": 994,
+      "sha256": "58211497f096ecef905603bd39a4b5e3ed68920427a0e72c0522e00b6b62e6ac"
+    },
+    "tests/reftests/image-identity-clipped.html": {
+      "bytes": 309,
+      "sha256": "ae335fa413b55f80dfa46e2bda26bd570b1b97d740210729a398c56571ff360b"
+    },
+    "tests/reftests/image-identity-mixed-axes-ref.html": {
+      "bytes": 1197,
+      "sha256": "4805931f85787831226100b4bb1f341c55fb3b61d57c9cea5c0a8f947f7ce214"
+    },
+    "tests/reftests/image-identity-mixed-axes.html": {
+      "bytes": 496,
+      "sha256": "779e4e05176b2f4d28a36b894158761299831d57414a2445d2b9ece3accbddf0"
+    },
+    "tests/reftests/image-identity-pattern.png": {
+      "bytes": 1079,
+      "sha256": "38561b147e7a061c3967231a938ed801b077cb5fa4dd04c5792886c1ef45c214"
+    },
+    "tests/reftests/image-identity-svg-ref.html": {
+      "bytes": 994,
+      "sha256": "37712a0a067bcd53bbfa7d71b89e5ded15a1db6ddbf6914e51073a53fea5c93d"
+    },
+    "tests/reftests/image-identity-svg.html": {
+      "bytes": 716,
+      "sha256": "7d41c82fac51aa903862779b9256beb88c908e252c31ecf8d3690cb333d49a48"
+    },
+    "tests/reftests/manifest.json": {
+      "bytes": 18051,
+      "sha256": "bac09ef86f5ded3e0d16a77017e61b41c17406eb3b9d2ad1e010217ecb34ee63"
+    },
+    "tools/vulkan-raster-probe/Cargo.toml": {
+      "bytes": 1276,
+      "sha256": "89e604a18a84dee491e03d8116c92e543b31863caa96f5daacc620ef2a719459"
+    },
+    "tools/vulkan-raster-probe/src/bin/identity-check.rs": {
+      "bytes": 1764,
+      "sha256": "c32c6638e7572c7d9b77aa1a2c68f9927c4eafd9bae0ff45af37d41e46ce02f6"
+    },
+    "tools/vulkan-raster-probe/src/identity_fixtures.rs": {
+      "bytes": 5001,
+      "sha256": "7ac98c5b1620bfc9e0dccecc064e1136f9b5a38e37c76dca55f13dbbce6770a8"
+    },
+    "tools/vulkan-raster-probe/src/lib.rs": {
+      "bytes": 847,
+      "sha256": "768fbc0bddb9277eb5773d0dae4e636a49a81f8301f04415c52f6b890bee09ab"
+    }
+  },
+  "reftests": {
+    "baseline": [
+      0,
+      3,
+      3
+    ],
+    "candidate": [
+      65,
+      0,
+      65
+    ],
+    "original_svg": [
+      1,
+      0,
+      1
+    ]
+  },
+  "reviews": {
+    "browser_fixtures": {
+      "bytes": 7550,
+      "path": "/tmp/eris-image-identity-preparation-1/reftests/script-review.json",
+      "sha256": "7f2df0f475e1388335a6643a5f24f58921193f53163a7d1fc5ba7d23098fbeab"
+    },
+    "documentation": {
+      "bytes": 22807,
+      "path": "/tmp/eris-image-identity-preparation-1/docs/layout-review.json",
+      "sha256": "e551b8162cc5b14e3ced9ed038d8ed998cfff4f3a1e36fb29ae41d1c978592aa"
+    },
+    "gpu_fixtures": {
+      "bytes": 6845,
+      "path": "/tmp/eris-image-identity-preparation-1/layout/script-review-2.json",
+      "sha256": "0f313322d646d61ac75e6e93d2a143d739bf20c73efa9f4bf1fc14204d5ccec7"
+    },
+    "initial_production": {
+      "bytes": 5367,
+      "path": "/tmp/eris-image-identity-preparation-1/script/html-source-review.json",
+      "sha256": "637ab77517ff1aa1e231cdd11436ae99afe654db33557ac6207e08eeae6c0c8d"
+    },
+    "production": {
+      "bytes": 10556,
+      "path": "/tmp/eris-image-identity-1/production-layout-review.json",
+      "sha256": "d2284fb43e0c9d38725b2e3a5261f755bb7c8d1f7f9bc71edc556fa26e2dada2"
+    },
+    "publisher": {
+      "bytes": 10813,
+      "path": "/tmp/eris-image-identity-1/package-preparation/html-review.json",
+      "sha256": "ca371ea9c3b5054010ab4da660cde69945650baee3e587a8fc58aaac3b623889"
+    }
+  },
+  "schema": "eris-image-identity-evidence-v1",
+  "scope": "Focused per-axis identity sampling evidence; no general scaling, global conformance, security, window or performance claim.",
+  "selection": {
+    "bytes": 51761,
+    "path": "/tmp/eris-image-identity-1/package-selection.json",
+    "sha256": "309e5fdb5596d2755424ce855687f7c5568630ed8c2b30da2bfde8f8be6ba835"
+  },
+  "sources": {
+    "before_gpu": {
+      "bytes": 53772,
+      "path": "/tmp/eris-image-identity-1/baseline-source-3.json",
+      "sha256": "777a3de1ab9daa3f73d598afda3a9011c1741edb883a65563a5f597be3f293a3"
+    },
+    "candidate": {
+      "bytes": 53767,
+      "path": "/tmp/eris-image-identity-1/compiled-source-1.json",
+      "sha256": "409a240c01b0fa73419d0266facbf60b4a4380cddc89a013aba1c400f203976d"
+    },
+    "gpu_unsplit": {
+      "bytes": 53650,
+      "path": "/tmp/eris-image-identity-1/baseline-source-2.json",
+      "sha256": "4edb3fc3e71d289ee637f462d9a6e2def908e483c6035c24e57b78d135f5a72f"
+    },
+    "prior_browser": {
+      "bytes": 47801,
+      "path": "/tmp/eris-object-fit-position-1/compiled-source-3.json",
+      "sha256": "1d6e34314f5869c2492aa62097e97aa7821e6851c8543ab909cd87f1fd666bb0"
+    },
+    "unit_baseline": {
+      "bytes": 47797,
+      "path": "/tmp/eris-image-identity-1/baseline-source-1.json",
+      "sha256": "c89ced3f6e83adc0abeca5ec15ea6f9679a142e838881fced22524232150434d"
+    }
+  }
+}

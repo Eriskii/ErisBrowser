@@ -69,7 +69,8 @@ retain their existing behavior. Logical positions, general CSS math, full CSS
 Images/SVG conformance, new rendering backends and performance claims are outside
 this increment.
 
-The published predecessor passes 0/5 new reference cases using their original
+At the object-fit checkpoint, the published predecessor passes 0/5 new reference
+cases using their original
 frozen expressions. The first candidate run passes 61/62 total cases: its one
 failure is twenty pixels in the combined scale-down reference. An independent
 comparison finds all 76,800 candidate pixels equal to the original thirty
@@ -81,8 +82,8 @@ Only that reference expression changes, to the same ordered CSS rectangles.
 The unchanged candidate binary then passes **62/62**. The original reference,
 first failure, pixel oracle and correction are retained; this is not a claim
 that the final reference bytes are identical to the predecessor run. The
-underlying image-sampling bug remains queued for a separate fix. These are
-self-authored references, not Web Platform Tests.
+underlying image-sampling bug is addressed by the separate follow-up below.
+These are self-authored references, not Web Platform Tests.
 
 The final Rust 1.88 native-feature suite passes **2,441 tests**, including the
 Page and confined-worker click checks and the loaded alpha/external-SVG case.
@@ -101,3 +102,56 @@ and [record archive](evidence/image-fitting.tar.gz) bind the source, raw attempt
 reference correction, reviews and final observations. The source inventory’s
 reference-only revision is distinct from the unchanged compiled engine. No
 acquired-window, GPU execution or performance claim follows from these checks.
+
+## Identity sampling follow-up
+
+When an image destination axis has exactly the source pixel extent, sampling
+now subtracts the destination origin directly. It avoids the redundant f32
+divide/multiply that could turn source position 125 into row or column 124 for
+a 240-pixel image. The width and height checks are independent: an identity
+axis can use the direct calculation while the other axis remains scaled.
+
+The software painter and raster-core source-index tables use the same selection.
+Extent equality is checked exactly after conversion to f64; it is not an epsilon
+test or a rounded comparison against a large integer source size. Other scaled
+axes keep their previous arithmetic. Existing floor/ceil destination loops,
+source-index clamp and truncation, clips, alpha blending and all resource limits
+remain unchanged. This introduces no interpolation filter, shader change or
+layout behavior. It also fixes sampling of inline SVG after its existing
+rasterization; that is separate from the loaded-img object-fit scope above.
+
+Three frozen browser references compare narrow colored bands in a 240×240 SVG
+or PNG against independently authored CSS rectangles. They cover both identity
+axes, an offset PNG clipped by overflow, and each identity axis paired with a
+scaled axis. All 62 earlier cases are retained, making 65 self-authored cases.
+The published object-fit renderer fails all three new cases. Its independent
+Canvas tests record three passes and three failures; raster-core records three
+passes and two failures. The original source, fixtures and failed runs remain
+retained.
+
+The candidate passes **65/65 browser references** using the same three new
+fixture/reference pairs. A separate replay of the retained original combined
+SVG reference also passes **1/1**, closing its former twenty-pixel mismatch; it
+is additional to the 65-case manifest. The Rust 1.88 native-feature suite passes
+**2,447 tests** and Rust 1.98 default-feature suite passes **2,277**, both including
+ignored tests. Raster-core with its GPU feature passes **151 tests** on Rust 1.98.
+Strict Clippy passes for both browser toolchains, core GPU on 1.88 and the probe
+with browser-bridge on 1.98. Formatting passes for all three packages.
+
+A dedicated offscreen Vulkan checker preserves the original thirty-fixture route
+and its limits. All three new fixtures pass on NVIDIA GeForce RTX 4070 SUPER,
+AMD RADV Raphael and llvmpipe: **236,800 compared bytes per adapter, 710,400 in
+total**, each exact against independent literal pixels. With the predecessor
+core, each adapter stops at the first fixture’s pixel (125,0), gray instead of
+green; later fixtures are not claimed as completed baseline observations. These
+are shader executions and offscreen readbacks, not acquired-window or compositor
+checks, and no performance comparison was run.
+
+The [evidence summary](evidence/image-identity-sampling.json) and
+[record archive](evidence/image-identity-sampling.tar.gz) bind source, unchanged
+references, raw attempts and final observations. They retain the initial offline
+probe build failure for an uncached locked dependency, the successful fetch with
+unchanged lockfile, and a superseded thirty-three-fixture registration with its
+unused build. The final dedicated checker leaves the original route unchanged.
+These focused checks establish no general scaling, Web Platform Tests, full
+compatibility or security result.

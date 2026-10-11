@@ -374,6 +374,24 @@
       "description": "Images4 contain/cover scale-down pairs accept both orders and choose the smaller natural or constrained size, including cover shrinking.",
       "test": "object-fit-combined-scale-down.html",
       "reference": "object-fit-combined-scale-down-ref.html"
+    },
+    {
+      "name": "image-identity-svg",
+      "description": "Identity SVG image transport preserves adjacent one-pixel rows and columns at source coordinate125; literal CSS rectangles are independent.",
+      "test": "image-identity-svg.html",
+      "reference": "image-identity-svg-ref.html"
+    },
+    {
+      "name": "image-identity-clipped",
+      "description": "Loaded PNG identity sampling retains source pixels after an integer offset and outer clip, with adjacent literal row and column sentinels.",
+      "test": "image-identity-clipped.html",
+      "reference": "image-identity-clipped-ref.html"
+    },
+    {
+      "name": "image-identity-mixed-axes",
+      "description": "An identity width with doubled height and an identity height with doubled width each preserve one-pixel source sentinels independently.",
+      "test": "image-identity-mixed-axes.html",
+      "reference": "image-identity-mixed-axes-ref.html"
     }
   ]
 }

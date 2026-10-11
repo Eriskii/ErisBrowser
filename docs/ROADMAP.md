@@ -37,10 +37,14 @@ implementation, including Images 4 scale-down pairs and physical one/two/four
 component positions. Paint fitting leaves box layout and hit areas intact, with
 content-box clipping that also fixes fractional default-fill edges. All 62 self-authored references pass,
 with Page/worker and decoded alpha/external-SVG coverage in the passing full
-suites. A retained reference-expression correction exposes an existing image
-identity-sampling precision bug, queued for a separate fix. Full CSS Images,
-inline SVG/video integration and broader image fidelity remain open. This
-increment makes no backend or performance claim.
+suites. The retained reference-expression correction exposed an image
+identity-sampling precision bug. Its separate
+[follow-up](image-fitting.md#identity-sampling-follow-up) removes the redundant
+divide/multiply on matching image axes and adds three literal browser references.
+All 65 browser references now pass, as does a separate replay of the original
+SVG reference. Three offscreen fixtures match 710,400 bytes across three Vulkan
+adapters. Full CSS Images, inline SVG/video object fitting and broader scaled-image
+fidelity remain open. This establishes no acquired-window or performance result.
 
 [Native rectangle accounting](native-rect-accounting.md) reserves the clipped
 pre-blend loop area for each Rect. The [image follow-up](native-image-accounting.md)

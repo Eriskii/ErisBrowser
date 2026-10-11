@@ -693,13 +693,24 @@ impl Canvas {
         if !self.consume_pixels((x1 - x0).max(0) as u64 * (y1 - y0).max(0) as u64) {
             return;
         }
+        // Exact f64 comparison avoids treating a rounded u32 source dimension
+        // as an identity extent. Keep the scaled f32 operation order unchanged.
+        let identity_x = f64::from(rect.width) == f64::from(img.width);
+        let identity_y = f64::from(rect.height) == f64::from(img.height);
         for y in y0..y1 {
-            let sy = (((y as f32 - rect.y) / rect.height) * img.height as f32)
-                .clamp(0.0, img.height.saturating_sub(1) as f32) as usize;
+            let sy = if identity_y {
+                y as f32 - rect.y
+            } else {
+                ((y as f32 - rect.y) / rect.height) * img.height as f32
+            }
+            .clamp(0.0, img.height.saturating_sub(1) as f32) as usize;
             for x in x0..x1 {
-                let sx = (((x as f32 - rect.x) / rect.width) * img.width as f32)
-                    .clamp(0.0, img.width.saturating_sub(1) as f32)
-                    as usize;
+                let sx = if identity_x {
+                    x as f32 - rect.x
+                } else {
+                    ((x as f32 - rect.x) / rect.width) * img.width as f32
+                }
+                .clamp(0.0, img.width.saturating_sub(1) as f32) as usize;
                 let p = (sy * img.width as usize + sx) * 4;
                 if let Some(c) = img.rgba.get(p..p + 4) {
                     self.blend(x, y, Color::rgba(c[0], c[1], c[2], c[3]), 255);
@@ -1775,5 +1786,228 @@ mod tests {
         };
         canvas.paint(&[command], &Fonts::new(), &ImageStore::new(), 0.0, 0.0);
         assert!(canvas.exhausted());
+    }
+}
+
+#[cfg(test)]
+mod image_identity_tests {
+    use super::*;
+
+    fn grid(width: u32, height: u32) -> RasterImage {
+        let mut rgba = Vec::new();
+        for y in 0..height {
+            for x in 0..width {
+                rgba.extend_from_slice(&[x as u8, y as u8, 0x7b, 255]);
+            }
+        }
+        RasterImage {
+            width,
+            height,
+            rgba,
+        }
+    }
+
+    #[test]
+    fn exact_image_extent_preserves_all_240_rows_and_columns() {
+        let mut canvas = Canvas::new(240, 240).unwrap();
+        canvas.image(
+            Rect {
+                x: 0.0,
+                y: 0.0,
+                width: 240.0,
+                height: 240.0,
+            },
+            &grid(240, 240),
+        );
+        for y in 0..240usize {
+            for x in 0..240usize {
+                assert_eq!(
+                    canvas.pixels[y * 240 + x],
+                    ((x as u32) << 16) | ((y as u32) << 8) | 0x7b
+                );
+            }
+        }
+        assert_eq!(canvas.pixels[124 * 240 + 125], 0x7d7c7b);
+        assert_eq!(canvas.pixels[125 * 240 + 125], 0x7d7d7b);
+        assert_eq!(canvas.pixels[126 * 240 + 125], 0x7d7e7b);
+        assert!(!canvas.exhausted());
+    }
+
+    #[test]
+    fn identity_extent_integer_and_fractional_translation_use_edge_samples() {
+        let mut integer = Canvas::new(6, 5).unwrap();
+        integer.image(
+            Rect {
+                x: 1.0,
+                y: 1.0,
+                width: 4.0,
+                height: 3.0,
+            },
+            &grid(4, 3),
+        );
+        assert_eq!(
+            integer.pixels,
+            [
+                0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x00007b,
+                0x01007b, 0x02007b, 0x03007b, 0xffffff, 0xffffff, 0x00017b, 0x01017b, 0x02017b,
+                0x03017b, 0xffffff, 0xffffff, 0x00027b, 0x01027b, 0x02027b, 0x03027b, 0xffffff,
+                0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff,
+            ]
+        );
+        let mut fractional = Canvas::new(6, 5).unwrap();
+        fractional.image(
+            Rect {
+                x: 0.5,
+                y: 0.5,
+                width: 4.0,
+                height: 3.0,
+            },
+            &grid(4, 3),
+        );
+        assert_eq!(
+            fractional.pixels,
+            [
+                0x00007b, 0x00007b, 0x01007b, 0x02007b, 0x03007b, 0xffffff, 0x00007b, 0x00007b,
+                0x01007b, 0x02007b, 0x03007b, 0xffffff, 0x00017b, 0x00017b, 0x01017b, 0x02017b,
+                0x03017b, 0xffffff, 0x00027b, 0x00027b, 0x01027b, 0x02027b, 0x03027b, 0xffffff,
+                0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff,
+            ]
+        );
+    }
+
+    #[test]
+    fn negative_identity_origin_and_fractional_clip_keep_source_bounds() {
+        let mut canvas = Canvas::new(4, 4).unwrap();
+        canvas.clip = Rect {
+            x: 0.5,
+            y: 0.5,
+            width: 3.0,
+            height: 2.0,
+        };
+        canvas.image(
+            Rect {
+                x: -0.25,
+                y: -0.25,
+                width: 4.0,
+                height: 3.0,
+            },
+            &grid(4, 3),
+        );
+        assert_eq!(
+            canvas.pixels,
+            [
+                0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x01017b, 0x02017b, 0x03017b,
+                0xffffff, 0x01027b, 0x02027b, 0x03027b, 0xffffff, 0xffffff, 0xffffff, 0xffffff,
+            ]
+        );
+        assert!(!canvas.exhausted());
+    }
+
+    #[test]
+    fn each_identity_axis_is_independent_of_the_other_scaled_axis() {
+        let mut horizontal = Canvas::new(240, 4).unwrap();
+        horizontal.image(
+            Rect {
+                x: 0.0,
+                y: 0.0,
+                width: 240.0,
+                height: 4.0,
+            },
+            &grid(240, 2),
+        );
+        for (y, source_y) in [0u32, 0, 1, 1].into_iter().enumerate() {
+            for x in 0..240usize {
+                assert_eq!(
+                    horizontal.pixels[y * 240 + x],
+                    ((x as u32) << 16) | (source_y << 8) | 0x7b
+                );
+            }
+        }
+        let mut vertical = Canvas::new(4, 240).unwrap();
+        vertical.image(
+            Rect {
+                x: 0.0,
+                y: 0.0,
+                width: 4.0,
+                height: 240.0,
+            },
+            &grid(2, 240),
+        );
+        for y in 0..240usize {
+            for (x, source_x) in [0u32, 0, 1, 1].into_iter().enumerate() {
+                assert_eq!(
+                    vertical.pixels[y * 4 + x],
+                    (source_x << 16) | ((y as u32) << 8) | 0x7b
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn scaled_axis_ulp_thresholds_retain_the_original_samples() {
+        for (extent, expected) in [
+            (f32::from_bits(0x3fff_ffff), [0x00007b, 0x02007b, 0xffffff]),
+            (2.0, [0x00007b, 0x02007b, 0xffffff]),
+            (f32::from_bits(0x4000_0001), [0x00007b, 0x01007b, 0x03007b]),
+        ] {
+            let mut canvas = Canvas::new(3, 1).unwrap();
+            canvas.image(
+                Rect {
+                    x: 0.0,
+                    y: 0.0,
+                    width: extent,
+                    height: 1.0,
+                },
+                &grid(4, 1),
+            );
+            assert_eq!(canvas.pixels, expected);
+        }
+    }
+
+    #[test]
+    fn identity_whole_loop_budget_keeps_existing_admission() {
+        for budget in [239, 240] {
+            let mut canvas = Canvas::new(240, 1).unwrap();
+            canvas.budget = Some(PaintBudget {
+                pixels: budget,
+                glyphs: 7,
+            });
+            canvas.image(
+                Rect {
+                    x: 0.0,
+                    y: 0.0,
+                    width: 240.0,
+                    height: 1.0,
+                },
+                &grid(240, 1),
+            );
+            assert_eq!(canvas.exhausted(), budget == 239);
+            assert_eq!(canvas.budget.as_ref().unwrap().glyphs, 7);
+            if budget == 239 {
+                assert!(canvas.pixels.iter().all(|&p| p == 0xffffff));
+            } else {
+                assert_eq!(canvas.pixels[125], 0x7d007b);
+                assert_eq!(canvas.budget.as_ref().unwrap().pixels, 0);
+            }
+        }
+        let mut canvas = Canvas::new(240, 1).unwrap();
+        canvas.budget = Some(PaintBudget {
+            pixels: 240,
+            glyphs: 7,
+        });
+        let mut invalid = grid(240, 1);
+        invalid.rgba.pop();
+        canvas.image(
+            Rect {
+                x: 0.0,
+                y: 0.0,
+                width: 240.0,
+                height: 1.0,
+            },
+            &invalid,
+        );
+        assert_eq!(canvas.budget.as_ref().unwrap().pixels, 240);
+        assert!(canvas.pixels.iter().all(|&p| p == 0xffffff));
+        assert!(!canvas.exhausted());
     }
 }

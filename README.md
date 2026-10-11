@@ -9,7 +9,10 @@ physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;
 CSS supports checks, cascade and inline style mutation share bounded validation.
 Try the [clickable example](examples/object-fit-position.html). This does not
-extend inline SVG, video or general CSS conformance.
+extend inline SVG, video or general CSS conformance. The
+[identity-sampling follow-up](docs/image-fitting.md#identity-sampling-follow-up)
+avoids skipped source rows or columns on image axes painted at their source
+extent, including rasterized SVG; scaled axes retain their existing sampling.
 
 The [ArrayBuffer checkpoint](tests/conformance/array-buffer.md) adds fixed and
 resizable buffers, resizing, same-realm species-aware slicing, transfers and

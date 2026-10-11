@@ -454,7 +454,12 @@ setters preserve valid earlier values, while invalid variable substitution uses
 `unset`. Inline CSSOM keeps its existing serialization format rather than full
 canonical computed-value serialization. Loaded image paint is clipped to its
 content box; unrepresentable fitted geometry is omitted within existing limits.
-Inline SVG and video/poster painting are outside this change.
+Inline SVG and video/poster painting are outside this change. A separate
+[identity-sampling fix](image-fitting.md#identity-sampling-follow-up) removes
+divide/multiply rounding on image axes whose painted extent exactly equals the
+source extent. It applies to the software painter and raster-core source-index
+tables, including rasterized inline SVG. Scaled-axis sampling, clipping, alpha
+blending and resource limits are unchanged; general image fidelity remains open.
 
 [Native image accounting](native-image-accounting.md) refines the optional GPU
 route’s CPU preparation estimate to the clipped image sampling loop. It retains

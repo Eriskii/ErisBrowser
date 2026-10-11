@@ -13,6 +13,10 @@ default = []
 browser-bridge = ["dep:eris", "eris/raster-bridge"]
 
 [[bin]]
+name = "eris-vulkan-identity-check"
+path = "src/bin/identity-check.rs"
+
+[[bin]]
 name = "eris-vulkan-opacity-check"
 path = "src/bin/opacity-check.rs"
 
