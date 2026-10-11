@@ -658,7 +658,8 @@ fn records(
     spend(work, count.saturating_mul(value.len() + 64) + 1)?;
     if matches!(
         property,
-        "background-image"
+        "border-spacing"
+            | "background-image"
             | "background-size"
             | "background-position"
             | "background-repeat"
@@ -907,6 +908,9 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
     spend(work, value.len().saturating_mul(12) + 1)?;
     if wide(value) {
         return Ok(true);
+    }
+    if property == "border-spacing" {
+        return css::valid_border_spacing(value, work).map_err(|_| Error::Limit);
     }
     if matches!(
         property,
@@ -1608,3 +1612,10 @@ mod background_box_tests;
 
 #[cfg(test)]
 mod background_layers_tests;
+
+#[cfg(test)]
+#[path = "cssom/border_spacing_tariff_tests.rs"]
+mod border_spacing_tariff_tests;
+
+#[cfg(test)]
+mod border_spacing_independent_tests;

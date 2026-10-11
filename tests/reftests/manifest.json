@@ -566,6 +566,30 @@
       "description": "Forced and soft line breaks preserve the virtual strip for three authored image slots with independent box selections.",
       "test": "background-layers-inline.html",
       "reference": "background-layers-inline-ref.html"
+    },
+    {
+      "name": "table-spacing-axes",
+      "description": "Two independent axes, swapped axes, and non-owning row/cell overrides.",
+      "test": "table-spacing-axes.html",
+      "reference": "table-spacing-axes-ref.html"
+    },
+    {
+      "name": "table-spacing-zero-single",
+      "description": "Zero removes gaps, one value duplicates both axes, and each independent axis can be zero.",
+      "test": "table-spacing-zero-single.html",
+      "reference": "table-spacing-zero-single-ref.html"
+    },
+    {
+      "name": "table-spacing-spans",
+      "description": "Colspan includes horizontal gaps; rowspan includes vertical gaps and distributes a positive height deficit.",
+      "test": "table-spacing-spans.html",
+      "reference": "table-spacing-spans-ref.html"
+    },
+    {
+      "name": "table-spacing-padding-caption",
+      "description": "Table border/padding offsets are additive; a top caption offsets the grid once.",
+      "test": "table-spacing-padding-caption.html",
+      "reference": "table-spacing-padding-caption-ref.html"
     }
   ]
 }

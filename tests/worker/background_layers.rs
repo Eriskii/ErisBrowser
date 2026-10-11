@@ -3,9 +3,7 @@ use super::*;
 use eris::graphics::{Canvas, Color, Fonts};
 
 #[cfg(feature = "raster-bridge")]
-#[allow(dead_code)]
-#[path = "../support/vulkan_backgrounds.rs"]
-mod witness;
+use super::raster_witness as witness;
 
 #[test]
 #[ignore = "requires Linux Landlock ABI 6; launches a confined renderer and broker"]

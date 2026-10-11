@@ -1872,7 +1872,14 @@ impl<'a> Engine<'a> {
                 depth + 1,
             )
         } else if tag == "table" {
-            self.layout_table(&children, inner_x, inner_y, inner_width, depth + 1)
+            self.layout_table(
+                &children,
+                inner_x,
+                inner_y,
+                inner_width,
+                style.border_spacing,
+                depth + 1,
+            )
         } else {
             let marker_advance = if style.list_item
                 && style.list_style_type != "none"
@@ -4254,8 +4261,11 @@ impl<'a> Engine<'a> {
         x: f32,
         y: f32,
         width: f32,
+        spacing: [f32; 2],
         depth: usize,
     ) -> f32 {
+        // Computed CSS owns inheritance; normalize synthetic host styles once.
+        let [horizontal, vertical] = spacing.map(extent);
         struct Cell {
             node: NodeId,
             row: usize,
@@ -4342,14 +4352,13 @@ impl<'a> Engine<'a> {
         }
         // Track sizing accepts explicit cell widths, distributing remaining space
         // over auto tracks. Full intrinsic table sizing is a separate algorithm.
-        let spacing = 2.0;
-        let available = (width - spacing * (column_count + 1) as f32).max(0.0);
+        let available = (width - horizontal * (column_count + 1) as f32).max(0.0);
         let mut tracks = vec![0.0f32; column_count];
         for cell in &cells {
             if let Some(value) = resolve(self.style(cell.node).width, width)
                 .or_else(|| self.attr_number(cell.node, "width"))
             {
-                let share = (value - spacing * cell.columns.saturating_sub(1) as f32).max(0.0)
+                let share = (value - horizontal * cell.columns.saturating_sub(1) as f32).max(0.0)
                     / cell.columns as f32;
                 for track in &mut tracks[cell.column..cell.column + cell.columns] {
                     *track = track.max(share);
@@ -4382,7 +4391,7 @@ impl<'a> Engine<'a> {
             let cell_width = tracks[cell.column..cell.column + cell.columns]
                 .iter()
                 .sum::<f32>()
-                + spacing * cell.columns.saturating_sub(1) as f32;
+                + horizontal * cell.columns.saturating_sub(1) as f32;
             cell.available = cell_width;
             let fragment = self.fragment(cell.node, cell_width, cell_width, depth + 1);
             if cell.rows == 1 {
@@ -4394,7 +4403,7 @@ impl<'a> Engine<'a> {
             if cell.rows > 1 {
                 let tracks = &mut heights[cell.row..cell.row + cell.rows];
                 let allocated =
-                    tracks.iter().sum::<f32>() + spacing * cell.rows.saturating_sub(1) as f32;
+                    tracks.iter().sum::<f32>() + vertical * cell.rows.saturating_sub(1) as f32;
                 let extra = (cell
                     .fragment
                     .as_ref()
@@ -4409,14 +4418,14 @@ impl<'a> Engine<'a> {
             }
         }
         let mut row_y = Vec::with_capacity(rows.len());
-        let mut cursor = y + caption_height + spacing;
+        let mut cursor = y + caption_height + vertical;
         for (row, &id) in rows.iter().enumerate() {
             row_y.push(cursor);
             let style = self.style(id).clone();
             let row_rect = rect(
-                x + spacing,
+                x + horizontal,
                 cursor,
-                available + spacing * column_count.saturating_sub(1) as f32,
+                available + horizontal * column_count.saturating_sub(1) as f32,
                 heights[row],
             );
             // Row tracks have coincident border/padding/content boxes in the
@@ -4476,14 +4485,14 @@ impl<'a> Engine<'a> {
                 action: HitAction::Node,
                 rect: row_rect,
             });
-            cursor += heights[row] + spacing;
+            cursor += heights[row] + vertical;
         }
         for cell in cells {
             let Some(mut fragment) = cell.fragment else {
                 continue;
             };
             let cell_height = heights[cell.row..cell.row + cell.rows].iter().sum::<f32>()
-                + spacing * cell.rows.saturating_sub(1) as f32;
+                + vertical * cell.rows.saturating_sub(1) as f32;
             let extra = (cell_height - fragment.size.height).max(0.0);
             let offset = match self.style(cell.node).vertical_align.as_str() {
                 "middle" => extra / 2.0,
@@ -4507,9 +4516,9 @@ impl<'a> Engine<'a> {
                 &mut self.position_work_left,
             );
             let cell_x = x
-                + spacing
+                + horizontal
                 + tracks[..cell.column].iter().sum::<f32>()
-                + spacing * cell.column as f32;
+                + horizontal * cell.column as f32;
             self.append_fragment(fragment, cell_x, row_y[cell.row]);
         }
         extent(cursor - y)
@@ -8922,3 +8931,6 @@ mod box_decoration_tests;
 
 #[cfg(test)]
 mod layers_tests;
+
+#[cfg(test)]
+mod table_spacing_tests;

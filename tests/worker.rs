@@ -23,6 +23,12 @@ use url::Url;
 const BINARY: &str = env!("CARGO_BIN_EXE_eris-browser");
 #[path = "worker/inline_edges.rs"]
 mod inline_edges;
+#[cfg(feature = "raster-bridge")]
+#[allow(dead_code)]
+#[path = "support/vulkan_backgrounds.rs"]
+mod raster_witness;
+#[path = "worker/table_spacing.rs"]
+mod table_spacing;
 #[path = "worker/url_backgrounds.rs"]
 mod url_backgrounds;
 static NEXT_DIRECTORY: AtomicU64 = AtomicU64::new(0);

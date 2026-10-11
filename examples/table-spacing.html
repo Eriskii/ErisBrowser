@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Table spacing</title><style>
+body{margin:24px;background:#f5f5f5;color:#202020;font:16px sans-serif}h1{font-size:24px}section{margin:20px 0;padding:12px;border:2px solid #555;background:white}h2{margin:0 0 12px;font-size:18px}
+table,tbody,tr,td{box-sizing:content-box;margin:0;padding:0;border:0}table{width:180px;background:#ffe080}tbody,tr{background:transparent}td{width:72px;height:28px;text-align:center;vertical-align:middle;color:white}.red{background:#b83030}.blue{background:#265cbd}.green{background:#357638}.purple{background:#774b9c}
+</style></head><body><h1>Table spacing</h1><p>The first value controls horizontal gaps; the second controls vertical gaps. One value sets both. These examples use fixed widths and the current separate-border table layout.</p>
+<section><h2>2px horizontal, 10px vertical</h2><table id="wide-vertical" style="border-spacing:2px 10px"><tr><td id="vertical-a" class="red">A</td><td id="vertical-b" class="blue">B</td></tr><tr><td id="vertical-c" class="green">C</td><td id="vertical-d" class="purple">D</td></tr></table></section>
+<section><h2>10px horizontal, 2px vertical</h2><table id="wide-horizontal" style="border-spacing:10px 2px"><tr><td id="horizontal-a" class="red">A</td><td id="horizontal-b" class="blue">B</td></tr><tr><td id="horizontal-c" class="green">C</td><td id="horizontal-d" class="purple">D</td></tr></table></section>
+<section><h2>Zero removes the gaps</h2><table id="zero" style="border-spacing:0"><tr><td id="zero-a" class="red">A</td><td id="zero-b" class="blue">B</td></tr><tr><td id="zero-c" class="green">C</td><td id="zero-d" class="purple">D</td></tr></table></section>
+<section><h2>One 6px value sets both axes</h2><table id="single" style="border-spacing:6px"><tr><td id="single-a" class="red">A</td><td id="single-b" class="blue">B</td></tr><tr><td id="single-c" class="green">C</td><td id="single-d" class="purple">D</td></tr></table></section>
+<section><h2>A spanning cell includes its internal gaps</h2><table id="spans" style="width:180px;border-spacing:2px 10px"><tr><td id="span-a" class="red" colspan="2" rowspan="2" style="width:114px;height:66px">A</td><td id="span-b" class="blue" style="width:58px">B</td></tr><tr><td id="span-c" class="green" style="width:58px">C</td></tr></table></section>
+</body></html>

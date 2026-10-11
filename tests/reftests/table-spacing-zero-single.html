@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Table spacing: zero and single values</title><style>
+html,body{margin:0;padding:0;background:white;font-size:0;line-height:0}
+table,tbody,thead,tfoot,tr,td,th,caption{margin:0;padding:0;border:0;box-sizing:content-box}
+table{position:absolute;background:#ffff00}
+tbody,thead,tfoot,tr{background:transparent}
+td{vertical-align:top}
+.red{background:#ff0000}.blue{background:#0000ff}.green{background:#00ff00}.black{background:#000000}
+</style></head><body>
+<table id="zero-table" style="left:10px;top:10px;width:20px;border-spacing:0;"><tr style="height:4px"><td id="zero-red" class="red" style="width:10px;height:4px"></td><td id="zero-blue" class="blue" style="width:10px;height:4px"></td></tr><tr style="height:6px"><td id="zero-green" class="green" style="width:10px;height:6px"></td><td id="zero-black" class="black" style="width:10px;height:6px"></td></tr></table>
+<table id="single-table" style="left:60px;top:10px;width:21px;border-spacing:3px;"><tr style="height:4px"><td id="single-red" class="red" style="width:6px;height:4px"></td><td id="single-blue" class="blue" style="width:6px;height:4px"></td></tr><tr style="height:6px"><td id="single-green" class="green" style="width:6px;height:6px"></td><td id="single-black" class="black" style="width:6px;height:6px"></td></tr></table>
+<table id="zero-x-table" style="left:10px;top:60px;width:20px;border-spacing:0 3px;"><tr style="height:4px"><td id="zero-x-red" class="red" style="width:10px;height:4px"></td><td id="zero-x-blue" class="blue" style="width:10px;height:4px"></td></tr><tr style="height:6px"><td id="zero-x-green" class="green" style="width:10px;height:6px"></td><td id="zero-x-black" class="black" style="width:10px;height:6px"></td></tr></table>
+<table id="zero-y-table" style="left:60px;top:60px;width:20px;border-spacing:2px 0;"><tr style="height:4px"><td id="zero-y-red" class="red" style="width:7px;height:4px"></td><td id="zero-y-blue" class="blue" style="width:7px;height:4px"></td></tr><tr style="height:6px"><td id="zero-y-green" class="green" style="width:7px;height:6px"></td><td id="zero-y-black" class="black" style="width:7px;height:6px"></td></tr></table>
+</body></html>

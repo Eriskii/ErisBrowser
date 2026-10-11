@@ -58,6 +58,14 @@ budgets and conservative CSSOM getter remain explicit limits. Attachment modes,
 open. The earlier test totals above belong to their named checkpoints; layered
 validation is recorded separately in its chapter.
 
+[Table spacing](table-spacing.md) now uses an inherited computed pair throughout
+the existing track, colspan and rowspan equations. HTML's 2px default remains;
+zero and unequal axes can be authored through the shared CSS/supports/CSSOM
+parser. Final cell geometry still drives background retiling under the same
+budgets. Full intrinsic table sizing, separated-background painting,
+`border-collapse`, caption placement and the broader table model remain open.
+This checkpoint's validation belongs to its own chapter.
+
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four
 component positions. Paint fitting leaves box layout and hit areas intact, with

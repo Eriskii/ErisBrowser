@@ -99,6 +99,14 @@ rendering limits. CSSOM preserves authored cardinalities and conservatively
 returns an empty shorthand when it cannot represent them. Try the
 [layer-order demo](examples/background-layers.html).
 
+[Table spacing](docs/table-spacing.md) adds one or two inherited `border-spacing`
+lengths to the existing table layout. Horizontal and vertical gaps now affect
+tracks, spans and final cell backgrounds independently; HTML tables retain
+2px gaps by default. CSSOM and supports checks share the bounded length/calc
+parser. Intrinsic table sizing, row-background gaps and caption handling remain
+limited, and `border-collapse` is unsupported. Try the
+[spacing demo](examples/table-spacing.html).
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;

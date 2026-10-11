@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Table spacing: column and row spans</title><style>
+html,body{margin:0;padding:0;background:white;font-size:0;line-height:0}
+table,tbody,thead,tfoot,tr,td,th,caption{margin:0;padding:0;border:0;box-sizing:content-box}
+table{position:absolute;background:#ffff00}
+tbody,thead,tfoot,tr{background:transparent}
+td{vertical-align:top}
+.red{background:#ff0000}.blue{background:#0000ff}.green{background:#00ff00}.black{background:#000000}
+</style></head><body>
+<table id="span-table" style="left:10px;top:10px;width:26px;border-spacing:2px 3px"><tr style="height:4px"><td id="span-red" class="red" style="width:14px;height:13px" colspan="2" rowspan="2"></td><td id="span-blue" class="blue" style="width:6px;height:4px"></td></tr><tr style="height:6px"><td id="span-green" class="green" style="width:6px;height:6px"></td></tr></table>
+<table id="deficit-table" style="left:60px;top:10px;width:26px;border-spacing:2px 3px"><tr style="height:4px"><td id="deficit-red" class="red" style="width:14px;height:17px" colspan="2" rowspan="2"></td><td id="deficit-blue" class="blue" style="width:6px;height:4px"></td></tr><tr style="height:6px"><td id="deficit-green" class="green" style="width:6px;height:6px"></td></tr></table>
+<table id="explicit-table" style="left:10px;top:60px;width:32px;border-spacing:3px 5px"><tr style="height:4px"><td id="explicit-red" class="red" style="width:17px;height:4px" colspan="2"></td><td id="explicit-blue" class="blue" style="width:6px;height:4px"></td></tr></table>
+</body></html>

@@ -4,6 +4,8 @@ use crate::dom::{
 };
 use crate::graphics::{Color, gradient::LinearGradient};
 mod background;
+mod border_spacing;
+pub(crate) use border_spacing::valid as valid_border_spacing;
 mod gradient;
 mod image;
 pub mod url;
@@ -275,6 +277,8 @@ pub struct ComputedStyle {
     pub margin: Edges<Length>,
     pub padding: Edges<Length>,
     pub border_width: Edges<f32>,
+    /// Computed horizontal/vertical separation in CSS pixels.
+    pub border_spacing: [f32; 2],
     pub color: Color,
     pub background_color: Color,
     pub backgrounds: Arc<BackgroundData>,
@@ -344,6 +348,7 @@ impl Default for ComputedStyle {
             margin: Edges::all(Length::Px(0.0)),
             padding: Edges::all(Length::Px(0.0)),
             border_width: Edges::all(0.0),
+            border_spacing: [0.0; 2],
             color: Color::BLACK,
             background_color: Color::TRANSPARENT,
             backgrounds: BackgroundData::initial(),
@@ -401,6 +406,7 @@ impl ComputedStyle {
         let mut s = Self::default();
         if let Some(p) = parent {
             s.color = p.color;
+            s.border_spacing = p.border_spacing;
             s.font_size = p.font_size;
             s.line_height = p.line_height;
             s.font_weight = p.font_weight;
@@ -1570,6 +1576,7 @@ pub(crate) fn supports_declaration_with_budget(
         }
         let tokens = crate::selectors::tokens(value, &mut evaluator.work).map_err(|_| ())?;
         evaluator.tokens(&tokens)?;
+        let spacing_property = property.eq_ignore_ascii_case("border-spacing");
         let image_property = property.eq_ignore_ascii_case("background")
             || property.eq_ignore_ascii_case("background-image");
         let box_property = property.eq_ignore_ascii_case("background")
@@ -1582,6 +1589,7 @@ pub(crate) fn supports_declaration_with_budget(
             ) || token.raw.contains(['\\', '\0'])
                 && !(image_property && image::url_payload(*token))
                 && !(box_property && background_box_token(*token))
+                && !(spacing_property && border_spacing::escape_allowed(*token))
         }) {
             return Ok(false);
         }
@@ -1595,7 +1603,8 @@ pub(crate) fn supports_declaration_with_budget(
         let property = property.to_ascii_lowercase();
         if matches!(
             property.as_str(),
-            "object-fit"
+            "border-spacing"
+                | "object-fit"
                 | "object-position"
                 | "background"
                 | "background-image"
@@ -1762,12 +1771,13 @@ impl SupportsEvaluator {
         if name.len() > 256 || value.len() > 4096 {
             return Ok(false);
         }
+        let spacing_property = name.eq_ignore_ascii_case("border-spacing");
         let image_property = name.eq_ignore_ascii_case("background")
             || name.eq_ignore_ascii_case("background-image");
         let box_property = name.eq_ignore_ascii_case("background")
             || name.eq_ignore_ascii_case("background-origin")
             || name.eq_ignore_ascii_case("background-clip");
-        if image_property || box_property {
+        if image_property || box_property || spacing_property {
             use crate::selectors::Kind;
             let tokens = crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
             self.spend(tokens.len() + 1)?;
@@ -1792,6 +1802,7 @@ impl SupportsEvaluator {
                 ) || t.raw.contains(['\\', '\0'])
                     && !(image_property && image::url_payload(*t))
                     && !(box_property && background_box_token(*t))
+                    && !(spacing_property && border_spacing::escape_allowed(*t))
             }) {
                 return Ok(false);
             }
@@ -1957,6 +1968,12 @@ fn supports_color(value: &str) -> bool {
     valid && parse_color(value).is_some()
 }
 pub(crate) fn supports_property(name: &str, value: &str) -> bool {
+    // This compatibility boolean helper owns a top-level allowance. Metered
+    // supports/CSSOM entry points dispatch spacing directly before this path.
+    if name == "border-spacing" {
+        let mut work = MAX_SUPPORTS_WORK;
+        return valid_border_spacing(value, &mut work).unwrap_or(false);
+    }
     if matches!(
         name,
         "background"
@@ -3556,6 +3573,7 @@ const SUPPORTED_PROPERTIES: &[&str] = &[
     "padding-right",
     "padding-bottom",
     "padding-left",
+    "border-spacing",
     "border-top-width",
     "border-right-width",
     "border-bottom-width",
@@ -4307,6 +4325,7 @@ fn apply_user_agent(
     };
     match tag {
         "body" => s.margin = Edges::all(Length::Px(8.0)),
+        "table" => s.border_spacing = [2.0; 2],
         "p" | "blockquote" | "figure" | "pre" | "dl" | "ul" | "ol" => {
             s.margin.top = Length::Px(s.font_size);
             s.margin.bottom = Length::Px(s.font_size);
@@ -4455,7 +4474,8 @@ fn apply_property(
     // The property parsers use bounded local token cursors. Reserve their
     // aggregate math scans against the style computation's shared budget.
     // Nested calc is linear; the grid-list parser has at most eight wrappers.
-    if may_have_calculation(value)
+    if name != "border-spacing"
+        && may_have_calculation(value)
         && crate::selectors::spend(work, value.len().saturating_mul(32) + 1).is_err()
     {
         return;
@@ -4498,6 +4518,7 @@ fn apply_property(
         let inherited = matches!(
             name,
             "color"
+                | "border-spacing"
                 | "font-size"
                 | "font-weight"
                 | "font-family"
@@ -4526,6 +4547,14 @@ fn apply_property(
             }
         }
         copy_property(s, from, name);
+        return;
+    }
+    if name == "border-spacing" {
+        if let Ok(Some(pair)) =
+            border_spacing::parse(value, [s.font_size, root_font, width, height], work)
+        {
+            s.border_spacing = pair;
+        }
         return;
     }
     let length = || parse_length(value, s.font_size, root_font, width, height);
@@ -4944,6 +4973,7 @@ fn apply_property(
 }
 fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
     match name {
+        "border-spacing" => s.border_spacing = p.border_spacing,
         "object-fit" => s.object_fit = p.object_fit,
         "object-position" => s.object_position = p.object_position,
         "display" => {
@@ -5552,7 +5582,9 @@ fn valid_declaration_value(
     value: &str,
     work: &mut usize,
 ) -> Result<bool, crate::selectors::Error> {
-    if matches!(name, "object-fit" | "object-position") {
+    if name == "border-spacing" {
+        valid_border_spacing(value, work)
+    } else if matches!(name, "object-fit" | "object-position") {
         valid_object_property(name, value, work)
     } else if matches!(
         name,

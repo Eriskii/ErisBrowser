@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Table spacing: unequal axes</title><style>
+html,body{margin:0;padding:0;background:white;font-size:0;line-height:0}
+table,tbody,thead,tfoot,tr,td,th,caption{margin:0;padding:0;border:0;box-sizing:content-box}
+table{position:absolute;background:#ffff00}
+tbody,thead,tfoot,tr{background:transparent}
+td{vertical-align:top}
+.red{background:#ff0000}.blue{background:#0000ff}.green{background:#00ff00}.black{background:#000000}
+#unequal-table tr{border-spacing:9px 11px}#unequal-table td{border-spacing:0}
+</style></head><body>
+<table id="unequal-table" style="left:10px;top:10px;width:20px;border-spacing:2px 3px;"><tr style="height:4px"><td id="unequal-red" class="red" style="width:7px;height:4px"></td><td id="unequal-blue" class="blue" style="width:7px;height:4px"></td></tr><tr style="height:6px"><td id="unequal-green" class="green" style="width:7px;height:6px"></td><td id="unequal-black" class="black" style="width:7px;height:6px"></td></tr></table>
+<table id="swapped-table" style="left:60px;top:10px;width:21px;border-spacing:3px 2px;"><tr style="height:4px"><td id="swapped-red" class="red" style="width:6px;height:4px"></td><td id="swapped-blue" class="blue" style="width:6px;height:4px"></td></tr><tr style="height:6px"><td id="swapped-green" class="green" style="width:6px;height:6px"></td><td id="swapped-black" class="black" style="width:6px;height:6px"></td></tr></table>
+</body></html>
