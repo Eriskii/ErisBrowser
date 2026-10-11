@@ -2867,3 +2867,6 @@ fn confined_node_clone_copies_exact_graphs_with_fresh_identities() {
         ));
     }
 }
+
+#[path = "worker/background_boxes.rs"]
+mod background_boxes;

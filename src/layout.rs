@@ -3,8 +3,8 @@
 //! This implements the useful core of block, inline, flex and grid layout. It is
 //! deliberately explicit about its limits: it is not a complete CSS formatter.
 use crate::css::{
-    BackgroundImage, BackgroundPosition, BackgroundSize, ComputedStyle, Display, GridBreadth,
-    GridLine, GridTrack, Length, ObjectFit, ObjectPosition, PositionComponent,
+    BackgroundBox, BackgroundImage, BackgroundPosition, BackgroundSize, ComputedStyle, Display,
+    GridBreadth, GridLine, GridTrack, Length, ObjectFit, ObjectPosition, PositionComponent,
 };
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
@@ -12,6 +12,10 @@ use std::cell::Cell as Counter;
 
 mod inline_edges;
 use inline_edges::{InlineCollection, InlineEdges, InlineSpan};
+mod background_boxes;
+use background_boxes::{BackgroundBoxes, PaintRole, PaintSlots};
+mod inline_backgrounds;
+use inline_backgrounds::InlineLayer;
 
 const MAX_DEPTH: usize = 128;
 const MAX_VISITS: usize = 100_000;
@@ -822,9 +826,10 @@ const MAX_POSITION_WORK: usize = 2_000_000;
 struct PaintOwner {
     node: NodeId,
     background: bool,
-    // Private inline URL slot. A transparent Rect carries its fragment geometry
-    // until the complete sliced strip is known; no fabricated image key escapes.
-    inline_raster: bool,
+    // Explicit pending layer and phase, independent of command admission.
+    inline_layer: InlineLayer,
+    inline_prefix: f32,
+    inline_sides: u8,
 }
 #[derive(Clone, Copy)]
 struct BoxGeometry {
@@ -834,6 +839,9 @@ struct BoxGeometry {
     content: Rect,
     fixed: bool,
     inline: bool,
+    inline_prefix: f32,
+    inline_basis: f32,
+    inline_sides: u8,
 }
 #[derive(Clone, Copy)]
 struct PositionJob {
@@ -1005,7 +1013,7 @@ impl FloatBand {
 
 struct InlineItem {
     node: NodeId,
-    owner: NodeId,
+
     kind: InlineKind,
     width: f32,
     height: f32,
@@ -1106,7 +1114,9 @@ pub(crate) fn layout_with_backgrounds(
         paint_owner: PaintOwner {
             node: doc.root,
             background: true,
-            inline_raster: false,
+            inline_layer: InlineLayer::None,
+            inline_prefix: 0.0,
+            inline_sides: 0,
         },
         flow_height_reference: Some(viewport.height),
         content_height_measure: None,
@@ -1186,7 +1196,7 @@ pub(crate) fn layout_with_backgrounds(
             engine.commands[index] = command;
         }
     }
-    engine.finish_inline_gradients();
+    engine.finish_inline_backgrounds();
     engine.restack();
     engine.commands.retain(|command| match command {
         DrawCommand::Rect { rect, color, .. } => {
@@ -1278,7 +1288,17 @@ impl Engine<'_> {
         self.boxes
             .iter()
             .find(|g| g.node == root && !g.inline)
-            .map(|g| g.padding)
+            .map(|g| {
+                match self
+                    .canvas_background_node
+                    .map(|source| self.style(source).background_origin)
+                    .unwrap_or(BackgroundBox::Padding)
+                {
+                    BackgroundBox::Border => g.border,
+                    BackgroundBox::Padding => g.padding,
+                    BackgroundBox::Content => g.content,
+                }
+            })
     }
 
     fn html_tag(&self, id: NodeId) -> Option<&str> {
@@ -1609,7 +1629,9 @@ impl Engine<'_> {
         self.paint_owner = PaintOwner {
             node: id,
             background: true,
-            inline_raster: false,
+            inline_layer: InlineLayer::None,
+            inline_prefix: 0.0,
+            inline_sides: 0,
         };
         if style.position == "relative" {
             x += resolve(style.left, available)
@@ -1818,115 +1840,20 @@ impl Engine<'_> {
             height = height.max(extent(min) + css_to_border);
         }
         height = extent(height).max(extras);
-        // Canvas background propagation is emitted once before the root box.
-        let paint_height = height;
-        let background = if self.canvas_background_node == Some(id) {
-            Color::TRANSPARENT
-        } else {
-            style.background_color
-        };
-        let border_color = style.border_color;
-        let mut replacements = [
-            DrawCommand::Rect {
-                rect: rect(x, y, width, paint_height),
-                color: background,
-                radius: style.border_radius,
+        self.paint_principal_background(
+            id,
+            &style,
+            Rect {
+                x,
+                y,
+                width,
+                height,
             },
-            DrawCommand::Rect {
-                rect: rect(x, y, width, border.top),
-                color: border_color,
-                radius: 0.0,
-            },
-            DrawCommand::Rect {
-                rect: rect(x + width - border.right, y, border.right, height),
-                color: border_color,
-                radius: 0.0,
-            },
-            DrawCommand::Rect {
-                rect: rect(x, y + height - border.bottom, width, border.bottom),
-                color: border_color,
-                radius: 0.0,
-            },
-            DrawCommand::Rect {
-                rect: rect(x, y, border.left, height),
-                color: border_color,
-                radius: 0.0,
-            },
-        ];
-        if self.rounded_border(id) {
-            replacements[0] = DrawCommand::Rect {
-                rect: rect(x, y, width, paint_height),
-                color: border_color,
-                radius: style.border_radius,
-            };
-            replacements[1] = DrawCommand::Rect {
-                rect: rect(
-                    x + border.left,
-                    y + border.top,
-                    width - border.horizontal(),
-                    paint_height - border.vertical(),
-                ),
-                color: background,
-                radius: (style.border_radius - border.top).max(0.0),
-            };
-            for command in &mut replacements[2..] {
-                *command = DrawCommand::Rect {
-                    rect: rect(x, y, 0.0, 0.0),
-                    color: Color::TRANSPARENT,
-                    radius: 0.0,
-                };
-            }
-        }
-        if has_image {
-            let area = rect(
-                x + border.left,
-                y + border.top,
-                width - border.horizontal(),
-                height - border.vertical(),
-            );
-            let rounded = self.rounded_border(id);
-            let command = self
-                .background_command(
-                    id,
-                    if rounded {
-                        area
-                    } else {
-                        rect(x, y, width, height)
-                    },
-                    area,
-                    if rounded {
-                        (style.border_radius - border.top).max(0.0)
-                    } else {
-                        style.border_radius
-                    },
-                    style.color,
-                    // Table stretching may give a currently zero-sized tile a
-                    // positive used area. Real keys remain bounded and paid once.
-                    true,
-                )
-                .unwrap_or(DrawCommand::Rect {
-                    rect: Rect::default(),
-                    color: Color::TRANSPARENT,
-                    radius: 0.0,
-                });
-            let [background, top, right, bottom, left] = replacements;
-            let commands = if rounded {
-                [background, top, command, right, bottom, left]
-            } else {
-                [background, command, top, right, bottom, left]
-            };
-            for (offset, command) in commands.into_iter().enumerate() {
-                if let Some(slot) = self.commands.get_mut(paint_start + offset) {
-                    *slot = command;
-                }
-            }
-        } else {
-            for (offset, command) in replacements.into_iter().enumerate() {
-                if let Some(slot) = self.commands.get_mut(paint_start + offset) {
-                    *slot = command;
-                }
-            }
-        }
+            border,
+            padding,
+            paint_start,
+            has_image,
+        );
         self.hits[hit_start].rect.height = height;
         self.boxes.push(BoxGeometry {
             node: id,
@@ -1940,6 +1867,9 @@ impl Engine<'_> {
             content: rect(inner_x, inner_y, inner_width, height - extras),
             fixed: false,
             inline: false,
+            inline_prefix: 0.0,
+            inline_basis: 0.0,
+            inline_sides: 0,
         });
         if style.list_item && style.list_style_type != "none" {
             self.paint_list_marker(id, inner_x, inner_y, &style);
@@ -2248,7 +2178,9 @@ impl Engine<'_> {
             let owner = PaintOwner {
                 node: job.node,
                 background: false,
-                inline_raster: false,
+                inline_layer: InlineLayer::None,
+                inline_prefix: 0.0,
+                inline_sides: 0,
             };
             let mut commands = Vec::with_capacity(fragment.commands.len() + scope_cost);
             let mut owners = Vec::with_capacity(commands.capacity());
@@ -2475,7 +2407,21 @@ impl Engine<'_> {
                 _ => {
                     let visible = match &command {
                         DrawCommand::BoxDecoration(decoration) => {
-                            decoration.shape.rect.width > 0.0 && decoration.shape.rect.height > 0.0
+                            decoration.shape.rect.width > 0.0
+                                && decoration.shape.rect.height > 0.0
+                                && match &decoration.paint {
+                                    crate::graphics::box_decoration::BoxPaint::Color(color) => {
+                                        color.a > 0
+                                    }
+                                    crate::graphics::box_decoration::BoxPaint::Image {
+                                        tile,
+                                        ..
+                                    }
+                                    | crate::graphics::box_decoration::BoxPaint::LinearGradient {
+                                        tile,
+                                        ..
+                                    } => tile.width > 0.0 && tile.height > 0.0,
+                                }
                         }
                         DrawCommand::Rect { rect, color, .. } => {
                             color.a > 0 && rect.width > 0.0 && rect.height > 0.0
@@ -2673,6 +2619,7 @@ impl Engine<'_> {
         let style = self.style(id);
         let border = self.borders(id);
         style.border_radius > 0.0
+            && style.background_clip == BackgroundBox::Border
             && self.canvas_background_node != Some(id)
             && if let Some(BackgroundImage::Gradient(gradient)) = &style.background_image {
                 style.border_color.a == 255
@@ -2680,6 +2627,7 @@ impl Engine<'_> {
                         || style.background_size == BackgroundSize::default()
                             && style.background_position == BackgroundPosition::default()
                             && style.background_repeat == [true; 2]
+                            && style.background_origin == BackgroundBox::Padding
                             && !gradient.stops.is_empty()
                             && gradient.stops.iter().all(|stop| {
                                 use crate::graphics::gradient::GradientColor;
@@ -2692,7 +2640,7 @@ impl Engine<'_> {
                 // Unknown/transparent URL pixels cannot prove an opaque fill.
                 style.border_color.a == 255 && style.background_color.a == 255
             } else {
-                style.background_color.a == 255
+                style.border_color.a == 255 && style.background_color.a == 255
             }
             && border.top > 0.0
             && border.top == border.right
@@ -2724,7 +2672,7 @@ impl Engine<'_> {
     fn collect_inline(
         &mut self,
         id: NodeId,
-        owner: NodeId,
+
         width: f32,
         depth: usize,
         output: &mut InlineCollection,
@@ -2736,7 +2684,7 @@ impl Engine<'_> {
         if matches!(self.style(id).position.as_str(), "absolute" | "fixed") {
             output.items.push(InlineItem {
                 node: id,
-                owner: id,
+
                 kind: InlineKind::Positioned(id),
                 width: 0.0,
                 height: 0.0,
@@ -2748,7 +2696,7 @@ impl Engine<'_> {
         if self.is_float(id) {
             output.items.push(InlineItem {
                 node: id,
-                owner: id,
+
                 kind: InlineKind::Float(id),
                 width: 0.0,
                 height: 0.0,
@@ -2763,14 +2711,14 @@ impl Engine<'_> {
                     .scalar_values()
                     .take(self.glyphs_left)
                     .collect::<String>();
-                self.tokenize(id, owner, &text, &mut output.items);
+                self.tokenize(id, &text, &mut output.items);
             }
             NodeKind::Element(_) => {
                 let tag = self.layout_tag(id);
                 if tag == "br" {
                     output.items.push(InlineItem {
                         node: id,
-                        owner: id,
+
                         kind: InlineKind::Break,
                         width: 0.0,
                         height: line_height(self.style(id)),
@@ -2798,7 +2746,7 @@ impl Engine<'_> {
                     let fragment = self.fragment(id, width, inner_width, depth + 1);
                     output.items.push(InlineItem {
                         node: id,
-                        owner: id,
+
                         width: fragment.size.width + margin.horizontal(),
                         height: fragment.size.height + margin.vertical(),
                         kind: InlineKind::Box(fragment, margin),
@@ -2811,6 +2759,7 @@ impl Engine<'_> {
                         let span = InlineSpan {
                             node: id,
                             parent: active_span,
+                            basis: width,
                             border: self.borders(id),
                             padding: self.padding(id, width),
                             margin: (margin.left, margin.right),
@@ -2860,7 +2809,7 @@ impl Engine<'_> {
                     };
                     let children = self.layout_children(id);
                     for child in children {
-                        self.collect_inline(child, id, width, depth + 1, output, span);
+                        self.collect_inline(child, width, depth + 1, output, span);
                     }
                     if span != active_span
                         && span.is_some_and(|span| output.spans[span].decorated())
@@ -2868,7 +2817,7 @@ impl Engine<'_> {
                     {
                         output.items.push(InlineItem {
                             node: id,
-                            owner: id,
+
                             kind: InlineKind::Empty,
                             width: 0.0,
                             height: line_height(self.style(id)),
@@ -2881,14 +2830,14 @@ impl Engine<'_> {
             _ => {
                 let children = self.doc.nodes[id].children.clone();
                 for child in children {
-                    self.collect_inline(child, owner, width, depth + 1, output, active_span);
+                    self.collect_inline(child, width, depth + 1, output, active_span);
                 }
             }
         }
         output.mark(active_span, &mut self.position_work_left);
     }
 
-    fn tokenize(&mut self, id: NodeId, owner: NodeId, text: &str, output: &mut Vec<InlineItem>) {
+    fn tokenize(&mut self, id: NodeId, text: &str, output: &mut Vec<InlineItem>) {
         let style = self.style(id).clone();
         let preserve = matches!(
             style.white_space.as_str(),
@@ -2907,18 +2856,18 @@ impl Engine<'_> {
             }
             last_cr = is_cr;
             if matches!(character, '\n' | '\r') && newlines {
-                self.emit_text(id, owner, &mut word, false, preserve, output);
-                self.emit_text(id, owner, &mut whitespace, true, preserve, output);
+                self.emit_text(id, &mut word, false, preserve, output);
+                self.emit_text(id, &mut whitespace, true, preserve, output);
                 output.push(InlineItem {
                     node: id,
-                    owner,
+
                     kind: InlineKind::Break,
                     width: 0.0,
                     height: line_height(&style),
                     preserve,
                 });
             } else if character.is_ascii_whitespace() {
-                self.emit_text(id, owner, &mut word, false, preserve, output);
+                self.emit_text(id, &mut word, false, preserve, output);
                 if preserve {
                     if character == '\t' {
                         whitespace.push_str("    ");
@@ -2929,20 +2878,20 @@ impl Engine<'_> {
                     whitespace.push(' ');
                 }
             } else {
-                self.emit_text(id, owner, &mut whitespace, true, preserve, output);
+                self.emit_text(id, &mut whitespace, true, preserve, output);
                 if character != '\0' {
                     word.push(character);
                 }
             }
         }
-        self.emit_text(id, owner, &mut word, false, preserve, output);
-        self.emit_text(id, owner, &mut whitespace, true, preserve, output);
+        self.emit_text(id, &mut word, false, preserve, output);
+        self.emit_text(id, &mut whitespace, true, preserve, output);
     }
 
     fn emit_text(
         &self,
         id: NodeId,
-        owner: NodeId,
+
         text: &mut String,
         space: bool,
         preserve: bool,
@@ -2956,7 +2905,7 @@ impl Engine<'_> {
         let width = self.measure(&value, style);
         output.push(InlineItem {
             node: id,
-            owner,
+
             kind: if space {
                 InlineKind::Space(value)
             } else {
@@ -3187,7 +3136,7 @@ impl Engine<'_> {
     ) -> f32 {
         let mut collection = InlineCollection::default();
         for &id in nodes {
-            self.collect_inline(id, id, width, depth, &mut collection, None);
+            self.collect_inline(id, width, depth, &mut collection, None);
         }
         let Some((tokens, mut edges)) = collection.finish(&mut self.position_work_left) else {
             return 0.0;
@@ -3373,173 +3322,6 @@ impl Engine<'_> {
         )
     }
 
-    fn record_inline_boxes(&mut self, node: NodeId, area: Rect) {
-        let mut ancestor = self.doc.nodes[node].parent;
-        for _ in 0..MAX_DEPTH {
-            let Some(id) = ancestor else { break };
-            if !grid_charge(&mut self.position_work_left, 1) {
-                break;
-            }
-            if self.style(id).display != Display::Inline {
-                break;
-            }
-            self.paint_inline_gradient(id, area);
-            ancestor = self.doc.nodes[id].parent;
-        }
-    }
-
-    fn paint_inline_gradient(&mut self, id: NodeId, area: Rect) {
-        if self.canvas_background_node == Some(id) || area.width <= 0.0 || area.height <= 0.0 {
-            return;
-        }
-        let style = self.style(id);
-        let Some(image) = style.background_image.clone() else {
-            return;
-        };
-        let (color, current_color, radius, repeat) = (
-            style.background_color,
-            style.color,
-            style.border_radius,
-            style.background_repeat,
-        );
-        // Reserve the real fragment clip, both background layers and its closer
-        // together. The full sliced strip is resolved after all fragment moves.
-        if self.commands_created + self.open_clips + 4 > MAX_COMMANDS {
-            return;
-        }
-        let old_owner = self.paint_owner;
-        self.paint_owner = PaintOwner {
-            node: id,
-            background: true,
-            inline_raster: false,
-        };
-        self.push(DrawCommand::PushClip { rect: area });
-        self.push(DrawCommand::Rect {
-            rect: area,
-            color,
-            radius,
-        });
-        match image {
-            BackgroundImage::Gradient(gradient) => {
-                self.push(DrawCommand::LinearGradient {
-                    rect: area,
-                    // Existing private gradient pending state stays unchanged.
-                    tile: Rect {
-                        width: -1.0,
-                        ..Rect::default()
-                    },
-                    radius,
-                    gradient,
-                    current_color,
-                    stop_scale: 1.0,
-                    repeat,
-                });
-            }
-            BackgroundImage::Url(_) => {
-                self.paint_owner.inline_raster = true;
-                self.push(DrawCommand::Rect {
-                    rect: area,
-                    color: Color::TRANSPARENT,
-                    radius,
-                });
-                self.paint_owner.inline_raster = false;
-            }
-        }
-        self.push(DrawCommand::PopClip);
-        self.inline_gradients = true;
-        self.paint_owner = old_owner;
-    }
-
-    fn finish_inline_gradients(&mut self) {
-        if !self.inline_gradients || self.doc.nodes.len() > MAX_VISITS {
-            return;
-        }
-        // DOM and command limits bound the table and both complete passes. A
-        // refused preparation leaves pending tiles invisible, not restarted
-        // independently at every token. Color-only lists do none of this work.
-        let cost = self
-            .commands
-            .len()
-            .saturating_mul(3)
-            .saturating_add(self.doc.nodes.len());
-        if cost > self.position_work_left {
-            return;
-        }
-        self.position_work_left -= cost;
-        let mut metrics = Vec::new();
-        if metrics.try_reserve_exact(self.doc.nodes.len()).is_err() {
-            return;
-        }
-        metrics.resize(self.doc.nodes.len(), (0.0f64, 0.0f64));
-        for (command, owner) in self.commands.iter().zip(&self.owners) {
-            let area = match command {
-                DrawCommand::LinearGradient { rect, tile, .. } if tile.width < 0.0 => Some(*rect),
-                DrawCommand::Rect { rect, .. } if owner.inline_raster => Some(*rect),
-                _ => None,
-            };
-            if let Some(area) = area
-                && let Some((width, _)) = metrics.get_mut(owner.node)
-            {
-                *width += f64::from(area.width);
-            }
-        }
-        for index in 0..self.commands.len() {
-            let area = match &self.commands[index] {
-                DrawCommand::LinearGradient { rect, tile, .. } if tile.width < 0.0 => *rect,
-                DrawCommand::Rect { rect, .. } if self.owners[index].inline_raster => *rect,
-                _ => continue,
-            };
-            let (width, advance) = &mut metrics[self.owners[index].node];
-            if !width.is_finite() || *width <= 0.0 || *width > f64::from(MAX_EXTENT) {
-                continue;
-            }
-            let left = f64::from(area.x) - *advance;
-            *advance += f64::from(area.width);
-            if !left.is_finite() || left.abs() > f64::from(MAX_EXTENT) {
-                continue;
-            }
-            // Each piece uses its own cross-axis extent (CSS Break3 slice).
-            let strip = Rect {
-                x: left as f32,
-                y: area.y,
-                width: *width as f32,
-                height: area.height,
-            };
-            let node = self.owners[index].node;
-            if self.owners[index].inline_raster {
-                let radius = match &self.commands[index] {
-                    DrawCommand::Rect { radius, .. } => *radius,
-                    _ => unreachable!(),
-                };
-                if let Some(command) = self.background_command(
-                    node,
-                    strip,
-                    strip,
-                    radius,
-                    self.style(node).color,
-                    false,
-                ) {
-                    self.commands[index] = command;
-                }
-                self.owners[index].inline_raster = false;
-            } else {
-                let style = self.style(node);
-                let resolved =
-                    background_tile(strip, style.background_size, style.background_position)
-                        .unwrap_or_default();
-                if let DrawCommand::LinearGradient { rect, tile, .. } = &mut self.commands[index] {
-                    *rect = strip;
-                    *tile = resolved;
-                }
-            }
-            if let Some(DrawCommand::Rect { rect, .. }) =
-                index.checked_sub(1).and_then(|i| self.commands.get_mut(i))
-            {
-                *rect = strip;
-            }
-        }
-    }
-
     #[allow(clippy::too_many_arguments)]
     fn paint_line(
         &mut self,
@@ -3621,11 +3403,17 @@ impl Engine<'_> {
             if self.boxes.try_reserve(plan.boxes.len()).is_err() {
                 return None;
             }
+            edges.commit_line(&plan);
             for &(mut geometry, (dx, dy)) in &plan.boxes {
                 geometry.border = geometry.border.translated(dx, dy);
                 geometry.padding = geometry.padding.translated(dx, dy);
                 geometry.content = geometry.content.translated(dx, dy);
                 self.boxes.push(geometry);
+                self.paint_inline_background(
+                    geometry,
+                    geometry.inline_prefix,
+                    geometry.inline_sides,
+                );
             }
             Some(plan)
         };
@@ -3646,7 +3434,9 @@ impl Engine<'_> {
             self.paint_owner = PaintOwner {
                 node: item.node,
                 background: false,
-                inline_raster: false,
+                inline_layer: InlineLayer::None,
+                inline_prefix: 0.0,
+                inline_sides: 0,
             };
             let style = self.style(item.node).clone();
             let is_space = matches!(item.kind, InlineKind::Space(_));
@@ -3660,18 +3450,6 @@ impl Engine<'_> {
                         item.width + if is_space { extra_space } else { 0.0 },
                         height,
                     );
-                    self.record_inline_boxes(item.node, item_rect);
-                    let owner_style = self.style(item.owner);
-                    if owner_style.background_color.a > 0
-                        && owner_style.display == Display::Inline
-                        && owner_style.background_image.is_none()
-                    {
-                        self.push(DrawCommand::Rect {
-                            rect: item_rect,
-                            color: owner_style.background_color,
-                            radius: owner_style.border_radius,
-                        });
-                    }
                     self.push(DrawCommand::Text {
                         x: visual_x,
                         y: text_y,
@@ -3716,10 +3494,6 @@ impl Engine<'_> {
                         "bottom" | "text-bottom" => height - item.height,
                         _ => baseline - item.height,
                     };
-                    self.record_inline_boxes(
-                        item.node,
-                        rect(visual_x, visual_y + offset, item.width, item.height),
-                    );
                     self.append_fragment(
                         fragment,
                         visual_x + margin.left,
@@ -3727,7 +3501,6 @@ impl Engine<'_> {
                     );
                 }
                 InlineKind::Positioned(id) => {
-                    self.record_inline_boxes(id, rect(visual_x, visual_y, 0.0, height));
                     self.enqueue_positioned(id, visual_x, visual_y, 0);
                 }
                 InlineKind::Empty | InlineKind::Break | InlineKind::Float(_) => {}
@@ -4404,6 +4177,9 @@ impl Engine<'_> {
             column: usize,
             columns: usize,
             rows: usize,
+            // Keep the original percentage reference even when forced border
+            // width is clamped by layout_box_sized.
+            available: f32,
             fragment: Option<Fragment>,
         }
         let mut rows = Vec::new();
@@ -4469,6 +4245,7 @@ impl Engine<'_> {
                     column,
                     columns,
                     rows: rowspan,
+                    available: 0.0,
                     fragment: None,
                 });
                 column += columns;
@@ -4521,6 +4298,7 @@ impl Engine<'_> {
                 .iter()
                 .sum::<f32>()
                 + spacing * cell.columns.saturating_sub(1) as f32;
+            cell.available = cell_width;
             let fragment = self.fragment(cell.node, cell_width, cell_width, depth + 1);
             if cell.rows == 1 {
                 heights[cell.row] = heights[cell.row].max(fragment.size.height);
@@ -4556,12 +4334,17 @@ impl Engine<'_> {
                 available + spacing * column_count.saturating_sub(1) as f32,
                 heights[row],
             );
+            // Row tracks have coincident border/padding/content boxes in the
+            // current table model. All origin/clip choices therefore select
+            // this same area; retain the existing square paint and tariff.
             let background = style.background_color;
             let saved_owner = self.paint_owner;
             self.paint_owner = PaintOwner {
                 node: id,
                 background: true,
-                inline_raster: false,
+                inline_layer: InlineLayer::None,
+                inline_prefix: 0.0,
+                inline_sides: 0,
             };
             self.push(DrawCommand::Rect {
                 rect: row_rect,
@@ -4594,7 +4377,7 @@ impl Engine<'_> {
                 "bottom" | "text-bottom" => extra,
                 _ => 0.0,
             };
-            let paint_slots = 5 + usize::from(fragment.gradient);
+            let paint_slots = PaintSlots::new(fragment.gradient, fragment.rounded_border).len();
             let content_start = if matches!(
                 fragment.commands.get(paint_slots),
                 Some(DrawCommand::PushClip { .. })
@@ -4603,30 +4386,22 @@ impl Engine<'_> {
             } else {
                 paint_slots
             };
-            for command in fragment.commands.iter_mut().skip(content_start) {
-                translate(command, 0.0, offset);
-            }
+            translate_fragment_commands(&mut fragment, content_start, 0.0, offset);
             for hit in fragment.hits.iter_mut().skip(1) {
                 hit.rect.y += offset;
             }
-            let style = self.style(cell.node);
-            if matches!(style.background_image, Some(BackgroundImage::Url(_))) {
-                stretch_fragment_background_with_raster(
-                    &mut fragment,
-                    cell_height,
-                    style.background_size,
-                    style.background_position,
-                    self.loaded_background(cell.node)
-                        .map(|loaded| loaded.natural),
-                );
-            } else {
-                stretch_fragment_background(
-                    &mut fragment,
-                    cell_height,
-                    style.background_size,
-                    style.background_position,
-                );
-            }
+            let natural = self
+                .loaded_background(cell.node)
+                .map(|loaded| loaded.natural);
+            let style = self.styles.get(cell.node).unwrap_or(&self.fallback);
+            stretch_fragment_background_boxes(
+                &mut fragment,
+                cell_height,
+                style,
+                cell.available,
+                natural,
+                &mut self.position_work_left,
+            );
             let cell_x = x
                 + spacing
                 + tracks[..cell.column].iter().sum::<f32>()
@@ -5609,16 +5384,27 @@ fn merge_geometry(target: &mut [Option<BoxGeometry>], boxes: &[BoxGeometry]) {
     }
 }
 
-fn translate_fragment(fragment: &mut Fragment, dx: f32, dy: f32) {
+fn translate_fragment_commands(fragment: &mut Fragment, start: usize, dx: f32, dy: f32) {
     let mut fixed = 0usize;
-    for command in &mut fragment.commands {
+    for (index, command) in fragment.commands.iter_mut().enumerate() {
         match command {
             DrawCommand::PushFixed => fixed += 1,
             DrawCommand::PopFixed => fixed = fixed.saturating_sub(1),
-            _ if fixed == 0 => translate(command, dx, dy),
+            _ if index >= start && fixed == 0 => {
+                let pending = fragment.owners.get_mut(index).is_some_and(|owner| {
+                    inline_backgrounds::translate_pending(command, owner, dx, dy)
+                });
+                if !pending {
+                    translate(command, dx, dy);
+                }
+            }
             _ => {}
         }
     }
+}
+
+fn translate_fragment(fragment: &mut Fragment, dx: f32, dy: f32) {
+    translate_fragment_commands(fragment, 0, dx, dy);
     let move_rect = |r: &mut Rect| {
         r.x = finite(r.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
         r.y = finite(r.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
@@ -5746,6 +5532,7 @@ fn stretch_fragment(fragment: &mut Fragment, height: f32) {
     );
 }
 
+#[cfg(test)]
 fn stretch_fragment_background(
     fragment: &mut Fragment,
     height: f32,
@@ -5777,54 +5564,169 @@ fn stretch_fragment_background_with_raster(
         g.content.height += extra;
         padding = Some(g.padding);
     }
-    let paint_slots = 5 + usize::from(fragment.gradient);
+    let paint_slots = PaintSlots::new(fragment.gradient, fragment.rounded_border).len();
+    let slots = PaintSlots::new(fragment.gradient, fragment.rounded_border);
     for (index, command) in fragment.commands.iter_mut().take(paint_slots).enumerate() {
-        if fragment.gradient {
-            match command {
-                DrawCommand::LinearGradient { rect, tile, .. } => {
-                    rect.height += height - old_height;
-                    *tile = padding
-                        .and_then(|area| background_tile(area, size, position))
-                        .unwrap_or_default();
-                }
-                DrawCommand::BackgroundImage { rect, tile, .. } => {
-                    rect.height += height - old_height;
-                    *tile = padding
-                        .zip(natural)
-                        .and_then(|(area, natural)| {
-                            background_tile_with_raster(area, size, position, natural)
-                        })
-                        .unwrap_or_default();
-                }
-                DrawCommand::Rect { rect, .. } if fragment.rounded_border => {
-                    if index == 0 {
-                        rect.height = height;
-                    } else if index == 1 {
-                        rect.height += height - old_height;
-                    }
-                }
-                DrawCommand::Rect { rect, .. } => match index {
-                    0 | 3 | 5 => rect.height = height,
-                    4 => rect.y += height - old_height,
-                    _ => {}
-                },
-                _ => {}
+        match command {
+            DrawCommand::LinearGradient { rect, tile, .. } if fragment.gradient => {
+                rect.height += height - old_height;
+                *tile = padding
+                    .and_then(|area| background_tile(area, size, position))
+                    .unwrap_or_default();
             }
-            continue;
-        }
-        if let DrawCommand::Rect { rect, .. } = command {
-            match index {
-                1 if fragment.rounded_border => rect.height += height - old_height,
-                0 | 2 | 4 => rect.height = height,
-                3 => rect.y += height - old_height,
-                _ => {}
+            DrawCommand::BackgroundImage { rect, tile, .. } if fragment.gradient => {
+                rect.height += height - old_height;
+                *tile = padding
+                    .zip(natural)
+                    .and_then(|(area, natural)| {
+                        background_tile_with_raster(area, size, position, natural)
+                    })
+                    .unwrap_or_default();
             }
+            DrawCommand::Rect { rect, .. } => match slots.role(index) {
+                PaintRole::Color | PaintRole::Right | PaintRole::Left | PaintRole::RoundOuter => {
+                    rect.height = height
+                }
+                PaintRole::RoundInner => rect.height += height - old_height,
+                PaintRole::Bottom => rect.y += height - old_height,
+                _ => {}
+            },
+            _ => {}
         }
     }
     if let Some(DrawCommand::PushClip { rect }) = fragment.commands.get_mut(paint_slots) {
         rect.height += height - old_height;
     }
     fragment.size.height = height;
+}
+
+/// New box selections and ring payloads retain compact slots and paid keys.
+fn stretch_fragment_background_boxes(
+    fragment: &mut Fragment,
+    height: f32,
+    style: &ComputedStyle,
+    available: f32,
+    natural: Option<RasterNaturalSize>,
+    work: &mut usize,
+) -> bool {
+    let slots = PaintSlots::new(fragment.gradient, fragment.rounded_border);
+    let shaped = fragment
+        .commands
+        .iter()
+        .take(slots.len())
+        .any(|c| matches!(c, DrawCommand::BoxDecoration(_)));
+    if !shaped && !background_boxes::nondefault(style) {
+        stretch_fragment_background_with_raster(
+            fragment,
+            height,
+            style.background_size,
+            style.background_position,
+            natural,
+        );
+        return true;
+    }
+    let Some(cost) = fragment
+        .boxes
+        .len()
+        .checked_add(background_boxes::SHAPE_WORK)
+    else {
+        return false;
+    };
+    if !background_boxes::spend(work, cost) {
+        return false;
+    }
+    let Some(node) = fragment.hits.first().map(|hit| hit.node) else {
+        return false;
+    };
+    let Some(mut geometry) = fragment.boxes.iter().find(|g| g.node == node).copied() else {
+        return false;
+    };
+    let delta = extent(height).max(fragment.size.height) - fragment.size.height;
+    geometry.border.height += delta;
+    geometry.padding.height += delta;
+    geometry.content.height += delta;
+    // Retain the original available width: a forced border width can clamp
+    // at MAX_EXTENT while percentage padding used the larger track span.
+    let Some(boxes) = BackgroundBoxes::from_style(
+        crate::graphics::box_decoration::RoundedBox {
+            rect: geometry.border,
+            radii: [[style.border_radius; 2]; 4],
+        },
+        style,
+        available,
+    ) else {
+        return false;
+    };
+    let clip = boxes.select(style.background_clip);
+    let origin = boxes.select(style.background_origin).rect;
+    stretch_fragment_background_with_raster(
+        fragment,
+        height,
+        style.background_size,
+        style.background_position,
+        natural,
+    );
+    for command in fragment.commands.iter_mut().take(slots.len()) {
+        match command {
+            DrawCommand::LinearGradient { tile, .. } => {
+                *tile = background_tile(origin, style.background_size, style.background_position)
+                    .unwrap_or_default()
+            }
+            DrawCommand::BackgroundImage { tile, .. } => {
+                *tile = natural
+                    .and_then(|n| {
+                        background_tile_with_raster(
+                            origin,
+                            style.background_size,
+                            style.background_position,
+                            n,
+                        )
+                    })
+                    .unwrap_or_default()
+            }
+            DrawCommand::BoxDecoration(shared) => {
+                // Fresh layout fragments uniquely own these payloads. Never
+                // copy a URL key through Arc::make_mut without its admission.
+                if let Some(decoration) = std::sync::Arc::get_mut(shared) {
+                    if decoration.cutout.is_some() {
+                        decoration.shape = boxes.border;
+                        decoration.cutout = Some(boxes.padding);
+                    } else {
+                        decoration.shape = clip;
+                    }
+                    match &mut decoration.paint {
+                        crate::graphics::box_decoration::BoxPaint::LinearGradient {
+                            tile, ..
+                        } => {
+                            *tile = background_tile(
+                                origin,
+                                style.background_size,
+                                style.background_position,
+                            )
+                            .unwrap_or_default()
+                        }
+                        crate::graphics::box_decoration::BoxPaint::Image { tile, .. } => {
+                            *tile = natural
+                                .and_then(|n| {
+                                    background_tile_with_raster(
+                                        origin,
+                                        style.background_size,
+                                        style.background_position,
+                                        n,
+                                    )
+                                })
+                                .unwrap_or_default()
+                        }
+                        _ => {}
+                    }
+                } else {
+                    *command = background_boxes::empty();
+                }
+            }
+            _ => {}
+        }
+    }
+    true
 }
 
 /// Use binary search at character boundaries, avoiding quadratic measurement.
@@ -6461,9 +6363,13 @@ mod tests {
             }
         }
         assert!(text_lines.len() >= 3);
-        assert!(result.commands.iter().any(
-            |c| matches!(c, DrawCommand::Rect { color, .. } if *color == Color::rgb(255, 0, 0))
-        ));
+        assert!(result.commands.iter().any(|command| match command {
+            DrawCommand::Rect { color, .. } => *color == Color::rgb(255, 0, 0),
+            DrawCommand::BoxDecoration(value) => matches!(value.paint,
+                crate::graphics::box_decoration::BoxPaint::Color(color)
+                    if color == Color::rgb(255, 0, 0)),
+            _ => false,
+        }));
     }
 
     #[test]
@@ -8214,7 +8120,9 @@ mod object_fit_tests {
             paint_owner: PaintOwner {
                 node: doc.root,
                 background: false,
-                inline_raster: false,
+                inline_layer: InlineLayer::None,
+                inline_prefix: 0.0,
+                inline_sides: 0,
             },
             flow_height_reference: Some(100.0),
             content_height_measure: None,

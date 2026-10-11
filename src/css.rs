@@ -7,7 +7,7 @@ mod background;
 mod gradient;
 mod image;
 pub mod url;
-pub use background::{BackgroundPosition, BackgroundSize};
+pub use background::{BackgroundBox, BackgroundPosition, BackgroundSize};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::{Arc, LazyLock};
 
@@ -278,6 +278,8 @@ pub struct ComputedStyle {
     pub background_size: BackgroundSize,
     pub background_position: BackgroundPosition,
     pub background_repeat: [bool; 2],
+    pub background_origin: BackgroundBox,
+    pub background_clip: BackgroundBox,
     pub border_color: Color,
     pub font_size: f32,
     pub line_height: f32,
@@ -350,6 +352,8 @@ impl Default for ComputedStyle {
             background_size: BackgroundSize::default(),
             background_position: BackgroundPosition::default(),
             background_repeat: [true, true],
+            background_origin: BackgroundBox::Padding,
+            background_clip: BackgroundBox::Border,
             border_color: Color::BLACK,
             font_size: 16.0,
             line_height: 19.2,
@@ -1575,11 +1579,16 @@ pub(crate) fn supports_declaration_with_budget(
         evaluator.tokens(&tokens)?;
         let image_property = property.eq_ignore_ascii_case("background")
             || property.eq_ignore_ascii_case("background-image");
+        let box_property = property.eq_ignore_ascii_case("background")
+            || property.eq_ignore_ascii_case("background-origin")
+            || property.eq_ignore_ascii_case("background-clip");
         if tokens.iter().any(|token| {
             matches!(
                 token.kind,
                 Kind::Delim('!' | ';') | Kind::Open('{') | Kind::Close('}')
-            ) || token.raw.contains(['\\', '\0']) && !(image_property && image::url_payload(*token))
+            ) || token.raw.contains(['\\', '\0'])
+                && !(image_property && image::url_payload(*token))
+                && !(box_property && background_box_token(*token))
         }) {
             return Ok(false);
         }
@@ -1600,6 +1609,8 @@ pub(crate) fn supports_declaration_with_budget(
                 | "background-size"
                 | "background-position"
                 | "background-repeat"
+                | "background-origin"
+                | "background-clip"
         ) {
             if css_wide(clean) {
                 return Ok(true);
@@ -1758,8 +1769,12 @@ impl SupportsEvaluator {
         if name.len() > 256 || value.len() > 4096 {
             return Ok(false);
         }
-        if name.eq_ignore_ascii_case("background") || name.eq_ignore_ascii_case("background-image")
-        {
+        let image_property = name.eq_ignore_ascii_case("background")
+            || name.eq_ignore_ascii_case("background-image");
+        let box_property = name.eq_ignore_ascii_case("background")
+            || name.eq_ignore_ascii_case("background-origin")
+            || name.eq_ignore_ascii_case("background-clip");
+        if image_property || box_property {
             use crate::selectors::Kind;
             let tokens = crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
             self.spend(tokens.len() + 1)?;
@@ -1781,7 +1796,9 @@ impl SupportsEvaluator {
                 matches!(
                     t.kind,
                     Kind::Delim('!' | ';') | Kind::Open('{') | Kind::Close('}')
-                ) || t.raw.contains(['\\', '\0']) && !image::url_payload(*t)
+                ) || t.raw.contains(['\\', '\0'])
+                    && !(image_property && image::url_payload(*t))
+                    && !(box_property && background_box_token(*t))
             }) {
                 return Ok(false);
             }
@@ -1821,6 +1838,8 @@ impl SupportsEvaluator {
                 | "background-size"
                 | "background-position"
                 | "background-repeat"
+                | "background-origin"
+                | "background-clip"
         ) {
             // Comments must not supply the mandatory whitespace around calc
             // operators when the supports condition normalizes its input.
@@ -1952,6 +1971,8 @@ pub(crate) fn supports_property(name: &str, value: &str) -> bool {
             | "background-size"
             | "background-position"
             | "background-repeat"
+            | "background-origin"
+            | "background-clip"
     ) {
         let mut work = MAX_SUPPORTS_WORK;
         return valid_background_property(name, value, &mut work).unwrap_or(false);
@@ -2456,6 +2477,8 @@ pub(crate) fn shorthand_properties(name: &str) -> Option<Vec<String>> {
             "background-size",
             "background-position",
             "background-repeat",
+            "background-origin",
+            "background-clip",
         ],
         "list-style" => &["list-style-type", "list-style-position"],
         "flex" => &["flex-grow", "flex-shrink", "flex-basis"],
@@ -2527,7 +2550,7 @@ pub(crate) fn expand_declaration_with_budget(
         if let Some(parts) = background::parts(value, work)? {
             crate::selectors::spend(
                 work,
-                parts.iter().map(|value| value.len()).sum::<usize>() + 320,
+                parts.iter().map(|value| value.len()).sum::<usize>() + parts.len() * 64,
             )?;
             for (name, value) in [
                 "background-color",
@@ -2535,6 +2558,8 @@ pub(crate) fn expand_declaration_with_budget(
                 "background-size",
                 "background-position",
                 "background-repeat",
+                "background-origin",
+                "background-clip",
             ]
             .into_iter()
             .zip(parts)
@@ -3543,6 +3568,8 @@ const SUPPORTED_PROPERTIES: &[&str] = &[
     "background-size",
     "background-position",
     "background-repeat",
+    "background-origin",
+    "background-clip",
     "font-size",
     "font-family",
     "font-style",
@@ -4642,6 +4669,16 @@ fn apply_property(
                 s.background_repeat = repeat;
             }
         }
+        "background-origin" => {
+            if let Ok(Some(value)) = background::parse_box(value, work) {
+                s.background_origin = value;
+            }
+        }
+        "background-clip" => {
+            if let Ok(Some(value)) = background::parse_box(value, work) {
+                s.background_clip = value;
+            }
+        }
         "border-top-color" | "border-right-color" | "border-bottom-color" | "border-left-color" => {
             if let Some(v) = color() {
                 s.border_color = v;
@@ -4951,6 +4988,8 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
         "background-size" => s.background_size = p.background_size,
         "background-position" => s.background_position = p.background_position,
         "background-repeat" => s.background_repeat = p.background_repeat,
+        "background-origin" => s.background_origin = p.background_origin,
+        "background-clip" => s.background_clip = p.background_clip,
         "font-size" => s.font_size = p.font_size,
         "font-weight" => s.font_weight = p.font_weight,
         "font-family" => s.font_family = p.font_family.clone(),
@@ -5524,6 +5563,12 @@ pub(crate) fn valid_object_property(
         _ => Ok(false),
     }
 }
+/// Whether a token is one of the supported visual-box keywords. Callers
+/// scanning supports values prepay the three decoded comparisons with their
+/// existing per-byte allowance; CSSOM can use the same predicate after lexing.
+pub(crate) fn background_box_token(token: crate::selectors::Token<'_>) -> bool {
+    background::box_from_token(token).is_some()
+}
 pub(crate) fn valid_background_property(
     name: &str,
     value: &str,
@@ -5545,6 +5590,8 @@ fn valid_declaration_value(
             | "background-size"
             | "background-position"
             | "background-repeat"
+            | "background-origin"
+            | "background-clip"
     ) {
         valid_background_property(name, value, work)
     } else {

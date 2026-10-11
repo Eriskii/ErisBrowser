@@ -40,15 +40,24 @@ command itself performs no fetching or decoding. Try the
 [Rounded box decorations](docs/rounded-boxes.md) add a software display-list
 foundation for elliptical fills and border rings using colors, gradients or
 already decoded images. Fixed subpixel coverage shares the existing paint
-budget; these commands take whole-frame CPU fallback on native paths. CSS
-`background-origin` and `background-clip` integration remains separate. Try the
-[direct Rust example](examples/rounded-boxes.rs).
+budget; these commands take whole-frame CPU fallback on native paths. That
+foundation did not add CSS box selection; the [integration](docs/background-boxes.md)
+follows below. Try the [direct Rust example](examples/rounded-boxes.rs).
 
 [Inline physical edges](docs/inline-edges.md) make ordinary inline horizontal
 padding, borders and signed margins participate in placement and wrapping.
 Separate per-line content, padding and border geometry preserves nested owners
-and positioned descendants. Existing inline background painting remains in use;
-this prerequisite does not add CSS background box selection or full line layout.
+and positioned descendants. Those retained rectangles prepared the
+[background box integration](docs/background-boxes.md) below; full line layout
+remains outside this subset.
+
+[Background box selection](docs/background-boxes.md) connects those two
+prerequisites to single-layer `background-origin` and `background-clip`.
+Border, padding and content boxes independently control image placement and
+background painting; ordinary wrapped inlines use joined owner geometry with
+physical end decorations. CSSOM now handles all seven supported background
+longhands. New shaped fills and border rings use whole-frame software fallback.
+Try the [interactive box example](examples/background-boxes.html).
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

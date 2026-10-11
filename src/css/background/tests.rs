@@ -292,12 +292,22 @@ fn shorthand_acceptance_and_five_literal_slices_are_atomic() {
             "linear-gradient(red,blue)",
             "25% auto",
             "right 2px bottom",
-            "repeat-x"
+            "repeat-x",
+            "padding-box",
+            "border-box"
         ]))
     );
     assert_eq!(
         parts("red", &mut 100_000),
-        Ok(Some(["red", "none", "auto auto", "0% 0%", "repeat"]))
+        Ok(Some([
+            "red",
+            "none",
+            "auto auto",
+            "0% 0%",
+            "repeat",
+            "padding-box",
+            "border-box"
+        ]))
     );
     for value in [
         "red",
@@ -324,7 +334,7 @@ fn shorthand_acceptance_and_five_literal_slices_are_atomic() {
         "repeat-x repeat",
         "left top bottom",
         "red center / -1px",
-        "red padding-box",
+        "red margin-box",
         "red fixed",
         "red,blue",
         "linear-gradient(red) space",

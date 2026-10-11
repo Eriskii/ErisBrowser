@@ -54,6 +54,14 @@ fn rasters(result: &LayoutResult) -> Vec<(Rect, Rect, f32, [bool; 2], &str)> {
                 repeat,
                 key,
             } => Some((*rect, *tile, *radius, *repeat, key.as_str())),
+            DrawCommand::BoxDecoration(value) => match &value.paint {
+                crate::graphics::box_decoration::BoxPaint::Image { tile, repeat, key } => {
+                    let radius = value.shape.radii[0][0];
+                    assert_eq!(value.shape.radii, [[radius; 2]; 4]);
+                    Some((value.shape.rect, *tile, radius, *repeat, key.as_str()))
+                }
+                _ => None,
+            },
             _ => None,
         })
         .collect()
@@ -111,7 +119,9 @@ fn engine<'a>(
         paint_owner: PaintOwner {
             node: doc.root,
             background: false,
-            inline_raster: false,
+            inline_layer: InlineLayer::None,
+            inline_prefix: 0.0,
+            inline_sides: 0,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,
@@ -440,24 +450,34 @@ fn unavailable_inline_color_and_loaded_virtual_strip_have_literal_pixels() {
     let empty = vec![None; doc.nodes.len()];
     let result = layout_with_backgrounds(&doc, &styles, 4.0, 4.0, &Fonts::new(), &empty);
     assert!(rasters(&result).is_empty());
-    assert_eq!(pixels(&result, 4, 4), vec![0x00ff00; 16]);
+    assert_eq!(
+        pixels(&result, 4, 4),
+        [
+            vec![0xffffff; 4],
+            vec![0x00ff00; 4],
+            vec![0xc0ffc0; 4],
+            vec![0x00ff00; 4]
+        ]
+        .concat()
+    );
     let mut bindings = empty;
     bindings[a] = Some(loaded("tile"));
     let result = layout_with_backgrounds(&doc, &styles, 4.0, 4.0, &Fonts::new(), &bindings);
     assert_eq!(
         pixels(&result, 4, 4),
-        [vec![0xff0000; 8], vec![0x0000ff; 8]].concat()
+        [
+            vec![0xffffff; 4],
+            vec![0xff0000; 4],
+            vec![0xd0c091; 4],
+            vec![0x0000ff; 4]
+        ]
+        .concat()
     );
     let images = rasters(&result);
-    assert_eq!(images.len(), 4);
+    assert_eq!(images.len(), 2);
     assert_eq!(
         images.iter().map(|v| v.1).collect::<Vec<_>>(),
-        vec![
-            rect(0.0, 0.0, 8.0, 4.0),
-            rect(0.0, 0.0, 8.0, 4.0),
-            rect(-4.0, 2.0, 8.0, 4.0),
-            rect(-4.0, 2.0, 8.0, 4.0)
-        ]
+        vec![rect(0.0, 1.05, 8.0, 4.0), rect(-4.0, 3.05, 8.0, 4.0)]
     );
 }
 
@@ -478,7 +498,10 @@ fn nested_inline_url_background_order_is_ancestor_then_child() {
     let result = layout_with_backgrounds(&doc, &styles, 6.0, 2.0, &Fonts::new(), &bindings);
     assert_eq!(
         pixels(&result, 6, 2),
-        [0xff0000, 0xff0000, 0x0000ff, 0x0000ff, 0x0000ff, 0x0000ff].repeat(2)
+        [
+            0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xff0000, 0xff0000,
+            0x0000ff, 0x0000ff, 0x0000ff, 0x0000ff
+        ]
     );
 }
 
@@ -491,40 +514,63 @@ fn inline_pending_slots_are_private_balanced_and_budget_refusal_keeps_color() {
     let mut bindings = vec![None; doc.nodes.len()];
     bindings[a] = Some(loaded("tile"));
     let fonts = Fonts::new();
+    let area = rect(0.0, 0.0, 4.0, 2.0);
+    let geometry = BoxGeometry {
+        node: a,
+        border: area,
+        padding: area,
+        content: area,
+        fixed: false,
+        inline: true,
+        inline_prefix: 0.0,
+        inline_sides: 3,
+        inline_basis: 4.0,
+    };
     let mut e = engine(&doc, &styles, &fonts, &bindings);
-    e.commands_created = MAX_COMMANDS - 3;
-    e.paint_inline_gradient(a, rect(0.0, 0.0, 4.0, 2.0));
+    e.boxes.push(geometry);
+    e.commands_created = MAX_COMMANDS - 4;
+    e.paint_inline_background(geometry, 0.0, 3);
     assert!(e.commands.is_empty());
     assert_eq!(e.open_clips, 0);
-    e.commands_created = MAX_COMMANDS - 4;
-    e.paint_inline_gradient(a, rect(0.0, 0.0, 4.0, 2.0));
-    assert_eq!((e.commands.len(), e.open_clips), (4, 0));
-    assert!(matches!(e.commands[2],DrawCommand::Rect{color,..} if color==Color::TRANSPARENT));
-    assert!(e.owners[2].inline_raster);
-    let scan = 12 + doc.nodes.len();
+    e.commands_created = MAX_COMMANDS - 5;
+    e.paint_inline_background(geometry, 0.0, 3);
+    assert_eq!((e.commands.len(), e.open_clips), (5, 0));
+    assert!(matches!(e.commands[2], DrawCommand::Rect {color,..} if color == Color::TRANSPARENT));
+    assert!(e.owners[2].inline_layer == InlineLayer::Image);
+    // 5 classification + node table + 8 geometry + 5 slots + 4*16 shapes.
+    let scan = doc.nodes.len() + 82;
     e.position_work_left = scan - 1;
-    e.finish_inline_gradients();
-    assert_eq!(e.position_work_left, scan - 1);
+    e.finish_inline_backgrounds();
+    assert_eq!(e.position_work_left, scan - 6);
     assert!(matches!(e.commands[2], DrawCommand::Rect { .. }));
+    assert!(!e.inline_gradients);
+
+    // One-shot failure uses a fresh preparation, not a runtime budget refill.
+    let mut e = engine(&doc, &styles, &fonts, &bindings);
+    e.boxes.push(geometry);
+    e.paint_inline_background(geometry, 0.0, 3);
     e.position_work_left = scan + 4;
-    e.finish_inline_gradients();
+    e.finish_inline_backgrounds();
     assert_eq!(e.position_work_left, 4);
     assert_eq!(e.background_key_bytes_left, 65_536);
     assert!(matches!(e.commands[2], DrawCommand::Rect { .. }));
     // A fresh preparation with exact scan+key work resolves one real image.
     let mut e = engine(&doc, &styles, &fonts, &bindings);
-    e.paint_inline_gradient(a, rect(0.0, 0.0, 4.0, 2.0));
+    e.boxes.push(geometry);
+    e.paint_inline_background(geometry, 0.0, 3);
     e.position_work_left = scan + 5;
-    e.finish_inline_gradients();
+    e.finish_inline_backgrounds();
     assert_eq!(
         (e.position_work_left, e.background_key_bytes_left),
         (0, 65_532)
     );
-    assert!(matches!(&e.commands[2],DrawCommand::BackgroundImage{key,..} if key=="tile"));
+    assert!(matches!(&e.commands[2], DrawCommand::BoxDecoration(value)
+        if matches!(&value.paint, crate::graphics::box_decoration::BoxPaint::Image {key,..} if key == "tile")));
     let mut e = engine(&doc, &styles, &fonts, &bindings);
-    e.paint_inline_gradient(a, rect(0.0, 0.0, 4.0, 2.0));
+    e.boxes.push(geometry);
+    e.paint_inline_background(geometry, 0.0, 3);
     e.background_key_bytes_left = 0;
-    e.finish_inline_gradients();
+    e.finish_inline_backgrounds();
     e.restack();
     let result = LayoutResult {
         commands: e.commands,

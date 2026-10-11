@@ -13,6 +13,7 @@ pub(super) fn charge(work: &mut usize, amount: usize) -> bool {
 pub(super) struct InlineSpan {
     pub(super) node: NodeId,
     pub(super) parent: Option<usize>,
+    pub(super) basis: f32,
     pub(super) border: Sides,
     pub(super) padding: Sides,
     pub(super) margin: (f32, f32),
@@ -75,6 +76,10 @@ impl InlineSpan {
             content,
             fixed: false,
             inline: true,
+            inline_prefix: 0.0,
+            inline_basis: self.basis,
+            inline_sides: (u8::from(first) * inline_backgrounds::FIRST)
+                | (u8::from(last) * inline_backgrounds::LAST),
         }
     }
 }
@@ -195,6 +200,7 @@ struct Occurrence {
     closing: bool,
     anchor: bool,
     start: f32,
+    advance: f64,
 }
 pub(super) struct InlineEdges {
     pub(super) spans: Vec<InlineSpan>,
@@ -207,6 +213,7 @@ pub(super) struct InlineEdges {
 pub(super) struct LinePlan {
     pub(super) positions: Vec<f32>,
     pub(super) boxes: Vec<(BoxGeometry, (f32, f32))>,
+    closes: Vec<(usize, std::cmp::Reverse<usize>)>,
 }
 impl InlineEdges {
     pub(super) fn extra(&self, index: usize) -> f32 {
@@ -251,6 +258,7 @@ impl InlineEdges {
                     touched.try_reserve(1).ok()?;
                     touched.push(id);
                     *slot = Occurrence {
+                        advance: slot.advance,
                         generation: self.generation,
                         first: at,
                         last: at,
@@ -268,7 +276,7 @@ impl InlineEdges {
         let count = touched.len();
         let sort_depth = (usize::BITS - count.leading_zeros()) as usize;
         let cost = count
-            .checked_mul(2 * (sort_depth + 2))?
+            .checked_mul(2 * (sort_depth + 2) + 1)?
             .checked_add(line.len())?;
         if !charge(work, cost) {
             return None;
@@ -313,7 +321,7 @@ impl InlineEdges {
                 let slot = self.scratch[id];
                 // Out-of-flow-only owners retain the old line-top anchor. They
                 // neither consume physical edges nor acquire a font-height box.
-                let geometry = if slot.anchor {
+                let mut geometry = if slot.anchor {
                     let area = rect(slot.start, line_box.0, 0.0, line_box.1);
                     BoxGeometry {
                         node: span.node,
@@ -322,6 +330,9 @@ impl InlineEdges {
                         content: area,
                         fixed: false,
                         inline: true,
+                        inline_prefix: 0.0,
+                        inline_basis: 0.0,
+                        inline_sides: 0,
                     }
                 } else {
                     span.geometry(
@@ -333,6 +344,7 @@ impl InlineEdges {
                         slot.closing,
                     )
                 };
+                geometry.inline_prefix = slot.advance as f32;
                 boxes.push((geometry, self.offsets[id]));
                 if slot.closing {
                     cursor += span.after();
@@ -343,7 +355,20 @@ impl InlineEdges {
                 return None;
             }
         }
-        Some(LinePlan { positions, boxes })
+        Some(LinePlan {
+            positions,
+            boxes,
+            closes,
+        })
+    }
+
+    // The caller first reserves space for every published box. Retain the
+    // already allocated closing order so that neither planning nor that final
+    // fallible reservation can change a later line's phase on refusal.
+    pub(super) fn commit_line(&mut self, plan: &LinePlan) {
+        for ((_, id), (geometry, _)) in plan.closes.iter().zip(&plan.boxes) {
+            self.scratch[id.0].advance += f64::from(geometry.border.width);
+        }
     }
 }
 
@@ -352,3 +377,6 @@ mod tests;
 
 #[cfg(test)]
 mod independent_tests;
+
+#[cfg(test)]
+mod prefix_tests;

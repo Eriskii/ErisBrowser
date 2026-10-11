@@ -21,6 +21,7 @@ fn span() -> InlineSpan {
     InlineSpan {
         node: 0,
         parent: None,
+        basis: 0.0,
         border: Sides {
             top: 1.0,
             right: 2.0,
@@ -248,6 +249,7 @@ fn translated_line_subtracts_nominal_ascent_before_adding_line_top() {
     let s = InlineSpan {
         node: 0,
         parent: None,
+        basis: 0.0,
         border: Sides::default(),
         padding: Sides::default(),
         margin: (0.0, 0.0),

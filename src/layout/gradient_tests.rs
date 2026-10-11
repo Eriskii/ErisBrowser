@@ -52,6 +52,20 @@ fn gradients(result: &LayoutResult) -> Vec<(Rect, Rect, f32, Color)> {
                 assert_eq!(*stop_scale, 1.0);
                 Some((*rect, *tile, *radius, *current_color))
             }
+            DrawCommand::BoxDecoration(value) => match &value.paint {
+                crate::graphics::box_decoration::BoxPaint::LinearGradient {
+                    tile,
+                    current_color,
+                    stop_scale,
+                    ..
+                } => {
+                    assert_eq!(*stop_scale, 1.0);
+                    let radius = value.shape.radii[0][0];
+                    assert_eq!(value.shape.radii, [[radius; 2]; 4]);
+                    Some((value.shape.rect, *tile, radius, *current_color))
+                }
+                _ => None,
+            },
             _ => None,
         })
         .collect()
@@ -76,7 +90,9 @@ fn engine<'a>(doc: &'a Document, styles: &'a [ComputedStyle], fonts: &'a Fonts) 
         paint_owner: PaintOwner {
             node: doc.root,
             background: false,
-            inline_raster: false,
+            inline_layer: InlineLayer::None,
+            inline_prefix: 0.0,
+            inline_sides: 0,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,
@@ -292,23 +308,19 @@ fn inline_slice_continues_through_three_atomic_fragments_and_wrapping() {
     let g = gradients(&result);
     assert_eq!(
         g.iter().map(|v| v.1).collect::<Vec<_>>(),
-        [
-            rect(0.0, 0.0, 6.0, 2.0),
-            rect(0.0, 0.0, 6.0, 2.0),
-            rect(-4.0, 2.0, 6.0, 2.0)
-        ]
+        [rect(0.0, 1.05, 6.0, 1.3), rect(-4.0, 3.05, 6.0, 1.3)]
     );
     assert_eq!(
         pixels(&result, 4, 4),
         [
-            0xff0000, 0xff0000, 0xff0000, 0x0000ff, 0xff0000, 0xff0000, 0xff0000, 0x0000ff,
-            0x0000ff, 0x0000ff, 0xffffff, 0xffffff, 0x0000ff, 0x0000ff, 0xffffff, 0xffffff
+            0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xff0000, 0xff0000, 0xff0000, 0x0000ff,
+            0xffc0c0, 0xffc0c0, 0xffc0c0, 0xc0c0ff, 0x0000ff, 0x0000ff, 0xffffff, 0xffffff
         ]
     );
 }
 
 #[test]
-fn nested_inline_uses_ancestor_color_and_real_piece_height() {
+fn nested_inline_uses_ancestor_color_and_nominal_owner_height() {
     let (doc, mut styles) = prepare(
         "<style>body{margin:0;width:6px;font-size:1px;line-height:2px}i{display:inline-block;width:2px;height:2px;vertical-align:top}span{color:red}b{color:blue}</style><span id=a><i></i><b><i></i><i></i></b></span>",
         6.0,
@@ -324,13 +336,16 @@ fn nested_inline_uses_ancestor_color_and_real_piece_height() {
         .into(),
     })));
     let result = layout(&doc, &styles, 6.0, 2.0, &Fonts::new());
-    assert_eq!(gradients(&result).len(), 3);
+    assert_eq!(gradients(&result).len(), 1);
     assert!(
         gradients(&result)
             .iter()
             .all(|g| g.3 == Color::rgb(255, 0, 0))
     );
-    assert_eq!(pixels(&result, 6, 2), vec![0xff0000; 12]);
+    assert_eq!(
+        pixels(&result, 6, 2),
+        [vec![0xffffff; 6], vec![0xff0000; 6]].concat()
+    );
     let nested = doc.query_selector("b").unwrap();
     styles[nested].background_image = Some(BackgroundImage::Gradient(split(
         Color::rgb(0, 0, 255),
@@ -339,7 +354,10 @@ fn nested_inline_uses_ancestor_color_and_real_piece_height() {
     let result = layout(&doc, &styles, 6.0, 2.0, &Fonts::new());
     assert_eq!(
         pixels(&result, 6, 2),
-        [0xff0000, 0xff0000, 0x0000ff, 0x0000ff, 0x0000ff, 0x0000ff].repeat(2)
+        [
+            0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xff0000, 0xff0000,
+            0x0000ff, 0x0000ff, 0x0000ff, 0x0000ff
+        ]
     );
 }
 
@@ -467,34 +485,59 @@ fn pending_inline_admission_is_atomic_and_zero_positioning_boxes_are_not_pending
     styles[a].background_image = Some(BackgroundImage::Gradient(Arc::clone(&image)));
     styles[z].background_image = Some(BackgroundImage::Gradient(image));
     let fonts = Fonts::new();
+    let area = rect(0.0, 0.0, 2.0, 2.0);
+    let geometry = BoxGeometry {
+        node: a,
+        border: area,
+        padding: area,
+        content: area,
+        fixed: false,
+        inline: true,
+        inline_prefix: 0.0,
+        inline_sides: 3,
+        inline_basis: 10.0,
+    };
     let mut e = engine(&doc, &styles, &fonts);
-    e.commands_created = MAX_COMMANDS - 3;
-    e.paint_inline_gradient(a, rect(0.0, 0.0, 2.0, 2.0));
+    e.boxes.push(geometry);
+    e.commands_created = MAX_COMMANDS - 4;
+    e.paint_inline_background(geometry, 0.0, 3);
     assert!(e.commands.is_empty());
     assert_eq!(e.open_clips, 0);
-    e.commands_created = MAX_COMMANDS - 4;
-    e.paint_inline_gradient(a, rect(0.0, 0.0, 2.0, 2.0));
+    e.commands_created = MAX_COMMANDS - 5;
+    e.paint_inline_background(geometry, 0.0, 3);
     assert_eq!(
         (e.commands.len(), e.commands_created, e.open_clips),
-        (4, MAX_COMMANDS, 0)
+        (5, MAX_COMMANDS, 0)
     );
-    let cost = e.commands.len() * 3 + doc.nodes.len();
+    // 5 classification + node table + 8 geometry + 5 slots + 4*16 shapes.
+    let cost = doc.nodes.len() + 82;
     e.position_work_left = cost - 1;
-    e.finish_inline_gradients();
-    assert!(matches!(e.commands[2],DrawCommand::LinearGradient{tile,..} if tile.width<0.0));
-    assert_eq!(e.position_work_left, cost - 1);
-    e.position_work_left = cost;
-    e.finish_inline_gradients();
-    assert_eq!(e.position_work_left, 0);
+    e.finish_inline_backgrounds();
     assert!(
-        matches!(e.commands[2],DrawCommand::LinearGradient{tile,..} if tile==rect(0.0,0.0,2.0,2.0))
+        matches!(e.commands[2], DrawCommand::Rect { color, .. } if color == Color::TRANSPARENT)
     );
-    // A real zero-width tile must stay zero even if another inline is pending.
-    e.commands_created = 4;
+    assert!(e.owners[2].inline_layer == InlineLayer::Image);
+    assert_eq!(e.position_work_left, cost - 6); // Reached first scan stays charged.
+    assert!(!e.inline_gradients); // Finalization is deliberately one-shot.
+
+    let mut e = engine(&doc, &styles, &fonts);
+    e.boxes.push(geometry);
+    e.paint_inline_background(geometry, 0.0, 3);
+    e.position_work_left = cost;
+    e.finish_inline_backgrounds();
+    assert_eq!(e.position_work_left, 0);
+    assert!(matches!(&e.commands[2], DrawCommand::BoxDecoration(value)
+        if matches!(&value.paint, crate::graphics::box_decoration::BoxPaint::LinearGradient {tile,..}
+            if *tile == rect(0.0,0.0,2.0,2.0))));
+
+    // A real zero-width tile stays zero while a separate inline slot is pending.
+    let mut e = engine(&doc, &styles, &fonts);
     e.paint_owner = PaintOwner {
         node: z,
         background: true,
-        inline_raster: false,
+        inline_layer: InlineLayer::None,
+        inline_prefix: 0.0,
+        inline_sides: 0,
     };
     e.push(DrawCommand::LinearGradient {
         rect: rect(0.0, 0.0, 4.0, 4.0),
@@ -508,9 +551,11 @@ fn pending_inline_admission_is_atomic_and_zero_positioning_boxes_are_not_pending
         stop_scale: 1.0,
         repeat: [true; 2],
     });
+    e.boxes.push(geometry);
+    e.paint_inline_background(geometry, 0.0, 3);
     e.position_work_left = MAX_POSITION_WORK;
-    e.finish_inline_gradients();
-    assert!(matches!(e.commands[4],DrawCommand::LinearGradient{tile,..} if tile.width==0.0));
+    e.finish_inline_backgrounds();
+    assert!(matches!(e.commands[0], DrawCommand::LinearGradient {tile,..} if tile.width == 0.0));
 }
 
 #[test]
@@ -556,6 +601,9 @@ fn canvas_geometry_scan_exact_and_one_short_preserve_remaining_paint_work() {
             content: Rect::default(),
             fixed: false,
             inline: false,
+            inline_prefix: 0.0,
+            inline_basis: 0.0,
+            inline_sides: 0,
         });
     }
     e.position_work_left = 2;

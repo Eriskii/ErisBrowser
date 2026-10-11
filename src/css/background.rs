@@ -2,6 +2,49 @@
 use super::{CalculationParser, Length, PositionComponent, css_wide, gradient};
 use crate::selectors::{self, Error, Kind, Token, spend};
 
+/// The supported physical visual boxes for a single background layer.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BackgroundBox {
+    Border,
+    Padding,
+    Content,
+}
+
+// Callers prepay three bounded decoded-name comparisons before using this
+// helper. It allocates nothing and never treats a payload or split token as a box.
+pub(super) fn box_from_token(token: Token<'_>) -> Option<BackgroundBox> {
+    if token.kind != Kind::Ident || token.raw.contains('\0') {
+        return None;
+    }
+    if token.is_name("border-box") {
+        Some(BackgroundBox::Border)
+    } else if token.is_name("padding-box") {
+        Some(BackgroundBox::Padding)
+    } else if token.is_name("content-box") {
+        Some(BackgroundBox::Content)
+    } else {
+        None
+    }
+}
+
+pub(super) fn parse_box(value: &str, work: &mut usize) -> Result<Option<BackgroundBox>, Error> {
+    let tokens = tokens(value, work)?;
+    accepted((|| {
+        let mut result = None;
+        for token in tokens {
+            spend(work, token.raw.len().saturating_mul(3) + 8)?;
+            if token.kind == Kind::Whitespace {
+                continue;
+            }
+            let next = box_from_token(token).ok_or(Error::Invalid)?;
+            if result.replace(next).is_some() {
+                return Err(Error::Invalid);
+            }
+        }
+        result.ok_or(Error::Invalid)
+    })())
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum BackgroundSize {
     Explicit { width: Length, height: Length },
@@ -351,7 +394,7 @@ fn repeat_start(token: Token<'_>) -> bool {
 
 /// Borrowed authored slices, in the stable shorthand target order. Defaults
 /// are static strings; no computed style or gradient allocation occurs here.
-pub(super) fn parts<'s>(value: &'s str, work: &mut usize) -> Result<Option<[&'s str; 5]>, Error> {
+pub(super) fn parts<'s>(value: &'s str, work: &mut usize) -> Result<Option<[&'s str; 7]>, Error> {
     if value.len() > 4096 {
         return Err(Error::Limit);
     }
@@ -360,7 +403,7 @@ pub(super) fn parts<'s>(value: &'s str, work: &mut usize) -> Result<Option<[&'s 
     spend(work, value.len().saturating_mul(32) + 64)?;
     let tokens = selectors::tokens(value, work)?;
     accepted((|| {
-        let mut components = [None; 11];
+        let mut components = [None; 13];
         let (mut at, mut count) = (0, 0);
         while at < tokens.len() {
             if tokens[at].kind == Kind::Whitespace {
@@ -406,14 +449,42 @@ pub(super) fn parts<'s>(value: &'s str, work: &mut usize) -> Result<Option<[&'s 
         let component = |index: usize| components[index].unwrap();
         let slice =
             |start: usize, end: usize| &value[component(start).first.start..component(end - 1).end];
-        let mut out = ["transparent", "none", "auto auto", "0% 0%", "repeat"];
-        let mut seen = [false; 5];
+        let mut out = [
+            "transparent",
+            "none",
+            "auto auto",
+            "0% 0%",
+            "repeat",
+            "padding-box",
+            "border-box",
+        ];
+        let mut seen = [false; 7];
+        let mut boxes_seen = 0;
         let mut index = 0;
         while index < count {
             let first = component(index).first;
             let start = index;
             index += 1;
-            if first.kind == Kind::Function
+            // This extra classification is independent of the legacy span
+            // tariff, so old direct longhand parser cuts remain unchanged.
+            let box_value = if first.kind == Kind::Ident {
+                spend(work, first.raw.len().saturating_mul(3) + 8)?;
+                box_from_token(first)
+            } else {
+                None
+            };
+            if box_value.is_some() {
+                if boxes_seen == 2 {
+                    return Err(Error::Invalid);
+                }
+                if boxes_seen == 0 {
+                    out[5] = slice(start, index);
+                    seen[5] = true;
+                }
+                out[6] = slice(start, index);
+                seen[6] = true;
+                boxes_seen += 1;
+            } else if first.kind == Kind::Function
                 && (first.is_name("linear-gradient") || first.is_name("url"))
                 || first.kind == Kind::Url
                 || first.kind == Kind::Ident && first.is_name("none")
@@ -489,9 +560,13 @@ pub(super) fn valid(name: &str, value: &str, work: &mut usize) -> Result<bool, E
         "background-size" => Ok(parse_size(value, units, work)?.is_some()),
         "background-position" => Ok(parse_position(value, units, work)?.is_some()),
         "background-repeat" => Ok(parse_repeat(value, work)?.is_some()),
+        "background-origin" | "background-clip" => Ok(parse_box(value, work)?.is_some()),
         _ => Ok(false),
     }
 }
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod box_tests;

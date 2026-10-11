@@ -19,7 +19,9 @@ fn engine<'a>(doc: &'a Document, styles: &'a [ComputedStyle], fonts: &'a Fonts) 
         paint_owner: PaintOwner {
             node: doc.root,
             background: false,
-            inline_raster: false,
+            inline_layer: InlineLayer::None,
+            inline_prefix: 0.0,
+            inline_sides: 0,
         },
         flow_height_reference: Some(100.0),
         content_height_measure: None,
@@ -86,7 +88,6 @@ fn actual_inline_pipeline_retains_owner_flow_boxes_before_child_relative_motion(
 fn atomic(node: NodeId, color: Color) -> InlineItem {
     InlineItem {
         node,
-        owner: node,
         width: 4.0,
         height: 4.0,
         preserve: false,
@@ -104,7 +105,9 @@ fn atomic(node: NodeId, color: Color) -> InlineItem {
                 owners: vec![PaintOwner {
                     node,
                     background: true,
-                    inline_raster: false,
+                    inline_layer: InlineLayer::None,
+                    inline_prefix: 0.0,
+                    inline_sides: 0,
                 }],
                 hits: vec![HitRegion {
                     node,
@@ -130,11 +133,12 @@ fn actual_paint_line_exact_and_one_short_preserve_published_state_and_caller_cur
     let owner = doc.query_selector("#owner").unwrap();
     let a = doc.query_selector("#a").unwrap();
     let b = doc.query_selector("#b").unwrap();
-    for budget in [0, 13, 14] {
+    for budget in [0, 14, 15] {
         let mut collection = InlineCollection::default();
         collection.spans.push(InlineSpan {
             node: owner,
             parent: None,
+            basis: 0.0,
             border: Sides::default(),
             padding: Sides {
                 left: 1.0,
@@ -166,6 +170,9 @@ fn actual_paint_line_exact_and_one_short_preserve_published_state_and_caller_cur
             padding: sentinel,
             content: sentinel,
             inline: false,
+            inline_prefix: 0.0,
+            inline_basis: 0.0,
+            inline_sides: 0,
             fixed: false,
         });
         e.hits.push(HitRegion {
@@ -175,7 +182,7 @@ fn actual_paint_line_exact_and_one_short_preserve_published_state_and_caller_cur
             action: HitAction::Node,
         });
         // Atomic fragments were already admitted during collection. The only
-        // new line tariff is 2 scan + 2*2 membership + 1*2*(1+2) order + 2 positions =14.
+        // new line tariff is 2 scan + 2*2 membership + 1*2*(1+2) order + 2 positions + 1 phase commit =15.
         e.commands_created = 3;
         e.hits_created = 3;
         e.position_work_left = budget;
@@ -191,7 +198,7 @@ fn actual_paint_line_exact_and_one_short_preserve_published_state_and_caller_cur
             "left",
             false,
         );
-        assert_eq!(result, if budget < 14 { None } else { Some(4.0) });
+        assert_eq!(result, if budget < 15 { None } else { Some(4.0) });
         cursor += result.unwrap_or(0.0);
         assert!(matches!(&e.commands[0], DrawCommand::Rect { rect, .. } if *rect == sentinel));
         assert_eq!(e.boxes[0].border, sentinel);
@@ -199,10 +206,10 @@ fn actual_paint_line_exact_and_one_short_preserve_published_state_and_caller_cur
         assert_eq!(e.boxes[0].content, sentinel);
         assert_eq!(e.hits[0].rect, sentinel);
         assert_eq!(e.paint_owner.node, doc.root);
-        assert!(!e.paint_owner.background && !e.paint_owner.inline_raster);
+        assert!(!e.paint_owner.background && e.paint_owner.inline_layer == InlineLayer::None);
         assert_eq!(e.commands_created, 3);
         assert_eq!(e.hits_created, 3);
-        if budget < 14 {
+        if budget < 15 {
             assert_eq!(cursor, 5.0);
             assert_eq!(
                 (
@@ -214,7 +221,7 @@ fn actual_paint_line_exact_and_one_short_preserve_published_state_and_caller_cur
                 (1, 1, 1, 1)
             );
             assert!(e.positioned.is_empty());
-            assert_eq!(e.position_work_left, if budget == 0 { 0 } else { 7 });
+            assert_eq!(e.position_work_left, if budget == 0 { 0 } else { 8 });
         } else {
             assert_eq!(cursor, 9.0);
             assert_eq!(e.position_work_left, 0);

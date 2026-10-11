@@ -75,6 +75,12 @@ fn gradients(result: &LayoutResult) -> Vec<(Rect, Rect, [bool; 2])> {
             DrawCommand::LinearGradient {
                 rect, tile, repeat, ..
             } => Some((*rect, *tile, *repeat)),
+            DrawCommand::BoxDecoration(value) => match &value.paint {
+                crate::graphics::box_decoration::BoxPaint::LinearGradient {
+                    tile, repeat, ..
+                } => Some((value.shape.rect, *tile, *repeat)),
+                _ => None,
+            },
             _ => None,
         })
         .collect()
@@ -371,15 +377,14 @@ fn inline_size_and_position_resolve_once_against_the_complete_virtual_strip() {
     let result = layout(&doc, &styles, 4.0, 4.0, &Fonts::new());
     assert_eq!(
         gradients(&result).iter().map(|g| g.1).collect::<Vec<_>>(),
-        [
-            rect(3.0, 0.0, 2.0, 2.0),
-            rect(3.0, 0.0, 2.0, 2.0),
-            rect(-1.0, 2.0, 2.0, 2.0)
-        ]
+        [rect(3.0, 1.05, 2.0, 2.0), rect(-1.0, 3.05, 2.0, 2.0)]
     );
     assert_eq!(
         paint(&result, 4, 4),
-        rows(&["WWWR", "WWWR", "BWWW", "BWWW"])
+        [
+            0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xff0000,
+            0xffffff, 0xffffff, 0xffffff, 0xffc0c0, 0x0000ff, 0xffffff, 0xffffff, 0xffffff,
+        ]
     );
     assert_eq!(hits(&result), hits(&baseline));
 }

@@ -488,6 +488,60 @@
       "description": "Percentage inline padding resolves against the full containing width before float exclusion and can move an unbreakable decorated child below a float.",
       "test": "inline-edge-float-percentage.html",
       "reference": "inline-edge-float-percentage-ref.html"
+    },
+    {
+      "name": "background-box-origins",
+      "description": "Three positioning boxes independently determine percentage tile width and repeated hard-stop phase.",
+      "test": "background-box-origins.html",
+      "reference": "background-box-origins-ref.html"
+    },
+    {
+      "name": "background-box-clips",
+      "description": "Three painting boxes clip both base color and image while a transparent middle stripe exposes the lime base.",
+      "test": "background-box-clips.html",
+      "reference": "background-box-clips-ref.html"
+    },
+    {
+      "name": "background-box-unequal-insets",
+      "description": "Unequal physical insets separate right/bottom and centered positioning from the chosen color/image clip.",
+      "test": "background-box-unequal-insets.html",
+      "reference": "background-box-unequal-insets-ref.html"
+    },
+    {
+      "name": "background-box-root-canvas",
+      "description": "Root canvas painting ignores content clipping and root rounding while retaining border-origin phase.",
+      "test": "background-box-root-canvas.html",
+      "reference": "background-box-root-canvas-ref.html"
+    },
+    {
+      "name": "background-box-body-canvas",
+      "description": "Propagated body background uses the root content origin and root currentColor, with no local second painting or content clip.",
+      "test": "background-box-body-canvas.html",
+      "reference": "background-box-body-canvas-ref.html"
+    },
+    {
+      "name": "background-box-rounded-insets",
+      "description": "Scalar outer radius4 becomes inner padding radius2 and content radius0, with independently counted fixed-grid coverage.",
+      "test": "background-box-rounded-insets.html",
+      "reference": "background-box-rounded-insets-ref.html"
+    },
+    {
+      "name": "background-box-inline-origins",
+      "description": "Forced two-line slices position repeated hard stops against distinct14/11/8px virtual boxes.",
+      "test": "background-box-inline-origins.html",
+      "reference": "background-box-inline-origins-ref.html"
+    },
+    {
+      "name": "background-box-inline-phase",
+      "description": "Soft three-line gradient and natural-ratio raster retain complete16px content phase.",
+      "test": "background-box-inline-phase.html",
+      "reference": "background-box-inline-phase-ref.html"
+    },
+    {
+      "name": "background-box-inline-nested-ends",
+      "description": "Nominal parent/child heights, empty padding paint, and true rounded physical ends stay separate.",
+      "test": "background-box-inline-nested-ends.html",
+      "reference": "background-box-inline-nested-ends-ref.html"
     }
   ]
 }

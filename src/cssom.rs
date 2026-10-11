@@ -477,22 +477,34 @@ fn shorthand_value(name: &str, values: &[&str]) -> String {
             if values.iter().any(|value| wide(value)) {
                 return String::new();
             }
-            if values[2] == "auto auto" && values[3] == "0% 0%" && values[4] == "repeat" {
-                if values[1] == "none" {
-                    values[0].into()
-                } else if values[0] == "transparent" {
-                    values[1].into()
+            let mut layer =
+                if values[2] == "auto auto" && values[3] == "0% 0%" && values[4] == "repeat" {
+                    if values[1] == "none" {
+                        values[0].into()
+                    } else if values[0] == "transparent" {
+                        values[1].into()
+                    } else {
+                        format!("{} {}", values[1], values[0])
+                    }
                 } else {
-                    format!("{} {}", values[1], values[0])
+                    // A size always follows a position and slash. Keep authored
+                    // longhand syntax while emitting an unambiguous complete layer.
+                    format!(
+                        "{} {} / {} {} {}",
+                        values[1], values[3], values[2], values[4], values[0]
+                    )
+                };
+            // Defaults preserve the existing layer serialization. One box
+            // sets both properties; different values need origin then clip.
+            if values[5] != "padding-box" || values[6] != "border-box" {
+                layer.push(' ');
+                layer.push_str(values[5]);
+                if values[5] != values[6] {
+                    layer.push(' ');
+                    layer.push_str(values[6]);
                 }
-            } else {
-                // A size always follows a position and slash. Keep authored
-                // longhand syntax while emitting an unambiguous complete layer.
-                format!(
-                    "{} {} / {} {} {}",
-                    values[1], values[3], values[2], values[4], values[0]
-                )
             }
+            layer
         }
         "border"
             if values
@@ -643,7 +655,12 @@ fn records(
     spend(work, count.saturating_mul(value.len() + 64) + 1)?;
     if matches!(
         property,
-        "background-image" | "background-size" | "background-position" | "background-repeat"
+        "background-image"
+            | "background-size"
+            | "background-position"
+            | "background-repeat"
+            | "background-origin"
+            | "background-clip"
     ) {
         // These normalized longhands expand unchanged. Their complete value
         // was just validated; retain it without a Declaration roundtrip and
@@ -890,7 +907,12 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
     }
     if matches!(
         property,
-        "background-image" | "background-size" | "background-position" | "background-repeat"
+        "background-image"
+            | "background-size"
+            | "background-position"
+            | "background-repeat"
+            | "background-origin"
+            | "background-clip"
     ) {
         return css::valid_background_property(property, value, work).map_err(|_| Error::Limit);
     }
@@ -1577,3 +1599,6 @@ mod background_tests;
 
 #[cfg(test)]
 mod url_background_tests;
+
+#[cfg(test)]
+mod background_box_tests;

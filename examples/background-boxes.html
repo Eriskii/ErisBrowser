@@ -1,0 +1,21 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Eris background boxes</title>
+<style>
+html { background: #f5f7fb; color: #17243a; }
+body { margin: 32px; max-width: 720px; font: 18px sans-serif; }
+h1 { font-size: 30px; }
+button { margin-right: 8px; padding: 8px 12px; }
+#sample { width: 240px; height: 90px; padding: 20px; border: 12px solid rgba(20,40,70,.4); border-radius: 28px; background: linear-gradient(to right,#e77942 50%,#4f78dc 50%) padding-box border-box; background-size: 50% 100%; }
+.wrapped { width: 250px; margin-top: 28px; font-size: 20px; line-height: 30px; }
+.wrapped span { padding: 5px 12px; border: 2px solid #345684; border-radius: 10px; background: linear-gradient(to right,#d7e9ff,#fff0cc) content-box padding-box; }
+</style>
+<h1>Background positioning and clipping</h1>
+<p>The image origin controls its size and alignment. The clip controls where the color and image are painted.</p>
+<p>
+<button onclick="document.getElementById('sample').style.setProperty('background-origin','border-box');document.getElementById('sample').style.setProperty('background-clip','border-box')">Border box</button>
+<button onclick="document.getElementById('sample').style.setProperty('background-origin','padding-box');document.getElementById('sample').style.setProperty('background-clip','padding-box')">Padding box</button>
+<button onclick="document.getElementById('sample').style.setProperty('background-origin','content-box');document.getElementById('sample').style.setProperty('background-clip','content-box')">Content box</button>
+</p>
+<div id="sample"></div>
+<p class="wrapped"><span>This inline background continues across its wrapped lines, with physical edges at the beginning and end.</span></p>

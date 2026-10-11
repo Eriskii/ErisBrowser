@@ -196,6 +196,10 @@ fn background_getter_requires_geometry_declarations_in_the_same_block() {
         assert_eq!(get(&partial, "background"), "");
     }
     assert!(set(&mut partial, "background-repeat", "repeat"));
+    assert_eq!(get(&partial, "background"), "");
+    assert!(set(&mut partial, "background-origin", "padding-box"));
+    assert_eq!(get(&partial, "background"), "");
+    assert!(set(&mut partial, "background-clip", "border-box"));
     assert_eq!(
         get(&partial, "background"),
         "linear-gradient(red,blue) yellow"
@@ -220,7 +224,7 @@ fn background_getter_requires_geometry_declarations_in_the_same_block() {
         );
     }
 
-    // A shorthand initialization explicitly supplies all five declarations.
+    // A shorthand initialization explicitly supplies all seven declarations.
     // Later valid color/image setters and rejected setters retain that basis.
     let mut initialized = InlineStyle::default();
     assert!(set(&mut initialized, "background", "none"));
