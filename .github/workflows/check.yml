@@ -181,6 +181,7 @@ jobs:
               ('src/graphics/raster_bridge/native/box_prepass_tests.rs', 'graphics::raster_bridge::native::box_prepass_tests::', 2),
               ('src/graphics/raster_bridge/native/box_fastpath_tests.rs', 'graphics::raster_bridge::native::box_fastpath_tests::', 10),
               ('src/graphics/raster_bridge/native/box_image_tests.rs', 'graphics::raster_bridge::native::box_image_tests::', 10),
+              ('src/graphics/raster_bridge/native/box_gradient_tests.rs', 'graphics::raster_bridge::native::box_gradient_tests::', 7),
           )
           expected = set()
           for source, prefix, count in modules:
@@ -190,7 +191,7 @@ jobs:
               expected.update(prefix + name for name in names)
           found = [line.removesuffix(': test') for line in Path(sys.argv[1]).read_text().splitlines()
                    if line.endswith(': test')]
-          if len(found) != 176 or set(found) != expected:
+          if len(found) != 183 or set(found) != expected:
               raise SystemExit(f'bridge test discovery mismatch: found={len(found)}, '
                                f'missing={sorted(expected - set(found))}, extra={sorted(set(found) - expected)}')
           print(f'Verified all {len(expected)} declared bridge tests are discoverable.')

@@ -81,6 +81,8 @@ pub struct NativeSceneStats {
     pub box_rectangles: usize,
     /// Eligible image boxes, including missing sources and empty windows.
     pub box_background_images: usize,
+    /// Eligible opaque gradient boxes, including empty generated windows.
+    pub box_gradients: usize,
     pub box_loop_work: u64,
     pub mask_sources: usize,
     pub coverage_bytes: usize,
@@ -197,6 +199,7 @@ struct InputCounts {
     command_key_bytes: usize,
     image_commands: usize,
     box_images: usize,
+    box_gradients: usize,
 }
 
 #[derive(Clone, Copy)]
@@ -269,8 +272,45 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                             counts.image_commands += 1;
                             counts.box_images += 1;
                         }
-                        BoxPaint::LinearGradient { .. } => {
-                            return Err(at(FallbackKind::UnsupportedBoxDecoration, phase, index));
+                        BoxPaint::LinearGradient {
+                            tile,
+                            gradient,
+                            stop_scale,
+                            ..
+                        } => {
+                            validate_rect(convert_rect(*tile), location).map_err(leaf)?;
+                            // This is the Box painter's scale ceiling, distinct
+                            // from Native's tighter coordinate field bounds.
+                            if tile.width <= 0.0
+                                || tile.height <= 0.0
+                                || !gradient.valid()
+                                || !stop_scale.is_finite()
+                                || *stop_scale <= 0.0
+                                || *stop_scale > 16_000_000.0
+                            {
+                                return Err(at(FallbackKind::InvalidGeometry, phase, index));
+                            }
+                            if stack[..depth]
+                                .iter()
+                                .any(|tag| matches!(tag, NativeScopeTag::Opacity))
+                            {
+                                return Err(at(
+                                    FallbackKind::UnsupportedBoxDecoration,
+                                    phase,
+                                    index,
+                                ));
+                            }
+                            // Validate every stop's alpha before any empty or
+                            // shape eligibility elision, without source pixels.
+                            box_gradient(
+                                target,
+                                decoration,
+                                (0.0, 0.0),
+                                browser_rect(target.caller_clip),
+                                phase,
+                                index,
+                            )?;
+                            counts.box_gradients += 1;
                         }
                     }
                 }
@@ -464,7 +504,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
 
 // The input validator has checked all raw geometry and balanced scopes. This
 // proof uses the current coordinate state without looking up or preparing images.
-fn box_image_proof(
+fn box_paint_proof(
     target: Frame,
     decoration: &BoxDecoration,
     state: &CoordinateState,
@@ -485,21 +525,77 @@ fn box_image_proof(
     .ok_or_else(|| at(FallbackKind::UnsupportedBoxDecoration, phase, index))
 }
 
+// The Box wrapper retains its own unsupported diagnostic. Ordinary gradients
+// continue to use gradient_error and their existing admission rules.
+fn box_gradient_error(error: OpaqueGradientError, phase: usize, command: usize) -> NativeFallback {
+    match error {
+        OpaqueGradientError::Unsupported => {
+            at(FallbackKind::UnsupportedBoxDecoration, phase, command)
+        }
+        _ => gradient_error(error, phase, command),
+    }
+}
+
+fn box_gradient(
+    target: Frame,
+    decoration: &BoxDecoration,
+    offset: (f32, f32),
+    clip: BrowserRect,
+    phase: usize,
+    index: usize,
+) -> NativeResult<Option<OpaqueGradient<'_>>> {
+    let BoxPaint::LinearGradient {
+        tile,
+        repeat,
+        gradient,
+        current_color,
+        stop_scale,
+    } = &decoration.paint
+    else {
+        unreachable!("gradient helper receives a gradient box");
+    };
+    OpaqueGradient::new_with_repeat(
+        target.width,
+        target.height,
+        decoration.shape.rect.translated(offset.0, offset.1),
+        tile.translated(offset.0, offset.1),
+        clip,
+        gradient,
+        *current_color,
+        *stop_scale,
+        *repeat,
+    )
+    .map_err(|error| box_gradient_error(error, phase, index))
+}
+
 // Complete this metadata-only pass before any Color mask classification or
 // source preparation. Each bounded scope Vec is dropped before the paid pass.
-fn preflight_box_images(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<()> {
+fn preflight_box_paints(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<()> {
     for (phase, input) in phases.iter().enumerate() {
         if !input.commands.iter().any(|command| matches!(command,
-            DrawCommand::BoxDecoration(decoration) if matches!(decoration.paint, BoxPaint::Image { .. }))) {
+            DrawCommand::BoxDecoration(decoration) if matches!(decoration.paint, BoxPaint::Image { .. } | BoxPaint::LinearGradient { .. }))) {
             continue;
         }
         let mut state = CoordinateState::new_for_profile(Profile::Native, input.frame)
             .map_err(|_| NativeFallback::new(FallbackKind::AllocationFailure, Some(phase), None))?;
         for (index, command) in input.commands.iter().enumerate() {
             if let DrawCommand::BoxDecoration(decoration) = command
-                && matches!(decoration.paint, BoxPaint::Image { .. })
+                && matches!(
+                    decoration.paint,
+                    BoxPaint::Image { .. } | BoxPaint::LinearGradient { .. }
+                )
             {
-                box_image_proof(target, decoration, &state, phase, index)?;
+                box_paint_proof(target, decoration, &state, phase, index)?;
+                if matches!(decoration.paint, BoxPaint::LinearGradient { .. }) {
+                    box_gradient(
+                        target,
+                        decoration,
+                        state.offset(),
+                        browser_rect(state.clip()),
+                        phase,
+                        index,
+                    )?;
+                }
             }
             let scope = match command {
                 DrawCommand::PushClip { rect } => Command::PushClip(convert_rect(*rect)),
@@ -587,6 +683,7 @@ impl GradientReservation {
 enum BoxReservation {
     Rectangle { work: u64 },
     BackgroundImage { work: u64 },
+    LinearGradient { work: u64 },
     Mask(BoxMaskReservation),
 }
 
@@ -625,8 +722,54 @@ fn geometry_pixel_work(
             ordinal += 1;
             let scope = match command {
                 DrawCommand::BoxDecoration(decoration) => {
+                    if matches!(decoration.paint, BoxPaint::LinearGradient { .. }) {
+                        let proof = box_paint_proof(target, decoration, &state, phase, index)?;
+                        let prepared = box_gradient(
+                            target,
+                            decoration,
+                            state.offset(),
+                            browser_rect(state.clip()),
+                            phase,
+                            index,
+                        )?;
+                        let info = prepared.as_ref().map(OpaqueGradient::info);
+                        let evaluation = info.map_or(0, |info| info.loop_work);
+                        let packing =
+                            info.map_or(0, |info| u64::from(info.width) * u64::from(info.height));
+                        let failure = at(FallbackKind::CpuPaintBudget, phase, index);
+                        let work = proof
+                            .classification_work()
+                            .checked_add(evaluation)
+                            .and_then(|work| work.checked_add(packing))
+                            .ok_or(failure)?;
+                        // Calculate all counters before the atomic debit. Empty
+                        // generated windows keep the original Box allowance.
+                        let total_evaluation = gradients
+                            .evaluation
+                            .checked_add(evaluation)
+                            .ok_or(failure)?;
+                        let total_packing =
+                            gradients.packing.checked_add(packing).ok_or(failure)?;
+                        let bytes = gradients
+                            .bytes
+                            .checked_add(info.map_or(0, |info| info.rgba_bytes()))
+                            .ok_or(failure)?;
+                        let sources = gradients
+                            .sources
+                            .checked_add(usize::from(info.is_some()))
+                            .ok_or(failure)?;
+                        let next = remaining.checked_sub(work).ok_or(failure)?;
+                        *remaining = next;
+                        gradients.evaluation = total_evaluation;
+                        gradients.packing = total_packing;
+                        gradients.bytes = bytes;
+                        gradients.sources = sources;
+                        gradients.windows[slot] = info;
+                        boxes[slot] = Some(BoxReservation::LinearGradient { work });
+                        continue;
+                    }
                     if let BoxPaint::Image { tile, repeat, .. } = &decoration.paint {
-                        let proof = box_image_proof(target, decoration, &state, phase, index)?;
+                        let proof = box_paint_proof(target, decoration, &state, phase, index)?;
                         let geometry = BackgroundImageGeometry::new(
                             target,
                             convert_rect(decoration.shape.rect),
@@ -1054,7 +1197,7 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
         (1, eris_raster_core::MAX_SOURCE_RGBA_BYTES),
         (MAX_SOURCE_ENTRIES, size_of::<RasterImage>()),
         (2, size_of::<GradientReservation>()),
-        (1, size_of::<OpaqueGradient<'_>>()),
+        (2, size_of::<OpaqueGradient<'_>>()),
         // Background geometry is stack metadata, never a generated raster.
         // Bound both return-value/caller copies during the charged prepass.
         (2, size_of::<BackgroundImageGeometry>()),
@@ -1128,8 +1271,8 @@ pub fn plan_native_scene(
     fonts: &Fonts,
 ) -> NativeResult<NativeScenePlan> {
     let counts = preflight(target, phases)?;
-    if counts.box_images > 0 {
-        preflight_box_images(target, phases)?;
+    if counts.box_images > 0 || counts.box_gradients > 0 {
+        preflight_box_paints(target, phases)?;
     }
     let preparation_peak_bytes = preparation_peak_bytes(target, false)?;
     if images.len() > MAX_SOURCE_ENTRIES || images.capacity() > MAX_STORE_CAPACITY {
@@ -1256,6 +1399,7 @@ pub fn plan_native_scene(
     let mut box_tiles = reserve_native::<BoxMaskTile>(MAX_COMMANDS)?;
     let mut box_rectangles = 0;
     let mut box_background_images = 0;
+    let mut box_gradients = 0;
     let mut ranges = [(0, 0); MAX_NATIVE_PHASES];
     ordinal = 0;
     for (phase_index, phase) in phases.iter().enumerate() {
@@ -1274,6 +1418,43 @@ pub fn plan_native_scene(
                     let reservation = box_window
                         .ok_or_else(|| at(FallbackKind::MaskPreparation, phase_index, index))?;
                     match (reservation, &decoration.paint) {
+                        (
+                            BoxReservation::LinearGradient { work },
+                            BoxPaint::LinearGradient { .. },
+                        ) => {
+                            ledger.box_loop_work =
+                                ledger.box_loop_work.checked_add(work).ok_or_else(|| {
+                                    at(FallbackKind::CpuPaintBudget, phase_index, index)
+                                })?;
+                            box_gradients += 1;
+                            let Some(info) = gradient_window else {
+                                continue;
+                            };
+                            let prepared = box_gradient(
+                                target,
+                                decoration,
+                                state.offset(),
+                                browser_rect(state.clip()),
+                                phase_index,
+                                index,
+                            )?
+                            .ok_or_else(|| at(FallbackKind::InvalidGeometry, phase_index, index))?;
+                            let source = (unique.len() + generated.len()) as u32;
+                            let rgba = prepared
+                                .materialize()
+                                .map_err(|error| box_gradient_error(error, phase_index, index))?;
+                            generated.push(RasterImage {
+                                width: info.width,
+                                height: info.height,
+                                rgba,
+                            });
+                            // Generated bounds already include phase/fixed offsets.
+                            Command::ScreenImage {
+                                x: info.x as i32,
+                                y: info.y as i32,
+                                source,
+                            }
+                        }
                         (
                             BoxReservation::BackgroundImage { work },
                             BoxPaint::Image { tile, repeat, .. },
@@ -1674,6 +1855,7 @@ pub fn plan_native_scene(
         box_masks: box_tiles.len(),
         box_rectangles,
         box_background_images,
+        box_gradients,
         box_loop_work: ledger.box_loop_work,
         mask_sources: masks.len(),
         coverage_bytes: ledger.coverage,
@@ -1705,3 +1887,6 @@ mod box_fastpath_tests;
 
 #[cfg(test)]
 mod box_image_tests;
+
+#[cfg(test)]
+mod box_gradient_tests;

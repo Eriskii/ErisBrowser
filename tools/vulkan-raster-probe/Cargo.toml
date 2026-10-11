@@ -79,3 +79,8 @@ debug = 0
 
 [lints.rust]
 unsafe_code = "forbid"
+
+[[bin]]
+name = "eris-vulkan-box-gradient-check"
+path = "src/bin/box-gradient-check.rs"
+required-features = ["browser-bridge"]

@@ -164,7 +164,7 @@ fn box_decoration_all_paints_refuse_without_materializing_payloads() {
         }
     );
     assert!(fonts.cache.borrow().is_empty());
-    for command in &commands[1..] {
+    for command in &commands[1..3] {
         all_routes(
             std::slice::from_ref(command),
             &images,
@@ -172,6 +172,32 @@ fn box_decoration_all_paints_refuse_without_materializing_payloads() {
             0,
         );
     }
+    // The new Native gradient route validates its malformed payload before
+    // coverage eligibility or source preparation. Both Probe routes still refuse.
+    probe_routes(
+        &commands[3..],
+        &images,
+        FallbackKind::UnsupportedBoxDecoration,
+        0,
+    );
+    assert_eq!(
+        native::plan_native_scene(
+            frame,
+            &[native::NativePhase {
+                frame,
+                commands: &commands[3..],
+            }],
+            &images,
+            &fonts,
+        )
+        .unwrap_err(),
+        native::NativeFallback {
+            kind: FallbackKind::InvalidGeometry,
+            phase_index: Some(0),
+            command_index: Some(0),
+        }
+    );
+    assert!(fonts.cache.borrow().is_empty());
     assert_eq!(Arc::strong_count(&images["bad"]), image_refs);
     assert_eq!(Arc::strong_count(&invalid_gradient), gradient_refs);
     assert_eq!(

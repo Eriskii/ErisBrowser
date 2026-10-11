@@ -72,9 +72,17 @@ through the same Vulkan rectangle shader and existing resource limits.
 The [image box follow-up](docs/native-box-image.md) sends proven integer-aligned,
 square image boxes through the existing Vulkan image kernel. Background origin
 and clip remain independent; repeat phase, source alpha and opacity groups use
-the existing sampling path. Rounded or fractional image boxes, cutouts and
-gradient box paints retain whole-frame fallback. No fetching or shader change
-is introduced.
+the existing sampling path. Rounded or fractionally translated image boxes
+and cutouts retain whole-frame fallback. That checkpoint left gradient boxes
+unsupported; the follow-up below admits a narrow subset. No fetching or shader
+change is introduced.
+
+The [gradient box follow-up](docs/native-box-gradient.md) prepares opaque,
+integer-aligned square boxes on the CPU for the existing Vulkan image kernel.
+Selected origin/clip boxes, repeats and currentColor retain their software
+samples. Rounded or fractional outer shapes, cutouts, translucent stops and
+retained opacity scopes still fall back as a whole. Generated pixels share the
+existing 1 MiB source allowance; gradient interpolation remains on the CPU.
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
