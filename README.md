@@ -4,6 +4,13 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
+physical `object-position` to loaded `<img>` content, including decoded external
+SVG images. Fitting preserves the element’s box and clips its image content;
+CSS supports checks, cascade and inline style mutation share bounded validation.
+Try the [clickable example](examples/object-fit-position.html). This does not
+extend inline SVG, video or general CSS conformance.
+
 The [ArrayBuffer checkpoint](tests/conformance/array-buffer.md) adds fixed and
 resizable buffers, resizing, same-realm species-aware slicing, transfers and
 detachment. [DataView](tests/conformance/data-view.md) now adds fixed and tracking

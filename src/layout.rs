@@ -2,7 +2,10 @@
 //!
 //! This implements the useful core of block, inline, flex and grid layout. It is
 //! deliberately explicit about its limits: it is not a complete CSS formatter.
-use crate::css::{ComputedStyle, Display, GridBreadth, GridLine, GridTrack, Length};
+use crate::css::{
+    ComputedStyle, Display, GridBreadth, GridLine, GridTrack, Length, ObjectFit, ObjectPosition,
+    PositionComponent,
+};
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
 use std::cell::Cell as Counter;
@@ -4236,13 +4239,15 @@ impl Engine<'_> {
             // Successful decoding installs natural-size metadata. A missing
             // image fallback must not become an opaque backdrop (or alt-text
             // watermark) beneath a loaded image's transparent pixels.
-            let loaded = self
+            let decoded = self
                 .attr_number(id, "data-eris-natural-width")
-                .is_some_and(|v| v > 0.0)
-                && self
-                    .attr_number(id, "data-eris-natural-height")
-                    .is_some_and(|v| v > 0.0);
-            if !loaded {
+                .filter(|v| *v > 0.0)
+                .and_then(|width| {
+                    self.attr_number(id, "data-eris-natural-height")
+                        .filter(|v| *v > 0.0)
+                        .map(|height| Size { width, height })
+                });
+            if decoded.is_none() {
                 self.push(DrawCommand::Rect {
                     rect: rect(x, y, width, height),
                     color: rgba(236, 238, 242, 255),
@@ -4262,10 +4267,27 @@ impl Engine<'_> {
                 }
             }
             if let Some(src) = self.doc.attr(id, "src").filter(|src| !src.is_empty()) {
-                self.push(DrawCommand::Image {
-                    rect: rect(x, y, width, height),
-                    key: src.to_owned(),
-                });
+                let content = rect(x, y, width, height);
+                if let Some(decoded) = decoded
+                    && (style.object_fit != ObjectFit::Fill
+                        || style.object_position != ObjectPosition::default())
+                {
+                    if let Some(destination) =
+                        fitted_image_rect(content, decoded, style.object_fit, style.object_position)
+                    {
+                        self.paint_fitted_image(content, destination, src);
+                    }
+                } else if decoded.is_some() && content.width > 0.0 && content.height > 0.0 {
+                    // Default fill needs no fitting arithmetic. It still needs
+                    // a clip when fractional origins expose pre-blend samples.
+                    self.paint_fitted_image(content, content, src);
+                } else {
+                    // Keep missing-image and harmless zero-area streams intact.
+                    self.push(DrawCommand::Image {
+                        rect: content,
+                        key: src.to_owned(),
+                    });
+                }
             }
         } else if tag == "video" {
             self.push(DrawCommand::Rect {
@@ -4281,6 +4303,31 @@ impl Engine<'_> {
             }
         }
         extent(height)
+    }
+
+    fn paint_fitted_image(&mut self, content: Rect, destination: Rect, key: &str) {
+        // Canvas::image samples from floor(origin), even for a fractionally
+        // inset destination. Those extra left/top pixels also need clipping.
+        let clipped = destination.x.floor() < content.x
+            || destination.y.floor() < content.y
+            || destination.x as f64 + destination.width as f64
+                > content.x as f64 + content.width as f64
+            || destination.y as f64 + destination.height as f64
+                > content.y as f64 + content.height as f64;
+        // Keep the entire destination: intersecting it would rescale the source
+        // instead of cropping. A refused clip must never expose an unclipped image.
+        if clipped && !self.push(DrawCommand::PushClip { rect: content }) {
+            return;
+        }
+        self.push(DrawCommand::Image {
+            rect: destination,
+            key: key.to_owned(),
+        });
+        if clipped {
+            // push reserves this closer even if the Image consumes/refuses the
+            // last ordinary slot. All enclosing scopes keep their reservations.
+            self.push(DrawCommand::PopClip);
+        }
     }
 
     fn paint_control(
@@ -4512,6 +4559,97 @@ fn rect(x: f32, y: f32, width: f32, height: f32) -> Rect {
         width: extent(width),
         height: extent(height),
     }
+}
+
+/// Loaded img content only. Layout and hit geometry keep the original box.
+/// Do not independently clamp a fitted rectangle: that distorts aspect ratio.
+fn fitted_image_rect(
+    content: Rect,
+    natural: Size,
+    fit: ObjectFit,
+    position: ObjectPosition,
+) -> Option<Rect> {
+    let (cw, ch) = (content.width as f64, content.height as f64);
+    let (nw, nh) = (natural.width as f64, natural.height as f64);
+    if ![content.x as f64, content.y as f64, cw, ch, nw, nh]
+        .iter()
+        .all(|v| v.is_finite())
+        || cw <= 0.0
+        || ch <= 0.0
+        || nw <= 0.0
+        || nh <= 0.0
+    {
+        return None;
+    }
+    let (width, height) = match fit {
+        ObjectFit::Fill => (cw, ch),
+        ObjectFit::None => (nw, nh),
+        ObjectFit::Contain
+        | ObjectFit::Cover
+        | ObjectFit::ScaleDown
+        | ObjectFit::CoverScaleDown => {
+            let scale = if matches!(fit, ObjectFit::Cover | ObjectFit::CoverScaleDown) {
+                (cw / nw).max(ch / nh)
+            } else {
+                (cw / nw).min(ch / nh)
+            };
+            let scale = if matches!(fit, ObjectFit::ScaleDown | ObjectFit::CoverScaleDown) {
+                scale.min(1.0)
+            } else {
+                scale
+            };
+            (nw * scale, nh * scale)
+        }
+    };
+    let x = content.x as f64 + object_position_offset(position.x, cw - width)?;
+    let y = content.y as f64 + object_position_offset(position.y, ch - height)?;
+    let limit = MAX_EXTENT as f64;
+    if ![x, y, width, height].iter().all(|v| v.is_finite())
+        || x.abs() > limit
+        || y.abs() > limit
+        || width <= 0.0
+        || height <= 0.0
+        || width > limit
+        || height > limit
+    {
+        return None;
+    }
+    let result = Rect {
+        x: x as f32,
+        y: y as f32,
+        width: width as f32,
+        height: height as f32,
+    };
+    // A positive f64 fit may underflow in the existing f32 command format.
+    (result.width > 0.0 && result.height > 0.0).then_some(result)
+}
+
+fn object_position_offset(component: PositionComponent, gap: f64) -> Option<f64> {
+    // Length::resolve clamps calc results and narrows to f32. Resolve the fixed
+    // typed coefficients here, retaining signed free space until the final bound.
+    let offset = match component.offset {
+        Length::Px(value) if value.is_finite() => value as f64,
+        Length::Percent(value) if value.is_finite() => gap * value as f64 / 100.0,
+        Length::Calc {
+            px,
+            percent,
+            has_percent,
+        } if px.is_finite() && percent.is_finite() => {
+            px as f64
+                + if has_percent {
+                    gap * percent as f64 / 100.0
+                } else {
+                    0.0
+                }
+        }
+        _ => return None,
+    };
+    let value = if component.from_end {
+        gap - offset
+    } else {
+        offset
+    };
+    value.is_finite().then_some(value)
 }
 
 fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
@@ -7139,5 +7277,679 @@ mod tests {
         assert_eq!(result.hit_test(21.0, 21.0), Some(2));
         assert_eq!(result.hit_test(0.0, 0.0), Some(1));
         assert_eq!(result.hit_test(100.0, 100.0), None);
+    }
+}
+
+#[cfg(test)]
+mod object_fit_tests {
+    use super::*;
+
+    fn position(x: Length, y: Length, from_end: bool) -> ObjectPosition {
+        ObjectPosition {
+            x: PositionComponent {
+                from_end,
+                offset: x,
+            },
+            y: PositionComponent {
+                from_end,
+                offset: y,
+            },
+        }
+    }
+
+    fn engine<'a>(doc: &'a Document, styles: &'a [ComputedStyle], fonts: &'a Fonts) -> Engine<'a> {
+        Engine {
+            doc,
+            styles,
+            fonts,
+            viewport: Size {
+                width: 100.0,
+                height: 100.0,
+            },
+            commands: Vec::new(),
+            owners: Vec::new(),
+            hits: Vec::new(),
+            boxes: Vec::new(),
+            positioned: Vec::new(),
+            paint_owner: PaintOwner {
+                node: doc.root,
+                background: false,
+            },
+            flow_height_reference: Some(100.0),
+            content_height_measure: None,
+            position_work_left: MAX_POSITION_WORK,
+            visits: 0,
+            hits_created: 0,
+            glyphs_left: MAX_GLYPHS,
+            emitted_glyphs_left: MAX_GLYPHS,
+            intrinsic_work_left: Counter::new(MAX_GLYPHS),
+            flex_work_left: MAX_FLEX_WORK,
+            float_work_left: MAX_FLOAT_WORK,
+            grid_work_left: MAX_GRID_WORK,
+            grid_height_reference: None,
+            floats_left: MAX_FLOATS,
+            floats: FloatContext::default(),
+            fragment_root: None,
+            commands_created: 0,
+            open_clips: 0,
+            canvas_background_node: None,
+            fallback: ComputedStyle::default(),
+            disclosure_hidden: doc.disclosure_hidden_mask(),
+        }
+    }
+
+    fn image_rect(commands: &[DrawCommand], key: &str) -> Rect {
+        let rectangles: Vec<_> = commands
+            .iter()
+            .filter_map(|command| match command {
+                DrawCommand::Image { rect, key: actual } if actual == key => Some(*rect),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(rectangles.len(), 1);
+        rectangles[0]
+    }
+
+    #[test]
+    fn object_fit_modes_and_scale_down_flag_have_literal_upscale_and_downscale_sizes() {
+        let content = rect(0.0, 0.0, 40.0, 40.0);
+        let cases = [
+            (
+                ObjectFit::Fill,
+                (0.0, 0.0, 40.0, 40.0),
+                (0.0, 0.0, 40.0, 40.0),
+            ),
+            (
+                ObjectFit::Contain,
+                (0.0, 10.0, 40.0, 20.0),
+                (0.0, 10.0, 40.0, 20.0),
+            ),
+            (
+                ObjectFit::Cover,
+                (-20.0, 0.0, 80.0, 40.0),
+                (-20.0, 0.0, 80.0, 40.0),
+            ),
+            (
+                ObjectFit::None,
+                (-20.0, 0.0, 80.0, 40.0),
+                (10.0, 15.0, 20.0, 10.0),
+            ),
+            (
+                ObjectFit::ScaleDown,
+                (0.0, 10.0, 40.0, 20.0),
+                (10.0, 15.0, 20.0, 10.0),
+            ),
+            (
+                ObjectFit::CoverScaleDown,
+                (-20.0, 0.0, 80.0, 40.0),
+                (10.0, 15.0, 20.0, 10.0),
+            ),
+        ];
+        for (fit, big, small) in cases {
+            for (natural, expected) in [
+                (
+                    Size {
+                        width: 80.0,
+                        height: 40.0,
+                    },
+                    big,
+                ),
+                (
+                    Size {
+                        width: 20.0,
+                        height: 10.0,
+                    },
+                    small,
+                ),
+            ] {
+                assert_eq!(
+                    fitted_image_rect(content, natural, fit, ObjectPosition::default()),
+                    Some(rect(expected.0, expected.1, expected.2, expected.3))
+                );
+            }
+        }
+        assert_eq!(
+            fitted_image_rect(
+                content,
+                Size {
+                    width: 10.0,
+                    height: 20.0
+                },
+                ObjectFit::Contain,
+                ObjectPosition::default()
+            ),
+            Some(rect(10.0, 0.0, 20.0, 40.0))
+        );
+        assert_eq!(
+            fitted_image_rect(
+                content,
+                Size {
+                    width: 400.0,
+                    height: 100.0
+                },
+                ObjectFit::CoverScaleDown,
+                ObjectPosition::default()
+            ),
+            Some(rect(-60.0, 0.0, 160.0, 40.0))
+        );
+    }
+
+    #[test]
+    fn object_position_resolves_negative_gap_end_offsets_calc_and_shifted_fill() {
+        let content = rect(0.0, 0.0, 40.0, 40.0);
+        let natural = Size {
+            width: 80.0,
+            height: 40.0,
+        };
+        for (position, x, y) in [
+            (
+                position(Length::Percent(0.0), Length::Percent(0.0), false),
+                0.0,
+                0.0,
+            ),
+            (
+                position(Length::Percent(100.0), Length::Percent(100.0), false),
+                -40.0,
+                0.0,
+            ),
+            (
+                position(Length::Percent(25.0), Length::Percent(50.0), false),
+                -10.0,
+                0.0,
+            ),
+            (
+                position(Length::Px(5.0), Length::Px(2.0), true),
+                -45.0,
+                -2.0,
+            ),
+            (
+                position(Length::Percent(150.0), Length::Percent(-25.0), false),
+                -60.0,
+                0.0,
+            ),
+            (
+                position(Length::Px(-5.0), Length::Px(-2.0), true),
+                -35.0,
+                2.0,
+            ),
+        ] {
+            assert_eq!(
+                fitted_image_rect(content, natural, ObjectFit::Cover, position),
+                Some(rect(x, y, 80.0, 40.0))
+            );
+        }
+        let offset = ObjectPosition {
+            x: PositionComponent {
+                from_end: false,
+                offset: Length::Calc {
+                    px: 3.0,
+                    percent: 25.0,
+                    has_percent: true,
+                },
+            },
+            y: PositionComponent {
+                from_end: true,
+                offset: Length::Calc {
+                    px: 2.0,
+                    percent: 50.0,
+                    has_percent: true,
+                },
+            },
+        };
+        assert_eq!(
+            fitted_image_rect(
+                rect(7.0, 11.0, 40.0, 40.0),
+                Size {
+                    width: 20.0,
+                    height: 10.0
+                },
+                ObjectFit::None,
+                offset
+            ),
+            Some(rect(15.0, 24.0, 20.0, 10.0))
+        );
+        assert_eq!(
+            fitted_image_rect(
+                rect(7.0, 11.0, 40.0, 40.0),
+                natural,
+                ObjectFit::Fill,
+                position(Length::Px(5.0), Length::Px(-2.0), false)
+            ),
+            Some(rect(12.0, 9.0, 40.0, 40.0))
+        );
+    }
+
+    #[test]
+    fn object_fit_omits_unrepresentable_geometry_without_clamping_aspect_ratio() {
+        let center = ObjectPosition::default();
+        let huge = rect(0.0, 0.0, MAX_EXTENT, MAX_EXTENT);
+        assert!(
+            fitted_image_rect(
+                huge,
+                Size {
+                    width: 4096.0,
+                    height: 1.0
+                },
+                ObjectFit::Cover,
+                center
+            )
+            .is_none()
+        );
+        assert_eq!(
+            fitted_image_rect(
+                huge,
+                Size {
+                    width: 4096.0,
+                    height: 1.0
+                },
+                ObjectFit::Contain,
+                center
+            ),
+            Some(rect(
+                0.0,
+                f32::from_bits(0x48f414be),
+                1000000.0,
+                f32::from_bits(0x43742400)
+            ))
+        );
+        for natural in [
+            Size {
+                width: 0.0,
+                height: 1.0,
+            },
+            Size {
+                width: f32::INFINITY,
+                height: 1.0,
+            },
+            Size {
+                width: 1.0,
+                height: f32::NAN,
+            },
+        ] {
+            assert!(
+                fitted_image_rect(rect(0.0, 0.0, 1.0, 1.0), natural, ObjectFit::None, center)
+                    .is_none()
+            );
+        }
+        let natural = Size {
+            width: 4.0,
+            height: 2.0,
+        };
+        for content in [
+            rect(0.0, 0.0, 0.0, 5.0),
+            rect(0.0, 0.0, 5.0, 0.0),
+            Rect {
+                x: f32::NAN,
+                y: 0.0,
+                width: 5.0,
+                height: 5.0,
+            },
+        ] {
+            assert!(fitted_image_rect(content, natural, ObjectFit::Contain, center).is_none());
+        }
+        let calc = Length::Calc {
+            px: 1000000.0,
+            percent: 1000000.0,
+            has_percent: true,
+        };
+        assert!(
+            fitted_image_rect(
+                rect(0.0, 0.0, 40.0, 40.0),
+                natural,
+                ObjectFit::None,
+                position(calc, Length::Px(0.0), false)
+            )
+            .is_none()
+        );
+        for offset in [
+            Length::Auto,
+            Length::Fr(1.0),
+            Length::Px(f32::INFINITY),
+            Length::Percent(f32::NAN),
+        ] {
+            assert!(
+                fitted_image_rect(
+                    rect(0.0, 0.0, 40.0, 40.0),
+                    natural,
+                    ObjectFit::None,
+                    position(offset, Length::Px(0.0), false)
+                )
+                .is_none()
+            );
+        }
+        assert!(
+            fitted_image_rect(
+                Rect {
+                    x: 0.0,
+                    y: 0.0,
+                    width: f32::from_bits(1),
+                    height: 1.0
+                },
+                Size {
+                    width: 4096.0,
+                    height: 1.0
+                },
+                ObjectFit::Contain,
+                center
+            )
+            .is_none()
+        );
+        assert_eq!(
+            fitted_image_rect(
+                rect(0.25, 0.5, 3.5, 3.5),
+                natural,
+                ObjectFit::Contain,
+                center
+            ),
+            Some(rect(0.25, 1.375, 3.5, 1.75))
+        );
+    }
+
+    #[test]
+    fn object_fit_uses_decoded_pair_preserves_default_stream_and_missing_fallback() {
+        let doc = Document::parse(
+            "<img id=loaded src=fixture width=1 height=999 data-eris-natural-width=80 data-eris-natural-height=40><img id=missing src=missing alt=ALT>",
+        );
+        let id = doc.query_selector("#loaded").unwrap();
+        let missing = doc.query_selector("#missing").unwrap();
+        let fonts = Fonts::new();
+        let mut styles = vec![ComputedStyle::default(); doc.nodes.len()];
+        let mut e = engine(&doc, &styles, &fonts);
+        assert_eq!(
+            e.paint_replaced(id, "img", rect(5.0, 7.0, 40.0, 0.0), Some(40.0)),
+            40.0
+        );
+        assert_eq!(e.commands.len(), 1);
+        assert_eq!(
+            image_rect(&e.commands, "fixture"),
+            rect(5.0, 7.0, 40.0, 40.0)
+        );
+        let mut zero = engine(&doc, &styles, &fonts);
+        zero.paint_replaced(id, "img", rect(5.0, 7.0, 0.0, 0.0), Some(0.0));
+        assert_eq!(zero.commands.len(), 1);
+        assert_eq!(
+            image_rect(&zero.commands, "fixture"),
+            rect(5.0, 7.0, 0.0, 0.0)
+        );
+        drop((e, zero));
+        styles[id].object_fit = ObjectFit::Contain;
+        styles[missing].object_fit = ObjectFit::Cover;
+        let mut e = engine(&doc, &styles, &fonts);
+        e.paint_replaced(id, "img", rect(5.0, 7.0, 40.0, 0.0), Some(40.0));
+        assert_eq!(
+            image_rect(&e.commands, "fixture"),
+            rect(5.0, 17.0, 40.0, 20.0)
+        );
+        e.paint_replaced(missing, "img", rect(0.0, 0.0, 20.0, 0.0), Some(10.0));
+        assert_eq!(
+            image_rect(&e.commands, "missing"),
+            rect(0.0, 0.0, 20.0, 10.0)
+        );
+        assert!(
+            e.commands
+                .iter()
+                .any(|c| matches!(c, DrawCommand::Text { text, .. } if text == "ALT"))
+        );
+        assert!(e.commands.iter().any(
+            |c| matches!(c, DrawCommand::Rect { rect: r, .. } if *r == rect(0.0, 0.0, 20.0, 10.0))
+        ));
+    }
+
+    #[test]
+    fn object_fit_changes_paint_not_padding_border_hits_flow_or_extent() {
+        let doc = Document::parse(
+            "<style>body{margin:0}img{display:block;width:40px;height:40px;padding:2px;border:3px solid}b{display:block;height:7px}</style><img id=photo src=fixture width=400 height=400 data-eris-natural-width=80 data-eris-natural-height=40><b id=next></b>",
+        );
+        let id = doc.query_selector("#photo").unwrap();
+        let next = doc.query_selector("#next").unwrap();
+        let fonts = Fonts::new();
+        let mut styles = crate::css::compute_styles(&doc, &doc.stylesheets(), 100.0, 100.0);
+        let before = layout(&doc, &styles, 100.0, 100.0, &fonts);
+        let hits = |r: &LayoutResult| {
+            r.hit_regions
+                .iter()
+                .map(|h| (h.node, h.rect, h.fixed, h.action))
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(
+            before
+                .hit_regions
+                .iter()
+                .find(|h| h.node == id)
+                .unwrap()
+                .rect,
+            rect(0.0, 0.0, 50.0, 50.0)
+        );
+        assert_eq!(
+            before
+                .hit_regions
+                .iter()
+                .find(|h| h.node == next)
+                .unwrap()
+                .rect
+                .y,
+            50.0
+        );
+        for (fit, expected) in [
+            (ObjectFit::Fill, rect(5.0, 5.0, 40.0, 40.0)),
+            (ObjectFit::Contain, rect(5.0, 15.0, 40.0, 20.0)),
+            (ObjectFit::Cover, rect(-15.0, 5.0, 80.0, 40.0)),
+            (ObjectFit::None, rect(-15.0, 5.0, 80.0, 40.0)),
+            (ObjectFit::ScaleDown, rect(5.0, 15.0, 40.0, 20.0)),
+        ] {
+            styles[id].object_fit = fit;
+            let after = layout(&doc, &styles, 100.0, 100.0, &fonts);
+            assert_eq!(hits(&after), hits(&before));
+            assert_eq!(after.content_height, before.content_height);
+            assert_eq!(image_rect(&after.commands, "fixture"), expected);
+            if matches!(fit, ObjectFit::Cover | ObjectFit::None) {
+                let index = after
+                    .commands
+                    .iter()
+                    .position(|c| matches!(c, DrawCommand::Image { key, .. } if key == "fixture"))
+                    .unwrap();
+                assert!(
+                    matches!(after.commands[index - 1], DrawCommand::PushClip { rect: r } if r == rect(5.0, 5.0, 40.0, 40.0))
+                );
+                assert!(matches!(after.commands[index + 1], DrawCommand::PopClip));
+            }
+        }
+    }
+
+    #[test]
+    fn object_fit_preserves_full_source_sampling_and_balanced_nested_scopes() {
+        use crate::graphics::{Canvas, ImageStore, RasterImage};
+        let doc = Document::parse(
+            "<img id=photo src=colors data-eris-natural-width=4 data-eris-natural-height=2>",
+        );
+        let id = doc.query_selector("#photo").unwrap();
+        let mut styles = vec![ComputedStyle::default(); doc.nodes.len()];
+        styles[id].object_fit = ObjectFit::Cover;
+        let fonts = Fonts::new();
+        let mut e = engine(&doc, &styles, &fonts);
+        assert!(e.push(DrawCommand::PushFixed));
+        assert!(e.push(DrawCommand::PushOpacity { opacity: 1.0 }));
+        assert!(e.push(DrawCommand::PushClip {
+            rect: rect(0.0, 0.0, 8.0, 8.0)
+        }));
+        e.paint_replaced(id, "img", rect(2.0, 2.0, 4.0, 0.0), Some(4.0));
+        assert_eq!(image_rect(&e.commands, "colors"), rect(0.0, 2.0, 8.0, 4.0));
+        assert_eq!(e.open_clips, 3);
+        assert!(e.push(DrawCommand::PopClip));
+        assert!(e.push(DrawCommand::PopOpacity));
+        assert!(e.push(DrawCommand::PopFixed));
+        assert_eq!(e.open_clips, 0);
+        let row = [
+            255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 0, 255,
+        ];
+        let mut images = ImageStore::new();
+        images.insert(
+            "colors".into(),
+            std::sync::Arc::new(RasterImage {
+                width: 4,
+                height: 2,
+                rgba: row.repeat(2),
+            }),
+        );
+        let mut canvas = Canvas::new(8, 8).unwrap();
+        canvas.paint(&e.commands, &fonts, &images, 0.0, 0.0);
+        for y in 0..8 {
+            for x in 0..8 {
+                let expected = if (2..6).contains(&y) && (2..4).contains(&x) {
+                    0x00ff00
+                } else if (2..6).contains(&y) && (4..6).contains(&x) {
+                    0x0000ff
+                } else {
+                    0xffffff
+                };
+                assert_eq!(canvas.pixels[y * 8 + x], expected, "{x},{y}");
+            }
+        }
+        assert!(!canvas.exhausted());
+    }
+
+    #[test]
+    fn object_fit_fractional_content_edges_clip_the_sampling_loop() {
+        use crate::graphics::{Canvas, ImageStore, RasterImage};
+        let doc = Document::parse(
+            "<img id=photo src=colors data-eris-natural-width=4 data-eris-natural-height=2>",
+        );
+        let id = doc.query_selector("#photo").unwrap();
+        let mut styles = vec![ComputedStyle::default(); doc.nodes.len()];
+        let fonts = Fonts::new();
+        for position in [
+            ObjectPosition::default(),
+            position(Length::Px(0.0), Length::Px(0.0), false),
+        ] {
+            styles[id].object_position = position;
+            let mut e = engine(&doc, &styles, &fonts);
+            e.paint_replaced(id, "img", rect(2.5, 2.5, 4.0, 0.0), Some(4.0));
+            assert_eq!(image_rect(&e.commands, "colors"), rect(2.5, 2.5, 4.0, 4.0));
+            assert_eq!(e.commands.len(), 3);
+            assert!(
+                matches!(e.commands[0], DrawCommand::PushClip { rect: r } if r == rect(2.5, 2.5, 4.0, 4.0))
+            );
+            assert!(matches!(e.commands[2], DrawCommand::PopClip));
+            let row = [
+                255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 0, 255,
+            ];
+            let mut images = ImageStore::new();
+            images.insert(
+                "colors".into(),
+                std::sync::Arc::new(RasterImage {
+                    width: 4,
+                    height: 2,
+                    rgba: row.repeat(2),
+                }),
+            );
+            let mut canvas = Canvas::new(8, 8).unwrap();
+            canvas.paint(&e.commands, &fonts, &images, 0.0, 0.0);
+            let colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+            for y in 0..8 {
+                for x in 0..8 {
+                    let expected = if (3..7).contains(&y) && (3..7).contains(&x) {
+                        colors[x - 3]
+                    } else {
+                        0xffffff
+                    };
+                    assert_eq!(canvas.pixels[y * 8 + x], expected, "{x},{y}");
+                }
+            }
+            assert!(!canvas.exhausted());
+        }
+    }
+
+    #[test]
+    fn object_fit_clip_admission_never_leaks_an_unclipped_image_or_closer() {
+        let doc = Document::parse("");
+        let fonts = Fonts::new();
+        let styles = vec![ComputedStyle::default(); doc.nodes.len()];
+        for room in 0..=3 {
+            let mut e = engine(&doc, &styles, &fonts);
+            assert!(e.push(DrawCommand::PushOpacity { opacity: 0.5 }));
+            e.commands_created = MAX_COMMANDS - 1 - room;
+            let before = e.commands_created;
+            e.paint_fitted_image(
+                rect(0.0, 0.0, 4.0, 4.0),
+                rect(-2.0, 0.0, 8.0, 4.0),
+                "fixture",
+            );
+            let emitted = if room < 2 { 0 } else { room };
+            assert_eq!(e.commands.len(), 1 + emitted);
+            assert_eq!(e.commands_created, before + emitted);
+            assert_eq!(e.open_clips, 1);
+            if room >= 2 {
+                assert!(matches!(e.commands[1], DrawCommand::PushClip { .. }));
+                assert!(matches!(e.commands.last(), Some(DrawCommand::PopClip)));
+            }
+            assert_eq!(
+                e.commands
+                    .iter()
+                    .filter(|c| matches!(c, DrawCommand::Image { .. }))
+                    .count(),
+                usize::from(room == 3)
+            );
+            assert_eq!(e.owners.len(), e.commands.len());
+            assert!(e.push(DrawCommand::PopOpacity));
+            assert_eq!(e.open_clips, 0);
+            assert!(e.commands_created <= MAX_COMMANDS);
+        }
+        let mut e = engine(&doc, &styles, &fonts);
+        e.commands_created = MAX_COMMANDS - 1;
+        e.paint_fitted_image(
+            rect(0.0, 0.0, 4.0, 4.0),
+            rect(1.0, 1.0, 2.0, 2.0),
+            "fixture",
+        );
+        assert_eq!(e.commands.len(), 1);
+        assert_eq!(e.commands_created, MAX_COMMANDS);
+        assert_eq!(e.open_clips, 0);
+    }
+
+    #[test]
+    fn object_fit_keeps_video_and_inline_svg_paths_and_omits_only_extreme_loaded_paint() {
+        let doc = Document::parse(
+            "<svg id=vector data-eris-natural-width=80 data-eris-natural-height=40></svg><video id=video poster=poster></video><img id=external src=external.svg data-eris-natural-width=80 data-eris-natural-height=40><img id=extreme src=extreme data-eris-natural-width=4096 data-eris-natural-height=1>",
+        );
+        let fonts = Fonts::new();
+        let mut styles = vec![ComputedStyle::default(); doc.nodes.len()];
+        for style in &mut styles {
+            style.object_fit = ObjectFit::Cover;
+        }
+        let vector = doc.query_selector("#vector").unwrap();
+        let video = doc.query_selector("#video").unwrap();
+        let external = doc.query_selector("#external").unwrap();
+        let extreme = doc.query_selector("#extreme").unwrap();
+        let mut e = engine(&doc, &styles, &fonts);
+        for (id, tag) in [(vector, "svg"), (video, "video"), (external, "img")] {
+            assert_eq!(
+                e.paint_replaced(id, tag, rect(0.0, 0.0, 40.0, 0.0), Some(40.0)),
+                40.0
+            );
+        }
+        assert_eq!(
+            image_rect(&e.commands, &format!("eris-inline-svg:{vector}")),
+            rect(0.0, 0.0, 40.0, 40.0)
+        );
+        assert_eq!(
+            image_rect(&e.commands, "poster"),
+            rect(0.0, 0.0, 40.0, 40.0)
+        );
+        assert_eq!(
+            image_rect(&e.commands, "external.svg"),
+            rect(-20.0, 0.0, 80.0, 40.0)
+        );
+        let count = e.commands.len();
+        assert_eq!(
+            e.paint_replaced(
+                extreme,
+                "img",
+                rect(0.0, 0.0, MAX_EXTENT, 0.0),
+                Some(MAX_EXTENT)
+            ),
+            MAX_EXTENT
+        );
+        assert_eq!(e.commands.len(), count);
+        assert_eq!(e.open_clips, 0);
     }
 }

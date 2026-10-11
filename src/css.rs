@@ -220,9 +220,40 @@ pub enum Display {
     Flex,
     Grid,
 }
+/// Sizing mode for replaced image content (CSS Images 3/4).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum ObjectFit {
+    #[default]
+    Fill,
+    Contain,
+    Cover,
+    None,
+    ScaleDown,
+    CoverScaleDown,
+}
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct PositionComponent {
+    pub from_end: bool,
+    pub offset: Length,
+}
+impl Default for PositionComponent {
+    fn default() -> Self {
+        Self {
+            from_end: false,
+            offset: Length::Percent(50.0),
+        }
+    }
+}
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub struct ObjectPosition {
+    pub x: PositionComponent,
+    pub y: PositionComponent,
+}
 #[derive(Debug, Clone)]
 pub struct ComputedStyle {
     pub display: Display,
+    pub object_fit: ObjectFit,
+    pub object_position: ObjectPosition,
     pub flow_root: bool,
     pub list_item: bool,
     pub float: String,
@@ -289,6 +320,8 @@ impl Default for ComputedStyle {
     fn default() -> Self {
         Self {
             display: Display::Inline,
+            object_fit: ObjectFit::Fill,
+            object_position: ObjectPosition::default(),
             flow_root: false,
             list_item: false,
             float: "none".into(),
@@ -1419,7 +1452,7 @@ pub(crate) fn supports_matches_with_budget(
         evaluator.tokens(&tokens)?;
         let clean = strip_comments(query);
         if implied_declaration && supports_declaration_parts(media_trim(&clean)).is_some() {
-            evaluator.declaration(media_trim(&clean))
+            evaluator.declaration(media_trim(&clean), query)
         } else {
             evaluator.condition(query, &tokens, 0)
         }
@@ -1479,7 +1512,15 @@ pub(crate) fn supports_declaration_with_budget(
         if clean.is_empty() {
             return Ok(false);
         }
-        Ok(supports_property(&property.to_ascii_lowercase(), clean))
+        let property = property.to_ascii_lowercase();
+        if matches!(property.as_str(), "object-fit" | "object-position") {
+            if css_wide(clean) {
+                return Ok(true);
+            }
+            valid_object_property(&property, value, &mut evaluator.work).map_err(|_| ())
+        } else {
+            Ok(supports_property(&property, clean))
+        }
     })();
     *work -= available - evaluator.work;
     result == Ok(true) && !evaluator.exhausted
@@ -1602,7 +1643,7 @@ impl SupportsEvaluator {
             let clean = strip_comments(raw);
             let clean = media_trim(&clean);
             if supports_declaration_parts(clean).is_some() {
-                return Ok((self.declaration(clean)?, end + 1));
+                return Ok((self.declaration(clean, raw)?, end + 1));
             }
             if inner.first().is_some_and(|t| {
                 matches!(t.kind, Kind::Open('(') | Kind::Function)
@@ -1621,7 +1662,7 @@ impl SupportsEvaluator {
         };
         Ok((value, end + 1))
     }
-    fn declaration(&mut self, source: &str) -> Result<bool, ()> {
+    fn declaration(&mut self, source: &str, original: &str) -> Result<bool, ()> {
         self.term()?;
         self.spend(source.len().saturating_mul(8) + 1)?;
         let Some((name, mut value)) = supports_declaration_parts(source) else {
@@ -1644,7 +1685,24 @@ impl SupportsEvaluator {
         if name.contains('\\') || value.contains('\\') {
             return Ok(false);
         }
-        Ok(supports_property(&name.to_ascii_lowercase(), value))
+        let name = name.to_ascii_lowercase();
+        if matches!(name.as_str(), "object-fit" | "object-position") {
+            // Comments must not supply the mandatory whitespace around calc
+            // operators when the supports condition normalizes its input.
+            let original_tokens =
+                crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
+            self.spend(original_tokens.len() + 1)?;
+            let colon = original_tokens
+                .iter()
+                .find(|t| t.kind == crate::selectors::Kind::Delim(':'))
+                .ok_or(())?;
+            if !valid_calculations(&original[colon.end..], &mut self.work).map_err(|_| ())? {
+                return Ok(false);
+            }
+            valid_object_property(&name, value, &mut self.work).map_err(|_| ())
+        } else {
+            Ok(supports_property(&name, value))
+        }
     }
 }
 fn supports_declaration_parts(source: &str) -> Option<(&str, &str)> {
@@ -1752,6 +1810,10 @@ fn supports_color(value: &str) -> bool {
     valid && parse_color(value).is_some()
 }
 pub(crate) fn supports_property(name: &str, value: &str) -> bool {
+    if matches!(name, "object-fit" | "object-position") {
+        let mut work = MAX_SUPPORTS_WORK;
+        return valid_object_property(name, value, &mut work).unwrap_or(false);
+    }
     let known = matches!(
         name,
         "display"
@@ -2125,7 +2187,7 @@ fn parse_declarations_with_limit(
             && !has_vars
             && declarations[start..]
                 .iter()
-                .any(|d| !valid_math_property(&d.name, &d.value))
+                .any(|d| !valid_declaration_value(&d.name, &d.value, work).unwrap_or(false))
         {
             declarations.truncate(start);
             continue;
@@ -2880,7 +2942,7 @@ fn cascaded_value(
         {
             return None;
         }
-        let value = if variables.is_some() && !valid_math_property(name, &value) {
+        let value = if variables.is_some() && !valid_declaration_value(name, &value, work).ok()? {
             "unset".into()
         } else {
             value
@@ -3199,6 +3261,8 @@ pub fn compute_styles_with_rules(
 }
 const SUPPORTED_PROPERTIES: &[&str] = &[
     "display",
+    "object-fit",
+    "object-position",
     "float",
     "clear",
     "width",
@@ -4190,6 +4254,18 @@ fn apply_property(
         }
     };
     match name {
+        "object-fit" => {
+            if let Ok(Some(fit)) = parse_object_fit(value, work) {
+                s.object_fit = fit;
+            }
+        }
+        "object-position" => {
+            if let Ok(Some(position)) =
+                parse_object_position(value, [s.font_size, root_font, width, height], work)
+            {
+                s.object_position = position;
+            }
+        }
         "display" => {
             if matches!(
                 value,
@@ -4585,6 +4661,8 @@ fn apply_property(
 }
 fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
     match name {
+        "object-fit" => s.object_fit = p.object_fit,
+        "object-position" => s.object_position = p.object_position,
         "display" => {
             s.display = p.display;
             s.flow_root = p.flow_root;
@@ -4948,6 +5026,243 @@ pub(crate) fn valid_calculations(
 }
 // Only math-related acceptance is tightened here. Other ordinary property
 // grammars retain their separately documented parser limits.
+/// Parse the bounded object-fit grammar, including Images 4's scale-down pairs.
+fn parse_object_fit(
+    value: &str,
+    work: &mut usize,
+) -> Result<Option<ObjectFit>, crate::selectors::Error> {
+    use crate::selectors::{Kind, spend};
+    if value.len() > 4096 {
+        return Err(crate::selectors::Error::Limit);
+    }
+    let tokens = crate::selectors::tokens(value, work)?;
+    spend(work, value.len().saturating_mul(8) + 8)?;
+    let mut words = tokens.iter().filter(|t| t.kind != Kind::Whitespace);
+    let Some(first) = words.next().filter(|t| t.kind == Kind::Ident) else {
+        return Ok(None);
+    };
+    let second = words.next();
+    if words.next().is_some() {
+        return Ok(None);
+    }
+    let parsed = if let Some(second) = second {
+        if second.kind != Kind::Ident {
+            None
+        } else if first.is_name("scale-down") && second.is_name("contain")
+            || second.is_name("scale-down") && first.is_name("contain")
+        {
+            Some(ObjectFit::ScaleDown)
+        } else if first.is_name("scale-down") && second.is_name("cover")
+            || second.is_name("scale-down") && first.is_name("cover")
+        {
+            Some(ObjectFit::CoverScaleDown)
+        } else {
+            None
+        }
+    } else if first.is_name("fill") {
+        Some(ObjectFit::Fill)
+    } else if first.is_name("contain") {
+        Some(ObjectFit::Contain)
+    } else if first.is_name("cover") {
+        Some(ObjectFit::Cover)
+    } else if first.is_name("none") {
+        Some(ObjectFit::None)
+    } else if first.is_name("scale-down") {
+        Some(ObjectFit::ScaleDown)
+    } else {
+        None
+    };
+    Ok(parsed)
+}
+
+#[derive(Clone, Copy)]
+enum ObjectPositionToken {
+    Horizontal(bool),
+    Vertical(bool),
+    Center,
+    Offset(Length),
+}
+impl ObjectPositionToken {
+    fn axis(self, horizontal: bool) -> Option<PositionComponent> {
+        let offset = match self {
+            Self::Horizontal(end) if horizontal => Length::Percent(if end { 100.0 } else { 0.0 }),
+            Self::Vertical(end) if !horizontal => Length::Percent(if end { 100.0 } else { 0.0 }),
+            Self::Center => Length::Percent(50.0),
+            Self::Offset(value) => value,
+            _ => return None,
+        };
+        Some(PositionComponent {
+            from_end: false,
+            offset,
+        })
+    }
+}
+
+/// Values 3 <position>: one/two values or two edge+offset pairs. The existing
+/// additive calculation parser shares this token stream and the caller's work
+/// budget; its depth/term bounds also cover nested calculations here.
+fn parse_object_position(
+    value: &str,
+    units: [f32; 4],
+    work: &mut usize,
+) -> Result<Option<ObjectPosition>, crate::selectors::Error> {
+    use crate::selectors::{Error, Kind, spend};
+    use ObjectPositionToken::{Center, Horizontal, Offset, Vertical};
+    if value.len() > 4096 {
+        return Err(Error::Limit);
+    }
+    let tokens = crate::selectors::tokens(value, work)?;
+    let mut parser = CalculationParser {
+        tokens: &tokens,
+        at: 0,
+        terms: 0,
+        units,
+        work,
+    };
+    let parsed = (|| {
+        let mut parts = [Center; 4];
+        let mut count = 0;
+        loop {
+            parser.spaces()?;
+            let Some(token) = tokens.get(parser.at) else {
+                break;
+            };
+            if count == parts.len() {
+                return Err(Error::Invalid);
+            }
+            parts[count] = match token.kind {
+                Kind::Ident => {
+                    let token = parser.take()?;
+                    spend(parser.work, token.raw.len().saturating_mul(6) + 8)?;
+                    if token.is_name("left") {
+                        Horizontal(false)
+                    } else if token.is_name("right") {
+                        Horizontal(true)
+                    } else if token.is_name("top") {
+                        Vertical(false)
+                    } else if token.is_name("bottom") {
+                        Vertical(true)
+                    } else if token.is_name("center") {
+                        Center
+                    } else {
+                        return Err(Error::Invalid);
+                    }
+                }
+                Kind::Number => {
+                    let token = parser.take()?;
+                    // Check the mantissa, not an f32 conversion: a tiny nonzero
+                    // unitless number must not become an accepted zero by underflow.
+                    spend(parser.work, token.raw.len().saturating_mul(2) + 4)?;
+                    let mantissa = token
+                        .raw
+                        .trim_start_matches(['+', '-'])
+                        .split(['e', 'E'])
+                        .next()
+                        .ok_or(Error::Invalid)?;
+                    if !mantissa.bytes().all(|b| b == b'0' || b == b'.') {
+                        return Err(Error::Invalid);
+                    }
+                    Offset(Length::Px(0.0))
+                }
+                Kind::Dimension | Kind::Percentage | Kind::Function => {
+                    let kind = token.kind;
+                    let value = parser.operand(0)?;
+                    if !value.px.is_finite()
+                        || !value.percent.is_finite()
+                        || value.px.abs() > f32::MAX as f64
+                        || value.percent.abs() > f32::MAX as f64
+                    {
+                        return Err(Error::Invalid);
+                    }
+                    Offset(match kind {
+                        Kind::Dimension => Length::Px(value.px as f32),
+                        Kind::Percentage => Length::Percent(value.percent as f32),
+                        _ => Length::Calc {
+                            px: value.px as f32,
+                            percent: value.percent as f32,
+                            has_percent: value.has_percent,
+                        },
+                    })
+                }
+                _ => return Err(Error::Invalid),
+            };
+            count += 1;
+        }
+        spend(parser.work, 16)?;
+        let centered = PositionComponent::default();
+        let position = match &parts[..count] {
+            [Vertical(end)] => ObjectPosition {
+                x: centered,
+                y: Vertical(*end).axis(false).unwrap(),
+            },
+            [one] => ObjectPosition {
+                x: one.axis(true).ok_or(Error::Invalid)?,
+                y: centered,
+            },
+            [first, second] => {
+                // Only the all-keyword branch may exchange the two axes.
+                let swap = matches!(first, Vertical(_)) || matches!(second, Horizontal(_));
+                let (x, y) = if swap && !matches!(first, Offset(_)) && !matches!(second, Offset(_))
+                {
+                    (second.axis(true), first.axis(false))
+                } else {
+                    (first.axis(true), second.axis(false))
+                };
+                ObjectPosition {
+                    x: x.ok_or(Error::Invalid)?,
+                    y: y.ok_or(Error::Invalid)?,
+                }
+            }
+            [Horizontal(x), Offset(dx), Vertical(y), Offset(dy)]
+            | [Vertical(y), Offset(dy), Horizontal(x), Offset(dx)] => ObjectPosition {
+                x: PositionComponent {
+                    from_end: *x,
+                    offset: *dx,
+                },
+                y: PositionComponent {
+                    from_end: *y,
+                    offset: *dy,
+                },
+            },
+            _ => return Err(Error::Invalid),
+        };
+        Ok(position)
+    })();
+    match parsed {
+        Ok(position) => Ok(Some(position)),
+        Err(Error::Limit) => Err(Error::Limit),
+        Err(_) => Ok(None),
+    }
+}
+
+pub(crate) fn valid_object_property(
+    name: &str,
+    value: &str,
+    work: &mut usize,
+) -> Result<bool, crate::selectors::Error> {
+    if css_wide(value) {
+        return Ok(true);
+    }
+    match name {
+        "object-fit" => Ok(parse_object_fit(value, work)?.is_some()),
+        "object-position" => {
+            Ok(parse_object_position(value, [16.0, 16.0, 800.0, 600.0], work)?.is_some())
+        }
+        _ => Ok(false),
+    }
+}
+fn valid_declaration_value(
+    name: &str,
+    value: &str,
+    work: &mut usize,
+) -> Result<bool, crate::selectors::Error> {
+    if matches!(name, "object-fit" | "object-position") {
+        valid_object_property(name, value, work)
+    } else {
+        Ok(valid_math_property(name, value))
+    }
+}
+
 fn valid_math_property(name: &str, value: &str) -> bool {
     let parse = |v| parse_length(v, 16.0, 16.0, 800.0, 600.0);
     if !value.contains('(') {
@@ -5415,6 +5730,368 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn object_fit_keywords_and_scale_down_pairs_share_strict_admission() {
+        for (value, expected) in [
+            ("fill", ObjectFit::Fill),
+            ("CONTAIN", ObjectFit::Contain),
+            ("cover", ObjectFit::Cover),
+            ("none", ObjectFit::None),
+            ("scale-down", ObjectFit::ScaleDown),
+            ("contain scale-down", ObjectFit::ScaleDown),
+            ("scale-down contain", ObjectFit::ScaleDown),
+            ("cover scale-down", ObjectFit::CoverScaleDown),
+            ("scale-down cover", ObjectFit::CoverScaleDown),
+            ("cover/**/scale-down", ObjectFit::CoverScaleDown),
+        ] {
+            assert_eq!(parse_object_fit(value, &mut 100_000), Ok(Some(expected)));
+            assert!(supports_declaration("object-fit", value), "{value}");
+            assert!(
+                supports_matches(&format!("(object-fit:{value})")),
+                "{value}"
+            );
+            assert_eq!(
+                layered_style(&format!("#target{{object-fit:{value}}}"), "").object_fit,
+                expected
+            );
+        }
+        for value in [
+            "",
+            "auto",
+            "fill cover",
+            "contain cover",
+            "scale-down scale-down",
+            "none scale-down",
+            "cover cover",
+            "cover scale-down none",
+            "url(x)",
+            "cover,scale-down",
+        ] {
+            assert_eq!(parse_object_fit(value, &mut 100_000), Ok(None), "{value}");
+            assert!(!supports_declaration("object-fit", value), "{value}");
+            assert_eq!(
+                layered_style(
+                    &format!("#target{{object-fit:none;object-fit:{value}}}"),
+                    ""
+                )
+                .object_fit,
+                ObjectFit::None
+            );
+        }
+    }
+
+    #[test]
+    fn object_position_literals_cover_each_axis_and_edge_offset_grammar() {
+        let start = |offset| PositionComponent {
+            from_end: false,
+            offset,
+        };
+        let end = |offset| PositionComponent {
+            from_end: true,
+            offset,
+        };
+        for (value, x, y) in [
+            (
+                "center",
+                start(Length::Percent(50.0)),
+                start(Length::Percent(50.0)),
+            ),
+            (
+                "top",
+                start(Length::Percent(50.0)),
+                start(Length::Percent(0.0)),
+            ),
+            (
+                "right",
+                start(Length::Percent(100.0)),
+                start(Length::Percent(50.0)),
+            ),
+            (
+                "-5px",
+                start(Length::Px(-5.0)),
+                start(Length::Percent(50.0)),
+            ),
+            (
+                "top left",
+                start(Length::Percent(0.0)),
+                start(Length::Percent(0.0)),
+            ),
+            (
+                "bottom center",
+                start(Length::Percent(50.0)),
+                start(Length::Percent(100.0)),
+            ),
+            (
+                "center right",
+                start(Length::Percent(100.0)),
+                start(Length::Percent(50.0)),
+            ),
+            (
+                "left 20%",
+                start(Length::Percent(0.0)),
+                start(Length::Percent(20.0)),
+            ),
+            (
+                "20% bottom",
+                start(Length::Percent(20.0)),
+                start(Length::Percent(100.0)),
+            ),
+            (
+                "-25% 125%",
+                start(Length::Percent(-25.0)),
+                start(Length::Percent(125.0)),
+            ),
+            ("0 -0", start(Length::Px(0.0)), start(Length::Px(0.0))),
+            ("2em 3vh", start(Length::Px(32.0)), start(Length::Px(18.0))),
+            (
+                "right 5px bottom 2px",
+                end(Length::Px(5.0)),
+                end(Length::Px(2.0)),
+            ),
+            (
+                "bottom -20% left 4px",
+                start(Length::Px(4.0)),
+                end(Length::Percent(-20.0)),
+            ),
+            (
+                "calc(50% - 2px) calc(1em + 3px)",
+                start(Length::Calc {
+                    px: -2.0,
+                    percent: 50.0,
+                    has_percent: true,
+                }),
+                start(Length::Calc {
+                    px: 19.0,
+                    percent: 0.0,
+                    has_percent: false,
+                }),
+            ),
+            (
+                "right calc(25% + 2px) bottom calc(3px - 1px)",
+                end(Length::Calc {
+                    px: 2.0,
+                    percent: 25.0,
+                    has_percent: true,
+                }),
+                end(Length::Calc {
+                    px: 2.0,
+                    percent: 0.0,
+                    has_percent: false,
+                }),
+            ),
+        ] {
+            let expected = ObjectPosition { x, y };
+            assert_eq!(
+                parse_object_position(value, [16.0, 16.0, 800.0, 600.0], &mut 100_000),
+                Ok(Some(expected)),
+                "{value}"
+            );
+            assert!(supports_declaration("object-position", value), "{value}");
+            assert!(
+                supports_matches(&format!("(object-position:{value})")),
+                "{value}"
+            );
+            assert_eq!(
+                layered_style(&format!("#target{{object-position:{value}}}"), "").object_position,
+                expected,
+                "{value}"
+            );
+        }
+    }
+
+    #[test]
+    fn object_position_rejects_wrong_axes_partial_values_and_comment_math() {
+        for value in [
+            "",
+            "auto",
+            "none",
+            "1",
+            "-2",
+            "1e-99",
+            "1e-999",
+            "1fr",
+            "NaNpx",
+            "infinity%",
+            "1e999px",
+            "top 20%",
+            "20% left",
+            "left right",
+            "top bottom",
+            "left 2px top",
+            "center 2px bottom 3px",
+            "left 2px right 3px",
+            "left 2px bottom 3px center",
+            "(2px)",
+            "min(1px,2px)",
+            "calc(1px + 2)",
+            "calc(1px/**/+/**/2px)",
+            "calc(1px + 2px)garbage",
+            "2px,3px",
+            "2px / 3px",
+        ] {
+            assert!(!supports_declaration("object-position", value), "{value}");
+            assert!(
+                !supports_matches(&format!("(object-position:{value})")),
+                "{value}"
+            );
+            assert!(
+                !supports_matches_with_budget(
+                    &format!("object-position:{value}"),
+                    true,
+                    &mut 100_000
+                ),
+                "{value}"
+            );
+            let style = layered_style(
+                &format!("#target{{object-position:25% 75%;object-position:{value}!important}}"),
+                "",
+            );
+            assert_eq!(
+                style.object_position.x.offset,
+                Length::Percent(25.0),
+                "{value}"
+            );
+            assert_eq!(
+                style.object_position.y.offset,
+                Length::Percent(75.0),
+                "{value}"
+            );
+        }
+        // Keep the existing CSS.supports escaped-spelling policy intact.
+        assert!(!supports_declaration("object-position", r"l\65 ft"));
+        assert!(!supports_declaration("object-fit", r"c\6f ver"));
+    }
+
+    #[test]
+    fn object_properties_defaults_inherit_explicitly_and_reset_through_all() {
+        for property in ["object-fit", "object-position"] {
+            for keyword in ["inherit", "initial", "unset", "revert", "revert-layer"] {
+                let value = format!(" /**/ {keyword} /**/ ");
+                assert!(supports_declaration(property, &value));
+                assert!(supports_matches(&format!("({property}:{value})")));
+                assert!(supports_matches_with_budget(
+                    &format!("{property}:{value}"),
+                    true,
+                    &mut 100_000
+                ));
+            }
+        }
+        let doc = Document::parse(
+            "<div id=p><img id=plain><img id=inherit><img id=unset><img id=initial><img id=all></div>",
+        );
+        let rules = "#p{object-fit:cover;object-position:right 5px bottom 2px} #inherit{object-fit:inherit;object-position:inherit} #unset{object-fit:unset;object-position:unset} #initial{object-fit:initial;object-position:initial} #all{object-fit:none;object-position:left;all:initial}";
+        let styles = compute_styles(&doc, &[rules.into()], 800.0, 600.0);
+        let parent = &styles[doc.query_selector("#p").unwrap()];
+        let inherited = &styles[doc.query_selector("#inherit").unwrap()];
+        assert_eq!(inherited.object_fit, parent.object_fit);
+        assert_eq!(inherited.object_position, parent.object_position);
+        for id in ["plain", "unset", "initial", "all"] {
+            let style = &styles[doc.query_selector(&format!("#{id}")).unwrap()];
+            assert_eq!(style.object_fit, ObjectFit::Fill, "{id}");
+            assert_eq!(style.object_position, ObjectPosition::default(), "{id}");
+        }
+        let style = layered_style(
+            "@layer first,second; @layer first{#target{object-fit:contain;object-position:20% 30%}} @layer second{#target{object-fit:cover;object-position:right;object-fit:revert-layer;object-position:revert-layer}}",
+            "",
+        );
+        assert_eq!(style.object_fit, ObjectFit::Contain);
+        assert_eq!(style.object_position.x.offset, Length::Percent(20.0));
+        assert_eq!(style.object_position.y.offset, Length::Percent(30.0));
+    }
+
+    #[test]
+    fn object_properties_invalid_substitution_uses_unset_without_resurrecting_winner() {
+        let style = layered_style(
+            "#target{--fit:bogus;--pos:top 20%;object-fit:cover;object-position:left;object-fit:var(--fit);object-position:var(--pos)}",
+            "",
+        );
+        assert_eq!(style.object_fit, ObjectFit::Fill);
+        assert_eq!(style.object_position, ObjectPosition::default());
+        let style = layered_style(
+            "#target{font-size:20px;--fit:cover scale-down;--pos:right calc(2em + 10%) bottom -5px;object-fit:var(--fit);object-position:var(--pos)}",
+            "",
+        );
+        assert_eq!(style.object_fit, ObjectFit::CoverScaleDown);
+        assert_eq!(
+            style.object_position.x,
+            PositionComponent {
+                from_end: true,
+                offset: Length::Calc {
+                    px: 40.0,
+                    percent: 10.0,
+                    has_percent: true
+                }
+            }
+        );
+        assert_eq!(
+            style.object_position.y,
+            PositionComponent {
+                from_end: true,
+                offset: Length::Px(-5.0)
+            }
+        );
+    }
+
+    #[test]
+    fn object_position_budget_caps_and_computed_style_storage_are_explicit() {
+        // One byte: tokenization 3, take 2, lexical scans 6, grammar 16.
+        let zero = ObjectPosition {
+            x: PositionComponent {
+                from_end: false,
+                offset: Length::Px(0.0),
+            },
+            y: PositionComponent::default(),
+        };
+        assert_eq!(
+            parse_object_position("0", [16.0, 16.0, 800.0, 600.0], &mut 27),
+            Ok(Some(zero))
+        );
+        assert_eq!(
+            parse_object_position("0", [16.0, 16.0, 800.0, 600.0], &mut 26),
+            Err(crate::selectors::Error::Limit)
+        );
+        let value = "right calc(25% + 2px) bottom calc(1em - 3px)";
+        let initial = 100_000;
+        let mut work = initial;
+        let expected = parse_object_position(value, [16.0, 16.0, 800.0, 600.0], &mut work).unwrap();
+        let cost = initial - work;
+        assert!(cost > 0);
+        let mut exact = cost;
+        assert_eq!(
+            parse_object_position(value, [16.0, 16.0, 800.0, 600.0], &mut exact),
+            Ok(expected)
+        );
+        assert_eq!(exact, 0);
+        assert_eq!(
+            parse_object_position(value, [16.0, 16.0, 800.0, 600.0], &mut (cost - 1)),
+            Err(crate::selectors::Error::Limit)
+        );
+        assert_eq!(
+            parse_object_position(&"0 ".repeat(2049), [16.0, 16.0, 800.0, 600.0], &mut 100_000),
+            Err(crate::selectors::Error::Limit)
+        );
+        let deep = format!("{}1px{}", "calc(".repeat(18), ")".repeat(18));
+        assert_eq!(
+            parse_object_position(&deep, [16.0, 16.0, 800.0, 600.0], &mut 100_000),
+            Err(crate::selectors::Error::Limit)
+        );
+        assert!(!supports_declaration_with_budget(
+            "object-position",
+            value,
+            &mut 1
+        ));
+        println!(
+            "object-property sizes: fit={} component={} position={} computed_style={} maximum_nodes=100000",
+            std::mem::size_of::<ObjectFit>(),
+            std::mem::size_of::<PositionComponent>(),
+            std::mem::size_of::<ObjectPosition>(),
+            std::mem::size_of::<ComputedStyle>()
+        );
+        assert!(std::mem::size_of::<ObjectFit>() <= 4);
+        assert!(std::mem::size_of::<PositionComponent>() <= 24);
+        assert!(std::mem::size_of::<ObjectPosition>() <= 48);
+    }
+
     #[test]
     fn supports_two_arguments_validate_names_and_standalone_values_without_injection() {
         for (property, value) in [

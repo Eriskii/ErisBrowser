@@ -344,6 +344,36 @@
       "description": "Auto-height Grid resolves cyclic gap percentages after intrinsic sizing while column Flexbox retains only the absolute gap term.",
       "test": "calc-cyclic-gaps.html",
       "reference": "calc-cyclic-gaps-ref.html"
+    },
+    {
+      "name": "object-fit-modes",
+      "description": "All five fits distinguish natural image size from authored attributes, including both scale-down branches.",
+      "test": "object-fit-modes.html",
+      "reference": "object-fit-modes-ref.html"
+    },
+    {
+      "name": "object-position-physical",
+      "description": "Physical keywords, signed free-space percentages, four-component edge offsets and calc shift full image destinations before content clipping.",
+      "test": "object-position-physical.html",
+      "reference": "object-position-physical-ref.html"
+    },
+    {
+      "name": "object-fit-content-box",
+      "description": "Padding, border, border-box sizing and following block flow retain their geometry while image content is fitted and clipped.",
+      "test": "object-fit-content-box.html",
+      "reference": "object-fit-content-box-ref.html"
+    },
+    {
+      "name": "object-fit-scopes",
+      "description": "Object cropping composes with outer overflow, fixed descendants and group opacity, and restores scopes for later content.",
+      "test": "object-fit-scopes.html",
+      "reference": "object-fit-scopes-ref.html"
+    },
+    {
+      "name": "object-fit-combined-scale-down",
+      "description": "Images4 contain/cover scale-down pairs accept both orders and choose the smaller natural or constrained size, including cover shrinking.",
+      "test": "object-fit-combined-scale-down.html",
+      "reference": "object-fit-combined-scale-down-ref.html"
     }
   ]
 }

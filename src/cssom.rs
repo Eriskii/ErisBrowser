@@ -849,6 +849,9 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
     if wide(value) {
         return Ok(true);
     }
+    if matches!(property, "object-fit" | "object-position") {
+        return css::valid_object_property(property, value, work).map_err(|_| Error::Limit);
+    }
     // Existing strict positive grammar covers colors, numerical flex/Grid data
     // and common dimensions. The remaining renderer grammar is validated here
     // without broadening CSS.supports capability claims.
@@ -1052,6 +1055,129 @@ mod tests {
             .set_property(name, value, priority, &mut WORK.clone())
             .unwrap()
     }
+    #[test]
+    fn object_properties_cssom_preserves_valid_winners_and_priority() {
+        let mut style = parse(
+            "object-fit:contain;object-position:25% 75%;object-fit:fill cover!important;object-position:top 20%!important",
+        );
+        assert_eq!(get(&style, "object-fit"), "contain");
+        assert_eq!(get(&style, "object-position"), "25% 75%");
+        for (property, values) in [
+            (
+                "object-fit",
+                &["auto", "contain cover", "fill scale-down", "cover cover"][..],
+            ),
+            (
+                "object-position",
+                &[
+                    "auto",
+                    "1",
+                    "top 20%",
+                    "left 5px top",
+                    "center 1px bottom 2px",
+                    "calc(1px/**/+/**/2px)",
+                ][..],
+            ),
+        ] {
+            for value in values {
+                let before = style.clone();
+                assert!(
+                    !set(&mut style, property, value, "important"),
+                    "{property}:{value}"
+                );
+                assert_eq!(style, before);
+            }
+        }
+        assert!(set(
+            &mut style,
+            "OBJECT-FIT",
+            "COVER SCALE-DOWN",
+            "important"
+        ));
+        assert!(set(
+            &mut style,
+            "object-position",
+            "right calc(25% + 2px) bottom -5px",
+            ""
+        ));
+        assert_eq!(get(&style, "object-fit"), "cover scale-down");
+        assert_eq!(
+            style
+                .get_property_priority("object-fit", &mut WORK.clone())
+                .unwrap(),
+            "important"
+        );
+        assert_eq!(
+            get(&style, "object-position"),
+            "right calc(25% + 2px) bottom -5px"
+        );
+        assert_eq!(parse(&text(&style)), style);
+        assert_eq!(
+            style
+                .remove_property("object-fit", &mut WORK.clone())
+                .unwrap(),
+            "cover scale-down"
+        );
+        assert_eq!(get(&style, "object-fit"), "");
+    }
+
+    #[test]
+    fn object_properties_cssom_pending_variables_and_serialized_cascade() {
+        let style = parse(
+            "object-fit:cover;object-position:left;--fit:bogus;--pos:top 20%;object-fit:var(--fit);object-position:var(--pos)",
+        );
+        assert_eq!(get(&style, "object-fit"), "var(--fit)");
+        assert_eq!(get(&style, "object-position"), "var(--pos)");
+        let document = crate::dom::Document::parse(&format!("<img id=x style='{}'>", text(&style)));
+        let computed = css::compute_styles(&document, &[], 800.0, 600.0);
+        let computed = &computed[document.query_selector("#x").unwrap()];
+        assert_eq!(computed.object_fit, css::ObjectFit::Fill);
+        assert_eq!(computed.object_position, css::ObjectPosition::default());
+        let style = parse("object-fit:cover/**/scale-down;object-position:top/**/left");
+        assert_eq!(get(&style, "object-fit"), "cover scale-down");
+        assert_eq!(get(&style, "object-position"), "top left");
+        assert_eq!(parse(&text(&style)), style);
+        for keyword in ["inherit", "initial", "unset", "revert", "revert-layer"] {
+            let mut style = InlineStyle::default();
+            assert!(set(&mut style, "object-fit", keyword, ""));
+            assert!(set(&mut style, "object-position", keyword, ""));
+            assert_eq!(get(&style, "object-position"), keyword);
+        }
+    }
+
+    #[test]
+    fn object_position_cssom_exact_and_short_work_preserve_atomic_storage() {
+        let original = parse("object-fit:contain;object-position:20% 30%;color:red");
+        let value = "right calc(25% + 2px) bottom calc(1em - 3px)";
+        let mut measured = original.clone();
+        let mut work = WORK;
+        assert!(
+            measured
+                .set_property("object-position", value, "important", &mut work)
+                .unwrap()
+        );
+        let cost = WORK - work;
+        assert!(cost > 0);
+        let mut exact = original.clone();
+        let mut exact_work = cost;
+        assert!(
+            exact
+                .set_property("object-position", value, "important", &mut exact_work)
+                .unwrap()
+        );
+        assert_eq!(exact_work, 0);
+        assert_eq!(exact, measured);
+        for limit in [0, 1, cost - 1] {
+            let mut short = original.clone();
+            let mut short_work = limit;
+            assert_eq!(
+                short.set_property("object-position", value, "important", &mut short_work),
+                Err(Error::Limit)
+            );
+            assert_eq!(short, original);
+        }
+    }
+
     #[test]
     fn inline_tokens_preserve_nested_delimiters_and_recover_declarations() {
         let mut s = parse(

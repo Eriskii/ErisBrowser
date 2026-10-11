@@ -1,6 +1,6 @@
 # Focused rendering reference tests
 
-These forty-one self-authored cases compare Eris rendering against independently
+These sixty-two self-authored cases compare Eris rendering against independently
 expressed reference layouts at 320 × 240 pixels. They exercise specific HTML/CSS
 behaviors; they are not the Web Platform Tests, a browser compatibility score, or
 a Chromium performance comparison. Passing a pair cannot detect a defect shared
@@ -41,3 +41,9 @@ nested and implicit layers, `revert-layer`, variable substitution and anonymous
 layer identities across imported source segments. Their references use opaque
 SVG rectangles without cascade layers. The supported grammar and rollback
 limits are recorded in [`cascade-layers.md`](../conformance/cascade-layers.md).
+
+Five image-fitting cases cover fit modes, physical positions, content-box
+padding/borders, nested overflow/fixed/opacity scopes, and the Images 4 combined
+scale-down forms. Their references use literal rectangles rather than fitted
+images. [Image fitting](../../docs/image-fitting.md) records the syntax, clipping
+behavior and remaining scope limits.

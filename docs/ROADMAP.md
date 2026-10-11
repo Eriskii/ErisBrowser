@@ -32,6 +32,16 @@ Later symbols can increase charged scratch storage, and late numeric fallback
 still pays for discarded work. The local benchmark has small mixed median
 changes and several p95 regressions; broader interpreter performance remains open.
 
+[Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
+implementation, including Images 4 scale-down pairs and physical one/two/four
+component positions. Paint fitting leaves box layout and hit areas intact, with
+content-box clipping that also fixes fractional default-fill edges. All 62 self-authored references pass,
+with Page/worker and decoded alpha/external-SVG coverage in the passing full
+suites. A retained reference-expression correction exposes an existing image
+identity-sampling precision bug, queued for a separate fix. Full CSS Images,
+inline SVG/video integration and broader image fidelity remain open. This
+increment makes no backend or performance claim.
+
 [Native rectangle accounting](native-rect-accounting.md) reserves the clipped
 pre-blend loop area for each Rect. The [image follow-up](native-image-accounting.md)
 extends that coordinate pass to Image sampling loops, preserving fractional

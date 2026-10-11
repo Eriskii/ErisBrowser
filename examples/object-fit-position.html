@@ -1,0 +1,43 @@
+<!doctype html><meta charset=utf-8>
+<title id=heading>Object fit ready</title>
+<style>
+body{margin:0}
+#board{position:relative;width:104px;height:104px}
+.sample{position:absolute;display:block;width:16px;height:16px;padding:2px;border:1px solid black;background:#d0d0d0}
+#fill{left:8px;top:8px;object-fit:fill}
+#contain{left:40px;top:8px;object-fit:contain;object-fit:bogus}
+#cover{left:72px;top:8px;object-fit:cover}
+#none{left:8px;top:40px;object-fit:none}
+#scale{left:40px;top:40px;object-fit:scale-down}
+#small{left:72px;top:40px;width:4px;height:4px;object-fit:scale-down}
+#top{left:8px;top:72px;object-fit:contain;object-position:top}
+#two{left:40px;top:72px;object-fit:none;object-position:25% bottom}
+#calc{left:72px;top:72px;object-fit:none;object-position:right calc(25% + 2px) bottom calc(50% - 2px)}
+#after{width:104px;height:6px;background:#123456}
+</style><body data-phase=ready data-style-kept=ready>
+<div id=board>
+<img id=fill class=sample width=80 height=40 src=object-fit-position.png>
+<img id=contain class=sample width=80 height=40 src=object-fit-position.png>
+<img id=cover class=sample width=80 height=40 src=object-fit-position.png>
+<img id=none class=sample width=80 height=40 src=object-fit-position.png>
+<img id=scale class=sample width=80 height=40 src=object-fit-position.png>
+<img id=small class=sample width=80 height=40 src=object-fit-position.png>
+<img id=top class=sample width=80 height=40 src=object-fit-position.png>
+<img id=two class=sample width=80 height=40 src=object-fit-position.png>
+<img id=calc class=sample width=80 height=40 src=object-fit-position.png>
+</div><div id=after></div>
+<script>
+var first=document.getElementById('fill');
+var supported=CSS.supports('object-fit','fill')&&CSS.supports('object-fit','contain')&&CSS.supports('object-fit','cover')&&CSS.supports('object-fit','none')&&CSS.supports('object-fit','scale-down')&&CSS.supports('object-position','top')&&CSS.supports('object-position','25% bottom')&&CSS.supports('object-position','right calc(25% + 2px) bottom calc(50% - 2px)')&&!CSS.supports('object-position','top 20%')&&!CSS.supports('object-position','right 5px bottom')&&!CSS.supports('object-fit','bogus');
+document.body.setAttribute('data-supports',supported?'yes':'no');
+first.addEventListener('click',function(){
+first.style.objectFit='none';
+first.style.setProperty('object-position','right calc(25% + 2px) bottom calc(50% - 2px)');
+var saved=first.style.getPropertyValue('object-position');
+first.style.objectFit='bogus';
+first.style.setProperty('object-position','top 20%');
+document.body.setAttribute('data-style-kept',first.style.objectFit==='none'&&saved!==''&&first.style.objectPosition===saved?'yes':'no');
+document.body.setAttribute('data-phase','changed');
+document.getElementById('heading').firstChild.data='Object fit changed';
+});
+</script>

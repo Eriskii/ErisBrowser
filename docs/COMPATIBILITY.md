@@ -429,7 +429,7 @@ This is an implementation inventory, not a conformance certificate. A feature li
 | Layout | Block/inline flow, text wrapping, margins/padding/borders, flex rows/columns/reverse/order, scaled shrink and min/max freezing, align-self/auto margins, row/column wrapping and cross-line align-content, Grid lines/spans and dense row/column placement, explicit/implicit tracks, minmax/fr sizing and alignment, tables/spans, left/right floats, clear, shrink-to-fit, partial formatting contexts, relative/absolute/fixed positioning, padding-box containing blocks and bounded stacking contexts | Complete formatting contexts, intrinsic flex auto minimums, baseline alignment, writing-mode and indefinite-size interactions, full positioned flex behavior, complete Grid intrinsic sizing/named areas/subgrid, float margin-collapse/painting interactions, full inline/static-position geometry, sticky positioning, multicolumn/pagination, transforms, writing modes and bidi |
 | Typography | Bundled sans/bold/monospace fonts, basic advances/kerning, synthetic italics, alignment/decoration | Complex text shaping, font fallback/downloads, full Unicode line breaking, hyphenation, variable fonts, complete font selection |
 | Paint | CPU display lists, nested rectangular overflow clips, rounded backgrounds/borders, alpha blending, cached glyphs, raster images, separate viewport-fixed paint/hit coordinates, group opacity with deferred bounded premultiplied RGBA16 surfaces, scrolling and zoom; optional Vulkan compositing with bounded [full-range group opacity](vulkan-full-opacity.md) | Full compositor, rounded clipping masks/separate overflow axes, filters, masks, shadows, gradients, animations, broader hardware acceleration, color management |
-| Images | PNG, JPEG, first-frame GIF/WebP, BMP via image codecs; bounded SVG subset | Animated image playback, AVIF, complete SVG, image orientation/media fidelity and full responsive image selection |
+| Images | PNG, JPEG, first-frame GIF/WebP, BMP via image codecs; bounded SVG subset; loaded-img [object-fit and physical object-position](image-fitting.md), including rasterized external SVG | Animated image playback, AVIF, complete SVG, image orientation/media fidelity and full responsive image selection |
 | SVG | Basic shapes, paths, fill/stroke, viewBox, transforms, simple text | Full SVG/CSS integration, filters, patterns, gradients, masks, markers, foreignObject, animation, external resource references |
 | JavaScript | Primitive values, UTF-16 strings, untagged interpolated templates, computed object keys/methods/accessors and static prototype setters, arrays/objects, lexical initialization and loop scopes, operators including comma expressions, strict directives and reference/receiver rules, control flow including switch and do/while, closures/functions/arrows with identifier default/rest parameters, bounded dynamic ordinary Function construction, constructors/this/instanceof and basic prototypes, ordinary data/accessor descriptors, for-in enumeration, deletion and bound functions, mapped/unmapped arguments, throw/try/catch/finally, selected builtins, DOM bindings and events | Full ECMAScript, classes/modules, destructured parameters, dynamic eval, complete Function source/UTF-16 handling, complete Annex B behavior, complete prototypes/exotic descriptors/coercion, async/promises, complete Error constructors/prototypes/stacks, tagged templates, complete String methods/generic receivers/property behavior, fractional/large nondecimal Number.toString, JIT and GC |
 | RegExp | Custom UTF-16 non-Unicode literals/constructor, d/g/i/m/s/y flags, captures/named groups, alternatives/classes/quantifiers, anchors/boundaries, lookahead/backreferences, exec/test/lastIndex, String match/search/replace/split | Unicode u/v modes and properties/sets, lookbehind, modifier groups, duplicate/non-ASCII group names, several legacy escape forms, Symbol hooks/species and complete RegExp compatibility |
@@ -442,6 +442,19 @@ This is an implementation inventory, not a conformance certificate. A feature li
 | Other platform APIs | No broad implementation | Canvas APIs, WebGL/WebGPU, WebAssembly, audio/video, WebRTC, storage/IndexedDB, workers, geolocation, sensors, notifications, payments, credentials, extensions, printing and many others |
 
 The URL parser and encoding libraries are infrastructure libraries, not independent reimplementations of those specifications. There is no claim that every dependency is authored in this repository.
+
+[Image fitting](image-fitting.md) supports `fill`, `contain`, `cover`, `none`,
+`scale-down`, and the Images 4 contain/cover plus scale-down pairs in either
+order. Physical positions use one, two or four components, supported length
+units, signed percentages and the existing additive `calc()` subset. Three
+components, logical positions and unsupported math remain rejected. Both
+properties start from non-inherited defaults; explicit inheritance, variables
+and CSS-wide resets follow the cascade. Invalid later declarations and inline
+setters preserve valid earlier values, while invalid variable substitution uses
+`unset`. Inline CSSOM keeps its existing serialization format rather than full
+canonical computed-value serialization. Loaded image paint is clipped to its
+content box; unrepresentable fitted geometry is omitted within existing limits.
+Inline SVG and video/poster painting are outside this change.
 
 [Native image accounting](native-image-accounting.md) refines the optional GPU
 route’s CPU preparation estimate to the clipped image sampling loop. It retains
