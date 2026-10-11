@@ -25,6 +25,12 @@ fetcher and image caches for the page lifetime. Request and decode allowances
 remain cumulative, and inline SVG accounting includes cache-only rasters. This
 adds no fetch trigger for layout, image-source mutations or CSS backgrounds.
 
+[Bounded tiled raster painting](docs/tiled-image-raster.md) adds a display-list
+primitive for already decoded images, with independent axis repetition,
+positioned tiles and rounded clipping. It uses center-based nearest sampling
+and whole-frame software fallback. CSS URL backgrounds remain unsupported;
+this primitive adds no fetching or decoding.
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;

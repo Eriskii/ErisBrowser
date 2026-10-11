@@ -201,6 +201,7 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
             DrawCommand::Text { .. } => (7, None, None),
             DrawCommand::Image { .. } => (8, None, None),
             DrawCommand::Line { .. } => (9, None, None),
+            DrawCommand::BackgroundImage { .. } => (12, None, None),
             DrawCommand::LinearGradient { repeat, .. } => {
                 (if *repeat == [true, true] { 10 } else { 11 }, None, None)
             }
@@ -269,6 +270,22 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
             }
             DrawCommand::Image { rect, key } => {
                 bytes.rect(*rect)?;
+                bytes.text(key)?;
+            }
+            DrawCommand::BackgroundImage {
+                rect,
+                tile,
+                repeat,
+                radius,
+                key,
+            } => {
+                if *radius < 0.0 || tile.width <= 0.0 || tile.height <= 0.0 {
+                    return Err("benchmark identity invalid background image".into());
+                }
+                bytes.byte(u8::from(repeat[0]) | (u8::from(repeat[1]) << 1))?;
+                bytes.rect(*rect)?;
+                bytes.rect(*tile)?;
+                bytes.f32(*radius)?;
                 bytes.text(key)?;
             }
             DrawCommand::LinearGradient {
@@ -765,3 +782,6 @@ mod tests {
         assert!(capture(&b, PhysicalSize::new(1280, 880)).is_err());
     }
 }
+
+#[cfg(test)]
+mod tiled_image_tests;

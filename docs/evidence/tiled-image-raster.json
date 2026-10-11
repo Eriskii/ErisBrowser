@@ -1,0 +1,1316 @@
+{
+  "archive": {
+    "bytes": 1271119,
+    "members": 517,
+    "path": "tiled-image-raster.tar.gz",
+    "sha256": "5682a7a617845cb0a8cbb5857f073506f2b41f2ee0578107b2d55a56059383bf"
+  },
+  "base": "dd6ac11daaf318f4e31edc988fd8a2f74722ac10",
+  "browser": {
+    "build_receipt": "/tmp/eris-tiled-raster-1/validation/candidate-browser-build-2.json",
+    "bytes": 62109096,
+    "path": "/tmp/eris-tiled-raster-1/eris-browser-final-2",
+    "sha256": "d8c45ec6746f1eef50d07ad6b520a753ad90d708c11fd26e5a4cdec6f3ed229d",
+    "source": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+    "source_sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d",
+    "strip_receipt": "/tmp/eris-tiled-raster-1/validation/candidate-browser-strip-2.json"
+  },
+  "checks": {
+    "bridge-list-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "raster-bridge",
+        "--lib",
+        "graphics::raster_bridge::",
+        "--",
+        "--list"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 14043,
+        "path": "/tmp/eris-tiled-raster-1/validation/bridge-list-188-1.log",
+        "sha256": "931c91bea24c741a7a25e023ec01cde1ff2ee20720c5b8d2cafb6350c756a624"
+      },
+      "receipt": {
+        "bytes": 413,
+        "path": "/tmp/eris-tiled-raster-1/validation/bridge-list-188-1.json",
+        "sha256": "76a28e9c5ad4c97a56a03bbdeecfb27e1aae43775b8c3c260ce3a666ddef8555"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "bridge-list-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "raster-bridge,vulkan-presenter",
+        "--lib",
+        "graphics::raster_bridge::",
+        "--",
+        "--list"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 14068,
+        "path": "/tmp/eris-tiled-raster-1/validation/bridge-list-198-1.log",
+        "sha256": "0522d7cd016d551dc2e5bf4177ccd0d3b444591d78d94f771de6dd14704885aa"
+      },
+      "receipt": {
+        "bytes": 429,
+        "path": "/tmp/eris-tiled-raster-1/validation/bridge-list-198-1.json",
+        "sha256": "4fd10e147a8e3b731948b27f250cc1e6e5f344f120fade174b2665a83b2be80a"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "candidate-browser-build-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-build-1.log",
+        "sha256": "4cf86278c1e6d659943a46a3d7e3da429ac15be90f0f17742e24ef85228e7d3e"
+      },
+      "receipt": {
+        "bytes": 386,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-build-1.json",
+        "sha256": "906e90b8a0282ebaed69f1d220b60218b2572b0d6888476f1ea68877187399c8"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "candidate-browser-build-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "build",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--bin",
+        "eris-browser"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-build-2.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      "receipt": {
+        "bytes": 385,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-build-2.json",
+        "sha256": "b834802e1c005497971e856c964a300e7d5065614e610fc289b0b8d9920b62e2"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "candidate-browser-strip-1": {
+      "command": [
+        "strip",
+        "--strip-debug",
+        "/tmp/eris-tiled-raster-1/eris-browser-final"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-strip-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 283,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-strip-1.json",
+        "sha256": "21c8c75ca0d6fdb6b4be80216d560f21cff8f830a1d2af05cafd98dabb38ab77"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "candidate-browser-strip-2": {
+      "command": [
+        "strip",
+        "--strip-debug",
+        "/tmp/eris-tiled-raster-1/eris-browser-final-2"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-strip-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 285,
+        "path": "/tmp/eris-tiled-raster-1/validation/candidate-browser-strip-2.json",
+        "sha256": "12766bcffcc3b3645f3fea036587b4c60396df1ce76232e6b776e1915e7bc476"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "ci-discovery-188-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-tiled-raster-1/ci-discovery.py",
+        "/tmp/eris-tiled-raster-1/validation/bridge-list-188-1.log"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 203,
+        "path": "/tmp/eris-tiled-raster-1/validation/ci-discovery-188-1.log",
+        "sha256": "f9fddf19ff514988c909189388f4f2933d767ff2acc6a5a0e267d015b998cbad"
+      },
+      "receipt": {
+        "bytes": 321,
+        "path": "/tmp/eris-tiled-raster-1/validation/ci-discovery-188-1.json",
+        "sha256": "7699c1c7fd24970e03a4df3155f0165b4d8d9327679084e470dda8d0af1fe0cd"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "ci-discovery-198-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-tiled-raster-1/ci-discovery.py",
+        "/tmp/eris-tiled-raster-1/validation/bridge-list-198-1.log"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 203,
+        "path": "/tmp/eris-tiled-raster-1/validation/ci-discovery-198-1.log",
+        "sha256": "f9fddf19ff514988c909189388f4f2933d767ff2acc6a5a0e267d015b998cbad"
+      },
+      "receipt": {
+        "bytes": 321,
+        "path": "/tmp/eris-tiled-raster-1/validation/ci-discovery-198-1.json",
+        "sha256": "f66bded3c6c054773ec41594505f68f635427e2ce442aaab69801218eb62a89f"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "default-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 141,
+        "path": "/tmp/eris-tiled-raster-1/validation/default-clippy-198-1.log",
+        "sha256": "f36ef549722699fd140b16c0322223f5f48d0d9c1ac7bbc4704ef73ae915cdf5"
+      },
+      "receipt": {
+        "bytes": 365,
+        "path": "/tmp/eris-tiled-raster-1/validation/default-clippy-198-1.json",
+        "sha256": "6ea109e5b974c06eda6c24e25b5e321d8d3a4f569fc78ba8a5c9f7e4fae07f97"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "default-clippy-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-tiled-raster-1/validation/default-clippy-198-2.log",
+        "sha256": "22e0df986057b9ba5be07526ac5fb348862a3dedef42108383cc3e088acbb889"
+      },
+      "receipt": {
+        "bytes": 366,
+        "path": "/tmp/eris-tiled-raster-1/validation/default-clippy-198-2.json",
+        "sha256": "8171cdd459fb0160c1584ed3ddef625aaf493ed979f6aeeaeeea4a267d1ed396"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "focused-background-image-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "background_image",
+        "--",
+        "--test-threads=4"
+      ],
+      "expected_exit": 101,
+      "log": {
+        "bytes": 798,
+        "path": "/tmp/eris-tiled-raster-1/validation/focused-background-image-1.log",
+        "sha256": "40ed5c4a4515a25bfe10259e1f56f7ebda64e3949c439058996583102153f0ff"
+      },
+      "receipt": {
+        "bytes": 412,
+        "path": "/tmp/eris-tiled-raster-1/validation/focused-background-image-1.json",
+        "sha256": "5aa44afc05753e11bc9fc0a7d23ddbad4fdf9b852b19da63a9340ecec34251f8"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-1.json",
+        "sha256": "19510d6993c333cd78ecb068fa14de8df7057de15b61210390e4c072dfdf3eac"
+      }
+    },
+    "focused-background-image-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "background_image",
+        "--",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 10435,
+        "path": "/tmp/eris-tiled-raster-1/validation/focused-background-image-2.log",
+        "sha256": "e5e576134b69881e0febae2811e4bfb290d02cf1ed24801bba3441e65ab857d9"
+      },
+      "receipt": {
+        "bytes": 409,
+        "path": "/tmp/eris-tiled-raster-1/validation/focused-background-image-2.json",
+        "sha256": "7b6f6854daf57eee0b08a5ee7eb1147e01fd217d2f9d1b26e4794aef5d449241"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 30,
+        "rows": 29
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "format-1": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--all"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-tiled-raster-1/validation/format-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 341,
+        "path": "/tmp/eris-tiled-raster-1/validation/format-1.json",
+        "sha256": "ae09cd63363093f3aa4475f2849e047c6b1175746836d971d104dc3a2afed3e4"
+      }
+    },
+    "format-check-1": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-tiled-raster-1/validation/format-check-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 362,
+        "path": "/tmp/eris-tiled-raster-1/validation/format-check-1.json",
+        "sha256": "8cb409cf728b5d31e29b91cbaa2a4a018bb17c3d63fbeda2bd8c233a59c1ff62"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "format-check-2": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-tiled-raster-1/validation/format-check-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 361,
+        "path": "/tmp/eris-tiled-raster-1/validation/format-check-2.json",
+        "sha256": "d5629da153b22e554e7717f945b769a2d0b2be9cae314e5a669e5a192c685d42"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "full-default-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 243614,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-default-198-1.log",
+        "sha256": "a88c6ded8cdd31a371afb4781cdbec62ff576dc10a68336e1c90f736e83f273e"
+      },
+      "receipt": {
+        "bytes": 363,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-default-198-1.json",
+        "sha256": "9c7f42f0eae070c1dd63c0e8f0a6d46de61f0dec122c391ca4f73f6ff2ec42a0"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2436,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "full-default-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 243544,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-default-198-2.log",
+        "sha256": "ddefa742436f9a8f941d803662f95f8466e640c3144f2fc0fa8a2540c1baf261"
+      },
+      "receipt": {
+        "bytes": 364,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-default-198-2.json",
+        "sha256": "01e8d829080f5f7e81a33b60b9862ecbe5e096a6de74e394f54255bb1ca5f2a1"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2436,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "full-native-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 268469,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-native-1.log",
+        "sha256": "1e053de98a5711947cc6fb6df1beb74bec7e1e96102bb56a65c9e3867337ba77"
+      },
+      "receipt": {
+        "bytes": 397,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-native-1.json",
+        "sha256": "63db8a2d6c70a38426640db81640148f505ed334cedc2b243fe112d6ba58fd9b"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2645,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "full-native-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 268469,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-native-2.log",
+        "sha256": "3d7fa23a41cb22f26c86b2ffa5d318468deb1173d620225708e86c83112caa44"
+      },
+      "receipt": {
+        "bytes": 397,
+        "path": "/tmp/eris-tiled-raster-1/validation/full-native-2.json",
+        "sha256": "be444ae6feead1da05097567bbf415fa748061fc80ce550530ae65818e27a9ea"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 2645,
+        "rows": 30
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "native-clippy-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 234,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-188-1.log",
+        "sha256": "bd4c08dacc6fb8bff5ad8524c587a667d833af2d51e8334c93f76356441e9ca7"
+      },
+      "receipt": {
+        "bytes": 404,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-188-1.json",
+        "sha256": "100e52f35c9c879654c75687e24c0da1676298e1b9b5368521a2deb10adeea0a"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "native-clippy-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-188-2.log",
+        "sha256": "22e0df986057b9ba5be07526ac5fb348862a3dedef42108383cc3e088acbb889"
+      },
+      "receipt": {
+        "bytes": 405,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-188-2.json",
+        "sha256": "1a8d135a2c8f74167f9fd56c6f5cce9aa5b3fdc72dfa7a237945850a838b33c5"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "native-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 233,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-198-1.log",
+        "sha256": "cfa9794e757b80af6c63afae4afb521da60a5b5f965355cf1b84563f14fa9fa7"
+      },
+      "receipt": {
+        "bytes": 402,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-198-1.json",
+        "sha256": "e3653f64309e0a600fb978bbe385303bada0a9dab60b0d8919e11f062ea61e9e"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "native-clippy-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "Cargo.toml",
+        "--features",
+        "vulkan-raster",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 72,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-198-2.log",
+        "sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af"
+      },
+      "receipt": {
+        "bytes": 405,
+        "path": "/tmp/eris-tiled-raster-1/validation/native-clippy-198-2.json",
+        "sha256": "6ac436cd2066cccd78a8160bb582714a02a5c47e065886413522786d31ab3afa"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "parent-ci-1": {
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "38127189184",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--json",
+        "headSha,status,conclusion,url,jobs"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 26976,
+        "path": "/tmp/eris-tiled-raster-1/validation/parent-ci-1.log",
+        "sha256": "dabc1ccbf4f5cf6f06ae383b0674aa9af7c242f4f3f66cb802960f3ac139995a"
+      },
+      "receipt": {
+        "bytes": 333,
+        "path": "/tmp/eris-tiled-raster-1/validation/parent-ci-1.json",
+        "sha256": "ccc613c04820b8736c74f7c297c7de480f40e2acffbdb87ceed0acc9d6cf40b9"
+      }
+    },
+    "parent-ci-list-1": {
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--commit",
+        "dd6ac11d",
+        "--json",
+        "databaseId,headSha,status,conclusion,url",
+        "--limit",
+        "3"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 3,
+        "path": "/tmp/eris-tiled-raster-1/validation/parent-ci-list-1.log",
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      },
+      "receipt": {
+        "bytes": 382,
+        "path": "/tmp/eris-tiled-raster-1/validation/parent-ci-list-1.json",
+        "sha256": "9d37dd4022640935e0942341bb2065a71eea13cecbf00724dea2a3c3cfff5641"
+      }
+    },
+    "parent-ci-list-2": {
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "Eriskii/ErisBrowser",
+        "--commit",
+        "dd6ac11daaf318f4e31edc988fd8a2f74722ac10",
+        "--json",
+        "databaseId,headSha,status,conclusion,url",
+        "--limit",
+        "3"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 193,
+        "path": "/tmp/eris-tiled-raster-1/validation/parent-ci-list-2.log",
+        "sha256": "a8f5c2989f90e7ee39d59b728076bcfef3c338df6e5dcd3a89adeee4a41d621c"
+      },
+      "receipt": {
+        "bytes": 413,
+        "path": "/tmp/eris-tiled-raster-1/validation/parent-ci-list-2.json",
+        "sha256": "ad375a50de88c82d270f07fca8619e9d3a097ff61977512301be795d3abd7724"
+      }
+    },
+    "probe-clippy-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 332,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-clippy-198-1.log",
+        "sha256": "61f5ed2829faec7a5ab386a1d7f55460438f26ed7f9a0978e780fc17bf43fe45"
+      },
+      "receipt": {
+        "bytes": 429,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-clippy-198-1.json",
+        "sha256": "4c927db9723b03fcbbd1649278252c7c28918d34dfb12e278ef565150455c314"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "probe-clippy-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 60,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-clippy-198-2.log",
+        "sha256": "4b395c9c76c7f7fb5221d30df7320c7a2387ff3842c426dbee6a59a54b5cffab"
+      },
+      "receipt": {
+        "bytes": 431,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-clippy-198-2.json",
+        "sha256": "0360ba8fd194f0640445f3b41936e570977772fda5938b12f3e89ad42ee2dd77"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "probe-format-check-1": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--all",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-format-check-1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 435,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-format-check-1.json",
+        "sha256": "a5fc2ec54d6f2d1d356b703700e844544398c02b18e9a7d3404f49f2048e6435"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "probe-format-check-2": {
+      "command": [
+        "env",
+        "CARGO_HOME=/tmp/eris-vulkan-browser-cargo-home",
+        "RUSTUP_HOME=/tmp/eris-vulkan-rustup",
+        "cargo",
+        "+1.88.0",
+        "fmt",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--all",
+        "--check"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 0,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-format-check-2.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "receipt": {
+        "bytes": 434,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-format-check-2.json",
+        "sha256": "4a7540bdacf39720eae1097007454fb4547ba271f09169697c90f59f3b13e4f2"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "probe-tests-188-1": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 4564,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-188-1.log",
+        "sha256": "cc2861d83651d1e2ada530b810300c2a4d661ee1959b71eb594a852692da2a12"
+      },
+      "receipt": {
+        "bytes": 429,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-188-1.json",
+        "sha256": "81ab16558fc86824ac4cf47d85c16d2452151fb96e37efa6849982be840fb765"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 15,
+        "rows": 12
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "probe-tests-188-2": {
+      "command": [
+        "cargo",
+        "+1.88.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 4291,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-188-2.log",
+        "sha256": "4ec27a5da7952835369c736691ce5342f8bce0c41538e2b663ea21243aeea1eb"
+      },
+      "receipt": {
+        "bytes": 430,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-188-2.json",
+        "sha256": "488050c06421e222bab8a730611ae9ab7b0e7026ad72f01ed3f1e6f607a15c15"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 15,
+        "rows": 12
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "probe-tests-198-1": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 8741,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-198-1.log",
+        "sha256": "968815a0eabd68f6dfdb1fcefb2081914d5ffc5339c264f9a6eb3413aeca7e8a"
+      },
+      "receipt": {
+        "bytes": 429,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-198-1.json",
+        "sha256": "e9e6bc0e1924e06914261c99f9722b473668b896b17c496f4a15b6778ccab052"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 15,
+        "rows": 12
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "probe-tests-198-2": {
+      "command": [
+        "cargo",
+        "+1.98.0",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "tools/vulkan-raster-probe/Cargo.toml",
+        "--features",
+        "browser-bridge",
+        "--",
+        "--include-ignored",
+        "--test-threads=4"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 4280,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-198-2.log",
+        "sha256": "00904d69d42b6568fe71fd642e8d4947ecd6f0686408db15c528ed0d91a26adc"
+      },
+      "receipt": {
+        "bytes": 429,
+        "path": "/tmp/eris-tiled-raster-1/validation/probe-tests-198-2.json",
+        "sha256": "5eaacbd5f46d32d0997735682978d25a8ffbc77b5462ed9cb76c01c34cf77078"
+      },
+      "rust": {
+        "failed": 0,
+        "ignored": 0,
+        "passed": 15,
+        "rows": 12
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    },
+    "reftests-final-1": {
+      "command": [
+        "python3",
+        "/tmp/eris-tiled-raster-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-tiled-raster-1/eris-browser-final",
+        "--output-dir",
+        "/tmp/eris-tiled-raster-1/reftests-final"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 25190,
+        "path": "/tmp/eris-tiled-raster-1/validation/reftests-final-1.log",
+        "sha256": "0b30c45555e635fc0c41c61fe010ac03d752895776adf41d56dd60315ba0b6eb"
+      },
+      "receipt": {
+        "bytes": 396,
+        "path": "/tmp/eris-tiled-raster-1/validation/reftests-final-1.json",
+        "sha256": "27719dcbebca6f3ba228d6122aa2ea6267cf485e458db76fdc0c23f3b3b3ecb0"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-2.json",
+        "sha256": "764497340c2ee3aeb4a07a2a34e5078987429bb7b3e1f2764d51c44e8b8eed48"
+      }
+    },
+    "reftests-final-2": {
+      "command": [
+        "python3",
+        "/tmp/eris-tiled-raster-1/worktree/tools/reftest.py",
+        "--binary",
+        "/tmp/eris-tiled-raster-1/eris-browser-final-2",
+        "--output-dir",
+        "/tmp/eris-tiled-raster-1/reftests-final-2"
+      ],
+      "expected_exit": 0,
+      "log": {
+        "bytes": 25480,
+        "path": "/tmp/eris-tiled-raster-1/validation/reftests-final-2.log",
+        "sha256": "b64993d01943b685e32a48701b070d99ba208dc800c49a162eb62f12d6841a84"
+      },
+      "receipt": {
+        "bytes": 400,
+        "path": "/tmp/eris-tiled-raster-1/validation/reftests-final-2.json",
+        "sha256": "d7769c7509b791a917c42abe0a762c3fd82dc92b36fc884a39adef921ba58795"
+      },
+      "source": {
+        "bytes": 62434,
+        "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+        "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+      }
+    }
+  },
+  "corrections": [
+    "Initial compile E0689 in a new codec test was corrected by an explicit f32 literal annotation; expected values and production code unchanged.",
+    "Root found the CI exact bridge roster needed seven new groups: 107 to 114. Source3 differs from source2 only in workflow metadata; final checks bind source3.",
+    "Source-only publisher peer required actual probe tests plus strict Clippy; repaired before publisher execution."
+  ],
+  "failed_attempts": 1,
+  "limitations": [
+    "CSS URL backgrounds and dynamic image acquisition are still unsupported.",
+    "The software work tariff is a conservative admission rule, not instruction or allocator measurement.",
+    "Native BackgroundImage lowering is deferred; explicit whole-frame CPU fallback.",
+    "No new GPU execution, Chromium performance measurement, complete web compatibility or production-security claim."
+  ],
+  "parent_ci": "parent-ci-1",
+  "parent_ci_observation": "Published parent dd6ac11d finished eight jobs successfully and one vulkan-raster-probe job cancelled. This is not a full green CI result.",
+  "published": {
+    ".github/workflows/check.yml": {
+      "bytes": 19329,
+      "sha256": "22e83be4f4ae782077549e56010c9ddf7d6fdf6e99b6d25e71eddb73972cf26f"
+    },
+    "README.md": {
+      "bytes": 51430,
+      "sha256": "ec09a3390fac94c8f461f4ac3e2f805937466dd6ac25f50d5f9357f87d2bc6ca"
+    },
+    "docs/SECURITY.md": {
+      "bytes": 78894,
+      "sha256": "ca823dcbd10d264dad4285e593b18832d5f21d0ab133bbbf8b2613ade198000a"
+    },
+    "docs/tiled-image-raster.md": {
+      "bytes": 6812,
+      "sha256": "f73d4ac05771299a234e21528a66ecc7607f853ee127e541f10529dd098be06e"
+    },
+    "src/bin/eris-stress.rs": {
+      "bytes": 58108,
+      "sha256": "4ac93c0805fdf0e310ce73a7d71fbc7e8345b590e3bf987f3c67578ec483cf6b"
+    },
+    "src/bin/eris-stress/tiled_image_tests.rs": {
+      "bytes": 1003,
+      "sha256": "d556d3e3757a0fddf1438b17520b45839de66df15181942187eaf6cba4bd8faf"
+    },
+    "src/browser.rs": {
+      "bytes": 126626,
+      "sha256": "16bc72953b7c3481668d5c3836ff7be28a3956a2cace62a7a76a79b0b723862e"
+    },
+    "src/browser/native_benchmark_identity.rs": {
+      "bytes": 28578,
+      "sha256": "141548198e317f559c1668ffdc4ac268e3e56fc27cef4565c25bdfbcf78fee0b"
+    },
+    "src/browser/native_benchmark_identity/tiled_image_tests.rs": {
+      "bytes": 3282,
+      "sha256": "7eccd152cebe1cf2ab4dcfcc0561fe968b65eecc46ca398817bad6f5eecdc149"
+    },
+    "src/browser/native_scene.rs": {
+      "bytes": 37520,
+      "sha256": "ccc0f5f4afacd456c610c5595f5078121de6cbed5585cf4978e2f3e039de225f"
+    },
+    "src/browser/native_scene/tiled_image_tests.rs": {
+      "bytes": 2384,
+      "sha256": "f2a941aaf30f992ad74736621af7c9bd38c0e8c9b8ee54ae6d646fc3177788ac"
+    },
+    "src/browser/tiled_image_tests.rs": {
+      "bytes": 1998,
+      "sha256": "a15ceba0e5867a5ecd5719410839520798ac784095f23347709729c3eba328f0"
+    },
+    "src/graphics.rs": {
+      "bytes": 70272,
+      "sha256": "7ebfde04356f7f1d6a8112bce95ed291a006cca51da98c4daea23d7fd64dd66f"
+    },
+    "src/graphics/background_image.rs": {
+      "bytes": 4924,
+      "sha256": "4fdd471d2dcd5d67c75b27a7f8d5797153a0a9e77c2c5ef0fe372f94a8f77ba9"
+    },
+    "src/graphics/background_image/tests.rs": {
+      "bytes": 15362,
+      "sha256": "b8309edad2dfd960ff903e962b35d6ac86eaad175186fc08f90d5093bbe3eef2"
+    },
+    "src/graphics/gradient.rs": {
+      "bytes": 21536,
+      "sha256": "ce327bc472884a4217559fe225108c76f7206bf2316fb74348a900626ddd0701"
+    },
+    "src/graphics/raster_bridge.rs": {
+      "bytes": 18781,
+      "sha256": "8722ac630c506c4e8d96110d7088bff20e4cb5eb6653159f92c24f1b43d607b8"
+    },
+    "src/graphics/raster_bridge/background_image_tests.rs": {
+      "bytes": 11087,
+      "sha256": "a16c9c466b264b74fc7126770a87f246813d8506e7bee84d4b1131a4e15fb133"
+    },
+    "src/graphics/raster_bridge/native.rs": {
+      "bytes": 53645,
+      "sha256": "b6a84557e94700c1601d19fa86b54669276c408236106667cdedfb62061a75d5"
+    },
+    "src/graphics/raster_bridge/text.rs": {
+      "bytes": 15545,
+      "sha256": "892721a481cfed1b96ad9d17ab679f5d67378c902a241b564b60c72eecf33fed"
+    },
+    "src/layout.rs": {
+      "bytes": 331094,
+      "sha256": "94309d6bfd6aa73cee3b7153dd52f0c27d35a33c28319b9735e716bd23b9f13f"
+    },
+    "src/layout/tiled_image_tests.rs": {
+      "bytes": 6207,
+      "sha256": "beddf65524e58eaea16e9930f497a4c81706af2371356d99e6ccd22995446243"
+    },
+    "src/worker/codec.rs": {
+      "bytes": 95761,
+      "sha256": "09f0e38ca07bbb7e23323bbd0372bc4f7da376f8b4aa324df56ab588d985d818"
+    },
+    "src/worker/codec/background_image_tests.rs": {
+      "bytes": 16779,
+      "sha256": "21da41b8ff33684685c862b42beb341172d6d6736f02434718e4b13aec4859b0"
+    },
+    "tools/vulkan-raster-probe/src/bin/checker_support/mod.rs": {
+      "bytes": 13669,
+      "sha256": "e76627a9383c78d3dd0055b90ff3bf8c4fd785528b9ebc5af311023e3b6aa616"
+    },
+    "tools/vulkan-raster-probe/src/bin/worker-text-check.rs": {
+      "bytes": 22684,
+      "sha256": "dc239a66ead8becac8262b08a2c876f5988a6ddc84397706622fb46d75178bff"
+    }
+  },
+  "reftests": {
+    "check": "reftests-final-2",
+    "manifest": {
+      "bytes": 19928,
+      "path": "/tmp/eris-tiled-raster-1/worktree/tests/reftests/manifest.json",
+      "sha256": "1b62c990295b4d04c31d75c77196fa6cdcdeac3f0ca57413d40cf76086a49136"
+    },
+    "report": {
+      "bytes": 25480,
+      "path": "/tmp/eris-tiled-raster-1/reftests-final-2/report.json",
+      "sha256": "b64993d01943b685e32a48701b070d99ba208dc800c49a162eb62f12d6841a84"
+    }
+  },
+  "results": {
+    "ci_inventory_each_variant": 114,
+    "default_rust_1_98": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2436,
+      "rows": 30
+    },
+    "earlier_focused": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 30,
+      "rows": 29
+    },
+    "native_rust_1_88": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2645,
+      "rows": 30
+    },
+    "new_groups": {
+      "bridge": 7,
+      "codec": 11,
+      "raster": 12,
+      "transforms": 9
+    },
+    "probe_rust_1_88": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 15,
+      "rows": 12
+    },
+    "probe_rust_1_98": {
+      "failed": 0,
+      "ignored": 0,
+      "passed": 15,
+      "rows": 12
+    },
+    "unchanged_references": 71
+  },
+  "scope": "Nearest-center raster backgrounds sample bounded destination pixels, reuse existing clips/opacity, transport through tag12 and preserve transforms/identity. Native preflight refuses the entire frame. No CSS URL consumer, fetch/decode trigger or GPU lowering.",
+  "source": {
+    "bytes": 62434,
+    "path": "/tmp/eris-tiled-raster-1/compiled-source-3.json",
+    "sha256": "64e8a40a85aecce7fda2970d93e46242d27724fa5df89fee02c0ae26d0e61b8d"
+  },
+  "source_count": 555,
+  "status": "bounded tiled-image primitive, transport and explicit native fallback validated; complete browser goal remains open"
+}

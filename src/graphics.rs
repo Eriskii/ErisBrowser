@@ -2,6 +2,7 @@
 use ab_glyph::{Font, FontArc, PxScale, ScaleFont, point};
 use std::{cell::RefCell, collections::HashMap, path::Path, sync::Arc};
 
+mod background_image;
 pub mod gradient;
 #[cfg(feature = "raster-bridge")]
 pub mod raster_bridge;
@@ -99,6 +100,14 @@ pub enum DrawCommand {
     },
     Image {
         rect: Rect,
+        key: String,
+    },
+    /// Raster background with independent repetition and a rounded paint outline.
+    BackgroundImage {
+        rect: Rect,
+        tile: Rect,
+        repeat: [bool; 2],
+        radius: f32,
         key: String,
     },
     /// A background tile with independent axis repetition and a paint outline.
@@ -866,6 +875,23 @@ impl Canvas {
                 DrawCommand::Image { rect, key } => {
                     if let Some(img) = images.get(key) {
                         self.image(rect.translated(dx, dy), img);
+                    }
+                }
+                DrawCommand::BackgroundImage {
+                    rect,
+                    tile,
+                    repeat,
+                    radius,
+                    key,
+                } => {
+                    if let Some(img) = images.get(key) {
+                        self.background_image(
+                            rect.translated(dx, dy),
+                            tile.translated(dx, dy),
+                            *radius,
+                            img,
+                            *repeat,
+                        );
                     }
                 }
                 DrawCommand::LinearGradient {

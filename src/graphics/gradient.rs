@@ -294,7 +294,7 @@ fn gradient_loop_with_repeat(
     Some(bounds)
 }
 
-fn nonrepeated_axis(low: i32, high: i32, origin: f32, extent: f32) -> (i32, i32) {
+pub(super) fn nonrepeated_axis(low: i32, high: i32, origin: f32, extent: f32) -> (i32, i32) {
     let origin = f64::from(origin);
     let extent = f64::from(extent);
     let low = low.max((origin - 0.5).ceil() as i32);

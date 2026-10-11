@@ -75,7 +75,7 @@ fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawComma
                     .filter(|&n| n <= MAX_FRAME_SCALARS)
                     .ok_or("native zoom scalar budget")?;
             }
-            DrawCommand::Image { key, .. } => {
+            DrawCommand::Image { key, .. } | DrawCommand::BackgroundImage { key, .. } => {
                 key_bytes = key_bytes
                     .checked_add(key.len())
                     .filter(|&n| n <= MAX_COMMAND_KEY_BYTES && key.len() <= MAX_KEY_BYTES)
@@ -137,6 +137,19 @@ fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawComma
             },
             DrawCommand::Image { rect: r, key } => DrawCommand::Image {
                 rect: rect(r),
+                key: copy_payload(key, &mut key_capacity, MAX_COMMAND_KEY_BYTES)?,
+            },
+            DrawCommand::BackgroundImage {
+                rect: r,
+                tile,
+                repeat,
+                radius,
+                key,
+            } => DrawCommand::BackgroundImage {
+                rect: rect(r),
+                tile: rect(tile),
+                repeat: *repeat,
+                radius: radius * zoom,
                 key: copy_payload(key, &mut key_capacity, MAX_COMMAND_KEY_BYTES)?,
             },
             DrawCommand::LinearGradient {
@@ -1064,3 +1077,6 @@ mod tests {
         assert_eq!(browser.selection.caret, usize::MAX);
     }
 }
+
+#[cfg(test)]
+mod tiled_image_tests;

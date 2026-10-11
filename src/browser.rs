@@ -2222,6 +2222,19 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
             rect: rect(r),
             key: key.clone(),
         },
+        DrawCommand::BackgroundImage {
+            rect: r,
+            tile,
+            repeat,
+            radius,
+            key,
+        } => DrawCommand::BackgroundImage {
+            rect: rect(r),
+            tile: rect(tile),
+            repeat: *repeat,
+            radius: radius * z,
+            key: key.clone(),
+        },
         DrawCommand::LinearGradient {
             rect: r,
             tile,
@@ -3531,3 +3544,6 @@ mod tests {
         assert_eq!(latest.take(), Some(4));
     }
 }
+
+#[cfg(test)]
+mod tiled_image_tests;

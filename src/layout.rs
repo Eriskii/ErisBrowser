@@ -2376,7 +2376,8 @@ impl Engine<'_> {
                             color.a > 0 && rect.width > 0.0 && rect.height > 0.0
                         }
                         DrawCommand::Text { text, color, .. } => !text.is_empty() && color.a > 0,
-                        DrawCommand::LinearGradient { rect, tile, .. } => {
+                        DrawCommand::LinearGradient { rect, tile, .. }
+                        | DrawCommand::BackgroundImage { rect, tile, .. } => {
                             rect.width > 0.0
                                 && rect.height > 0.0
                                 && tile.width > 0.0
@@ -5269,7 +5270,8 @@ fn translate_fragment(fragment: &mut Fragment, dx: f32, dy: f32) {
 
 fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
     match command {
-        DrawCommand::LinearGradient { rect, tile, .. } => {
+        DrawCommand::LinearGradient { rect, tile, .. }
+        | DrawCommand::BackgroundImage { rect, tile, .. } => {
             rect.x = finite(rect.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
             rect.y = finite(rect.y + dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
             // A tile can be locally valid before fragment placement. Clamping
@@ -7407,6 +7409,21 @@ mod tests {
                         *stop_scale,
                     ]
                 }
+                DrawCommand::BackgroundImage {
+                    rect, tile, radius, ..
+                } => {
+                    vec![
+                        rect.x,
+                        rect.y,
+                        rect.width,
+                        rect.height,
+                        tile.x,
+                        tile.y,
+                        tile.width,
+                        tile.height,
+                        *radius,
+                    ]
+                }
                 DrawCommand::Text { x, y, size, .. } => vec![*x, *y, *size],
                 DrawCommand::Line {
                     x1,
@@ -8364,3 +8381,6 @@ mod object_fit_tests {
         assert_eq!(e.open_clips, 0);
     }
 }
+
+#[cfg(test)]
+mod tiled_image_tests;

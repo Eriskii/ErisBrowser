@@ -22,6 +22,7 @@ pub enum FallbackKind {
     UnsupportedRoundedRect,
     UnsupportedOpacity,
     UnsupportedGradient,
+    UnsupportedBackgroundImage,
     InvalidGeometry,
     InvalidImage,
     InvalidScope,
@@ -58,6 +59,7 @@ impl FallbackReason {
             FallbackKind::UnsupportedRoundedRect => "unsupported-rounded-rectangle",
             FallbackKind::UnsupportedOpacity => "unsupported-opacity",
             FallbackKind::UnsupportedGradient => "unsupported-gradient",
+            FallbackKind::UnsupportedBackgroundImage => "unsupported-background-image",
             FallbackKind::InvalidGeometry => "invalid-geometry",
             FallbackKind::InvalidImage => "invalid-image",
             FallbackKind::InvalidScope => "invalid-scope",
@@ -265,6 +267,12 @@ fn preflight_commands_by(
     for (index, command) in commands.iter().enumerate() {
         let at = Some(index);
         match command {
+            DrawCommand::BackgroundImage { .. } => {
+                return Err(FallbackReason::new(
+                    FallbackKind::UnsupportedBackgroundImage,
+                    at,
+                ));
+            }
             DrawCommand::LinearGradient { .. } => {
                 return Err(FallbackReason::new(FallbackKind::UnsupportedGradient, at));
             }
@@ -464,6 +472,7 @@ pub fn plan_display_list(
             DrawCommand::PopFixed => Command::PopFixed,
             // The complete immutable list was checked before table allocation.
             DrawCommand::Text { .. }
+            | DrawCommand::BackgroundImage { .. }
             | DrawCommand::LinearGradient { .. }
             | DrawCommand::PushOpacity { .. }
             | DrawCommand::PopOpacity => unreachable!("preflight rejected unsupported commands"),
@@ -509,6 +518,8 @@ pub fn plan_display_list(
     Ok(BridgePlan { plan, stats })
 }
 
+#[cfg(test)]
+mod background_image_tests;
 #[cfg(test)]
 mod gradient_tests;
 #[cfg(test)]

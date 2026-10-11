@@ -226,6 +226,9 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
             let location = Some(index);
             let leaf = |error| NativeFallback::leaf(error, Some(phase));
             match command {
+                DrawCommand::BackgroundImage { .. } => {
+                    return Err(at(FallbackKind::UnsupportedBackgroundImage, phase, index));
+                }
                 DrawCommand::LinearGradient {
                     rect,
                     tile,
@@ -459,6 +462,9 @@ fn geometry_pixel_work(
             let slot = ordinal;
             ordinal += 1;
             let scope = match command {
+                DrawCommand::BackgroundImage { .. } => {
+                    unreachable!("preflight refused background images")
+                }
                 DrawCommand::Rect { rect, .. } => {
                     let offset = state.offset();
                     let translated = Rect::new(
@@ -975,6 +981,9 @@ pub fn plan_native_scene(
             let gradient_window = gradients.windows[ordinal];
             ordinal += 1;
             let lowered_command = match command {
+                DrawCommand::BackgroundImage { .. } => {
+                    unreachable!("preflight refused background images")
+                }
                 DrawCommand::Text {
                     x,
                     y,

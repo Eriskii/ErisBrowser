@@ -104,6 +104,16 @@ impl Encoder {
         self.u32(s.len());
         self.raw(s.as_bytes());
     }
+    fn budget_string(&mut self, s: &str, remaining: &mut usize) {
+        // Image aliases and both image command kinds share the receiver's
+        // retained-key allowance. Reject before copying the offending key.
+        if self.failed || s.len() > (*remaining).min(MAX_STRING) {
+            self.failed = true;
+            return;
+        }
+        *remaining -= s.len();
+        self.string(s);
+    }
     fn dom_string(&mut self, s: &DomString) {
         if let Some(scalar) = s.scalar() {
             self.byte(0);
@@ -690,8 +700,9 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
         e.raw(&image.rgba);
     }
     e.u32(s.images.len());
+    let mut keys_bytes = MAX_STRING;
     for (key, image) in &s.images {
-        e.string(key);
+        e.budget_string(key, &mut keys_bytes);
         e.u32(indices[&Arc::as_ptr(image)]);
     }
     e.f32(s.layout.content_height);
@@ -754,7 +765,43 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
             DrawCommand::Image { rect, key } => {
                 e.byte(4);
                 e.rect(*rect);
-                e.string(key);
+                e.budget_string(key, &mut keys_bytes);
+            }
+            DrawCommand::BackgroundImage {
+                rect,
+                tile,
+                repeat,
+                radius,
+                key,
+            } => {
+                if [
+                    rect.x,
+                    rect.y,
+                    rect.width,
+                    rect.height,
+                    tile.x,
+                    tile.y,
+                    tile.width,
+                    tile.height,
+                    *radius,
+                ]
+                .iter()
+                .any(|n| !n.is_finite() || n.abs() > 16_000_000.0)
+                    || rect.width < 0.0
+                    || rect.height < 0.0
+                    || tile.width <= 0.0
+                    || tile.height <= 0.0
+                    || *radius < 0.0
+                {
+                    e.failed = true;
+                    return;
+                }
+                e.byte(12);
+                e.byte(u8::from(repeat[0]) | (u8::from(repeat[1]) << 1));
+                e.rect(*rect);
+                e.rect(*tile);
+                e.f32(*radius);
+                e.budget_string(key, &mut keys_bytes);
             }
             DrawCommand::LinearGradient {
                 rect,
@@ -1158,6 +1205,28 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                     repeat,
                 }
             }
+            12 => {
+                let flags = d.byte()?;
+                if flags & !3 != 0 {
+                    return Err("unknown IPC background image repeat flags".into());
+                }
+                let rect = d.rect()?;
+                let tile = d.rect()?;
+                let radius = d.f32()?;
+                if radius < 0.0 || tile.width <= 0.0 || tile.height <= 0.0 {
+                    return Err("invalid IPC background image geometry".into());
+                }
+                let key = d.budget_string(&mut keys_bytes)?;
+                // A missing raster is legal. This is an opaque image-store
+                // reference, never permission to fetch or open its contents.
+                DrawCommand::BackgroundImage {
+                    rect,
+                    tile,
+                    repeat: [flags & 1 != 0, flags & 2 != 0],
+                    radius,
+                    key,
+                }
+            }
             _ => return Err("unknown IPC display command".into()),
         };
         commands.push(command);
@@ -1440,6 +1509,8 @@ pub(super) fn decode_image_result(bytes: &[u8], budget: usize) -> Result<Result<
 
 #[cfg(test)]
 mod background_geometry_tests;
+#[cfg(test)]
+mod background_image_tests;
 #[cfg(test)]
 mod gradient_tests;
 

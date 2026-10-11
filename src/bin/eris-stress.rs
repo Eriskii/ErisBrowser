@@ -284,6 +284,15 @@ fn rectangle(rect: Rect) -> Result<(), String> {
     }
     Ok(())
 }
+fn background_image_invariants(rect: Rect, tile: Rect, radius: f32) -> Result<(), String> {
+    rectangle(rect)?;
+    rectangle(tile)?;
+    finite(&[radius], "background image radius")?;
+    if radius < 0.0 || tile.width <= 0.0 || tile.height <= 0.0 {
+        return Err("invalid background image geometry".into());
+    }
+    Ok(())
+}
 fn style_invariants(style: &ComputedStyle) -> Result<(), String> {
     finite(
         &[
@@ -557,6 +566,11 @@ fn pipeline(
                 glyphs = glyphs.saturating_add(text.chars().count());
             }
             DrawCommand::Image { rect, .. } | DrawCommand::PushClip { rect } => rectangle(*rect)?,
+            DrawCommand::BackgroundImage {
+                rect, tile, radius, ..
+            } => {
+                background_image_invariants(*rect, *tile, *radius)?;
+            }
             DrawCommand::LinearGradient {
                 rect,
                 tile,
@@ -974,3 +988,7 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "eris-stress/tiled_image_tests.rs"]
+mod tiled_image_tests;

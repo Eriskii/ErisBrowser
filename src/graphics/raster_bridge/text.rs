@@ -355,6 +355,7 @@ pub fn plan_display_list_with_fonts(
             DrawCommand::PopFixed => Command::PopFixed,
             DrawCommand::PushOpacity { .. }
             | DrawCommand::PopOpacity
+            | DrawCommand::BackgroundImage { .. }
             | DrawCommand::LinearGradient { .. } => {
                 unreachable!("preflight refused unsupported paint")
             }
