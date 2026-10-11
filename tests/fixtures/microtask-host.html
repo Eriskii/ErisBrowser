@@ -1,0 +1,19 @@
+<!doctype html><title>before</title>
+<style>html,body{margin:0;padding:0;background:white}.box{position:absolute;top:2px;width:4px;height:4px;margin:0;padding:0;border:0}#box{left:2px;background:red}#link{left:20px;background:blue}</style>
+<div id="box" class="box"></div><a id="link" class="box" href="wrong.html"></a>
+<script>
+var trace='';var box=document.getElementById('box');var link=document.getElementById('link');
+function mark(s){trace+=s;document.title=trace;}
+document.addEventListener('DOMContentLoaded',function(){mark('D');queueMicrotask(function(){mark('d');});});
+window.addEventListener('load',function(){mark('L');queueMicrotask(function(){mark('l');});});
+mark('A');queueMicrotask(function(){mark('m');box.style.left='6px';});mark('B');
+</script>
+<script>
+mark('C');
+box.addEventListener('nested',function(){mark('N');queueMicrotask(function(){mark('n');});});
+box.addEventListener('click',function(){mark('H');box.dispatchEvent(new Event('nested'));mark('I');queueMicrotask(function(){mark('h');box.style.left='10px';});});
+box.addEventListener('click',{get handleEvent(){mark('G');queueMicrotask(function(){mark('g');});return function(){mark('O');queueMicrotask(function(){mark('o');});};}});
+box.addEventListener('click',function(e){mark('P');queueMicrotask(function(){e.preventDefault();mark(e.defaultPrevented?'!':'p');mark(e.currentTarget===box?'T':'!');mark(e.eventPhase===2?'2':'!');});},{passive:true});
+box.addEventListener('click',function(){mark('Z');});
+link.addEventListener('click',function(){mark('Q');queueMicrotask(function(){link.setAttribute('href','chosen.html');mark('q');});});
+</script>

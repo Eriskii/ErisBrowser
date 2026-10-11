@@ -1,5 +1,14 @@
 # Development docket
 
+[Microtask callbacks](microtasks.md) now provide the first shared job FIFO and
+script/host-callback cleanup checkpoints in the existing Window realm.
+`queueMicrotask` preserves callback identity, ordinary invocation and ordered
+appends while sharing existing work/storage limits. Fatal failures suspend
+asynchronous work without turning rendering into a scheduler. Promise jobs,
+thenable assimilation, rejection handling, MutationObserver delivery, timers
+and cross-realm callback settings are subsequent work; the current loader
+still executes supported classic scripts after parsing.
+
 [Decimal Number formatting](number-format.md) handles exact shortest-decimal
 ties across runtime conversion and compiled property names.
 [Number TypedArray foundations](typedarray-foundation.md) provide ten Number

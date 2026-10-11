@@ -851,7 +851,7 @@ impl Page {
     pub fn task_state(&self) -> TaskState {
         if !self.scripts_enabled {
             TaskState::Idle
-        } else if self.tasks_suspended {
+        } else if self.tasks_suspended || self.runtime.microtasks_suspended() {
             TaskState::Suspended
         } else if self.document.has_pending_details_toggles() {
             TaskState::Pending
@@ -1517,7 +1517,7 @@ mod tests {
         assert!(page.document.has_pending_details_toggles());
     }
     #[test]
-    fn persistent_allocation_failure_suspends_task_preflight_without_consuming_the_task() {
+    fn persistent_allocation_failure_immediately_suspends_tasks_without_an_extra_preflight() {
         let html = "<details id=d></details><input id=n value=untouched><script>const d=document.getElementById('d');const out=document.getElementById('n');d.ontoggle=()=>{out.value='ran';};</script>";
         let mut page = Page::from_html(Url::parse("https://example.test/").unwrap(), html, true);
         assert_eq!(page.task_state(), TaskState::Idle);
@@ -1548,15 +1548,16 @@ mod tests {
             "fixture must exhaust the persistent allocation budget"
         );
         assert!(page.diagnostics.is_empty());
+        assert_eq!(page.task_state(), TaskState::Suspended);
         page.run_pending_tasks();
         assert_eq!(page.task_state(), TaskState::Suspended);
         assert_eq!(page.document.peek_details_toggle(), Some(queued));
         assert!(!page.document.details_toggle_running());
         assert_eq!(page.document.attr(output, "value"), Some("untouched"));
         let diagnostics = page.diagnostics.clone();
-        assert_eq!(diagnostics.len(), 1);
-        assert!(diagnostics[0].contains("allocation limit"));
-        assert!(diagnostics[0].contains("suspended until reload"));
+        // The direct Runtime caller already received the fatal error.
+        // Suspended task polling does not retry preflight or add a diagnostic.
+        assert!(diagnostics.is_empty());
         for _ in 0..10 {
             page.run_pending_tasks();
             page.disclosure_checkpoint();

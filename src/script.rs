@@ -32,6 +32,13 @@ mod dom_own_properties;
 mod dom_prototypes;
 mod iterators;
 mod machine;
+#[cfg(test)]
+mod microtask_binding_tests;
+#[cfg(test)]
+mod microtask_budget_tests;
+#[cfg(test)]
+mod microtask_tests;
+mod microtasks;
 mod names;
 mod node_clone;
 mod node_connected;
@@ -1561,6 +1568,7 @@ pub struct Runtime {
     data_views: data_view::State,
     typed_arrays: typed_array::State,
     dom_prototypes: dom_prototypes::State,
+    microtasks: microtasks::State,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
@@ -1736,6 +1744,7 @@ impl Runtime {
             data_views: data_view::State::default(),
             typed_arrays: typed_array::State::default(),
             dom_prototypes: dom_prototypes::State::default(),
+            microtasks: microtasks::State::default(),
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
@@ -1753,6 +1762,7 @@ impl Runtime {
                 + std::mem::size_of::<data_view::State>()
                 + std::mem::size_of::<typed_array::State>()
                 + std::mem::size_of::<dom_prototypes::State>()
+                + std::mem::size_of::<microtasks::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + native_names.len() * NATIVE_METADATA_BYTES
@@ -1814,7 +1824,8 @@ impl Runtime {
         self.initialize_typed_array_intrinsics()?;
         self.initialize_dom_prototypes()?;
         self.install_object_has_own_intrinsic()?;
-        self.initialize_reflect_property_intrinsics()
+        self.initialize_reflect_property_intrinsics()?;
+        self.install_microtask_intrinsic()
     }
 
     fn initialize_intrinsics_before_typed_array(&mut self) -> Result<()> {
@@ -2317,12 +2328,14 @@ impl Runtime {
     }
 
     pub fn execute(&mut self, source: &str, document: &mut Document) -> Result<Value> {
-        let program = parser::Parser::program(source)?;
-        self.execute_program(source, program, document)
+        let result = parser::Parser::program(source)
+            .and_then(|program| self.execute_program(source, program, document));
+        self.observe_microtask_failure(result)
     }
     pub fn execute_strict(&mut self, source: &str, document: &mut Document) -> Result<Value> {
-        let program = parser::Parser::program_context(source, false, true)?;
-        self.execute_program(source, program, document)
+        let result = parser::Parser::program_context(source, false, true)
+            .and_then(|program| self.execute_program(source, program, document));
+        self.observe_microtask_failure(result)
     }
     fn execute_program(
         &mut self,
@@ -2333,16 +2346,23 @@ impl Runtime {
         self.charge(source.len().saturating_mul(3))?;
         self.charge(program.compiled_storage)?;
         self.steps = MAX_STEPS;
-        let saved = self.environments[1].strict;
-        self.environments[1].strict = program.strict;
-        let completion =
-            machine::evaluate_statements(self, &program, machine::ListOwner::Program, 1, document);
-        self.environments[1].strict = saved;
-        match completion? {
-            Flow::Normal(value) => Ok(value.unwrap_or(Value::Undefined)),
-            Flow::Return(_) => Err(ScriptError::new("return outside function")),
-            _ => Err(ScriptError::new("loop control outside loop")),
-        }
+        self.with_author_entry(document, |runtime, document| {
+            let saved = runtime.environments[1].strict;
+            runtime.environments[1].strict = program.strict;
+            let completion = machine::evaluate_statements(
+                runtime,
+                &program,
+                machine::ListOwner::Program,
+                1,
+                document,
+            );
+            runtime.environments[1].strict = saved;
+            match completion? {
+                Flow::Normal(value) => Ok(value.unwrap_or(Value::Undefined)),
+                Flow::Return(_) => Err(ScriptError::new("return outside function")),
+                _ => Err(ScriptError::new("loop control outside loop")),
+            }
+        })
     }
 
     fn initialize_events(&mut self) -> Result<()> {
@@ -3295,21 +3315,21 @@ impl Runtime {
                 self.listeners[listener_id].removed = true;
             }
             self.events[id].passive = listener.passive;
-            let result = (|| {
+            let result = self.with_author_entry(doc, |runtime, doc| {
                 if listener.handler {
-                    let callback =
-                        self.event_handler_callback(target, &self.events[id].event_type.clone())?;
+                    let callback = runtime
+                        .event_handler_callback(target, &runtime.events[id].event_type.clone())?;
                     if !json_callable(&callback) {
                         return Ok(Value::Undefined);
                     }
-                    self.call(callback, vec![event.clone()], target.value(), doc)
+                    runtime.call(callback, vec![event.clone()], target.value(), doc)
                 } else if json_callable(&listener.callback) {
-                    self.call(listener.callback, vec![event.clone()], target.value(), doc)
+                    runtime.call(listener.callback, vec![event.clone()], target.value(), doc)
                 } else {
-                    let method = self.get(listener.callback.clone(), "handleEvent", doc)?;
-                    self.call(method, vec![event.clone()], listener.callback, doc)
+                    let method = runtime.get(listener.callback.clone(), "handleEvent", doc)?;
+                    runtime.call(method, vec![event.clone()], listener.callback, doc)
                 }
-            })();
+            });
             self.events[id].passive = false;
             match result {
                 Ok(Value::Bool(false)) if listener.handler && self.events[id].cancelable => {
@@ -3387,27 +3407,36 @@ impl Runtime {
         result
     }
     pub fn dispatch_dom_content_loaded(&mut self, document: &mut Document) -> Result<()> {
-        if self.readiness_fired {
-            return Ok(());
-        }
-        self.readiness_fired = true;
-        self.steps = MAX_STEPS;
-        let event = self.event_object(
-            "DOMContentLoaded".into(),
-            true,
-            false,
-            false,
-            Value::Null,
-            false,
-        )?;
-        let id = self.event_index(&event)?;
-        self.events[id].trusted = true;
-        self.dispatch_event_object(EventTarget::Document, event, None, document)?;
-        let event = self.event_object("load".into(), false, false, false, Value::Null, false)?;
-        let id = self.event_index(&event)?;
-        self.events[id].trusted = true;
-        self.dispatch_event_object(EventTarget::Window, event, Some(Value::Document), document)?;
-        Ok(())
+        let result = (|| {
+            if self.readiness_fired {
+                return Ok(());
+            }
+            self.readiness_fired = true;
+            self.steps = MAX_STEPS;
+            let event = self.event_object(
+                "DOMContentLoaded".into(),
+                true,
+                false,
+                false,
+                Value::Null,
+                false,
+            )?;
+            let id = self.event_index(&event)?;
+            self.events[id].trusted = true;
+            self.dispatch_event_object(EventTarget::Document, event, None, document)?;
+            let event =
+                self.event_object("load".into(), false, false, false, Value::Null, false)?;
+            let id = self.event_index(&event)?;
+            self.events[id].trusted = true;
+            self.dispatch_event_object(
+                EventTarget::Window,
+                event,
+                Some(Value::Document),
+                document,
+            )?;
+            Ok(())
+        })();
+        self.observe_microtask_failure(result)
     }
     pub fn dispatch_click(&mut self, target: NodeId, document: &mut Document) -> Result<()> {
         self.dispatch_event(target, "click", document)
@@ -3415,66 +3444,74 @@ impl Runtime {
     /// Host task checkpoint: coalesced details notifications share one budget.
     /// Tasks beyond the checkpoint limit remain queued for a later checkpoint.
     pub fn dispatch_details_toggles(&mut self, document: &mut Document) -> Result<()> {
-        if document.details_toggle_running() {
-            return Err(ScriptError::type_error(
-                "details checkpoint is already running",
+        if self.microtasks_suspended() {
+            return Err(ScriptError::resource(
+                "microtask dispatch suspended until reload",
             ));
         }
-        self.steps = MAX_STEPS;
-        for _ in 0..64 {
-            let Some(task) = document.peek_details_toggle() else {
-                break;
-            };
-            // Preflight the event and path before consuming the queued task.
-            // Once dispatch starts, ordinary listener errors are reported and
-            // quota errors terminate the task without replaying its callbacks.
-            let mut cursor = Some(task.event.node);
-            let mut path_length = 2usize; // Document/window upper bound.
-            while let Some(node) = cursor {
-                self.tick()?;
-                if path_length >= 258 {
-                    return Err(ScriptError::resource("event path limit exceeded"));
-                }
-                path_length += 1;
-                cursor = document.nodes.get(node).and_then(|node| node.parent);
+        let result = (|| {
+            if document.details_toggle_running() {
+                return Err(ScriptError::type_error(
+                    "details checkpoint is already running",
+                ));
             }
-            // Reserve the bounded ordered-map operations for begin and finish.
-            // Cleanup must run even if callbacks spend the remaining budget.
-            self.work(128 + path_length)?;
-            self.charge(path_length.saturating_mul(std::mem::size_of::<EventTarget>()))?;
-            let event =
-                self.event_object("toggle".into(), false, false, false, Value::Null, false)?;
-            self.attach_toggle_state(
-                &event,
-                if task.event.old_open {
-                    "open"
-                } else {
-                    "closed"
+            self.steps = MAX_STEPS;
+            for _ in 0..64 {
+                let Some(task) = document.peek_details_toggle() else {
+                    break;
+                };
+                // Preflight the event and path before consuming the queued task.
+                // Once dispatch starts, ordinary listener errors are reported and
+                // quota errors terminate the task without replaying its callbacks.
+                let mut cursor = Some(task.event.node);
+                let mut path_length = 2usize; // Document/window upper bound.
+                while let Some(node) = cursor {
+                    self.tick()?;
+                    if path_length >= 258 {
+                        return Err(ScriptError::resource("event path limit exceeded"));
+                    }
+                    path_length += 1;
+                    cursor = document.nodes.get(node).and_then(|node| node.parent);
                 }
-                .into(),
-                if task.event.new_open {
-                    "open"
-                } else {
-                    "closed"
-                }
-                .into(),
-                Value::Null,
-            )?;
-            let id = self.event_index(&event)?;
-            self.events[id].trusted = true;
-            let task = document
-                .begin_details_toggle(task.id)
-                .ok_or_else(|| ScriptError::new("details task changed during preflight"))?;
-            let result = self.dispatch_event_object(
-                EventTarget::Node(task.event.node),
-                event,
-                None,
-                document,
-            );
-            document.finish_details_toggle(task.id);
-            result?;
-        }
-        Ok(())
+                // Reserve the bounded ordered-map operations for begin and finish.
+                // Cleanup must run even if callbacks spend the remaining budget.
+                self.work(128 + path_length)?;
+                self.charge(path_length.saturating_mul(std::mem::size_of::<EventTarget>()))?;
+                let event =
+                    self.event_object("toggle".into(), false, false, false, Value::Null, false)?;
+                self.attach_toggle_state(
+                    &event,
+                    if task.event.old_open {
+                        "open"
+                    } else {
+                        "closed"
+                    }
+                    .into(),
+                    if task.event.new_open {
+                        "open"
+                    } else {
+                        "closed"
+                    }
+                    .into(),
+                    Value::Null,
+                )?;
+                let id = self.event_index(&event)?;
+                self.events[id].trusted = true;
+                let task = document
+                    .begin_details_toggle(task.id)
+                    .ok_or_else(|| ScriptError::new("details task changed during preflight"))?;
+                let result = self.dispatch_event_object(
+                    EventTarget::Node(task.event.node),
+                    event,
+                    None,
+                    document,
+                );
+                document.finish_details_toggle(task.id);
+                result?;
+            }
+            Ok(())
+        })();
+        self.observe_microtask_failure(result)
     }
     pub fn dispatch_event(
         &mut self,
@@ -3482,41 +3519,44 @@ impl Runtime {
         event_type: &str,
         document: &mut Document,
     ) -> Result<()> {
-        if event_type.len() > 128 {
-            return Err(ScriptError::resource("event name limit exceeded"));
-        }
-        let target = self.event_target(&Value::Node(target), document)?;
-        self.steps = MAX_STEPS;
-        self.last_default_prevented = false;
-        let cancelable = matches!(
-            event_type,
-            "click"
-                | "submit"
-                | "keydown"
-                | "keyup"
-                | "beforeinput"
-                | "contextmenu"
-                | "wheel"
-                | "mousedown"
-                | "mouseup"
-        );
-        let bubbles = !matches!(
-            event_type,
-            "focus" | "blur" | "load" | "unload" | "mouseenter" | "mouseleave"
-        );
-        let event = self.event_object(
-            event_type.into(),
-            bubbles,
-            cancelable,
-            false,
-            Value::Null,
-            false,
-        )?;
-        let id = self.event_index(&event)?;
-        self.events[id].trusted = true;
-        let result = self.dispatch_event_object(target, event, None, document);
-        self.last_default_prevented = self.events[id].canceled;
-        result.map(|_| ())
+        let result = (|| {
+            if event_type.len() > 128 {
+                return Err(ScriptError::resource("event name limit exceeded"));
+            }
+            let target = self.event_target(&Value::Node(target), document)?;
+            self.steps = MAX_STEPS;
+            self.last_default_prevented = false;
+            let cancelable = matches!(
+                event_type,
+                "click"
+                    | "submit"
+                    | "keydown"
+                    | "keyup"
+                    | "beforeinput"
+                    | "contextmenu"
+                    | "wheel"
+                    | "mousedown"
+                    | "mouseup"
+            );
+            let bubbles = !matches!(
+                event_type,
+                "focus" | "blur" | "load" | "unload" | "mouseenter" | "mouseleave"
+            );
+            let event = self.event_object(
+                event_type.into(),
+                bubbles,
+                cancelable,
+                false,
+                Value::Null,
+                false,
+            )?;
+            let id = self.event_index(&event)?;
+            self.events[id].trusted = true;
+            let result = self.dispatch_event_object(target, event, None, document);
+            self.last_default_prevented = self.events[id].canceled;
+            result.map(|_| ())
+        })();
+        self.observe_microtask_failure(result)
     }
 
     fn tick(&mut self) -> Result<()> {
@@ -15748,20 +15788,72 @@ mod tests {
             assert_eq!(runtime.stack_units, 0);
             if failure.starts_with("while") {
                 assert!(result.unwrap_err().is_resource_limit());
-                assert_eq!(
-                    document.peek_details_toggle().unwrap().event.node,
-                    document.query_selector("#b").unwrap()
-                );
+                assert!(runtime.microtasks_suspended());
+                let a = document.query_selector("#a").unwrap();
+                let b = document.query_selector("#b").unwrap();
+                let first = document.peek_details_toggle().unwrap();
+                assert_eq!(first.event.node, b);
                 assert_eq!(
                     runtime.execute("caught", &mut document).unwrap(),
                     Value::Bool(false)
                 );
                 // Cleared tracker must not cancel the already queued closed>closed task.
+                // Later synchronous edits remain allowed; suspended host tasks do not resume.
                 runtime.execute("a.open=true;", &mut document).unwrap();
-                runtime.dispatch_details_toggles(&mut document).unwrap();
+                assert_eq!(document.peek_details_toggle(), Some(first));
                 assert_eq!(
-                    runtime.execute("trace", &mut document).unwrap().to_string(),
-                    "closed>open;closed>closed;closed>open;"
+                    runtime
+                        .execute("trace+'|'+count", &mut document)
+                        .unwrap()
+                        .to_string(),
+                    "closed>open;|1"
+                );
+                for steps in [0, 7, 123, MAX_STEPS] {
+                    runtime.steps = steps;
+                    let allocated = runtime.allocated;
+                    assert!(
+                        runtime
+                            .dispatch_details_toggles(&mut document)
+                            .unwrap_err()
+                            .is_resource_limit()
+                    );
+                    assert!(runtime.microtasks_suspended());
+                    assert_eq!(runtime.steps, steps);
+                    assert_eq!(runtime.allocated, allocated);
+                    assert_eq!(document.peek_details_toggle(), Some(first));
+                    assert!(!document.details_toggle_running());
+                    assert_eq!(document.attr(a, "open"), Some(""));
+                    assert_eq!(document.attr(b, "open"), Some(""));
+                }
+                assert_eq!(
+                    runtime
+                        .execute("trace+'|'+caught+'|'+count", &mut document)
+                        .unwrap()
+                        .to_string(),
+                    "closed>open;|false|1"
+                );
+                // Manual Rust fixture inspection of the inert queue, not callback resumption.
+                // This retains the old cleared-tracker and reentrant-order witness.
+                for (node, old_open, new_open) in
+                    [(b, false, true), (a, false, false), (a, false, true)]
+                {
+                    let task = document.peek_details_toggle().unwrap();
+                    assert_eq!(
+                        (task.event.node, task.event.old_open, task.event.new_open),
+                        (node, old_open, new_open)
+                    );
+                    assert_eq!(document.begin_details_toggle(task.id), Some(task));
+                    assert!(document.finish_details_toggle(task.id));
+                }
+                assert!(runtime.microtasks_suspended());
+                assert_eq!(document.attr(a, "open"), Some(""));
+                assert_eq!(document.attr(b, "open"), Some(""));
+                assert_eq!(
+                    runtime
+                        .execute("trace+'|'+caught+'|'+count", &mut document)
+                        .unwrap()
+                        .to_string(),
+                    "closed>open;|false|1"
                 );
             } else {
                 result.unwrap();

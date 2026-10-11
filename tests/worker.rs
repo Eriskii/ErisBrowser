@@ -2890,3 +2890,6 @@ mod cssom_var_getter;
 
 #[path = "worker/cssom_wide_getter.rs"]
 mod cssom_wide_getter;
+
+#[path = "worker/microtasks.rs"]
+mod microtasks;

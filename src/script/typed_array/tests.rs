@@ -117,23 +117,41 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // driftsort control envelope, plus one further reserved bag.
     // Four search methods add908work/8440bytes and four reserved bags; the
     // independent metadata endpoints and raw diagnostic verify that delta.
+    // queueMicrotask adds327work, one reserved bag and the held typed envelope.
+    let microtask_added = size_of::<crate::script::microtasks::State>()
+        + s
+        + 1004
+        + a
+        + d
+        + 2 * k
+        + bpp
+        + n
+        + 4 * bsb;
     assert_eq!(
         runtime.steps,
-        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492
+        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327
     );
     assert_eq!(
         runtime.allocated,
-        1_782_581 + added - 5711 + 27648 - 197266 + 11514 + 64 + 8440 + 2095 + 2110 + 2125 + 2125
+        1_782_581 + added - 5711 + 27648 - 197266
+            + 11514
+            + 64
+            + 8440
+            + 2095
+            + 2110
+            + 2125
+            + 2125
+            + microtask_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (740, 740)
+        (741, 741)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),
         (299, 25)
     );
-    assert_eq!(runtime.environments[0].bindings.len(), 210);
+    assert_eq!(runtime.environments[0].bindings.len(), 211);
     assert!(runtime.typed_arrays.records.is_empty());
     assert!(runtime.allocated < MAX_HEAP);
     clean(&runtime);

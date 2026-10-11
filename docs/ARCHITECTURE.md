@@ -89,12 +89,29 @@ callbacks refresh inline SVG even after partial mutation followed by failure.
 `Render` runs no author callbacks. Headless/library callers can explicitly use
 `Page::run_pending_tasks`; CLI renders and benchmarks retain their fixed
 post-load checkpoint. This is an idle continuation mechanism for disclosure
-tasks, not the complete HTML event loop, timers or a microtask implementation.
+tasks; the complete HTML event loop and hosted timers remain unfinished.
+
+The Runtime separately owns a bounded [microtask FIFO](microtasks.md).
+`queueMicrotask` retains callable handles and drains at the cleanup of an
+outermost script or host callback, sharing that entry's remaining work and
+cumulative heap. Nested JavaScript dispatch stays within its outer author
+entry; a host listener can drain before the next listener and the default
+action. A fatal Runtime error makes task state suspended even when there are
+no disclosure notifications. Unstarted jobs remain inert, and rendering or
+later budget resets cannot resume them. Full navigation creates a fresh
+Runtime. Promise jobs and the complete HTML error-reporting pipeline remain
+separate work.
 
 The painter runs in the UI and draws validated commands with bundled fonts and
 a glyph cache. Fixed scopes retain viewport coordinates and reset document ancestor clips to the caller viewport clip; both native and headless scrolling keep these offsets separate. Scrolling reuses the display list; edits currently recompute
-styles and layout. Rendering is CPU based, without a GPU compositor or general
-incremental invalidation. The `--benchmark` warm-render loop excludes process
+styles and layout. Default and headless rendering use the CPU painter. The
+optional Linux [Vulkan route](vulkan-rendering.md), selected with
+`--presenter=vulkan --raster=gpu` in a `vulkan-raster` build, composes admitted
+scenes with custom shaders into the acquired window texture. CPU-prepared
+coverage and image inputs feed those shaders; unsupported or over-budget
+scenes use the complete CPU painter. GPU ownership stays outside the confined
+renderer. General incremental invalidation remains unfinished.
+The `--benchmark` warm-render loop excludes process
 startup, resource transfer and snapshot serialization. The separate
 `--benchmark-worker` mode uses the same confined worker and validated snapshots
 as the native browser, measuring startup, load, render round trips, parent

@@ -128,7 +128,11 @@ fn invoke_native(
     if !already_guarded {
         runtime.enter_stack(4)?;
     }
-    let result = if NumberPredicate::from_name(&native.name).is_some()
+    let result = if native.name == "queueMicrotask" {
+        // This Window operation uses the dynamic receiver without allocating a
+        // temporary Native name or bypassing unconditional stack cleanup.
+        runtime.queue_microtask(&receiver, &arguments)
+    } else if NumberPredicate::from_name(&native.name).is_some()
         || crate::script::dom_prototypes::is_interface_name(&native.name)
     {
         runtime.native_call(&native, arguments, doc)

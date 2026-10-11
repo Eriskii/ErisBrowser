@@ -4,6 +4,14 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Microtask callbacks](docs/microtasks.md) add `queueMicrotask` and cleanup
+checkpoints for the existing single Window realm. FIFO jobs share the active
+script/event work allowance and cumulative heap; host-listener jobs settle
+before later listeners and default actions. Rendering remains callback-free,
+and fatal resource errors keep unstarted jobs suspended until a fresh Runtime.
+Promise jobs, timers, MutationObserver delivery and the full HTML event loop
+remain unfinished.
+
 [Linear gradient backgrounds](docs/linear-gradients.md) introduced one bounded
 `linear-gradient()` layer with legacy sRGB colors, alpha, physical directions
 and length/percentage stops. The software painter evaluates it directly, with

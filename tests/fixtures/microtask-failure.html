@@ -1,0 +1,9 @@
+<!doctype html><title>before</title>
+<style>html,body{margin:0;padding:0;background:white}.box{position:absolute;top:2px;width:4px;height:4px;margin:0;padding:0;border:0}#box{left:2px;background:red}#link{left:20px;background:blue}</style>
+<div id="box" class="box" onclick="document.title='clicked'"></div><div id="link" class="box"></div>
+<script>
+var box=document.getElementById('box');
+queueMicrotask(function(){box.style.left='6px';while(true){}});
+queueMicrotask(function(){box.style.background='blue';document.title='BAD';});
+document.title='queued';
+</script>
