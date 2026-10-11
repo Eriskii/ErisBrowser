@@ -7,16 +7,20 @@ fn table(start: u32, count: u32, origin: f32, extent: f32, source: u32) -> Vec<u
         0
     );
     bytes
-        .chunks_exact(4)
-        .map(|b| u32::from_le_bytes(b.try_into().unwrap()))
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .map(|b| u32::from_le_bytes(*b))
         .collect()
 }
 
 fn words(plan: &Plan, start: u32, count: u32) -> Vec<u32> {
     let begin = start as usize * 4;
     plan.input_bytes()[begin..begin + count as usize * 4]
-        .chunks_exact(4)
-        .map(|b| u32::from_le_bytes(b.try_into().unwrap()))
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .map(|b| u32::from_le_bytes(*b))
         .collect()
 }
 

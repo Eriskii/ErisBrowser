@@ -7,8 +7,10 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 [Linear gradient backgrounds](docs/linear-gradients.md) add one bounded
 `linear-gradient()` layer with legacy sRGB colors, alpha, physical directions
 and length/percentage stops. The software painter evaluates it directly, with
-shared CSS/supports/style validation and explicit whole-scene Vulkan raster
-fallback. Try the [clickable example](examples/linear-gradient.html).
+shared CSS/supports/style validation. The [native-gradient follow-up](docs/vulkan-gradients.md)
+prepares opaque square-corner fragments on the CPU for the existing GPU image
+shader; alpha, rounded gradients and gradients inside opacity scopes retain
+whole-scene fallback. Try the [native example](examples/vulkan-gradients.html).
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

@@ -1007,7 +1007,7 @@ fn opacity_keeps_probe_refusal_and_old_native_uniform_bytes() {
     assert_eq!(old.draws(), current.draws());
     assert_eq!(old.parameters(), current.parameters());
     assert_eq!(old.input_bytes(), current.input_bytes());
-    for bytes in current.parameters().chunks_exact(PARAM_STRIDE) {
+    for bytes in current.parameters().as_chunks::<PARAM_STRIDE>().0 {
         assert!(bytes[64..].iter().all(|&b| b == 0));
     }
 }

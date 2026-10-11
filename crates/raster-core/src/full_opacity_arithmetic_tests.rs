@@ -129,7 +129,11 @@ fn check_channel(
     label: &str,
     c: &mut Counts,
 ) -> Result<u32, String> {
-    if source > alpha || alpha > 65535 || destination > 65535 || (root && destination % 257 != 0) {
+    if source > alpha
+        || alpha > 65535
+        || destination > 65535
+        || (root && !destination.is_multiple_of(257))
+    {
         return Err(format!(
             "invalid verifier channel setup {label}: S={source} A={alpha} D={destination} root={root}"
         ));
@@ -302,8 +306,9 @@ fn primitive_boundaries(c: &mut Counts) -> Result<(), String> {
             let denominator = 1u64 << shift;
             let q = u64::from(x) / denominator;
             let rem = u64::from(x) % denominator;
-            let expected =
-                q + u64::from(2 * rem > denominator || (2 * rem == denominator && q % 2 != 0));
+            let expected = q + u64::from(
+                2 * rem > denominator || (2 * rem == denominator && !q.is_multiple_of(2)),
+            );
             let actual = integer::round_even(x, shift);
             if u64::from(actual) != expected {
                 return Err(format!(

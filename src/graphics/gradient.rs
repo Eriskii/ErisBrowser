@@ -203,6 +203,201 @@ impl ResolvedGradient {
     }
 }
 
+#[derive(Clone, Copy)]
+struct GradientLoop {
+    x0: i32,
+    y0: i32,
+    x1: i32,
+    y1: i32,
+    work: u64,
+}
+
+fn gradient_loop(
+    width: u32,
+    height: u32,
+    rect: Rect,
+    clip: Rect,
+    stops: usize,
+) -> Option<GradientLoop> {
+    let visible = rect.intersect(clip);
+    if visible.width <= 0.0 || visible.height <= 0.0 {
+        return None;
+    }
+    let x0 = visible.x.floor().max(clip.x.ceil()).max(0.0) as i32;
+    let y0 = visible.y.floor().max(clip.y.ceil()).max(0.0) as i32;
+    let x1 = (visible.x + visible.width).ceil().min(width as f32) as i32;
+    let y1 = (visible.y + visible.height).ceil().min(height as f32) as i32;
+    let pixels = (x1 - x0).max(0) as u64 * (y1 - y0).max(0) as u64;
+    if pixels == 0 {
+        return None;
+    }
+    let search = u64::from(usize::BITS - (stops - 1).leading_zeros()) + 1;
+    Some(GradientLoop {
+        x0,
+        y0,
+        x1,
+        y1,
+        work: pixels * (search + 1) + stops as u64 * 4,
+    })
+}
+
+#[cfg(feature = "raster-bridge")]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum OpaqueGradientError {
+    Unsupported,
+    Geometry,
+    Allocation,
+}
+
+#[cfg(feature = "raster-bridge")]
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct OpaqueGradientInfo {
+    pub x: u32,
+    pub y: u32,
+    pub width: u32,
+    pub height: u32,
+    /// The software painter's complete candidate-loop tariff, including
+    /// samples later rejected by half-open clip containment.
+    pub loop_work: u64,
+}
+
+#[cfg(feature = "raster-bridge")]
+impl OpaqueGradientInfo {
+    pub fn rgba_bytes(self) -> usize {
+        self.width as usize * self.height as usize * 4
+    }
+}
+
+/// Bounded metadata only. The caller must reserve work, source slots, source
+/// bytes and peak storage before calling materialize. The retained borrow
+/// prevents sampling a different gradient from the one admitted.
+#[cfg(feature = "raster-bridge")]
+pub(crate) struct OpaqueGradient<'a> {
+    info: OpaqueGradientInfo,
+    gradient: &'a LinearGradient,
+    tile: Rect,
+    current_color: Color,
+    stop_scale: f32,
+}
+
+#[cfg(feature = "raster-bridge")]
+impl<'a> OpaqueGradient<'a> {
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        width: u32,
+        height: u32,
+        rect: Rect,
+        tile: Rect,
+        clip: Rect,
+        gradient: &'a LinearGradient,
+        current_color: Color,
+        stop_scale: f32,
+    ) -> Result<Option<Self>, OpaqueGradientError> {
+        // This helper ceiling makes integer-to-f32 placement exact and keeps
+        // the RGBA byte product representable on 32-bit hosts. The Native
+        // caller applies its stricter viewport and source storage limits.
+        if width == 0
+            || height == 0
+            || width > 8192
+            || height > 8192
+            || !gradient.valid()
+            || ![
+                rect.x,
+                rect.y,
+                rect.width,
+                rect.height,
+                tile.x,
+                tile.y,
+                tile.width,
+                tile.height,
+                clip.x,
+                clip.y,
+                clip.width,
+                clip.height,
+                stop_scale,
+            ]
+            .into_iter()
+            .all(f32::is_finite)
+            || ![
+                rect.x + rect.width,
+                rect.y + rect.height,
+                tile.x + tile.width,
+                tile.y + tile.height,
+                clip.x + clip.width,
+                clip.y + clip.height,
+            ]
+            .into_iter()
+            .all(f32::is_finite)
+            || tile.width <= 0.0
+            || tile.height <= 0.0
+            || stop_scale <= 0.0
+        {
+            return Err(OpaqueGradientError::Geometry);
+        }
+        if gradient.stops.iter().any(|stop| match stop.color {
+            GradientColor::Color(color) => color.a != 255,
+            GradientColor::CurrentColor => current_color.a != 255,
+        }) {
+            return Err(OpaqueGradientError::Unsupported);
+        }
+        if rect.width <= 0.0 || rect.height <= 0.0 || clip.width <= 0.0 || clip.height <= 0.0 {
+            return Ok(None);
+        }
+        let Some(bounds) = gradient_loop(width, height, rect, clip, gradient.stops.len()) else {
+            return Ok(None);
+        };
+        // Retain the full loop tariff above, while storing only pixels that
+        // blend_gradient would actually accept. No transparent holes arise.
+        let x1 = bounds.x1.min((clip.x + clip.width).ceil() as i32);
+        let y1 = bounds.y1.min((clip.y + clip.height).ceil() as i32);
+        if x1 <= bounds.x0 || y1 <= bounds.y0 {
+            return Ok(None);
+        }
+        Ok(Some(Self {
+            info: OpaqueGradientInfo {
+                x: bounds.x0 as u32,
+                y: bounds.y0 as u32,
+                width: (x1 - bounds.x0) as u32,
+                height: (y1 - bounds.y0) as u32,
+                loop_work: bounds.work,
+            },
+            gradient,
+            tile,
+            current_color,
+            stop_scale,
+        }))
+    }
+
+    pub fn info(&self) -> OpaqueGradientInfo {
+        self.info
+    }
+
+    pub fn materialize(self) -> Result<Vec<u8>, OpaqueGradientError> {
+        let resolved = ResolvedGradient::new(
+            self.gradient,
+            self.tile,
+            self.current_color,
+            self.stop_scale,
+        )
+        .ok_or(OpaqueGradientError::Geometry)?;
+        let mut rgba = Vec::new();
+        rgba.try_reserve_exact(self.info.rgba_bytes())
+            .map_err(|_| OpaqueGradientError::Allocation)?;
+        for y in self.info.y..self.info.y + self.info.height {
+            for x in self.info.x..self.info.x + self.info.width {
+                let color = resolved.sample(f64::from(x) + 0.5, f64::from(y) + 0.5);
+                rgba.extend_from_slice(&[
+                    (color[0] * 255.0).round() as u8,
+                    (color[1] * 255.0).round() as u8,
+                    (color[2] * 255.0).round() as u8,
+                    255,
+                ]);
+            }
+        }
+        Ok(rgba)
+    }
+}
+
 impl super::Canvas {
     #[allow(clippy::too_many_arguments)]
     pub fn linear_gradient(
@@ -225,23 +420,18 @@ impl super::Canvas {
         {
             return;
         }
-        let visible = rect.intersect(self.clip);
-        if visible.width <= 0.0 || visible.height <= 0.0 {
+        let Some(bounds) = gradient_loop(
+            self.width,
+            self.height,
+            rect,
+            self.clip,
+            gradient.stops.len(),
+        ) else {
             return;
-        }
-        let x0 = visible.x.floor().max(self.clip.x.ceil()).max(0.0) as i32;
-        let y0 = visible.y.floor().max(self.clip.y.ceil()).max(0.0) as i32;
-        let x1 = (visible.x + visible.width).ceil().min(self.width as f32) as i32;
-        let y1 = (visible.y + visible.height).ceil().min(self.height as f32) as i32;
-        let pixels = (x1 - x0).max(0) as u64 * (y1 - y0).max(0) as u64;
-        if pixels == 0 {
-            return;
-        }
+        };
         // Charge resolution plus a conservative binary-search/evaluation
         // tariff before any per-pixel work. No temporary image is allocated.
-        let search = u64::from(usize::BITS - (gradient.stops.len() - 1).leading_zeros()) + 1;
-        let work = pixels * (search + 1) + gradient.stops.len() as u64 * 4;
-        if !self.consume_pixels(work) {
+        if !self.consume_pixels(bounds.work) {
             return;
         }
         let Some(resolved) = ResolvedGradient::new(gradient, tile, current_color, stop_scale)
@@ -249,8 +439,8 @@ impl super::Canvas {
             return;
         };
         let radius = radius.min(rect.width / 2.0).min(rect.height / 2.0);
-        for y in y0..y1 {
-            for x in x0..x1 {
+        for y in bounds.y0..bounds.y1 {
+            for x in bounds.x0..bounds.x1 {
                 if self.paint_exhausted {
                     return;
                 }
@@ -326,3 +516,6 @@ impl super::Canvas {
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(all(test, feature = "raster-bridge"))]
+mod opaque_tests;

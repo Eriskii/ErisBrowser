@@ -13,6 +13,11 @@ default = []
 browser-bridge = ["dep:eris", "eris/raster-bridge"]
 
 [[bin]]
+name = "eris-vulkan-gradient-check"
+path = "src/bin/gradient-check.rs"
+required-features = ["browser-bridge"]
+
+[[bin]]
 name = "eris-vulkan-identity-check"
 path = "src/bin/identity-check.rs"
 

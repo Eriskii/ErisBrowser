@@ -4,6 +4,7 @@
 use super::*;
 use crate::graphics::{
     Fonts, Rect as BrowserRect,
+    gradient::{OpaqueGradient, OpaqueGradientError, OpaqueGradientInfo},
     text_masks::{self, MaskInfo, MaskKey, Session, TextRun},
 };
 use eris_raster_core::{
@@ -61,6 +62,11 @@ type NativeResult<T> = std::result::Result<T, NativeFallback>;
 pub struct NativeSceneStats {
     pub phases: usize,
     pub bridge: BridgeStats,
+    /// CPU-prepared sources, separate from the loaded ImageStore statistics.
+    pub generated_gradient_sources: usize,
+    pub generated_gradient_bytes: usize,
+    pub gradient_evaluation_work: u64,
+    pub gradient_preparation_work: u64,
     pub text_input_bytes: usize,
     pub text_input_scalars: usize,
     pub text: text_masks::Stats,
@@ -119,6 +125,23 @@ fn font_error(error: text_masks::Error, phase: usize, command: usize) -> NativeF
         _ => FallbackKind::MaskPreparation,
     };
     at(kind, phase, command)
+}
+
+fn gradient_error(error: OpaqueGradientError, phase: usize, command: usize) -> NativeFallback {
+    let kind = match error {
+        OpaqueGradientError::Unsupported => FallbackKind::UnsupportedGradient,
+        OpaqueGradientError::Geometry => FallbackKind::InvalidGeometry,
+        OpaqueGradientError::Allocation => FallbackKind::AllocationFailure,
+    };
+    at(kind, phase, command)
+}
+fn browser_rect(rect: Rect) -> BrowserRect {
+    BrowserRect {
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+    }
 }
 
 fn validate_native_frame(frame: Frame, phase: Option<usize>) -> NativeResult<()> {
@@ -203,8 +226,43 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
             let location = Some(index);
             let leaf = |error| NativeFallback::leaf(error, Some(phase));
             match command {
-                DrawCommand::LinearGradient { .. } => {
-                    return Err(at(FallbackKind::UnsupportedGradient, phase, index));
+                DrawCommand::LinearGradient {
+                    rect,
+                    tile,
+                    radius,
+                    gradient,
+                    current_color,
+                    stop_scale,
+                } => {
+                    if !bounded_scalar(*radius) {
+                        return Err(at(FallbackKind::InvalidGeometry, phase, index));
+                    }
+                    // Even hidden gradients refuse rounded shapes and every
+                    // enclosing opacity scope: RGB8 preparation must not precede
+                    // the software painter's fractional-channel group blending.
+                    if *radius != 0.0
+                        || stack[..depth]
+                            .iter()
+                            .any(|tag| matches!(tag, NativeScopeTag::Opacity))
+                    {
+                        return Err(at(FallbackKind::UnsupportedGradient, phase, index));
+                    }
+                    validate_rect(convert_rect(*rect), location).map_err(leaf)?;
+                    validate_rect(convert_rect(*tile), location).map_err(leaf)?;
+                    // Structural validation is bounded by 32 stops. The helper
+                    // checks alpha before its empty-window return and allocates
+                    // neither a resolved stop array nor source pixels here.
+                    OpaqueGradient::new(
+                        target.width,
+                        target.height,
+                        *rect,
+                        *tile,
+                        browser_rect(target.caller_clip),
+                        gradient,
+                        *current_color,
+                        *stop_scale,
+                    )
+                    .map_err(|error| gradient_error(error, phase, index))?;
                 }
                 DrawCommand::Rect { rect, radius, .. } => {
                     validate_rect(convert_rect(*rect), location).map_err(leaf)?;
@@ -302,6 +360,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                 command,
                 DrawCommand::Rect { .. }
                     | DrawCommand::Image { .. }
+                    | DrawCommand::LinearGradient { .. }
                     | DrawCommand::PushClip { .. }
                     | DrawCommand::PopClip
                     | DrawCommand::PushFixed
@@ -348,19 +407,46 @@ fn image_loop_work(target: Frame, rect: BrowserRect, clip: Rect) -> u64 {
     (x1 - x0).max(0) as u64 * (y1 - y0).max(0) as u64
 }
 
-/// Called only after complete original-input validation. No coverage, glyphs,
-/// source payloads or per-command cache are allocated by this geometry pass.
-/// One bounded CoordinateState scope Vec is live at a time and is dropped
-/// before later preparation, within its existing structural peak allowance.
-fn geometry_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<u64> {
+// Fixed metadata indexed by original command, never allocated per gradient.
+struct GradientReservation {
+    windows: [Option<OpaqueGradientInfo>; MAX_COMMANDS],
+    sources: usize,
+    bytes: usize,
+    evaluation: u64,
+    packing: u64,
+}
+impl GradientReservation {
+    fn new() -> Self {
+        Self {
+            windows: [None; MAX_COMMANDS],
+            sources: 0,
+            bytes: 0,
+            evaluation: 0,
+            packing: 0,
+        }
+    }
+}
+
+/// Called only after complete original-input validation. No coverage, glyphs
+/// or source payloads are allocated. The fixed window table is caller-owned;
+/// one bounded CoordinateState scope Vec is live and dropped per phase.
+fn geometry_pixel_work(
+    target: Frame,
+    phases: &[NativePhase<'_>],
+    gradients: &mut GradientReservation,
+) -> NativeResult<u64> {
     let mut total = 0u64;
+    let mut ordinal = 0;
     for (phase, input) in phases.iter().enumerate() {
         if !input.commands.iter().any(|command| {
             matches!(
                 command,
-                DrawCommand::Rect { .. } | DrawCommand::Image { .. }
+                DrawCommand::Rect { .. }
+                    | DrawCommand::Image { .. }
+                    | DrawCommand::LinearGradient { .. }
             )
         }) {
+            ordinal += input.commands.len();
             continue;
         }
         // Frame/range validation is already complete; the only remaining
@@ -368,6 +454,8 @@ fn geometry_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResul
         let mut state = CoordinateState::new_for_profile(Profile::Native, input.frame)
             .map_err(|_| NativeFallback::new(FallbackKind::AllocationFailure, Some(phase), None))?;
         for (index, command) in input.commands.iter().enumerate() {
+            let slot = ordinal;
+            ordinal += 1;
             let scope = match command {
                 DrawCommand::Rect { rect, .. } => {
                     let offset = state.offset();
@@ -413,8 +501,48 @@ fn geometry_pixel_work(target: Frame, phases: &[NativePhase<'_>]) -> NativeResul
                 DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
                 DrawCommand::PopOpacity => Command::PopOpacity,
                 DrawCommand::Text { .. } | DrawCommand::Line { .. } => continue,
-                DrawCommand::LinearGradient { .. } => {
-                    unreachable!("preflight refused gradients")
+                DrawCommand::LinearGradient {
+                    rect,
+                    tile,
+                    gradient,
+                    current_color,
+                    stop_scale,
+                    ..
+                } => {
+                    let offset = state.offset();
+                    let Some(prepared) = OpaqueGradient::new(
+                        target.width,
+                        target.height,
+                        rect.translated(offset.0, offset.1),
+                        tile.translated(offset.0, offset.1),
+                        browser_rect(state.clip()),
+                        gradient,
+                        *current_color,
+                        *stop_scale,
+                    )
+                    .map_err(|error| gradient_error(error, phase, index))?
+                    else {
+                        continue;
+                    };
+                    let info = prepared.info();
+                    let packing = u64::from(info.width) * u64::from(info.height);
+                    let failure = at(FallbackKind::CpuPaintBudget, phase, index);
+                    total = total
+                        .checked_add(info.loop_work)
+                        .and_then(|n| n.checked_add(packing))
+                        .ok_or(failure)?;
+                    gradients.evaluation = gradients
+                        .evaluation
+                        .checked_add(info.loop_work)
+                        .ok_or(failure)?;
+                    gradients.packing = gradients.packing.checked_add(packing).ok_or(failure)?;
+                    gradients.bytes = gradients
+                        .bytes
+                        .checked_add(info.rgba_bytes())
+                        .ok_or(failure)?;
+                    gradients.sources += 1;
+                    gradients.windows[slot] = Some(info);
+                    continue;
                 }
             };
             state
@@ -445,6 +573,34 @@ struct Ledger {
     rounded_loop_work: u64,
 }
 impl Ledger {
+    // One generated window is one source and exactly width+height LUT words.
+    // Commit only after all shared limits and the GPU byte bound admit it.
+    fn gradient(&mut self, width: u32, height: u32, failure: NativeFallback) -> NativeResult<()> {
+        let mut next = *self;
+        next.sources = next
+            .sources
+            .checked_add(1)
+            .filter(|&n| n <= MAX_SOURCE_ENTRIES)
+            .ok_or(failure)?;
+        let bytes = (width as usize)
+            .checked_mul(height as usize)
+            .and_then(|n| n.checked_mul(4))
+            .ok_or(failure)?;
+        next.image_bytes = next
+            .image_bytes
+            .checked_add(bytes)
+            .filter(|&n| n <= eris_raster_core::MAX_SOURCE_RGBA_BYTES)
+            .ok_or(failure)?;
+        next.image_lut_words = next
+            .image_lut_words
+            .checked_add(width as usize)
+            .and_then(|n| n.checked_add(height as usize))
+            .filter(|&n| n <= Profile::Native.max_lut_entries())
+            .ok_or(failure)?;
+        next.check_gpu(failure)?;
+        *self = next;
+        Ok(())
+    }
     fn check_gpu(&mut self, failure: NativeFallback) -> NativeResult<()> {
         self.gpu_upper = self
             .coverage
@@ -610,6 +766,14 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
     let terms = [
         (2, core),
         (1, input_bytes),
+        // Owned generated RGBA coexists with the final packed core input.
+        (1, eris_raster_core::MAX_SOURCE_RGBA_BYTES),
+        (MAX_SOURCE_ENTRIES, size_of::<RasterImage>()),
+        (2, size_of::<GradientReservation>()),
+        (1, size_of::<OpaqueGradient<'_>>()),
+        // ResolvedGradient: <=32 five-f64 stops plus bounded geometry/header.
+        (32, 5 * size_of::<f64>()),
+        (1, 256),
         (MAX_COMMANDS + 1, PARAM_STRIDE),
         (1, MAX_MASK_COVERAGE_BYTES),
         (MAX_ROW_ENTRIES, size_of::<i32>()),
@@ -617,7 +781,9 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
         (text_masks::MAX_COLD_REQUESTS, font_record),
         (MAX_SOURCE_ENTRIES, size_of::<Entry<'_>>()),
         (MAX_SOURCE_ENTRIES, size_of::<&Arc<RasterImage>>()),
-        (MAX_SOURCE_ENTRIES, size_of::<SourceImage<'_>>()),
+        // reserve_exact may hold the old source-view table while allocating
+        // its loaded+generated replacement. Bound both full tables.
+        (MAX_SOURCE_ENTRIES * 2, size_of::<SourceImage<'_>>()),
         (MAX_COMMANDS, size_of::<Command>()),
         (MAX_COMMANDS, size_of::<Vec<i32>>()),
         (MAX_COMMANDS, size_of::<RowSource>()),
@@ -643,7 +809,7 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
                 + size_of::<NativeScenePlan>(),
         ),
         // Headers for temporary vectors and the two caller-owned UI vectors.
-        (16, size_of::<Vec<u8>>()),
+        (17, size_of::<Vec<u8>>()),
         (64, size_of::<DrawCommand>()),
         (1, 16 * 1024),
     ];
@@ -692,7 +858,8 @@ pub fn plan_native_scene(
     .map_err(|error| NativeFallback::leaf(error, None))?;
     let area = u64::from(target.width) * u64::from(target.height);
     let cpu_limit = (area * 16).clamp(1_000_000, 32_000_000);
-    let geometry_work = geometry_pixel_work(target, phases)?;
+    let mut gradients = GradientReservation::new();
+    let geometry_work = geometry_pixel_work(target, phases, &mut gradients)?;
     let cpu_nontext = area
         .checked_mul(counts.full_area_commands as u64)
         .and_then(|work| work.checked_add(geometry_work))
@@ -763,6 +930,26 @@ pub fn plan_native_scene(
         rounded_loop_work: 0,
     };
     ledger.check_gpu(NativeFallback::new(FallbackKind::PlannerLimit, None, None))?;
+    // Reserve every generated source before the first materialization, sharing
+    // loaded-image and later font/rounded source allowances. No payload exists
+    // yet; a late admission failure drops metadata only.
+    let mut gradient_ordinal = 0;
+    for (phase, input) in phases.iter().enumerate() {
+        for index in 0..input.commands.len() {
+            if let Some(info) = gradients.windows[gradient_ordinal] {
+                ledger.gradient(
+                    info.width,
+                    info.height,
+                    at(FallbackKind::PlannerLimit, phase, index),
+                )?;
+            }
+            gradient_ordinal += 1;
+        }
+    }
+    sources
+        .try_reserve_exact(gradients.sources)
+        .map_err(|_| NativeFallback::new(FallbackKind::AllocationFailure, None, None))?;
+    let mut generated = reserve_native::<RasterImage>(gradients.sources)?;
     let mut session = Session::new(fonts, cpu_limit - cpu_nontext)
         .map_err(|_| NativeFallback::new(FallbackKind::CpuPaintBudget, None, None))?;
     let mut lowered = reserve_native(MAX_COMMANDS)?;
@@ -781,6 +968,7 @@ pub fn plan_native_scene(
         let start = lowered.len();
         for (index, command) in phase.commands.iter().enumerate() {
             let source_image = image_ids[ordinal];
+            let gradient_window = gradients.windows[ordinal];
             ordinal += 1;
             let lowered_command = match command {
                 DrawCommand::Text {
@@ -954,8 +1142,46 @@ pub fn plan_native_scene(
                 DrawCommand::PopFixed => Command::PopFixed,
                 DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
                 DrawCommand::PopOpacity => Command::PopOpacity,
-                DrawCommand::LinearGradient { .. } => {
-                    unreachable!("preflight refused gradients")
+                DrawCommand::LinearGradient {
+                    rect,
+                    tile,
+                    gradient,
+                    current_color,
+                    stop_scale,
+                    ..
+                } => {
+                    let Some(info) = gradient_window else {
+                        continue;
+                    };
+                    let offset = state.offset();
+                    let prepared = OpaqueGradient::new(
+                        target.width,
+                        target.height,
+                        rect.translated(offset.0, offset.1),
+                        tile.translated(offset.0, offset.1),
+                        browser_rect(state.clip()),
+                        gradient,
+                        *current_color,
+                        *stop_scale,
+                    )
+                    .map_err(|error| gradient_error(error, phase_index, index))?
+                    .ok_or_else(|| at(FallbackKind::InvalidGeometry, phase_index, index))?;
+                    let source = (unique.len() + generated.len()) as u32;
+                    let rgba = prepared
+                        .materialize()
+                        .map_err(|error| gradient_error(error, phase_index, index))?;
+                    generated.push(RasterImage {
+                        width: info.width,
+                        height: info.height,
+                        rgba,
+                    });
+                    // Already framebuffer-relative integer bounds. ScreenImage
+                    // neither reapplies the phase offset nor normalizes samples.
+                    Command::ScreenImage {
+                        x: info.x as i32,
+                        y: info.y as i32,
+                        source,
+                    }
                 }
             };
             state
@@ -1005,6 +1231,15 @@ pub fn plan_native_scene(
             RowSource::Rounded(index) => rounded[index].row_origins(),
         });
     }
+    // Do not borrow generated entries until their owner Vec is complete.
+    // Both the owners and these views remain live through core packing.
+    for image in &generated {
+        sources.push(SourceImage {
+            width: image.width,
+            height: image.height,
+            rgba: &image.rgba,
+        });
+    }
     let mut core_phases = reserve_native(phases.len())?;
     for (phase, (start, end)) in phases.iter().zip(ranges) {
         core_phases.push(Phase {
@@ -1044,6 +1279,10 @@ pub fn plan_native_scene(
             referenced_rgba_bytes,
             missing_images,
         },
+        generated_gradient_sources: gradients.sources,
+        generated_gradient_bytes: gradients.bytes,
+        gradient_evaluation_work: gradients.evaluation,
+        gradient_preparation_work: gradients.packing,
         text_input_bytes: counts.text_bytes,
         text_input_scalars: counts.scalars,
         text: session.stats(),
@@ -1061,3 +1300,6 @@ pub fn plan_native_scene(
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod gradient_tests;

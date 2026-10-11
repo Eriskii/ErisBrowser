@@ -36,9 +36,14 @@ changes and several p95 regressions; broader interpreter performance remains ope
 implementation for one legacy-sRGB layer. CSS declarations/supports/style setters,
 default background geometry, worker transport and explicit whole-scene native
 fallback are included. Broader gradient syntax, author background geometry
-controls, color spaces and native GPU gradient rendering remain open. All
+controls, color spaces and GPU gradient interpolation remain open. All
 68 self-authored references pass after the canvas currentColor correction; the
-full Rust suites and strict checks also pass.
+full Rust suites and strict checks also pass. The [native-gradient follow-up](vulkan-gradients.md)
+adds CPU-prepared opaque square-corner fragments outside opacity scopes to the
+existing GPU image path; interpolation stays on the CPU. All three frozen
+fixtures pass in both output formats on NVIDIA, AMD RADV and llvmpipe, and all
+68 browser references pass. Native alpha/rounded/opacity-gradient paths and
+timing remain open.
 
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four

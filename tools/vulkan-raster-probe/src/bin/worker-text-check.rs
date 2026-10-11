@@ -92,6 +92,9 @@ fn verify_worker(snapshot: &Snapshot, fixture: &WorkerTextFixture) -> Result<Tex
     let mut references = [0usize; 256];
     for command in &snapshot.layout.commands {
         let kind = match command {
+            DrawCommand::LinearGradient { .. } => {
+                return Err("gradient outside legacy worker-text fixture".into());
+            }
             DrawCommand::PushClip { rect } => {
                 if depth == scopes.len()
                     || ![rect.x, rect.y, rect.width, rect.height]

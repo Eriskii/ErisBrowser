@@ -161,7 +161,7 @@ fn unit_scopes_keep_old_uniform_bytes_and_no_optional_gpu_storage() {
         BufferAccounting::for_plan(&plain, 256, false, false).unwrap(),
         BufferAccounting::for_plan(&unit, 256, false, true).unwrap()
     );
-    for record in unit.parameters().chunks_exact(PARAM_STRIDE) {
+    for record in unit.parameters().as_chunks::<PARAM_STRIDE>().0 {
         assert!(record[64..].iter().all(|byte| *byte == 0));
     }
 }
@@ -171,8 +171,10 @@ fn group_uniform_window_matches_clear_primitive_and_composite_abi() {
     let plan = group(4.0, 2.0);
     let words = |record: usize| -> Vec<u32> {
         plan.parameters()[record * PARAM_STRIDE..record * PARAM_STRIDE + 128]
-            .chunks_exact(4)
-            .map(|bytes| u32::from_le_bytes(bytes.try_into().unwrap()))
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .map(|bytes| u32::from_le_bytes(*bytes))
             .collect()
     };
     assert_eq!(plan.draws()[1].kind(), DrawKind::GroupClear);
@@ -191,7 +193,7 @@ fn group_uniform_window_matches_clear_primitive_and_composite_abi() {
     let composite = words(3);
     assert_eq!(&composite[16..24], &[0, 0, 0, 16, 16, 0, 0, 0]);
     assert_eq!(&composite[24..], &[0, 0, 0, 4, 2, 128, 0, 0]);
-    for record in plan.parameters().chunks_exact(PARAM_STRIDE) {
+    for record in plan.parameters().as_chunks::<PARAM_STRIDE>().0 {
         assert!(record[128..].iter().all(|byte| *byte == 0));
     }
 }

@@ -223,6 +223,9 @@ pub(super) fn dump_snapshot(snapshot: &Snapshot, frame: Frame) -> Result<Vec<u8>
         out.count(snapshot.layout.commands.len())?;
         for command in &snapshot.layout.commands {
             match command {
+                DrawCommand::LinearGradient { .. } => {
+                    return Err("gradient outside legacy browser snapshot fixture".into());
+                }
                 DrawCommand::PushClip { rect } => {
                     out.raw(&[0])?;
                     out.rect(*rect)?;

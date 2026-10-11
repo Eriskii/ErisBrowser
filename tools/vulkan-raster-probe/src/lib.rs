@@ -16,6 +16,8 @@ pub mod browser_adapter;
 pub mod browser_fixtures;
 pub mod fixtures;
 pub mod gpu;
+#[cfg(feature = "browser-bridge")]
+pub mod gradient_fixtures;
 pub mod identity_fixtures;
 pub mod image_fixtures;
 pub mod opacity_fixtures;

@@ -83,6 +83,14 @@ pub enum Command {
         rect: Rect,
         source: u32,
     },
+    /// An unscaled source placed in absolute framebuffer coordinates. The
+    /// active clip applies, but document/fixed offsets have already been used
+    /// by the producer and must not be applied a second time.
+    ScreenImage {
+        x: i32,
+        y: i32,
+        source: u32,
+    },
     /// Mask source and row-table indices are separate from image source IDs.
     /// Row origins and y are absolute framebuffer coordinates.
     Glyph {
@@ -832,6 +840,16 @@ impl<'a> PlannerDraft<'a> {
                     let rect = rect.translated(offset);
                     (rect, 0, Some(ImageDraft { rect, source }))
                 }
+                Command::ScreenImage { x, y, source } => {
+                    let source = source as usize;
+                    let image = sources
+                        .get(source)
+                        .ok_or("source ID outside validated table")?;
+                    let rect =
+                        Rect::new(x as f32, y as f32, image.width as f32, image.height as f32);
+                    rect.validate()?;
+                    (rect, 0, Some(ImageDraft { rect, source }))
+                }
                 Command::PushClip(_)
                 | Command::PopClip
                 | Command::PushFixed
@@ -1071,3 +1089,6 @@ mod tests;
 
 #[cfg(test)]
 mod identity_image_tests;
+
+#[cfg(test)]
+mod screen_image_tests;

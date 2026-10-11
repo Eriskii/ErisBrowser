@@ -1,0 +1,19 @@
+<!doctype html><meta charset=utf-8>
+<title id=heading>Native gradients ready</title>
+<style>
+html,body{margin:0;background:white}
+#board{position:relative;width:96px;height:64px}
+#ramp{position:absolute;left:8px;top:8px;width:4px;height:8px;background:linear-gradient(to right,#000,#f8f8f8)}
+#switch{position:absolute;left:24px;top:8px;width:32px;height:16px;background:linear-gradient(to right,red 50%,blue 50%)}
+#fixed{position:fixed;left:64px;top:8px;width:16px;height:16px;color:magenta;background:linear-gradient(currentColor)}
+</style><body data-phase=ready>
+<div id=board><div id=ramp></div><div id=switch></div><div id=fixed></div></div>
+<script>
+var sample=document.getElementById('switch');
+sample.addEventListener('click',function(){
+sample.style.color='lime';
+sample.style.backgroundImage='linear-gradient(to right,currentColor 50%,yellow 50%)';
+document.body.setAttribute('data-phase','changed');
+document.getElementById('heading').firstChild.data='Native gradients changed';
+});
+</script>

@@ -1,5 +1,7 @@
 # Linear gradient backgrounds
 
+This chapter records the initial software checkpoint; the [native follow-up](vulkan-gradients.md) adds bounded CPU-prepared opaque fragments to the existing GPU image path.
+
 `background-image` and the supported `background` shorthand accept one
 `linear-gradient()` layer. The software painter evaluates the gradient directly;
 it does not allocate a generated bitmap or add an image-store resource.
