@@ -595,7 +595,7 @@ pub fn serve() -> Result<(), String> {
                     task_state: page.task_state(),
                     layout,
                     images: page.images.clone(),
-                    document: page.document.clone(),
+                    document: page.document.clone_for_ui_snapshot(),
                     title: page.title().chars().take(512).collect(),
                     url: page.url.to_string(),
                     diagnostics,

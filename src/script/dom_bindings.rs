@@ -554,6 +554,8 @@ impl Runtime {
                     let work = doc.base_attribute_work(id, &key);
                     self.work(work.saturating_add(if work > 0 { text.len() } else { 0 }))?;
                     self.charge_details_attribute(id, &key, text.len(), doc)?;
+                    doc.prepay_inline_style_invalidation(id, &key, None, &mut self.steps)
+                        .map_err(style_dom_error)?;
                     doc.set_attr(id, &key, &text);
                     self.event_attribute_changed(id, &key, doc)?;
                     return Ok(Value::Undefined);
@@ -561,6 +563,8 @@ impl Runtime {
                 if name == "removeAttribute" {
                     self.work(doc.base_attribute_work(id, &key))?;
                     self.charge_details_attribute(id, &key, 0, doc)?;
+                    doc.prepay_inline_style_invalidation(id, &key, None, &mut self.steps)
+                        .map_err(style_dom_error)?;
                     doc.remove_attr(id, &key);
                     self.event_attribute_changed(id, &key, doc)?;
                     return Ok(Value::Undefined);

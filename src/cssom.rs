@@ -1,7 +1,9 @@
 //! Bounded inline declaration storage. DOM bindings perform conversions first,
-//! then stage this object, serialize successfully, and commit one attribute write.
+//! then stage this object and commit its serialization with persistent typed state.
 use crate::css::{self, Length};
+use crate::dom::{DomDataError, DomMutationBudget};
 use crate::selectors::{self, Kind, Token};
+use std::{mem::size_of, sync::Arc};
 
 pub(crate) const MAX_INLINE_BYTES: usize = 64 * 1024;
 pub(crate) const MAX_DECLARATIONS: usize = 256;
@@ -22,17 +24,120 @@ pub(crate) fn scratch_bytes(input_bytes: usize) -> usize {
     input_bytes.saturating_mul(512).saturating_add(32 * 1024)
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
+struct PendingValue {
+    shorthand: Arc<str>,
+    tokens: String,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+enum RecordValue {
+    Tokens(String),
+    Pending(Arc<PendingValue>),
+}
+impl RecordValue {
+    fn source(&self) -> &str {
+        match self {
+            Self::Tokens(tokens) => tokens,
+            Self::Pending(pending) => &pending.tokens,
+        }
+    }
+    fn pending(&self) -> Option<&PendingValue> {
+        match self {
+            Self::Tokens(_) => None,
+            Self::Pending(pending) => Some(pending),
+        }
+    }
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
 struct Record {
     name: String,
-    value: String,
+    value: RecordValue,
     important: bool,
-    // Only pending substitutions keep shorthand identity. Other shorthands are
-    // expanded, so removing a winner cannot resurrect an older declaration.
-    pending: Option<Vec<String>>,
 }
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
+impl Record {
+    fn logical_bytes(&self) -> Result<usize, Error> {
+        add(
+            add(serialized_name_len(&self.name), self.value.source().len())?,
+            if self.important { 15 } else { 4 },
+        )
+    }
+}
+#[derive(Clone, Copy, Debug)]
+struct StyleSummary {
+    logical_bytes: usize,
+    retained_bytes: usize,
+    clone_work: usize,
+    release_work: usize,
+    names_work: usize,
+    pending_records: usize,
+}
+#[derive(Debug)]
 pub(crate) struct InlineStyle {
     records: Vec<Record>,
+    summary: StyleSummary,
+}
+impl PartialEq for InlineStyle {
+    fn eq(&self, other: &Self) -> bool {
+        self.records == other.records
+    }
+}
+impl Eq for InlineStyle {}
+impl Clone for InlineStyle {
+    fn clone(&self) -> Self {
+        let records = self.records.clone();
+        // Runtime callers pay the cached copy, summary and teardown tariff first.
+        let summary =
+            Self::summarize(&records, records.capacity()).expect("bounded inline clone summary");
+        Self { records, summary }
+    }
+}
+impl Default for InlineStyle {
+    fn default() -> Self {
+        Self {
+            records: Vec::new(),
+            summary: StyleSummary {
+                logical_bytes: 0,
+                retained_bytes: arc_bytes(),
+                clone_work: 2,
+                release_work: 1,
+                names_work: 0,
+                pending_records: 0,
+            },
+        }
+    }
+}
+pub(crate) struct InlineDeclarationRef<'a> {
+    pub name: &'a str,
+    pub value: &'a str,
+    pub important: bool,
+    pub pending_shorthand: Option<&'a Arc<str>>,
+}
+#[derive(Debug)]
+pub(crate) struct PreparedInlineStyle {
+    style: Arc<InlineStyle>,
+    serialized: String,
+}
+impl PreparedInlineStyle {
+    pub(crate) fn serialized(&self) -> &str {
+        &self.serialized
+    }
+    pub(crate) fn style(&self) -> &InlineStyle {
+        &self.style
+    }
+    pub(crate) fn into_parts(self) -> (Arc<InlineStyle>, String) {
+        (self.style, self.serialized)
+    }
+}
+fn add(a: usize, b: usize) -> Result<usize, Error> {
+    a.checked_add(b).ok_or(Error::Limit)
+}
+fn mul(a: usize, b: usize) -> Result<usize, Error> {
+    a.checked_mul(b).ok_or(Error::Limit)
+}
+fn arc_bytes() -> usize {
+    2 * size_of::<usize>() + size_of::<InlineStyle>()
+}
+fn summary_work(count: usize) -> Result<usize, Error> {
+    add(1, mul(264, count)?)
 }
 fn alias(name: &str) -> &str {
     match name {
@@ -62,23 +167,116 @@ fn name(name: &str) -> Option<String> {
     }
     let lower = name.to_ascii_lowercase();
     let lower = alias(&lower);
-    (css::supported_property(lower) || css::shorthand_properties(lower).is_some())
+    (css::supported_property(lower) || css::shorthand_property_count(lower).is_some())
         .then(|| lower.to_owned())
 }
 pub(crate) fn recognized_property(property: &str) -> bool {
     name(property).is_some()
 }
-fn targets(name: &str) -> Vec<String> {
-    css::shorthand_properties(name).unwrap_or_else(|| vec![name.into()])
-}
-fn matches_name(record: &Record, property: &str) -> bool {
-    record.name == property
-        || record
-            .pending
-            .as_ref()
-            .is_some_and(|names| names.iter().any(|name| name == property))
+fn targets(property: &str, work: &mut usize) -> Result<Vec<String>, Error> {
+    let count = css::shorthand_property_count(property).unwrap_or(1);
+    spend(work, add(1, mul(count, add(property.len(), 32)?)?)?)?;
+    Ok(css::shorthand_properties(property).unwrap_or_else(|| vec![property.into()]))
 }
 impl InlineStyle {
+    fn summarize(records: &[Record], capacity: usize) -> Result<StyleSummary, Error> {
+        let mut logical_bytes = 0;
+        let mut retained_bytes = add(arc_bytes(), mul(capacity, size_of::<Record>())?)?;
+        let mut names_work = 0;
+        let mut pending_records = 0;
+        for record in records {
+            logical_bytes = add(logical_bytes, record.logical_bytes()?)?;
+            names_work = add(names_work, add(record.name.len(), 1)?)?;
+            let payload = match &record.value {
+                RecordValue::Tokens(tokens) => tokens.capacity(),
+                RecordValue::Pending(pending) => {
+                    pending_records += 1;
+                    add(
+                        add(4 * size_of::<usize>(), size_of::<PendingValue>())?,
+                        add(pending.tokens.capacity(), pending.shorthand.len())?,
+                    )?
+                }
+            };
+            retained_bytes = add(retained_bytes, add(record.name.capacity(), payload)?)?;
+        }
+        if records.len() > MAX_DECLARATIONS || logical_bytes > MAX_INLINE_BYTES {
+            return Err(Error::Limit);
+        }
+        let release_work = add(add(1, records.len())?, logical_bytes)?;
+        let clone_work = add(
+            add(summary_work(records.len())?, logical_bytes)?,
+            release_work,
+        )?;
+        Ok(StyleSummary {
+            logical_bytes,
+            retained_bytes,
+            clone_work,
+            release_work,
+            names_work,
+            pending_records,
+        })
+    }
+    fn refresh_summary(&mut self, work: &mut usize) -> Result<(), Error> {
+        spend(work, summary_work(self.records.len())?)?;
+        self.summary = Self::summarize(&self.records, self.records.capacity())?;
+        Ok(())
+    }
+    #[cfg(test)]
+    fn from_records_for_test(records: Vec<Record>) -> Self {
+        let summary = Self::summarize(&records, records.capacity()).expect("bounded test records");
+        Self { records, summary }
+    }
+    pub(crate) fn logical_bytes(&self) -> usize {
+        self.summary.logical_bytes
+    }
+    pub(crate) fn retained_bytes(&self) -> usize {
+        self.summary.retained_bytes
+    }
+    pub(crate) fn clone_work(&self) -> usize {
+        self.summary.clone_work
+    }
+    pub(crate) fn release_work(&self) -> usize {
+        self.summary.release_work
+    }
+    pub(crate) fn declarations(&self) -> impl ExactSizeIterator<Item = InlineDeclarationRef<'_>> {
+        self.records.iter().map(|record| InlineDeclarationRef {
+            name: &record.name,
+            value: record.value.source(),
+            important: record.important,
+            pending_shorthand: record.value.pending().map(|p| &p.shorthand),
+        })
+    }
+    pub(crate) fn try_clone_for_edit(
+        &self,
+        budget: &mut DomMutationBudget,
+    ) -> Result<Self, DomDataError> {
+        budget.work(self.clone_work())?;
+        budget.charge(self.retained_bytes())?;
+        Ok(self.clone())
+    }
+    pub(crate) fn prepare_commit(
+        self,
+        budget: &mut DomMutationBudget,
+    ) -> Result<PreparedInlineStyle, DomDataError> {
+        // Pays incoming-block teardown even when serialization or later DOM admission refuses.
+        budget.work(
+            self.release_work()
+                .checked_add(2)
+                .ok_or(DomDataError::LimitExceeded)?,
+        )?;
+        budget.charge(
+            self.logical_bytes()
+                .checked_add(arc_bytes())
+                .ok_or(DomDataError::LimitExceeded)?,
+        )?;
+        let serialized = self
+            .serialize(&mut budget.steps)
+            .map_err(|_| DomDataError::LimitExceeded)?;
+        Ok(PreparedInlineStyle {
+            style: Arc::new(self),
+            serialized,
+        })
+    }
     pub(crate) fn parse(source: &str, work: &mut usize) -> Result<Self, Error> {
         if source.len() > MAX_INLINE_BYTES {
             return Err(Error::Limit);
@@ -102,7 +300,7 @@ impl InlineStyle {
             }
         }
         style.parse_part(source, &tokens[start..], work)?;
-        style.check_size()?;
+        style.refresh_summary(work)?;
         Ok(style)
     }
     fn parse_part(
@@ -147,99 +345,128 @@ impl InlineStyle {
             for record in records {
                 spend(
                     work,
-                    self.records.iter().map(|r| r.name.len() + 1).sum::<usize>()
-                        + record.name.len()
-                        + 1,
+                    add(self.summary.names_work, add(record.name.len(), 1)?)?,
                 )?;
-                if let Some(index) = self.records.iter().position(|old| old.name == record.name) {
-                    if self.records[index].important && !record.important {
-                        continue;
-                    }
-                    // A pending shorthand between duplicate longhands can affect
-                    // their precedence. Keep the last winning source position.
+                let index = self.records.iter().position(|old| old.name == record.name);
+                if index.is_some_and(|i| self.records[i].important && !record.important) {
+                    continue;
+                }
+                self.admit_replacement(index, &record)?;
+                // Parse precedence retains the last winning source position.
+                if let Some(index) = index {
                     self.records.remove(index);
                 }
                 self.records.push(record);
-                self.check_size()?;
             }
         }
+        Ok(())
+    }
+    // Called only inside a funded merge/mutation pass; keep admission metadata
+    // incremental so no record-vector growth precedes count/logical admission.
+    fn admit_replacement(
+        &mut self,
+        index: Option<usize>,
+        replacement: &Record,
+    ) -> Result<(), Error> {
+        let old = index.map(|i| &self.records[i]);
+        let old_bytes = old.map_or(Ok(0), Record::logical_bytes)?;
+        let new_bytes = replacement.logical_bytes()?;
+        let logical = add(
+            self.summary
+                .logical_bytes
+                .checked_sub(old_bytes)
+                .ok_or(Error::Limit)?,
+            new_bytes,
+        )?;
+        let count = add(self.records.len(), usize::from(index.is_none()))?;
+        if logical > MAX_INLINE_BYTES || count > MAX_DECLARATIONS {
+            return Err(Error::Limit);
+        }
+        let old_names = old.map_or(0, |r| r.name.len() + 1);
+        self.summary.names_work = add(
+            self.summary
+                .names_work
+                .checked_sub(old_names)
+                .ok_or(Error::Limit)?,
+            replacement.name.len() + 1,
+        )?;
+        self.summary.logical_bytes = logical;
         Ok(())
     }
     pub(crate) fn len(&self) -> usize {
         self.records.len()
     }
     pub(crate) fn item(&self, index: usize) -> &str {
-        self.records.get(index).map_or("", |r| r.name.as_str())
+        self.records
+            .get(index)
+            .map_or("", |record| record.name.as_str())
     }
-    fn query_work(&self, property: &str, work: &mut usize) -> Result<(), Error> {
+    fn query_targets(
+        &self,
+        property: &str,
+        work: &mut usize,
+    ) -> Result<Option<(String, Vec<String>)>, Error> {
         spend(work, property.len().saturating_add(1))?;
-        let names = name(property).map(|p| targets(&p)).unwrap_or_default();
-        let records = self
-            .records
-            .iter()
-            .map(|r| {
-                r.name.len()
-                    + 1
-                    + r.pending
-                        .as_ref()
-                        .map_or(0, |p| p.iter().map(|s| s.len() + 1).sum())
-            })
-            .sum::<usize>();
+        let Some(normalized) = name(property) else {
+            spend(work, add(self.summary.names_work, add(property.len(), 1)?)?)?;
+            return Ok(None);
+        };
+        let names = targets(&normalized, work)?;
         spend(
             work,
-            (records + property.len() + 1).saturating_mul(names.len().max(1)),
-        )
+            mul(
+                add(self.summary.names_work, add(property.len(), 1)?)?,
+                names.len().max(1),
+            )?,
+        )?;
+        Ok(Some((normalized, names)))
     }
-
-    fn winner(&self, property: &str) -> Option<(usize, &Record)> {
-        let mut result: Option<(usize, &Record)> = None;
-        for (index, record) in self.records.iter().enumerate() {
-            if matches_name(record, property)
-                && result.is_none_or(|(_, old)| record.important || !old.important)
-            {
-                result = Some((index, record));
-            }
-        }
-        result
+    fn winner(&self, property: &str) -> Option<&Record> {
+        self.records.iter().find(|record| record.name == property)
     }
     pub(crate) fn get_property_value(
         &self,
         property: &str,
         work: &mut usize,
     ) -> Result<String, Error> {
-        self.query_work(property, work)?;
-        let Some(property) = name(property) else {
+        let Some((property, names)) = self.query_targets(property, work)? else {
             return Ok(String::new());
         };
-        let Some(longhands) = css::shorthand_properties(&property) else {
+        if css::shorthand_property_count(&property).is_none() {
             let value = self
                 .winner(&property)
-                .filter(|(_, r)| r.pending.is_none())
-                .map_or("", |(_, r)| r.value.as_str());
+                .and_then(|record| match &record.value {
+                    RecordValue::Tokens(tokens) => Some(tokens.as_str()),
+                    RecordValue::Pending(_) => None,
+                })
+                .unwrap_or("");
             spend(work, value.len() + 1)?;
             return Ok(value.into());
-        };
-        let values: Option<Vec<_>> = longhands.iter().map(|p| self.winner(p)).collect();
+        }
+        // This prepayment precedes any pending-source content/importance checks.
+        if self.summary.pending_records != 0 {
+            spend(work, add(self.logical_bytes(), 1)?)?;
+        }
+        let values: Option<Vec<_>> = names.iter().map(|p| self.winner(p)).collect();
         let Some(values) = values else {
             return Ok(String::new());
         };
-        if values
-            .iter()
-            .any(|(_, r)| r.important != values[0].1.important)
-        {
+        if values.iter().any(|r| r.important != values[0].important) {
             return Ok(String::new());
         }
-        if values.iter().any(|(_, r)| r.pending.is_some()) {
-            if values
-                .iter()
-                .all(|(i, r)| *i == values[0].0 && r.name == property)
+        if let Some(pending) = values[0].value.pending() {
+            if pending.shorthand.as_ref() == property
+                && values.iter().all(|r| r.value.pending() == Some(pending))
             {
-                spend(work, values[0].1.value.len() + 1)?;
-                return Ok(values[0].1.value.clone());
+                spend(work, pending.tokens.len() + 1)?;
+                return Ok(pending.tokens.clone());
             }
             return Ok(String::new());
         }
-        let raw: Vec<_> = values.iter().map(|(_, r)| r.value.as_str()).collect();
+        if values.iter().any(|r| r.value.pending().is_some()) {
+            return Ok(String::new());
+        }
+        let raw: Vec<_> = values.iter().map(|r| r.value.source()).collect();
         spend(
             work,
             raw.iter()
@@ -258,20 +485,44 @@ impl InlineStyle {
         property: &str,
         work: &mut usize,
     ) -> Result<&'static str, Error> {
-        self.query_work(property, work)?;
-        let Some(property) = name(property) else {
+        let Some((_, names)) = self.query_targets(property, work)? else {
             return Ok("");
         };
         Ok(
-            if targets(&property)
+            if names
                 .iter()
-                .all(|p| self.winner(p).is_some_and(|(_, r)| r.important))
+                .all(|p| self.winner(p).is_some_and(|r| r.important))
             {
                 "important"
             } else {
                 ""
             },
         )
+    }
+    fn mutation_work(&self, property: &str, count: usize, work: &mut usize) -> Result<(), Error> {
+        spend(
+            work,
+            add(
+                1,
+                mul(
+                    mul(2, count)?,
+                    add(self.summary.names_work, add(property.len(), 1)?)?,
+                )?,
+            )?,
+        )
+    }
+    fn commit_staged(&mut self, mut staged: Self, work: &mut usize) -> Result<bool, Error> {
+        staged.refresh_summary(work)?;
+        spend(
+            work,
+            add(
+                1,
+                mul(2, add(self.logical_bytes(), staged.logical_bytes())?)?,
+            )?,
+        )?;
+        let changed = *self != staged;
+        *self = staged;
+        Ok(changed)
     }
     pub(crate) fn set_property(
         &mut self,
@@ -302,64 +553,28 @@ impl InlineStyle {
         if value.len() > MAX_VALUE_BYTES {
             return Err(Error::Limit);
         }
-        let important = !priority.is_empty();
-        let Some(replacements) = records(&property, value, important, work)? else {
+        let Some(replacements) = records(&property, value, !priority.is_empty(), work)? else {
             return Ok(false);
         };
-        self.query_work(&property, work)?;
-        let names = targets(&property);
-        // Partial removal of a pending shorthand cannot be represented by plain
-        // declaration text. A later value is safe only if it can win the priority.
-        if self.records.iter().any(|r| {
-            r.pending.as_ref().is_some_and(|parts| {
-                parts.iter().any(|p| names.contains(p))
-                    && !parts.iter().all(|p| names.contains(p))
-                    && r.important
-                    && !important
-            })
-        }) {
+        let Some((_, names)) = self.query_targets(&property, work)? else {
             return Ok(false);
-        }
-        spend(work, self.storage_bytes().saturating_mul(2) + 1)?;
+        };
+        spend(work, self.clone_work())?;
+        self.mutation_work(&property, names.len(), work)?;
         let mut staged = self.clone();
-        if replacements.iter().any(|r| r.pending.is_some()) {
-            staged.records.retain(|r| {
-                if let Some(parts) = &r.pending {
-                    !parts.iter().all(|p| names.contains(p))
-                } else {
-                    !names.contains(&r.name)
-                }
-            });
-            staged.records.extend(replacements);
-        } else {
-            staged.records.retain(|r| {
-                r.pending
-                    .as_ref()
-                    .is_none_or(|parts| !parts.iter().all(|p| names.contains(p)))
-            });
-            for replacement in replacements {
-                let existing = staged
-                    .records
-                    .iter()
-                    .position(|r| r.name == replacement.name);
-                let last_pending = staged
-                    .records
-                    .iter()
-                    .rposition(|r| r.pending.is_some() && matches_name(r, &replacement.name));
-                if let Some(index) = existing {
-                    if last_pending.is_none_or(|pending| pending < index) {
-                        staged.records[index] = replacement;
-                        continue;
-                    }
-                    staged.records.remove(index);
-                }
+        for replacement in replacements {
+            let index = staged
+                .records
+                .iter()
+                .position(|r| r.name == replacement.name);
+            staged.admit_replacement(index, &replacement)?;
+            if let Some(index) = index {
+                staged.records[index] = replacement;
+            } else {
                 staged.records.push(replacement);
             }
         }
-        staged.check_size()?;
-        let changed = *self != staged;
-        *self = staged;
-        Ok(changed)
+        self.commit_staged(staged, work)
     }
     pub(crate) fn remove_property(
         &mut self,
@@ -367,37 +582,18 @@ impl InlineStyle {
         work: &mut usize,
     ) -> Result<String, Error> {
         let previous = self.get_property_value(property, work)?;
-        let Some(property) = name(property) else {
+        let Some((property, names)) = self.query_targets(property, work)? else {
             return Ok(previous);
         };
-        let names = targets(&property);
-        self.query_work(&property, work)?;
-        if self.records.iter().any(|r| {
-            r.pending.as_ref().is_some_and(|parts| {
-                parts.iter().any(|p| names.contains(p)) && !parts.iter().all(|p| names.contains(p))
-            })
-        }) {
-            return Ok(String::new());
-        }
-        self.records.retain(|r| {
-            if let Some(parts) = &r.pending {
-                !parts.iter().all(|p| names.contains(p))
-            } else {
-                !names.contains(&r.name)
-            }
-        });
+        spend(work, self.clone_work())?;
+        self.mutation_work(&property, names.len(), work)?;
+        let mut staged = self.clone();
+        staged.records.retain(|r| !names.contains(&r.name));
+        self.commit_staged(staged, work)?;
         Ok(previous)
     }
-    fn storage_bytes(&self) -> usize {
-        self.records
-            .iter()
-            .map(|r| {
-                serialized_name_len(&r.name) + r.value.len() + if r.important { 15 } else { 4 }
-            })
-            .sum()
-    }
     fn check_size(&self) -> Result<(), Error> {
-        if self.records.len() > MAX_DECLARATIONS || self.storage_bytes() > MAX_INLINE_BYTES {
+        if self.records.len() > MAX_DECLARATIONS || self.logical_bytes() > MAX_INLINE_BYTES {
             Err(Error::Limit)
         } else {
             Ok(())
@@ -405,15 +601,74 @@ impl InlineStyle {
     }
     pub(crate) fn serialize(&self, work: &mut usize) -> Result<String, Error> {
         self.check_size()?;
-        spend(work, self.storage_bytes().saturating_mul(2) + 1)?;
-        let mut out = String::with_capacity(self.storage_bytes());
-        for record in &self.records {
+        spend(work, add(mul(2, self.logical_bytes())?, 1)?)?;
+        let mut considered = [false; MAX_DECLARATIONS];
+        let mut skip = [false; MAX_DECLARATIONS];
+        let mut shorthand = [false; MAX_DECLARATIONS];
+        if self.summary.pending_records != 0 {
+            spend(work, self.records.len() + 1)?;
+            for (i, record) in self.records.iter().enumerate() {
+                if considered[i] {
+                    continue;
+                }
+                let Some(pending) = record.value.pending() else {
+                    continue;
+                };
+                spend(
+                    work,
+                    add(
+                        add(
+                            1,
+                            mul(self.records.len(), add(pending.shorthand.len(), 4)?)?,
+                        )?,
+                        self.logical_bytes(),
+                    )?,
+                )?;
+                let mut count = 0;
+                let mut complete = true;
+                let mut group = [false; MAX_DECLARATIONS];
+                for (j, other) in self.records.iter().enumerate() {
+                    if let Some(source) = other.value.pending()
+                        && source.shorthand == pending.shorthand
+                    {
+                        considered[j] = true;
+                        group[j] = true;
+                        count += 1;
+                        complete &= source == pending && other.important == record.important;
+                    }
+                }
+                complete &= css::shorthand_property_count(&pending.shorthand) == Some(count);
+                if complete {
+                    shorthand[i] = true;
+                    // The paid origin scan also funds this fixed flag publication.
+                    for (j, matches) in group.iter().enumerate().take(self.records.len()) {
+                        if j != i && *matches {
+                            skip[j] = true;
+                        }
+                    }
+                }
+            }
+        }
+        let mut out = String::with_capacity(self.logical_bytes());
+        for (i, record) in self.records.iter().enumerate() {
+            if skip[i] {
+                continue;
+            }
             if !out.is_empty() {
                 out.push(' ');
             }
-            write_name(&mut out, &record.name);
-            out.push_str(": ");
-            out.push_str(&record.value);
+            if shorthand[i] {
+                let pending = record.value.pending().expect("planned pending shorthand");
+                write_name(&mut out, &pending.shorthand);
+                out.push_str(": ");
+                out.push_str(&pending.tokens);
+            } else {
+                write_name(&mut out, &record.name);
+                out.push_str(": ");
+                if let RecordValue::Tokens(value) = &record.value {
+                    out.push_str(value);
+                }
+            }
             if record.important {
                 out.push_str(" !important");
             }
@@ -541,6 +796,10 @@ fn records(
     important: bool,
     work: &mut usize,
 ) -> Result<Option<Vec<Record>>, Error> {
+    let count = css::shorthand_property_count(property).unwrap_or(1);
+    spend(work, add(1, mul(count, add(property.len(), 32)?)?)?)?;
+    // Flat temporary records are paid for even if a later validation/stage fails.
+    spend(work, add(1, mul(8, count)?)?)?;
     let tokens = selectors::tokens(raw, work).map_err(|_| Error::Limit)?;
     spend(
         work,
@@ -584,20 +843,35 @@ fn records(
     if custom {
         return Ok(Some(vec![Record {
             name: property.into(),
-            value: value.into(),
+            value: RecordValue::Tokens(value.into()),
             important,
-            pending: None,
         }]));
     }
     if value.is_empty() {
         return Ok(None);
     }
     if css::contains_var_function(value) {
+        spend(work, add(1, mul(count, add(value.len(), 64)?)?)?)?;
+        if let Some(names) = css::shorthand_properties(property) {
+            let source = Arc::new(PendingValue {
+                shorthand: Arc::from(property),
+                tokens: value.into(),
+            });
+            return Ok(Some(
+                names
+                    .into_iter()
+                    .map(|name| Record {
+                        name,
+                        value: RecordValue::Pending(Arc::clone(&source)),
+                        important,
+                    })
+                    .collect(),
+            ));
+        }
         return Ok(Some(vec![Record {
             name: property.into(),
-            value: value.into(),
+            value: RecordValue::Tokens(value.into()),
             important,
-            pending: css::shorthand_properties(property),
         }]));
     }
     if !css::valid_calculations(value, work).map_err(|_| Error::Limit)? {
@@ -654,7 +928,6 @@ fn records(
     if !valid_value(property, value, work)? {
         return Ok(None);
     }
-    let count = css::shorthand_properties(property).map_or(1, |names| names.len());
     spend(work, count.saturating_mul(value.len() + 64) + 1)?;
     if matches!(
         property,
@@ -671,9 +944,8 @@ fn records(
         // another identical parser pass. Pending var() values returned above.
         return Ok(Some(vec![Record {
             name: property.into(),
-            value: normalized,
+            value: RecordValue::Tokens(normalized),
             important,
-            pending: None,
         }]));
     }
     let mut expanded = Vec::new();
@@ -694,9 +966,8 @@ fn records(
             .into_iter()
             .map(|d| Record {
                 name: d.name,
-                value: d.value,
+                value: RecordValue::Tokens(d.value),
                 important: d.important,
-                pending: None,
             })
             .collect(),
     ))
@@ -794,7 +1065,7 @@ fn valid_value(property: &str, value: &str, work: &mut usize) -> Result<bool, Er
     if wide(value) {
         return Ok(true);
     }
-    if css::shorthand_properties(property).is_none() {
+    if css::shorthand_property_count(property).is_none() {
         return valid_longhand(property, value, work);
     }
     let tokens = selectors::tokens(value, work).map_err(|_| Error::Limit)?;
@@ -1417,18 +1688,23 @@ mod tests {
         assert!(set(&mut s, "margin-top", "10px", ""));
         assert_eq!(get(&s, "margin-top"), "10px");
         assert_eq!(get(&s, "margin"), "");
-        let before = s.clone();
         assert_eq!(
             s.remove_property("margin-top", &mut WORK.clone()).unwrap(),
-            ""
+            "10px"
         );
-        assert_eq!(s, before);
+        assert_eq!(get(&s, "margin-top"), "");
         assert!(set(&mut s, "margin", "4px", ""));
         assert_eq!(get(&s, "margin"), "4px");
         let mut s = parse("margin:var(--x) !important");
-        let before = s.clone();
-        assert!(!set(&mut s, "margin-left", "3px", ""));
-        assert_eq!(s, before);
+        assert!(set(&mut s, "margin-left", "3px", ""));
+        assert_eq!(
+            s.get_property_priority("margin-left", &mut WORK.clone()),
+            Ok("")
+        );
+        assert_eq!(
+            s.get_property_priority("margin-top", &mut WORK.clone()),
+            Ok("important")
+        );
         assert!(set(&mut s, "margin-left", "3px", "important"));
         assert_eq!(get(&s, "margin-left"), "3px");
     }
@@ -1619,3 +1895,9 @@ mod border_spacing_tariff_tests;
 
 #[cfg(test)]
 mod border_spacing_independent_tests;
+
+#[cfg(test)]
+mod pending_record_tests;
+
+#[cfg(test)]
+mod pending_record_accounting_tests;

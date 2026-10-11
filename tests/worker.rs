@@ -2881,3 +2881,6 @@ mod background_boxes;
 
 #[path = "worker/background_layers.rs"]
 mod background_layers;
+
+#[path = "worker/cssom_pending.rs"]
+mod cssom_pending;

@@ -226,12 +226,21 @@ fn every_missing_priority_or_mixed_wide_component_blocks_shorthand_serialization
 #[test]
 fn pending_seven_targets_keep_identity_priority_and_atomic_removal() {
     let mut pending = parse("background:var(--Saved)");
-    assert_eq!(pending.len(), 1);
+    assert_eq!(pending.len(), 7);
     assert_eq!(get(&pending, "background"), "var(--Saved)");
     assert_eq!(
-        pending.records[0].pending.as_ref().unwrap(),
-        &NAMES.map(str::to_owned)
+        (0..pending.len())
+            .map(|i| pending.item(i))
+            .collect::<Vec<_>>(),
+        NAMES
     );
+    for record in &pending.records {
+        let RecordValue::Pending(source) = &record.value else {
+            panic!("pending background")
+        };
+        assert_eq!(source.shorthand.as_ref(), "background");
+        assert_eq!(source.tokens, "var(--Saved)");
+    }
     assert!(set(&mut pending, "background-origin", "content-box", ""));
     assert_eq!(get(&pending, "background"), "");
     assert_eq!(get(&pending, "background-origin"), "content-box");
@@ -243,9 +252,15 @@ fn pending_seven_targets_keep_identity_priority_and_atomic_removal() {
     );
     assert_eq!(pending, InlineStyle::default());
     let mut important = parse("background:var(--Saved)!important");
-    let saved = important.clone();
-    assert!(!set(&mut important, "background-clip", "content-box", ""));
-    assert_eq!(important, saved);
+    assert!(set(&mut important, "background-clip", "content-box", ""));
+    assert_eq!(
+        important.get_property_priority("background-clip", &mut WORK.clone()),
+        Ok("")
+    );
+    assert_eq!(
+        important.get_property_priority("background-origin", &mut WORK.clone()),
+        Ok("important")
+    );
     assert!(set(
         &mut important,
         "background-clip",
@@ -253,7 +268,11 @@ fn pending_seven_targets_keep_identity_priority_and_atomic_removal() {
         "important"
     ));
     assert_eq!(get(&important, "background"), "");
-    assert_eq!(parse(&text(&important)), important);
+    assert_eq!(important.len(), 7);
+    let reparsed = parse(&text(&important));
+    assert_eq!(reparsed.len(), 1);
+    assert_eq!(get(&reparsed, "background-clip"), "content-box");
+    assert_eq!(get(&reparsed, "background-origin"), "");
 }
 
 #[test]
@@ -304,20 +323,21 @@ fn cssom_wide_and_var_records_reach_computed_box_values() {
 fn new_box_records_keep_literal_one_pass_admission_and_old_work_limits() {
     // Single Ident length n: records scans12n+12, two validators24n+2,
     // shared box parser5n+9, normalized storage n+65 =>42n+88.
+    // Record T(p,1)+F(1)=p+42 is now added before leaf validation.
     for property in ["background-origin", "background-clip"] {
         for (value, cost) in [
             ("border-box", 508),
             ("padding-box", 550),
             ("content-box", 550),
         ] {
+            let cost = cost + property.len() + 42;
             let mut work = cost;
             assert_eq!(
                 records(property, value, true, &mut work),
                 Ok(Some(vec![Record {
                     name: property.into(),
-                    value: value.into(),
+                    value: RecordValue::Tokens(value.into()),
                     important: true,
-                    pending: None,
                 }]))
             );
             assert_eq!(work, 0);
@@ -331,12 +351,13 @@ fn new_box_records_keep_literal_one_pass_admission_and_old_work_limits() {
 
 #[test]
 fn literal_setter_budget_refusal_publishes_no_partial_record() {
-    // Empty block: API bytes + records fee + two property query scans +1 staging.
+    // Empty block: old leaf + T/F + API/Q + clone2 + M + summary265 + equality.
+    // For important singletons the exact sum is old_leaf +9*p+3*v+388.
     for (property, value, cost) in [
-        ("background-origin", "border-box", 582),
-        ("background-origin", "padding-box", 625),
-        ("background-clip", "border-box", 576),
-        ("background-clip", "content-box", 619),
+        ("background-origin", "border-box", 1079),
+        ("background-origin", "padding-box", 1124),
+        ("background-clip", "border-box", 1061),
+        ("background-clip", "content-box", 1106),
     ] {
         let mut exact = InlineStyle::default();
         let mut work = cost;
@@ -360,16 +381,15 @@ fn literal_setter_budget_refusal_publishes_no_partial_record() {
 #[test]
 fn seven_record_expansion_respects_existing256_record_limit_transactionally() {
     for custom_count in [249, 250] {
-        let mut style = InlineStyle {
-            records: (0..custom_count)
+        let mut style = InlineStyle::from_records_for_test(
+            (0..custom_count)
                 .map(|index| Record {
                     name: format!("--saved{index}"),
-                    value: "0".into(),
+                    value: RecordValue::Tokens("0".into()),
                     important: false,
-                    pending: None,
                 })
                 .collect(),
-        };
+        );
         let before = style.clone();
         let result = style.set_property(
             "background",

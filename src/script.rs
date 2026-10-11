@@ -7705,12 +7705,68 @@ impl Runtime {
         Ok(text)
     }
 
+    fn style_read<'a>(
+        &mut self,
+        id: NodeId,
+        extra_bytes: usize,
+        doc: &'a Document,
+    ) -> Result<std::borrow::Cow<'a, crate::cssom::InlineStyle>> {
+        if let Some(style) = doc
+            .inline_style(id, &mut self.steps)
+            .map_err(style_dom_error)?
+        {
+            return Ok(std::borrow::Cow::Borrowed(style));
+        }
+        let source = doc.attr(id, "style").unwrap_or("");
+        self.charge(crate::cssom::scratch_bytes(
+            source.len().saturating_add(extra_bytes),
+        ))?;
+        crate::cssom::InlineStyle::parse(source, &mut self.steps)
+            .map(std::borrow::Cow::Owned)
+            .map_err(style_limit)
+    }
+
+    // A borrowed block avoids parse/clone allocations, but allocating CSSOM
+    // queries still need their operation allowance. The owned text path already
+    // prepaid parse plus operation scratch. Metadata-only reads skip this call.
+    fn style_read_scratch<'a>(
+        &mut self,
+        style: std::borrow::Cow<'a, crate::cssom::InlineStyle>,
+        extra_bytes: usize,
+    ) -> Result<std::borrow::Cow<'a, crate::cssom::InlineStyle>> {
+        if matches!(style, std::borrow::Cow::Borrowed(_)) {
+            self.charge(crate::cssom::scratch_bytes(
+                style.logical_bytes().saturating_add(extra_bytes),
+            ))?;
+        }
+        Ok(style)
+    }
+
+    // Editing requires a checked clone of the latest typed block. Its cached
+    // logical size includes pending payloads absent from attribute text.
     fn style_parse(
         &mut self,
         id: NodeId,
         extra_bytes: usize,
         doc: &Document,
     ) -> Result<crate::cssom::InlineStyle> {
+        if let Some(style) = doc
+            .inline_style(id, &mut self.steps)
+            .map_err(style_dom_error)?
+        {
+            self.charge(crate::cssom::scratch_bytes(
+                style.logical_bytes().saturating_add(extra_bytes),
+            ))?;
+            let mut budget = crate::dom::DomMutationBudget {
+                steps: self.steps,
+                allocated: self.allocated,
+                heap_limit: MAX_HEAP,
+            };
+            let result = style.try_clone_for_edit(&mut budget);
+            self.steps = budget.steps;
+            self.allocated = budget.allocated;
+            return result.map_err(style_dom_error);
+        }
         let source = doc.attr(id, "style").unwrap_or("");
         self.charge(crate::cssom::scratch_bytes(
             source.len().saturating_add(extra_bytes),
@@ -7721,14 +7777,22 @@ impl Runtime {
     fn style_commit(
         &mut self,
         id: NodeId,
-        style: &crate::cssom::InlineStyle,
+        style: crate::cssom::InlineStyle,
         doc: &mut Document,
     ) -> Result<()> {
-        let source = style.serialize(&mut self.steps).map_err(style_limit)?;
-        self.work(source.len().saturating_add(1))?;
-        self.charge(source.len().saturating_add(24))?;
-        doc.set_attr(id, "style", &source);
-        Ok(())
+        let mut budget = crate::dom::DomMutationBudget {
+            steps: self.steps,
+            allocated: self.allocated,
+            heap_limit: MAX_HEAP,
+        };
+        let result = style
+            .prepare_commit(&mut budget)
+            .and_then(|prepared| doc.commit_inline_style_checked(id, prepared, &mut budget));
+        // Failed preparation/publication retains both cumulative debits. The
+        // checked DOM operation publishes exact text and typed state together.
+        self.steps = budget.steps;
+        self.allocated = budget.allocated;
+        result.map_err(style_dom_error)
     }
 
     fn style_get(&mut self, id: NodeId, key: &str, doc: &mut Document) -> Result<Value> {
@@ -7743,7 +7807,7 @@ impl Runtime {
             return Ok(Value::Null);
         }
         if matches!(key, "cssText" | "length") || style_index(key).is_some() {
-            let style = self.style_parse(id, key.len(), doc)?;
+            let style = self.style_read(id, key.len(), doc)?;
             if key == "length" {
                 return Ok(Value::Number(style.len() as f64));
             }
@@ -7754,11 +7818,13 @@ impl Runtime {
                     Ok(Value::Undefined)
                 };
             }
+            let style = self.style_read_scratch(style, key.len())?;
             let source = style.serialize(&mut self.steps).map_err(style_limit)?;
             return self.string(source);
         }
         if let Some(property) = self.style_property_name(key)? {
-            let style = self.style_parse(id, property.len(), doc)?;
+            let style = self.style_read(id, property.len(), doc)?;
+            let style = self.style_read_scratch(style, property.len())?;
             let value = style
                 .get_property_value(&property, &mut self.steps)
                 .map_err(style_limit)?;
@@ -7781,7 +7847,7 @@ impl Runtime {
                 return Ok(true);
             }
             if let Some(index) = style_index(&name) {
-                return Ok(index < self.style_parse(id, name.len(), doc)?.len());
+                return Ok(index < self.style_read(id, name.len(), doc)?.len());
             }
         }
         Ok(self
@@ -7807,7 +7873,7 @@ impl Runtime {
             self.charge(crate::cssom::scratch_bytes(source.len()))?;
             let style =
                 crate::cssom::InlineStyle::parse(&source, &mut self.steps).map_err(style_limit)?;
-            return self.style_commit(id, &style, doc);
+            return self.style_commit(id, style, doc);
         }
         let Some(property) = self.style_property_name(key)? else {
             return Err(ScriptError::unsupported(
@@ -7820,13 +7886,13 @@ impl Runtime {
             self.string_hint(value, doc)?
         };
         let value = self.style_source(&value)?;
-        // Author conversion may have changed this node's style. Parse only now.
+        // Author conversion may have changed this node's style. Snapshot only now.
         let mut style = self.style_parse(id, property.len().saturating_add(value.len()), doc)?;
         if style
             .set_property(&property, &value, "", &mut self.steps)
             .map_err(style_limit)?
         {
-            self.style_commit(id, &style, doc)?;
+            self.style_commit(id, style, doc)?;
         }
         Ok(())
     }
@@ -7851,7 +7917,7 @@ impl Runtime {
         }
         if method == "item" {
             let index = to_i32(self.number_value(args[0].clone(), doc)?) as u32 as usize;
-            let style = self.style_parse(id, 0, doc)?;
+            let style = self.style_read(id, 0, doc)?;
             return self.string(style.item(index));
         }
         let name = self.string_hint(args[0].clone(), doc)?;
@@ -7876,20 +7942,23 @@ impl Runtime {
             .len()
             .saturating_add(value.len())
             .saturating_add(priority.len());
-        let mut style = self.style_parse(id, extra, doc)?;
-        match method {
-            "getPropertyValue" => {
+        if matches!(method, "getPropertyValue" | "getPropertyPriority") {
+            let style = self.style_read(id, extra, doc)?;
+            let style = self.style_read_scratch(style, extra)?;
+            return if method == "getPropertyValue" {
                 let value = style
                     .get_property_value(&name, &mut self.steps)
                     .map_err(style_limit)?;
                 self.string(value)
-            }
-            "getPropertyPriority" => {
+            } else {
                 let value = style
                     .get_property_priority(&name, &mut self.steps)
                     .map_err(style_limit)?;
                 self.string(value)
-            }
+            };
+        }
+        let mut style = self.style_parse(id, extra, doc)?;
+        match method {
             "removeProperty" => {
                 let previous_length = style.len();
                 let previous = style
@@ -7898,7 +7967,7 @@ impl Runtime {
                 // Allocate the result before the one final DOM mutation.
                 let result = self.string(previous)?;
                 if style.len() != previous_length {
-                    self.style_commit(id, &style, doc)?;
+                    self.style_commit(id, style, doc)?;
                 }
                 Ok(result)
             }
@@ -7907,7 +7976,7 @@ impl Runtime {
                     .set_property(&name, &value, &priority, &mut self.steps)
                     .map_err(style_limit)?
                 {
-                    self.style_commit(id, &style, doc)?;
+                    self.style_commit(id, style, doc)?;
                 }
                 Ok(Value::Undefined)
             }
@@ -9642,6 +9711,23 @@ fn css_name(name: &str) -> String {
     }
     result
 }
+fn style_dom_error(error: crate::dom::DomDataError) -> ScriptError {
+    match error {
+        crate::dom::DomDataError::InvalidNode => {
+            ScriptError::type_error("invalid inline style receiver")
+        }
+        crate::dom::DomDataError::InvalidData => {
+            ScriptError::unsupported("invalid inline style data")
+        }
+        crate::dom::DomDataError::LimitExceeded => {
+            ScriptError::resource("inline style resource limit exceeded")
+        }
+        crate::dom::DomDataError::AllocationFailed => {
+            ScriptError::resource("inline style allocation failed")
+        }
+    }
+}
+
 fn style_limit(_: crate::cssom::Error) -> ScriptError {
     ScriptError::resource("inline declaration limit exceeded")
 }
@@ -20585,3 +20671,8 @@ mod tests {
         "#,&mut document).unwrap();
     }
 }
+
+#[cfg(test)]
+mod pending_style_budget_tests;
+#[cfg(test)]
+mod pending_style_tests;

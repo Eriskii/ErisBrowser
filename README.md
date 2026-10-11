@@ -113,6 +113,13 @@ row-based phase across all clips. This uses the existing shared budgets and
 can require more commands on painted rows. Try the
 [row-background demo](examples/table-row-backgrounds.html).
 
+[Persistent inline declarations](docs/cssom-pending.md) let scripts replace or
+remove one part of a pending `var()` shorthand, preserving the other parts and
+their individual priorities across later script calls and renders. Longhand
+indices now reflect those retained parts. Text replacement deliberately reparses
+serialized values; full CSSOM serialization remains incomplete. Try the
+[interactive shorthand example](examples/cssom-pending.html).
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;

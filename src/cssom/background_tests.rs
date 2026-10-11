@@ -275,9 +275,8 @@ fn validated_background_longhands_keep_normalization_priority_and_pending_values
             records(property, authored, true, &mut WORK.clone()).unwrap(),
             Some(vec![Record {
                 name: property.into(),
-                value: expected.into(),
+                value: RecordValue::Tokens(expected.into()),
                 important: true,
-                pending: None,
             }])
         );
         for wide in ["inherit", "initial", "unset", "revert", "revert-layer"] {
@@ -285,9 +284,8 @@ fn validated_background_longhands_keep_normalization_priority_and_pending_values
                 records(property, wide, false, &mut WORK.clone()).unwrap(),
                 Some(vec![Record {
                     name: property.into(),
-                    value: wide.into(),
+                    value: RecordValue::Tokens(wide.into()),
                     important: false,
-                    pending: None,
                 }])
             );
         }
@@ -297,9 +295,8 @@ fn validated_background_longhands_keep_normalization_priority_and_pending_values
             records(property, "var(--Saved)", true, &mut WORK.clone()).unwrap(),
             Some(vec![Record {
                 name: property.into(),
-                value: "var(--Saved)".into(),
+                value: RecordValue::Tokens("var(--Saved)".into()),
                 important: true,
-                pending: None,
             }])
         );
     }
@@ -327,21 +324,21 @@ fn validated_background_longhands_keep_normalization_priority_and_pending_values
 fn validated_background_longhands_pay_one_parser_pass_before_record_publication() {
     // Literal source ledger for records(), including tokenization, variable
     // syntax, normalization allowance, first validation and storage prepay.
+    // Add T(p,1)+F(1)=p+42 to each unchanged leaf fee below.
     // none: 60 + (49 + 49 + 270) + 69 = 497
     // size0: 24 + (13 + 13 + 19) + 66 = 135
     // pos0:  24 + (13 + 13 + 35) + 66 = 151
     // repeat:84 + (73 + 73 + 51) + 71 = 352
     for (property, value, cost) in [
-        ("background-image", "none", 497),
-        ("background-size", "0", 135),
-        ("background-position", "0", 151),
-        ("background-repeat", "repeat", 352),
+        ("background-image", "none", 555),
+        ("background-size", "0", 192),
+        ("background-position", "0", 212),
+        ("background-repeat", "repeat", 411),
     ] {
         let expected = Some(vec![Record {
             name: property.into(),
-            value: value.into(),
+            value: RecordValue::Tokens(value.into()),
             important: true,
-            pending: None,
         }]);
         let mut exact = cost;
         assert_eq!(records(property, value, true, &mut exact), Ok(expected));

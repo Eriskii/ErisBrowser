@@ -1,5 +1,17 @@
 # Validation record
 
+## Persistent pending inline declarations
+
+The [CSSOM pending-state increment](cssom-pending.md) passes 3,046 Rust 1.88
+native-feature tests and 2,742 default-feature tests, including ignored tests.
+Strict all-target checks pass on Rust 1.88 and 1.98. Forty-eight new groups cover
+records, bounded atomic storage, cascade/bindings, Page pixels and a real worker.
+The parent failed five Page mutation cases and the worker edit while retaining
+the initial control. All 102 reference pairs pass and all 204 PNGs match the
+parent archive byte for byte. The chapter records source/binary bindings, the
+UI projection boundary, type sizes and retained setup/lint/demo corrections.
+This is local compatibility evidence, without a new GPU or performance claim.
+
 ## Decimal Number midpoint selection
 
 The [shared formatter](number-format.md) passes all 74 independent raw-bit

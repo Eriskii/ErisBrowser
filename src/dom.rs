@@ -1,6 +1,7 @@
 //! A bounded, independent HTML tree builder and CSS selector matcher.
 use std::collections::{BTreeMap, BTreeSet};
 
+mod inline_style;
 mod mutation_budget;
 mod node_clone;
 mod node_normalize;
@@ -178,11 +179,13 @@ pub struct Node {
     pub children: Vec<NodeId>,
     pub kind: NodeKind,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Document {
     pub nodes: Vec<Node>,
     pub root: NodeId,
     retained_bytes: usize,
+    inline_styles: BTreeMap<NodeId, inline_style::InlineStyleEntry>,
+    inline_style_bytes: usize,
     scripting_enabled: bool,
     mode: DocumentMode,
     encoding: &'static encoding_rs::Encoding,
@@ -352,6 +355,8 @@ impl Document {
             nodes,
             root,
             retained_bytes: bytes,
+            inline_styles: BTreeMap::new(),
+            inline_style_bytes: 0,
             scripting_enabled,
             mode,
             encoding: encoding_rs::UTF_8,
@@ -1347,6 +1352,7 @@ impl Document {
         value: &str,
         namespace: Option<AttributeNamespace>,
     ) {
+        let inline_credit = self.inline_style_retained_credit(id, name, namespace);
         let refresh = self.base_attribute_work(id, name) != 0;
         let details = namespace.is_none()
             && self.html_control_tag(id) == Some("details")
@@ -1377,8 +1383,11 @@ impl Document {
                     0
                 };
             let name_size = name.len() * if namespace.is_some() { 2 } else { 1 };
-            let remaining =
-                MAX_DOM_BYTES.saturating_sub(self.retained_bytes.saturating_sub(old_size));
+            let remaining = MAX_DOM_BYTES.saturating_sub(
+                self.retained_bytes
+                    .saturating_sub(old_size)
+                    .saturating_sub(inline_credit),
+            );
             if remaining < name_size {
                 return;
             }
@@ -1397,6 +1406,9 @@ impl Document {
             if let Some(namespace) = namespace {
                 el.attr_namespaces.insert(name.into(), namespace);
             }
+        }
+        if changed && inline_credit != 0 {
+            self.invalidate_inline_style_after_attribute_write(id);
         }
         if details && changed {
             if name == "name" {
@@ -1438,6 +1450,8 @@ impl Document {
         if details {
             self.forget_details_group(id);
         }
+        let inline_credit = self.inline_style_retained_credit(id, &name, None);
+        let mut removed = false;
         if let Some(Node {
             kind: NodeKind::Element(el),
             ..
@@ -1448,9 +1462,13 @@ impl Document {
                 self.base_href_bytes = self.base_href_bytes.saturating_sub(old.len());
             }
             self.retained_bytes = self.retained_bytes.saturating_sub(name.len() + old.len());
+            removed = true;
             if el.attr_namespaces.remove(&name).is_some() {
                 self.retained_bytes = self.retained_bytes.saturating_sub(name.len());
             }
+        }
+        if removed && inline_credit != 0 {
+            self.invalidate_inline_style_after_attribute_write(id);
         }
         if details {
             let new_open = self.attr(id, "open").is_some();
@@ -2862,6 +2880,8 @@ impl TreeBuilder {
                 }],
                 root: 0,
                 retained_bytes: 0,
+                inline_styles: BTreeMap::new(),
+                inline_style_bytes: 0,
                 scripting_enabled: scripting,
                 mode: DocumentMode::NoQuirks,
                 encoding: encoding_rs::UTF_8,

@@ -2465,6 +2465,24 @@ fn css_wide(value: &str) -> bool {
     wide_keyword(value).is_some()
 }
 
+/// Target cardinality without constructing property-name Strings. Keep this
+/// beside shorthand_properties so callers can admit that allocation first.
+pub(crate) fn shorthand_property_count(name: &str) -> Option<usize> {
+    Some(match name {
+        "all" => SUPPORTED_PROPERTIES.len(),
+        "gap" | "grid-gap" | "grid-row" | "grid-column" | "place-items" | "place-self"
+        | "place-content" | "list-style" | "flex-flow" | "margin-inline" | "padding-inline"
+        | "margin-block" | "padding-block" => 2,
+        "grid-area" | "inset" | "margin" | "padding" | "border-width" | "border-color"
+        | "border-style" => 4,
+        "background" => 7,
+        "font" => 5,
+        "border" => 12,
+        "flex" | "border-top" | "border-right" | "border-bottom" | "border-left" => 3,
+        _ => return None,
+    })
+}
+
 pub(crate) fn shorthand_properties(name: &str) -> Option<Vec<String>> {
     let list: &[&str] = match name {
         "all" => SUPPORTED_PROPERTIES,
@@ -3063,7 +3081,27 @@ struct CascadedProperties {
 }
 impl CascadedProperties {
     fn insert(&mut self, decl: &Declaration, inline: bool, layer: usize, tail: (u32, u32, u32)) {
-        let (name, value, important) = (decl.name.as_str(), decl.value.as_str(), decl.important);
+        self.insert_parts(
+            (
+                &decl.name,
+                &decl.value,
+                decl.important,
+                decl.pending_shorthand.as_ref(),
+            ),
+            inline,
+            layer,
+            tail,
+        );
+    }
+
+    fn insert_parts(
+        &mut self,
+        parts: (&str, &str, bool, Option<&Arc<str>>),
+        inline: bool,
+        layer: usize,
+        tail: (u32, u32, u32),
+    ) {
+        let (name, value, important, pending_shorthand) = parts;
         let precedence = if important {
             MAX_LAYERS + 1 - layer
         } else {
@@ -3089,11 +3127,80 @@ impl CascadedProperties {
             Candidate {
                 priority,
                 value: value.into(),
-                pending_shorthand: decl.pending_shorthand.clone(),
+                pending_shorthand: pending_shorthand.cloned(),
             },
         );
     }
 }
+// Typed inline declarations retain pending shorthand source independently of
+// their deliberately lossy attribute serialization. Only absence selects text.
+fn insert_inline_declarations(
+    doc: &Document,
+    id: NodeId,
+    cascade: &mut CascadedProperties,
+    layer: usize,
+    work: &mut usize,
+) {
+    match doc.inline_style(id, work) {
+        Err(_) => {
+            *work = 0;
+        }
+        Ok(Some(style)) => {
+            let declarations = style.declarations();
+            if declarations.len() > *work {
+                *work = 0;
+                return;
+            }
+            *work -= declarations.len();
+            for (decl_order, decl) in declarations.enumerate() {
+                if !supported_property(decl.name) || decl.value.len() > 4096 {
+                    continue;
+                }
+                let cost = decl.name.len() + decl.value.len();
+                if cost > *work {
+                    *work = 0;
+                    break;
+                }
+                *work -= cost;
+                cascade.insert_parts(
+                    (
+                        decl.name,
+                        decl.value,
+                        decl.important,
+                        decl.pending_shorthand,
+                    ),
+                    true,
+                    layer,
+                    (1 << 30, u32::MAX, decl_order as u32),
+                );
+            }
+        }
+        Ok(None) => {
+            if let Some(inline) = doc.attr(id, "style")
+                && inline.len() <= *work
+            {
+                *work -= inline.len();
+                for (decl_order, decl) in
+                    parse_declarations_with_limit(inline, &mut (1024 * 1024), work)
+                        .into_iter()
+                        .enumerate()
+                {
+                    if !supported_property(&decl.name) || decl.value.len() > 4096 {
+                        continue;
+                    }
+                    let cost = decl.name.len() + decl.value.len();
+                    if cost > *work {
+                        *work = 0;
+                        break;
+                    }
+                    *work -= cost;
+                    cascade.insert(&decl, true, layer, (1 << 30, u32::MAX, decl_order as u32));
+                }
+            }
+        }
+    }
+}
+
 #[derive(Clone, Copy)]
 enum WinningSource {
     Document,
@@ -3379,32 +3486,7 @@ pub fn compute_styles_with_rules(
                     }
                 }
             }
-            if let Some(inline) = doc.attr(id, "style")
-                && inline.len() <= work
-            {
-                work -= inline.len();
-                for (decl_order, decl) in
-                    parse_declarations_with_limit(inline, &mut (1024 * 1024), &mut work)
-                        .into_iter()
-                        .enumerate()
-                {
-                    if !supported_property(&decl.name) || decl.value.len() > 4096 {
-                        continue;
-                    }
-                    let cost = decl.name.len() + decl.value.len();
-                    if cost > work {
-                        work = 0;
-                        break;
-                    }
-                    work -= cost;
-                    cascade.insert(
-                        &decl,
-                        true,
-                        ranks[0],
-                        (1 << 30, u32::MAX, decl_order as u32),
-                    );
-                }
-            }
+            insert_inline_declarations(doc, id, &mut cascade, ranks[0], &mut work);
             let mut custom = BTreeMap::new();
             for (name, candidates) in &cascade.properties {
                 if name.starts_with("--")
@@ -8735,3 +8817,8 @@ pub(crate) fn serialize_background_shorthand(
 ) -> Result<String, crate::selectors::Error> {
     background::serialize(values, work)
 }
+
+#[cfg(test)]
+mod pending_inline_budget_tests;
+#[cfg(test)]
+mod pending_inline_tests;

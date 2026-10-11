@@ -9,7 +9,7 @@ pub(crate) struct DomMutationBudget {
 }
 
 impl DomMutationBudget {
-    pub(super) fn work(&mut self, count: usize) -> Result<(), DomDataError> {
+    pub(crate) fn work(&mut self, count: usize) -> Result<(), DomDataError> {
         if count > self.steps {
             self.steps = 0;
             return Err(DomDataError::LimitExceeded);
@@ -18,7 +18,7 @@ impl DomMutationBudget {
         Ok(())
     }
 
-    pub(super) fn charge(&mut self, bytes: usize) -> Result<(), DomDataError> {
+    pub(crate) fn charge(&mut self, bytes: usize) -> Result<(), DomDataError> {
         self.allocated = self
             .allocated
             .checked_add(bytes)

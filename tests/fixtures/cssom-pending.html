@@ -1,0 +1,15 @@
+<!doctype html><title>ready</title>
+<style>
+html,body{margin:0;padding:0;background:white}
+#target{position:absolute;left:2px;top:2px;box-sizing:content-box;width:6px;height:4px;margin:0;border:0;background:red}
+#ink{display:block;box-sizing:content-box;width:6px;height:4px;margin:0;padding:0;border:0;background:blue}
+</style>
+<div id="target" style="--p:1px 2px 3px 4px;padding:var(--p)!important" onclick="
+var step=Number(this.getAttribute('data-step')||'0');
+if(step===0){this.style.setProperty('padding-left','9px','');}
+else if(step===1){this.style.setProperty('--p','5px 6px 7px 8px','');}
+else if(step===2){this.style.removeProperty('padding-right');}
+else if(step===3){this.setAttribute('style',this.getAttribute('style'));}
+this.setAttribute('data-step',String(step+1));
+document.title=this.style.getPropertyValue('padding-left')+'|'+this.style.getPropertyPriority('padding-top')+'|'+this.style.getPropertyPriority('padding-right')+'|'+this.style.length;
+"><div id="ink"></div></div>

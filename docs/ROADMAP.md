@@ -70,6 +70,12 @@ row-group/column backgrounds, `empty-cells`, `border-collapse`, general
 relative/rounded-cell clipping and caption placement remain open. Each
 checkpoint's validation belongs to its own chapter.
 
+[Persistent pending inline declarations](cssom-pending.md) now preserve surviving
+longhands and their priorities after partial CSSOM edits, across later entries
+and worker renders. Typed state shares existing storage/work limits and commits
+with serialized attributes. UI snapshots project only attributes; full CSSOM
+serialization, computed style, rule APIs and semantic typed transport remain open.
+
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four
 component positions. Paint fitting leaves box layout and hit areas intact, with
