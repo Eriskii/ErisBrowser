@@ -65,6 +65,9 @@ fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawComma
     let (mut text_bytes, mut scalars, mut key_bytes) = (0usize, 0usize, 0usize);
     for command in commands {
         match command {
+            DrawCommand::BoxDecoration(_) => {
+                return Err("native zoom unsupported box decoration".into());
+            }
             DrawCommand::Text { text, .. } => {
                 text_bytes = text_bytes
                     .checked_add(text.len())
@@ -101,6 +104,9 @@ fn scaled_page(commands: &[DrawCommand], zoom: f32) -> Result<Cow<'_, [DrawComma
     for command in commands {
         // Match scaled_command's arithmetic; only payload cloning differs.
         let scaled = match command {
+            DrawCommand::BoxDecoration(_) => {
+                unreachable!("box decorations refused before zoom allocation")
+            }
             DrawCommand::PushClip { rect: r } => DrawCommand::PushClip { rect: rect(r) },
             DrawCommand::PopClip => DrawCommand::PopClip,
             DrawCommand::PushFixed => DrawCommand::PushFixed,
@@ -1080,3 +1086,6 @@ mod tests {
 
 #[cfg(test)]
 mod tiled_image_tests;
+
+#[cfg(test)]
+mod box_decoration_tests;

@@ -223,6 +223,9 @@ pub(super) fn dump_snapshot(snapshot: &Snapshot, frame: Frame) -> Result<Vec<u8>
         out.count(snapshot.layout.commands.len())?;
         for command in &snapshot.layout.commands {
             match command {
+                DrawCommand::BoxDecoration(_) => {
+                    return Err("box decoration outside legacy browser snapshot fixture".into());
+                }
                 DrawCommand::BackgroundImage { .. } => {
                     return Err("background image outside legacy browser snapshot fixture".into());
                 }

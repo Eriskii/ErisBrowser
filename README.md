@@ -37,6 +37,13 @@ whole-frame software fallback. URL backgrounds consume this primitive; the paint
 command itself performs no fetching or decoding. Try the
 [clickable background example](examples/vulkan-backgrounds.html).
 
+[Rounded box decorations](docs/rounded-boxes.md) add a software display-list
+foundation for elliptical fills and border rings using colors, gradients or
+already decoded images. Fixed subpixel coverage shares the existing paint
+budget; these commands take whole-frame CPU fallback on native paths. CSS
+`background-origin` and `background-clip` integration remains separate. Try the
+[direct Rust example](examples/rounded-boxes.rs).
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;

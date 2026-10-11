@@ -555,6 +555,40 @@ fn pipeline(
     let mut glyphs = 0usize;
     for command in &layout.commands {
         match command {
+            DrawCommand::BoxDecoration(decoration) => {
+                use eris::graphics::box_decoration::{BoxDecoration, BoxPaint};
+                let BoxDecoration {
+                    shape,
+                    cutout,
+                    paint,
+                } = decoration.as_ref();
+                for outline in std::iter::once(shape).chain(cutout.iter()) {
+                    if !outline.valid() {
+                        return Err("invalid rounded box decoration".into());
+                    }
+                    rectangle(outline.rect)?;
+                }
+                match paint {
+                    BoxPaint::Color(_) => {}
+                    BoxPaint::Image { tile, .. } | BoxPaint::LinearGradient { tile, .. } => {
+                        rectangle(*tile)?;
+                        if tile.width <= 0.0 || tile.height <= 0.0 {
+                            return Err("invalid box decoration tile".into());
+                        }
+                    }
+                }
+                if let BoxPaint::LinearGradient {
+                    gradient,
+                    stop_scale,
+                    ..
+                } = paint
+                {
+                    finite(&[*stop_scale], "box decoration stop scale")?;
+                    if *stop_scale <= 0.0 || !gradient.valid() {
+                        return Err("invalid box decoration gradient".into());
+                    }
+                }
+            }
             DrawCommand::Rect { rect, radius, .. } => {
                 rectangle(*rect)?;
                 finite(&[*radius], "border radius")?;

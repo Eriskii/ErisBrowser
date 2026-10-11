@@ -226,6 +226,15 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
             let location = Some(index);
             let leaf = |error| NativeFallback::leaf(error, Some(phase));
             match command {
+                DrawCommand::BoxDecoration(decoration) => {
+                    validate_box_shape(&decoration.shape, location).map_err(leaf)?;
+                    if let Some(cutout) = &decoration.cutout {
+                        validate_box_shape(cutout, location).map_err(leaf)?;
+                    }
+                    // Complete refusal precedes source/gradient/font/rounded
+                    // materialization across every phase, even under opacity 0.
+                    return Err(at(FallbackKind::UnsupportedBoxDecoration, phase, index));
+                }
                 DrawCommand::BackgroundImage {
                     rect,
                     tile,
@@ -491,6 +500,9 @@ fn geometry_pixel_work(
             let slot = ordinal;
             ordinal += 1;
             let scope = match command {
+                DrawCommand::BoxDecoration(_) => {
+                    unreachable!("complete preflight refused box decoration")
+                }
                 DrawCommand::BackgroundImage {
                     rect, tile, repeat, ..
                 } => {
@@ -1033,6 +1045,9 @@ pub fn plan_native_scene(
             let gradient_window = gradients.windows[ordinal];
             ordinal += 1;
             let lowered_command = match command {
+                DrawCommand::BoxDecoration(_) => {
+                    unreachable!("complete preflight refused box decoration")
+                }
                 DrawCommand::BackgroundImage {
                     rect, tile, repeat, ..
                 } => {

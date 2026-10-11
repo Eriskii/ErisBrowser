@@ -7,6 +7,7 @@
 //! or GPU state is serialized. Source and bundled fonts are host-manifest inputs.
 //! This is an input comparison, not a pixel oracle or renderer admission check.
 use super::{Browser, Selection, TaskState};
+use eris::graphics::box_decoration::{BoxDecoration, BoxPaint, RoundedBox};
 use eris::graphics::gradient::{GradientColor, GradientDirection};
 use eris::graphics::{Color, DrawCommand, ImageStore, RasterImage, Rect};
 use std::sync::Arc;
@@ -202,6 +203,7 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
             DrawCommand::Image { .. } => (8, None, None),
             DrawCommand::Line { .. } => (9, None, None),
             DrawCommand::BackgroundImage { .. } => (12, None, None),
+            DrawCommand::BoxDecoration(_) => (13, None, None),
             DrawCommand::LinearGradient { repeat, .. } => {
                 (if *repeat == [true, true] { 10 } else { 11 }, None, None)
             }
@@ -223,6 +225,45 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
         }
         bytes.byte(tag)?;
         match command {
+            DrawCommand::BoxDecoration(decoration) => {
+                let BoxDecoration {
+                    shape,
+                    cutout,
+                    paint,
+                } = decoration.as_ref();
+                rounded_box(bytes, *shape)?;
+                bytes.boolean(cutout.is_some())?;
+                if let Some(inner) = cutout {
+                    rounded_box(bytes, *inner)?;
+                }
+                match paint {
+                    BoxPaint::Color(color) => {
+                        bytes.byte(0)?;
+                        bytes.color(*color)?;
+                    }
+                    BoxPaint::Image { tile, repeat, key } => {
+                        bytes.byte(1)?;
+                        box_tile(bytes, *tile, *repeat)?;
+                        bytes.text(key)?;
+                    }
+                    BoxPaint::LinearGradient {
+                        tile,
+                        repeat,
+                        gradient,
+                        current_color,
+                        stop_scale,
+                    } => {
+                        if !gradient.valid() || *stop_scale <= 0.0 {
+                            return Err("benchmark identity invalid decoration gradient".into());
+                        }
+                        bytes.byte(2)?;
+                        box_tile(bytes, *tile, *repeat)?;
+                        bytes.color(*current_color)?;
+                        bytes.f32(*stop_scale)?;
+                        gradient_identity(bytes, gradient)?;
+                    }
+                }
+            }
             DrawCommand::PushClip { rect } => bytes.rect(*rect)?,
             DrawCommand::PopClip
             | DrawCommand::PushFixed
@@ -313,32 +354,7 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
                 bytes.f32(*radius)?;
                 bytes.color(*current_color)?;
                 bytes.f32(*stop_scale)?;
-                match gradient.direction {
-                    GradientDirection::Angle(angle) => {
-                        bytes.byte(0)?;
-                        bytes.f64(angle)?;
-                    }
-                    GradientDirection::Corner { right, bottom } => {
-                        bytes.byte(1)?;
-                        bytes.boolean(right)?;
-                        bytes.boolean(bottom)?;
-                    }
-                }
-                bytes.count(gradient.stops.len())?;
-                for stop in gradient.stops.iter() {
-                    match stop.color {
-                        GradientColor::Color(color) => {
-                            bytes.byte(0)?;
-                            bytes.color(color)?;
-                        }
-                        GradientColor::CurrentColor => bytes.byte(1)?,
-                    }
-                    bytes.boolean(stop.position.is_some())?;
-                    if let Some(position) = stop.position {
-                        bytes.f64(position.px)?;
-                        bytes.f64(position.percent)?;
-                    }
-                }
+                gradient_identity(bytes, gradient)?;
             }
             DrawCommand::Line {
                 x1,
@@ -360,6 +376,58 @@ fn commands(bytes: &mut Bytes, commands: &[DrawCommand]) -> Result<(), String> {
     }
     if depth != 0 {
         return Err("benchmark identity unclosed scope".into());
+    }
+    Ok(())
+}
+
+fn rounded_box(bytes: &mut Bytes, shape: RoundedBox) -> Result<(), String> {
+    if !shape.valid() {
+        return Err("benchmark identity invalid rounded box".into());
+    }
+    bytes.rect(shape.rect)?;
+    for corner in shape.radii {
+        for axis in corner {
+            bytes.f32(axis)?;
+        }
+    }
+    Ok(())
+}
+fn box_tile(bytes: &mut Bytes, tile: Rect, repeat: [bool; 2]) -> Result<(), String> {
+    if tile.width <= 0.0 || tile.height <= 0.0 {
+        return Err("benchmark identity invalid decoration tile".into());
+    }
+    bytes.byte(u8::from(repeat[0]) | (u8::from(repeat[1]) << 1))?;
+    bytes.rect(tile)
+}
+fn gradient_identity(
+    bytes: &mut Bytes,
+    gradient: &eris::graphics::gradient::LinearGradient,
+) -> Result<(), String> {
+    match gradient.direction {
+        GradientDirection::Angle(angle) => {
+            bytes.byte(0)?;
+            bytes.f64(angle)?;
+        }
+        GradientDirection::Corner { right, bottom } => {
+            bytes.byte(1)?;
+            bytes.boolean(right)?;
+            bytes.boolean(bottom)?;
+        }
+    }
+    bytes.count(gradient.stops.len())?;
+    for stop in gradient.stops.iter() {
+        match stop.color {
+            GradientColor::Color(color) => {
+                bytes.byte(0)?;
+                bytes.color(color)?;
+            }
+            GradientColor::CurrentColor => bytes.byte(1)?,
+        }
+        bytes.boolean(stop.position.is_some())?;
+        if let Some(position) = stop.position {
+            bytes.f64(position.px)?;
+            bytes.f64(position.percent)?;
+        }
     }
     Ok(())
 }
@@ -785,3 +853,6 @@ mod tests {
 
 #[cfg(test)]
 mod tiled_image_tests;
+
+#[cfg(test)]
+mod box_decoration_tests;

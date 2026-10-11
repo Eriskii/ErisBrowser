@@ -604,6 +604,7 @@ impl super::Canvas {
     }
 
     fn blend_gradient(&mut self, x: i32, y: i32, color: [f64; 4], coverage: u8) {
+        let coverage = self.box_coverage(x, y, coverage);
         if coverage == 0 || color[3] == 0.0 || !self.clip.contains(x as f32, y as f32) {
             return;
         }

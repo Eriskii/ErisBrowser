@@ -1,6 +1,7 @@
 //! Versioned length-prefixed protocol; no generic deserializer can allocate an
 //! attacker-declared collection before checking its count and remaining bytes.
 use super::{Command, Init, Reply, Snapshot};
+use crate::graphics::box_decoration::{BoxDecoration as Decoration, BoxPaint, RoundedBox};
 use crate::graphics::gradient::{
     GradientColor, GradientDirection, GradientPosition, GradientStop, LinearGradient,
     MAX_GRADIENT_STOPS,
@@ -586,6 +587,158 @@ fn decode_gradient(d: &mut Decoder<'_>, remaining: &mut usize) -> Result<Arc<Lin
     }))
 }
 
+// Tag13 carries raw, unnormalized elliptical corners. Normalization is an
+// explicit caller operation; the wire validates and preserves supplied values.
+fn encode_rounded_box(e: &mut Encoder, shape: RoundedBox) {
+    e.rect(shape.rect);
+    for corner in shape.radii {
+        e.f32(corner[0]);
+        e.f32(corner[1]);
+    }
+}
+
+fn decode_rounded_box(d: &mut Decoder<'_>) -> Result<RoundedBox> {
+    let rect = d.rect()?;
+    let mut radii = [[0.0; 2]; 4];
+    for corner in &mut radii {
+        corner[0] = d.f32()?;
+        corner[1] = d.f32()?;
+    }
+    let shape = RoundedBox { rect, radii };
+    if !shape.valid() {
+        return Err("invalid IPC rounded box".into());
+    }
+    Ok(shape)
+}
+
+fn valid_box_tile(tile: Rect) -> bool {
+    [tile.x, tile.y, tile.width, tile.height]
+        .iter()
+        .all(|value| value.is_finite() && value.abs() <= 16_000_000.0)
+        && tile.width > 0.0
+        && tile.height > 0.0
+}
+
+fn encode_box_decoration(
+    e: &mut Encoder,
+    shape: RoundedBox,
+    cutout: Option<RoundedBox>,
+    paint: &BoxPaint,
+    keys: &mut usize,
+    gradients: &mut usize,
+) {
+    if e.failed || !shape.valid() || cutout.is_some_and(|inner| !inner.valid()) {
+        e.failed = true;
+        return;
+    }
+    let valid_paint = match paint {
+        BoxPaint::Color(_) => true,
+        BoxPaint::Image { tile, .. } => valid_box_tile(*tile),
+        BoxPaint::LinearGradient {
+            tile, stop_scale, ..
+        } => {
+            valid_box_tile(*tile)
+                && stop_scale.is_finite()
+                && *stop_scale > 0.0
+                && *stop_scale <= 16_000_000.0
+        }
+    };
+    if !valid_paint {
+        e.failed = true;
+        return;
+    }
+    e.byte(13);
+    encode_rounded_box(e, shape);
+    e.boolean(cutout.is_some());
+    if let Some(inner) = cutout {
+        encode_rounded_box(e, inner);
+    }
+    match paint {
+        BoxPaint::Color(color) => {
+            e.byte(0);
+            e.color(*color);
+        }
+        BoxPaint::Image { tile, repeat, key } => {
+            e.byte(1);
+            e.byte(u8::from(repeat[0]) | (u8::from(repeat[1]) << 1));
+            e.rect(*tile);
+            e.budget_string(key, keys);
+        }
+        BoxPaint::LinearGradient {
+            tile,
+            repeat,
+            gradient,
+            current_color,
+            stop_scale,
+        } => {
+            e.byte(2);
+            e.byte(u8::from(repeat[0]) | (u8::from(repeat[1]) << 1));
+            e.rect(*tile);
+            e.color(*current_color);
+            e.f32(*stop_scale);
+            encode_gradient(e, gradient, gradients);
+        }
+    }
+}
+
+fn decode_box_decoration(
+    d: &mut Decoder<'_>,
+    keys: &mut usize,
+    gradients: &mut usize,
+) -> Result<DrawCommand> {
+    let shape = decode_rounded_box(d)?;
+    let cutout = if d.boolean()? {
+        Some(decode_rounded_box(d)?)
+    } else {
+        None
+    };
+    let paint = match d.byte()? {
+        0 => BoxPaint::Color(d.color()?),
+        kind @ (1 | 2) => {
+            let flags = d.byte()?;
+            if flags & !3 != 0 {
+                return Err("unknown IPC box repeat flags".into());
+            }
+            let repeat = [flags & 1 != 0, flags & 2 != 0];
+            let tile = d.rect()?;
+            if !valid_box_tile(tile) {
+                return Err("invalid IPC box paint tile".into());
+            }
+            if kind == 1 {
+                // Missing keys stay opaque ImageStore references, never I/O.
+                BoxPaint::Image {
+                    tile,
+                    repeat,
+                    key: d.budget_string(keys)?,
+                }
+            } else {
+                let current_color = d.color()?;
+                let stop_scale = d.f32()?;
+                if stop_scale <= 0.0 {
+                    return Err("invalid IPC box gradient scale".into());
+                }
+                let gradient = decode_gradient(d, gradients)?;
+                BoxPaint::LinearGradient {
+                    tile,
+                    repeat,
+                    gradient,
+                    current_color,
+                    stop_scale,
+                }
+            }
+        }
+        _ => return Err("unknown IPC box paint subtype".into()),
+    };
+    // One fixed payload allocation only after the complete paint validates.
+    // The snapshot's existing command count and frame limits bound its count;
+    // variable keys and gradients retain their shared cumulative admissions.
+    Ok(DrawCommand::BoxDecoration(Arc::new(Decoration {
+        shape,
+        cutout,
+        paint,
+    })))
+}
+
 fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
     e.u64(s.generation);
     e.u64(s.processed_edit_sequence);
@@ -766,6 +919,16 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
                 e.byte(4);
                 e.rect(*rect);
                 e.budget_string(key, &mut keys_bytes);
+            }
+            DrawCommand::BoxDecoration(decoration) => {
+                encode_box_decoration(
+                    e,
+                    decoration.shape,
+                    decoration.cutout,
+                    &decoration.paint,
+                    &mut keys_bytes,
+                    &mut gradient_bytes,
+                );
             }
             DrawCommand::BackgroundImage {
                 rect,
@@ -1227,6 +1390,7 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
                     key,
                 }
             }
+            13 => decode_box_decoration(d, &mut keys_bytes, &mut gradient_bytes)?,
             _ => return Err("unknown IPC display command".into()),
         };
         commands.push(command);
@@ -1511,6 +1675,8 @@ pub(super) fn decode_image_result(bytes: &[u8], budget: usize) -> Result<Result<
 mod background_geometry_tests;
 #[cfg(test)]
 mod background_image_tests;
+#[cfg(test)]
+mod box_decoration_tests;
 #[cfg(test)]
 mod gradient_tests;
 

@@ -353,7 +353,8 @@ pub fn plan_display_list_with_fonts(
             DrawCommand::PopClip => Command::PopClip,
             DrawCommand::PushFixed => Command::PushFixed,
             DrawCommand::PopFixed => Command::PopFixed,
-            DrawCommand::PushOpacity { .. }
+            DrawCommand::BoxDecoration(_)
+            | DrawCommand::PushOpacity { .. }
             | DrawCommand::PopOpacity
             | DrawCommand::BackgroundImage { .. }
             | DrawCommand::LinearGradient { .. } => {

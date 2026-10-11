@@ -92,6 +92,9 @@ fn verify_worker(snapshot: &Snapshot, fixture: &WorkerTextFixture) -> Result<Tex
     let mut references = [0usize; 256];
     for command in &snapshot.layout.commands {
         let kind = match command {
+            DrawCommand::BoxDecoration(_) => {
+                return Err("box decoration outside legacy worker-text fixture".into());
+            }
             DrawCommand::BackgroundImage { .. } => {
                 return Err("background image outside legacy worker-text fixture".into());
             }

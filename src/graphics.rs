@@ -3,6 +3,7 @@ use ab_glyph::{Font, FontArc, PxScale, ScaleFont, point};
 use std::{cell::RefCell, collections::HashMap, path::Path, sync::Arc};
 
 mod background_image;
+pub mod box_decoration;
 pub mod gradient;
 #[cfg(feature = "raster-bridge")]
 pub mod raster_bridge;
@@ -110,6 +111,8 @@ pub enum DrawCommand {
         radius: f32,
         key: String,
     },
+    /// Self-contained elliptical fill or outer-minus-cutout decoration.
+    BoxDecoration(Arc<box_decoration::BoxDecoration>),
     /// A background tile with independent axis repetition and a paint outline.
     LinearGradient {
         rect: Rect,
@@ -295,6 +298,7 @@ pub struct Canvas {
     first_pending: Option<usize>,
     layer_allocated: usize,
     layer_live: usize,
+    box_mask: Option<box_decoration::ShapeMask>,
 }
 impl Canvas {
     pub fn new(width: u32, height: u32) -> Result<Self, String> {
@@ -322,6 +326,7 @@ impl Canvas {
             first_pending: None,
             layer_allocated: 0,
             layer_live: 0,
+            box_mask: None,
         })
     }
 
@@ -512,6 +517,7 @@ impl Canvas {
         {
             return;
         }
+        let coverage = self.box_coverage(x, y, coverage);
         let a = u32::from(color.a) * u32::from(coverage) / 255;
         if a == 0 {
             return;
@@ -585,7 +591,7 @@ impl Canvas {
             return;
         }
         let radius = radius.max(0.0).min(rect.width / 2.0).min(rect.height / 2.0);
-        if radius == 0.0 && color.a == 255 && self.layers.is_empty() {
+        if radius == 0.0 && color.a == 255 && self.layers.is_empty() && self.box_mask.is_none() {
             for y in y0..y1 {
                 if x1 > x0 {
                     self.pixels[y as usize * self.width as usize + x0 as usize
@@ -763,6 +769,7 @@ impl Canvas {
             Opacity { layer: bool },
         }
         self.paint_exhausted = false;
+        self.box_mask = None;
         self.layers.clear();
         self.first_pending = None;
         self.layer_allocated = 0;
@@ -894,6 +901,15 @@ impl Canvas {
                         );
                     }
                 }
+                DrawCommand::BoxDecoration(decoration) => {
+                    self.box_decoration_offset(
+                        decoration.shape,
+                        decoration.cutout,
+                        &decoration.paint,
+                        images,
+                        (dx, dy),
+                    );
+                }
                 DrawCommand::LinearGradient {
                     rect,
                     tile,
@@ -938,6 +954,7 @@ impl Canvas {
         self.first_pending = None;
         self.layer_live = 0;
         self.budget = None;
+        self.box_mask = None;
         self.clip = caller_clip;
     }
     pub fn save(&self, path: impl AsRef<Path>) -> Result<(), String> {

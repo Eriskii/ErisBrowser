@@ -2177,6 +2177,7 @@ fn paint_process_error(canvas: &mut Canvas, fonts: &Fonts, viewport: Rect, error
 }
 
 fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
+    use eris::graphics::box_decoration::{BoxDecoration, BoxPaint};
     let rect = |r: &Rect| Rect {
         x: r.x * z,
         y: r.y * z,
@@ -2184,6 +2185,38 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
         height: r.height * z,
     };
     match command {
+        DrawCommand::BoxDecoration(decoration) => {
+            let BoxDecoration {
+                shape,
+                cutout,
+                paint,
+            } = decoration.as_ref();
+            DrawCommand::BoxDecoration(Arc::new(BoxDecoration {
+                shape: shape.scaled(z),
+                cutout: cutout.map(|inner| inner.scaled(z)),
+                paint: match paint {
+                    BoxPaint::Color(color) => BoxPaint::Color(*color),
+                    BoxPaint::Image { tile, repeat, key } => BoxPaint::Image {
+                        tile: rect(tile),
+                        repeat: *repeat,
+                        key: key.clone(),
+                    },
+                    BoxPaint::LinearGradient {
+                        tile,
+                        repeat,
+                        gradient,
+                        current_color,
+                        stop_scale,
+                    } => BoxPaint::LinearGradient {
+                        tile: rect(tile),
+                        repeat: *repeat,
+                        gradient: Arc::clone(gradient),
+                        current_color: *current_color,
+                        stop_scale: stop_scale * z,
+                    },
+                },
+            }))
+        }
         DrawCommand::PushClip { rect: r } => DrawCommand::PushClip { rect: rect(r) },
         DrawCommand::PopClip => DrawCommand::PopClip,
         DrawCommand::PushFixed => DrawCommand::PushFixed,
@@ -3547,3 +3580,6 @@ mod tests {
 
 #[cfg(test)]
 mod tiled_image_tests;
+
+#[cfg(test)]
+mod box_decoration_tests;

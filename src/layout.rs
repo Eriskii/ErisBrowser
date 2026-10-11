@@ -2469,6 +2469,9 @@ impl Engine<'_> {
                 }
                 _ => {
                     let visible = match &command {
+                        DrawCommand::BoxDecoration(decoration) => {
+                            decoration.shape.rect.width > 0.0 && decoration.shape.rect.height > 0.0
+                        }
                         DrawCommand::Rect { rect, color, .. } => {
                             color.a > 0 && rect.width > 0.0 && rect.height > 0.0
                         }
@@ -5504,6 +5507,56 @@ fn translate_fragment(fragment: &mut Fragment, dx: f32, dy: f32) {
 
 fn translate(command: &mut DrawCommand, dx: f32, dy: f32) {
     match command {
+        DrawCommand::BoxDecoration(decoration) => {
+            use crate::graphics::box_decoration::{BoxDecoration, BoxPaint};
+            let BoxDecoration {
+                shape,
+                cutout,
+                paint,
+            } = std::sync::Arc::make_mut(decoration);
+            // Preserve common phase for the outer shape, hole and tile. A
+            // refused placement omits the decoration rather than shifting an
+            // individually clamped sampling origin relative to its outline.
+            let move_box = |r: &mut Rect| {
+                let x = f64::from(r.x) + f64::from(dx);
+                let y = f64::from(r.y) + f64::from(dy);
+                if !x.is_finite()
+                    || !y.is_finite()
+                    || x.abs() > f64::from(MAX_EXTENT)
+                    || y.abs() > f64::from(MAX_EXTENT)
+                {
+                    return false;
+                }
+                r.x = x as f32;
+                r.y = y as f32;
+                true
+            };
+            let mut moved_shape = *shape;
+            let mut moved_cutout = *cutout;
+            let mut moved_tile = match paint {
+                BoxPaint::Color(_) => None,
+                BoxPaint::Image { tile, .. } | BoxPaint::LinearGradient { tile, .. } => Some(*tile),
+            };
+            let outer_valid = move_box(&mut moved_shape.rect) && moved_shape.valid();
+            let inner_valid = moved_cutout
+                .as_mut()
+                .is_none_or(|inner| move_box(&mut inner.rect) && inner.valid());
+            let tile_valid = moved_tile.as_mut().is_none_or(move_box);
+            if outer_valid && inner_valid && tile_valid {
+                *shape = moved_shape;
+                *cutout = moved_cutout;
+                if let Some(moved) = moved_tile {
+                    match paint {
+                        BoxPaint::Image { tile, .. } | BoxPaint::LinearGradient { tile, .. } => {
+                            *tile = moved
+                        }
+                        BoxPaint::Color(_) => unreachable!("solid paint has no tile"),
+                    }
+                }
+            } else {
+                shape.rect = Rect::default();
+            }
+        }
         DrawCommand::LinearGradient { rect, tile, .. }
         | DrawCommand::BackgroundImage { rect, tile, .. } => {
             rect.x = finite(rect.x + dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT);
@@ -7640,6 +7693,30 @@ mod tests {
         assert!(result.content_height.is_finite());
         for command in &result.commands {
             let coordinates = match command {
+                DrawCommand::BoxDecoration(decoration) => {
+                    use crate::graphics::box_decoration::{BoxDecoration, BoxPaint};
+                    let BoxDecoration {
+                        shape,
+                        cutout,
+                        paint,
+                    } = decoration.as_ref();
+                    let mut coordinates = Vec::new();
+                    for rounded in std::iter::once(shape).chain(cutout.iter()) {
+                        coordinates.extend([
+                            rounded.rect.x,
+                            rounded.rect.y,
+                            rounded.rect.width,
+                            rounded.rect.height,
+                        ]);
+                        coordinates.extend(rounded.radii.into_iter().flatten());
+                    }
+                    if let BoxPaint::Image { tile, .. } | BoxPaint::LinearGradient { tile, .. } =
+                        paint
+                    {
+                        coordinates.extend([tile.x, tile.y, tile.width, tile.height]);
+                    }
+                    coordinates
+                }
                 DrawCommand::Rect { rect, .. }
                 | DrawCommand::Image { rect, .. }
                 | DrawCommand::PushClip { rect } => {
@@ -8643,3 +8720,6 @@ mod object_fit_tests {
 
 #[cfg(test)]
 mod tiled_image_tests;
+
+#[cfg(test)]
+mod box_decoration_tests;

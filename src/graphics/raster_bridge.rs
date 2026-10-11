@@ -23,6 +23,7 @@ pub enum FallbackKind {
     UnsupportedOpacity,
     UnsupportedGradient,
     UnsupportedBackgroundImage,
+    UnsupportedBoxDecoration,
     InvalidGeometry,
     InvalidImage,
     InvalidScope,
@@ -60,6 +61,7 @@ impl FallbackReason {
             FallbackKind::UnsupportedOpacity => "unsupported-opacity",
             FallbackKind::UnsupportedGradient => "unsupported-gradient",
             FallbackKind::UnsupportedBackgroundImage => "unsupported-background-image",
+            FallbackKind::UnsupportedBoxDecoration => "unsupported-box-decoration",
             FallbackKind::InvalidGeometry => "invalid-geometry",
             FallbackKind::InvalidImage => "invalid-image",
             FallbackKind::InvalidScope => "invalid-scope",
@@ -147,6 +149,17 @@ fn validate_rect(rect: Rect, index: Option<usize>) -> Result<()> {
     } else {
         Err(FallbackReason::new(FallbackKind::InvalidGeometry, index))
     }
+}
+// The software shape admits a wider coordinate domain. Keep the adapter's
+// established tighter domain even though this command is not GPU-admitted.
+fn validate_box_shape(
+    shape: &crate::graphics::box_decoration::RoundedBox,
+    index: Option<usize>,
+) -> Result<()> {
+    if !shape.valid() || !shape.radii.iter().flatten().copied().all(bounded_scalar) {
+        return Err(FallbackReason::new(FallbackKind::InvalidGeometry, index));
+    }
+    validate_rect(convert_rect(shape.rect), index)
 }
 fn validate_frame(frame: Frame) -> Result<()> {
     if frame.width == 0 || frame.height == 0 || frame.width > MAX_WIDTH || frame.height > MAX_HEIGHT
@@ -267,6 +280,18 @@ fn preflight_commands_by(
     for (index, command) in commands.iter().enumerate() {
         let at = Some(index);
         match command {
+            DrawCommand::BoxDecoration(decoration) => {
+                validate_box_shape(&decoration.shape, at)?;
+                if let Some(cutout) = &decoration.cutout {
+                    validate_box_shape(cutout, at)?;
+                }
+                // Borrow fixed geometry only: paint keys, gradients and source
+                // payloads remain untouched, including empty/hidden commands.
+                return Err(FallbackReason::new(
+                    FallbackKind::UnsupportedBoxDecoration,
+                    at,
+                ));
+            }
             DrawCommand::BackgroundImage { .. } => {
                 return Err(FallbackReason::new(
                     FallbackKind::UnsupportedBackgroundImage,
@@ -472,6 +497,7 @@ pub fn plan_display_list(
             DrawCommand::PopFixed => Command::PopFixed,
             // The complete immutable list was checked before table allocation.
             DrawCommand::Text { .. }
+            | DrawCommand::BoxDecoration(_)
             | DrawCommand::BackgroundImage { .. }
             | DrawCommand::LinearGradient { .. }
             | DrawCommand::PushOpacity { .. }
@@ -520,6 +546,8 @@ pub fn plan_display_list(
 
 #[cfg(test)]
 mod background_image_tests;
+#[cfg(test)]
+mod box_decoration_tests;
 #[cfg(test)]
 mod gradient_tests;
 #[cfg(test)]
