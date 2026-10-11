@@ -472,9 +472,15 @@ impl InlineStyle {
             raw.iter()
                 .map(|v| v.len() + 1)
                 .sum::<usize>()
-                .saturating_mul(4)
+                .saturating_mul(8)
                 + 1,
         )?;
+        // Explicit longhand substitutions cannot be combined into an equivalent
+        // shorthand. Original Pending reconstruction returned above; this paid
+        // token-aware scan ignores comments, strings and URL payloads.
+        if raw.iter().any(|value| css::contains_var_function(value)) {
+            return Ok(String::new());
+        }
         if property == "background" && !raw.iter().all(|v| *v == raw[0] && wide(v)) {
             return css::serialize_background_shorthand(&raw, work).map_err(|_| Error::Limit);
         }
@@ -1901,3 +1907,9 @@ mod pending_record_tests;
 
 #[cfg(test)]
 mod pending_record_accounting_tests;
+
+#[cfg(test)]
+mod var_getter_tests;
+
+#[cfg(test)]
+mod var_getter_budget_tests;

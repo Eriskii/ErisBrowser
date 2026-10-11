@@ -1,0 +1,27 @@
+<!doctype html><title>before</title>
+<style>
+html,body{margin:0;padding:0;background:white}
+.box{position:absolute;top:2px;box-sizing:content-box;width:6px;height:4px;margin:0;padding:0;border:0}
+#direct{left:2px;background:red}#pending{left:20px;background:blue}
+</style>
+<div id="direct" style="--m:2px;margin-top:var(--m)!important;margin-right:var(--m)!important;margin-bottom:var(--m)!important;margin-left:var(--m)!important" class="box" onclick="
+var step=Number(this.getAttribute('data-step')||'0');
+var returned='';
+if(step===0){returned=this.style.removeProperty('margin');}
+else if(step===1){returned=document.getElementById('pending').style.removeProperty('margin');}
+this.setAttribute('data-step',String(step+1));
+report(step===0?'explicit':'pending',returned);
+"></div>
+<div id="pending" style="--m:2px;margin:var(--m)!important" class="box"></div>
+<script>
+function report(label,returned){
+var d=document.getElementById('direct').style;
+var p=document.getElementById('pending').style;
+document.title=label+'|'+returned+'|'+d.getPropertyValue('margin')+'|'+d.getPropertyPriority('margin')+'|'+
+d.getPropertyValue('margin-top')+','+d.getPropertyValue('margin-right')+','+d.getPropertyValue('margin-bottom')+','+d.getPropertyValue('margin-left')+'|'+
+d.getPropertyPriority('margin-top')+','+d.getPropertyPriority('margin-right')+','+d.getPropertyPriority('margin-bottom')+','+d.getPropertyPriority('margin-left')+'|'+
+p.getPropertyValue('margin')+'|'+p.getPropertyPriority('margin')+'|'+p.getPropertyValue('margin-left')+'|'+p.getPropertyPriority('margin-left')+'|'+
+d.getPropertyValue('--m')+'|'+p.getPropertyValue('--m');
+}
+report('initial','');
+</script>

@@ -118,7 +118,9 @@ remove one part of a pending `var()` shorthand, preserving the other parts and
 their individual priorities across later script calls and renders. Longhand
 indices now reflect those retained parts. Text replacement deliberately reparses
 serialized values; full CSSOM serialization remains incomplete. Try the
-[interactive shorthand example](examples/cssom-pending.html).
+[interactive shorthand example](examples/cssom-pending.html). Separately authored
+variable longhands now return an empty shorthand getter; removing that shorthand
+still removes its parts. See the [getter follow-up](docs/cssom-var-getter.md).
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

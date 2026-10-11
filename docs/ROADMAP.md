@@ -75,6 +75,8 @@ longhands and their priorities after partial CSSOM edits, across later entries
 and worker renders. Typed state shares existing storage/work limits and commits
 with serialized attributes. UI snapshots project only attributes; full CSSOM
 serialization, computed style, rule APIs and semantic typed transport remain open.
+The [getter follow-up](cssom-var-getter.md) prevents unresolved ordinary longhands
+from being recombined into a shorthand with different parsing semantics.
 
 [Image fitting and positioning](image-fitting.md) now have a bounded loaded-img
 implementation, including Images 4 scale-down pairs and physical one/two/four
