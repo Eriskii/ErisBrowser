@@ -2887,3 +2887,6 @@ mod cssom_pending;
 
 #[path = "worker/cssom_var_getter.rs"]
 mod cssom_var_getter;
+
+#[path = "worker/cssom_wide_getter.rs"]
+mod cssom_wide_getter;

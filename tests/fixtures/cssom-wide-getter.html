@@ -1,0 +1,24 @@
+<!doctype html><title>before</title>
+<style>
+html,body{margin:0;padding:0;background:white}
+.box{position:absolute;top:2px;box-sizing:content-box;width:6px;height:4px;margin:0;padding:0;border:0}
+#mixed{left:2px;background:red}#uniform{left:20px;background:blue}
+</style>
+<div id="mixed" style="margin-top:initial!important;margin-right:2px!important;margin-bottom:2px!important;margin-left:2px!important" class="box" onclick="
+var returned=this.style.removeProperty('margin');
+report('removed',returned);
+"></div>
+<div id="uniform" style="margin:initial!important" class="box"></div>
+<script>
+function report(label,returned){
+var m=document.getElementById('mixed').style;
+var u=document.getElementById('uniform').style;
+document.title=label+'|'+returned+'|'+m.getPropertyValue('margin')+'|'+m.getPropertyPriority('margin')+'|'+
+m.getPropertyValue('margin-top')+','+m.getPropertyValue('margin-right')+','+m.getPropertyValue('margin-bottom')+','+m.getPropertyValue('margin-left')+'|'+
+m.getPropertyPriority('margin-top')+','+m.getPropertyPriority('margin-right')+','+m.getPropertyPriority('margin-bottom')+','+m.getPropertyPriority('margin-left')+'|'+
+u.getPropertyValue('margin')+'|'+u.getPropertyPriority('margin')+'|'+
+u.getPropertyValue('margin-top')+','+u.getPropertyValue('margin-right')+','+u.getPropertyValue('margin-bottom')+','+u.getPropertyValue('margin-left')+'|'+
+u.getPropertyPriority('margin-top')+','+u.getPropertyPriority('margin-right')+','+u.getPropertyPriority('margin-bottom')+','+u.getPropertyPriority('margin-left');
+}
+report('initial','');
+</script>

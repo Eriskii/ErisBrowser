@@ -121,6 +121,8 @@ serialized values; full CSSOM serialization remains incomplete. Try the
 [interactive shorthand example](examples/cssom-pending.html). Separately authored
 variable longhands now return an empty shorthand getter; removing that shorthand
 still removes its parts. See the [getter follow-up](docs/cssom-var-getter.md).
+[Mixed CSS-wide components](docs/cssom-wide-getter.md) also refuse shorthand
+synthesis; uniform keywords such as `margin: initial` remain readable.
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

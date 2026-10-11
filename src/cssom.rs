@@ -705,14 +705,19 @@ fn write_name(out: &mut String, name: &str) {
     }
 }
 fn shorthand_value(name: &str, values: &[&str]) -> String {
-    if values.iter().all(|v| *v == values[0])
-        && (values[0].eq_ignore_ascii_case("inherit")
-            || values[0].eq_ignore_ascii_case("initial")
-            || values[0].eq_ignore_ascii_case("unset")
-            || values[0].eq_ignore_ascii_case("revert")
-            || values[0].eq_ignore_ascii_case("revert-layer"))
-    {
-        return values[0].into();
+    // Normalized CSS-wide values can reconstruct only one identical keyword.
+    // The mutually exclusive paths inspect each remaining component once,
+    // within the caller's existing synthesis allowance.
+    let first = values[0];
+    if wide(first) {
+        return if values[1..].iter().all(|value| *value == first) {
+            first.into()
+        } else {
+            String::new()
+        };
+    }
+    if values[1..].iter().any(|value| wide(value)) {
+        return String::new();
     }
     match name {
         "margin" | "padding" | "inset" | "border-width" | "border-color" | "border-style" => {
@@ -736,11 +741,6 @@ fn shorthand_value(name: &str, values: &[&str]) -> String {
             }
         }
         "background" => {
-            // A CSS-wide keyword cannot be one component of a shorthand.
-            // The identical-all-wide case was handled above.
-            if values.iter().any(|value| wide(value)) {
-                return String::new();
-            }
             let mut layer =
                 if values[2] == "auto auto" && values[3] == "0% 0%" && values[4] == "repeat" {
                     if values[1] == "none" {
@@ -1913,3 +1913,9 @@ mod var_getter_tests;
 
 #[cfg(test)]
 mod var_getter_budget_tests;
+
+#[cfg(test)]
+mod wide_getter_tests;
+
+#[cfg(test)]
+mod wide_getter_budget_tests;
