@@ -58,7 +58,10 @@ fn earlier_rect_debt_precedes_box_classification_and_materialization_reservation
         assert!(boxes[0].is_none());
         if initial == 107 {
             assert_eq!(result.unwrap(), 107);
-            let info = boxes[1].as_ref().unwrap().info();
+            let BoxReservation::Mask(reservation) = boxes[1].as_ref().unwrap() else {
+                panic!("ellipse must retain its funded mask reservation");
+            };
+            let info = reservation.info();
             assert_eq!(
                 (
                     info.candidate_pixels,
@@ -128,15 +131,16 @@ fn full_area_line_debt_is_global_before_any_box_window_preparation() {
         at(FallbackKind::CpuPaintBudget, 0, 0)
     );
 
+    // Positive subpixel radii keep this a mask; all sixteen samples stay inside.
     // This valid shape needs 264000 mask bytes, beyond the fixed 262144 cap.
     // The exact-debt control reaches that window check; one extra Line must
     // instead fail globally before visiting even the first Box command.
-    let mask_short = line_commands(box_command(1000.0, 264.0, [[0.0; 2]; 4]), 16);
+    let mask_short = line_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 16);
     assert_eq!(
         prepare(&mask_short).unwrap_err(),
         at(FallbackKind::MaskPreparation, 0, 0)
     );
-    let aggregate_short = line_commands(box_command(1000.0, 264.0, [[0.0; 2]; 4]), 17);
+    let aggregate_short = line_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 17);
     assert_eq!(
         prepare(&aggregate_short).unwrap_err(),
         NativeFallback::new(FallbackKind::CpuPaintBudget, None, None)

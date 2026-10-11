@@ -13,7 +13,7 @@ fn parameter(plan: &Plan, draw: usize, index: usize) -> u32 {
 // Independent packed-plan interpretation with integer primitive blending and f32 group pop, used only by
 // these bridge tests. Literal expected pixels below are the oracle; neither
 // this decoder nor Canvas execution is evidence about a GPU driver.
-fn decode_opacity_pixels(plan: &Plan) -> Vec<u32> {
+pub(super) fn decode_opacity_pixels(plan: &Plan) -> Vec<u32> {
     let frame = plan.frame();
     let mut pixels = vec![0; frame.width as usize * frame.height as usize];
     let mut scratch = vec![[0u64; 4]; plan.group_scratch_bytes() as usize / 8];
@@ -195,6 +195,14 @@ fn square(x: f32, y: f32, width: f32, height: f32) -> RoundedBox {
     RoundedBox {
         rect: rect(x, y, width, height),
         radii: [[0.0; 2]; 4],
+    }
+}
+// Positive subpixel radii retain the mask route while all quarter-grid samples
+// and classifier extrema remain inside: P/A0/S1 and every old tariff are exact.
+fn mask_square(x: f32, y: f32, width: f32, height: f32) -> RoundedBox {
+    RoundedBox {
+        rect: rect(x, y, width, height),
+        radii: [[0.125; 2]; 4],
     }
 }
 fn ellipse() -> RoundedBox {
@@ -531,7 +539,7 @@ fn native_box_color_strip_widths_keep_absolute_rows_and_exact_storage_work() {
             frame,
             frame,
             &[decoration(
-                square(0.0, 0.0, width as f32, 1.0),
+                mask_square(0.0, 0.0, width as f32, 1.0),
                 None,
                 Color::BLACK,
             )],
@@ -571,7 +579,7 @@ fn native_box_color_shared_mask_area_cap_is_not_per_strip() {
         frame,
         frame,
         &[decoration(
-            square(0.0, 0.0, 1280.0, 204.0),
+            mask_square(0.0, 0.0, 1280.0, 204.0),
             None,
             Color::BLACK,
         )],
@@ -588,7 +596,7 @@ fn native_box_color_shared_mask_area_cap_is_not_per_strip() {
     assert_eq!(result.stats().box_loop_work, 1_044_896);
     let frame = Frame::new(1280, 205, 0xffffff);
     let commands = [decoration(
-        square(0.0, 0.0, 1280.0, 205.0),
+        mask_square(0.0, 0.0, 1280.0, 205.0),
         None,
         Color::BLACK,
     )];
@@ -610,7 +618,11 @@ fn native_box_color_shared_mask_area_cap_is_not_per_strip() {
 #[test]
 fn native_box_color_loaded_sources_and_aliases_share_the_source_limit() {
     let frame = Frame::new(1, 1, 0xffffff);
-    let commands = [decoration(square(0.0, 0.0, 1.0, 1.0), None, Color::BLACK)];
+    let commands = [decoration(
+        mask_square(0.0, 0.0, 1.0, 1.0),
+        None,
+        Color::BLACK,
+    )];
     let mut images = ImageStore::new();
     for i in 0..255 {
         images.insert(
@@ -842,12 +854,12 @@ fn native_box_color_full_scene_cpu_limit_has_an_exact_one_pixel_cut() {
     // Three1000x64 masks cost3*256072; one999x63 costs251819.
     // Their sum1,020,035 plus one ordinary793x5 rectangle is exactly1,024,000.
     let frame = Frame::new(1000, 64, 0xffffff);
-    let full = decoration(square(0.0, 0.0, 1000.0, 64.0), None, Color::BLACK);
+    let full = decoration(mask_square(0.0, 0.0, 1000.0, 64.0), None, Color::BLACK);
     let mut commands = vec![
         full.clone(),
         full.clone(),
         full,
-        decoration(square(0.0, 0.0, 999.0, 63.0), None, Color::BLACK),
+        decoration(mask_square(0.0, 0.0, 999.0, 63.0), None, Color::BLACK),
         ordinary(rect(0.0, 0.0, 793.0, 5.0), Color::BLACK),
     ];
     let native = checked(frame, frame, &commands, &vec![0; 64_000]);

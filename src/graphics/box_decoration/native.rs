@@ -86,6 +86,84 @@ fn debit(remaining: &mut u64, work: u64) -> Result<(), BoxMaskError> {
 }
 
 impl BoxMaskWindow {
+    /// Prove that one raw core Rect has exactly the Color box's coverage.
+    /// Inputs are already translated. Some(work) is a proof, not a debit: the
+    /// adapter must prepay it before retaining the rectangle route. None keeps
+    /// the existing mask path. No pixel scan or payload allocation occurs here.
+    pub(crate) fn rect_work(
+        width: u32,
+        height: u32,
+        outer: RoundedBox,
+        cutout: Option<RoundedBox>,
+        clip: Rect,
+    ) -> Result<Option<u64>, BoxMaskError> {
+        // Keep invalid input observable before empty/ineligible early returns.
+        if width == 0
+            || height == 0
+            || width > Profile::Native.max_width()
+            || height > Profile::Native.max_height()
+            || !outer.valid()
+            || cutout.is_some_and(|shape| !shape.valid())
+            || ![clip.x, clip.y, clip.width, clip.height]
+                .into_iter()
+                .all(|v| v.is_finite() && f64::from(v).abs() <= MAX_COORDINATE)
+        {
+            return Err(BoxMaskError::InvalidGeometry);
+        }
+        if cutout.is_some()
+            || outer.radii.iter().any(|[rx, ry]| *rx != 0.0 && *ry != 0.0)
+            || ![
+                outer.rect.x,
+                outer.rect.y,
+                outer.rect.width,
+                outer.rect.height,
+            ]
+            .into_iter()
+            .all(|v| v.fract() == 0.0)
+        {
+            return Ok(None);
+        }
+        if outer.rect.width <= 0.0
+            || outer.rect.height <= 0.0
+            || clip.width <= 0.0
+            || clip.height <= 0.0
+        {
+            return Ok(Some(0));
+        }
+        // Preserve the original Canvas/core f32 candidate-window expression.
+        let visible = outer.rect.intersect(clip);
+        if visible.width <= 0.0 || visible.height <= 0.0 {
+            return Ok(Some(0));
+        }
+        let x0 = visible.x.floor().max(clip.x.ceil()).max(0.0) as i32;
+        let y0 = visible.y.floor().max(clip.y.ceil()).max(0.0) as i32;
+        let x1 = (visible.x + visible.width).ceil().min(width as f32) as i32;
+        let y1 = (visible.y + visible.height).ceil().min(height as f32) as i32;
+        if x1 <= x0 || y1 <= y0 {
+            return Ok(Some(0));
+        }
+        // Box always blends through its mask. Opaque root Rect omits blend's
+        // upper clip check, so prove that all candidate cells pass it anyway.
+        // The integer shape bounds also prove all sixteen samples are inside.
+        if f64::from(x0) < f64::from(outer.rect.x)
+            || f64::from(y0) < f64::from(outer.rect.y)
+            || f64::from(x1) > f64::from(outer.rect.x) + f64::from(outer.rect.width)
+            || f64::from(y1) > f64::from(outer.rect.y) + f64::from(outer.rect.height)
+            || x1 as f32 > (clip.x + clip.width).ceil()
+            || y1 as f32 > (clip.y + clip.height).ceil()
+        {
+            return Ok(None);
+        }
+        // Retain software setup, both classification tariffs and its Rect
+        // loop: A=0 and S=1. There are no native mask bytes or rows to prepare.
+        let work = ((x1 - x0) as u64)
+            .checked_mul((y1 - y0) as u64)
+            .and_then(|p| p.checked_mul(3))
+            .and_then(|work| work.checked_add(SETUP_WORK))
+            .ok_or(BoxMaskError::WorkLimit)?;
+        Ok(Some(work))
+    }
+
     /// Constant-size metadata only. Inputs are already in framebuffer space;
     /// neither translation nor clip normalization is repeated here.
     pub(crate) fn new(
@@ -337,3 +415,6 @@ impl BoxMaskTile {
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod rect_tests;

@@ -119,6 +119,18 @@ fn prepare(
             native.stats().box_masks
         ));
     }
+    // These two fixtures contain eligible square fills; all literal pixels stay exact.
+    let rectangles = match name {
+        "fixed-fractional-mask-and-document-clip" => 2,
+        "fractional-caller-clip" => 1,
+        _ => 0,
+    };
+    if native.stats().box_rectangles != rectangles {
+        return Err(format!(
+            "{name} box rectangle count actual={} expected={rectangles}",
+            native.stats().box_rectangles
+        ));
+    }
     if name == "two-mask-absolute-seam"
         && (native.stats().coverage_bytes != 2560 || native.stats().row_entries != 4)
     {
@@ -212,7 +224,7 @@ pub fn fixtures() -> Result<Vec<PreparedFixture>> {
         vec![
             0xffffff, 0x00ff00, 0x7070ff, 0xd0d0ff, 0xffffff, 0x000000, 0xd0d0ff, 0xf0f0ff,
         ],
-        3,
+        1,
         &fonts,
     )?);
     cases.push(prepare(
@@ -263,7 +275,7 @@ pub fn fixtures() -> Result<Vec<PreparedFixture>> {
         vec![
             0xffffff, 0x000000, 0x000000, 0xffffff, 0xffffff, 0x000000, 0x000000, 0xffffff,
         ],
-        1,
+        0,
         &fonts,
     )?);
     // Literal sparse rows: no geometry/sampling helper computes an expectation.

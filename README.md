@@ -65,6 +65,9 @@ composition paths, including translucent fills and correlated border rings.
 Image and gradient box paints, or scenes beyond the shared limits, retain
 whole-frame software fallback. The recorded comparisons are offscreen;
 this increment establishes no acquired-window or performance result.
+The [rectangle follow-up](docs/native-box-fastpath.md) avoids mask allocation
+for proven integer-aligned solid fills, allowing full-viewport backgrounds
+through the same Vulkan rectangle shader and existing resource limits.
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

@@ -13,6 +13,11 @@ default = []
 browser-bridge = ["dep:eris", "eris/raster-bridge"]
 
 [[bin]]
+name = "eris-vulkan-box-rect-check"
+path = "src/bin/box-rect-check.rs"
+required-features = ["browser-bridge"]
+
+[[bin]]
 name = "eris-vulkan-native-box-check"
 path = "src/bin/native-box-check.rs"
 required-features = ["browser-bridge"]
