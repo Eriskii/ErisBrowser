@@ -4,6 +4,9 @@
 use super::*;
 use crate::graphics::{
     Fonts, Rect as BrowserRect,
+    box_decoration::{
+        BoxMaskError, BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow, BoxPaint,
+    },
     gradient::{OpaqueGradient, OpaqueGradientError, OpaqueGradientInfo},
     text_masks::{self, MaskInfo, MaskKey, Session, TextRun},
 };
@@ -72,6 +75,8 @@ pub struct NativeSceneStats {
     pub text: text_masks::Stats,
     pub rounded_masks: usize,
     pub rounded_loop_work: u64,
+    pub box_masks: usize,
+    pub box_loop_work: u64,
     pub mask_sources: usize,
     pub coverage_bytes: usize,
     pub row_entries: usize,
@@ -142,6 +147,16 @@ fn browser_rect(rect: Rect) -> BrowserRect {
         width: rect.width,
         height: rect.height,
     }
+}
+
+fn box_error(error: BoxMaskError, phase: usize, command: usize) -> NativeFallback {
+    let kind = match error {
+        BoxMaskError::InvalidGeometry => FallbackKind::InvalidGeometry,
+        BoxMaskError::MaskLimit => FallbackKind::MaskPreparation,
+        BoxMaskError::WorkLimit => FallbackKind::CpuPaintBudget,
+        BoxMaskError::AllocationFailure => FallbackKind::AllocationFailure,
+    };
+    at(kind, phase, command)
 }
 
 fn validate_native_frame(frame: Frame, phase: Option<usize>) -> NativeResult<()> {
@@ -231,9 +246,11 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                     if let Some(cutout) = &decoration.cutout {
                         validate_box_shape(cutout, location).map_err(leaf)?;
                     }
-                    // Complete refusal precedes source/gradient/font/rounded
-                    // materialization across every phase, even under opacity 0.
-                    return Err(at(FallbackKind::UnsupportedBoxDecoration, phase, index));
+                    // Unsupported paints remain a complete-scene refusal before
+                    // source or mask preparation, even when hidden/suppressed.
+                    if !matches!(decoration.paint, BoxPaint::Color(_)) {
+                        return Err(at(FallbackKind::UnsupportedBoxDecoration, phase, index));
+                    }
                 }
                 DrawCommand::BackgroundImage {
                     rect,
@@ -403,6 +420,7 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                     | DrawCommand::Image { .. }
                     | DrawCommand::BackgroundImage { .. }
                     | DrawCommand::LinearGradient { .. }
+                    | DrawCommand::BoxDecoration(_)
                     | DrawCommand::PushClip { .. }
                     | DrawCommand::PopClip
                     | DrawCommand::PushFixed
@@ -476,8 +494,10 @@ fn geometry_pixel_work(
     target: Frame,
     phases: &[NativePhase<'_>],
     gradients: &mut GradientReservation,
+    boxes: &mut [Option<BoxMaskReservation>],
+    remaining: &mut u64,
 ) -> NativeResult<u64> {
-    let mut total = 0u64;
+    let initial = *remaining;
     let mut ordinal = 0;
     for (phase, input) in phases.iter().enumerate() {
         if !input.commands.iter().any(|command| {
@@ -487,6 +507,7 @@ fn geometry_pixel_work(
                     | DrawCommand::Image { .. }
                     | DrawCommand::BackgroundImage { .. }
                     | DrawCommand::LinearGradient { .. }
+                    | DrawCommand::BoxDecoration(_)
             )
         }) {
             ordinal += input.commands.len();
@@ -500,8 +521,26 @@ fn geometry_pixel_work(
             let slot = ordinal;
             ordinal += 1;
             let scope = match command {
-                DrawCommand::BoxDecoration(_) => {
-                    unreachable!("complete preflight refused box decoration")
+                DrawCommand::BoxDecoration(decoration) => {
+                    let offset = state.offset();
+                    let window = BoxMaskWindow::new(
+                        target.width,
+                        target.height,
+                        decoration.shape.translated(offset.0, offset.1),
+                        decoration
+                            .cutout
+                            .map(|shape| shape.translated(offset.0, offset.1)),
+                        browser_rect(state.clip()),
+                    )
+                    .map_err(|error| box_error(error, phase, index))?;
+                    // Each classification/sample stage prepays against the
+                    // remaining whole-scene allowance, before its first scan.
+                    boxes[slot] = Some(
+                        window
+                            .reserve(remaining)
+                            .map_err(|error| box_error(error, phase, index))?,
+                    );
+                    continue;
                 }
                 DrawCommand::BackgroundImage {
                     rect, tile, repeat, ..
@@ -518,10 +557,11 @@ fn geometry_pixel_work(
                     // extra per-axis LUT work before source packing. Missing,
                     // transparent and suppressed sources keep this conservative
                     // upper bound even if no actual LUT is later emitted.
-                    total = total
-                        .checked_add(geometry.loop_work)
-                        .and_then(|work| work.checked_add(geometry.lut_work))
+                    let work = geometry
+                        .loop_work
+                        .checked_add(geometry.lut_work)
                         .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                    charge_geometry(remaining, work)?;
                     continue;
                 }
                 DrawCommand::Rect { rect, .. } => {
@@ -545,9 +585,7 @@ fn geometry_pixel_work(
                     };
                     // Keep this conservative charge for transparent colors and
                     // zero-opacity descendants; geometry alone determines it.
-                    total = total
-                        .checked_add(work)
-                        .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                    charge_geometry(remaining, work)?;
                     continue;
                 }
                 DrawCommand::Image { rect, .. } => {
@@ -556,9 +594,7 @@ fn geometry_pixel_work(
                         image_loop_work(target, rect.translated(offset.0, offset.1), state.clip());
                     // Retain a geometric upper bound for missing sources,
                     // transparent samples and zero-opacity descendants too.
-                    total = total
-                        .checked_add(work)
-                        .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
+                    charge_geometry(remaining, work)?;
                     continue;
                 }
                 DrawCommand::PushClip { rect } => Command::PushClip(convert_rect(*rect)),
@@ -596,10 +632,8 @@ fn geometry_pixel_work(
                     let info = prepared.info();
                     let packing = u64::from(info.width) * u64::from(info.height);
                     let failure = at(FallbackKind::CpuPaintBudget, phase, index);
-                    total = total
-                        .checked_add(info.loop_work)
-                        .and_then(|n| n.checked_add(packing))
-                        .ok_or(failure)?;
+                    let work = info.loop_work.checked_add(packing).ok_or(failure)?;
+                    charge_geometry(remaining, work)?;
                     gradients.evaluation = gradients
                         .evaluation
                         .checked_add(info.loop_work)
@@ -622,7 +656,16 @@ fn geometry_pixel_work(
             .finish()
             .map_err(|_| NativeFallback::new(FallbackKind::InvalidScope, Some(phase), None))?;
     }
-    Ok(total)
+    Ok(initial - *remaining)
+}
+
+fn charge_geometry(remaining: &mut u64, work: u64) -> NativeResult<()> {
+    // Preserve the old aggregate-budget diagnostic for existing primitives,
+    // while refusing before any later box classification scan.
+    *remaining = remaining
+        .checked_sub(work)
+        .ok_or_else(|| NativeFallback::new(FallbackKind::CpuPaintBudget, None, None))?;
+    Ok(())
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -640,6 +683,7 @@ struct Ledger {
     cpu_limit: u64,
     gpu_upper: u64,
     rounded_loop_work: u64,
+    box_loop_work: u64,
 }
 impl Ledger {
     // One generated window is one source and exactly width+height LUT words.
@@ -791,17 +835,51 @@ impl Ledger {
         *self = next;
         Ok(())
     }
+    fn box_mask(
+        &mut self,
+        shape: &BoxMaskReservation,
+        phase: usize,
+        command: usize,
+    ) -> NativeResult<()> {
+        let info = shape.info();
+        let mut next = *self;
+        next.operations = next
+            .operations
+            .checked_add(info.tile_count.saturating_sub(1))
+            .filter(|&n| n <= MAX_COMMANDS)
+            .ok_or_else(|| at(FallbackKind::CommandLimit, phase, command))?;
+        next.box_loop_work = next
+            .box_loop_work
+            .checked_add(info.classification_work)
+            .and_then(|n| n.checked_add(info.materialization_work))
+            .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, command))?;
+        // Both CPU work stages were prepaid by the original-order geometry
+        // scan. Admit every partition's shared resources before allocation.
+        for tile in shape.tiles() {
+            next.mask(
+                tile.coverage_bytes,
+                tile.row_entries,
+                true,
+                false,
+                at(FallbackKind::MaskPreparation, phase, command),
+            )?;
+        }
+        *self = next;
+        Ok(())
+    }
 }
 
 #[derive(Clone, Copy)]
 enum MaskSource {
     Font(usize),
     Rounded(usize),
+    Box(usize),
 }
 #[derive(Clone, Copy)]
 enum RowSource {
     Font(usize),
     Rounded(usize),
+    Box(usize),
 }
 
 /// Closed structural bound available before scene/UI allocation. Includes the
@@ -862,6 +940,13 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
         (MAX_SOURCE_ENTRIES, size_of::<MaskSource>()),
         (MAX_SOURCE_ENTRIES, size_of::<(MaskKey, usize)>()),
         (MAX_COMMANDS, size_of::<RoundedTile>()),
+        (MAX_COMMANDS, size_of::<Option<BoxMaskReservation>>()),
+        (MAX_COMMANDS, size_of::<BoxMaskTile>()),
+        (
+            2,
+            size_of::<BoxMaskWindow>() + size_of::<BoxMaskReservation>(),
+        ),
+        (1, size_of::<BoxMaskTiles>()),
         // Fixed Native partition metadata and the all-or-nothing pair of
         // owners coexist with the reserved destination Vec during handoff.
         (
@@ -881,7 +966,7 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
                 + size_of::<NativeScenePlan>(),
         ),
         // Headers for temporary vectors and the two caller-owned UI vectors.
-        (17, size_of::<Vec<u8>>()),
+        (19, size_of::<Vec<u8>>()),
         (64, size_of::<DrawCommand>()),
         (1, 16 * 1024),
     ];
@@ -931,18 +1016,17 @@ pub fn plan_native_scene(
     let area = u64::from(target.width) * u64::from(target.height);
     let cpu_limit = (area * 16).clamp(1_000_000, 32_000_000);
     let mut gradients = GradientReservation::new();
-    let geometry_work = geometry_pixel_work(target, phases, &mut gradients)?;
-    let cpu_nontext = area
+    let full_area_work = area
         .checked_mul(counts.full_area_commands as u64)
-        .and_then(|work| work.checked_add(geometry_work))
         .ok_or_else(|| NativeFallback::new(FallbackKind::CpuPaintBudget, None, None))?;
-    if cpu_nontext > cpu_limit {
-        return Err(NativeFallback::new(
-            FallbackKind::CpuPaintBudget,
-            None,
-            None,
-        ));
-    }
+    let mut remaining = cpu_limit
+        .checked_sub(full_area_work)
+        .ok_or_else(|| NativeFallback::new(FallbackKind::CpuPaintBudget, None, None))?;
+    let mut boxes = reserve_native::<Option<BoxMaskReservation>>(counts.original)?;
+    boxes.resize_with(counts.original, || None);
+    let geometry_work =
+        geometry_pixel_work(target, phases, &mut gradients, &mut boxes, &mut remaining)?;
+    let cpu_nontext = full_area_work + geometry_work;
     let mut entries = reserve_native(images.len())?;
     for (key, image) in images {
         entries.push((key.as_str(), image));
@@ -1002,6 +1086,7 @@ pub fn plan_native_scene(
         cpu_limit,
         gpu_upper: 0,
         rounded_loop_work: 0,
+        box_loop_work: 0,
     };
     ledger.check_gpu(NativeFallback::new(FallbackKind::PlannerLimit, None, None))?;
     // Reserve every generated source before the first materialization, sharing
@@ -1032,6 +1117,7 @@ pub fn plan_native_scene(
     let mut mask_sources = reserve_native(MAX_SOURCE_ENTRIES)?;
     let mut keys = reserve_native::<(MaskKey, usize)>(MAX_SOURCE_ENTRIES)?;
     let mut rounded = reserve_native::<RoundedTile>(MAX_COMMANDS)?;
+    let mut box_tiles = reserve_native::<BoxMaskTile>(MAX_COMMANDS)?;
     let mut ranges = [(0, 0); MAX_NATIVE_PHASES];
     ordinal = 0;
     for (phase_index, phase) in phases.iter().enumerate() {
@@ -1043,10 +1129,31 @@ pub fn plan_native_scene(
         for (index, command) in phase.commands.iter().enumerate() {
             let source_image = image_ids[ordinal];
             let gradient_window = gradients.windows[ordinal];
+            let box_window = boxes[ordinal].take();
             ordinal += 1;
             let lowered_command = match command {
-                DrawCommand::BoxDecoration(_) => {
-                    unreachable!("complete preflight refused box decoration")
+                DrawCommand::BoxDecoration(decoration) => {
+                    let BoxPaint::Color(color) = decoration.paint else {
+                        unreachable!("complete preflight refused unsupported box paint");
+                    };
+                    let reservation = box_window
+                        .ok_or_else(|| at(FallbackKind::MaskPreparation, phase_index, index))?;
+                    let coverage = reservation.materialize(
+                        |shape| ledger.box_mask(shape, phase_index, index),
+                        |error| box_error(error, phase_index, index),
+                    )?;
+                    for tile in coverage.into_tiles() {
+                        lowered.push(Command::Glyph {
+                            source: mask_sources.len() as u32,
+                            rows: row_sources.len() as u32,
+                            y: tile.info().origin_y,
+                            rgba: [color.r, color.g, color.b, color.a],
+                        });
+                        mask_sources.push(MaskSource::Box(box_tiles.len()));
+                        row_sources.push(RowSource::Box(box_tiles.len()));
+                        box_tiles.push(tile);
+                    }
+                    continue;
                 }
                 DrawCommand::BackgroundImage {
                     rect, tile, repeat, ..
@@ -1316,6 +1423,14 @@ pub fn plan_native_scene(
         masks.push(match *source {
             MaskSource::Font(index) => font_masks[index],
             MaskSource::Rounded(index) => rounded[index].mask(),
+            MaskSource::Box(index) => {
+                let tile = &box_tiles[index];
+                SourceMask {
+                    width: tile.info().width,
+                    height: tile.info().height,
+                    coverage: tile.coverage(),
+                }
+            }
         });
     }
     let mut rows = reserve_native(row_sources.len())?;
@@ -1323,6 +1438,7 @@ pub fn plan_native_scene(
         rows.push(match *source {
             RowSource::Font(index) => font_rows[index].as_slice(),
             RowSource::Rounded(index) => rounded[index].row_origins(),
+            RowSource::Box(index) => box_tiles[index].row_origins(),
         });
     }
     // Do not borrow generated entries until their owner Vec is complete.
@@ -1382,6 +1498,8 @@ pub fn plan_native_scene(
         text: session.stats(),
         rounded_masks: rounded.len(),
         rounded_loop_work: ledger.rounded_loop_work,
+        box_masks: box_tiles.len(),
+        box_loop_work: ledger.box_loop_work,
         mask_sources: masks.len(),
         coverage_bytes: ledger.coverage,
         row_entries: ledger.rows,
@@ -1400,3 +1518,9 @@ mod gradient_tests;
 
 #[cfg(test)]
 mod background_image_tests;
+
+#[cfg(test)]
+mod box_decoration_tests;
+
+#[cfg(test)]
+mod box_prepass_tests;

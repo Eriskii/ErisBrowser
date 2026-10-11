@@ -1213,6 +1213,7 @@ fn partition_ledger() -> Ledger {
         cpu_limit: 1_000_000,
         gpu_upper: 0,
         rounded_loop_work: 0,
+        box_loop_work: 0,
     }
 }
 

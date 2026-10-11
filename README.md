@@ -40,7 +40,7 @@ command itself performs no fetching or decoding. Try the
 [Rounded box decorations](docs/rounded-boxes.md) add a software display-list
 foundation for elliptical fills and border rings using colors, gradients or
 already decoded images. Fixed subpixel coverage shares the existing paint
-budget; these commands take whole-frame CPU fallback on native paths. That
+budget; that checkpoint used whole-frame CPU fallback on native paths. The
 foundation did not add CSS box selection; the [integration](docs/background-boxes.md)
 follows below. Try the [direct Rust example](examples/rounded-boxes.rs).
 
@@ -56,8 +56,15 @@ prerequisites to single-layer `background-origin` and `background-clip`.
 Border, padding and content boxes independently control image placement and
 background painting; ordinary wrapped inlines use joined owner geometry with
 physical end decorations. CSSOM now handles all seven supported background
-longhands. New shaped fills and border rings use whole-frame software fallback.
-Try the [interactive box example](examples/background-boxes.html).
+longhands. That checkpoint introduced shaped fills and border rings with
+whole-frame software fallback. Try the [interactive box example](examples/background-boxes.html).
+
+[Native color box decorations](docs/native-box-color.md) now prepare bounded
+coverage masks on the CPU for the existing Vulkan color and opacity-group
+composition paths, including translucent fills and correlated border rings.
+Image and gradient box paints, or scenes beyond the shared limits, retain
+whole-frame software fallback. The recorded comparisons are offscreen;
+this increment establishes no acquired-window or performance result.
 
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external

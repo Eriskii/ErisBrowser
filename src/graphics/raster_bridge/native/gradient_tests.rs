@@ -513,6 +513,7 @@ fn generated_ledger_admits_exact_limits_and_refuses_transactionally() {
         cpu_limit: 1_000_000,
         gpu_upper: 0,
         rounded_loop_work: 0,
+        box_loop_work: 0,
     };
     let failure = at(FallbackKind::PlannerLimit, 2, 7);
     for boundary in 0..4 {

@@ -48,6 +48,37 @@ fn poison() -> ImageStore {
     );
     store
 }
+// Native now admits Color only; both Probe routes retain their old refusal.
+fn probe_routes(commands: &[DrawCommand], images: &ImageStore, kind: FallbackKind, index: usize) {
+    let frame = Frame::new(4, 2, 0xffffff);
+    let fonts = Fonts::new();
+    let expected = FallbackReason {
+        kind,
+        command_index: Some(index),
+    };
+    assert_eq!(
+        plan_display_list(commands, images, frame).unwrap_err(),
+        expected
+    );
+    assert_eq!(
+        plan_display_list_with_fonts(commands, images, frame, &fonts).unwrap_err(),
+        expected
+    );
+    assert!(fonts.cache.borrow().is_empty());
+}
+fn native_color_admitted(commands: &[DrawCommand]) {
+    let frame = Frame::new(4, 2, 0xffffff);
+    let fonts = Fonts::new();
+    native::plan_native_scene(
+        frame,
+        &[native::NativePhase { frame, commands }],
+        &ImageStore::new(),
+        &fonts,
+    )
+    .unwrap();
+    assert!(fonts.cache.borrow().is_empty());
+}
+
 fn all_routes(commands: &[DrawCommand], images: &ImageStore, kind: FallbackKind, index: usize) {
     let frame = Frame::new(4, 2, 0xffffff);
     let fonts = Fonts::new();
@@ -105,7 +136,35 @@ fn box_decoration_all_paints_refuse_without_materializing_payloads() {
     let images = poison();
     let image_refs = Arc::strong_count(&images["bad"]);
     let gradient_refs = Arc::strong_count(&invalid_gradient);
-    for command in &commands {
+    probe_routes(
+        &commands[..1],
+        &images,
+        FallbackKind::UnsupportedBoxDecoration,
+        0,
+    );
+    native_color_admitted(&commands[..1]);
+    // Supported Color still validates every retained source before preparation.
+    let frame = Frame::new(4, 2, 0xffffff);
+    let fonts = Fonts::new();
+    assert_eq!(
+        native::plan_native_scene(
+            frame,
+            &[native::NativePhase {
+                frame,
+                commands: &commands[..1]
+            }],
+            &images,
+            &fonts
+        )
+        .unwrap_err(),
+        native::NativeFallback {
+            kind: FallbackKind::InvalidImage,
+            phase_index: None,
+            command_index: None
+        }
+    );
+    assert!(fonts.cache.borrow().is_empty());
+    for command in &commands[1..] {
         all_routes(
             std::slice::from_ref(command),
             &images,
@@ -153,8 +212,29 @@ fn box_decoration_hidden_empty_offscreen_and_fixed_commands_still_refuse() {
             DrawCommand::PopClip,
             DrawCommand::PopFixed,
         ];
-        all_routes(
+        probe_routes(
             &commands,
+            &poison(),
+            FallbackKind::UnsupportedBoxDecoration,
+            2,
+        );
+        native_color_admitted(&commands);
+        // Hidden unsupported image payload still refuses before poison validation.
+        let mut unsupported = commands.clone();
+        let DrawCommand::BoxDecoration(payload) = &commands[2] else {
+            unreachable!()
+        };
+        unsupported[2] = DrawCommand::BoxDecoration(Arc::new(BoxDecoration {
+            shape: payload.shape,
+            cutout: payload.cutout,
+            paint: BoxPaint::Image {
+                tile: rect(0.0, 0.0, 1.0, 1.0),
+                repeat: [true; 2],
+                key: "bad".into(),
+            },
+        }));
+        all_routes(
+            &unsupported,
             &poison(),
             FallbackKind::UnsupportedBoxDecoration,
             2,
@@ -177,12 +257,13 @@ fn box_decoration_cutout_covering_outer_shape_does_not_elide_refusal() {
             cutout,
             paint: BoxPaint::Color(Color::BLACK),
         }));
-        all_routes(
-            &[command],
+        probe_routes(
+            std::slice::from_ref(&command),
             &poison(),
             FallbackKind::UnsupportedBoxDecoration,
             0,
         );
+        native_color_admitted(&[command]);
     }
 }
 
@@ -269,16 +350,18 @@ fn box_decoration_adapter_coordinate_bound_is_inclusive_and_tighter_than_cpu() {
             radii: [[1_000_000.0; 2]; 4],
         };
         assert!(edge.valid());
-        all_routes(
-            &[DrawCommand::BoxDecoration(Arc::new(BoxDecoration {
-                shape: edge,
-                cutout: None,
-                paint: BoxPaint::Color(Color::BLACK),
-            }))],
+        let edge_command = DrawCommand::BoxDecoration(Arc::new(BoxDecoration {
+            shape: edge,
+            cutout: None,
+            paint: BoxPaint::Color(Color::BLACK),
+        }));
+        probe_routes(
+            std::slice::from_ref(&edge_command),
             &poison(),
             FallbackKind::UnsupportedBoxDecoration,
             0,
         );
+        native_color_admitted(&[edge_command]);
         let beyond = RoundedBox {
             rect: rect(sign * 1_000_001.0, 0.0, 1.0, 1.0),
             radii: [[0.0; 2]; 4],
@@ -343,12 +426,13 @@ fn box_decoration_preceding_text_and_rounded_masks_remain_cold() {
             command_index: Some(0)
         }
     );
+    let native_commands = [commands[0].clone(), commands[1].clone(), image("bad")];
     assert_eq!(
         native::plan_native_scene(
             frame,
             &[native::NativePhase {
                 frame,
-                commands: &commands
+                commands: &native_commands
             }],
             &images,
             &fonts
@@ -417,12 +501,13 @@ fn box_decoration_command_counts_preserve_full_input_limit_precedence() {
     };
     let mut commands = vec![plain.clone(); 256];
     commands[255] = color();
-    all_routes(
+    probe_routes(
         &commands,
         &poison(),
         FallbackKind::UnsupportedBoxDecoration,
         255,
     );
+    native_color_admitted(&commands);
     commands.push(plain);
     let images = poison();
     let fonts = Fonts::new();
@@ -498,13 +583,32 @@ fn box_decoration_preserves_earlier_geometry_scope_and_cheap_store_guards() {
         plan_display_list_with_fonts(&commands, &images, frame, &fonts).unwrap_err(),
         expected
     );
-    // Native's existing structural pass precedes the cheap store guard.
+    // Accepted Native Color reaches the unchanged cheap store guard.
     assert_eq!(
         native::plan_native_scene(
             frame,
             &[native::NativePhase {
                 frame,
                 commands: &commands
+            }],
+            &images,
+            &fonts
+        )
+        .unwrap_err(),
+        native::NativeFallback {
+            kind: FallbackKind::ImageStoreLimit,
+            phase_index: None,
+            command_index: None
+        }
+    );
+    // Unsupported paints still stop in structural preflight, before that guard.
+    let unsupported = [image("missing")];
+    assert_eq!(
+        native::plan_native_scene(
+            frame,
+            &[native::NativePhase {
+                frame,
+                commands: &unsupported
             }],
             &images,
             &fonts

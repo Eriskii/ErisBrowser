@@ -6,6 +6,13 @@
 use super::{Canvas, Color, ImageStore, Rect, gradient::LinearGradient};
 use std::sync::Arc;
 
+#[cfg(feature = "raster-bridge")]
+mod native;
+#[cfg(feature = "raster-bridge")]
+pub(crate) use native::{
+    BoxMaskError, BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow,
+};
+
 const MAX_COORDINATE: f64 = 16_000_000.0;
 const SETUP_WORK: u64 = 8;
 

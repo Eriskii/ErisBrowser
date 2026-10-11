@@ -26,3 +26,6 @@ pub mod opacity_fixtures;
 pub mod reuse_fixtures;
 pub mod reuse_gpu;
 pub mod surface_gpu;
+
+#[cfg(feature = "browser-bridge")]
+pub mod native_box_fixtures;
