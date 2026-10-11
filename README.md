@@ -15,6 +15,11 @@ The [background geometry follow-up](docs/background-geometry.md) adds single-lay
 size, physical position and independent repeat axes, including atomic shorthand
 resets. Try the [positioned stripe example](examples/background-geometry.html).
 
+[CSS URL provenance](docs/css-url-provenance.md) retains each external stylesheet's
+final URL through imports and parsing, while inline sources keep a document-base
+marker. A bounded, pure CSS `url()` decoder and resolver supports this foundation;
+URL background images and resource fetching from CSS properties remain unsupported.
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;

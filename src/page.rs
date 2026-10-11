@@ -2054,3 +2054,7 @@ mod tests {
         assert_eq!(stylesheets.len(), 128);
     }
 }
+
+#[cfg(test)]
+#[path = "page/css_url_tests.rs"]
+mod css_url_tests;

@@ -1,6 +1,6 @@
 //! Bounded stylesheet import loading. Fetch authority always remains the document.
 use crate::{
-    css::{CascadeLayer, StyleSource, supports_matches_with_budget},
+    css::{CascadeLayer, SourceBase, StyleSource, supports_matches_with_budget},
     net::{Fetcher, ResourceKind},
     text_encoding,
 };
@@ -17,8 +17,20 @@ pub(crate) type Sources = Vec<StyleSource>;
 #[derive(Clone, Debug)]
 struct Sheet {
     source: Arc<str>,
-    url: Url,
+    url: Arc<Url>,
+    embedded: bool,
     encoding: &'static Encoding,
+}
+
+impl Sheet {
+    // Callers admit the fixed publication work before cloning this handle.
+    fn source_base(&self) -> SourceBase {
+        if self.embedded {
+            SourceBase::Document
+        } else {
+            SourceBase::Stylesheet(self.url.clone())
+        }
+    }
 }
 
 pub(crate) struct Loader {
@@ -60,7 +72,7 @@ impl Loader {
         self.check_segments()?;
         let sheet = self.fetch(fetcher, url, self.environment_encoding)?;
         self.charge_url_work(sheet.url.as_str().len())?;
-        let mut path = vec![sheet.url.clone()];
+        let mut path = vec![sheet.url.as_ref().clone()];
         let sources = self.expand(
             fetcher,
             &sheet,
@@ -84,9 +96,14 @@ impl Loader {
             return Err("stylesheet decoded source budget exceeded".into());
         }
         self.decoded += source.len();
+        if base.as_str().len() > MAX_URL_BYTES.saturating_sub(self.url_storage) {
+            return Err("stylesheet URL storage budget exceeded".into());
+        }
+        let url = self.retain_sheet_url(base.clone(), 0)?;
         let sheet = Sheet {
             source: source.into(),
-            url: base.clone(),
+            url,
+            embedded: true,
             encoding: self.environment_encoding,
         };
         let sources = self.expand(
@@ -121,6 +138,18 @@ impl Loader {
         self.url_work += bytes;
         Ok(())
     }
+    // One URL string is shared by the cached sheet and all emitted source
+    // contexts. Fixed Arc/source headers are bounded by the existing sheet,
+    // segment and recursion limits, separately from authored text capacity.
+    fn retain_sheet_url(&mut self, url: Url, key_bytes: usize) -> Result<Arc<Url>, String> {
+        self.charge_url_work(4)?;
+        let storage = key_bytes.saturating_add(url.as_str().len());
+        if storage > MAX_URL_BYTES.saturating_sub(self.url_storage) {
+            return Err("stylesheet URL storage budget exceeded".into());
+        }
+        self.url_storage += storage;
+        Ok(Arc::new(url))
+    }
     fn fetch(
         &mut self,
         fetcher: &mut Fetcher,
@@ -148,7 +177,7 @@ impl Loader {
         if key.0.len() > MAX_URL_BYTES.saturating_sub(self.url_storage) {
             return Err("stylesheet URL storage budget exceeded".into());
         }
-        let result: Result<Sheet, String> = (|| {
+        let result: Result<(Arc<str>, Url, &'static Encoding), String> = (|| {
             let response = fetcher.fetch(&url, Some(&self.document_url), ResourceKind::Style)?;
             let encoding =
                 text_encoding::css_encoding(&response.bytes, &response.content_type, fallback);
@@ -159,22 +188,29 @@ impl Loader {
             self.decoded += source.len();
             let mut url = response.url;
             url.set_fragment(None);
-            Ok(Sheet {
-                source: source.into(),
-                url,
-                encoding,
-            })
+            Ok((source.into(), url, encoding))
         })();
         let clone_bytes = match &result {
-            Ok(sheet) => sheet.url.as_str().len(),
+            Ok((_, url, _)) => url.as_str().len(),
             Err(error) => error.len(),
         };
         self.charge_url_work(clone_bytes)?;
-        let storage = key.0.len().saturating_add(clone_bytes);
-        if storage > MAX_URL_BYTES.saturating_sub(self.url_storage) {
-            return Err("stylesheet URL storage budget exceeded".into());
-        }
-        self.url_storage += storage;
+        let result = match result {
+            Ok((source, url, encoding)) => Ok(Sheet {
+                source,
+                url: self.retain_sheet_url(url, key.0.len())?,
+                embedded: false,
+                encoding,
+            }),
+            Err(error) => {
+                let storage = key.0.len().saturating_add(clone_bytes);
+                if storage > MAX_URL_BYTES.saturating_sub(self.url_storage) {
+                    return Err("stylesheet URL storage budget exceeded".into());
+                }
+                self.url_storage += storage;
+                Err(error)
+            }
+        };
         self.cache.insert(key, result.clone());
         result
     }
@@ -252,7 +288,7 @@ impl Loader {
             // Order statements before an import establish its position. Preserve
             // each original parser boundary while retaining shared anonymous
             // layer identity and media conditions as metadata, never CSS text.
-            self.flush_source(&mut sources, &mut output, scope)?;
+            self.flush_source(&mut sources, &mut output, scope, sheet)?;
             let mut import_scope = scope.clone();
             if !import.media.is_empty() {
                 self.charge_expansion(import.media.len())?;
@@ -279,7 +315,10 @@ impl Loader {
                 if sources.len() >= MAX_IMPORTS {
                     return Err("stylesheet segment count exceeded".into());
                 }
-                sources.push(import_scope.clone());
+                self.charge_url_work(4)?;
+                let mut declaration = import_scope.clone();
+                declaration.base = sheet.source_base();
+                sources.push(declaration);
             }
             self.imports += 1;
             if self.imports > MAX_IMPORTS || path.len() >= MAX_DEPTH {
@@ -325,10 +364,10 @@ impl Loader {
                 diagnostic(diagnostics, &error);
                 continue;
             }
-            if path.contains(&imported.url) {
+            if path.contains(imported.url.as_ref()) {
                 continue;
             }
-            path.push(imported.url.clone());
+            path.push(imported.url.as_ref().clone());
             let expanded = self.expand(fetcher, &imported, path, &import_scope, diagnostics);
             path.pop();
             match expanded {
@@ -345,7 +384,7 @@ impl Loader {
         }
         // Parse boundaries prevent malformed imported EOF constructs from
         // consuming rules belonging to the importing sheet or its siblings.
-        self.flush_source(&mut sources, &mut output, scope)?;
+        self.flush_source(&mut sources, &mut output, scope, sheet)?;
         Ok(sources)
     }
 
@@ -358,19 +397,22 @@ impl Loader {
     }
 
     fn flush_source(
-        &self,
+        &mut self,
         sources: &mut Sources,
         output: &mut String,
         scope: &StyleSource,
+        sheet: &Sheet,
     ) -> Result<(), String> {
         if !output.is_empty() {
             if sources.len() >= MAX_IMPORTS {
                 return Err("stylesheet segment count exceeded".into());
             }
+            self.charge_url_work(4)?;
             sources.push(StyleSource {
                 source: std::mem::take(output).into(),
                 layer: scope.layer.clone(),
                 media: scope.media.clone(),
+                base: sheet.source_base(),
             });
         }
         Ok(())
@@ -962,7 +1004,8 @@ mod tests {
                 match source {
                     Ok(source) => Ok(Sheet {
                         source: (*source).into(),
-                        url,
+                        url: Arc::new(url),
+                        embedded: false,
                         encoding: encoding_rs::UTF_8,
                     }),
                     Err(error) => Err((*error).into()),
@@ -1149,7 +1192,8 @@ mod tests {
                 (child.to_string(), "UTF-8"),
                 Ok(Sheet {
                     source: "#x{color:red}".into(),
-                    url: child,
+                    url: Arc::new(child),
+                    embedded: false,
                     encoding: encoding_rs::UTF_8,
                 }),
             );
@@ -1217,7 +1261,8 @@ mod tests {
             (child.to_string(), "UTF-8"),
             Ok(Sheet {
                 source: "} #x{color:red}".into(),
-                url: child,
+                url: Arc::new(child),
+                embedded: false,
                 encoding: encoding_rs::UTF_8,
             }),
         );
@@ -1273,7 +1318,8 @@ mod tests {
             (short.to_string(), "UTF-8"),
             Ok(Sheet {
                 source: "".into(),
-                url: base.clone(),
+                url: Arc::new(base.clone()),
+                embedded: false,
                 encoding: encoding_rs::UTF_8,
             }),
         );
@@ -1350,7 +1396,8 @@ mod tests {
                 (child.to_string(), "UTF-8"),
                 Ok(Sheet {
                     source: bad.into(),
-                    url: child.clone(),
+                    url: Arc::new(child.clone()),
+                    embedded: false,
                     encoding: encoding_rs::UTF_8,
                 }),
             );
@@ -1384,7 +1431,8 @@ mod tests {
                 (url.to_string(), "UTF-8"),
                 Ok(Sheet {
                     source: source.into(),
-                    url,
+                    url: Arc::new(url),
+                    embedded: false,
                     encoding: encoding_rs::UTF_8,
                 }),
             );
@@ -1462,3 +1510,7 @@ mod tests {
         assert!(Cursor::new(&"(".repeat(129)).statement_end().is_none());
     }
 }
+
+#[cfg(test)]
+#[path = "stylesheet_loading/url_tests.rs"]
+mod url_tests;

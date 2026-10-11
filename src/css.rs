@@ -5,6 +5,7 @@ use crate::dom::{
 use crate::graphics::{Color, gradient::LinearGradient};
 mod background;
 mod gradient;
+pub mod url;
 pub use background::{BackgroundPosition, BackgroundSize};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::{Arc, LazyLock};
@@ -424,8 +425,18 @@ pub struct Declaration {
     // Pending substitution preserves shorthand semantics until var() resolves.
     pending_shorthand: Option<Arc<str>>,
 }
+/// The base for a stylesheet's URL tokens, independent of fetch permission.
+/// Document-relative tokens use the document's current base when consumed.
+#[derive(Debug, Clone, Default)]
+pub enum SourceBase {
+    #[default]
+    Document,
+    Stylesheet(Arc<::url::Url>),
+}
+
 #[derive(Debug, Clone)]
 pub struct Rule {
+    pub base: SourceBase,
     pub selectors: Vec<String>,
     pub declarations: Vec<Declaration>,
     pub layer: Option<Arc<CascadeLayer>>,
@@ -439,6 +450,7 @@ const MAX_STYLE_BYTES: usize = 8 * 1024 * 1024;
 /// A source boundary preserves stylesheet EOF semantics and imported layers.
 #[derive(Debug, Clone)]
 pub struct StyleSource {
+    pub base: SourceBase,
     pub source: Arc<str>,
     pub layer: Option<Arc<CascadeLayer>>,
     /// Nested import/link conditions are a conjunction, not a textual wrapper.
@@ -446,7 +458,13 @@ pub struct StyleSource {
 }
 impl StyleSource {
     pub fn new(source: impl Into<Arc<str>>) -> Self {
+        Self::with_base(source, SourceBase::Document)
+    }
+
+    /// Retain an already admitted source base without copying its URL bytes.
+    pub fn with_base(source: impl Into<Arc<str>>, base: SourceBase) -> Self {
         Self {
+            base,
             source: source.into(),
             layer: None,
             media: Vec::new(),
@@ -602,6 +620,7 @@ pub fn parse_stylesheet_in_layer(
     parse_source(
         source,
         &layer,
+        &SourceBase::Document,
         width,
         height,
         &mut rules,
@@ -612,6 +631,7 @@ pub fn parse_stylesheet_in_layer(
 fn parse_source(
     source: &str,
     layer: &Option<Arc<CascadeLayer>>,
+    base: &SourceBase,
     width: f32,
     height: f32,
     rules: &mut Vec<Rule>,
@@ -627,12 +647,13 @@ fn parse_source(
     let source = &source[..end];
     if let Some(layer) = layer {
         rules.push(Rule {
+            base: base.clone(),
             selectors: vec![],
             declarations: vec![],
             layer: Some(layer.clone()),
         });
     }
-    parse_rules(source, width, height, 0, layer, true, rules, budget);
+    parse_rules(source, width, height, 0, layer, base, true, rules, budget);
 }
 
 struct ParseBudget {
@@ -717,6 +738,7 @@ fn parse_rules(
     height: f32,
     depth: usize,
     layer: &Option<Arc<CascadeLayer>>,
+    base: &SourceBase,
     apply: bool,
     rules: &mut Vec<Rule>,
     budget: &mut ParseBudget,
@@ -767,7 +789,7 @@ fn parse_rules(
             parens -= 1;
         }
         if c == b';' && parens == 0 {
-            layer_statement(&source[start..i], layer, rules, budget);
+            layer_statement(&source[start..i], layer, base, rules, budget);
             start = i + 1;
         } else if c == b'{' && parens == 0 {
             let raw_header = rule_start(&source[start..i]);
@@ -818,11 +840,31 @@ fn parse_rules(
             let body = &source[body_start..i];
             if let Some(media) = at_rule(header, "media") {
                 if media_matches_with_budget(media, width, height, &mut budget.work) {
-                    parse_rules(body, width, height, depth + 1, layer, apply, rules, budget);
+                    parse_rules(
+                        body,
+                        width,
+                        height,
+                        depth + 1,
+                        layer,
+                        base,
+                        apply,
+                        rules,
+                        budget,
+                    );
                 }
             } else if let Some(supports) = at_rule(raw_header, "supports") {
                 if supports_matches_with_budget(supports, false, &mut budget.work) {
-                    parse_rules(body, width, height, depth + 1, layer, apply, rules, budget);
+                    parse_rules(
+                        body,
+                        width,
+                        height,
+                        depth + 1,
+                        layer,
+                        base,
+                        apply,
+                        rules,
+                        budget,
+                    );
                 }
             } else if let Some(name) = at_rule(header, "layer") {
                 if budget.layer(name) {
@@ -833,6 +875,7 @@ fn parse_rules(
                     };
                     if let Some(child) = child {
                         rules.push(Rule {
+                            base: base.clone(),
                             selectors: vec![],
                             declarations: vec![],
                             layer: Some(child.clone()),
@@ -843,6 +886,7 @@ fn parse_rules(
                             height,
                             depth + 1,
                             &Some(child),
+                            base,
                             apply,
                             rules,
                             budget,
@@ -852,7 +896,17 @@ fn parse_rules(
             } else if at_rule(header, "container").is_some() {
                 // Element-dependent conditions always establish global layer
                 // order. Container matching itself is not implemented.
-                parse_rules(body, width, height, depth + 1, layer, false, rules, budget);
+                parse_rules(
+                    body,
+                    width,
+                    height,
+                    depth + 1,
+                    layer,
+                    base,
+                    false,
+                    rules,
+                    budget,
+                );
             } else if apply && !header.starts_with('@') && !header.is_empty() {
                 let selectors = crate::selectors::parse_list(raw_header, &mut budget.work)
                     .unwrap_or_default()
@@ -860,6 +914,7 @@ fn parse_rules(
                     .map(|selector| selector.source)
                     .collect();
                 rules.push(Rule {
+                    base: base.clone(),
                     selectors,
                     declarations: parse_declarations_with_limit(
                         body,
@@ -874,12 +929,13 @@ fn parse_rules(
         i += 1;
     }
     if start < source.len() && rules.len() < 10_000 {
-        layer_statement(&source[start..], layer, rules, budget);
+        layer_statement(&source[start..], layer, base, rules, budget);
     }
 }
 fn layer_statement(
     header: &str,
     layer: &Option<Arc<CascadeLayer>>,
+    base: &SourceBase,
     rules: &mut Vec<Rule>,
     budget: &mut ParseBudget,
 ) {
@@ -894,6 +950,7 @@ fn layer_statement(
                 }
                 if let Some(child) = CascadeLayer::named(layer.clone(), name) {
                     rules.push(Rule {
+                        base: base.clone(),
                         selectors: vec![],
                         declarations: vec![],
                         layer: Some(child),
@@ -2813,6 +2870,7 @@ pub fn compute_styles_from_sources(
         parse_source(
             &source.source,
             &source.layer,
+            &source.base,
             width,
             height,
             &mut rules,
@@ -5864,6 +5922,9 @@ impl<T> TransposeOption<T> for Option<Option<T>> {
 }
 
 #[cfg(test)]
+mod provenance_tests;
+
+#[cfg(test)]
 mod tests {
     #[test]
     fn object_fit_keywords_and_scale_down_pairs_share_strict_admission() {
@@ -6855,6 +6916,7 @@ mod tests {
         }
         let shared = CascadeLayer::anonymous(None).unwrap();
         let make = |source, layer| StyleSource {
+            base: SourceBase::Document,
             source: Arc::from(source),
             layer: Some(layer),
             media: vec![],
@@ -6885,6 +6947,7 @@ mod tests {
         let doc = Document::parse("<div></div>");
         let id = doc.query_selector("div").unwrap();
         let empty = StyleSource {
+            base: SourceBase::Document,
             source: "".into(),
             layer: CascadeLayer::named(None, "first"),
             media: vec!["print".into()],
@@ -7025,6 +7088,7 @@ mod tests {
         assert!(cascade.bytes <= 1024 * 1024);
         let doc = Document::parse("<div></div>");
         let source = StyleSource {
+            base: SourceBase::Document,
             source: "div{display:none}".into(),
             layer: None,
             media: vec!["screen".into(); 33],
@@ -7487,6 +7551,7 @@ mod tests {
         let mut sources = vec![StyleSource::new("#x{color:green}")];
         for invalid in ["url(foo) or (color)", "unknown(url(foo bar)) or (color)"] {
             sources.push(StyleSource {
+                base: SourceBase::Document,
                 source: "#x{color:red}".into(),
                 layer: None,
                 media: vec![invalid.into()],
@@ -7499,6 +7564,7 @@ mod tests {
             r#"@media url("foo") or (color) {#x{background:blue}}"#,
         ));
         sources.push(StyleSource {
+            base: SourceBase::Document,
             source: "#x{height:12px}".into(),
             layer: None,
             media: vec!["unknown(url(foo)) or (color)".into()],
@@ -7567,6 +7633,7 @@ mod tests {
     fn media_ranges_control_layers_and_import_metadata_at_viewport_boundaries() {
         let doc = Document::parse("<p id=x>text</p>");
         let conditional = StyleSource {
+            base: SourceBase::Document,
             source: "#x{color:red}".into(),
             layer: CascadeLayer::named(None, "conditional"),
             media: vec![
@@ -7589,6 +7656,7 @@ mod tests {
         assert_eq!(outside[x].color, Color::rgb(255, 0, 0));
         assert_eq!(outside[x].background_color, Color::rgb(0, 0, 255));
         let empty = StyleSource {
+            base: SourceBase::Document,
             source: "".into(),
             layer: CascadeLayer::named(None, "outer"),
             media: vec!["(width > 400px) or (width <= 400px) and (color)".into()],

@@ -29,6 +29,22 @@ byte encoding, following the [CSS URL processing model](https://drafts.csswg.org
 Decoded source caching includes that fallback encoding. Fetch permissions remain
 those of the document throughout the import graph.
 
+External sources and parsed rules now retain a shared `SourceBase::Stylesheet`
+handle to the response's final URL. An imported sheet keeps its own final URL,
+even inside its parent's layer or media scope. Inline source segments instead
+retain `SourceBase::Document`; the pure resolver uses the current document base
+supplied by its caller. Changing `base[href]` therefore does not replace a loaded
+external sheet's context. Recollection preserves cached source handles, while
+changed inline style text becomes a fresh document-context source.
+
+This metadata currently ends at parsed rules. The new pure `css::url` utility
+accepts one complete bounded `url()` value and distinguishes absolute URLs, local
+fragments, empty values and unresolved text. It does not add a URL-valued CSS
+property or fetch a resource. Custom-property URL text remains unresolved through
+inheritance and variable substitution; wiring the consuming declaration's context
+into a future URL-valued property remains separate work. See
+[CSS URL provenance and decoder limits](css-url-provenance.md).
+
 Import traversal preserves cascade positions, repeated imports and conditional
 media metadata. Repeated resources share decoded source; each occurrence still
 costs scan work. Current recursion-path URLs, including redirect destinations,
@@ -87,6 +103,17 @@ cache lookups and failed-resource keys. Page resource resolution has its own
 8 MiB/256-style-input cascade limit also apply. New layer-name and media text is charged before
 allocation; import diagnostics have a bounded inventory. Structured inputs allow
 at most 32 media conditions per source under the shared 8 MiB input budget.
+
+Final external URL strings are admitted once under the existing URL storage
+allowance before shared ownership is published. Inline import traversal also
+charges its retained base string there. Cached and emitted source handles share
+the same external URL allocation. Fixed source/rule metadata remains bounded by
+the existing 256-source and 10,000-rule caps; it does not reduce the text-byte
+capacity. Two independent 4 MiB source chunks can still fill the 8 MiB text limit.
+The decoder/resolver has its own caller-supplied cumulative work/storage budget,
+with a 4,096-byte raw CSS input cap and a 16 MiB selected-base/result URL cap.
+Its conservative parser reservation is an admission tariff, not an instrumented
+measurement of dependency allocations or instructions.
 
 Inline collection validates `type` and media syntax before copying text, both
 while loading and during later style recalculation. HTML and SVG `style`
