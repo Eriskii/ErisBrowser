@@ -44,6 +44,12 @@ budget; these commands take whole-frame CPU fallback on native paths. CSS
 `background-origin` and `background-clip` integration remains separate. Try the
 [direct Rust example](examples/rounded-boxes.rs).
 
+[Inline physical edges](docs/inline-edges.md) make ordinary inline horizontal
+padding, borders and signed margins participate in placement and wrapping.
+Separate per-line content, padding and border geometry preserves nested owners
+and positioned descendants. Existing inline background painting remains in use;
+this prerequisite does not add CSS background box selection or full line layout.
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;

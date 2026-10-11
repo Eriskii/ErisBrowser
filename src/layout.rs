@@ -10,6 +10,9 @@ use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
 use std::cell::Cell as Counter;
 
+mod inline_edges;
+use inline_edges::{InlineCollection, InlineEdges, InlineSpan};
+
 const MAX_DEPTH: usize = 128;
 const MAX_VISITS: usize = 100_000;
 const MAX_COMMANDS: usize = 200_000;
@@ -961,6 +964,8 @@ enum InlineKind {
     Box(Fragment, Sides),
     Float(NodeId),
     Positioned(NodeId),
+    // Zero-content decorated inline, ordered in the same source stream.
+    Empty,
     Break,
 }
 
@@ -2722,13 +2727,14 @@ impl Engine<'_> {
         owner: NodeId,
         width: f32,
         depth: usize,
-        output: &mut Vec<InlineItem>,
+        output: &mut InlineCollection,
+        active_span: Option<usize>,
     ) {
-        if !self.enter(id, depth) || self.is_hidden(id) {
+        if output.failed || !self.enter(id, depth) || self.is_hidden(id) {
             return;
         }
         if matches!(self.style(id).position.as_str(), "absolute" | "fixed") {
-            output.push(InlineItem {
+            output.items.push(InlineItem {
                 node: id,
                 owner: id,
                 kind: InlineKind::Positioned(id),
@@ -2736,10 +2742,11 @@ impl Engine<'_> {
                 height: 0.0,
                 preserve: false,
             });
+            output.mark(active_span, &mut self.position_work_left);
             return;
         }
         if self.is_float(id) {
-            output.push(InlineItem {
+            output.items.push(InlineItem {
                 node: id,
                 owner: id,
                 kind: InlineKind::Float(id),
@@ -2747,6 +2754,7 @@ impl Engine<'_> {
                 height: 0.0,
                 preserve: false,
             });
+            output.mark(active_span, &mut self.position_work_left);
             return;
         }
         match &self.doc.nodes[id].kind {
@@ -2755,12 +2763,12 @@ impl Engine<'_> {
                     .scalar_values()
                     .take(self.glyphs_left)
                     .collect::<String>();
-                self.tokenize(id, owner, &text, output);
+                self.tokenize(id, owner, &text, &mut output.items);
             }
             NodeKind::Element(_) => {
                 let tag = self.layout_tag(id);
                 if tag == "br" {
-                    output.push(InlineItem {
+                    output.items.push(InlineItem {
                         node: id,
                         owner: id,
                         kind: InlineKind::Break,
@@ -2768,6 +2776,7 @@ impl Engine<'_> {
                         height: line_height(self.style(id)),
                         preserve: true,
                     });
+                    output.mark(active_span, &mut self.position_work_left);
                     return;
                 }
                 if matches!(
@@ -2787,7 +2796,7 @@ impl Engine<'_> {
                         self.width_for(id, width, width)
                     };
                     let fragment = self.fragment(id, width, inner_width, depth + 1);
-                    output.push(InlineItem {
+                    output.items.push(InlineItem {
                         node: id,
                         owner: id,
                         width: fragment.size.width + margin.horizontal(),
@@ -2796,19 +2805,87 @@ impl Engine<'_> {
                         preserve: false,
                     });
                 } else {
+                    let start = output.items.len();
+                    let span = if self.style(id).display == Display::Inline {
+                        let margin = self.margins(id, width);
+                        let span = InlineSpan {
+                            node: id,
+                            parent: active_span,
+                            border: self.borders(id),
+                            padding: self.padding(id, width),
+                            margin: (margin.left, margin.right),
+                            first: None,
+                            last: None,
+                            font_size: font_size(self.style(id)),
+                        };
+                        match inline_edges::push_span(
+                            &mut output.spans,
+                            span,
+                            &mut self.position_work_left,
+                        ) {
+                            Some(span) => {
+                                if !inline_edges::charge(&mut self.position_work_left, 1)
+                                    || output.offsets.try_reserve(1).is_err()
+                                {
+                                    output.failed = true;
+                                    return;
+                                }
+                                let (mut dx, mut dy) = active_span
+                                    .map(|parent| output.offsets[parent])
+                                    .unwrap_or((0.0, 0.0));
+                                let style = self.style(id);
+                                if style.position == "relative" {
+                                    dx += resolve(style.left, width).unwrap_or_else(|| {
+                                        -resolve(style.right, width).unwrap_or(0.0)
+                                    });
+                                    dy += grid_length(style.top, self.flow_height_reference)
+                                        .unwrap_or_else(|| {
+                                            -grid_length(style.bottom, self.flow_height_reference)
+                                                .unwrap_or(0.0)
+                                        });
+                                }
+                                output.offsets.push((
+                                    finite(dx, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT),
+                                    finite(dy, 0.0).clamp(-MAX_EXTENT, MAX_EXTENT),
+                                ));
+                                Some(span)
+                            }
+                            None => {
+                                output.failed = true;
+                                return;
+                            }
+                        }
+                    } else {
+                        active_span
+                    };
                     let children = self.layout_children(id);
                     for child in children {
-                        self.collect_inline(child, id, width, depth + 1, output);
+                        self.collect_inline(child, id, width, depth + 1, output, span);
+                    }
+                    if span != active_span
+                        && span.is_some_and(|span| output.spans[span].decorated())
+                        && !output.has_content(start, &mut self.position_work_left)
+                    {
+                        output.items.push(InlineItem {
+                            node: id,
+                            owner: id,
+                            kind: InlineKind::Empty,
+                            width: 0.0,
+                            height: line_height(self.style(id)),
+                            preserve: true,
+                        });
+                        output.mark(span, &mut self.position_work_left);
                     }
                 }
             }
             _ => {
                 let children = self.doc.nodes[id].children.clone();
                 for child in children {
-                    self.collect_inline(child, owner, width, depth + 1, output);
+                    self.collect_inline(child, owner, width, depth + 1, output, active_span);
                 }
             }
         }
+        output.mark(active_span, &mut self.position_work_left);
     }
 
     fn tokenize(&mut self, id: NodeId, owner: NodeId, text: &str, output: &mut Vec<InlineItem>) {
@@ -3108,11 +3185,15 @@ impl Engine<'_> {
         align: &str,
         depth: usize,
     ) -> f32 {
-        let mut tokens = Vec::new();
+        let mut collection = InlineCollection::default();
         for &id in nodes {
-            self.collect_inline(id, id, width, depth, &mut tokens);
+            self.collect_inline(id, id, width, depth, &mut collection, None);
         }
+        let Some((tokens, mut edges)) = collection.finish(&mut self.position_work_left) else {
+            return 0.0;
+        };
         let mut line = Vec::new();
+        let mut line_indices = Vec::new();
         let mut line_width = 0.0;
         let mut line_extent = 0.0f32;
         let mut line_baseline = 0.0f32;
@@ -3120,7 +3201,8 @@ impl Engine<'_> {
         let mut line_max_height = 0.0f32;
         let mut cursor = y;
         let mut pending_break = false;
-        for token in tokens {
+        for (token_index, token) in tokens.into_iter().enumerate() {
+            let token_width = token.width + edges.extra(token_index);
             if cursor >= MAX_EXTENT {
                 break;
             }
@@ -3140,16 +3222,20 @@ impl Engine<'_> {
             }
             if matches!(token.kind, InlineKind::Break) {
                 let band = self.float_band(x, cursor, width, line_extent.max(token.height));
-                cursor += self
-                    .paint_line(
-                        std::mem::take(&mut line),
-                        band.left,
-                        cursor,
-                        band.width(),
-                        align,
-                        false,
-                    )
-                    .max(token.height);
+                let Some(height) = self.paint_line(
+                    std::mem::take(&mut line),
+                    std::mem::take(&mut line_indices),
+                    &mut edges,
+                    width,
+                    band.left,
+                    cursor,
+                    band.width(),
+                    align,
+                    false,
+                ) else {
+                    return extent(cursor - y);
+                };
+                cursor += height.max(token.height);
                 line_width = 0.0;
                 line_extent = 0.0;
                 line_baseline = 0.0;
@@ -3173,7 +3259,7 @@ impl Engine<'_> {
                 "pre" | "nowrap"
             );
             let (baseline, descent) = match token.kind {
-                InlineKind::Text(_) | InlineKind::Space(_) => {
+                InlineKind::Text(_) | InlineKind::Space(_) | InlineKind::Empty => {
                     let size = font_size(self.style(token.node));
                     let leading = (token.height - size * 1.3).max(0.0) / 2.0;
                     (size * 0.95 + leading, size * 0.35 + leading)
@@ -3185,17 +3271,23 @@ impl Engine<'_> {
                 .max(token.height)
                 .max(line_baseline.max(baseline) + line_descent.max(descent));
             let band = self.float_band(x, cursor, width, prospective);
-            if can_wrap && !line.is_empty() && line_width + token.width > band.width() && !space {
+            if can_wrap && !line.is_empty() && line_width + token_width > band.width() && !space {
                 let previous = self.float_band(x, cursor, width, line_extent);
                 self.floats.source_top = self.floats.source_top.max(cursor);
-                cursor += self.paint_line(
+                let Some(height) = self.paint_line(
                     std::mem::take(&mut line),
+                    std::mem::take(&mut line_indices),
+                    &mut edges,
+                    width,
                     previous.left,
                     cursor,
                     previous.width(),
                     align,
                     true,
-                );
+                ) else {
+                    return extent(cursor - y);
+                };
+                cursor += height;
                 line_width = 0.0;
                 line_baseline = 0.0;
                 line_descent = 0.0;
@@ -3204,7 +3296,7 @@ impl Engine<'_> {
             if line.is_empty() && !space {
                 loop {
                     let band = self.float_band(x, cursor, width, token_height);
-                    if token.width <= band.width() || band.next.is_none() {
+                    if token_width <= band.width() || band.next.is_none() {
                         break;
                     }
                     cursor = band.next.unwrap();
@@ -3212,24 +3304,38 @@ impl Engine<'_> {
             } else if !can_wrap {
                 loop {
                     let band = self.float_band(x, cursor, width, prospective);
-                    if line_width + token.width <= band.width() || band.next.is_none() {
+                    if line_width + token_width <= band.width() || band.next.is_none() {
                         break;
                     }
                     cursor = band.next.unwrap();
                 }
             }
-            line_width += token.width;
+            line_width += token_width;
             line_baseline = line_baseline.max(baseline);
             line_descent = line_descent.max(descent);
             line_max_height = line_max_height.max(token.height);
             line_extent = line_max_height.max(line_baseline + line_descent);
             line.push(token);
+            line_indices.push(token_index);
             pending_break = false;
         }
         if !line.is_empty() {
             let band = self.float_band(x, cursor, width, line_extent);
             self.floats.source_top = self.floats.source_top.max(cursor);
-            cursor += self.paint_line(line, band.left, cursor, band.width(), align, false);
+            let Some(height) = self.paint_line(
+                line,
+                line_indices,
+                &mut edges,
+                width,
+                band.left,
+                cursor,
+                band.width(),
+                align,
+                false,
+            ) else {
+                return extent(cursor - y);
+            };
+            cursor += height;
         } else if pending_break {
             // A trailing <br> establishes an empty final line.
             cursor += nodes
@@ -3277,14 +3383,6 @@ impl Engine<'_> {
             if self.style(id).display != Display::Inline {
                 break;
             }
-            self.boxes.push(BoxGeometry {
-                node: id,
-                border: area,
-                padding: area,
-                content: area,
-                fixed: false,
-                inline: true,
-            });
             self.paint_inline_gradient(id, area);
             ancestor = self.doc.nodes[id].parent;
         }
@@ -3442,29 +3540,38 @@ impl Engine<'_> {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn paint_line(
         &mut self,
         mut line: Vec<InlineItem>,
+        mut indices: Vec<usize>,
+        edges: &mut InlineEdges,
+        full_width: f32,
         x: f32,
         y: f32,
         available: f32,
         align: &str,
         wrapped: bool,
-    ) -> f32 {
+    ) -> Option<f32> {
         while line
             .last()
             .is_some_and(|item| matches!(item.kind, InlineKind::Space(_)) && !item.preserve)
         {
             line.pop();
+            indices.pop();
         }
         if line.is_empty() {
-            return 0.0;
+            return Some(0.0);
         }
-        let width: f32 = line.iter().map(|item| item.width).sum();
+        let width: f32 = line
+            .iter()
+            .zip(&indices)
+            .map(|(item, &index)| item.width + edges.extra(index))
+            .sum();
         let baseline = line
             .iter()
             .map(|item| match item.kind {
-                InlineKind::Text(_) | InlineKind::Space(_) => {
+                InlineKind::Text(_) | InlineKind::Space(_) | InlineKind::Empty => {
                     let size = font_size(self.style(item.node));
                     size * 0.95 + (item.height - size * 1.3).max(0.0) / 2.0
                 }
@@ -3474,7 +3581,7 @@ impl Engine<'_> {
         let descent = line
             .iter()
             .filter_map(|item| match item.kind {
-                InlineKind::Text(_) | InlineKind::Space(_) => {
+                InlineKind::Text(_) | InlineKind::Space(_) | InlineKind::Empty => {
                     let size = font_size(self.style(item.node));
                     Some(size * 0.35 + (item.height - size * 1.3).max(0.0) / 2.0)
                 }
@@ -3499,15 +3606,41 @@ impl Engine<'_> {
             "right" | "end" => (available - width).max(0.0),
             _ => 0.0,
         };
+        let plan = if edges.spans.is_empty() {
+            None
+        } else {
+            let plan = edges.line_plan(
+                &line,
+                &indices,
+                cursor,
+                baseline,
+                (y, height),
+                extra_space,
+                &mut self.position_work_left,
+            )?;
+            if self.boxes.try_reserve(plan.boxes.len()).is_err() {
+                return None;
+            }
+            for &(mut geometry, (dx, dy)) in &plan.boxes {
+                geometry.border = geometry.border.translated(dx, dy);
+                geometry.padding = geometry.padding.translated(dx, dy);
+                geometry.content = geometry.content.translated(dx, dy);
+                self.boxes.push(geometry);
+            }
+            Some(plan)
+        };
         let saved_owner = self.paint_owner;
-        for item in line {
+        for (item_index, item) in line.into_iter().enumerate() {
+            if let Some(plan) = &plan {
+                cursor = plan.positions[item_index];
+            }
             if matches!(item.kind, InlineKind::Text(_) | InlineKind::Space(_))
                 && self.hits_created >= MAX_VISITS
             {
                 cursor += item.width;
                 continue;
             }
-            let (relative_x, relative_y) = self.inline_offset(item.node, available);
+            let (relative_x, relative_y) = self.inline_offset(item.node, full_width);
             let visual_x = cursor + relative_x;
             let visual_y = y + relative_y;
             self.paint_owner = PaintOwner {
@@ -3597,12 +3730,12 @@ impl Engine<'_> {
                     self.record_inline_boxes(id, rect(visual_x, visual_y, 0.0, height));
                     self.enqueue_positioned(id, visual_x, visual_y, 0);
                 }
-                InlineKind::Break | InlineKind::Float(_) => {}
+                InlineKind::Empty | InlineKind::Break | InlineKind::Float(_) => {}
             }
             cursor += item.width + if is_space { extra_space } else { 0.0 };
         }
         self.paint_owner = saved_owner;
-        height
+        Some(height)
     }
 
     /// Border-box min/max bounds, with minimums winning conflicting limits.
@@ -5455,16 +5588,21 @@ fn distribution(justify: &str, free: f32, count: usize) -> (f32, f32) {
 }
 
 fn merge_geometry(target: &mut [Option<BoxGeometry>], boxes: &[BoxGeometry]) {
+    fn union(a: Rect, b: Rect) -> Rect {
+        let x = a.x.min(b.x);
+        let y = a.y.min(b.y);
+        rect(
+            x,
+            y,
+            (a.x + a.width).max(b.x + b.width) - x,
+            (a.y + a.height).max(b.y + b.height) - y,
+        )
+    }
     for &g in boxes {
         if let Some(old) = target[g.node].as_mut().filter(|old| old.inline && g.inline) {
-            let right = (old.padding.x + old.padding.width).max(g.padding.x + g.padding.width);
-            let bottom = (old.padding.y + old.padding.height).max(g.padding.y + g.padding.height);
-            old.padding.x = old.padding.x.min(g.padding.x);
-            old.padding.y = old.padding.y.min(g.padding.y);
-            old.padding.width = extent(right - old.padding.x);
-            old.padding.height = extent(bottom - old.padding.y);
-            old.border = old.padding;
-            old.content = old.padding;
+            old.border = union(old.border, g.border);
+            old.padding = union(old.padding, g.padding);
+            old.content = union(old.content, g.content);
         } else {
             target[g.node] = Some(g);
         }

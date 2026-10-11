@@ -458,6 +458,36 @@
       "description": "A split inline uses a continuous virtual strip; a stretched table cell recomputes natural-ratio size from its final height.",
       "test": "url-background-inline-table.html",
       "reference": "url-background-inline-table-ref.html"
+    },
+    {
+      "name": "inline-edge-padding",
+      "description": "Ordinary inline padding and signed margins move atomic children and the following sibling without requiring inline decoration painting.",
+      "test": "inline-edge-padding.html",
+      "reference": "inline-edge-padding-ref.html"
+    },
+    {
+      "name": "inline-edge-wrap",
+      "description": "The final child is fitted together with closing padding; physical opening/closing edges occur only on the first/last line.",
+      "test": "inline-edge-wrap.html",
+      "reference": "inline-edge-wrap-ref.html"
+    },
+    {
+      "name": "inline-edge-nested-empty",
+      "description": "Nested inline boundaries accumulate once; decorated empty spans retain ordered advances while undecorated empty spans add none.",
+      "test": "inline-edge-nested-empty.html",
+      "reference": "inline-edge-nested-empty-ref.html"
+    },
+    {
+      "name": "inline-edge-forced-break",
+      "description": "Forced breaks do not repeat opening padding or prematurely apply closing padding, including an empty intermediate line.",
+      "test": "inline-edge-forced-break.html",
+      "reference": "inline-edge-forced-break-ref.html"
+    },
+    {
+      "name": "inline-edge-float-percentage",
+      "description": "Percentage inline padding resolves against the full containing width before float exclusion and can move an unbreakable decorated child below a float.",
+      "test": "inline-edge-float-percentage.html",
+      "reference": "inline-edge-float-percentage-ref.html"
     }
   ]
 }
