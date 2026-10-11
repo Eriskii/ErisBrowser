@@ -212,6 +212,30 @@ impl Browser {
             };
             self.selection = prepared.selection;
             let stamp = self.next_frame_stamp()?;
+            let stats = prepared.plan.stats();
+            if check
+                && (stats.box_rectangles != 0
+                    || stats.box_masks != 0
+                    || stats.box_background_images != 0
+                    || stats.box_gradients != 0)
+            {
+                // Check-only evidence joins the admitted routes to the exact
+                // submitted frame. Existing scenes and measured runs retain
+                // their diagnostic protocol; this does not affect admission.
+                eprintln!(
+                    "native boxes prepared: serial={} generation={} viewport_revision={} box_rectangles={} box_masks={} box_background_images={} box_gradients={} box_loop_work={} generated_gradient_sources={} generated_gradient_bytes={}",
+                    stamp.serial,
+                    stamp.generation,
+                    stamp.viewport_revision,
+                    stats.box_rectangles,
+                    stats.box_masks,
+                    stats.box_background_images,
+                    stats.box_gradients,
+                    stats.box_loop_work,
+                    stats.generated_gradient_sources,
+                    stats.generated_gradient_bytes,
+                );
+            }
             let presenter = self
                 .presenter
                 .as_mut()

@@ -1,0 +1,391 @@
+{
+  "status": "Independent source-derived expectations; no candidate execution",
+  "page_region": {
+    "width": 48,
+    "height": 14,
+    "rows": [
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWGGGGWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWGGGGWWWWWWWWWWWWWRGBWWWWWWWWWWWWWRRBWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    ],
+    "palette": {
+      "W": "ffffff",
+      "G": "00ff00",
+      "R": "ff0000",
+      "B": "0000ff"
+    },
+    "outside": "White page background; native browser chrome has differential, not independent full-frame literals."
+  },
+  "geometry": [
+    {
+      "id": "color",
+      "border": [
+        8,
+        8,
+        8,
+        6
+      ],
+      "padding": [
+        9,
+        9,
+        6,
+        4
+      ],
+      "content_and_clip": [
+        10,
+        10,
+        4,
+        2
+      ],
+      "paint": "Color(00ff00ff)",
+      "route": "BoxRectangle",
+      "box_work": 32
+    },
+    {
+      "id": "image",
+      "border": [
+        24,
+        8,
+        8,
+        6
+      ],
+      "padding": [
+        25,
+        9,
+        6,
+        4
+      ],
+      "content_and_clip": [
+        26,
+        10,
+        4,
+        2
+      ],
+      "tile": [
+        27,
+        11,
+        4,
+        2
+      ],
+      "repeat": [
+        false,
+        false
+      ],
+      "raster": [
+        4,
+        2
+      ],
+      "rgba_rows": [
+        "ff0000ff 00ff00ff 0000ffff 00ffffff",
+        "ff00ffff ffff00ff 000000ff ff8000ff"
+      ],
+      "route": "BoxBackgroundImage",
+      "candidate_pixels": 8,
+      "box_classification": 24,
+      "background_loop": 17,
+      "lut_work": 20,
+      "box_work": 61
+    },
+    {
+      "id": "gradient",
+      "border": [
+        40,
+        8,
+        8,
+        6
+      ],
+      "padding": [
+        41,
+        9,
+        6,
+        4
+      ],
+      "content_and_clip": [
+        42,
+        10,
+        4,
+        2
+      ],
+      "tile": [
+        43,
+        11,
+        4,
+        2
+      ],
+      "repeat": [
+        false,
+        false
+      ],
+      "route": "BoxGradient/absolute ScreenImage",
+      "candidate_pixels": 8,
+      "box_classification": 24,
+      "gradient_evaluation": 39,
+      "packing": 3,
+      "box_work": 66
+    }
+  ],
+  "expected_box_stats": {
+    "box_rectangles": 1,
+    "box_background_images": 1,
+    "box_gradients": 1,
+    "box_masks": 0,
+    "box_loop_work": 159,
+    "generated_gradient_sources": 1,
+    "generated_gradient_bytes": 12
+  },
+  "expected_resources": {
+    "requests": [
+      "/admitted.html",
+      "/two-pixels.png"
+    ],
+    "decoded_rasters": 1,
+    "rgba_bytes": 32,
+    "request_order": "Document then PNG; same fixed route names as existing delayed host. Inline stylesheet relative URL resolves from actual document URL. No external CSS/provenance claim.",
+    "image_key": "eris-css-background:0",
+    "image_alias_id": 0
+  },
+  "window": {
+    "physical_size": [
+      1280,
+      880
+    ],
+    "scale_factor": 1,
+    "zoom": 1,
+    "scroll": 0,
+    "page_offset": [
+      0,
+      76
+    ],
+    "status_height": 25,
+    "page_viewport": [
+      1280,
+      779
+    ],
+    "one_acquired_frame_bytes": 4505600,
+    "meaning": "Entire acquired texture versus Canvas before compositor; literal 48x14 page region is established separately in direct/worker tests."
+  },
+  "fallback_control": {
+    "document": "rounded.html served as /admitted.html in a separately bound case",
+    "only_change": "body class fallback selects image border-radius:3px",
+    "image_outer_border_radii": [
+      [
+        3,
+        3
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        3,
+        3
+      ]
+    ],
+    "image_selected_content_radii": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "expected_kind": "unsupported-box-decoration",
+    "expected_phase": 0,
+    "original_command": "2 (zero-based): one white canvas Rect, Color Box, Image Box, Gradient Box; no scope markers or page text in this fixed page.",
+    "expected_normal_route": "Whole-frame CPU upload; no prepared Native route record, custom native presentation or native acquired verification for this loaded scene.",
+    "pixel_claim": "No acquired pixels are claimed for this negative normal-mode control.",
+    "software_literal_change": {
+      "pixel": [
+        29,
+        11
+      ],
+      "before": "0000ff",
+      "after": "3030ff",
+      "derivation": "The bottom-right radius1 quarter circle accepts13 of16 fixed samples:4+4+3+2. Integer coverage floor(255*13/16)=207; opaque blue over white becomes(48,48,255). All other literal pixels unchanged."
+    }
+  },
+  "selection": "Additive two-route selection requested by root; all geometry, literal pixel rows and tariffs from original hold unchanged. Earlier external-CSS fixture remains unselected.",
+  "expected_page_command_inventory": [
+    {
+      "tag": 6,
+      "kind": "Rect",
+      "rect": [
+        0,
+        0,
+        1280,
+        779
+      ],
+      "color": "ffffffff",
+      "radius": 0
+    },
+    {
+      "tag": 13,
+      "kind": "BoxColor",
+      "rect": [
+        10,
+        10,
+        4,
+        2
+      ],
+      "radii": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "cutout": null,
+      "color": "00ff00ff"
+    },
+    {
+      "tag": 13,
+      "kind": "BoxImage",
+      "rect": [
+        26,
+        10,
+        4,
+        2
+      ],
+      "radii": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "cutout": null,
+      "tile": [
+        27,
+        11,
+        4,
+        2
+      ],
+      "repeat_byte": 0,
+      "key": "eris-css-background:0"
+    },
+    {
+      "tag": 13,
+      "kind": "BoxGradient",
+      "rect": [
+        42,
+        10,
+        4,
+        2
+      ],
+      "radii": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "cutout": null,
+      "tile": [
+        43,
+        11,
+        4,
+        2
+      ],
+      "repeat_byte": 0,
+      "current_color": "ff0000ff",
+      "stop_scale": 1,
+      "direction": {
+        "tag": 0,
+        "angle": 90
+      },
+      "stops": [
+        {
+          "color_tag": 1,
+          "position_present": true,
+          "px": 0,
+          "percent": 50
+        },
+        {
+          "color_tag": 0,
+          "color": "0000ffff",
+          "position_present": true,
+          "px": 0,
+          "percent": 50
+        }
+      ]
+    }
+  ],
+  "identity": {
+    "title": "Native background window",
+    "status": "Native timing scene",
+    "address": "exact served URL http://127.0.0.1:PORT/admitted.html",
+    "zoom": 1,
+    "scroll": 0,
+    "content_height": 779,
+    "page_command_count": 4,
+    "images": 1,
+    "image_alias_id": 0,
+    "image_key": "eris-css-background:0",
+    "chrome": "EBNI serializes page commands and all paint-affecting chrome inputs; chrome command list is rebuilt by Browser native_scene and is not separately serialized. Fixed status removes dynamic load-time text. Require normal preexisting selection normalization, no focused control and exact complete input identity; do not fabricate chrome raw command count.",
+    "selection": {
+      "address_focused": false,
+      "input_value": "",
+      "caret": 0,
+      "anchor": 0,
+      "focused_control": null
+    }
+  }
+}

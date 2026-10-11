@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Native background window</title>
+<style>
+html{margin:0;padding:0;background:white}
+body{margin:0;padding:0}
+.board{position:absolute;top:8px;box-sizing:content-box;width:4px;height:2px;padding:1px;border:1px solid transparent;background-origin:padding-box;background-clip:content-box;background-size:4px 2px;background-position:right bottom;background-repeat:no-repeat}
+#color{left:8px;background-color:#00ff00}
+#image{left:24px;background-image:url(two-pixels.png)}
+#gradient{left:40px;color:red;background-image:linear-gradient(to right,currentColor 50%,blue 50%)}
+.fallback #image{border-radius:3px}
+</style>
+<body class="fallback"><div id="color" class="board"></div><div id="image" class="board"></div><div id="gradient" class="board"></div></body>

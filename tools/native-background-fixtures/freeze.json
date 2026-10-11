@@ -1,0 +1,26 @@
+{
+  "status": "independent pre-execution native window fixture freeze",
+  "files": [
+    {
+      "path": "admitted.html",
+      "bytes": 783,
+      "sha256": "a026ca61e1f7ce3d6338ec74526cba5af0b36630ea718948adea49339073d42b"
+    },
+    {
+      "path": "rounded.html",
+      "bytes": 800,
+      "sha256": "69bd059ac978b65365d1972d0e17cde21c44ab8eb3869f09acd4abd63a0c571a"
+    },
+    {
+      "path": "two-pixels.png",
+      "bytes": 85,
+      "sha256": "ecf7586a9a4bea1cee53d49b09639a9915b5a49f1c12b75152bd97236286b80e"
+    }
+  ],
+  "oracles": {
+    "path": "oracles.json",
+    "bytes": 8383,
+    "sha256": "c9bfa4243eab37f48cf41f572f1fea4010b7a60e4538555eed531a1ea0e39588"
+  },
+  "selection": "Two fixed HTTP routes only; rounded.html is served at /admitted.html for the negative case. Existing repository native-raster fixture bytes are not modified."
+}

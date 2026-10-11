@@ -84,6 +84,12 @@ samples. Rounded or fractional outer shapes, cutouts, translucent stops and
 retained opacity scopes still fall back as a whole. Generated pixels share the
 existing 1 MiB source allowance; gradient interpolation remains on the CPU.
 
+A dedicated [background window check](docs/native-background-window.md) combines
+color, image and gradient boxes in one confined page. On the tested NVIDIA adapter,
+one acquired Vulkan texture matched all 4,505,600 Canvas bytes before compositor
+output; a separate rounded-image case confirmed whole-frame CPU fallback.
+The evidence retains four earlier failed host attempts and the final successful run.
+
 [Image fitting and positioning](docs/image-fitting.md) add `object-fit` and
 physical `object-position` to loaded `<img>` content, including decoded external
 SVG images. Fitting preserves the element’s box and clips its image content;
