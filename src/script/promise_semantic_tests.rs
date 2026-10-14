@@ -235,7 +235,7 @@ data(P,'resolve',P.resolve,true,false,true);data(P,'reject',P.reject,true,false,
 data(proto,'constructor',P,true,false,true);data(proto,'then',proto.then,true,false,true);
 data(proto,Symbol.toStringTag,'Promise',false,false,true);
 check(Object.getOwnPropertyNames(P).join(',')==='length,name,prototype,resolve,reject');
-check(Object.getOwnPropertyNames(proto).join(',')==='constructor,then,catch');
+check(Object.getOwnPropertyNames(proto).join(',')==='constructor,then,catch,finally');
 check(Object.getOwnPropertySymbols(P).length===1&&Object.getOwnPropertySymbols(P)[0]===Symbol.species);
 check(Object.getOwnPropertySymbols(proto).length===1&&Object.getOwnPropertySymbols(proto)[0]===Symbol.toStringTag);
 var species=Object.getOwnPropertyDescriptor(P,Symbol.species);check(species.set===undefined&&!species.enumerable&&species.configurable);

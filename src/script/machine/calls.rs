@@ -141,6 +141,7 @@ fn invoke_native(
         "Promise"
             | "Promise.then"
             | "Promise.catch"
+            | "Promise.finally"
             | "Promise.resolve"
             | "Promise.reject"
             | "Promise.getSpecies"

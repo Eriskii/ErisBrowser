@@ -20767,3 +20767,6 @@ mod promise_semantic_tests;
 
 #[cfg(test)]
 mod promise_catch_tests;
+
+#[cfg(test)]
+mod promise_finally_tests;

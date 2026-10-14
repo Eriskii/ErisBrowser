@@ -1,0 +1,10 @@
+<!doctype html><html><head><title>before</title><style>
+html,body{margin:0;padding:0;background:white}#box,#trap{position:absolute;top:2px;width:4px;height:4px;padding:0;border:0;margin:0}#box{left:2px;background:red}#trap{left:20px;background:blue}
+</style></head><body><div id="box"></div><div id="trap"></div><script>
+var log='',box=document.getElementById('box'),cleanup={};
+Object.defineProperty(cleanup,'then',{get:function(){log+='G';return function(resolve){log+='T';queueMicrotask(function(){log+='M';resolve(99);});};}});
+Promise.resolve(7).finally(function(){log+='F';return cleanup;}).then(function(v){log+='V'+v;box.style.left='6px';document.title=log;});
+queueMicrotask(function(){log+='Q';});log+='S';
+box.addEventListener('click',function(){log+='A';Promise.resolve(3).finally(function(){log+='C';return 0;}).then(function(){log+='D';box.style.left='10px';document.title=log;});queueMicrotask(function(){log+='K';});});
+box.addEventListener('click',function(){log+='B';document.title=log;});
+</script></body></html>

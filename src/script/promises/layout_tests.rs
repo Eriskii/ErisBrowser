@@ -1,4 +1,4 @@
-//! Root's two pinned x86-64 mirror measurements supply these layout assertions.
+//! Root's held foundation/finally mirrors supply these x86-64 layout assertions.
 //! This test measures actual production types; it does not execute Promise code.
 #[cfg(target_pointer_width = "64")]
 use super::*;
@@ -22,7 +22,7 @@ fn actual_promise_private_type_layouts_match_held_mirror() {
     row!("ScriptObject", ScriptObject, 216);
     row!("CurrentMicrotaskState", microtasks::State, 56);
     row!("ProposedMicrotaskState", microtasks::State, 56);
-    row!("State", State, 192);
+    row!("State", State, 224);
     row!("Intrinsics", Intrinsics, 32);
     row!("PromiseRecord", PromiseRecord, 80);
     row!("ReactionPair", ReactionPair, 120);

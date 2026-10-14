@@ -3,6 +3,10 @@ use super::*;
 use std::mem::size_of;
 
 mod factories;
+#[cfg(test)]
+mod finally_layout_tests;
+#[cfg(test)]
+mod finally_quota_tests;
 mod install;
 #[cfg(test)]
 mod install_tests;
@@ -18,7 +22,7 @@ use factories::object_slot_plan;
 #[cfg(test)]
 mod layout_tests;
 
-pub(super) const METADATA_OBJECTS: usize = 7;
+pub(super) const METADATA_OBJECTS: usize = 8;
 
 pub(super) struct Arena<T> {
     pub(super) records: Vec<T>,
@@ -39,6 +43,7 @@ pub(super) struct State {
     callbacks: Arena<CallbackRecord>,
     captures: Arena<CapabilityCapture>,
     pub(super) jobs: Arena<Option<PromiseJob>>,
+    finally_captures: Arena<FinallyCapture>,
     intrinsics: Option<Intrinsics>,
 }
 pub(super) struct Intrinsics {
@@ -51,6 +56,8 @@ pub(super) struct PromiseId(pub(super) usize);
 pub(super) struct GateId(pub(super) usize);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct CaptureId(pub(super) usize);
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct FinallyCaptureId(usize);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct JobId(pub(super) usize);
 
@@ -88,11 +95,24 @@ enum CallbackKind {
     Resolve(GateId),
     Reject(GateId),
     CapabilityExecutor(CaptureId),
+    ThenFinally(FinallyCaptureId),
+    CatchFinally(FinallyCaptureId),
+    ReturnValue(FinallyCaptureId),
+    ThrowReason(FinallyCaptureId),
 }
 struct CapabilityCapture {
     resolve: Value,
     reject: Value,
 }
+// Reusable callbacks retain immutable values; these are never one-shot gates.
+enum FinallyCapture {
+    Finalizer {
+        constructor: Value,
+        on_finally: Value,
+    },
+    Outcome(Value),
+}
+
 pub(super) enum PromiseJob {
     Reaction {
         handler: Option<Value>,

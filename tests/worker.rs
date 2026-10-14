@@ -2902,3 +2902,6 @@ mod promise_foundation;
 
 #[path = "worker/promise_catch.rs"]
 mod promise_catch;
+
+#[path = "worker/promise_finally.rs"]
+mod promise_finally;

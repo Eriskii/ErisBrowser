@@ -2,15 +2,18 @@
 
 [Promise construction and reactions](promise-foundation.md) now include
 thenable adoption, generic capabilities/species and a shared FIFO with
-`queueMicrotask`. [Generic `catch`](promise-catch.md) is implemented.
-Remaining asynchronous work includes `finally`,
-combinators, async functions/`await`, rejection notifications, timers,
+`queueMicrotask`. [Generic `catch`](promise-catch.md) and
+[`finally` cleanup](promise-finally.md) are implemented. The next conformance
+step needs an asynchronous Test262 host contract before upstream `$DONE` tests
+can run. Remaining asynchronous work includes combinators,
+async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 
 [Shared startup keys](pi-key-cache.md) reduce duplicate DOM metadata allocations
 within the existing bootstrap allowance, making room for Promise installation.
 The [job metadata follow-up](shared-job-keys.md) removes two more duplicate
-strings and leaves 127 startup work units available without raising the limit.
+strings. Installing `finally` uses 122 of the 127 work units it made available,
+leaving five under the unchanged startup limit.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity

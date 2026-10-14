@@ -128,7 +128,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
         + bpp
         + n
         + 4 * bsb;
-    // Promise's five arena headers/private cache and six eagerly reserved bags
+    // Promise's current arena headers/private cache and first six reserved bags
     // are separate from its existing helper charges. The microtask header's
     // current sizeof is already included in microtask_added above.
     let promise_added = size_of::<crate::script::promises::State>()
@@ -143,12 +143,15 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // catch adds one ordinary metadata bag, reusing existing length/name keys.
     // Adjacent job installers share length/name payloads:34 work and168 bytes saved.
     let catch_added = s + a + d + 3 * k + bpp + n + 1029;
+    // Finally adds one method; the current State term above includes its arena header.
+    let finally_added = s + a + d + 3 * k + bpp + n + 1047;
     assert_eq!(
         runtime.steps,
         5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
             - 930
             - 102
             + 34
+            - 122
     );
     assert_eq!(
         runtime.allocated,
@@ -165,10 +168,11 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + promise_added
             + catch_added
             - 168
+            + finally_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (748, 748)
+        (749, 749)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

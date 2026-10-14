@@ -4,7 +4,10 @@
 `resolve`, `reject`, generic species/capabilities and thenable adoption in one
 Window realm. Reactions share the `queueMicrotask` FIFO.
 [Generic `catch`](promise-catch.md) preserves observable lookup/call behavior.
-Combinators, `finally`, async functions and rejection notifications remain absent;
+[`finally`](promise-finally.md) waits for cleanup and preserves or replaces the
+original outcome according to cleanup success or failure, including generic
+receivers, constructor/species selection and reusable callbacks.
+Combinators, async functions and rejection notifications remain absent;
 the authored regression tests are not a full ECMAScript conformance result.
 The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
 preserving function properties and identities; they add no API coverage.

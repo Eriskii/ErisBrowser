@@ -27,11 +27,13 @@ fn publish_arena<T>(arena: &mut Arena<T>, plan: GrowthPlan) {
 }
 
 #[derive(Clone, Copy)]
-enum FactoryExtra {
+enum FactoryExtra<'a> {
     #[cfg(test)]
     None,
     Gate(PromiseId),
     Capture,
+    Finally(&'a Value, &'a Value),
+    Outcome(&'a Value),
 }
 
 impl Runtime {
@@ -93,7 +95,7 @@ impl Runtime {
     fn build_promise_callbacks<const N: usize>(
         &mut self,
         kinds: [CallbackKind; N],
-        extra: FactoryExtra,
+        extra: FactoryExtra<'_>,
     ) -> Result<[Value; N]> {
         if N == 0 || N > 2 {
             return Err(invalid());
@@ -130,6 +132,18 @@ impl Runtime {
                     1,
                 )?,
             ),
+            FactoryExtra::Finally(_, _) | FactoryExtra::Outcome(_) => (
+                if matches!(extra, FactoryExtra::Finally(_, _)) {
+                    14
+                } else {
+                    11
+                },
+                growth_plan::<FinallyCapture>(
+                    self.promises.finally_captures.records.len(),
+                    self.promises.finally_captures.admitted_capacity,
+                    1,
+                )?,
+            ),
         };
         // Nine record operations plus six temporary-release credits per
         // callable precede every reserve/metadata allocation. Each metadata
@@ -156,6 +170,18 @@ impl Runtime {
                         CallbackKind::CapabilityExecutor(id) => {
                             id.0 < self.promises.captures.records.len()
                         }
+                        CallbackKind::ThenFinally(id) | CallbackKind::CatchFinally(id) => {
+                            matches!(
+                                self.promises.finally_captures.records.get(id.0),
+                                Some(FinallyCapture::Finalizer { .. })
+                            )
+                        }
+                        CallbackKind::ReturnValue(id) | CallbackKind::ThrowReason(id) => {
+                            matches!(
+                                self.promises.finally_captures.records.get(id.0),
+                                Some(FinallyCapture::Outcome(_))
+                            )
+                        }
                     };
                     if !valid {
                         return Err(invalid());
@@ -170,6 +196,9 @@ impl Runtime {
             FactoryExtra::None => {}
             FactoryExtra::Gate(_) => reserve_arena(&mut self.promises.gates, extra_plan)?,
             FactoryExtra::Capture => reserve_arena(&mut self.promises.captures, extra_plan)?,
+            FactoryExtra::Finally(_, _) | FactoryExtra::Outcome(_) => {
+                reserve_arena(&mut self.promises.finally_captures, extra_plan)?;
+            }
         }
         reserve_arena(&mut self.promises.callbacks, callbacks)?;
         self.reserve_promise_objects(objects)?;
@@ -177,6 +206,7 @@ impl Runtime {
         for (slot, kind) in values.iter_mut().zip(kinds) {
             let arity = match kind {
                 CallbackKind::CapabilityExecutor(_) => 2,
+                CallbackKind::ReturnValue(_) | CallbackKind::ThrowReason(_) => 0,
                 _ => 1,
             };
             *slot = self.promise_callback_metadata(arity)?;
@@ -200,6 +230,26 @@ impl Runtime {
                     reject: Value::Undefined,
                 });
                 publish_arena(&mut self.promises.captures, extra_plan);
+            }
+            FactoryExtra::Finally(constructor, on_finally) => {
+                // All metadata exists before either retained payload is cloned.
+                // The extra14 paid both clones, field moves and final releases.
+                self.promises
+                    .finally_captures
+                    .records
+                    .push(FinallyCapture::Finalizer {
+                        constructor: constructor.clone(),
+                        on_finally: on_finally.clone(),
+                    });
+                publish_arena(&mut self.promises.finally_captures, extra_plan);
+            }
+            FactoryExtra::Outcome(value) => {
+                // Extra11 likewise covers the single immutable payload.
+                self.promises
+                    .finally_captures
+                    .records
+                    .push(FinallyCapture::Outcome(value.clone()));
+                publish_arena(&mut self.promises.finally_captures, extra_plan);
             }
         }
         for (value, kind) in values.iter().zip(kinds) {
@@ -247,6 +297,69 @@ impl Runtime {
                 FactoryExtra::Capture,
             )
             .map(|[value]| (capture, value));
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn new_finally_functions(
+        &mut self,
+        constructor: &Value,
+        on_finally: &Value,
+    ) -> Result<(Value, Value)> {
+        let capture = FinallyCaptureId(self.promises.finally_captures.records.len());
+        let result = self
+            .build_promise_callbacks(
+                [
+                    CallbackKind::ThenFinally(capture),
+                    CallbackKind::CatchFinally(capture),
+                ],
+                FactoryExtra::Finally(constructor, on_finally),
+            )
+            .map(|[fulfilled, rejected]| (fulfilled, rejected));
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn new_finally_thunk(&mut self, value: &Value, kind: ReactionKind) -> Result<Value> {
+        let capture = FinallyCaptureId(self.promises.finally_captures.records.len());
+        let kind = match kind {
+            ReactionKind::Fulfill => CallbackKind::ReturnValue(capture),
+            ReactionKind::Reject => CallbackKind::ThrowReason(capture),
+        };
+        let result = self
+            .build_promise_callbacks([kind], FactoryExtra::Outcome(value))
+            .map(|[value]| value);
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn read_finally_finalizer(
+        &mut self,
+        id: FinallyCaptureId,
+    ) -> Result<(Value, Value)> {
+        let result = (|| {
+            // Check8 plus two copies and their eventual temporary releases.
+            self.work(12)?;
+            let Some(FinallyCapture::Finalizer {
+                constructor,
+                on_finally,
+            }) = self.promises.finally_captures.records.get(id.0)
+            else {
+                return Err(invalid());
+            };
+            Ok((constructor.clone(), on_finally.clone()))
+        })();
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn read_finally_outcome(&mut self, id: FinallyCaptureId) -> Result<Value> {
+        let result = (|| {
+            // Check8 plus one copy and its eventual temporary release.
+            self.work(10)?;
+            let Some(FinallyCapture::Outcome(value)) =
+                self.promises.finally_captures.records.get(id.0)
+            else {
+                return Err(invalid());
+            };
+            Ok(value.clone())
+        })();
         self.observe_microtask_failure(result)
     }
 

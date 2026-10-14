@@ -9,7 +9,10 @@ constructor, `then`, `resolve`, `reject`, generic species/capabilities and
 thenable adoption to the shared microtask FIFO. Jobs preserve original
 rejection values and share the existing work and storage limits. The [generic `catch` method](docs/promise-catch.md) forwards through observable
 `then` lookup and preserves original receivers, arguments and return values.
-Combinators, `finally`, async functions and rejection notifications remain unfinished.
+[`finally`](docs/promise-finally.md) now waits for cleanup, preserves the original
+outcome on success and adopts cleanup failures. Its reusable callbacks preserve
+observable species and `then` behavior under the existing resource limits.
+Combinators, async functions and rejection notifications remain unfinished.
 
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors

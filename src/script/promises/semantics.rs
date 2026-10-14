@@ -171,6 +171,33 @@ impl Runtime {
         self.call(method, arguments, receiver, doc)
     }
 
+    fn promise_finally(
+        &mut self,
+        receiver: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        if !js_object(&receiver) {
+            return Err(ScriptError::type_error(
+                "Promise.finally receiver is not an object",
+            ));
+        }
+        self.work(1)?;
+        let constructor = self.promise_species_constructor(receiver.clone(), doc)?;
+        let on_finally = args.first().unwrap_or(&Value::Undefined);
+        // Species is observable even when a noncallable argument passes through.
+        let (fulfilled, rejected) = if json_callable(on_finally) {
+            self.new_finally_functions(&constructor, on_finally)?
+        } else {
+            self.work(2)?;
+            (on_finally.clone(), on_finally.clone())
+        };
+        self.work(1)?;
+        let method = self.promise_named_get(receiver.clone(), "then", doc)?;
+        let arguments = self.promise_arguments([fulfilled, rejected])?;
+        self.call(method, arguments, receiver, doc)
+    }
+
     fn promise_then(
         &mut self,
         receiver: Value,
@@ -206,6 +233,17 @@ impl Runtime {
         }
         self.work(1)?;
         let value = args.first().cloned().unwrap_or(Value::Undefined);
+        self.promise_resolve_with_constructor(constructor, value, doc)
+    }
+
+    // Internal PromiseResolve uses its captured constructor, never C.resolve
+    // or the mutable global binding. The old public resolve body/fees stay here.
+    fn promise_resolve_with_constructor(
+        &mut self,
+        constructor: Value,
+        value: Value,
+        doc: &mut Document,
+    ) -> Result<Value> {
         if self.promise_id(&value)?.is_some() {
             self.work(1)?;
             let observed = self.promise_named_get(value.clone(), "constructor", doc)?;
@@ -258,6 +296,7 @@ impl Runtime {
                 "Promise" => Err(ScriptError::type_error("Promise constructor requires new")),
                 "Promise.then" => self.promise_then(receiver, args, doc),
                 "Promise.catch" => self.promise_catch(receiver, args, doc),
+                "Promise.finally" => self.promise_finally(receiver, args, doc),
                 "Promise.resolve" => self.promise_resolve(receiver, args, doc),
                 "Promise.reject" => self.promise_reject(receiver, args, doc),
                 "Promise.getSpecies" => Ok(receiver),
@@ -297,6 +336,27 @@ impl Runtime {
         }
     }
 
+    fn run_finally_callback(
+        &mut self,
+        capture: FinallyCaptureId,
+        kind: ReactionKind,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // Fixed orchestration and bounded temporary cleanup precede any copy.
+        self.work(8)?;
+        let (constructor, on_finally) = self.read_finally_finalizer(capture)?;
+        self.work(1)?;
+        let outcome = args.first().cloned().unwrap_or(Value::Undefined);
+        let result = self.call(on_finally, Vec::new(), Value::Undefined, doc)?;
+        let promise = self.promise_resolve_with_constructor(constructor, result, doc)?;
+        let thunk = self.new_finally_thunk(&outcome, kind)?;
+        self.work(1)?;
+        let method = self.promise_named_get(promise.clone(), "then", doc)?;
+        let arguments = self.promise_arguments([thunk])?;
+        self.call(method, arguments, promise, doc)
+    }
+
     pub(in crate::script) fn promise_callback(
         &mut self,
         native: &Native,
@@ -327,6 +387,19 @@ impl Runtime {
                 }
                 CallbackKind::CapabilityExecutor(capture) => {
                     self.store_capability_capture(capture, args)?;
+                }
+                CallbackKind::ThenFinally(capture) => {
+                    return self.run_finally_callback(capture, ReactionKind::Fulfill, args, doc);
+                }
+                CallbackKind::CatchFinally(capture) => {
+                    return self.run_finally_callback(capture, ReactionKind::Reject, args, doc);
+                }
+                CallbackKind::ReturnValue(capture) => return self.read_finally_outcome(capture),
+                CallbackKind::ThrowReason(capture) => {
+                    let reason = self.read_finally_outcome(capture)?;
+                    // The exact original payload is retained. Formatting uses
+                    // the existing non-observing error path, not author getters.
+                    return Err(self.thrown_error(reason)?);
                 }
             }
             Ok(Value::Undefined)
