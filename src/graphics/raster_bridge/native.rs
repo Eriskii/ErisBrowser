@@ -5,8 +5,8 @@ use super::*;
 use crate::graphics::{
     Fonts, Rect as BrowserRect,
     box_decoration::{
-        BoxDecoration, BoxMaskError, BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow,
-        BoxPaint, BoxRectProof,
+        BoxCoreReservation, BoxCoreTiles, BoxCoreWindow, BoxDecoration, BoxMaskError,
+        BoxMaskReservation, BoxMaskTile, BoxMaskTiles, BoxMaskWindow, BoxPaint, BoxRectProof,
     },
     gradient::{OpaqueGradient, OpaqueGradientError, OpaqueGradientInfo},
     text_masks::{self, MaskInfo, MaskKey, Session, TextRun},
@@ -79,6 +79,8 @@ pub struct NativeSceneStats {
     pub box_masks: usize,
     /// Eligible Color box commands lowered without coverage or row payloads.
     pub box_rectangles: usize,
+    /// Individually oversized Color masks split into one Rect and edge masks.
+    pub box_cores: usize,
     /// Eligible image boxes, including missing sources and empty windows.
     pub box_background_images: usize,
     /// Eligible opaque gradient boxes, including empty generated windows.
@@ -681,10 +683,58 @@ impl GradientReservation {
 // fallible allocation for every retained command.
 #[allow(clippy::large_enum_variant)]
 enum BoxReservation {
-    Rectangle { work: u64 },
-    BackgroundImage { work: u64 },
-    LinearGradient { work: u64 },
+    Rectangle {
+        work: u64,
+    },
+    BackgroundImage {
+        work: u64,
+    },
+    LinearGradient {
+        work: u64,
+    },
     Mask(BoxMaskReservation),
+    Core {
+        reservation: BoxCoreReservation,
+        raw_core: BrowserRect,
+    },
+}
+
+/// Convert a proved screen interior back to one ordinary raw Rect. Preserve
+/// current phase/fixed scopes: core's f32 translation must reproduce all four
+/// fields exactly. Fractional raw geometry or offsets remain on the old route.
+fn exact_raw_core(
+    screen: BrowserRect,
+    raw_outer: BrowserRect,
+    offset: (f32, f32),
+) -> Option<BrowserRect> {
+    if ![
+        raw_outer.x,
+        raw_outer.y,
+        raw_outer.width,
+        raw_outer.height,
+        offset.0,
+        offset.1,
+    ]
+    .into_iter()
+    .all(|v| bounded_scalar(v) && v.fract() == 0.0)
+    {
+        return None;
+    }
+    let raw = BrowserRect {
+        x: screen.x - offset.0,
+        y: screen.y - offset.1,
+        width: screen.width,
+        height: screen.height,
+    };
+    if validate_rect(convert_rect(raw), None).is_err()
+        || ![raw.x, raw.y, raw.width, raw.height]
+            .into_iter()
+            .all(|v| v.fract() == 0.0)
+        || raw.translated(offset.0, offset.1) != screen
+    {
+        return None;
+    }
+    Some(raw)
 }
 
 /// Called only after complete original-input validation. No coverage, glyphs
@@ -811,14 +861,43 @@ fn geometry_pixel_work(
                             .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, index))?;
                         BoxReservation::Rectangle { work }
                     } else {
-                        let window =
-                            BoxMaskWindow::new(target.width, target.height, outer, cutout, clip)
-                                .map_err(|error| box_error(error, phase, index))?;
-                        BoxReservation::Mask(
-                            window
-                                .reserve(remaining)
-                                .map_err(|error| box_error(error, phase, index))?,
-                        )
+                        match BoxMaskWindow::new(target.width, target.height, outer, cutout, clip) {
+                            Ok(window) => BoxReservation::Mask(
+                                window
+                                    .reserve(remaining)
+                                    .map_err(|error| box_error(error, phase, index))?,
+                            ),
+                            // Only an individually oversized stored mask can
+                            // select the new path; its constructor proves this
+                            // independently. CPU or shared-ledger failure never
+                            // retries another route or refunds earlier work.
+                            Err(BoxMaskError::MaskLimit) => {
+                                let failure = at(FallbackKind::MaskPreparation, phase, index);
+                                let window = BoxCoreWindow::new(
+                                    target.width,
+                                    target.height,
+                                    outer,
+                                    cutout,
+                                    clip,
+                                )
+                                .map_err(|error| box_error(error, phase, index))?
+                                .ok_or(failure)?;
+                                let raw_core = exact_raw_core(
+                                    window.core_rect(),
+                                    decoration.shape.rect,
+                                    offset,
+                                )
+                                .ok_or(failure)?;
+                                let reservation = window
+                                    .reserve(remaining)
+                                    .map_err(|error| box_error(error, phase, index))?;
+                                BoxReservation::Core {
+                                    reservation,
+                                    raw_core,
+                                }
+                            }
+                            Err(error) => return Err(box_error(error, phase, index)),
+                        }
                     });
                     continue;
                 }
@@ -1115,6 +1194,43 @@ impl Ledger {
         *self = next;
         Ok(())
     }
+    fn box_core(
+        &mut self,
+        shape: &BoxCoreReservation,
+        phase: usize,
+        command: usize,
+    ) -> NativeResult<()> {
+        let info = shape.info();
+        let mut next = *self;
+        // One original command pays the Rect. Every edge Glyph is additional.
+        next.operations = next
+            .operations
+            .checked_add(info.tile_count)
+            .filter(|&n| n <= MAX_COMMANDS)
+            .ok_or_else(|| at(FallbackKind::CommandLimit, phase, command))?;
+        next.box_loop_work = next
+            .box_loop_work
+            .checked_add(info.classification_work)
+            .and_then(|n| n.checked_add(info.materialization_work))
+            .ok_or_else(|| at(FallbackKind::CpuPaintBudget, phase, command))?;
+        // The two CPU stages were already funded in original command order.
+        // Reuse the old row/source/storage/GPU diagnostic ordering unchanged.
+        for tile in shape.tiles() {
+            next.mask(
+                tile.coverage_bytes,
+                tile.row_entries,
+                true,
+                false,
+                at(FallbackKind::MaskPreparation, phase, command),
+            )?;
+        }
+        if info.tile_count == 0 {
+            next.check_gpu(at(FallbackKind::PlannerLimit, phase, command))?;
+        }
+        *self = next;
+        Ok(())
+    }
+
     fn box_mask(
         &mut self,
         shape: &BoxMaskReservation,
@@ -1225,6 +1341,12 @@ pub fn preparation_peak_bytes(target: Frame, include_reference: bool) -> NativeR
         (MAX_COMMANDS, size_of::<BoxMaskTile>()),
         (2, size_of::<BoxMaskWindow>() + size_of::<BoxReservation>()),
         (1, size_of::<BoxMaskTiles>()),
+        // Move-only core metadata and the complete edge owners can coexist
+        // with their callers/destination metadata. Payload caps stay shared.
+        (2, size_of::<BoxCoreWindow>()),
+        (2, size_of::<BoxCoreReservation>()),
+        (1, size_of::<BoxCoreTiles>()),
+        (2, size_of::<BrowserRect>()),
         // Fixed Native partition metadata and the all-or-nothing pair of
         // owners coexist with the reserved destination Vec during handoff.
         (
@@ -1398,6 +1520,7 @@ pub fn plan_native_scene(
     let mut rounded = reserve_native::<RoundedTile>(MAX_COMMANDS)?;
     let mut box_tiles = reserve_native::<BoxMaskTile>(MAX_COMMANDS)?;
     let mut box_rectangles = 0;
+    let mut box_cores = 0;
     let mut box_background_images = 0;
     let mut box_gradients = 0;
     let mut ranges = [(0, 0); MAX_NATIVE_PHASES];
@@ -1487,6 +1610,39 @@ pub fn plan_native_scene(
                                 rgba: [color.r, color.g, color.b, color.a],
                                 radius: 0.0,
                             }
+                        }
+                        (
+                            BoxReservation::Core {
+                                reservation,
+                                raw_core,
+                            },
+                            BoxPaint::Color(color),
+                        ) => {
+                            let coverage = reservation.materialize(
+                                |shape| ledger.box_core(shape, phase_index, index),
+                                |error| box_error(error, phase_index, index),
+                            )?;
+                            box_cores += 1;
+                            // The Rect retains raw coordinates and surrounding
+                            // scopes. Edge Glyphs are already absolute. Their
+                            // integer pixels are disjoint, including at seams.
+                            lowered.push(Command::Rect {
+                                rect: convert_rect(raw_core),
+                                rgba: [color.r, color.g, color.b, color.a],
+                                radius: 0.0,
+                            });
+                            for tile in coverage.into_tiles() {
+                                lowered.push(Command::Glyph {
+                                    source: mask_sources.len() as u32,
+                                    rows: row_sources.len() as u32,
+                                    y: tile.info().origin_y,
+                                    rgba: [color.r, color.g, color.b, color.a],
+                                });
+                                mask_sources.push(MaskSource::Box(box_tiles.len()));
+                                row_sources.push(RowSource::Box(box_tiles.len()));
+                                box_tiles.push(tile);
+                            }
+                            continue;
                         }
                         (BoxReservation::Mask(reservation), BoxPaint::Color(color)) => {
                             let coverage = reservation.materialize(
@@ -1854,6 +2010,7 @@ pub fn plan_native_scene(
         rounded_loop_work: ledger.rounded_loop_work,
         box_masks: box_tiles.len(),
         box_rectangles,
+        box_cores,
         box_background_images,
         box_gradients,
         box_loop_work: ledger.box_loop_work,
@@ -1890,3 +2047,6 @@ mod box_image_tests;
 
 #[cfg(test)]
 mod box_gradient_tests;
+
+#[cfg(test)]
+mod box_core_tests;

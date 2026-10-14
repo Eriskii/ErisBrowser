@@ -600,6 +600,28 @@ fn native_box_color_shared_mask_area_cap_is_not_per_strip() {
         None,
         Color::BLACK,
     )];
+    // Same original oversized input: the new core route admits its exact pixels.
+    let result = checked(frame, frame, &commands, &vec![0; 262_400]);
+    assert_eq!(
+        (
+            result.stats().box_cores,
+            result.stats().box_masks,
+            result.stats().coverage_bytes,
+            result.stats().row_entries
+        ),
+        (1, 6, 2_966, 410)
+    );
+    assert_eq!(result.stats().box_rectangles, 0);
+    assert_eq!(result.stats().box_loop_work, 790_588);
+    assert_eq!(result.stats().cpu_pixel_upper_bound, 790_588);
+    assert_eq!(result.stats().bridge.lowered_commands, 7);
+
+    // Separate forced-mask control: even an empty cutout excludes core extraction.
+    let commands = [decoration(
+        mask_square(0.0, 0.0, 1280.0, 205.0),
+        Some(square(0.0, 0.0, 0.0, 0.0)),
+        Color::BLACK,
+    )];
     assert_eq!(
         plan_native_scene(
             frame,

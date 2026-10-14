@@ -131,13 +131,30 @@ fn full_area_line_debt_is_global_before_any_box_window_preparation() {
         at(FallbackKind::CpuPaintBudget, 0, 0)
     );
 
-    // Positive subpixel radii keep this a mask; all sixteen samples stay inside.
-    // This valid shape needs 264000 mask bytes, beyond the fixed 262144 cap.
-    // The exact-debt control reaches that window check; one extra Line must
-    // instead fail globally before visiting even the first Box command.
+    // The exact original oversized shape now selects the core route, but the
+    // sixteen Lines leave no work for its first debit. All samples stay inside.
+    // One extra Line still fails globally before visiting the first Box command.
     let mask_short = line_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 16);
     assert_eq!(
         prepare(&mask_short).unwrap_err(),
+        at(FallbackKind::CpuPaintBudget, 0, 0)
+    );
+    // Separate forced-mask control retains the old cap-before-funding refusal.
+    let mut forced_mask = box_command(1000.0, 264.0, [[0.125; 2]; 4]);
+    let DrawCommand::BoxDecoration(decoration) = &mut forced_mask else {
+        unreachable!();
+    };
+    Arc::make_mut(decoration).cutout = Some(RoundedBox {
+        rect: BrowserRect {
+            x: 0.0,
+            y: 0.0,
+            width: 0.0,
+            height: 0.0,
+        },
+        radii: [[0.0; 2]; 4],
+    });
+    assert_eq!(
+        prepare(&line_commands(forced_mask, 16)).unwrap_err(),
         at(FallbackKind::MaskPreparation, 0, 0)
     );
     let aggregate_short = line_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 17);

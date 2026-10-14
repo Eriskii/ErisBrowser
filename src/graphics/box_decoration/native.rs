@@ -9,6 +9,9 @@ use eris_raster_core::{
 };
 use std::mem::size_of;
 
+mod core;
+pub(crate) use core::{BoxCoreReservation, BoxCoreTiles, BoxCoreWindow};
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum BoxMaskError {
     InvalidGeometry,

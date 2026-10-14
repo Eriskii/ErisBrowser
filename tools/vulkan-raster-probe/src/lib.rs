@@ -38,3 +38,6 @@ pub mod box_image_fixtures;
 
 #[cfg(feature = "browser-bridge")]
 pub mod box_gradient_fixtures;
+
+#[cfg(feature = "browser-bridge")]
+pub mod box_core_fixtures;

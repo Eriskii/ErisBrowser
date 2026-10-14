@@ -97,6 +97,10 @@ acquired-window or performance result.
 The [rectangle follow-up](docs/native-box-fastpath.md) avoids mask allocation
 for proven integer-aligned solid fills, allowing full-viewport backgrounds
 through the same Vulkan rectangle shader and existing resource limits.
+The [rounded-background follow-up](docs/vulkan-rounded-core.md) draws a proven
+solid interior with that shader and masks only the edges. Selected large
+rounded Color boxes now fit the unchanged mask allowance, including source
+alpha and opacity groups.
 
 The [image box follow-up](docs/native-box-image.md) sends proven integer-aligned,
 square image boxes through the existing Vulkan image kernel. Background origin

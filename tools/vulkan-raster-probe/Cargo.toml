@@ -84,3 +84,8 @@ unsafe_code = "forbid"
 name = "eris-vulkan-box-gradient-check"
 path = "src/bin/box-gradient-check.rs"
 required-features = ["browser-bridge"]
+
+[[bin]]
+name = "eris-vulkan-box-core-check"
+path = "src/bin/box-core-check.rs"
+required-features = ["browser-bridge"]

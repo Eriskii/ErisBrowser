@@ -428,12 +428,14 @@ the CPU reference. Release CPU/native and native baseline/reuse comparisons
 now use equal scenes with preparation and presentation costs kept separate.
 Further measurements need more scenes and repeated environment observations.
 
+[Large rounded Color backgrounds](vulkan-rounded-core.md) now use a proven
+interior rectangle and at most seven edge masks when an individual mask would
+exceed the existing allowance. Ordinary small-mask routes and resource limits
+remain unchanged. Wider geometry, acquired-window coverage and performance
+measurements remain open.
+
 Acceptance work:
 
-- For individually oversized rounded solid-color boxes, prove a fully covered
-  interior rectangle and mask only the remaining edges. Keep the existing
-  limits, exact blending and clipping; small-mask routes remain unchanged in
-  the first slice. This is planned work, not a measured speedup.
 - Expand the bounded native route to more browser scenes, preserving clipping,
   fixed coordinates, text coverage, full-range nested opacity and alpha under
   explicit resource limits.
