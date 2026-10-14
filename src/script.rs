@@ -1620,7 +1620,8 @@ impl Runtime {
     /// Successful construction starts a fresh execution work budget;
     /// initialization allocations remain charged to the realm.
     pub fn try_new() -> Result<Self> {
-        let mut runtime = Self::uninitialized().finish_bootstrap()?;
+        let mut runtime = Self::uninitialized();
+        runtime.initialize_bootstrap()?;
         runtime.steps = MAX_STEPS;
         Ok(runtime)
     }
@@ -1792,14 +1793,22 @@ impl Runtime {
         }
     }
 
-    fn finish_bootstrap(mut self) -> Result<Self> {
+    // Borrow the realm through initialization so nested installers do not keep
+    // whole Runtime return-value temporaries on the native stack.
+    fn initialize_bootstrap(&mut self) -> Result<()> {
         self.reserve_bootstrap_objects()?;
         #[cfg(test)]
         let bootstrap_object_capacity = self.objects.capacity();
-        machine::initialize(&mut self)?;
+        machine::initialize(self)?;
         self.initialize_intrinsics()?;
         #[cfg(test)]
         assert_eq!(self.objects.capacity(), bootstrap_object_capacity);
+        Ok(())
+    }
+
+    #[cfg(test)]
+    fn finish_bootstrap(mut self) -> Result<Self> {
+        self.initialize_bootstrap()?;
         Ok(self)
     }
 

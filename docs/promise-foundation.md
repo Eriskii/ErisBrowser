@@ -101,3 +101,7 @@ historical-test migrations and both source inventories remain in the
 783 final source inputs. The authored tests are local regressions, not imported
 Web Platform Tests or a conformance claim. Build caches were reused, and this
 checkpoint adds no Chromium-performance or production-security result.
+
+The subsequent [bootstrap stack correction](runtime-bootstrap-stack.md) fixes
+a small-thread startup overflow found by Rust 1.99 CI after this checkpoint.
+The original evidence remains unchanged.
