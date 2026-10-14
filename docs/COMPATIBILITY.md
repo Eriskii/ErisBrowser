@@ -2,8 +2,9 @@
 
 [Promise foundations](promise-foundation.md) provide construction, `then`,
 `resolve`, `reject`, generic species/capabilities and thenable adoption in one
-Window realm. Reactions share the `queueMicrotask` FIFO. Combinators,
-`catch`/`finally`, async functions and rejection notifications remain absent;
+Window realm. Reactions share the `queueMicrotask` FIFO.
+[Generic `catch`](promise-catch.md) preserves observable lookup/call behavior.
+Combinators, `finally`, async functions and rejection notifications remain absent;
 the authored regression tests are not a full ECMAScript conformance result.
 
 [Object.is](../tests/conformance/object-is.md) implements SameValue for existing

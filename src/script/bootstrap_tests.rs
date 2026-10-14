@@ -187,9 +187,9 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Eager represented DOM interface metadata is included in this raw
     // initialization witness. No author-entry reset has happened.
     // Reusing the existing PI name/length keys saves332 work; no cap change.
-    // Promise adds930 paid installation work and six metadata bags.
-    assert_eq!(reference.steps, 195);
-    assert_eq!(reference.objects.len(), 747);
+    // Promise with catch adds1032 paid installation work and seven metadata bags.
+    assert_eq!(reference.steps, 93);
+    assert_eq!(reference.objects.len(), 748);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);
     for mut runtime in [

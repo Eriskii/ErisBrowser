@@ -155,6 +155,22 @@ impl Runtime {
         self.observe_microtask_failure(result)
     }
 
+    fn promise_catch(
+        &mut self,
+        receiver: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // Invoke performs an observable GetV before Call. Retain the original
+        // receiver and forward the unfiltered argument without Promise branding.
+        self.work(1)?;
+        let method = self.promise_named_get(receiver.clone(), "then", doc)?;
+        self.work(1)?;
+        let rejected = args.first().cloned().unwrap_or(Value::Undefined);
+        let arguments = self.promise_arguments([Value::Undefined, rejected])?;
+        self.call(method, arguments, receiver, doc)
+    }
+
     fn promise_then(
         &mut self,
         receiver: Value,
@@ -241,6 +257,7 @@ impl Runtime {
             match name {
                 "Promise" => Err(ScriptError::type_error("Promise constructor requires new")),
                 "Promise.then" => self.promise_then(receiver, args, doc),
+                "Promise.catch" => self.promise_catch(receiver, args, doc),
                 "Promise.resolve" => self.promise_resolve(receiver, args, doc),
                 "Promise.reject" => self.promise_reject(receiver, args, doc),
                 "Promise.getSpecies" => Ok(receiver),

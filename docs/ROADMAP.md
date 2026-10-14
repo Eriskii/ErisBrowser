@@ -2,7 +2,8 @@
 
 [Promise construction and reactions](promise-foundation.md) now include
 thenable adoption, generic capabilities/species and a shared FIFO with
-`queueMicrotask`. Remaining asynchronous work includes `catch`, `finally`,
+`queueMicrotask`. [Generic `catch`](promise-catch.md) is implemented.
+Remaining asynchronous work includes `finally`,
 combinators, async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 

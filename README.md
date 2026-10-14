@@ -7,8 +7,9 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 [Promise construction and reactions](docs/promise-foundation.md) add the
 constructor, `then`, `resolve`, `reject`, generic species/capabilities and
 thenable adoption to the shared microtask FIFO. Jobs preserve original
-rejection values and share the existing work and storage limits. Combinators,
-`catch`/`finally`, async functions and rejection notifications remain unfinished.
+rejection values and share the existing work and storage limits. The [generic `catch` method](docs/promise-catch.md) forwards through observable
+`then` lookup and preserves original receivers, arguments and return values.
+Combinators, `finally`, async functions and rejection notifications remain unfinished.
 
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors

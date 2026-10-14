@@ -20764,3 +20764,6 @@ mod promise_layout_probe;
 
 #[cfg(test)]
 mod promise_semantic_tests;
+
+#[cfg(test)]
+mod promise_catch_tests;

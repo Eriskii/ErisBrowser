@@ -16,7 +16,7 @@ use factories::object_slot_plan;
 #[cfg(test)]
 mod layout_tests;
 
-pub(super) const METADATA_OBJECTS: usize = 6;
+pub(super) const METADATA_OBJECTS: usize = 7;
 
 pub(super) struct Arena<T> {
     pub(super) records: Vec<T>,

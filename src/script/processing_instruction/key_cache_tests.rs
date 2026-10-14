@@ -261,10 +261,10 @@ fn cached_pi_keys_share_the_existing_immutable_payload_for_every_bag() {
 }
 
 #[test]
-fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99805_work_boundary() {
-    // Cached PI keys still save332; the separately held Promise installer adds930.
+fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99907_work_boundary() {
+    // Cached PI keys still save332; the separately held Promise with catch installer adds1032.
     for (allowance, success, remaining) in
-        [(99_804, false, 0), (99_805, true, 0), (100_000, true, 195)]
+        [(99_906, false, 0), (99_907, true, 0), (100_000, true, 93)]
     {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;
@@ -279,7 +279,7 @@ fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99805_work_boundary
         }
         let runtime = result.unwrap();
         assert_eq!(runtime.steps, remaining);
-        assert_eq!(runtime.objects.len(), 747);
+        assert_eq!(runtime.objects.len(), 748);
         assert_eq!(runtime.native_properties.len(), 299);
         assert_eq!(runtime.prototypes.len(), 25);
         assert_eq!(runtime.environments[0].bindings.len(), 212);

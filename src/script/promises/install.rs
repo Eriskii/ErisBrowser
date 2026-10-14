@@ -67,8 +67,8 @@ impl Runtime {
 
     pub(in crate::script) fn install_promise_intrinsics(&mut self) -> Result<()> {
         // Five empty arena guards, absent-intrinsics guard, final publication,
-        // and nine temporary literal-handle releases. No author calls occur.
-        self.work(16)?;
+        // and ten temporary literal-handle releases. No author calls occur.
+        self.work(17)?;
         if !self.promises.promises.records.is_empty()
             || !self.promises.gates.records.is_empty()
             || !self.promises.callbacks.records.is_empty()
@@ -88,9 +88,10 @@ impl Runtime {
             self.dom_proto_text("prototype")?,
             self.dom_proto_text("constructor")?,
             self.dom_proto_text("get [Symbol.species]")?,
+            self.dom_proto_text("catch")?,
         ];
-        // 15 string keys, 5 display names, 1 prototype tag, 2 constructor handles.
-        self.work(23)?;
+        // 18 string keys, 6 display names, 1 prototype tag, 2 constructor handles.
+        self.work(27)?;
         let (symbol_comparisons, _) = tree(self.well_known_symbol_count());
         self.work(symbol_comparisons * (1 + "species".len() / 8))?;
         let species = self.well_known_key("species");
@@ -106,7 +107,7 @@ impl Runtime {
 
         let constructor_bag =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 6)?;
-        let prototype = self.dom_proto_object(Some(Value::Object(object_prototype)), 3)?;
+        let prototype = self.dom_proto_object(Some(Value::Object(object_prototype)), 4)?;
         self.dom_proto_property(
             constructor_bag,
             pool[0].clone().into(),
@@ -129,6 +130,7 @@ impl Runtime {
         let reject = self.promise_intrinsic_method("Promise.reject", pool[5].clone(), 1, keys)?;
         let species_getter =
             self.promise_intrinsic_method("Promise.getSpecies", pool[8].clone(), 0, keys)?;
+        let catch = self.promise_intrinsic_method("Promise.catch", pool[9].clone(), 1, keys)?;
         self.dom_proto_property(
             constructor_bag,
             pool[4].clone().into(),
@@ -160,6 +162,11 @@ impl Runtime {
             prototype,
             pool[3].clone().into(),
             Property::data(then, true, false, true),
+        )?;
+        self.dom_proto_property(
+            prototype,
+            pool[9].clone().into(),
+            Property::data(catch, true, false, true),
         )?;
         self.dom_proto_property(
             prototype,

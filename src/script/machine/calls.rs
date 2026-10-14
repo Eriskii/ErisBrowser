@@ -138,7 +138,12 @@ fn invoke_native(
         runtime.promise_callback(&native, &arguments, doc)
     } else if matches!(
         native.name.as_str(),
-        "Promise" | "Promise.then" | "Promise.resolve" | "Promise.reject" | "Promise.getSpecies"
+        "Promise"
+            | "Promise.then"
+            | "Promise.catch"
+            | "Promise.resolve"
+            | "Promise.reject"
+            | "Promise.getSpecies"
     ) {
         runtime.promise_native_operation(&native.name, receiver, &arguments, doc)
     } else if NumberPredicate::from_name(&native.name).is_some()

@@ -119,6 +119,10 @@ fn clone_bootstrap_reports_actual_admission_and_legacy_removal() {
     assert!(!runtime.native_properties.contains_key("DOM.cloneNode"));
     assert!(!runtime.native_properties.contains_key("DOM.Node.cloneNode"));
     assert_eq!(runtime.native_properties.len(), 299);
+    assert!(runtime.steps > 0 && runtime.allocated < MAX_HEAP);
+    // Preserve raw bootstrap observations, then use the successful public
+    // constructor's fresh work allowance for metadata inspection.
+    runtime.steps = MAX_STEPS;
     let prototype = runtime.dom_proto_id("Node").unwrap();
     let PropertyValue::Data {
         value: Value::Native(method),

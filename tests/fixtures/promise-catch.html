@@ -1,0 +1,21 @@
+<!doctype html><title>before</title><style>
+body{margin:0;background:white}#box,#trap{position:absolute;top:2px;width:4px;height:4px}
+#box{left:2px;background:red}#trap{left:20px;background:blue}
+</style><div id="box"></div><div id="trap"></div><script>
+var trace='',box=document.getElementById('box'),token={},marker={};
+Object.defineProperty(token,'constructor',{get:function(){trace+='X';document.getElementById('trap').style.left='24px';while(true){}}});
+Object.defineProperty(marker,'then',{get:function(){trace+='X';document.getElementById('trap').style.left='24px';while(true){}}});
+var generic={};
+Object.defineProperty(generic,'constructor',{get:function(){trace+='X';throw 99;}});
+Object.defineProperty(generic,'then',{get:function(){trace+=this===generic?'G':'!';return function(a,b){'use strict';trace+=this===generic&&arguments.length===2&&a===undefined&&b===token?'T':'!';return marker;};}});
+if(Promise.prototype.catch.call(generic,token)!==marker)trace+='!';
+box.addEventListener('click',function(){
+ trace+='A';Promise.reject(token).catch(function(e){trace+=e===token?'C':'!';box.style.left='10px';document.title=trace;});
+ queueMicrotask(function(){trace+='M';});
+});
+box.addEventListener('click',function(){trace+='B';document.title=trace;});
+Promise.reject(token).catch(function(e){trace+=e===token?'R':'!';box.style.left='6px';return 9;})
+ .then(function(v){trace+=v===9?'D':'!';document.title=trace;});
+queueMicrotask(function(){trace+='Q';});
+trace+='S';
+</script>

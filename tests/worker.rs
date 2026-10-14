@@ -2899,3 +2899,6 @@ mod throw_completion;
 
 #[path = "worker/promise_foundation.rs"]
 mod promise_foundation;
+
+#[path = "worker/promise_catch.rs"]
+mod promise_catch;

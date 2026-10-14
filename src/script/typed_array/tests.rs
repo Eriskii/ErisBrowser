@@ -140,9 +140,13 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
         + 5 * n
         + 4 * bsb
         + 6269;
+    // catch adds one ordinary metadata bag, reusing existing length/name keys.
+    let catch_added = s + a + d + 3 * k + bpp + n + 1029;
     assert_eq!(
         runtime.steps,
-        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332 - 930
+        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
+            - 930
+            - 102
     );
     assert_eq!(
         runtime.allocated,
@@ -157,10 +161,11 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + microtask_added
             - 1680
             + promise_added
+            + catch_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (747, 747)
+        (748, 748)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),
