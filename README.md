@@ -4,6 +4,12 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Promise construction and reactions](docs/promise-foundation.md) add the
+constructor, `then`, `resolve`, `reject`, generic species/capabilities and
+thenable adoption to the shared microtask FIFO. Jobs preserve original
+rejection values and share the existing work and storage limits. Combinators,
+`catch`/`finally`, async functions and rejection notifications remain unfinished.
+
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors
 and identities. Work and heap limits remain unchanged.
@@ -18,7 +24,7 @@ checkpoints for the existing single Window realm. FIFO jobs share the active
 script/event work allowance and cumulative heap; host-listener jobs settle
 before later listeners and default actions. Rendering remains callback-free,
 and fatal resource errors keep unstarted jobs suspended until a fresh Runtime.
-Promise jobs, timers, MutationObserver delivery and the full HTML event loop
+Timers, MutationObserver delivery and the full HTML event loop
 remain unfinished.
 
 [Linear gradient backgrounds](docs/linear-gradients.md) introduced one bounded

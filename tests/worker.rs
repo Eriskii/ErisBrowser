@@ -2896,3 +2896,6 @@ mod microtasks;
 
 #[path = "worker/throw_completion.rs"]
 mod throw_completion;
+
+#[path = "worker/promise_foundation.rs"]
+mod promise_foundation;

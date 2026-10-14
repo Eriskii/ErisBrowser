@@ -1,4 +1,5 @@
 //! One realm-owned FIFO, sharing the current author turn's work and heap limits.
+use super::promises::QueueJob;
 use super::*;
 use std::collections::{VecDeque, btree_map::Entry};
 use std::fmt::Write;
@@ -6,10 +7,11 @@ use std::fmt::Write;
 pub(super) const METADATA_OBJECTS: usize = 1;
 const NAME: &str = "queueMicrotask";
 const REPORT_PREFIX: &str = "Uncaught microtask exception: ";
+const PROMISE_REPORT_PREFIX: &str = "Uncaught Promise job exception: ";
 
 #[derive(Default)]
 pub(super) struct State {
-    pub(super) queue: VecDeque<Value>,
+    pub(super) queue: VecDeque<QueueJob>,
     // Admission is independent of allocator rounding and retained spare space.
     pub(super) admitted_capacity: usize,
     pub(super) author_depth: usize,
@@ -35,6 +37,22 @@ pub(super) fn report_plan(
     console_len: usize,
     console_capacity: usize,
 ) -> Result<ReportPlan> {
+    report_plan_with_prefix(
+        REPORT_PREFIX,
+        message_bytes,
+        offset,
+        console_len,
+        console_capacity,
+    )
+}
+
+fn report_plan_with_prefix(
+    prefix: &str,
+    message_bytes: usize,
+    offset: Option<usize>,
+    console_len: usize,
+    console_capacity: usize,
+) -> Result<ReportPlan> {
     // Other console producers have their own thresholds. Do not format a
     // suppressed asynchronous report, including its decimal offset.
     if console_len >= 1024 {
@@ -45,7 +63,7 @@ pub(super) fn report_plan(
             target_capacity: None,
         });
     }
-    let mut rendered = REPORT_PREFIX
+    let mut rendered = prefix
         .len()
         .checked_add(message_bytes)
         .ok_or_else(overflow)?;
@@ -200,7 +218,7 @@ impl Runtime {
             }
             let count = self.microtasks.queue.len();
             if count == self.microtasks.admitted_capacity {
-                let maximum = MAX_HEAP / std::mem::size_of::<Value>();
+                let maximum = MAX_HEAP / std::mem::size_of::<QueueJob>();
                 let target = self
                     .microtasks
                     .admitted_capacity
@@ -218,7 +236,7 @@ impl Runtime {
                     .and_then(|n| n.checked_add(8))
                     .ok_or_else(overflow)?;
                 let bytes = target
-                    .checked_mul(std::mem::size_of::<Value>())
+                    .checked_mul(std::mem::size_of::<QueueJob>())
                     .and_then(|n| n.checked_add(32))
                     .ok_or_else(overflow)?;
                 self.work(work)?;
@@ -229,7 +247,9 @@ impl Runtime {
                     .map_err(|_| ScriptError::resource("microtask queue allocation failed"))?;
                 self.microtasks.admitted_capacity = target;
             }
-            self.microtasks.queue.push_back(callback.clone());
+            self.microtasks
+                .queue
+                .push_back(QueueJob::Callback(callback.clone()));
             Ok(Value::Undefined)
         })();
         self.observe_microtask_failure(result)
@@ -271,17 +291,42 @@ impl Runtime {
         let result = (|| {
             while !self.microtasks.queue.is_empty() {
                 self.work(8)?;
-                // Both fixed job debits precede pop. Once popped, even a call
-                // preflight failure cannot replay this job in another turn.
+                // Promise payload lookup/take and destruction are prepaid
+                // before either queue publication is consumed. The first
+                // Promise job costs 32 total before pop (callbacks stay at 24).
+                let promise_job =
+                    matches!(self.microtasks.queue.front(), Some(QueueJob::Promise(_)));
+                if promise_job {
+                    self.work(8)?;
+                }
                 let result = self.with_author_entry(doc, |runtime, doc| {
-                    let callback = runtime.microtasks.queue.pop_front().unwrap();
-                    runtime.call(callback, Vec::new(), Value::Undefined, doc)
+                    match runtime.microtasks.queue.pop_front().unwrap() {
+                        QueueJob::Callback(callback) => {
+                            runtime.call(callback, Vec::new(), Value::Undefined, doc)
+                        }
+                        QueueJob::Promise(id) => {
+                            let job = runtime
+                                .promises
+                                .jobs
+                                .records
+                                .get_mut(id.0)
+                                .and_then(Option::take)
+                                .ok_or_else(|| {
+                                    ScriptError::resource("Promise job payload missing")
+                                })?;
+                            runtime.run_promise_job(job, doc)
+                        }
+                    }
                 });
                 if let Err(error) = result {
                     if error.is_resource_limit() || error.is_unsupported() {
                         return Err(error);
                     }
-                    self.report_microtask_error(error)?;
+                    if promise_job {
+                        self.report_promise_job_error(error)?;
+                    } else {
+                        self.report_microtask_error(error)?;
+                    }
                 }
             }
             Ok(())
@@ -291,16 +336,34 @@ impl Runtime {
     }
 
     pub(super) fn report_microtask_error(&mut self, error: ScriptError) -> Result<()> {
+        self.report_job_error(REPORT_PREFIX, error)
+    }
+
+    pub(super) fn report_promise_job_error(&mut self, error: ScriptError) -> Result<()> {
+        self.report_job_error(PROMISE_REPORT_PREFIX, error)
+    }
+
+    fn report_job_error(&mut self, prefix: &str, error: ScriptError) -> Result<()> {
         let result = (|| {
             if error.is_resource_limit() || error.is_unsupported() {
                 return Err(error);
             }
-            let plan = report_plan(
-                error.message.len(),
-                error.offset,
-                self.console.len(),
-                self.console.capacity(),
-            )?;
+            let plan = if prefix == REPORT_PREFIX {
+                report_plan(
+                    error.message.len(),
+                    error.offset,
+                    self.console.len(),
+                    self.console.capacity(),
+                )?
+            } else {
+                report_plan_with_prefix(
+                    prefix,
+                    error.message.len(),
+                    error.offset,
+                    self.console.len(),
+                    self.console.capacity(),
+                )?
+            };
             self.work(plan.work)?;
             let Some(rendered) = plan.rendered_bytes else {
                 return Ok(());
@@ -317,7 +380,7 @@ impl Runtime {
             message
                 .try_reserve_exact(rendered)
                 .map_err(|_| ScriptError::resource("microtask report allocation failed"))?;
-            message.push_str(REPORT_PREFIX);
+            message.push_str(prefix);
             message.push_str(&error.message);
             if let Some(offset) = error.offset {
                 write!(message, " at byte {offset}")

@@ -234,6 +234,10 @@ impl Runtime {
         Ok(())
     }
 
+    pub(super) fn well_known_symbol_count(&self) -> usize {
+        self.symbols.well_known.len()
+    }
+
     pub(super) fn well_known_key(&self, name: &str) -> PropertyKey {
         PropertyKey::Symbol(self.symbols.well_known[name].clone())
     }

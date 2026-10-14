@@ -1,0 +1,18 @@
+<!doctype html><title>before</title><style>
+body{margin:0;background:white}#box,#trap{position:absolute;top:2px;width:4px;height:4px}
+#box{left:2px;background:red}#trap{left:20px;background:blue}
+</style><div id="box"></div><div id="trap"></div><script>
+var trace='',box=document.getElementById('box'),token={};
+Object.defineProperty(token,'constructor',{get:function(){trace+='X';document.getElementById('trap').style.left='24px';while(true){}}});
+box.addEventListener('click',function(){
+ trace+='A';Promise.resolve(1).then(function(v){trace+=v===1?'P':'!';return {then:function(r){trace+='T';r(2);}};}).then(function(v){trace+=v===2?'R':'!';box.style.left='10px';document.title=trace;});
+ queueMicrotask(function(){trace+='M';});
+});
+box.addEventListener('click',function(){trace+='B';document.title=trace;});
+queueMicrotask(function(){trace+='Q';});
+new Promise(function(resolve){trace+='E';resolve({then:function(r){trace+='T';r(4);}});})
+ .then(function(v){trace+=v===4?'F':'!';queueMicrotask(function(){trace+='M';});throw token;})
+ .then(undefined,function(e){trace+=e===token?'R':'!';return 5;})
+ .then(function(v){trace+=v===5?'D':'!';box.style.left='6px';document.title=trace;});
+trace+='S';
+</script>

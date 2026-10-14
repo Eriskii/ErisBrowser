@@ -57,6 +57,7 @@ pub(super) const PREFIX: &str = "DOM.Interface.";
 // CharacterData and DocumentType's ChildNode lists (Element combines both).
 pub(super) const BOOTSTRAP_OBJECTS: usize = 351
     + microtasks::METADATA_OBJECTS
+    + promises::METADATA_OBJECTS
     + object_has_own::METADATA_OBJECTS
     + typed_array::METADATA_OBJECTS
     + reflect_properties_install::METADATA_OBJECTS

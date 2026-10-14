@@ -1,0 +1,350 @@
+//! Bounded object adapters and immutable native callback captures.
+use super::*;
+
+pub(super) fn object_slot_plan(
+    len: usize,
+    physical_capacity: usize,
+    count: usize,
+) -> Result<GrowthPlan> {
+    let mut plan = growth_plan::<ScriptObject>(len, physical_capacity, count)?;
+    plan.bytes = add(plan.bytes, mul(count, size_of::<ScriptObject>())?)?;
+    Ok(plan)
+}
+
+fn reserve_arena<T>(arena: &mut Arena<T>, plan: GrowthPlan) -> Result<()> {
+    if let Some(target) = plan.target {
+        arena
+            .records
+            .try_reserve_exact(target - arena.records.len())
+            .map_err(|_| ScriptError::resource("Promise private arena allocation failed"))?;
+    }
+    Ok(())
+}
+fn publish_arena<T>(arena: &mut Arena<T>, plan: GrowthPlan) {
+    if let Some(target) = plan.target {
+        arena.admitted_capacity = target;
+    }
+}
+
+#[derive(Clone, Copy)]
+enum FactoryExtra {
+    #[cfg(test)]
+    None,
+    Gate(PromiseId),
+    Capture,
+}
+
+impl Runtime {
+    fn reserve_promise_objects(&mut self, plan: GrowthPlan) -> Result<()> {
+        if let Some(target) = plan.target {
+            self.objects
+                .try_reserve_exact(target - self.objects.len())
+                .map_err(|_| ScriptError::resource("Promise object arena allocation failed"))?;
+        }
+        Ok(())
+    }
+
+    pub(super) fn new_pending_promise(&mut self, prototype: Value) -> Result<(PromiseId, Value)> {
+        let result = (|| {
+            let record = growth_plan::<PromiseRecord>(
+                self.promises.promises.records.len(),
+                self.promises.promises.admitted_capacity,
+                1,
+            )?;
+            let objects = object_slot_plan(self.objects.len(), self.objects.capacity(), 1)?;
+            // The old bag helper supplies the remaining9 and its own bytes.
+            self.work(add(add(11, record.work)?, objects.work)?)?;
+            self.charge(add(record.bytes, objects.bytes)?)?;
+            reserve_arena(&mut self.promises.promises, record)?;
+            self.reserve_promise_objects(objects)?;
+            let object_id = self.dom_proto_object(Some(prototype), 0)?;
+            let id = PromiseId(self.promises.promises.records.len());
+            self.promises.promises.records.push(PromiseRecord {
+                object_id,
+                settlement: Settlement::Pending,
+                reactions: Arena::default(),
+                handled: false,
+            });
+            publish_arena(&mut self.promises.promises, record);
+            Ok((id, Value::Object(object_id)))
+        })();
+        self.observe_microtask_failure(result)
+    }
+
+    fn promise_callback_metadata(&mut self, arity: usize) -> Result<Value> {
+        let properties =
+            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
+        let display = self.dom_proto_text("")?;
+        let length_key = self.dom_proto_text("length")?;
+        self.dom_proto_property(
+            properties,
+            length_key.into(),
+            Property::data(Value::Number(arity as f64), false, false, true),
+        )?;
+        let name_key = self.dom_proto_text("name")?;
+        self.dom_proto_property(
+            properties,
+            name_key.into(),
+            Property::data(Value::String(display), false, false, true),
+        )?;
+        self.promise_native(properties, "Promise.callback", Value::Object(properties))
+    }
+
+    fn build_promise_callbacks<const N: usize>(
+        &mut self,
+        kinds: [CallbackKind; N],
+        extra: FactoryExtra,
+    ) -> Result<[Value; N]> {
+        if N == 0 || N > 2 {
+            return Err(invalid());
+        }
+        let callbacks = growth_plan::<CallbackRecord>(
+            self.promises.callbacks.records.len(),
+            self.promises.callbacks.admitted_capacity,
+            N,
+        )?;
+        let objects = object_slot_plan(self.objects.len(), self.objects.capacity(), N)?;
+        let (extra_fixed, extra_plan) = match extra {
+            #[cfg(test)]
+            FactoryExtra::None => (
+                0,
+                GrowthPlan {
+                    target: None,
+                    work: 0,
+                    bytes: 0,
+                },
+            ),
+            FactoryExtra::Gate(_) => (
+                9,
+                growth_plan::<ResolveGate>(
+                    self.promises.gates.records.len(),
+                    self.promises.gates.admitted_capacity,
+                    1,
+                )?,
+            ),
+            FactoryExtra::Capture => (
+                10,
+                growth_plan::<CapabilityCapture>(
+                    self.promises.captures.records.len(),
+                    self.promises.captures.admitted_capacity,
+                    1,
+                )?,
+            ),
+        };
+        // Nine record operations plus six temporary-release credits per
+        // callable precede every reserve/metadata allocation. Each metadata
+        // helper then retains its original staged101work/byte schedule.
+        let work = add(
+            add(
+                add(add(mul(15, N)?, extra_fixed)?, callbacks.work)?,
+                objects.work,
+            )?,
+            extra_plan.work,
+        )?;
+        self.work(work)?;
+        match extra {
+            FactoryExtra::Gate(id) if id.0 >= self.promises.promises.records.len() => {
+                return Err(invalid());
+            }
+            #[cfg(test)]
+            FactoryExtra::None => {
+                for kind in kinds {
+                    let valid = match kind {
+                        CallbackKind::Resolve(id) | CallbackKind::Reject(id) => {
+                            id.0 < self.promises.gates.records.len()
+                        }
+                        CallbackKind::CapabilityExecutor(id) => {
+                            id.0 < self.promises.captures.records.len()
+                        }
+                    };
+                    if !valid {
+                        return Err(invalid());
+                    }
+                }
+            }
+            _ => {}
+        }
+        self.charge(add(add(callbacks.bytes, objects.bytes)?, extra_plan.bytes)?)?;
+        match extra {
+            #[cfg(test)]
+            FactoryExtra::None => {}
+            FactoryExtra::Gate(_) => reserve_arena(&mut self.promises.gates, extra_plan)?,
+            FactoryExtra::Capture => reserve_arena(&mut self.promises.captures, extra_plan)?,
+        }
+        reserve_arena(&mut self.promises.callbacks, callbacks)?;
+        self.reserve_promise_objects(objects)?;
+        let mut values = std::array::from_fn(|_| Value::Undefined);
+        for (slot, kind) in values.iter_mut().zip(kinds) {
+            let arity = match kind {
+                CallbackKind::CapabilityExecutor(_) => 2,
+                _ => 1,
+            };
+            *slot = self.promise_callback_metadata(arity)?;
+        }
+        // Every fallible operation is complete. Private lengths/capacities
+        // publish together; ordinary bags left by an earlier failure remain
+        // unexposed and do not create any callback/gate/capture record.
+        match extra {
+            #[cfg(test)]
+            FactoryExtra::None => {}
+            FactoryExtra::Gate(id) => {
+                self.promises
+                    .gates
+                    .records
+                    .push(ResolveGate { target: Some(id) });
+                publish_arena(&mut self.promises.gates, extra_plan);
+            }
+            FactoryExtra::Capture => {
+                self.promises.captures.records.push(CapabilityCapture {
+                    resolve: Value::Undefined,
+                    reject: Value::Undefined,
+                });
+                publish_arena(&mut self.promises.captures, extra_plan);
+            }
+        }
+        for (value, kind) in values.iter().zip(kinds) {
+            let Value::Native(native) = value else {
+                unreachable!("fixed native factory");
+            };
+            let Value::Object(object_id) = native.receiver else {
+                unreachable!("fixed private receiver");
+            };
+            self.promises
+                .callbacks
+                .records
+                .push(CallbackRecord { object_id, kind });
+        }
+        publish_arena(&mut self.promises.callbacks, callbacks);
+        Ok(values)
+    }
+
+    // Isolated one-callback quota entry. The production pair/executor routes
+    // use the same batch implementation, without an unused production API.
+    #[cfg(test)]
+    pub(super) fn new_promise_callback(&mut self, kind: CallbackKind) -> Result<Value> {
+        let result = self
+            .build_promise_callbacks([kind], FactoryExtra::None)
+            .map(|[value]| value);
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn new_resolving_functions(&mut self, id: PromiseId) -> Result<(Value, Value)> {
+        let gate = GateId(self.promises.gates.records.len());
+        let result = self
+            .build_promise_callbacks(
+                [CallbackKind::Resolve(gate), CallbackKind::Reject(gate)],
+                FactoryExtra::Gate(id),
+            )
+            .map(|[resolve, reject]| (resolve, reject));
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn new_capability_executor(&mut self) -> Result<(CaptureId, Value)> {
+        let capture = CaptureId(self.promises.captures.records.len());
+        let result = self
+            .build_promise_callbacks(
+                [CallbackKind::CapabilityExecutor(capture)],
+                FactoryExtra::Capture,
+            )
+            .map(|[value]| (capture, value));
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn callback_target(&mut self, native: &Native) -> Result<CallbackKind> {
+        let result = (|| {
+            self.work(search_work(self.promises.callbacks.records.len()))?;
+            let Value::Object(object_id) = native.receiver else {
+                return Err(invalid());
+            };
+            if native.name != "Promise.callback"
+                || native.properties.map(|id| id.get()) != Some(object_id)
+            {
+                return Err(invalid());
+            }
+            let index = self
+                .promises
+                .callbacks
+                .records
+                .binary_search_by_key(&object_id, |record| record.object_id)
+                .map_err(|_| invalid())?;
+            Ok(self.promises.callbacks.records[index].kind)
+        })();
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn take_resolve_gate(&mut self, id: GateId) -> Result<Option<PromiseId>> {
+        let result = (|| {
+            self.work(8)?;
+            Ok(self
+                .promises
+                .gates
+                .records
+                .get_mut(id.0)
+                .ok_or_else(invalid)?
+                .target
+                .take())
+        })();
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn store_capability_capture(
+        &mut self,
+        id: CaptureId,
+        arguments: &[Value],
+    ) -> Result<()> {
+        let result = (|| {
+            self.work(14)?;
+            let capture = self
+                .promises
+                .captures
+                .records
+                .get_mut(id.0)
+                .ok_or_else(invalid)?;
+            if !matches!(capture.resolve, Value::Undefined)
+                || !matches!(capture.reject, Value::Undefined)
+            {
+                return Err(ScriptError::type_error(
+                    "Promise capability executor already called",
+                ));
+            }
+            capture.resolve = arguments.first().cloned().unwrap_or(Value::Undefined);
+            capture.reject = arguments.get(1).cloned().unwrap_or(Value::Undefined);
+            Ok(())
+        })();
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn read_capability_capture(&mut self, id: CaptureId) -> Result<(Value, Value)> {
+        let result = (|| {
+            self.work(12)?;
+            let capture = self
+                .promises
+                .captures
+                .records
+                .get(id.0)
+                .ok_or_else(invalid)?;
+            Ok((capture.resolve.clone(), capture.reject.clone()))
+        })();
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn promise_arguments<const N: usize>(
+        &mut self,
+        arguments: [Value; N],
+    ) -> Result<Vec<Value>> {
+        let result = (|| {
+            if N != 1 && N != 2 {
+                return Err(invalid());
+            }
+            self.work(8 + 2 * N)?;
+            self.charge(32 + N * size_of::<Value>())?;
+            let mut values = Vec::new();
+            values
+                .try_reserve_exact(N)
+                .map_err(|_| ScriptError::resource("Promise argument allocation failed"))?;
+            values.extend(arguments);
+            Ok(values)
+        })();
+        self.observe_microtask_failure(result)
+    }
+}

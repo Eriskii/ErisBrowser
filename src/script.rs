@@ -55,6 +55,7 @@ mod object_is;
 mod own_keys;
 mod parser;
 mod processing_instruction;
+mod promises;
 mod property_keys;
 mod reflect_properties;
 mod reflect_properties_install;
@@ -1574,6 +1575,7 @@ pub struct Runtime {
     typed_arrays: typed_array::State,
     dom_prototypes: dom_prototypes::State,
     microtasks: microtasks::State,
+    promises: promises::State,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
@@ -1750,6 +1752,7 @@ impl Runtime {
             typed_arrays: typed_array::State::default(),
             dom_prototypes: dom_prototypes::State::default(),
             microtasks: microtasks::State::default(),
+            promises: promises::State::default(),
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
@@ -1768,6 +1771,7 @@ impl Runtime {
                 + std::mem::size_of::<typed_array::State>()
                 + std::mem::size_of::<dom_prototypes::State>()
                 + std::mem::size_of::<microtasks::State>()
+                + std::mem::size_of::<promises::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
                 + initial_binding_bytes
                 + native_names.len() * NATIVE_METADATA_BYTES
@@ -1830,7 +1834,8 @@ impl Runtime {
         self.initialize_dom_prototypes()?;
         self.install_object_has_own_intrinsic()?;
         self.initialize_reflect_property_intrinsics()?;
-        self.install_microtask_intrinsic()
+        self.install_microtask_intrinsic()?;
+        self.install_promise_intrinsics()
     }
 
     fn initialize_intrinsics_before_typed_array(&mut self) -> Result<()> {
@@ -20744,3 +20749,9 @@ mod tests {
 mod pending_style_budget_tests;
 #[cfg(test)]
 mod pending_style_tests;
+
+#[cfg(test)]
+mod promise_layout_probe;
+
+#[cfg(test)]
+mod promise_semantic_tests;

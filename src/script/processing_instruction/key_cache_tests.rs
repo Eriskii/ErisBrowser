@@ -261,12 +261,11 @@ fn cached_pi_keys_share_the_existing_immutable_payload_for_every_bag() {
 }
 
 #[test]
-fn cached_pi_keys_raw_bootstrap_uses_the_frozen_98875_work_boundary() {
-    for (allowance, success, remaining) in [
-        (98_874, false, 0),
-        (98_875, true, 0),
-        (100_000, true, 1_125),
-    ] {
+fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99805_work_boundary() {
+    // Cached PI keys still save332; the separately held Promise installer adds930.
+    for (allowance, success, remaining) in
+        [(99_804, false, 0), (99_805, true, 0), (100_000, true, 195)]
+    {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;
         let result = runtime.finish_bootstrap();
@@ -280,11 +279,11 @@ fn cached_pi_keys_raw_bootstrap_uses_the_frozen_98875_work_boundary() {
         }
         let runtime = result.unwrap();
         assert_eq!(runtime.steps, remaining);
-        assert_eq!(runtime.objects.len(), 741);
+        assert_eq!(runtime.objects.len(), 747);
         assert_eq!(runtime.native_properties.len(), 299);
         assert_eq!(runtime.prototypes.len(), 25);
-        assert_eq!(runtime.environments[0].bindings.len(), 211);
-        assert!(!runtime.environments[0].bindings.contains_key("Promise"));
+        assert_eq!(runtime.environments[0].bindings.len(), 212);
+        assert!(runtime.environments[0].bindings.contains_key("Promise"));
         assert!(runtime.frames.is_empty());
         assert!(runtime.console.is_empty());
     }

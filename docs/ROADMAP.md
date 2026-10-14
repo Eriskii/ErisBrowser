@@ -1,20 +1,24 @@
 # Development docket
 
+[Promise construction and reactions](promise-foundation.md) now include
+thenable adoption, generic capabilities/species and a shared FIFO with
+`queueMicrotask`. Remaining asynchronous work includes `catch`, `finally`,
+combinators, async functions/`await`, rejection notifications, timers,
+MutationObserver delivery and multiple realms.
+
 [Shared startup keys](pi-key-cache.md) reduce duplicate DOM metadata allocations
-within the existing bootstrap allowance. Promise construction and reactions are
-still the next asynchronous runtime feature.
+within the existing bootstrap allowance, making room for Promise installation.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity
 prerequisite for Promise reactions while preserving the existing runtime limits.
-Promise construction, reactions and thenable adoption remain subsequent work.
 
 [Microtask callbacks](microtasks.md) now provide the first shared job FIFO and
 script/host-callback cleanup checkpoints in the existing Window realm.
 `queueMicrotask` preserves callback identity, ordinary invocation and ordered
 appends while sharing existing work/storage limits. Fatal failures suspend
-asynchronous work without turning rendering into a scheduler. Promise jobs,
-thenable assimilation, rejection handling, MutationObserver delivery, timers
+asynchronous work without turning rendering into a scheduler. Rejection
+notifications, MutationObserver delivery, timers
 and cross-realm callback settings are subsequent work; the current loader
 still executes supported classic scripts after parsing.
 

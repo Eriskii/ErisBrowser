@@ -128,9 +128,21 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
         + bpp
         + n
         + 4 * bsb;
+    // Promise's five arena headers/private cache and six eagerly reserved bags
+    // are separate from its existing helper charges. The microtask header's
+    // current sizeof is already included in microtask_added above.
+    let promise_added = size_of::<crate::script::promises::State>()
+        + 6 * s
+        + 6 * a
+        + 6 * d
+        + 17 * k
+        + 6 * bpp
+        + 5 * n
+        + 4 * bsb
+        + 6269;
     assert_eq!(
         runtime.steps,
-        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
+        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332 - 930
     );
     assert_eq!(
         runtime.allocated,
@@ -144,16 +156,17 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + 2125
             + microtask_added
             - 1680
+            + promise_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (741, 741)
+        (747, 747)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),
         (299, 25)
     );
-    assert_eq!(runtime.environments[0].bindings.len(), 211);
+    assert_eq!(runtime.environments[0].bindings.len(), 212);
     assert!(runtime.typed_arrays.records.is_empty());
     assert!(runtime.allocated < MAX_HEAP);
     clean(&runtime);

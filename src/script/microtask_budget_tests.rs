@@ -1,4 +1,5 @@
 //! Private-seam cuts, derived before implementation; no measured callback fees.
+use super::promises::QueueJob;
 use super::*;
 
 fn fixture() -> (Runtime, Document, Value) {
@@ -24,7 +25,7 @@ fn idle(runtime: &Runtime) {
 
 #[test]
 fn microtask_cold_enqueue_exact16_and_heap_cut_precede_publication() {
-    let bytes = 32 + 8 * std::mem::size_of::<Value>();
+    let bytes = 32 + 8 * std::mem::size_of::<QueueJob>();
     for (work, allowance, accepted) in [
         (16, bytes, true),
         (15, bytes, false),
@@ -40,7 +41,10 @@ fn microtask_cold_enqueue_exact16_and_heap_cut_precede_publication() {
         if accepted {
             assert_eq!(result.unwrap(), Value::Undefined);
             assert_eq!(runtime.microtasks.admitted_capacity, 8);
-            assert_eq!(runtime.microtasks.queue.front(), Some(&callback));
+            assert_eq!(
+                runtime.microtasks.queue.front(),
+                Some(&QueueJob::Callback(callback.clone()))
+            );
             assert_eq!(runtime.microtasks.queue.len(), 1);
             assert_eq!(runtime.allocated, MAX_HEAP);
             assert!(!runtime.microtasks_suspended());
@@ -75,7 +79,13 @@ fn microtask_spare8_and_full_growth32_preserve_old_fifo_on_refusal() {
             if work == 8 { 2 } else { 1 }
         );
     }
-    let bytes = 32 + 16 * std::mem::size_of::<Value>();
+    // The frozen layout mirror has QueueJob=Value=24 bytes, so the
+    // existing growth movement unit and exact32/31 work cuts stay unchanged.
+    assert_eq!(
+        std::mem::size_of::<QueueJob>(),
+        std::mem::size_of::<Value>()
+    );
+    let bytes = 32 + 16 * std::mem::size_of::<QueueJob>();
     for (work, allowance, accepted) in [
         (32, bytes, true),
         (31, bytes, false),
@@ -223,7 +233,10 @@ fn microtask_reporter_cold88_spare80_and_heap_cuts_are_atomic() {
     );
     assert!(runtime.microtasks_suspended());
     assert_eq!(runtime.microtasks.queue.len(), 1);
-    assert_eq!(runtime.microtasks.queue.front(), Some(&later));
+    assert_eq!(
+        runtime.microtasks.queue.front(),
+        Some(&QueueJob::Callback(later.clone()))
+    );
     assert!(runtime.console.is_empty());
     idle(&runtime);
 }

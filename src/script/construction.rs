@@ -112,6 +112,7 @@ impl Runtime {
                                     | "Function"
                                     | "Array"
                                     | "ArrayBuffer"
+                                    | "Promise"
                                     | "DataView"
                                     | "String"
                                     | "Number"
@@ -329,6 +330,7 @@ impl Runtime {
                         doc,
                     ),
                     "Date" => self.date_constructor(&arguments, new_target, doc),
+                    "Promise" => self.promise_construct(&arguments, new_target, doc),
                     "ArrayBuffer" => self.array_buffer_constructor(&arguments, new_target, doc),
                     "DataView" => self.data_view_constructor(&arguments, new_target, doc),
                     "Function" => self.dynamic_function(arguments, new_target, doc),

@@ -132,6 +132,15 @@ fn invoke_native(
         // This Window operation uses the dynamic receiver without allocating a
         // temporary Native name or bypassing unconditional stack cleanup.
         runtime.queue_microtask(&receiver, &arguments)
+    } else if native.name == "Promise.callback" {
+        // Private capture identity is the stored metadata receiver. Do not
+        // substitute dynamic this or allocate a copied Native name.
+        runtime.promise_callback(&native, &arguments, doc)
+    } else if matches!(
+        native.name.as_str(),
+        "Promise" | "Promise.then" | "Promise.resolve" | "Promise.reject" | "Promise.getSpecies"
+    ) {
+        runtime.promise_native_operation(&native.name, receiver, &arguments, doc)
     } else if NumberPredicate::from_name(&native.name).is_some()
         || crate::script::dom_prototypes::is_interface_name(&native.name)
     {
