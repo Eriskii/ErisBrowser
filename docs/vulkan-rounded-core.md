@@ -67,3 +67,9 @@ source inventory, frozen executables, literal oracles, retained failures,
 reviews and checks. The accompanying `sources-and-checks.tar.gz` contains
 the selected sources and validation artifacts; compiled executables are
 identified by hash rather than included.
+
+The first pushed CI run exposed a separate discovery-list omission: its explicit
+roster still contained 183 tests and rejected the nine newly registered tests.
+The [CI follow-up](evidence/vulkan-rounded-core/ci-roster/summary.json) adds those
+nine names. Both affected feature combinations then discovered and passed all
+192 tests locally. The original source archive remains unchanged.

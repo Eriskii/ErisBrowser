@@ -1,0 +1,71 @@
+{
+  "status": "local_checks_pass",
+  "base": "f240fcf578ae5620546893bc0a49502a7abc9467",
+  "failure_url": "https://github.com/Eriskii/ErisBrowser/actions/runs/38530546529",
+  "reason": "CI explicit discovery roster omitted the nine new box_core_tests; found192 with no missing original183 tests.",
+  "correction": "Add the nine-test module tuple and change exact total183 to192. Original183 tests and all executable Rust sources unchanged.",
+  "checks": "Both raster-bridge and raster-bridge,vulkan-presenter discover exactly the corrected192 names and run192 passed/0failed/0ignored on Rust1.88.0. Exact workflow embedded Python checker executed on both listings.",
+  "prior_source_inventory_sha256": "f3c301a550f5fd4da96a784a8b95462b6065830c4bd8ef0cc6ae244070ca6545",
+  "prior_workflow_sha256": "34fc264296e79303a876b0bd1c61acca3478b550133ae2420313b48c4b16c913",
+  "corrected_workflow_sha256": "4cb11f06072e38d937a8c52a7f55127715002becb16261e6504017fd2b0508e2",
+  "unchanged_prior_source_inputs": 809,
+  "files": {
+    "root/verify-ci-roster.py": {
+      "bytes": 2047,
+      "sha256": "52a03eefd12c4d65ebd13d3046e5f29204f72803d6f888d89bc8745f335bce88"
+    },
+    "root/ci-roster-validation.json": {
+      "bytes": 2153,
+      "sha256": "73ce0cec6f7cc0996dbe0af9b6fe4dc0bbe3f42e410681fd904aa06716cabbec"
+    },
+    "root/ci-roster-source-review.json": {
+      "bytes": 3509,
+      "sha256": "3add8ae4e075c551e9cd493ce445a3a5b45b86fe42e0fdfb2781544700ca1940"
+    },
+    "validation/pushed-ci-progress-1.json": {
+      "bytes": 26978,
+      "sha256": "70fd4a27c609bd64182f0442ebc7396f6d227833894927baf1ddc5992343cf5c"
+    },
+    "validation/pushed-ci-failure-1.log": {
+      "bytes": 23532,
+      "sha256": "a261006ea81f22b01da60346aa639113dacbfc62db246ebf40095db3a9cdad22"
+    },
+    "validation/bridge-list-ci-fix-1.json": {
+      "bytes": 416,
+      "sha256": "d5e5110594537ec7ae9a5a503553cbc6c11ce376def6f853640cdddc521dfc76"
+    },
+    "validation/bridge-list-ci-fix-1.log": {
+      "bytes": 24074,
+      "sha256": "22595e809ac3dff429f39627cd449731639d3275770a848a097c24ac77174070"
+    },
+    "validation/bridge-tests-ci-fix-1.json": {
+      "bytes": 428,
+      "sha256": "f56ec844a67eb9422400f391a16e038042cf67448324aca312feef412f64780d"
+    },
+    "validation/bridge-tests-ci-fix-1.log": {
+      "bytes": 25145,
+      "sha256": "492541d14d307871dc942029e542358a4fb61c57d6f2b76d95a91dd114a8f8bb"
+    },
+    "validation/bridge-presenter-list-ci-fix-1.json": {
+      "bytes": 443,
+      "sha256": "4f944bb5a83e23d747555238c21aa3d794744ee8272d2b37cd8fb07e39112e9a"
+    },
+    "validation/bridge-presenter-list-ci-fix-1.log": {
+      "bytes": 24001,
+      "sha256": "0532a3b2308b7ab537efafe96df367878ffda7a59de6c09cea05ebe8c4126b8a"
+    },
+    "validation/bridge-presenter-tests-ci-fix-1.json": {
+      "bytes": 455,
+      "sha256": "88cb19bcbee548f7a1afbed7faa59f4537e3b0d6e20363f065ca87fbd3fce4a1"
+    },
+    "validation/bridge-presenter-tests-ci-fix-1.log": {
+      "bytes": 25145,
+      "sha256": "ae1e0cc67adf78710150f93f08d515a4b078ccf9f797a3a685b6c267ca3059ae"
+    },
+    "check.yml": {
+      "bytes": 20266,
+      "sha256": "4cb11f06072e38d937a8c52a7f55127715002becb16261e6504017fd2b0508e2"
+    }
+  },
+  "limits": "This follow-up corrects CI discovery only; prior source2 archive is retained unchanged. Corrected remote CI has not yet run."
+}

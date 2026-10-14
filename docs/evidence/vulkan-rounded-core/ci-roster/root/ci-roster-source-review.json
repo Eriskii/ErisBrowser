@@ -1,0 +1,61 @@
+{
+  "status": "clear",
+  "scope": "Independent source/hash/AST/retained-log inspection only; no workflow/compiler/test/Git/GitHub execution or live edits.",
+  "workflow": {
+    "path": "/tmp/eris-vulkan-rounded-core-1/worktree/.github/workflows/check.yml",
+    "bytes": 20266,
+    "sha256": "4cb11f06072e38d937a8c52a7f55127715002becb16261e6504017fd2b0508e2"
+  },
+  "frozen_source": {
+    "path": "/tmp/eris-vulkan-rounded-core-1/source-2.json",
+    "bytes": 91937,
+    "sha256": "f3c301a550f5fd4da96a784a8b95462b6065830c4bd8ef0cc6ae244070ca6545"
+  },
+  "prior_workflow_sha256": "34fc264296e79303a876b0bd1c61acca3478b550133ae2420313b48c4b16c913",
+  "reversal": "Removing exactly the box_core_tests module tuple and changing only count192 back to183 reconstructs the frozen published-candidate workflow byte-exact. No command, feature, source parser, set-equality comparison or old module tuple changes.",
+  "declared_roster": {
+    "old_modules": 18,
+    "old_tests": 183,
+    "new_modules": 1,
+    "new_tests": 9,
+    "final_modules": 19,
+    "final_tests": 192,
+    "new_prefix": "graphics::raster_bridge::native::box_core_tests::",
+    "new_names": [
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_complete_batch_obeys_six_shared_exact_limits_atomically",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_uses_the_existing_mask_ledger_and_preserves_prior_admission",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_zero_and_seven_tile_batches_count_the_rect_exactly_once",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_original_order_cpu_debt_precedes_both_prepaid_stages",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_full_scene_cpu_allowance_keeps_transparent_rect_debt",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_preserves_small_mask_route_and_suppressed_reservations",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_raw_offset_proof_and_unselected_shapes_keep_refusals",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_later_raw_and_image_eligibility_checks_still_precede_color_work",
+      "graphics::raster_bridge::native::box_core_tests::native_box_core_adapter_types_are_observed_without_guessed_stack_sizes"
+    ]
+  },
+  "source_bindings": {
+    "new_test_module": {
+      "path": "/tmp/eris-vulkan-rounded-core-1/worktree/src/graphics/raster_bridge/native/box_core_tests.rs",
+      "bytes": 15958,
+      "sha256": "690c741dc662eb01e2c7b79e70272b774488040965589f2f85e0b0a6b18021d1"
+    },
+    "registration": {
+      "path": "/tmp/eris-vulkan-rounded-core-1/worktree/src/graphics/raster_bridge/native.rs",
+      "bytes": 86940,
+      "sha256": "aaf90707de65a1dbdad3b4282ff531b1077627841ec8448a6cbff0227e6d2967"
+    },
+    "unchanged_rust_inputs": 493,
+    "all_rust_inputs_match_source2": true,
+    "all_old_roster_module_bytes_match_source2": true
+  },
+  "retained_failure": {
+    "log": {
+      "path": "/tmp/eris-vulkan-rounded-core-1/validation/pushed-ci-failure-1.log",
+      "bytes": 23532,
+      "sha256": "a261006ea81f22b01da60346aa639113dacbfc62db246ebf40095db3a9cdad22"
+    },
+    "reported_run": "38530546529",
+    "observed": "stable presenter-variants bridge discovery reports found192, missing[], exactly the nine new module-prefixed tests as extras, then exit1. This agrees with stale183 roster; this read does not rerun or certify the corrected CI job."
+  },
+  "findings": []
+}

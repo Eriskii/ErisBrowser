@@ -1,0 +1,21 @@
+{
+  "command": [
+    "cargo",
+    "+1.88.0",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "Cargo.toml",
+    "--features",
+    "raster-bridge,vulkan-presenter",
+    "--lib",
+    "graphics::raster_bridge::",
+    "--",
+    "--list"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 23.942929619923234,
+  "log": "bridge-presenter-list-ci-fix-1.log",
+  "sha256": "0532a3b2308b7ab537efafe96df367878ffda7a59de6c09cea05ebe8c4126b8a"
+}

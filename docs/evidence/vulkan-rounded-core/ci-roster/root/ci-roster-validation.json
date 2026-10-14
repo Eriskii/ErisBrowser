@@ -1,0 +1,67 @@
+{
+  "status": "pass",
+  "workflow_sha256": "4cb11f06072e38d937a8c52a7f55127715002becb16261e6504017fd2b0508e2",
+  "tests_per_feature": 192,
+  "features": [
+    "raster-bridge",
+    "raster-bridge,vulkan-presenter"
+  ],
+  "checks": {
+    "bridge-list-ci-fix-1": {
+      "validation": "Verified all 192 declared bridge tests are discoverable.",
+      "test_receipt": {
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "test",
+          "--locked",
+          "--offline",
+          "--manifest-path",
+          "Cargo.toml",
+          "--features",
+          "raster-bridge",
+          "--lib",
+          "graphics::raster_bridge::",
+          "--",
+          "--include-ignored"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 1.8700194009579718,
+        "log": "bridge-tests-ci-fix-1.log",
+        "sha256": "492541d14d307871dc942029e542358a4fb61c57d6f2b76d95a91dd114a8f8bb"
+      },
+      "listing_sha256": "22595e809ac3dff429f39627cd449731639d3275770a848a097c24ac77174070"
+    },
+    "bridge-presenter-list-ci-fix-1": {
+      "validation": "Verified all 192 declared bridge tests are discoverable.",
+      "test_receipt": {
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "test",
+          "--locked",
+          "--offline",
+          "--manifest-path",
+          "Cargo.toml",
+          "--features",
+          "raster-bridge,vulkan-presenter",
+          "--lib",
+          "graphics::raster_bridge::",
+          "--",
+          "--include-ignored"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 1.8215073328465223,
+        "log": "bridge-presenter-tests-ci-fix-1.log",
+        "sha256": "ae1e0cc67adf78710150f93f08d515a4b078ccf9f797a3a685b6c267ca3059ae"
+      },
+      "listing_sha256": "0532a3b2308b7ab537efafe96df367878ffda7a59de6c09cea05ebe8c4126b8a"
+    }
+  },
+  "source_changes": "Explicit CI roster adds the nine new box_core_tests; old183 names and executable Rust source unchanged.",
+  "original_failure": {
+    "url": "https://github.com/Eriskii/ErisBrowser/actions/runs/38530546529",
+    "job": 115741118156,
+    "reason": "found192, missing[], extra ninebox_core_tests"
+  }
+}
