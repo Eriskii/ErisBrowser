@@ -186,7 +186,8 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     let reference = Runtime::uninitialized().finish_bootstrap().unwrap();
     // Eager represented DOM interface metadata is included in this raw
     // initialization witness. No author-entry reset has happened.
-    assert_eq!(reference.steps, 793);
+    // Reusing the existing PI name/length keys saves332 work; no cap change.
+    assert_eq!(reference.steps, 1125);
     assert_eq!(reference.objects.len(), 741);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);

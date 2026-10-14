@@ -374,7 +374,7 @@ impl Runtime {
         self.objects.push(bag);
         Ok(id)
     }
-    fn dom_proto_property(
+    pub(super) fn dom_proto_property(
         &mut self,
         owner: usize,
         key: PropertyKey,
@@ -454,6 +454,9 @@ impl Runtime {
         let unscopables_key = self.well_known_key("unscopables");
         let first_order = self.next_global_order;
         let mut new_count = 0usize;
+        // Reuse the immutable length/name pool across the ten PI factories.
+        self.work(8)?;
+        let pi_metadata_keys = [&keys[1], &keys[0]];
         for (interface_index, interface) in INTERFACES.iter().enumerate() {
             self.work(16)?;
             if interface.name == "EventTarget" {
@@ -578,7 +581,7 @@ impl Runtime {
                 self.install_node_identity_members(prototype)?;
                 self.install_node_constants(prototype, properties, &tag_key)?;
             }
-            self.install_pi_members(interface.name, prototype)?;
+            self.install_pi_members(interface.name, prototype, pi_metadata_keys)?;
             // Web IDL places operations/constants before this string property.
             self.dom_proto_property(
                 prototype,

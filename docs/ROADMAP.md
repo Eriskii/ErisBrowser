@@ -1,5 +1,9 @@
 # Development docket
 
+[Shared startup keys](pi-key-cache.md) reduce duplicate DOM metadata allocations
+within the existing bootstrap allowance. Promise construction and reactions are
+still the next asynchronous runtime feature.
+
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity
 prerequisite for Promise reactions while preserving the existing runtime limits.

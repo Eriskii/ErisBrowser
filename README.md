@@ -4,6 +4,10 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
+allocations from ten DOM function metadata bags while keeping their descriptors
+and identities. Work and heap limits remain unchanged.
+
 [Throw diagnostics](docs/throw-completion.md) retain the original JavaScript value
 without invoking constructor or name accessors. Data-only metadata inspection
 keeps ordinary exceptions from triggering unrelated getters or suspending

@@ -118,6 +118,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // Four search methods add908work/8440bytes and four reserved bags; the
     // independent metadata endpoints and raw diagnostic verify that delta.
     // queueMicrotask adds327work, one reserved bag and the held typed envelope.
+    // PI metadata reuses existing keys, saving332work and1680bytes.
     let microtask_added = size_of::<crate::script::microtasks::State>()
         + s
         + 1004
@@ -129,7 +130,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
         + 4 * bsb;
     assert_eq!(
         runtime.steps,
-        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327
+        5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
     );
     assert_eq!(
         runtime.allocated,
@@ -142,6 +143,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + 2125
             + 2125
             + microtask_added
+            - 1680
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),

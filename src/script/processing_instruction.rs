@@ -6,6 +6,10 @@ use crate::dom::DomDataError;
 
 mod character_data;
 #[cfg(test)]
+mod key_cache_fee_tests;
+#[cfg(test)]
+mod key_cache_tests;
+#[cfg(test)]
 mod tests;
 mod xml_name;
 
@@ -26,18 +30,26 @@ pub(super) fn dom_data_error(error: DomDataError) -> ScriptError {
 }
 
 impl Runtime {
-    fn pi_function(&mut self, suffix: &str, display: &str, length: usize) -> Result<Value> {
+    fn pi_function(
+        &mut self,
+        suffix: &str,
+        display: &str,
+        length: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<Value> {
         let properties =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
         let name = self.dom_proto_text(display)?;
-        self.dom_proto_named(
+        // Pay for both borrowed-key clones before retaining either handle.
+        self.work(2)?;
+        self.dom_proto_property(
             properties,
-            "length",
+            metadata_keys[0].clone(),
             Property::data(Value::Number(length as f64), false, false, true),
         )?;
-        self.dom_proto_named(
+        self.dom_proto_property(
             properties,
-            "name",
+            metadata_keys[1].clone(),
             Property::data(Value::String(name), false, false, true),
         )?;
         let length = PREFIX.len() + suffix.len();
@@ -57,11 +69,17 @@ impl Runtime {
         })))
     }
 
-    pub(super) fn install_pi_members(&mut self, interface: &str, prototype: usize) -> Result<()> {
+    pub(super) fn install_pi_members(
+        &mut self,
+        interface: &str,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
         self.work(4)?;
         match interface {
             "Document" => {
-                let function = self.pi_function("create", "createProcessingInstruction", 2)?;
+                let function =
+                    self.pi_function("create", "createProcessingInstruction", 2, metadata_keys)?;
                 self.dom_proto_named(
                     prototype,
                     "createProcessingInstruction",
@@ -69,7 +87,7 @@ impl Runtime {
                 )?;
             }
             "ProcessingInstruction" => {
-                let get = self.pi_function("target", "get target", 0)?;
+                let get = self.pi_function("target", "get target", 0, metadata_keys)?;
                 self.dom_proto_named(
                     prototype,
                     "target",
@@ -84,8 +102,8 @@ impl Runtime {
                 )?;
             }
             "CharacterData" => {
-                let get = self.pi_function("data", "get data", 0)?;
-                let set = self.pi_function("setData", "set data", 1)?;
+                let get = self.pi_function("data", "get data", 0, metadata_keys)?;
+                let set = self.pi_function("setData", "set data", 1, metadata_keys)?;
                 self.dom_proto_named(
                     prototype,
                     "data",
@@ -95,7 +113,7 @@ impl Runtime {
                         configurable: true,
                     },
                 )?;
-                let get = self.pi_function("length", "get length", 0)?;
+                let get = self.pi_function("length", "get length", 0, metadata_keys)?;
                 self.dom_proto_named(
                     prototype,
                     "length",
@@ -110,7 +128,7 @@ impl Runtime {
                 )?;
                 self.work(character_data::METHODS.len())?;
                 for &(name, length) in character_data::METHODS {
-                    let function = self.pi_function(name, name, length)?;
+                    let function = self.pi_function(name, name, length, metadata_keys)?;
                     self.dom_proto_named(
                         prototype,
                         name,
