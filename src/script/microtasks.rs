@@ -118,18 +118,24 @@ fn tree(count: usize) -> (usize, usize) {
 }
 
 impl Runtime {
-    pub(super) fn install_microtask_intrinsic(&mut self) -> Result<()> {
+    pub(super) fn install_microtask_intrinsic(&mut self) -> Result<[JsString; 2]> {
+        // Retained handles may be dropped by any later producer/consumer error.
+        self.work(2)?;
         let properties =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
         let display = self.dom_proto_text(NAME)?;
-        self.dom_proto_named(
+        let length_key = self.dom_proto_text("length")?;
+        self.work(1)?;
+        self.dom_proto_property(
             properties,
-            "length",
+            length_key.clone().into(),
             Property::data(Value::Number(1.0), false, false, true),
         )?;
-        self.dom_proto_named(
+        let name_key = self.dom_proto_text("name")?;
+        self.work(1)?;
+        self.dom_proto_property(
             properties,
-            "name",
+            name_key.clone().into(),
             Property::data(Value::String(display), false, false, true),
         )?;
         self.work(8 + NAME.len())?;
@@ -174,7 +180,7 @@ impl Runtime {
             deletable: true,
         });
         self.next_global_order = next_order;
-        Ok(())
+        Ok([length_key, name_key])
     }
 
     pub fn microtasks_suspended(&self) -> bool {

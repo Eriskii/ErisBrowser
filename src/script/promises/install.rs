@@ -51,7 +51,7 @@ impl Runtime {
         keys: [&JsString; 2],
     ) -> Result<Value> {
         let bag = self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
-        // These two immutable-key clones were prepaid by install_promise_intrinsics.
+        // These two immutable-key clones were prepaid by the installer body.
         self.dom_proto_property(
             bag,
             keys[0].clone().into(),
@@ -65,10 +65,28 @@ impl Runtime {
         self.promise_native(bag, internal, Value::Undefined)
     }
 
+    #[cfg(test)]
     pub(in crate::script) fn install_promise_intrinsics(&mut self) -> Result<()> {
-        // Five empty arena guards, absent-intrinsics guard, final publication,
-        // and ten temporary literal-handle releases. No author calls occur.
+        // Preserve standalone guard-before-allocation ordering and all ten
+        // temporary handle releases, including the two keys created here.
         self.work(17)?;
+        self.check_promise_install_state()?;
+        let keys = [self.dom_proto_text("length")?, self.dom_proto_text("name")?];
+        self.install_promise_intrinsics_body(keys)
+    }
+
+    pub(in crate::script) fn install_promise_intrinsics_with_keys(
+        &mut self,
+        keys: [JsString; 2],
+    ) -> Result<()> {
+        // The producer prepaid both supplied handles' releases, including
+        // refusal of this debit. Pay guards, publication and eight pool releases.
+        self.work(15)?;
+        self.check_promise_install_state()?;
+        self.install_promise_intrinsics_body(keys)
+    }
+
+    fn check_promise_install_state(&self) -> Result<()> {
         if !self.promises.promises.records.is_empty()
             || !self.promises.gates.records.is_empty()
             || !self.promises.callbacks.records.is_empty()
@@ -78,9 +96,14 @@ impl Runtime {
         {
             return Err(ScriptError::resource("Promise state already initialized"));
         }
+        Ok(())
+    }
+
+    fn install_promise_intrinsics_body(&mut self, keys: [JsString; 2]) -> Result<()> {
+        let [length, name] = keys;
         let pool = [
-            self.dom_proto_text("length")?,
-            self.dom_proto_text("name")?,
+            length,
+            name,
             self.dom_proto_text("Promise")?,
             self.dom_proto_text("then")?,
             self.dom_proto_text("resolve")?,

@@ -9,6 +9,8 @@ MutationObserver delivery and multiple realms.
 
 [Shared startup keys](pi-key-cache.md) reduce duplicate DOM metadata allocations
 within the existing bootstrap allowance, making room for Promise installation.
+The [job metadata follow-up](shared-job-keys.md) removes two more duplicate
+strings and leaves 127 startup work units available without raising the limit.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity
@@ -425,6 +427,10 @@ Further measurements need more scenes and repeated environment observations.
 
 Acceptance work:
 
+- For individually oversized rounded solid-color boxes, prove a fully covered
+  interior rectangle and mask only the remaining edges. Keep the existing
+  limits, exact blending and clipping; small-mask routes remain unchanged in
+  the first slice. This is planned work, not a measured speedup.
 - Expand the bounded native route to more browser scenes, preserving clipping,
   fixed coordinates, text coverage, full-range nested opacity and alpha under
   explicit resource limits.

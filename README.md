@@ -14,6 +14,8 @@ Combinators, `finally`, async functions and rejection notifications remain unfin
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors
 and identities. Work and heap limits remain unchanged.
+The [job metadata follow-up](docs/shared-job-keys.md) also shares the immutable
+`length` and `name` keys between `queueMicrotask` and Promise function metadata.
 
 [Throw diagnostics](docs/throw-completion.md) retain the original JavaScript value
 without invoking constructor or name accessors. Data-only metadata inspection

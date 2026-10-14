@@ -1843,8 +1843,8 @@ impl Runtime {
         self.initialize_dom_prototypes()?;
         self.install_object_has_own_intrinsic()?;
         self.initialize_reflect_property_intrinsics()?;
-        self.install_microtask_intrinsic()?;
-        self.install_promise_intrinsics()
+        let keys = self.install_microtask_intrinsic()?;
+        self.install_promise_intrinsics_with_keys(keys)
     }
 
     fn initialize_intrinsics_before_typed_array(&mut self) -> Result<()> {

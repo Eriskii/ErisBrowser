@@ -141,12 +141,14 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
         + 4 * bsb
         + 6269;
     // catch adds one ordinary metadata bag, reusing existing length/name keys.
+    // Adjacent job installers share length/name payloads:34 work and168 bytes saved.
     let catch_added = s + a + d + 3 * k + bpp + n + 1029;
     assert_eq!(
         runtime.steps,
         5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
             - 930
             - 102
+            + 34
     );
     assert_eq!(
         runtime.allocated,
@@ -162,6 +164,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 1680
             + promise_added
             + catch_added
+            - 168
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),

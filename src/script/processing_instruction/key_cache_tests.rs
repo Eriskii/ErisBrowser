@@ -261,10 +261,11 @@ fn cached_pi_keys_share_the_existing_immutable_payload_for_every_bag() {
 }
 
 #[test]
-fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99907_work_boundary() {
-    // Cached PI keys still save332; the separately held Promise with catch installer adds1032.
+fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99873_work_boundary() {
+    // Cached PI keys still save332; Promise with catch standalone installation adds1032.
+    // Shared adjacent job keys independently save34 work without changing either limit.
     for (allowance, success, remaining) in
-        [(99_906, false, 0), (99_907, true, 0), (100_000, true, 93)]
+        [(99_872, false, 0), (99_873, true, 0), (100_000, true, 127)]
     {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;

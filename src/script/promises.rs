@@ -12,6 +12,8 @@ mod quota_more_tests;
 mod quota_tests;
 mod semantics;
 #[cfg(test)]
+mod shared_key_tests;
+#[cfg(test)]
 use factories::object_slot_plan;
 #[cfg(test)]
 mod layout_tests;
@@ -576,3 +578,6 @@ mod allocation_probe {
         });
     }
 }
+
+#[cfg(test)]
+mod shared_key_identity_tests;

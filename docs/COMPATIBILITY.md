@@ -6,6 +6,8 @@ Window realm. Reactions share the `queueMicrotask` FIFO.
 [Generic `catch`](promise-catch.md) preserves observable lookup/call behavior.
 Combinators, `finally`, async functions and rejection notifications remain absent;
 the authored regression tests are not a full ECMAScript conformance result.
+The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
+preserving function properties and identities; they add no API coverage.
 
 [Object.is](../tests/conformance/object-is.md) implements SameValue for existing
 runtime values, including NaN, signed zero, exact UTF-16 strings and ordinary
