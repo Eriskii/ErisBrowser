@@ -27,8 +27,12 @@ controls verified**.
 capability and returns its exact promise/resolve/reject values as own writable,
 enumerable and configurable data properties. The result uses the saved Object
 prototype; constructor throws remain synchronous. The runtime controls cover
-deferred settlement, callback identity and terminal suspension. No dedicated
-withResolvers upstream profile is claimed.
+deferred settlement, callback identity and terminal suspension. Its complete
+pinned upstream directory retains six sources and all 12 modes, with **10 passed
+and two unsupported** under a healthy 44-control gate. Both modes of
+`ctx-ctor.js` are excluded for the declared `class` feature. The synchronous
+profile uses ordinary ERJS1/ERJR2 transport and the existing seven intrinsic
+error identities; it adds no async completion or class support.
 
 [`AggregateError`](aggregate-error.md) supports call/new construction, optional
 message and cause, cached synchronous iteration and a fresh intrinsic errors

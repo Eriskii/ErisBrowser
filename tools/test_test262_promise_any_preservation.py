@@ -30,10 +30,10 @@ class PromiseAnyPreservationTests(unittest.TestCase):
 
     def test_all_58_old_tables_features_and_actual_main_policies_remain_exact(self):
         old = self.oracle
-        self.assertEqual({k: v for k, v in importer.PROFILES.items() if k != NEW_PROFILE}, old['profiles'])
-        self.assertEqual({k: v for k, v in importer.PROFILE_ROOTS.items() if k != NEW_PROFILE}, old['roots'])
-        self.assertEqual(sorted(importer.TREE_PROFILES - {NEW_PROFILE}), old['tree_profiles'])
-        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k != NEW_PROFILE}, old['features'])
+        self.assertEqual({k: v for k, v in importer.PROFILES.items() if k not in {NEW_PROFILE, 'promise-with-resolvers'}}, old['profiles'])
+        self.assertEqual({k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {NEW_PROFILE, 'promise-with-resolvers'}}, old['roots'])
+        self.assertEqual(sorted(importer.TREE_PROFILES - {NEW_PROFILE, 'promise-with-resolvers'}), old['tree_profiles'])
+        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {NEW_PROFILE, 'promise-with-resolvers'}}, old['features'])
         self.assertEqual(sorted(runner.PROMISE_HOST_PROFILES - {NEW_PROFILE}), old['promise_host_profiles'])
         self.assertEqual(sorted(runner.INTRINSIC_ERRORS), old['intrinsic_errors'])
         self.assertEqual(len(old['profiles']), 58)

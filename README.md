@@ -29,8 +29,10 @@ controls verified**.
 [`Promise.withResolvers`](docs/promise-with-resolvers.md) returns a fresh
 `{promise, resolve, reject}` result using a generic constructor and the exact
 capability callbacks. Ordinary constructor errors remain synchronous; existing
-settlement and terminal queue behavior are preserved. A dedicated upstream
-profile remains separate work.
+settlement and terminal queue behavior are preserved. Its complete pinned
+six-source upstream profile retains all 12 modes: **10 passed and two unsupported**,
+with all **44 controls verified**. The two class-tagged modes remain excluded;
+the profile uses ordinary requests and responses without a Promise host policy.
 
 [`AggregateError`](docs/aggregate-error.md) adds callable and constructed errors
 with ordered synchronous iterable collection, optional message/cause properties

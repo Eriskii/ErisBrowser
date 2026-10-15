@@ -133,6 +133,9 @@ AGGREGATE_ERROR_PROFILE = 'aggregate-error'
 AGGREGATE_ERROR_FEATURES = {'AggregateError', 'error-cause', 'Reflect', 'Reflect.construct',
                             'Symbol', 'Symbol.iterator', 'Symbol.toPrimitive'}
 PROFILE_FEATURES[AGGREGATE_ERROR_PROFILE] = AGGREGATE_ERROR_FEATURES
+PROMISE_WITH_RESOLVERS_PROFILE = 'promise-with-resolvers'
+PROMISE_WITH_RESOLVERS_FEATURES = {'promise-with-resolvers'}
+PROFILE_FEATURES[PROMISE_WITH_RESOLVERS_PROFILE] = PROMISE_WITH_RESOLVERS_FEATURES
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -254,13 +257,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {PROMISE_WITH_RESOLVERS_PROFILE, 'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {PROMISE_WITH_RESOLVERS_PROFILE, 'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -389,6 +392,8 @@ def encode_request(case):
 
 
 def decode_response(output, *, profile=None):
+    if profile == PROMISE_WITH_RESOLVERS_PROFILE and not output.startswith(b'ERJR2'):
+        raise ValueError('Promise.withResolvers profile requires an ordinary ERJR2 response')
     if profile == AGGREGATE_ERROR_PROFILE and not output.startswith(b'ERJR2'):
         raise ValueError('AggregateError profile requires an ordinary ERJR2 response')
     if profile == PROMISE_ANY_PROFILE and not output.startswith(b'ERJR3'):
@@ -445,6 +450,9 @@ def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES, profi
     result = {key: case[key] for key in ('id', 'file', 'mode', 'case_sha256')}
     result['source_sha256'] = digest(case['source'])
     result['expected_negative'] = case['metadata']['negative']
+    if profile == PROMISE_WITH_RESOLVERS_PROFILE and 'completion_policy' in case:
+        return dict(result, status='adapter-error',
+                    reason='Promise.withResolvers requires an ordinary request')
     reason = unsupported_reason(case, supported_features, profile)
     if reason:
         return dict(result, status='unsupported', reason=reason)
@@ -455,7 +463,8 @@ def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES, profi
             return dict(result, status='adapter-error', reason=f'adapter exit {exit_code}',
                         stderr=stderr.decode('utf-8', 'replace')[:4096])
         observation = (decode_response(output, profile=profile)
-                       if profile in {AGGREGATE_ERROR_PROFILE, PROMISE_ANY_PROFILE} else decode_response(output))
+                       if profile in {AGGREGATE_ERROR_PROFILE, PROMISE_ANY_PROFILE,
+                                      PROMISE_WITH_RESOLVERS_PROFILE} else decode_response(output))
         status = (classify(case, observation, profile=profile)
                   if profile == PROMISE_ANY_PROFILE else classify(case, observation))
         return dict(result, status=status, observation=observation)
@@ -1400,6 +1409,8 @@ def array_from_preflight_variants():
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
+    if profile == PROMISE_WITH_RESOLVERS_PROFILE:
+        return with_resolvers_harness_preflight(files, binary, timeout)
     if profile == PROMISE_ANY_PROFILE:
         return promise_any_harness_preflight(files, binary, timeout)
     if profile == AGGREGATE_ERROR_PROFILE:
@@ -5038,6 +5049,422 @@ def promise_any_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+def with_resolvers_preflight_variants():
+    """Build the frozen ordinary32 and selected12 controls from source literals."""
+    rows = []
+
+    def add(name, mode, source, expected, *, includes=(), negative=None,
+            error_type='', error_identity='', prerequisites=(), mode_id=False):
+        rows.append({
+            'name': name,
+            'mode': mode,
+            'id': 'harness-preflight:' + name + (':' + mode if mode_id else ''),
+            'source': source,
+            'metadata': {'features': [], 'flags': [], 'includes': list(includes),
+                         'locale': [], 'negative': None if negative is None else
+                         {'phase': 'runtime', 'type': negative}},
+            'expected': expected,
+            'required_observation': {'error_identity': error_identity,
+                                     'error_type': error_type, 'harness': '',
+                                     'phase': 'runtime',
+                                     'status': 'exception' if error_type else 'complete'},
+            'prerequisites': list(prerequisites),
+        })
+
+    # Existing ordinary controls: name, source, result, same-mode prerequisite.
+    common = [
+        ('success',
+         'assert.sameValue(1, 1); assert.sameValue(NaN, NaN);',
+         'passed', None),
+        ('assert-false',
+         'assert(false);',
+         'failed', 'success'),
+        ('same-value',
+         'assert.sameValue(1, 2);',
+         'failed', 'success'),
+        ('signed-zero',
+         'assert.sameValue(0, -0);',
+         'failed', 'success'),
+        ('not-same-value',
+         'assert.notSameValue(1, 1);',
+         'failed', 'success'),
+        ('throws-success',
+         'assert.throws(TypeError, function () { throw new TypeError(); });',
+         'passed', None),
+        ('throws-wrong-type',
+         'assert.throws(TypeError, function () { throw new RangeError(); });',
+         'failed', 'throws-success'),
+        ('throws-missing',
+         'assert.throws(TypeError, function () {});',
+         'failed', 'throws-success'),
+        ('array-mismatch',
+         'assert.compareArray([1], [2]);',
+         'failed', 'success'),
+        ('property-success',
+         "verifyProperty({x: 1}, 'x', {value: 1, writable: true, enumerable: true, configurable: true});",
+         'passed', None),
+        ('property-writable',
+         "verifyProperty({x: 1}, 'x', {writable: false});",
+         'failed', 'property-success'),
+        ('property-enumerable',
+         "verifyProperty({x: 1}, 'x', {enumerable: false});",
+         'failed', 'property-success'),
+        ('property-configurable',
+         "verifyProperty({x: 1}, 'x', {configurable: false});",
+         'failed', 'property-success'),
+    ]
+    for mode, prefix in (('sloppy', ''), ('strict', 'strict-')):
+        for name, source, expected, prerequisite in common:
+            add(prefix + name, mode, source, expected,
+                includes=('propertyHelper.js',) if 'property-' in name else (),
+                error_type='Test262Error' if expected == 'failed' else '',
+                prerequisites=([(prefix + prerequisite, mode)]
+                               if prerequisite is not None else []))
+
+    strict_only = [
+        ('strict-receiver',
+         'function f(){return this;} assert.sameValue(f(),undefined); assert.sameValue(f.call(null),null); assert.sameValue(f.call(3),3);'),
+        ('strict-unbound-write',
+         'assert.throws(ReferenceError,function(){missing=1;});'),
+        ('strict-readonly-write',
+         "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){o.x=2;});"),
+        ('strict-delete',
+         "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){delete o.x;});"),
+        ('strict-arguments',
+         'function f(a){arguments[0]=2;assert.sameValue(a,1);assert.throws(TypeError,()=>arguments.callee);}f(1);'),
+        ('strict-tdz',
+         'assert.throws(ReferenceError,function(){typeof x;let x;});'),
+    ]
+    for name, source in strict_only:
+        add(name, 'strict', source, 'passed')
+    common_refs = [(row['name'], row['mode']) for row in rows]
+
+    # Each selected source is written once and expanded into both modes.
+    selected = [
+        {
+            'name': 'with-resolvers-generic',
+            'source': (
+                "assert.sameValue(typeof Promise.withResolvers, 'function', 'withResolvers availability');\n"
+                'var method = Promise.withResolvers;\n'
+                'var probe = method.call(Promise);\n'
+                'assert.sameValue(probe.promise instanceof Promise, true);\n'
+                'var promise = {}, count = 0, calls = 0;\n'
+                'function resolve(value) { calls++; return value; }\n'
+                'function reject(value) { calls++; return value; }\n'
+                'function C(executor) {\n'
+                "  assert.sameValue(typeof executor, 'function');\n"
+                '  count++;\n'
+                '  executor(resolve, reject);\n'
+                '  return promise;\n'
+                '}\n'
+                'var result = method.call(C);\n'
+                'assert.sameValue(result.promise, promise);\n'
+                'assert.sameValue(result.resolve, resolve);\n'
+                'assert.sameValue(result.reject, reject);\n'
+                'assert.sameValue(calls, 0);\n'
+                "var invalid = [undefined, null, false, 1, 'text', Symbol()];\n"
+                'for (var i = 0; i < invalid.length; i++) {\n'
+                '  assert.throws(TypeError, function () { method.call(invalid[i]); });\n'
+                '}\n'
+                'assert.throws(TypeError, function () { method.call(eval); });\n'
+                'assert.throws(TypeError, function () { method.call(method); });\n'
+                "assert.sameValue(count, 1, 'one generic constructor call');\n"
+            ),
+            'includes': (),
+            'expected': 'passed',
+            'prerequisite': None,
+        },
+        {
+            'name': 'with-resolvers-generic-mismatch',
+            'source': (
+                "assert.sameValue(typeof Promise.withResolvers, 'function', 'withResolvers availability');\n"
+                'var method = Promise.withResolvers;\n'
+                'var probe = method.call(Promise);\n'
+                'assert.sameValue(probe.promise instanceof Promise, true);\n'
+                'var promise = {}, count = 0, calls = 0;\n'
+                'function resolve(value) { calls++; return value; }\n'
+                'function reject(value) { calls++; return value; }\n'
+                'function C(executor) {\n'
+                "  assert.sameValue(typeof executor, 'function');\n"
+                '  count++;\n'
+                '  executor(resolve, reject);\n'
+                '  return promise;\n'
+                '}\n'
+                'var result = method.call(C);\n'
+                'assert.sameValue(result.promise, promise);\n'
+                'assert.sameValue(result.resolve, resolve);\n'
+                'assert.sameValue(result.reject, reject);\n'
+                'assert.sameValue(calls, 0);\n'
+                "var invalid = [undefined, null, false, 1, 'text', Symbol()];\n"
+                'for (var i = 0; i < invalid.length; i++) {\n'
+                '  assert.throws(TypeError, function () { method.call(invalid[i]); });\n'
+                '}\n'
+                'assert.throws(TypeError, function () { method.call(eval); });\n'
+                'assert.throws(TypeError, function () { method.call(method); });\n'
+                "assert.sameValue(count, 2, 'one generic constructor call');\n"
+            ),
+            'includes': (),
+            'expected': 'failed',
+            'prerequisite': 'with-resolvers-generic',
+        },
+        {
+            'name': 'with-resolvers-genuine',
+            'source': (
+                "assert.sameValue(typeof Promise.withResolvers, 'function', 'withResolvers availability');\n"
+                'var result = Promise.withResolvers();\n'
+                'assert.sameValue(result.promise.constructor, Promise);\n'
+                'assert.sameValue(Object.getPrototypeOf(result.promise), Promise.prototype);\n'
+                'assert.sameValue(result.promise instanceof Promise, true);\n'
+                'var calls = 0;\n'
+                'var child = Promise.prototype.then.call(result.promise,\n'
+                '  function () { calls++; }, function () { calls++; });\n'
+                'assert.sameValue(child instanceof Promise, true);\n'
+                "assert.sameValue(calls, 0, 'pending promise has no handler calls');\n"
+                "assert.sameValue(typeof result.resolve, 'function');\n"
+                "assert.sameValue(typeof result.reject, 'function');\n"
+                "assert.sameValue(result.resolve.name, '');\n"
+                "assert.sameValue(result.reject.name, '');\n"
+                'assert.sameValue(result.resolve.length, 1);\n'
+                "assert.sameValue(result.reject.length, 1, 'reject arity');\n"
+            ),
+            'includes': (),
+            'expected': 'passed',
+            'prerequisite': None,
+        },
+        {
+            'name': 'with-resolvers-genuine-mismatch',
+            'source': (
+                "assert.sameValue(typeof Promise.withResolvers, 'function', 'withResolvers availability');\n"
+                'var result = Promise.withResolvers();\n'
+                'assert.sameValue(result.promise.constructor, Promise);\n'
+                'assert.sameValue(Object.getPrototypeOf(result.promise), Promise.prototype);\n'
+                'assert.sameValue(result.promise instanceof Promise, true);\n'
+                'var calls = 0;\n'
+                'var child = Promise.prototype.then.call(result.promise,\n'
+                '  function () { calls++; }, function () { calls++; });\n'
+                'assert.sameValue(child instanceof Promise, true);\n'
+                "assert.sameValue(calls, 0, 'pending promise has no handler calls');\n"
+                "assert.sameValue(typeof result.resolve, 'function');\n"
+                "assert.sameValue(typeof result.reject, 'function');\n"
+                "assert.sameValue(result.resolve.name, '');\n"
+                "assert.sameValue(result.reject.name, '');\n"
+                'assert.sameValue(result.resolve.length, 1);\n'
+                "assert.sameValue(result.reject.length, 2, 'reject arity');\n"
+            ),
+            'includes': (),
+            'expected': 'failed',
+            'prerequisite': 'with-resolvers-genuine',
+        },
+        {
+            'name': 'with-resolvers-result',
+            'source': (
+                "assert.sameValue(typeof Promise.withResolvers, 'function', 'withResolvers availability');\n"
+                'var promise = {}, calls = 0, constructors = 0;\n'
+                'function resolve(value) { calls++; return value; }\n'
+                'function reject(value) { calls++; return value; }\n'
+                'function C(executor) { constructors++; executor(resolve, reject); return promise; }\n'
+                'var result = Promise.withResolvers.call(C);\n'
+                'var again = Promise.withResolvers.call(C);\n'
+                'assert.notSameValue(result, again);\n'
+                'assert.sameValue(Object.getPrototypeOf(result), Object.prototype);\n'
+                'assert.sameValue(Object.getPrototypeOf(again), Object.prototype);\n'
+                "assert.compareArray(Object.getOwnPropertyNames(result), ['promise', 'resolve', 'reject']);\n"
+                "assert.compareArray(Object.keys(result), ['promise', 'resolve', 'reject']);\n"
+                'assert.sameValue(constructors, 2);\n'
+                'assert.sameValue(calls, 0);\n'
+                "var keys = ['promise', 'resolve', 'reject'];\n"
+                'var values = [promise, resolve, reject];\n'
+                'for (var i = 0; i < keys.length; i++) {\n'
+                '  var descriptor = Object.getOwnPropertyDescriptor(result, keys[i]);\n'
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(descriptor, 'value'), true);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(descriptor, 'get'), false);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(descriptor, 'set'), false);\n"
+                '  assert.sameValue(again[keys[i]], values[i]);\n'
+                '  verifyProperty(result, keys[i], {value: values[i], writable: true,\n'
+                '    enumerable: true, configurable: true}, {restore: true});\n'
+                '}\n'
+                'assert.sameValue(calls, 0);\n'
+                "verifyProperty(result, 'reject', {enumerable: true}, {restore: true});\n"
+            ),
+            'includes': ('propertyHelper.js',),
+            'expected': 'passed',
+            'prerequisite': None,
+        },
+        {
+            'name': 'with-resolvers-result-mismatch',
+            'source': (
+                "assert.sameValue(typeof Promise.withResolvers, 'function', 'withResolvers availability');\n"
+                'var promise = {}, calls = 0, constructors = 0;\n'
+                'function resolve(value) { calls++; return value; }\n'
+                'function reject(value) { calls++; return value; }\n'
+                'function C(executor) { constructors++; executor(resolve, reject); return promise; }\n'
+                'var result = Promise.withResolvers.call(C);\n'
+                'var again = Promise.withResolvers.call(C);\n'
+                'assert.notSameValue(result, again);\n'
+                'assert.sameValue(Object.getPrototypeOf(result), Object.prototype);\n'
+                'assert.sameValue(Object.getPrototypeOf(again), Object.prototype);\n'
+                "assert.compareArray(Object.getOwnPropertyNames(result), ['promise', 'resolve', 'reject']);\n"
+                "assert.compareArray(Object.keys(result), ['promise', 'resolve', 'reject']);\n"
+                'assert.sameValue(constructors, 2);\n'
+                'assert.sameValue(calls, 0);\n'
+                "var keys = ['promise', 'resolve', 'reject'];\n"
+                'var values = [promise, resolve, reject];\n'
+                'for (var i = 0; i < keys.length; i++) {\n'
+                '  var descriptor = Object.getOwnPropertyDescriptor(result, keys[i]);\n'
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(descriptor, 'value'), true);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(descriptor, 'get'), false);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(descriptor, 'set'), false);\n"
+                '  assert.sameValue(again[keys[i]], values[i]);\n'
+                '  verifyProperty(result, keys[i], {value: values[i], writable: true,\n'
+                '    enumerable: true, configurable: true}, {restore: true});\n'
+                '}\n'
+                'assert.sameValue(calls, 0);\n'
+                "verifyProperty(result, 'reject', {enumerable: false}, {restore: true});\n"
+            ),
+            'includes': ('propertyHelper.js',),
+            'expected': 'failed',
+            'prerequisite': 'with-resolvers-result',
+        },
+    ]
+    for row in selected:
+        for mode in ('sloppy', 'strict'):
+            prerequisites = common_refs + ([(row['prerequisite'], mode)]
+                                           if row['prerequisite'] is not None else [])
+            add(row['name'], mode, row['source'], row['expected'],
+                includes=row['includes'],
+                error_type='Test262Error' if row['expected'] == 'failed' else '',
+                prerequisites=prerequisites, mode_id=True)
+    return rows
+
+
+def with_resolvers_preflight_cases(files):
+    """Rebuild ordinary control identities from frozen literals and pinned helpers."""
+    definitions = []
+    for row in with_resolvers_preflight_variants():
+        metadata = row['metadata']
+        case = dict(id=row['id'], file='<preflight>', mode=row['mode'],
+                    metadata=metadata, source=row['source'].encode(),
+                    harness=[(name, files['harness/' + name])
+                             for name in harness_names(metadata)])
+        case['case_sha256'] = case_fingerprint(case)
+        definitions.append((row, case))
+    return definitions
+
+
+def with_resolvers_preflight_reference(row, case):
+    return dict(name=row['name'], mode=case['mode'], id=case['id'],
+                case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
+                expected=row['expected'])
+
+
+def with_resolvers_preflight_checks(outcomes, files):
+    """Recheck exact identities, ordinary observations and prerequisite health."""
+    try:
+        definitions = with_resolvers_preflight_cases(files)
+        if not isinstance(outcomes, list) or len(outcomes) != 44 or len(definitions) != 44:
+            return None
+        canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+        if len(canonical) != 44:
+            return None
+        observed = {}
+        for item in outcomes:
+            if (not isinstance(item, dict)
+                    or set(item) != {'name', 'expected', 'verified', 'result', 'prerequisites'}
+                    or not isinstance(item['name'], str)
+                    or not isinstance(item['expected'], str)
+                    or type(item['verified']) is not bool
+                    or not isinstance(item['result'], dict)
+                    or not isinstance(item['result'].get('mode'), str)
+                    or not isinstance(item['prerequisites'], list)):
+                return None
+            identity = (item['name'], item['result']['mode'])
+            if identity in observed or identity not in canonical:
+                return None
+            observed[identity] = item
+        if observed.keys() != canonical.keys():
+            return None
+        raw_checks = {}
+        for identity, (row, case) in canonical.items():
+            item = observed[identity]
+            result = item['result']
+            expected_result = {key: case[key] for key in ('id', 'file', 'mode', 'case_sha256')}
+            expected_result.update(source_sha256=digest(case['source']),
+                                   expected_negative=case['metadata']['negative'],
+                                   status=row['expected'])
+            observation = result.get('observation')
+            raw_names = {'status', 'phase', 'error_type', 'error_identity', 'message', 'harness'}
+            expected_prerequisites = [with_resolvers_preflight_reference(*canonical[key])
+                                      for key in row['prerequisites']]
+            prerequisites = item['prerequisites']
+            reference_names = {'name', 'mode', 'id', 'case_sha256', 'source_sha256', 'expected'}
+            negative = result.get('expected_negative')
+            good = ('completion_policy' not in case
+                    and item['expected'] == row['expected']
+                    and set(result) == set(expected_result) | {'observation'}
+                    and all(isinstance(result.get(key), str) for key in
+                            ('id', 'file', 'mode', 'case_sha256', 'source_sha256', 'status'))
+                    and (negative is None or isinstance(negative, dict)
+                         and set(negative) == {'phase', 'type'}
+                         and all(isinstance(value, str) for value in negative.values()))
+                    and all(result.get(key) == value for key, value in expected_result.items())
+                    and len(prerequisites) == len(expected_prerequisites)
+                    and all(isinstance(ref, dict) and set(ref) == reference_names
+                            and all(isinstance(value, str) for value in ref.values())
+                            for ref in prerequisites)
+                    and prerequisites == expected_prerequisites
+                    and isinstance(observation, dict) and set(observation) == raw_names)
+            if good:
+                good = (all(isinstance(value, str) and len(value.encode('utf-8')) <= 16384
+                            for value in observation.values())
+                        and all(observation[key] == value
+                                for key, value in row['required_observation'].items())
+                        and classify(case, observation) == row['expected'])
+            raw_checks[identity] = good
+        checked, visiting = {}, set()
+
+        def healthy(identity):
+            if identity in checked:
+                return checked[identity]
+            if identity in visiting:
+                return False
+            visiting.add(identity)
+            row, _ = canonical[identity]
+            value = raw_checks[identity] and all(healthy(key) for key in row['prerequisites'])
+            visiting.remove(identity)
+            checked[identity] = value
+            return value
+
+        for identity in canonical:
+            healthy(identity)
+        return checked
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def with_resolvers_preflight_healthy(outcomes, files):
+    checks = with_resolvers_preflight_checks(outcomes, files)
+    return (checks is not None and len(checks) == 44 and all(checks.values())
+            and all(item['verified'] is True for item in outcomes))
+
+
+def with_resolvers_harness_preflight(files, binary, timeout):
+    definitions = with_resolvers_preflight_cases(files)
+    canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+    outcomes = []
+    for row, case in definitions:
+        result = run_case(case, binary, timeout,
+                          PROMISE_WITH_RESOLVERS_FEATURES, PROMISE_WITH_RESOLVERS_PROFILE)
+        prerequisites = [with_resolvers_preflight_reference(*canonical[key])
+                         for key in row['prerequisites']]
+        outcomes.append(dict(name=row['name'], expected=row['expected'], verified=False,
+                             result=result, prerequisites=prerequisites))
+    checks = with_resolvers_preflight_checks(outcomes, files)
+    if checks is not None:
+        for item in outcomes:
+            item['verified'] = checks[(item['name'], item['result']['mode'])]
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -5082,7 +5509,8 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (promise_any_preflight_healthy(preflight, files) if args.profile == PROMISE_ANY_PROFILE
+        preflight_ok = (with_resolvers_preflight_healthy(preflight, files) if args.profile == PROMISE_WITH_RESOLVERS_PROFILE
+                        else promise_any_preflight_healthy(preflight, files) if args.profile == PROMISE_ANY_PROFILE
                         else aggregate_error_preflight_healthy(preflight, files) if args.profile == AGGREGATE_ERROR_PROFILE
                         else promise_all_settled_preflight_healthy(preflight) if args.profile == PROMISE_ALL_SETTLED_PROFILE
                         else promise_race_preflight_healthy(preflight) if args.profile == PROMISE_RACE_PROFILE
@@ -5090,7 +5518,12 @@ def main():
                         else promise_preflight_healthy(preflight) if args.profile == PROMISE_PROFILE
                         else all(item['verified'] for item in preflight))
         supported_features = PROFILE_FEATURES[args.profile]
-        if args.profile == AGGREGATE_ERROR_PROFILE and not preflight_ok:
+        if args.profile == PROMISE_WITH_RESOLVERS_PROFILE and not preflight_ok:
+            results = [dict(id=case['id'], file=case['file'], mode=case['mode'],
+                            case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
+                            expected_negative=case['metadata']['negative'], status='blocked',
+                            reason='Promise.withResolvers harness preflight failed') for case in cases]
+        elif args.profile == AGGREGATE_ERROR_PROFILE and not preflight_ok:
             results = [dict(id=case['id'], file=case['file'], mode=case['mode'],
                             case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
                             expected_negative=case['metadata']['negative'], status='blocked',

@@ -360,6 +360,15 @@ failures retain sticky queue suspension. The late metadata bag uses the existing
 trusted allowance without changing author-entry resets, host authority or
 decoder policy. These logical charges do not establish process-memory bounds.
 
+The withResolvers upstream profile uses ordinary ERJS1 requests and accepts only
+ERJR2 responses with the existing seven intrinsic error identities. A supplied
+completion-policy key is refused before metadata exclusions, encoding or adapter
+execution. Its 44-control gate checks exact source/helper identities, bounded raw
+fields and prerequisite records, then recomputes ordinary classification. An
+unhealthy gate blocks every source mode and prevents baseline recording. These
+checks rely on the trusted adapter; they grant no renderer authority and change
+no runtime, transport bytes or resource limits.
+
 ## Representative limits
 
 [Trusted runtime initialization](bootstrap-budget.md) has a finite 1,000,000-unit

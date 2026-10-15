@@ -1,5 +1,40 @@
 # Validation record
 
+## Complete pinned Promise.withResolvers selection
+
+The [withResolvers upstream profile](promise-with-resolvers.md) retains all six
+pinned sources and 12 modes. It records **10 passed and two unsupported modes**,
+with all **44 controls verified**. Both unsupported rows are `ctx-ctor.js`,
+excluded for its declared `class` feature before adapter execution. All six
+originals are synchronous; the profile uses ordinary ERJS1/ERJR2 transport and
+the existing seven intrinsic error identities.
+
+The complete Python suite passes **652 tests**, preserving all 624 parent
+identities and adding 28 groups. The first focused candidate run passes all 28.
+Offline importing reproduces the complete 19-file package byte for byte.
+The gate authenticates canonical control identities, raw observations and
+prerequisites; an unhealthy gate blocks all 12 modes and refuses both new and
+existing baseline destinations.
+
+Healthy recording and replay retain the complete **12 case and 44 control
+arrays**. The measured baseline is the compact 12-status map with binding
+metadata, not a full report. All six older profiles preserve their complete
+**1,288 case and 502 control arrays**, including nonpassing outcomes, with no
+old policy or baseline changes.
+
+The initial orchestration recipe incorrectly required exit zero despite the
+two retained unsupported rows; a later verifier incorrectly equated the compact
+baseline with a full report. Both assertions were corrected without changing
+source, controls, tests or recorded outcomes. The completed initial reports
+remain retained. A separate evidence-parser correction deduplicates repeated
+parent-test summary lines without changing raw logs or project results.
+
+This tooling checkpoint reuses the published runtime's exact Rust 1.88 ordinary
+and host adapters. Rust execution inputs and limits are unchanged; no new Rust
+suite, Clippy or build is claimed. The adjacent ordinary baseline CI gate is
+configured without a new remote-result claim. Evidence is linked from the
+chapter. All prior validation text below remains byte-exact.
+
 ## Promise.withResolvers runtime
 
 The [withResolvers checkpoint](promise-with-resolvers.md) adds generic capability

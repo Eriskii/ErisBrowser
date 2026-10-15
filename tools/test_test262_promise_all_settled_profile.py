@@ -393,12 +393,12 @@ class PromiseAllSettledProfileTests(unittest.TestCase):
 
     def test_existing_56_tables_and_all_three_promise_profiles_remain_exact(self):
         # Parent-compatible: no new profile, function or transport is looked up.
-        tables = dict(profiles={k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'aggregate-error', 'promise-any'}},
-                      roots={k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'aggregate-error', 'promise-any'}},
-                      tree_profiles=sorted(importer.TREE_PROFILES - {PROFILE, 'aggregate-error', 'promise-any'}))
+        tables = dict(profiles={k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'aggregate-error', 'promise-any', 'promise-with-resolvers'}},
+                      roots={k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'aggregate-error', 'promise-any', 'promise-with-resolvers'}},
+                      tree_profiles=sorted(importer.TREE_PROFILES - {PROFILE, 'aggregate-error', 'promise-any', 'promise-with-resolvers'}))
         self.assertEqual(tables, self.oracle['old_tables'])
         self.assertEqual((len(tables['profiles']), digest(canonical(tables))), (56, self.oracle['old_tables_sha256']))
-        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {PROFILE, 'aggregate-error', 'promise-any'}},
+        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {PROFILE, 'aggregate-error', 'promise-any', 'promise-with-resolvers'}},
                          self.oracle['old_features'])
         self.assertEqual(runner.promise_preflight_variants(), self.common)
         self.assertEqual(runner.promise_all_preflight_variants(), self.all_oracle['controls'])

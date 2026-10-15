@@ -1,0 +1,373 @@
+{
+  "base": "dbbb86c0b3330bbe3bd5213896f2460cedfa02d0",
+  "profile": "promise-with-resolvers",
+  "expected_manifest": {
+    "format": 1,
+    "repository": "https://github.com/tc39/test262",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "scope": "all 6 original .js files in the complete Promise/withResolvers subtree; root-linked nonrecursive Git proofs and unchanged three-helper closure; all original feature metadata retained; no execution or conformance claim",
+    "directories": {
+      "Promise/withResolvers": [
+        "ctx-ctor.js",
+        "ctx-non-ctor.js",
+        "ctx-non-object.js",
+        "promise.js",
+        "resolvers.js",
+        "result.js"
+      ]
+    },
+    "test_files": 6,
+    "files": [
+      {
+        "path": "INTERPRETING.md",
+        "upstream_path": "INTERPRETING.md",
+        "bytes": 18611,
+        "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+      },
+      {
+        "path": "LICENSE",
+        "upstream_path": "LICENSE",
+        "bytes": 2213,
+        "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+      },
+      {
+        "path": "harness/assert.js",
+        "upstream_path": "harness/assert.js",
+        "bytes": 4881,
+        "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+      },
+      {
+        "path": "harness/propertyHelper.js",
+        "upstream_path": "harness/propertyHelper.js",
+        "bytes": 18956,
+        "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+      },
+      {
+        "path": "harness/sta.js",
+        "upstream_path": "harness/sta.js",
+        "bytes": 792,
+        "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+      },
+      {
+        "path": "test/built-ins/Promise/withResolvers/ctx-ctor.js",
+        "upstream_path": "test/built-ins/Promise/withResolvers/ctx-ctor.js",
+        "bytes": 504,
+        "sha256": "9b300e14b4ec7698294757126a71b8126c9815c420522930781e273041801b4f"
+      },
+      {
+        "path": "test/built-ins/Promise/withResolvers/ctx-non-ctor.js",
+        "upstream_path": "test/built-ins/Promise/withResolvers/ctx-non-ctor.js",
+        "bytes": 368,
+        "sha256": "6bddd01251652b3aedc93a8dda8272f017577e00d8c898ef84c75d99d7bdae36"
+      },
+      {
+        "path": "test/built-ins/Promise/withResolvers/ctx-non-object.js",
+        "upstream_path": "test/built-ins/Promise/withResolvers/ctx-non-object.js",
+        "bytes": 772,
+        "sha256": "ac8c6e4498379ba800306ced5224a67bd048318cb550deddcde41e83a2dba58c"
+      },
+      {
+        "path": "test/built-ins/Promise/withResolvers/promise.js",
+        "upstream_path": "test/built-ins/Promise/withResolvers/promise.js",
+        "bytes": 469,
+        "sha256": "8d183c5be617915955e6b322d58567e2a2dab0c0db30faef429d6efe2d2623a0"
+      },
+      {
+        "path": "test/built-ins/Promise/withResolvers/resolvers.js",
+        "upstream_path": "test/built-ins/Promise/withResolvers/resolvers.js",
+        "bytes": 773,
+        "sha256": "b538537ee0d5d9ad474c264d65576eaad9fb4769f5a54f33ccc6ed893ffc5c15"
+      },
+      {
+        "path": "test/built-ins/Promise/withResolvers/result.js",
+        "upstream_path": "test/built-ins/Promise/withResolvers/result.js",
+        "bytes": 822,
+        "sha256": "85d0e26f667f83b162f3f69439b76f35c8ca9412b92fd24efdb234424f04acbb"
+      }
+    ],
+    "inventory_proof": {
+      "method": "complete-nonrecursive-git-trees",
+      "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+      "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+      "directory_trees": {
+        "Promise/withResolvers": "062393e615d0cf97a0252e6a93923bd91444a455"
+      },
+      "auxiliary_blobs": {
+        "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+        "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+        "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+        "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+        "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+      },
+      "files": [
+        {
+          "path": "inventory-proof/commit.json",
+          "bytes": 1094,
+          "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+          "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+        },
+        {
+          "path": "inventory-proof/tree-062393e615d0cf97a0252e6a93923bd91444a455.json",
+          "bytes": 1470,
+          "sha256": "40cad5d6f1d478ef3037c7d6fe5f6e0b4600de1e774a3e9396dcdcf0694b99eb",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/062393e615d0cf97a0252e6a93923bd91444a455"
+        },
+        {
+          "path": "inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+          "bytes": 15975,
+          "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/176043820c3a0729f2da2a047303a984cca036c6"
+        },
+        {
+          "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+          "bytes": 5452,
+          "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+        },
+        {
+          "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+          "bytes": 1374,
+          "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+        },
+        {
+          "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+          "bytes": 13201,
+          "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+        },
+        {
+          "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+          "bytes": 7655,
+          "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+        }
+      ]
+    }
+  },
+  "manifest_sha256": "fb37d92c48c11850d893bb2b8375244673b674ea56403aecd81dee9362e89a94",
+  "all_files": [
+    {
+      "path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "inventory-proof/commit.json",
+      "bytes": 1094,
+      "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0"
+    },
+    {
+      "path": "inventory-proof/tree-062393e615d0cf97a0252e6a93923bd91444a455.json",
+      "bytes": 1470,
+      "sha256": "40cad5d6f1d478ef3037c7d6fe5f6e0b4600de1e774a3e9396dcdcf0694b99eb"
+    },
+    {
+      "path": "inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+      "bytes": 15975,
+      "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61"
+    },
+    {
+      "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+      "bytes": 5452,
+      "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb"
+    },
+    {
+      "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+      "bytes": 1374,
+      "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e"
+    },
+    {
+      "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+      "bytes": 13201,
+      "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e"
+    },
+    {
+      "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+      "bytes": 7655,
+      "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 6036,
+      "sha256": "fb37d92c48c11850d893bb2b8375244673b674ea56403aecd81dee9362e89a94"
+    },
+    {
+      "path": "test/built-ins/Promise/withResolvers/ctx-ctor.js",
+      "bytes": 504,
+      "sha256": "9b300e14b4ec7698294757126a71b8126c9815c420522930781e273041801b4f"
+    },
+    {
+      "path": "test/built-ins/Promise/withResolvers/ctx-non-ctor.js",
+      "bytes": 368,
+      "sha256": "6bddd01251652b3aedc93a8dda8272f017577e00d8c898ef84c75d99d7bdae36"
+    },
+    {
+      "path": "test/built-ins/Promise/withResolvers/ctx-non-object.js",
+      "bytes": 772,
+      "sha256": "ac8c6e4498379ba800306ced5224a67bd048318cb550deddcde41e83a2dba58c"
+    },
+    {
+      "path": "test/built-ins/Promise/withResolvers/promise.js",
+      "bytes": 469,
+      "sha256": "8d183c5be617915955e6b322d58567e2a2dab0c0db30faef429d6efe2d2623a0"
+    },
+    {
+      "path": "test/built-ins/Promise/withResolvers/resolvers.js",
+      "bytes": 773,
+      "sha256": "b538537ee0d5d9ad474c264d65576eaad9fb4769f5a54f33ccc6ed893ffc5c15"
+    },
+    {
+      "path": "test/built-ins/Promise/withResolvers/result.js",
+      "bytes": 822,
+      "sha256": "85d0e26f667f83b162f3f69439b76f35c8ca9412b92fd24efdb234424f04acbb"
+    }
+  ],
+  "total_package_bytes": 101418,
+  "metadata": {
+    "test/built-ins/Promise/withResolvers/ctx-ctor.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "promise-with-resolvers",
+        "class"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/withResolvers/ctx-non-ctor.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "promise-with-resolvers"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/withResolvers/ctx-non-object.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "promise-with-resolvers"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/withResolvers/promise.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "promise-with-resolvers"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/withResolvers/resolvers.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "promise-with-resolvers"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/withResolvers/result.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [
+        "promise-with-resolvers"
+      ],
+      "locale": [],
+      "negative": null
+    }
+  },
+  "case_identities": [
+    {
+      "id": "test/built-ins/Promise/withResolvers/ctx-ctor.js:sloppy",
+      "case_sha256": "9e681a93c2ab377c24fa305a897f77f93e6d537e1e1c0ee7b498d5caef5d66f4"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/ctx-ctor.js:strict",
+      "case_sha256": "2cfd5c83e185c3ef2aa99db4ef0497424c13c405f15e06ad132de074ab340bd1"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/ctx-non-ctor.js:sloppy",
+      "case_sha256": "a56521ca815b0ae0ece44024b1796791462feef99fd42daca37df50a07304b1d"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/ctx-non-ctor.js:strict",
+      "case_sha256": "f777104576df2bf3905b80530901dc2b62fd0fb916fad7a2a974d82a7ba1bdc6"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/ctx-non-object.js:sloppy",
+      "case_sha256": "7d8c2e2f47ee2104a38428eee23b9499ee4e177951fe9fc6d501a7043c17c1aa"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/ctx-non-object.js:strict",
+      "case_sha256": "6ca59c8fff2be31caef705896453f50b5042a795a8caddd3056fa3d7a4e11517"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/promise.js:sloppy",
+      "case_sha256": "c15134a05ff15a3576054444cdcdfa196cc5ac722ca7e88f360c5b030b972076"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/promise.js:strict",
+      "case_sha256": "45635df90bb7f1a83c35f70cb1568411e80f0de28c5493a006667416bed8e5ca"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/resolvers.js:sloppy",
+      "case_sha256": "f987ccd96b6f2252933504e9e462db8d02d472d5b96c645f0e6709ccdae4211a"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/resolvers.js:strict",
+      "case_sha256": "022fc2957862b4368c5368d81d81211ea46202dacd301fcc1087d84e04b52cc2"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/result.js:sloppy",
+      "case_sha256": "e4982c341eb27b2d321c4ed264eeeca3fd7509dc3b83aba22d90ab2577f2afb9"
+    },
+    {
+      "id": "test/built-ins/Promise/withResolvers/result.js:strict",
+      "case_sha256": "231b3ac36d0074b99de2503c2b48a58b79efbc89baa952936ff6665742bf581b"
+    }
+  ],
+  "old_profile_count": 59,
+  "old_tables_sha256": {
+    "PROFILES": "85eef885693c6ef8d24219c5c49044969c4044e5628cb5dfca670d5d5f73cff0",
+    "PROFILE_ROOTS": "70ac2f8d8454db9746fa145eecc2ad4692dc835e9c4a4dc14bef505603ec0a21",
+    "TREE_PROFILES": "d4d6d81c595d500df569ab87d23831ec903899f43d3f85f651ffd1c0f29d6139"
+  },
+  "source_features": {
+    "promise-with-resolvers": 6,
+    "class": 1
+  },
+  "source_includes": {
+    "propertyHelper.js": 1
+  },
+  "source_bytes": 3708,
+  "source_modes": 12,
+  "completion_policy_present": false,
+  "qualification": "Exact source-derived data only. All six originals retained; no runtime outcome prediction."
+}

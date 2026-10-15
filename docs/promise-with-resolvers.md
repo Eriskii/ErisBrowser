@@ -1,5 +1,69 @@
 # Promise.withResolvers
 
+## Complete pinned upstream profile
+
+The `promise-with-resolvers` profile retains all six original files in
+`built-ins/Promise/withResolvers` at Test262 revision
+`7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd`, in both sloppy and strict modes.
+It records **10 passed and two unsupported modes**, with all **44 controls
+verified**. Both unsupported rows are `ctx-ctor.js`: its declared `class`
+feature is excluded before adapter execution. No source or mode is removed
+because of its outcome.
+
+The 19-file package includes the six sources, three unchanged helpers
+(`assert.js`, `sta.js` and `propertyHelper.js`), legal files, complete directory
+proofs linked to the pinned root, and a manifest. An offline importer replay
+reproduces every packaged byte. All six sources are synchronous; this profile
+uses ordinary ERJS1 requests and ERJR2 responses with the existing seven
+intrinsic error identities. It adds no Promise host requirement or async
+completion policy. Class syntax remains unsupported.
+
+The canonical gate retains 32 existing ordinary controls and adds three
+positive/mismatch pairs in both modes. They exercise generic capability
+capture and constructor validation, genuine pending Promises and resolver
+metadata, and fresh result objects with exact callback identities and data
+properties. Each mismatch changes one final assertion. Pending `then` is a
+synchronous brand check, not asynchronous settlement coverage. Control success
+means the expected result was verified, including deliberate assertion failures.
+
+Admission rebuilds source, metadata, mode and ordered-helper fingerprints;
+checks exact result and prerequisite records; validates the six ordinary raw
+fields; and recomputes classification. A completion-policy key is refused
+before encoding or dispatch, and ERJR3 responses are rejected. A bad gate blocks
+all 12 source modes, including metadata-excluded rows, and cannot create or
+overwrite a baseline.
+
+All **652 Python tests pass**, retaining the 624 parent test identities and
+adding 28 groups. The first focused candidate run passes all 28. Healthy
+recording and replay retain the exact 12 case and 44 control arrays. The new
+baseline stores a compact map of the 12 statuses and case/source fingerprints,
+with corpus, policy and binary bindings; it is not a copy of the full reports. The six older profiles keep
+their complete 1,288 case and 502 control records, including failed and
+unsupported outcomes, with unchanged policies and baselines.
+
+Two orchestration assertions were corrected after complete reports had been
+written: the initial recipe expected exit zero despite retained unsupported
+rows, and the first replay verifier compared the compact baseline with a full
+report. Neither correction changes source, controls, test expectations or raw
+results. Those initial records remain in the evidence. A separate evidence-parser
+correction deduplicates repeated parent-test summary lines without changing raw
+logs or project results.
+
+This checkpoint changes tooling, corpus data, tests and the adjacent ordinary
+CI gate. It reuses the published runtime checkpoint's exact Rust 1.88 ordinary
+and host adapters; Rust sources, build settings, wire bytes and runtime limits
+are unchanged. No new Rust suite, Clippy or build result is claimed. The CI step
+is configured here; no remote result for this checkpoint is claimed. These
+selected results establish neither full ECMAScript compatibility nor a security
+or performance result.
+
+The [upstream evidence manifest](evidence/promise-with-resolvers-upstream/manifest.json)
+and [source/check archive](evidence/promise-with-resolvers-upstream/sources-and-checks.tar.gz)
+retain the source contracts, original reports, compact baseline and validation
+receipts. The earlier runtime record below keeps its historical scope.
+
+## Runtime checkpoint
+
 `Promise.withResolvers()` returns a fresh ordinary object containing `promise`,
 `resolve` and `reject`, in that property order. Each is an own writable,
 enumerable and configurable data property. The method has name `withResolvers`,
