@@ -136,7 +136,7 @@ impl Runtime {
                     )?;
                 }
             }
-            "Text" => self.install_text_operations(prototype)?,
+            "Text" => self.install_text_operations(prototype, metadata_keys)?,
             _ => {}
         }
         Ok(())

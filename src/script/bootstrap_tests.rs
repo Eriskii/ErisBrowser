@@ -193,7 +193,8 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Promise.all adds107 metadata work and one arena guard, with no cap change.
     // Nine further Node factories share immutable keys:250 work/1512 bytes saved.
     // Promise.race adds121 metadata work and one reserved bag, with no new arena.
-    assert_eq!(reference.steps, 154);
+    // Two Text factories share existing keys, saving60 work and336 bytes.
+    assert_eq!(reference.steps, 214);
     assert_eq!(reference.objects.len(), 751);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);

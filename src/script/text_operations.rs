@@ -5,6 +5,10 @@ use crate::dom::{DomMutationBudget, DomString};
 use processing_instruction::dom_data_error;
 
 #[cfg(test)]
+mod key_cache_fee_tests;
+#[cfg(test)]
+mod key_cache_tests;
+#[cfg(test)]
 mod tests;
 
 pub(super) const PREFIX: &str = "DOM.Text.";
@@ -26,18 +30,21 @@ impl Runtime {
         suffix: &str,
         display: &str,
         length: usize,
+        metadata_keys: [&PropertyKey; 2],
     ) -> Result<Value> {
         let properties =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
         let name = self.dom_proto_text(display)?;
-        self.dom_proto_named(
+        // Pay both retained key clones before publishing either descriptor.
+        self.work(2)?;
+        self.dom_proto_property(
             properties,
-            "length",
+            metadata_keys[0].clone(),
             Property::data(Value::Number(length as f64), false, false, true),
         )?;
-        self.dom_proto_named(
+        self.dom_proto_property(
             properties,
-            "name",
+            metadata_keys[1].clone(),
             Property::data(Value::String(name), false, false, true),
         )?;
         let length = PREFIX.len() + suffix.len();
@@ -57,10 +64,17 @@ impl Runtime {
         })))
     }
 
-    pub(super) fn install_text_operations(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn install_text_operations(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // Forward the existing immutable length/name pool once for both bags.
+        self.work(8)?;
         self.work(4)?;
         // Web IDL installs attributes before operations, then constructor.
-        let get = self.text_operations_function("getWholeText", "get wholeText", 0)?;
+        let get =
+            self.text_operations_function("getWholeText", "get wholeText", 0, metadata_keys)?;
         self.dom_proto_named(
             prototype,
             "wholeText",
@@ -73,7 +87,7 @@ impl Runtime {
                 configurable: true,
             },
         )?;
-        let split = self.text_operations_function("splitText", "splitText", 1)?;
+        let split = self.text_operations_function("splitText", "splitText", 1, metadata_keys)?;
         self.dom_proto_named(
             prototype,
             "splitText",

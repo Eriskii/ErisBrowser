@@ -50,6 +50,9 @@ heap bytes while preserving their separate identities and behavior.
 The [Node method follow-up](docs/node-method-keys.md) extends this sharing to nine
 more functions, saving another 250 startup work units and 1,512 accounted heap
 bytes within the same limits.
+The [Text metadata follow-up](docs/text-metadata-keys.md) shares the existing keys
+for `wholeText` and `splitText`, saving 60 startup work units and 336 accounted
+heap bytes while preserving both functions and their behavior.
 
 [Throw diagnostics](docs/throw-completion.md) retain the original JavaScript value
 without invoking constructor or name accessors. Data-only metadata inspection

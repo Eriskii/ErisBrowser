@@ -261,13 +261,13 @@ fn cached_pi_keys_share_the_existing_immutable_payload_for_every_bag() {
 }
 
 #[test]
-fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99846_work_boundary() {
+fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99786_work_boundary() {
     // Cached PI keys still save332; Promise with finally standalone installation adds1154.
     // Shared adjacent job keys independently save34 work without changing either limit.
     // Four Node accessor key pairs independently save128 work and672 bytes.
     // Promise.all independently adds107 metadata work and one arena guard.
     for (allowance, success, remaining) in
-        [(99_845, false, 0), (99_846, true, 0), (100_000, true, 154)]
+        [(99_785, false, 0), (99_786, true, 0), (100_000, true, 214)]
     {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;

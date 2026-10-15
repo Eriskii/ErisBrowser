@@ -1,0 +1,2483 @@
+{
+  "schema": 1,
+  "status": "verified",
+  "archive": {
+    "path": "sources-and-checks.tar.gz",
+    "bytes": 2490222,
+    "sha256": "ed457a4f27769c8bd36586b7d25bd2bc54f6280785fc53207d7a2914c983a642",
+    "member_bytes": 14669251,
+    "uncompressed_tar_bytes": 14940160,
+    "selected_max_uncompressed_bytes": 33554432
+  },
+  "source_count": 10,
+  "documentation_count": 4,
+  "supplemental_input_count": 177,
+  "artifact_count": 152,
+  "source_inventory": {
+    "path": "/tmp/eris-text-metadata-keys-1/source-final.json",
+    "bytes": 205029,
+    "sha256": "e30f5b782d6903382234ba5fa39f4e98df8e8568d3b6777907da6dc632a94db8"
+  },
+  "claims": {
+    "base": "f3e70ba152fdd3b730b1dd1494963a77f5141161",
+    "scope": "Reuse the existing immutable length/name key payloads for both Text native metadata bags, preserving observable behavior and runtime limits.",
+    "resource_change": {
+      "raw_startup_before": 99846,
+      "raw_startup_after": 99786,
+      "work_saved": 60,
+      "accounted_heap_bytes_saved": 336,
+      "instruction_limit": 100000,
+      "remaining_before": 154,
+      "remaining_after": 214,
+      "heap_limit_bytes": 8388608,
+      "objects": 751,
+      "native_registry_entries": 299,
+      "prototypes": 25,
+      "globals": 212,
+      "qualification": "Abstract work and heap accounting; not CPU timing, resident memory or Chromium performance."
+    },
+    "new_test_groups": 5,
+    "private_operation_rows": 16,
+    "parent_passed": 1,
+    "parent_expected_failures": 2,
+    "default_distinct_passed": 3089,
+    "default_commands_passed": [
+      2965,
+      124
+    ],
+    "host_vulkan_passed": 3443,
+    "exact_case_records": 842,
+    "exact_harness_records": 254,
+    "baseline_changes": 0,
+    "source_inputs": 1540,
+    "changed_source_inputs": 10,
+    "binary_sha256": "876a0c50e7da4007b3bb9b0c47f9dbb27ae911d2a81c5832145ab8f47f3a693f",
+    "limitations": [
+      "Promise.allSettled remains absent at this checkpoint.",
+      "No new web API or standards-coverage claim.",
+      "Existing Promise profile failures and unsupported modes remain recorded.",
+      "No GPU execution, Chromium speed comparison or general security proof.",
+      "Full web compatibility and the overall browser objective remain incomplete."
+    ]
+  },
+  "claims_authority": {
+    "ledger": {
+      "path": "/tmp/eris-text-metadata-keys-1/root/final-validation.json",
+      "bytes": 8119,
+      "sha256": "11294d70d2192d22099a1ace9bc3fb5d876fc1116ab9f1c643ed4be12f6dc26e"
+    },
+    "peer": {
+      "path": "/tmp/eris-text-metadata-keys-1/validation-review-1/final-review.json",
+      "bytes": 6335,
+      "sha256": "d35c7ecce6d768b2698015ba977169c8c50f4ddef3f50198fba86f90d05cf733"
+    }
+  },
+  "selection": {
+    "path": "/tmp/eris-text-metadata-keys-1/root/evidence-selection.json",
+    "bytes": 114732,
+    "sha256": "bba7940267a527bf797ee4ae62fc9368eba15e36e05b8a423f0853ab87326bb0"
+  },
+  "members": [
+    {
+      "path": "artifacts/candidate-source-review-1/check.py",
+      "bytes": 9328,
+      "sha256": "b509c989ba5288b099ff76961a29427f0b5f5d0262627a18dcad310e86444529",
+      "origin": "/tmp/eris-text-metadata-keys-1/candidate-source-review-1/check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/candidate-source-review-1/source-review.json",
+      "bytes": 8531,
+      "sha256": "84eb51c93ca3a232fa1202ad3473eac2e733f94d1ff55fce5b8bb938f6ddd78c",
+      "origin": "/tmp/eris-text-metadata-keys-1/candidate-source-review-1/source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/README.md",
+      "bytes": 62029,
+      "sha256": "1afe46661bfbd18f28a58a30c23aa54fcf0b2ba1f2158ed09d5c1b3fb2991aa5",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/before/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/COMPATIBILITY.md",
+      "bytes": 76595,
+      "sha256": "b7b4e8afe0e1b6bd500cce65ba46d6d79deea96c46ebe62e3472e5e567d42e4b",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/before/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/ROADMAP.md",
+      "bytes": 38006,
+      "sha256": "816fe176b9939164ae0f19fdda0d7379bf8aaa6c82c1e34675ee0839f202e728",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/before/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/README.md.patch",
+      "bytes": 639,
+      "sha256": "bd2b889394b74a574f40bf0d17a9936f197c12cc79c80b7f472fa85041889e95",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/diffs/README.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__COMPATIBILITY.md.patch",
+      "bytes": 675,
+      "sha256": "ba8affbe220554f068ec8f8ac985381cedbd76609918d5fc981f21f2bc7006c1",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/diffs/docs__COMPATIBILITY.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__ROADMAP.md.patch",
+      "bytes": 869,
+      "sha256": "b072e78c0f527e995eb3c5614b37e155f88fc0a6c440d08d01b28362b5fc3181",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/diffs/docs__ROADMAP.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__text-metadata-keys.md.patch",
+      "bytes": 4169,
+      "sha256": "d5cfefa5baf7dad3cd2ffc4b0eff2e73755d6c57527944cf429d5c91587964b8",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/diffs/docs__text-metadata-keys.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/draft-status.json",
+      "bytes": 273,
+      "sha256": "69011afbd937b2412882b063ac6afceba0490d19a18b0c88f603075e85f51c45",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/draft-status.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/README.md",
+      "bytes": 62255,
+      "sha256": "82b7b91b477b4c3cef61c6b1008e3d7fe89a04e4b52cc66130849d51ee11d4a1",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/raw/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/COMPATIBILITY.md",
+      "bytes": 76815,
+      "sha256": "63aef119580692bf8bd21b5289c065a897c9a3359a13313e27473b60a810fb44",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/raw/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/ROADMAP.md",
+      "bytes": 38177,
+      "sha256": "92bd96ab67057de19c9ef699a6acf66503de661e305d55b1a3262bf67bb0a044",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/raw/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/text-metadata-keys.md",
+      "bytes": 4042,
+      "sha256": "29bc6c7987754b6c8bda85d3f086c4dcfb55298bb658833ac3382f044f2e528b",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/raw/docs/text-metadata-keys.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/source-ready.json",
+      "bytes": 7455,
+      "sha256": "1609123f43a5bf83ffdc9c48ab3bef0b99a79f5811b345c6389c8d9ea5e2214a",
+      "origin": "/tmp/eris-text-metadata-keys-1/documentation-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/eris-js-host-final-1.json",
+      "bytes": 565,
+      "sha256": "51f63281668b46cc1727c4c352937284d3ed085abc8db5e3e07175135e127b3b",
+      "origin": "/tmp/eris-text-metadata-keys-1/eris-js-host-final-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src/script/text_operations.rs.patch",
+      "bytes": 523,
+      "sha256": "cf5616602d1444cc4516c02da80ab0c6e9cee6d7e48d21bd7a8ae05111b11ae0",
+      "origin": "/tmp/eris-text-metadata-keys-1/formatting-1/src/script/text_operations.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src/script/text_operations/key_cache_fee_tests.rs.patch",
+      "bytes": 8868,
+      "sha256": "39b4c195c68e70a9b56d193a1bfeb5313fd7e2e3e11c40c2ee22a1c68829adc4",
+      "origin": "/tmp/eris-text-metadata-keys-1/formatting-1/src/script/text_operations/key_cache_fee_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src/script/text_operations/key_cache_tests.rs.patch",
+      "bytes": 4335,
+      "sha256": "c4192d825e0271ca74bd5897e5a90803a010973ea76f5f0aea05e5b199b87f04",
+      "origin": "/tmp/eris-text-metadata-keys-1/formatting-1/src/script/text_operations/key_cache_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-audit-1/audit.py",
+      "bytes": 8509,
+      "sha256": "b4df52b85cd63fdc4f6f784851df85a442162ce0339b64249e97b1168e4ba9d0",
+      "origin": "/tmp/eris-text-metadata-keys-1/inventory-audit-1/audit.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-audit-1/literal-inputs.json",
+      "bytes": 530235,
+      "sha256": "8d64b81aca9560eb034b40d301cd7f99658d816e9581d17d279783d3bc400c0a",
+      "origin": "/tmp/eris-text-metadata-keys-1/inventory-audit-1/literal-inputs.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-audit-1/published-include-joins.json",
+      "bytes": 3397,
+      "sha256": "434e377c083a31675a72e9ada85b6ca936e01bc6c7f371de887b2633deb43069",
+      "origin": "/tmp/eris-text-metadata-keys-1/inventory-audit-1/published-include-joins.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-audit-1/source-review.json",
+      "bytes": 11010,
+      "sha256": "a0fe432a2273190586f1f81bc03531f39e49648d7637397afae714e3e2c00dc0",
+      "origin": "/tmp/eris-text-metadata-keys-1/inventory-audit-1/source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-audit-1/supplemental-literal-inputs.json",
+      "bytes": 128985,
+      "sha256": "ec69f3026e72d8432f5e0914593fa20c75072b6fb3fe59b8f9dddfef5a0903da",
+      "origin": "/tmp/eris-text-metadata-keys-1/inventory-audit-1/supplemental-literal-inputs.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/script/bootstrap_tests.rs",
+      "bytes": 16065,
+      "sha256": "f8c462797ee8065ef401639a79b03a043fa6ad7c5b265f28c08a6fec7a67b6a0",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/before/src/script/bootstrap_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/script/processing_instruction/key_cache_tests.rs",
+      "bytes": 10498,
+      "sha256": "f6198d5d2a601c74482f9ed3fe24a1b46d336124c34c34ac4322cdbb13280591",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/before/src/script/processing_instruction/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/script/promises/install_tests.rs",
+      "bytes": 8096,
+      "sha256": "c10371e289814be1ee6eb2562ab8b4e2a00475b5745d9561a9e0ff92465b20e1",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/before/src/script/promises/install_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/script/promises/shared_key_tests.rs",
+      "bytes": 15452,
+      "sha256": "433204aba82c4be92763ee80142ceb8ab43ab586ed2010b42e42da6fc317a811",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/before/src/script/promises/shared_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/script/test262_host/quota_tests.rs",
+      "bytes": 15225,
+      "sha256": "a294e855c90bfdc7c45121654303020491368c3494e86a135d49563430dfbcd7",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/before/src/script/test262_host/quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/script/typed_array/tests.rs",
+      "bytes": 23109,
+      "sha256": "733f6863e579661f62631960880844d615fa405ab5ab6dca4aa72a0191b93e99",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/before/src/script/typed_array/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diffs/src/script/bootstrap_tests.rs.patch",
+      "bytes": 650,
+      "sha256": "11ca56f3c79a86b35bf0c9e3502788c939bf07eea5f8dd1e713309e329bce577",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/diffs/src/script/bootstrap_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diffs/src/script/processing_instruction/key_cache_tests.rs.patch",
+      "bytes": 946,
+      "sha256": "d52cfb1648322be0cd4a1651873233e5bc9c6c4db3b5ec80641c447a07985061",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/diffs/src/script/processing_instruction/key_cache_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diffs/src/script/promises/install_tests.rs.patch",
+      "bytes": 565,
+      "sha256": "39db6d6359cfd9f9b7ba7a01f632781a8b3c86c5fa66bd1f8047fb1f27831485",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/diffs/src/script/promises/install_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diffs/src/script/promises/shared_key_tests.rs.patch",
+      "bytes": 386,
+      "sha256": "6ab1e5a7f2a8f16280662f99d032e9da18e407d7f623cfd4343b632657f75f2a",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/diffs/src/script/promises/shared_key_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diffs/src/script/test262_host/quota_tests.rs.patch",
+      "bytes": 446,
+      "sha256": "bc9aad3232132f1b8c6f6356f2f41fd9afdc33cac3aff60644aa2dbff7be012c",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/diffs/src/script/test262_host/quota_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diffs/src/script/typed_array/tests.rs.patch",
+      "bytes": 843,
+      "sha256": "87b59ecfcbb9413535e82b9ac3f29a1f696740497354b1e181d5385cb82b6cf8",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/diffs/src/script/typed_array/tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/script/bootstrap_tests.rs",
+      "bytes": 16140,
+      "sha256": "38fedd729907ccd0fce7c2f7c73e2335aacfea86ed98bffe80acbcabc719c799",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/raw/src/script/bootstrap_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/script/processing_instruction/key_cache_tests.rs",
+      "bytes": 10498,
+      "sha256": "ffb94268e1836a2d43f04def9912c71703fbfbf07fca74cce751e4407d22e832",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/raw/src/script/processing_instruction/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/script/promises/install_tests.rs",
+      "bytes": 8096,
+      "sha256": "bb09b63b391a147ec2ef2a597e8de826c4f42048c809f219ed87eb0bab869c3b",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/raw/src/script/promises/install_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/script/promises/shared_key_tests.rs",
+      "bytes": 15452,
+      "sha256": "7fd83b2ad665358836a571362674a6924305d0e54fea980ef7e2119171e531dd",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/raw/src/script/promises/shared_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/script/test262_host/quota_tests.rs",
+      "bytes": 15225,
+      "sha256": "98d69fb514d7c8beda7cbc0edb9f2129dcd984cbaf2e71f9781bea4498a0a0b3",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/raw/src/script/test262_host/quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/script/typed_array/tests.rs",
+      "bytes": 23217,
+      "sha256": "0d094efc5564937dfdb16a24b76cd9fab04e87f10d5d4af93e8f83d7a3882d18",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/raw/src/script/typed_array/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/source-ready.json",
+      "bytes": 5685,
+      "sha256": "aca7c9d379579f0f8f08de36d708f75289236b291618574410a4ee40655da76d",
+      "origin": "/tmp/eris-text-metadata-keys-1/migrations-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-binary-original.json",
+      "bytes": 311,
+      "sha256": "030b409d6ebedc8222f5a63d72839eae8ce92f822afbf564f51f4d5b866c5d7b",
+      "origin": "/tmp/eris-text-metadata-keys-1/parent-binary-original.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-ci-final.json",
+      "bytes": 98633,
+      "sha256": "0c836b208a82b952884b35c1292511bd13e6fed78ff91f66713093b6233ce6e9",
+      "origin": "/tmp/eris-text-metadata-keys-1/parent-ci-final.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-ci-latest.json",
+      "bytes": 98633,
+      "sha256": "0c836b208a82b952884b35c1292511bd13e6fed78ff91f66713093b6233ce6e9",
+      "origin": "/tmp/eris-text-metadata-keys-1/parent-ci-latest.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-source-extended.json",
+      "bytes": 204828,
+      "sha256": "3926fe1fd1690846d3a12817a384973e90fbb8bc586af0bb44962ea452e0c6d5",
+      "origin": "/tmp/eris-text-metadata-keys-1/parent-source-extended.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-source.json",
+      "bytes": 182167,
+      "sha256": "b73a5c62c045598a6097afdca2f8461c4b612bb9cec54e25793a292cfc5aef4a",
+      "origin": "/tmp/eris-text-metadata-keys-1/parent-source.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/planning/text-key-sharing-review.json",
+      "bytes": 12263,
+      "sha256": "2a7aa1aa6eac5f6d7f777d688cc84e9b6cbb57f33e593631242e4db3a5fd67e8",
+      "origin": "/tmp/eris-text-metadata-keys-1/planning/text-key-sharing-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/prior-rust/default-full-1.json",
+      "bytes": 335,
+      "sha256": "691a888276448de9a7d5ca9d5a05a5345d7937f5d259bad8c9781f407f306d27",
+      "origin": "/tmp/eris-text-metadata-keys-1/prior-rust/default-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/prior-rust/default-full-1.log",
+      "bytes": 318277,
+      "sha256": "e3bf19a2c1ea8421dc9f2b956d86ba46f8f1f7cf9b86c6fd01ea1d3001ab5c07",
+      "origin": "/tmp/eris-text-metadata-keys-1/prior-rust/default-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/prior-rust/host-vulkan-full-1.json",
+      "bytes": 391,
+      "sha256": "a5afdadba733429b5e7d29e1189f4f9a460b1299723901b2c7ba10248ef4fb61",
+      "origin": "/tmp/eris-text-metadata-keys-1/prior-rust/host-vulkan-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/prior-rust/host-vulkan-full-1.log",
+      "bytes": 361412,
+      "sha256": "585013c5cc039c5ee8a814a6c98805a8d98aa80351066e8d919925be70434cb9",
+      "origin": "/tmp/eris-text-metadata-keys-1/prior-rust/host-vulkan-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/api.txt",
+      "bytes": 2102,
+      "sha256": "76ea72052273d225a808f7d9aa03d5882778a0fc2e970c9eeb7e6588b95cd776",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/api.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/before/src/script/text_operations.rs",
+      "bytes": 8366,
+      "sha256": "4d7e59c102a20ff287891efe26b1f1803e4139d8911280451b8a1e88e00ea558",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/before/src/script/text_operations.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/diffs/src__script__text_operations.rs.patch",
+      "bytes": 252,
+      "sha256": "63089e63a2c4124d978d2bb791898f8cb40722ac504f5721a7b115ba5aa6a228",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/diffs/src__script__text_operations.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/diffs/src__script__text_operations__key_cache_fee_tests.rs.patch",
+      "bytes": 11054,
+      "sha256": "837666d61fa0ca40a75d618425dc1c7f57f6b85ad754f6a99e6850bd9ef46994",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/diffs/src__script__text_operations__key_cache_fee_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/ledger.json",
+      "bytes": 4206,
+      "sha256": "48880e01c149ed33abb74f1547ce330d62021645d3a93a102e89aa1197b4934a",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/ledger.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/raw/src/script/text_operations.rs",
+      "bytes": 8404,
+      "sha256": "2e4dc9f561269fc3e6e13b0190749a06b21431f67a6cea39b67ce5cdb7ceb5ae",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/raw/src/script/text_operations.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/raw/src/script/text_operations/key_cache_fee_tests.rs",
+      "bytes": 10733,
+      "sha256": "40a408070dda262e240b34b51dc9918cbf50d038a9530bfdd556e2867afffbb5",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/raw/src/script/text_operations/key_cache_fee_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/registration.patch",
+      "bytes": 252,
+      "sha256": "63089e63a2c4124d978d2bb791898f8cb40722ac504f5721a7b115ba5aa6a228",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/registration.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/roster.json",
+      "bytes": 1046,
+      "sha256": "49e99ded0404d6eb61cd439f8756150b99612df3b5ce681b59295144a77cc3a6",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/source-bindings.json",
+      "bytes": 2339,
+      "sha256": "839b24ad1d663f22625c9d87623b8b94ed02c7f6e0da33b53f38dfa35ce9a9e3",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-1/source-ready.json",
+      "bytes": 4103,
+      "sha256": "8fab50cf48704007ad2817a67bccc90567eff8b9a874bdf14dfbf388314d568f",
+      "origin": "/tmp/eris-text-metadata-keys-1/private-tests-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/processing_instruction.rs",
+      "bytes": 14095,
+      "sha256": "56e2c43836bfaea0e7d3fdd1b47131231e2bce5cc2c27f6574feb0ac4309309f",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-1/before/src/script/processing_instruction.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/text_operations.rs",
+      "bytes": 8366,
+      "sha256": "4d7e59c102a20ff287891efe26b1f1803e4139d8911280451b8a1e88e00ea558",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-1/before/src/script/text_operations.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src/script/processing_instruction.rs.patch",
+      "bytes": 358,
+      "sha256": "dd57a2e4c3ced65ae61c5715fc0e2241742dca9c2fa24617265c66cafb08793b",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-1/diffs/src/script/processing_instruction.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src/script/text_operations.rs.patch",
+      "bytes": 2348,
+      "sha256": "58c851a0ebef8d616bdefd6c7f877c90dc718fb5e99269be94f9c50c56b2449e",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-1/diffs/src/script/text_operations.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/processing_instruction.rs",
+      "bytes": 14110,
+      "sha256": "0e6995ab20de9cb067de741ce152b6e07c594b48e8dc561abd7e6d325c107716",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-1/raw/src/script/processing_instruction.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/text_operations.rs",
+      "bytes": 8817,
+      "sha256": "df76177de022e06303f8f87d4f3e3faa480403c2f0e2ebf7b7914ce075a4e0ce",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-1/raw/src/script/text_operations.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/source-ready.json",
+      "bytes": 2673,
+      "sha256": "6871ef93c0fb095741e8edef572bf23db06ce3da81d6aca0e0cdb34c980c7179",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-review-1/check-private.py",
+      "bytes": 3925,
+      "sha256": "656e00e941d3b0b2d978c144e7365486eb3b04dd4bf32553a8b428e77e21d501",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-review-1/check-private.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-review-1/check.py",
+      "bytes": 6442,
+      "sha256": "02607aa8368287716ce9ca8b0fb7a4c34a4cfc56fbd24155da8cde31b84e60e2",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-review-1/check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-review-1/private-tests-review.json",
+      "bytes": 3166,
+      "sha256": "1932f3de8b365fcecec2d6731e6489c1f1a8865c8df712646cfae9301b71d8fa",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-review-1/private-tests-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-review-1/source-review.json",
+      "bytes": 6199,
+      "sha256": "554fc4253ae3e91fbab41457181e46da2b8146e1da41ef8338d42cc59bfaf5fe",
+      "origin": "/tmp/eris-text-metadata-keys-1/production-review-1/source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/all-replay-report.json",
+      "bytes": 600027,
+      "sha256": "5e966bbfa7cb5c714e204701f12bf6158468580417de358812f6625beb7d5d9d",
+      "origin": "/tmp/eris-text-metadata-keys-1/replay-parent/all-replay-report.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/existing-replay-report.json",
+      "bytes": 616880,
+      "sha256": "aa76bfce78be1cc8163ed905f55e43a1aa93190aa3b0529887cff40e71458dbc",
+      "origin": "/tmp/eris-text-metadata-keys-1/replay-parent/existing-replay-report.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/race-replay-report.json",
+      "bytes": 593016,
+      "sha256": "4fedb411060c76dfe8559c807b831d46e7a471798bd5e0a3d8e7d58f26e31e16",
+      "origin": "/tmp/eris-text-metadata-keys-1/replay-parent/race-replay-report.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/root/analyze-rust.py",
+      "bytes": 3493,
+      "sha256": "ff7e4fb803db10ba0c961b2c3e197827cd7eda4d4ad7d66394564fa32ac68445",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/analyze-rust.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/final-validation.json",
+      "bytes": 8119,
+      "sha256": "11294d70d2192d22099a1ace9bc3fb5d876fc1116ab9f1c643ed4be12f6dc26e",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/final-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/finalize-validation.py",
+      "bytes": 5264,
+      "sha256": "c7c9074403531ca8ac6708a329fd8e6401c0c80c429dd95620ca722013b3a5cc",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/finalize-validation.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/formatting-inventory-attempt-1.json",
+      "bytes": 466,
+      "sha256": "ba80072e5e15858c626d8eae50c9547210aee1a9602575d76b7b12999a492577",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/formatting-inventory-attempt-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/formatting.json",
+      "bytes": 1145,
+      "sha256": "f0fb8b1d6d9e4c5f073b8d5d33fceec58520ae843bd8b8560c5f3068d66b4d1a",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/formatting.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/freeze-release-and-replay.py",
+      "bytes": 3028,
+      "sha256": "2b66f3375ce1faf4d0745557ca76f206732707620ee167337122204ad679c13b",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/freeze-release-and-replay.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/inventory-extension.json",
+      "bytes": 1712,
+      "sha256": "c1235ef3697321aec063b01cf641c8be97036e747d46a700f8a9fef5d5ca28e1",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/inventory-extension.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-baseline.json",
+      "bytes": 1356,
+      "sha256": "fb73bd707bcc8338f7f5b46bbd36906c35bf1785b16f63f5ba6e81ddc6145b5c",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/parent-baseline.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-tests-import.json",
+      "bytes": 817,
+      "sha256": "ad6bb79f6f23d14f6a841a2e00f17527235a62afda4b413cda4544d3fa6a6290",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/parent-tests-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/prepare-migrations.py",
+      "bytes": 2975,
+      "sha256": "e6dc668fd761d664d13a08aad91068ba422529ade3d4c461717498688b9086a0",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/prepare-migrations.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/prepare-production.py",
+      "bytes": 3917,
+      "sha256": "673c8c56a6851788b7fe47236d10dfcb29c6287fdf0ea7d51efdfff20003ba10",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/prepare-production.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/production-import.json",
+      "bytes": 846,
+      "sha256": "175a98208668c3ff09c10ceaf4b506803fa970d8ffa52363af5c6b58e6daf87f",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/production-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/publish-evidence.py",
+      "bytes": 5647,
+      "sha256": "2819d1a6280b2e8234c0b50046f9af9c7cc2abcfc21d6b423f01446d668e3a39",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/publish-evidence.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/publish-git.py",
+      "bytes": 2410,
+      "sha256": "858d9f9b11906bf0865a65c2a940578d3087e18f25bd9215e91d33d6899dcad9",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/publish-git.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/replay-validation.json",
+      "bytes": 4518,
+      "sha256": "df11d8d3d8f322a3ab8fba9f866af04871d276982c52a0c04cee99e2dbd02e8b",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/replay-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/rust-validation.json",
+      "bytes": 1457946,
+      "sha256": "41f20f5d95d0e627e6a6712595bce2b48dd4186bfdf5f0600aba6e433f1d64ce",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/rust-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/selection-1.json",
+      "bytes": 3306,
+      "sha256": "b6a13eee5343e6c131fde9aae7a7c5741c39226016534dc3f70f3ba997b581cd",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/selection-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/selection-2.json",
+      "bytes": 3897,
+      "sha256": "a8044054b9d2c3e174d3f0574d97e4137d58ec724d5db67e474630dafa535f9a",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/selection-2.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/text-input-supplement.json",
+      "bytes": 792,
+      "sha256": "e0c10f78e35f3bbbc5ad67a8ece6775e11a1939892ea65591cd5e3ac78e5fa81",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/text-input-supplement.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/verify-publication.py",
+      "bytes": 2927,
+      "sha256": "aac8fd488cda958b5afdaa0fdf2e7ce8c571385c593e5c867cf47813e844abb3",
+      "origin": "/tmp/eris-text-metadata-keys-1/root/verify-publication.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/run-check.py",
+      "bytes": 1252,
+      "sha256": "92948cda271466ab8d3419b47e73218c1f30aa9a639a8d75b46d14ecc749316f",
+      "origin": "/tmp/eris-text-metadata-keys-1/run-check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/run-tool.py",
+      "bytes": 726,
+      "sha256": "abea4ed0c4a338841442c6d7b4fc327f719dd3e5e57b7163cc92bc5517c8532b",
+      "origin": "/tmp/eris-text-metadata-keys-1/run-tool.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-extended.json",
+      "bytes": 205029,
+      "sha256": "e30f5b782d6903382234ba5fa39f4e98df8e8568d3b6777907da6dc632a94db8",
+      "origin": "/tmp/eris-text-metadata-keys-1/source-candidate-extended.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-raw.json",
+      "bytes": 182664,
+      "sha256": "0b5221296de06f056acbccc2f19f6e0d646cda2b1ca38b6891a21c6bcb619dd9",
+      "origin": "/tmp/eris-text-metadata-keys-1/source-candidate-raw.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate.json",
+      "bytes": 182670,
+      "sha256": "04c4aebc1455da2745a8b6ac665ac599c51ccbe7a7708bfa8ac11dc687fc7936",
+      "origin": "/tmp/eris-text-metadata-keys-1/source-candidate.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-final.json",
+      "bytes": 205029,
+      "sha256": "e30f5b782d6903382234ba5fa39f4e98df8e8568d3b6777907da6dc632a94db8",
+      "origin": "/tmp/eris-text-metadata-keys-1/source-final.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-parent-tests.json",
+      "bytes": 182580,
+      "sha256": "e6e17803612ec1e3bf52d552cc6f72b2671ddd11c7093bf3fe4f96d92f31291f",
+      "origin": "/tmp/eris-text-metadata-keys-1/source-parent-tests.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/before/src/script/text_operations.rs",
+      "bytes": 8366,
+      "sha256": "4d7e59c102a20ff287891efe26b1f1803e4139d8911280451b8a1e88e00ea558",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/before/src/script/text_operations.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/html-review.json",
+      "bytes": 3255,
+      "sha256": "3384a83395eafba665e007edf03853fa89662daf42c923d78e3ef0c48fc5bf5b",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/migration-inventory.json",
+      "bytes": 4040,
+      "sha256": "96750a9d615e8d21725088107ed9acdf389b0237b9aac40dba36fb7bcd6b220e",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/migration-inventory.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/oracle.json",
+      "bytes": 8221,
+      "sha256": "64079d2a559e3541fa0d8dfee44438eadace0a63b108bb5c8815ec17e303f1d3",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/raw/src/script/text_operations/key_cache_tests.rs",
+      "bytes": 11265,
+      "sha256": "814bd81163125383c4c9b6ddc4c70ddbbbd780eab05ac31696487cc1b1fb3cdb",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/raw/src/script/text_operations/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/registration-append.txt",
+      "bytes": 35,
+      "sha256": "30a39bdc9bdcaf7afd6ec4a42c052768a110096e42bf15571c6fc07179715b2a",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/registration-append.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/roster.json",
+      "bytes": 826,
+      "sha256": "fb4b6ae4aa96599cdad0322a7b031012017cda24ad927bad8d3dd09729cffa61",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-bindings.json",
+      "bytes": 4909,
+      "sha256": "f87cc95a927d27cc083b44e1c562dc759f85995905ce51e17e019294721039ce",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-ready.json",
+      "bytes": 2979,
+      "sha256": "378ba9abb7ca64efb299d65981249be32fa8e333897a2c6970d4e1fb2fddd4e6",
+      "origin": "/tmp/eris-text-metadata-keys-1/tests-before-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/upstream-all-1.json",
+      "bytes": 600030,
+      "sha256": "4ba177007f23de6b8c0767a8ec0c73d676a9b19268f0b626939ec73fb7e4e9f5",
+      "origin": "/tmp/eris-text-metadata-keys-1/upstream-all-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/upstream-existing-1.json",
+      "bytes": 616883,
+      "sha256": "d0fbae4ec4e0ccabcb821266444f20bf2ebe66c9e61109fa2add3b8ba6f20b2e",
+      "origin": "/tmp/eris-text-metadata-keys-1/upstream-existing-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/upstream-race-1.json",
+      "bytes": 593019,
+      "sha256": "37a4ce8ff1a9885f7379a5d6ca77a6a9aa6b2943572fd72d9bd7fe7993c029c8",
+      "origin": "/tmp/eris-text-metadata-keys-1/upstream-race-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/check-final.py",
+      "bytes": 8135,
+      "sha256": "c62fedc62a003b4e35a9b21620b5b50ed52658bf7b3ed5d64be073420bbb0029",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/check-final.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/check-replays.py",
+      "bytes": 6204,
+      "sha256": "98a3df798f696a7cf9fe925eee11fc2f4e0e3ee6ac43d5f9b7346e52b0c3b09f",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/check-replays.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/check-rust.py",
+      "bytes": 7375,
+      "sha256": "2d25cc56816f7a6dedab56e9743148f7816e7e6e022905234c2c22ee88cd9b9d",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/check-rust.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/final-checks.json",
+      "bytes": 15025,
+      "sha256": "1ec8c4bdfe16e7061ad309d8814ea1651fa8ae23a1dc881f485b011106fcc021",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/final-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/final-review.json",
+      "bytes": 6335,
+      "sha256": "d35c7ecce6d768b2698015ba977169c8c50f4ddef3f50198fba86f90d05cf733",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/final-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/replay-checks.json",
+      "bytes": 8492,
+      "sha256": "b432262a932d29ad18bf8a3b4888b8efb06d4f1b97b32e96c80be0146dbb5437",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/replay-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/replay-review.json",
+      "bytes": 3138,
+      "sha256": "6eb30c0ac66ca665ca1b51ebc8302821579787f72028c351d1f83246e51ab6fd",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/replay-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/rust-checks.json",
+      "bytes": 1571787,
+      "sha256": "7f98cea96e7088ab72565b8ac9f0864e4b03bc24f564b3e736b8a9576a5b873d",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/rust-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/rust-review.json",
+      "bytes": 12987,
+      "sha256": "586b2579b9ecf478024a5793bda8fd717c22de5683247686f4267e9c2885372c",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation-review-1/rust-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-text-1.json",
+      "bytes": 387,
+      "sha256": "88c3e7dffbe11b21f36964792c5220acb8ea54163a0ce3d864f4018804ec7cb9",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/candidate-text-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-text-1.log",
+      "bytes": 1051,
+      "sha256": "93b416779f1243389ae307443aaedef1d41ddfdedf8617e336b79a647edd13fc",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/candidate-text-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-host-vulkan-1.json",
+      "bytes": 418,
+      "sha256": "8c32aa5e19fbad60e388ff1c4eb77b4df387126abd9e01305e64287fe3ef6bd2",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/clippy-host-vulkan-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-host-vulkan-1.log",
+      "bytes": 246,
+      "sha256": "3e1acd449b326782d164f03651748dc6bdd00a7ce0d18e3c373a4b6ca5700722",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/clippy-host-vulkan-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-msrv-1.json",
+      "bytes": 358,
+      "sha256": "0205c36eff986f5d12cbfddaf2e0a2b6599516bc0cc9a0d0a0a60956db98cdc4",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/clippy-msrv-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-msrv-1.log",
+      "bytes": 148,
+      "sha256": "2997f7d536c20b14259d8a0286b71a0bd47c6a0139e54606e8ace3d4cb8f9138",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/clippy-msrv-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-1.json",
+      "bytes": 301,
+      "sha256": "f97d6296fa9e3dacbd53db99fcf9095531db8d11dd5689d1df3492ff5b2e55c4",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/default-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-1.log",
+      "bytes": 328508,
+      "sha256": "5313d79142699a023b17c8b0639ff94c2022e524f01986176150a6e164a58366",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/default-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-ignored-1.json",
+      "bytes": 330,
+      "sha256": "1db77faf45e92f95aeea48388de8f95bf91ec353d3fb4b29975965271aba6796",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/default-ignored-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-ignored-1.log",
+      "bytes": 22797,
+      "sha256": "f319b4c56f7083d9f21e82ead482282368a5a3ac876e6bbf87e49237d0a4cd0d",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/default-ignored-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-apply-1.json",
+      "bytes": 347,
+      "sha256": "ad89853a27413d5a43ae958649e6d66a6971f3a43bf42173bc7e1672139b216b",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/format-apply-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-apply-1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/format-apply-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-check-1.json",
+      "bytes": 372,
+      "sha256": "0458354c3b0a2db6689c3e0d09d837365a7333b01049c42bd20eebf9828fc391",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/format-check-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-check-1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/format-check-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-release-1.json",
+      "bytes": 385,
+      "sha256": "f096cb029d09bf29d1a76cb999ea7700aecd8dc856ef6571e34e5574903de4b8",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/host-release-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-release-1.log",
+      "bytes": 138,
+      "sha256": "6a1073f23a35ba0f1d103b0c7ee5dde26a02a7dd1cc6f38ec83b4a0bd78a7cda",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/host-release-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-1.json",
+      "bytes": 391,
+      "sha256": "df55419c25f44cd55268248e7b716dfbf57d30ae4c809bf8f57cce58d743ac14",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/host-vulkan-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-1.log",
+      "bytes": 362398,
+      "sha256": "ce789be1a8ffd54c183dd808df5f59247c7aa96052a875916250181c1062c90d",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/host-vulkan-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-text-1.json",
+      "bytes": 391,
+      "sha256": "7203ebd7b94cd1f96aa7ad11c9f2214e93030c71346473eb69a5d4334bf8a385",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/parent-text-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-text-1.log",
+      "bytes": 1772,
+      "sha256": "dd221fecdac03ccbc94068ec9e44ff2b504d7856decbeabe9469fcf556044587",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/parent-text-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-all-1.json",
+      "bytes": 536,
+      "sha256": "52bc29d512755d6627e363b99eb8059229e07266cea09d34857a90379a422484",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/upstream-all-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-all-1.log",
+      "bytes": 212,
+      "sha256": "a3756c7104e804f0dff97bbae8c37849969f2f9e0cfdd2f4c781f3bc950b210f",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/upstream-all-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-existing-1.json",
+      "bytes": 566,
+      "sha256": "90b1278f53ee3b74e48f95469ea09d159226fc5a6480569761275827ffc58af3",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/upstream-existing-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-existing-1.log",
+      "bytes": 218,
+      "sha256": "acffa12c0ce4284753623c1fb58d23e23f9b9fab4da6f958990c7f0843c7efed",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/upstream-existing-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-race-1.json",
+      "bytes": 540,
+      "sha256": "7bf44e1b1282798abe6f0ed56cfdd7e90bbb87829930a90741a1b06b124f5712",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/upstream-race-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-race-1.log",
+      "bytes": 213,
+      "sha256": "c58ca57dc03a336a99a48329c64afeb183829d1fe4ead3cbe4e6641213899745",
+      "origin": "/tmp/eris-text-metadata-keys-1/validation/upstream-race-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "documentation/README.md",
+      "bytes": 62255,
+      "sha256": "82b7b91b477b4c3cef61c6b1008e3d7fe89a04e4b52cc66130849d51ee11d4a1",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/README.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/COMPATIBILITY.md",
+      "bytes": 76815,
+      "sha256": "63aef119580692bf8bd21b5289c065a897c9a3359a13313e27473b60a810fb44",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/docs/COMPATIBILITY.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/ROADMAP.md",
+      "bytes": 38177,
+      "sha256": "92bd96ab67057de19c9ef699a6acf66503de661e305d55b1a3262bf67bb0a044",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/docs/ROADMAP.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/text-metadata-keys.md",
+      "bytes": 4042,
+      "sha256": "29bc6c7987754b6c8bda85d3f086c4dcfb55298bb658833ac3382f044f2e528b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/docs/text-metadata-keys.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "sources/src/script/bootstrap_tests.rs",
+      "bytes": 16140,
+      "sha256": "38fedd729907ccd0fce7c2f7c73e2335aacfea86ed98bffe80acbcabc719c799",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/bootstrap_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/processing_instruction.rs",
+      "bytes": 14110,
+      "sha256": "0e6995ab20de9cb067de741ce152b6e07c594b48e8dc561abd7e6d325c107716",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/processing_instruction.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/processing_instruction/key_cache_tests.rs",
+      "bytes": 10498,
+      "sha256": "ffb94268e1836a2d43f04def9912c71703fbfbf07fca74cce751e4407d22e832",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/processing_instruction/key_cache_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/install_tests.rs",
+      "bytes": 8096,
+      "sha256": "bb09b63b391a147ec2ef2a597e8de826c4f42048c809f219ed87eb0bab869c3b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/promises/install_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/shared_key_tests.rs",
+      "bytes": 15452,
+      "sha256": "7fd83b2ad665358836a571362674a6924305d0e54fea980ef7e2119171e531dd",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/promises/shared_key_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/test262_host/quota_tests.rs",
+      "bytes": 15225,
+      "sha256": "98d69fb514d7c8beda7cbc0edb9f2129dcd984cbaf2e71f9781bea4498a0a0b3",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/test262_host/quota_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/text_operations.rs",
+      "bytes": 8829,
+      "sha256": "47da4de8246c96bcad0ab11245283cc3250d52574925c5e95f51755caad6c6fc",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/text_operations.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/text_operations/key_cache_fee_tests.rs",
+      "bytes": 11610,
+      "sha256": "697b6188172798b6581ed555f5e4aba8a9ab53d0b4133d0409b823c2021d68d2",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/text_operations/key_cache_fee_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/text_operations/key_cache_tests.rs",
+      "bytes": 11712,
+      "sha256": "22a985482ca018dcbd2b881ada0819af27e544b0050cca5331bc4e8d8d5959dc",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/text_operations/key_cache_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/typed_array/tests.rs",
+      "bytes": 23217,
+      "sha256": "0d094efc5564937dfdb16a24b76cd9fab04e87f10d5d4af93e8f83d7a3882d18",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/src/script/typed_array/tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/array-buffer.js",
+      "bytes": 107482,
+      "sha256": "f0fa6fded781ed80e20ee382367a34ea49f75258d75e66e29af24010ab50c2b3",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/array-buffer.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/array-descriptors.js",
+      "bytes": 16079,
+      "sha256": "32537a09fbc2f87052e183e2467cdbf4f1128bc2b2a7ec817c776ef61c44400d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/array-descriptors.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/array-find.js",
+      "bytes": 392164,
+      "sha256": "fdf171bc4d2b5d2bcf795a2fbb691db93a2405f3de8fac6ea9ebe69343e1b974",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/array-find.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/array-last-index-of.js",
+      "bytes": 5312,
+      "sha256": "ef6456dc93e6e03f9002d038dd894eed9893793625bbc15809e64c722b5934ef",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/array-last-index-of.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/array-predicates.js",
+      "bytes": 57647,
+      "sha256": "7a82528b49633c55c9d82dfb70693ea017960d459789414e3977348039a2d124",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/array-predicates.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/construction.js",
+      "bytes": 8768,
+      "sha256": "3f253873764383cc46ee927a22186aa30ccba9e55d7c4647580d77b2bf58c9a4",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/construction.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/data-view-codec-vectors.tsv",
+      "bytes": 8993,
+      "sha256": "b0569334716bf88531ac592cfcc0930726dac67df19fd795126263dc2a09128a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/data-view-codec-vectors.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/data-view-local.js",
+      "bytes": 134116,
+      "sha256": "41e779fb99cd84a87e6a3c827539900f87a3354387e96b1a5d742c07ec680d38",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/data-view-local.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/dom-method-identity-local.js",
+      "bytes": 75517,
+      "sha256": "e27aef0be9e10b91f11682b4289087449323ece31c02d81eb9cbf34f2467095d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/dom-method-identity-local.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/function-constructor.js",
+      "bytes": 4652,
+      "sha256": "c1af0be07772e88eea928f7fa273d5873532f1be234ad02e288d188a7c5f6e53",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/function-constructor.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/number-format-correct-control.js",
+      "bytes": 540,
+      "sha256": "7fd469391469adb89aafc5367904acf8ea884dc7e1af72bc3be42e24328eede2",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/number-format-correct-control.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/number-format-literals.tsv",
+      "bytes": 4035,
+      "sha256": "4f0b9ab0c5fc4463a40421a400fb0085d95b871e49634c8943915ec45827504b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/number-format-literals.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/number-format-wrong-control.js",
+      "bytes": 540,
+      "sha256": "0f708af67405617fdaa0a0225ebd8498a665e2df755364b6e690315fa71f3e7d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/number-format-wrong-control.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/number-format.js",
+      "bytes": 9778,
+      "sha256": "a019fb1221d27789d00fadfc5a42e37ee7f18282aa2b09633205e875f4d9fea6",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/number-format.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/object-integrity.js",
+      "bytes": 156237,
+      "sha256": "9f2b3cd66ab6c834ee9439860e27b34d8c2d541ae6b8c56652744a32f0a27f8b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/object-integrity.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/object-is-local.js",
+      "bytes": 65987,
+      "sha256": "c254865d351e14c13e62ebb629a1b78c0f19c7732dc0b29c42e56dbc4815488e",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/object-is-local.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/own-keys.js",
+      "bytes": 37412,
+      "sha256": "1cf4cc23989831f50a06f135581bae6e2f5e6bbc3b79c2950a97063ef67a03c1",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/own-keys.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/reflect-properties-browser/reference-after.html",
+      "bytes": 461,
+      "sha256": "2314f6448c4732696474ab332a0cae5744ae26c21c30f7c45564fc844ba50a7a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/reflect-properties-browser/reference-after.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/reflect-properties-browser/reference-initial.html",
+      "bytes": 458,
+      "sha256": "3333bb40cefed84de1efcbba228b03e672b67206f0e89f92e04bf184b752a972",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/reflect-properties-browser/reference-initial.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/reflect-properties-browser/reflect-properties.html",
+      "bytes": 4092,
+      "sha256": "ac2e5fa566941636ec819f1776102812efb6801f1254901724cbd2ed967d47f6",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/reflect-properties-browser/reflect-properties.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/regexp-constructor.js",
+      "bytes": 5097,
+      "sha256": "6fbe091e4a43699c8708b540ad0a2c16ee82973cc1b89a4f3ec12ce21b029058",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/regexp-constructor.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/regexp-match-search.js",
+      "bytes": 6288,
+      "sha256": "c3af6ae1e5c5633a9b8d8470087f2a4828414ed31f23cadf679e064c6dbdd3b6",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/regexp-match-search.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/regexp-split.js",
+      "bytes": 7410,
+      "sha256": "9c6e23123869812f86f7b14024597af12dc50f3d165895fe929e0cc50c81bc7c",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/regexp-split.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/string-conversion.js",
+      "bytes": 6757,
+      "sha256": "b98f6d2fb981ccf1e9420547faeaff3fb7d2faacdb11aa36b000902eed92742e",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/string-conversion.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/string-last-index-of.js",
+      "bytes": 5590,
+      "sha256": "a5859d1f8a8d82f6618a8b9569adc4ac868f7dce40ae5ddfa6643c4cb2abdeee",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/string-last-index-of.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/string-split-hooks.js",
+      "bytes": 2738,
+      "sha256": "a553c21a46f3d47bf419edf49b46482d9c98bf82cd11333739882719af4efe06",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/string-split-hooks.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/symbol-constructor-targets.js",
+      "bytes": 2171,
+      "sha256": "a5c495155519b20e6ddfc12f59ebeedd4ca8e7635bd31d692bf4113a1b29aa05",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/symbol-constructor-targets.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/typedarray-foundation-browser/reference-after.html",
+      "bytes": 467,
+      "sha256": "c87ab37d835a03ccda228af4429a7e8ec6e92b59a5d9cda4f334c748a84b26b9",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/typedarray-foundation-browser/reference-after.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/typedarray-foundation-browser/reference-initial.html",
+      "bytes": 462,
+      "sha256": "2e5d9514669a1acf08caaa0de993ae8cd9f12a61e2cb5ff627a4b66ad4b6ba77",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/typedarray-foundation-browser/reference-initial.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/typedarray-foundation-browser/typedarray-foundation.html",
+      "bytes": 2432,
+      "sha256": "db7b0c7b335ecf5864df5385c4e5812c6c57eba093b84bf442d6875589fae7e7",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/typedarray-foundation-browser/typedarray-foundation.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/typedarray-views-browser/reference-after.html",
+      "bytes": 461,
+      "sha256": "591d1638bb65a5ae0931f69c7e9fb276d72f3022421900d4f33488fcef436f7c",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/typedarray-views-browser/reference-after.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/typedarray-views-browser/reference-initial.html",
+      "bytes": 458,
+      "sha256": "5d3aaaa38715c84adf72d98939b4e03e64a16dad524ceb5b6d35a56b364269d3",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/typedarray-views-browser/reference-initial.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/conformance/typedarray-views-browser/typedarray-views.html",
+      "bytes": 3517,
+      "sha256": "97623c51683a9534184a910b370cc9af69d9d208c9837aa1b6756c44a4bb61b9",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/conformance/typedarray-views-browser/typedarray-views.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/addition.html",
+      "bytes": 2507,
+      "sha256": "b73867df79677124cf8b1ce2cf6a6668740b63f7997142932a56e9e1ac1c2e9b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/addition.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/append-domstrings.html",
+      "bytes": 5425,
+      "sha256": "fe02aec30b81effb044a3b9bf79be65485d8de813159621645883e74d4203a9e",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/append-domstrings.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/append-domstrings.js",
+      "bytes": 5956,
+      "sha256": "6679318fdae5235ab4201560a0f853ddd3ea5a54fb1021b29a2cf3771b39bc17",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/append-domstrings.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/array-buffer.html",
+      "bytes": 4822,
+      "sha256": "37505a1a232c6988e1f54008fcc0ff419bf14296a38d5f808fb99fc984cc2c7b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/array-buffer.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/array-concat.html",
+      "bytes": 4628,
+      "sha256": "43e00a45c5d00c5d631df1fa5393f54e6b80dcbd7e864eb0e4a84e7ff723d5fa",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/array-concat.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/array-from.html",
+      "bytes": 3192,
+      "sha256": "6f819d828eb5688f3f3f4e462aaf0918eb684da1184a10433eb931cc5c601ff7",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/array-from.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/array-reduce.html",
+      "bytes": 4302,
+      "sha256": "b7dc5909106196dd1a135deb1570322bd1d6c47ed8976c871a8ac0fbd84fbac1",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/array-reduce.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/array-sort.html",
+      "bytes": 3924,
+      "sha256": "fc778d2629365fbd9cfda8c4602394d495cddd49021cef305dc2d52864145911",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/array-sort.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/array-splice.html",
+      "bytes": 3865,
+      "sha256": "d67f6a52db35e973dc50288289dd60ac618214bd4bc5d86e670ad014b494851a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/array-splice.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/calc-resize.html",
+      "bytes": 810,
+      "sha256": "4deec56dd1f6aac67fad8ec9c705e7ab2c7dc26c569e679c03725a48689450bd",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/calc-resize.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/character-data-policy-append-lone-high-unit.js",
+      "bytes": 153,
+      "sha256": "e00dd52bdbc77e6067cdd42920edd94607e9cdd35c6e0091cabaf42e1c978873",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/character-data-policy-append-lone-high-unit.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/character-data-policy-delete-leaves-low-unit.js",
+      "bytes": 217,
+      "sha256": "3bc4996074ea814ce395e9bffba33c2f66ee7159c6eeb53b07c4e5d0bd825289",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/character-data-policy-delete-leaves-low-unit.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/character-data-policy-insert-between-pair-leaves-unpaired-units.js",
+      "bytes": 174,
+      "sha256": "17f73aea9146731a367accc017226482dd5b76f18a635538bcfd5e18232889bf",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/character-data-policy-insert-between-pair-leaves-unpaired-units.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/character-data-policy-replace-leaves-lone-high-unit.js",
+      "bytes": 185,
+      "sha256": "194ffc5e13de4accfca94266bde96636a86db09284f7d68337975fc87a171928",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/character-data-policy-replace-leaves-lone-high-unit.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/character-data.html",
+      "bytes": 5046,
+      "sha256": "91a236990835ec0a487f8ff38459b010fe72526e8222c086843a6784b2f03282",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/character-data.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/character-data.js",
+      "bytes": 10042,
+      "sha256": "dde6c7970bd18b49565a5f78990eb47b659dbad65a549855f724478646f6fc7f",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/character-data.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/compound-assignment.html",
+      "bytes": 2131,
+      "sha256": "f38c98353bb1573b9a92706146539391bd66b269e385d01134d075dc64ae2352",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/compound-assignment.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/css-supports.html",
+      "bytes": 918,
+      "sha256": "60e8478aadfa58771f63b4dffa10ecb12bb885cea55a32d59163f6ebaf17461d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/css-supports.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/custom-properties.html",
+      "bytes": 517,
+      "sha256": "074f6e7db677836e8c8a24e2c133a649003448557dd9340af6c1c3eea6fd21c0",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/custom-properties.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/data-view.html",
+      "bytes": 3848,
+      "sha256": "81cc0ecf880da8adbfe3ef175934445164af97200ad023695562230eaf9239e0",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/data-view.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/date-zones/America/New_York",
+      "bytes": 3552,
+      "sha256": "e9ed07d7bee0c76a9d442d091ef1f01668fee7c4f26014c0a868b19fe6c18a95",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/date-zones/America/New_York",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/date-zones/Asia/Kathmandu",
+      "bytes": 198,
+      "sha256": "fd1b1f79259b0abf24338611262ed7bfa8401221d6d7820586c5ec7e16cf8e83",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/date-zones/Asia/Kathmandu",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/date-zones/Australia/Lord_Howe",
+      "bytes": 1846,
+      "sha256": "a323c5433991a963eb497b7da4d1d09848bf3ef5f5d64d9c9649f388e4bab9df",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/date-zones/Australia/Lord_Howe",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/date-zones/Europe/Dublin",
+      "bytes": 3492,
+      "sha256": "40e8d2a1c3b572284da39f6f4245b1bc814f452c44f5aa73d0a011571d5ccc43",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/date-zones/Europe/Dublin",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/date-zones/Pacific/Apia",
+      "bytes": 598,
+      "sha256": "33740ab29ef943b1f55f769e13ff59a90962f5a12434209072d650e6c10abb4d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/date-zones/Pacific/Apia",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/default-parameters.html",
+      "bytes": 3074,
+      "sha256": "84657cb7e70f2436fa67f7f98f872b9b603b1d10d969c8648ded46c509ef0ce1",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/default-parameters.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/document-append.html",
+      "bytes": 5927,
+      "sha256": "c708febfb81afd6dd4d037db4951da698766dca3f993cac3e352d90b1d877168",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/document-append.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/document-title.html",
+      "bytes": 4368,
+      "sha256": "b690a43de5dc7d176c7f3dd2173a174dc2be2806baba0cf9fd165658cf526d9a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/document-title.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/document-title.js",
+      "bytes": 15457,
+      "sha256": "9be504456e25a2ae87dd3ff8239a5dab4bb7f682d86478e1857f4e585182121c",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/document-title.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-interface-mapping.js",
+      "bytes": 2441,
+      "sha256": "1b8003d5ed7e175439484a8313c3438c180496f9c8e7c53426c8f2a05672439d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-interface-mapping.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-method-identity.html",
+      "bytes": 5161,
+      "sha256": "6033de0d5392516d3aa390dd3cf50e70d877dce289c943f4404c69d2c4635a04",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-method-identity.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-own-properties.html",
+      "bytes": 9645,
+      "sha256": "20388d0ab25394df4c1a8f96f7cd9770cc5d6e97583c807ae7484a06dc8f0142",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-own-properties.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-own-properties.js",
+      "bytes": 6098,
+      "sha256": "7094ef6708e6f981673581493c169124f0742ebb7bbbbe28f732cf87bed5df2d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-own-properties.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-production.html",
+      "bytes": 3847,
+      "sha256": "5aa32470360db346bc13672eb0826730e299cf8a4155f2a9efd90130afa7db09",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-production.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-production.js",
+      "bytes": 12900,
+      "sha256": "a3e376359b7fb74bc74e43b90ec2ecaa9972aeda2effbd6f50ae8382ee61d5f2",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-production.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-prototypes-core-interface-descriptors.js",
+      "bytes": 3294,
+      "sha256": "b86386e3f4fe45dc9dd06129b04141880f014874e3f46a8c7a8a493757ef68a5",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-prototypes-core-interface-descriptors.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-prototypes-core-node-constants.js",
+      "bytes": 1313,
+      "sha256": "45168d4616d98468e0b5e16444e99cf5706d22614c451bca6119662891d65cbe",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-prototypes-core-node-constants.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-prototypes-document-parent-methods.js",
+      "bytes": 3666,
+      "sha256": "745595d64b3f6fdfb552e798c33d87510f579d64200590e0f60a5b3285e144be",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-prototypes-document-parent-methods.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-prototypes-element-parent-methods.js",
+      "bytes": 3707,
+      "sha256": "4b5239864da3d61038c1d8a2c24ff1ff0b7a55dd21c95e6932026959cc41caba",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-prototypes-element-parent-methods.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-prototypes-fragment-parent-methods.js",
+      "bytes": 3725,
+      "sha256": "4e71458c9d7f48ad32279e04faf4876d5c63c3fcf9164325c4c64e0d0c7d0a9f",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-prototypes-fragment-parent-methods.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-prototypes-parent-method-identities.js",
+      "bytes": 1424,
+      "sha256": "6a2d80faa52b5670c325f91acb0159f5d5f35dcfca345e9d3ec47576383dac0b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-prototypes-parent-method-identities.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-prototypes.html",
+      "bytes": 10141,
+      "sha256": "307f5608563b7d846351800080bae2c1d5577348614845248e3c7a43d1d3cbe9",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-prototypes.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/dom-string-conversion.tsv",
+      "bytes": 1623,
+      "sha256": "a6258d12211346243d4d2598c62e43df5a0b2952d009eca53288ba9d284c3780",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/dom-string-conversion.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/equality.html",
+      "bytes": 2247,
+      "sha256": "17e658b90d0128319c31cd62c4c5d9da1d214a7b9b13b3d07d3e8087b23d69ef",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/equality.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/for-of.html",
+      "bytes": 2758,
+      "sha256": "a44f06965f5891084c51efbb4f40ff5c9c7742771bedaa6b524cd338025de558",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/for-of.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/global-values.html",
+      "bytes": 4295,
+      "sha256": "c298fafc802cf33ea97ca8db0183f89673f764618114cb31aa7db6631d66df3f",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/global-values.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/identifiers.html",
+      "bytes": 2560,
+      "sha256": "b6a3f2f2763bd07c7f9b2230ac0e6362477d34447433a59d9b9125de412d2af6",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/identifiers.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/inline-style.html",
+      "bytes": 4191,
+      "sha256": "fb974b1a538c08980da849644fa5e57bd894f5d45ca030c89cce402feb668536",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/inline-style.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/labels.html",
+      "bytes": 2200,
+      "sha256": "d51d22d67b11f0c7c3ec1663fbfd741d093b9f24fbaf23c763ce473a550193d3",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/labels.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/logical-assignment.html",
+      "bytes": 2366,
+      "sha256": "f6bd7b582a00bfb8d88372896bb4b45068c197fb7d29534e0da227101b6ee909",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/logical-assignment.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-clone.html",
+      "bytes": 4489,
+      "sha256": "358b61ea4bc84a8de2901f9ba15884ad0f4e8fc01b063fa590cb848a7919b7e2",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-clone.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-clone.js",
+      "bytes": 26587,
+      "sha256": "bf66956a6ca0e1ef138a2d634ab3c31968754415f04c4b2197a2b07e9ec63479",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-clone.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-connected.html",
+      "bytes": 4376,
+      "sha256": "b1ab05ddd991bd7590fdea93e5268de6dfd1df49b99fad07658226ae8c607907",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-connected.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-connected.js",
+      "bytes": 18321,
+      "sha256": "25e76612b7ff0e8f6ce0a68b5ae72399a77d27be2b745da0aad2b44ae885bc94",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-connected.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-constants.js",
+      "bytes": 11440,
+      "sha256": "e3253ef6cdc80310be70fa6975e5bbe41ba9482177ac568e6bc5dc2156685d1a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-constants.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-data-effects.html",
+      "bytes": 4212,
+      "sha256": "b4e78397b7bd238766aef835d5e7bbdaeb13fa177eff1322f409530868cb0d4b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-data-effects.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-data-exact.js",
+      "bytes": 11080,
+      "sha256": "c7e93bf860ff4f0a073de6cc1bdfb4eae7842dcd012623bed11807d9f915c8da",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-data-exact.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-data.html",
+      "bytes": 3815,
+      "sha256": "ff5acba84ce96954bdc37280728cc8ca93a611f0c992140d1a02b8efb4c7d468",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-data.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-data.js",
+      "bytes": 9205,
+      "sha256": "0c4e8f1e7fa88114afa099052298fecdaa91a9698cc7a114883fc83407498851",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-data.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-equality.html",
+      "bytes": 6309,
+      "sha256": "add2342816a74021f7c0d37fa3af664bdbbee00b524f1e84fabaa7379112096f",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-equality.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-equality.js",
+      "bytes": 18363,
+      "sha256": "675e9c85be938da35f929c8b9f661b2493789648074e92de2816367795474597",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-equality.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-normalize.html",
+      "bytes": 5671,
+      "sha256": "a55e8ff5fa40c4a7270352edbf49253c163f1dc8360ee206f0029864b8463524",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-normalize.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-normalize.js",
+      "bytes": 15892,
+      "sha256": "337b5acb013b8e1aea04e933913c50746c0372185117edd32f84b48c648d3f20",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-normalize.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-position.html",
+      "bytes": 4456,
+      "sha256": "2b6fcca35412a1b93a79bbad8af946d25b7a3c0f91b645908f75f5bdf5b4faf3",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-position.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-position.js",
+      "bytes": 21673,
+      "sha256": "97855d380d9a18edbef4fd0c317ac5430265d78d07f9adeb5511542fcbb84575",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-position.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-predicates.html",
+      "bytes": 4388,
+      "sha256": "9d7fe4ab7306de23e724020bcb767b6dd2486489c50029eab48bad351289856b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-predicates.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-predicates.js",
+      "bytes": 14910,
+      "sha256": "119b41f4a50a0a3de691c172ffe053d80f88ec6a7339764603e19b9dd02bf909",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-predicates.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-root.html",
+      "bytes": 5841,
+      "sha256": "7e6e3fbaddeed5198e4ccbefbd5f3f321dfc33fdc4a52d78c667499c8e8c8889",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-root.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/node-root.js",
+      "bytes": 17483,
+      "sha256": "65e3b34ac5b80a095d59505ab8693ec22b26225ae9d7f3408163070593ed6af3",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/node-root.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/number-format-negative.html",
+      "bytes": 1145,
+      "sha256": "fa5c2a4fe52f2e8835579f1a276dbb6310e10eb3d3224479213469e4e7739d6e",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/number-format-negative.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/number-format-positive.html",
+      "bytes": 1142,
+      "sha256": "6e15d0a2bcdbdabcb306f089ebef2ce4a54fc4a62cbb08f065e39cc5d9f4a026",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/number-format-positive.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/number-statics.html",
+      "bytes": 4224,
+      "sha256": "a89d64967aa69f810ad8039884c69ee85335d3569ba29a8c9ba6ffbb35a9e552",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/number-statics.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/numeric-conversion.html",
+      "bytes": 2959,
+      "sha256": "46892e8cd66e531728f432189a35adc511ca2531cb160166df4819596c27ef01",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/numeric-conversion.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/numeric-parsing.html",
+      "bytes": 2945,
+      "sha256": "241544d0eb45995e089c40bb24c088abe974988573896c17308b3fd9d6e03357",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/numeric-parsing.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/object-has-own.js",
+      "bytes": 12004,
+      "sha256": "4cfdacc069d83792f20d4be1efec38b91ab748114eadef1b04c46e306ce3053f",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/object-has-own.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/object-is.html",
+      "bytes": 3752,
+      "sha256": "59b0d4151b85d5b012e60343d662ba323b0b6956607eb2bc2932fd006c315d58",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/object-is.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/own-keys.html",
+      "bytes": 3778,
+      "sha256": "8b81778cda639fd48540f91b6180717fc60346c862409eb556a6b65e798d6025",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/own-keys.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/png-ancillary-exif-4k.png",
+      "bytes": 4178,
+      "sha256": "3801686dafc8a94bdd9696d22b46b858352f53e2b5dd2ac6dc647d88abc672ed",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/png-ancillary-exif-4k.png",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/png-ancillary-icc-4k.png",
+      "bytes": 119,
+      "sha256": "c3c7f72e20a959094a2d7ca957c7145a4527346baecd30952357b8a995062eb9",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/png-ancillary-icc-4k.png",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/processing-instruction-accessors.js",
+      "bytes": 11364,
+      "sha256": "7348d015b56903ed9e75f4191a2c6ff03def35b542c031fc68ed42e09accb502",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/processing-instruction-accessors.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/processing-instruction-authentic-constructor-override.js",
+      "bytes": 2914,
+      "sha256": "a0dcbd8d5de85cc7a28b25f9f511f1f00582be20dbc139fc489937d891d7ba33",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/processing-instruction-authentic-constructor-override.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/processing-instruction.html",
+      "bytes": 5918,
+      "sha256": "afb0120d3662ca59766639d555700ee3b5b8236d260d6afcd4344b9b07e95234",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/processing-instruction.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/processing-instruction.js",
+      "bytes": 14056,
+      "sha256": "46f6909fa212fa4dc2fc3fe63ea0ccf64af6871d30fd1ed41b98ae15d067dc73",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/processing-instruction.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/prototype-membership.html",
+      "bytes": 3155,
+      "sha256": "b6b29eecaea592b538f7f25fe2fca692d0d2d4bba2093a1bef0dc739358c1386",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/prototype-membership.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/relational.html",
+      "bytes": 2132,
+      "sha256": "4eaa9170af0768fb80f021f72b27076c9c068bb586e53f0df53bfad52144a034",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/relational.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/rest-parameters.html",
+      "bytes": 3459,
+      "sha256": "d392a5302cce3ee5d207032d6deb68da12493ca2f3c3dcbea9ce524b4c6f6eea",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/rest-parameters.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/scope-names.tsv",
+      "bytes": 97598,
+      "sha256": "58415bfd670354c04027df2eae0dcdc2d56efaf7db30fd2973ddcf0e5faa60f7",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/scope-names.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/script-completion.tsv",
+      "bytes": 8410,
+      "sha256": "7a53bb8b0b6e5d2f8eb1ff782ac139fb5dd302df3feae3391b2f20de0edcd90b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/script-completion.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/string-concat.tsv",
+      "bytes": 3420,
+      "sha256": "d747bb768e409319af6d5324e990ba54dc7afc97f48d502a79dd478b5255b4d8",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/string-concat.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/text-operations.html",
+      "bytes": 4960,
+      "sha256": "3df46a40b4d5a7ae72ac0cb2ec1ae3e0f8bf25db6454e02f415250e632a9a486",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/text-operations.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/text-operations.js",
+      "bytes": 14246,
+      "sha256": "6a7d6f008628d4fab814ab380dc1e1590a77a22b6154532ec7a39a4efc0e2363",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/text-operations.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/uri.html",
+      "bytes": 2317,
+      "sha256": "6a4f760f2f4c147f2abbf93dc1fc4cd582eea063c8f668994bee2c1db97bacd4",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/uri.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/webp-lossy-2x2.webp",
+      "bytes": 64,
+      "sha256": "58f54ff02c361724d4b70489d46dd5d8719af3ad52c4b56afe3ec507ce7b2e1a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/webp-lossy-2x2.webp",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/webp-oversized-inner-vp8.webp",
+      "bytes": 48,
+      "sha256": "8e99fd6a80a22d41fb8204549c1f74a1b866cdf300a8f1af81e40c47c7238bf5",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/webp-oversized-inner-vp8.webp",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/window-global-bindings.tsv",
+      "bytes": 4251,
+      "sha256": "2c42eb02bc277f41ca585145af68b1879860b5f262114f896008ba38719c4014",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/window-global-bindings.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/window-reflection.tsv",
+      "bytes": 3149,
+      "sha256": "8e6e97d047ee850abbaa9800826f1c92acc0d3ce3dcb532e9ce796799f3e42cc",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/window-reflection.tsv",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/fixtures/window-self.html",
+      "bytes": 3633,
+      "sha256": "d8c9904cb63163277006518b6c70649758d601304395e3b781a44d1da56c91f0",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/fixtures/window-self.html",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-array-buffer/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-array-buffer/harness/assert.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-array-buffer/harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-array-buffer/harness/propertyHelper.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-array-buffer/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-array-buffer/harness/sta.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-array-reduce/test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js",
+      "bytes": 1566,
+      "sha256": "d13d55ebdaa4b5394745a7cd3f0aaad9ce712585fe7e83b618b376d70a927dbb",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-array-reduce/test/built-ins/Array/prototype/reduceRight/length-near-integer-limit.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-11-elements.js",
+      "bytes": 1192,
+      "sha256": "1be27a1193158a0323931c679c93d1b2d109087593692a3b3074290ea752d90e",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-11-elements.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-2048-elements.js",
+      "bytes": 64618,
+      "sha256": "fed127c2af841d2d2d8fb782b6e505ba445ef38169af6d38abea4635c6086257",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-2048-elements.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-5-elements.js",
+      "bytes": 840,
+      "sha256": "cb9196a4bb26efe824d45a4262b16ca14880bf4848a2d7f46e40fb8433965fb4",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-array-sort/test/built-ins/Array/prototype/sort/stability-5-elements.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/13.2-30-s.js",
+      "bytes": 945,
+      "sha256": "0f27073e05ac349d093a36aadec6454c4ee80311bc32d86198a315c5effcbfef",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/13.2-30-s.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13.2.1_A1_T1.js",
+      "bytes": 4692,
+      "sha256": "92538a981853d536d0a90d3db608f7a8f0ff8a0b526a6b354504076d49c3b447",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13.2.1_A1_T1.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13.2.1_A5_T1.js",
+      "bytes": 774,
+      "sha256": "32b86cbd2223ee7520e7f18d5eb68b7cb3708b0774f5946584a61b784e245433",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13.2.1_A5_T1.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A1_T1.js",
+      "bytes": 1281,
+      "sha256": "673ad38ff9c3a0bbeec630d3d10927c3efe711ee7c35e50fc796cd2ad5326efa",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A1_T1.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A1_T2.js",
+      "bytes": 1300,
+      "sha256": "831736472eb25b08f4b9f0ca4bd4db6736f04528bb8145067d00fa89dcfb8bd6",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A1_T2.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A3_T1.js",
+      "bytes": 1365,
+      "sha256": "879d1872089a75f973eff53b3028684f014f1708a33516b2239d494f1559a143",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A3_T1.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A3_T2.js",
+      "bytes": 1377,
+      "sha256": "225cdbf6e0d2c4ec4727e04980ba5db8890b48834467e6f4f007473f769e3f72",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13.2.2_A3_T2.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13.2_A5.js",
+      "bytes": 1024,
+      "sha256": "b27d77cf9068d9c8cb307c08e5bf09e9f6b843c2e41f27f612a9ed98024a296b",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13.2_A5.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S13_A7_T1.js",
+      "bytes": 2734,
+      "sha256": "ab3449861b952c99e671f30f82bf6f6eec8642b588909474bdad43496ef12c67",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S13_A7_T1.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S14_A5_T1.js",
+      "bytes": 851,
+      "sha256": "f8fc3563d71a81d24382bec998641ec0e4eb60e0f9cec385b9e68188ae45ba64",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S14_A5_T1.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-functions/test/language/statements/function/S14_A5_T2.js",
+      "bytes": 797,
+      "sha256": "ebc337ad8c23d0a5c6aaec25f2c7b998890494451ccb47635fa999e37957c985",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-functions/test/language/statements/function/S14_A5_T2.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-identifiers/test/language/identifiers/start-unicode-10.0.0.js",
+      "bytes": 83606,
+      "sha256": "fd256cf1f6538fbb3ee1d1c8eaa74b0da9549e6a19fd50d6edd294aa2cba2869",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-identifiers/test/language/identifiers/start-unicode-10.0.0.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-numeric-parsing/harness/decimalToHexString.js",
+      "bytes": 641,
+      "sha256": "bc8786436987220b53cbc28443697f1fb61d5818fbf4f0741fd80a736d1d4ff5",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-numeric-parsing/harness/decimalToHexString.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-typedarray-foundation/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-typedarray-foundation/harness/assert.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-typedarray-foundation/harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-typedarray-foundation/harness/propertyHelper.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-typedarray-foundation/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-typedarray-foundation/harness/sta.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-typedarray-foundation/harness/testTypedArray.js",
+      "bytes": 16526,
+      "sha256": "51eb50e53e6215f31f14d64d249bea2d08ad943c77835f63ba52ec694de2189a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-typedarray-foundation/harness/testTypedArray.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262-typedarray-foundation/test/built-ins/TypedArrayConstructors/internals/DefineOwnProperty/key-is-not-numeric-index.js",
+      "bytes": 1586,
+      "sha256": "3815beaf3ca3b96280da8ef06524a316e7ae29d1ce4d0e010154e01632e7fdc1",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262-typedarray-foundation/test/built-ins/TypedArrayConstructors/internals/DefineOwnProperty/key-is-not-numeric-index.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262/harness/assert.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262/harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262/harness/compareArray.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262/harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262/harness/propertyHelper.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262/harness/sta.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/test262/test/built-ins/JSON/stringify/value-string-escape-ascii.js",
+      "bytes": 1735,
+      "sha256": "8185a70c7e050b19f02491618f462f53796bccde59463dfa2fc4dfd0dfd1eb50",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/test262/test/built-ins/JSON/stringify/value-string-escape-ascii.js",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tests/upstream/unicode/18.0.0/DerivedCoreProperties.txt",
+      "bytes": 1159889,
+      "sha256": "09c928886a178fcafd93c29e4bd59073a058e5a100b716d425cb563ab50f68c9",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tests/upstream/unicode/18.0.0/DerivedCoreProperties.txt",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-command-cap-refuses-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-command-cap-refuses-whole-frame.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-fixed-escape-and-nested-restoration.rgb",
+      "bytes": 72,
+      "sha256": "78590e56ffd340433232ea019d14fa17060c73bc5f9c344fa42e9914c0a6e2fa",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-fixed-escape-and-nested-restoration.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-hidden-text-refuses-whole-frame.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-hidden-text-refuses-whole-frame.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-lines-are-bounding-rectangles.rgb",
+      "bytes": 60,
+      "sha256": "71b132d8bb46350f9ff7fbf8d3265548327de58f9eaaf859aa8002c9fe669e8c",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-lines-are-bounding-rectangles.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-missing-image-is-a-legal-noop.rgb",
+      "bytes": 24,
+      "sha256": "3dc8007acc7bdc6938676753f1136033d422a534b0da352d126e9b38d2b7fcb4",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-missing-image-is-a-legal-noop.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-repeated-key-alias-and-alpha.rgb",
+      "bytes": 24,
+      "sha256": "0c1a9dafdd5a66918f6a788b0c979aa85c2dbb37f30e2d3f32196d9bc649f140",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-repeated-key-alias-and-alpha.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-rounded-refuses-whole-frame.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-rounded-refuses-whole-frame.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-scope-cap-refuses-balanced-whole-frame.rgb",
+      "bytes": 3,
+      "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-scope-cap-refuses-balanced-whole-frame.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-translucent-fractional-clip-edges.rgb",
+      "bytes": 45,
+      "sha256": "204fe68429499a02ef2d833aec124154ec220184afc760c06a381f983147d023",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-translucent-fractional-clip-edges.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-transparent-hidden-rounded-still-refuses.rgb",
+      "bytes": 18,
+      "sha256": "b264d50882783e189ebe8cae2a58fdbb0872ea01fe58a35e659f6a43c78d0ae0",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-transparent-hidden-rounded-still-refuses.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-unit-opacity-refuses-whole-frame.rgb",
+      "bytes": 18,
+      "sha256": "ef40b7f937395a2e5810f78655f2d55a9f6c2fd35d576ab50156b6a671930264",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/direct-unit-opacity-refuses-whole-frame.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-fixed-child-escapes-scrolling-clip.rgb",
+      "bytes": 96,
+      "sha256": "d96bf74f2bbdb6b31e56b9cdfb4ecb93bd6b88368708ab0f902e80793f3aee53",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-fixed-child-escapes-scrolling-clip.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-ordered-rectangles.rgb",
+      "bytes": 72,
+      "sha256": "7704024730fe07beddc79d430f0072dfc8228d903f6aa555194676dbd101993a",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-ordered-rectangles.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-repeated-decoded-image-key.rgb",
+      "bytes": 36,
+      "sha256": "755c08ffce08cc1e3ed054d3e8efd1c7ffbecbc020b7a1180dd3c1e92cf9134f",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-repeated-decoded-image-key.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-rounded-page-requires-full-cpu-fallback.rgb",
+      "bytes": 36,
+      "sha256": "aa0eb258ba18d785e049ca9c8f4314ecf575f6e763abd98d3bade2fe2a0eee46",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-rounded-page-requires-full-cpu-fallback.rgb",
+      "role": "unchanged-literal-input"
+    },
+    {
+      "path": "supplemental-inputs/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-unavailable-image-keeps-placeholder.rgb",
+      "bytes": 24,
+      "sha256": "cabe78bf9662f83b80ffcbdf921fa3e0b81d63a6c880d78a5ce55f3e9764c785",
+      "origin": "/tmp/eris-text-metadata-keys-1/worktree/tools/vulkan-raster-probe/browser-fixtures/oracle/expected/html-unavailable-image-keeps-placeholder.rgb",
+      "role": "unchanged-literal-input"
+    }
+  ]
+}

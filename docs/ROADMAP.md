@@ -33,7 +33,10 @@ leaving five under the unchanged startup limit. The
 `Promise.all` uses 108 units and leaves 25 under the same startup allowance.
 The [Node method follow-up](node-method-keys.md) saves another 250 work units and
 1,512 accounted heap bytes, leaving 275 units. Installing `Promise.race` uses
-121 units and leaves 154 under the unchanged startup allowance. Call/new spread
+121 units and leaves 154 under the unchanged startup allowance. The
+[Text metadata follow-up](text-metadata-keys.md) saves 60 further work units and
+336 accounted heap bytes, leaving 214. `allSettled` remains separate unfinished
+work. Call/new spread
 uses the same runtime limits. [Argument grammar contexts](call-argument-in.md)
 now restore `+In` inside argument lists nested in a `for` initializer, while
 preserving the surrounding `for-in` grammar. [Computed member keys and

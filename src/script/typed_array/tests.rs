@@ -147,6 +147,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     let finally_added = s + a + d + 3 * k + bpp + n + 1047;
     // All adds one method; the current State term above includes its arena header.
     let all_added = s + a + d + 3 * k + bpp + n + 1011;
+    // Text metadata sharing saves60 work and336 bytes without new bags.
     // Race adds one method and no State header.
     let race_added = s + a + d + 3 * k + bpp + n + 1020;
     assert_eq!(
@@ -160,6 +161,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 108
             + 250
             - 121
+            + 60
     );
     assert_eq!(
         runtime.allocated,
@@ -181,6 +183,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + all_added
             - 1512
             + race_added
+            - 336
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
