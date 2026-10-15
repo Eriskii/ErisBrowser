@@ -177,6 +177,8 @@ jobs:
       - run: cargo build --locked --release --features test262-host --bin eris-js
       - name: Preserve authenticated Promise completion and pinned method cases
         run: python3 tools/test262_conformance.py --binary target/release/eris-js --profile promise-methods-async --baseline tests/conformance/test262-promise-methods-async-current.json --output artifacts/test262-promise-methods-async-gate.json
+      - name: Preserve complete pinned Promise.all cases
+        run: python3 tools/test262_conformance.py --binary target/release/eris-js --profile promise-all --baseline tests/conformance/test262-promise-all-current.json --output artifacts/test262-promise-all-gate.json
   presenter-variants:
     runs-on: ubuntu-latest
     timeout-minutes: 20

@@ -80,10 +80,10 @@ and strict Clippy in both configurations, plus final formatting. The full-suite
 totals remain attributed to source1; production code is unchanged by the cleanup.
 
 The complete pinned Test262 `Promise/all` directory has 98 authenticated sources
-and 196 required modes. Those sources have been fetched but not executed in
-this record. A separate conformance record will report their actual outcomes;
-no pass total is predicted. The earlier 232-source Promise-methods profile
-retains its own historical results. These authored controls do not establish
+and 196 required modes. The [subsequent conformance record](promise-all-test262.md)
+reports 170 passed, 18 failed and 8 unsupported modes, with all 90 harness controls
+passing. The earlier 232-source Promise-methods profile retains its exact
+outcomes on replay. These authored controls and selected upstream results do not establish
 full Promise or ECMAScript conformance. Other combinators, async functions,
 complete rejection notifications, multiple realms and garbage collection remain
 unfinished.

@@ -160,9 +160,9 @@ class PromiseImporter(unittest.TestCase):
             importer.import_corpus(Path(temporary), PROFILE)
 
     def test_all_prior_profile_tables_and_nonrecursive_proof_description_remain_exact(self):
-        old = {'profiles': {k: v for k, v in importer.PROFILES.items() if k != PROFILE},
-               'roots': {k: v for k, v in importer.PROFILE_ROOTS.items() if k != PROFILE},
-               'tree_profiles': sorted(importer.TREE_PROFILES - {PROFILE})}
+        old = {'profiles': {k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'promise-all'}},
+               'roots': {k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'promise-all'}},
+               'tree_profiles': sorted(importer.TREE_PROFILES - {PROFILE, 'promise-all'})}
         self.assertEqual(len(old['profiles']), 53)
         self.assertEqual(digest(canonical(old)), 'e51b4b6882c1163b10fa3eb84321fac4b923acadc8a29a41b648c0d399a502e6')
         corpus = importer.ROOT / 'tests/upstream/test262-array-find'

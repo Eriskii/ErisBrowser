@@ -113,6 +113,10 @@ PROMISE_FEATURES = {'Promise', 'Promise.prototype.finally', 'Symbol.species',
                     'Reflect.construct', 'arrow-function', 'Reflect',
                     'Symbol.toStringTag', 'Symbol'}
 PROFILE_FEATURES[PROMISE_PROFILE] = PROMISE_FEATURES
+PROMISE_ALL_PROFILE = 'promise-all'
+PROMISE_ALL_FEATURES = PROMISE_FEATURES | {'Symbol.iterator'}
+PROFILE_FEATURES[PROMISE_ALL_PROFILE] = PROMISE_ALL_FEATURES
+PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -228,13 +232,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -254,7 +258,7 @@ def load_corpus(directory, profile='string-json'):
         source = files[path].decode('utf-8')
         metadata = parse_metadata(source)
         names = harness_names(metadata)
-        if profile == PROMISE_PROFILE and len(set(names)) != len(names):
+        if profile in PROMISE_HOST_PROFILES and len(set(names)) != len(names):
             raise ValueError('duplicate Promise harness include')
         harness = []
         for name in names:
@@ -265,7 +269,7 @@ def load_corpus(directory, profile='string-json'):
         for mode in modes(metadata):
             case = dict(id=f'{path}:{mode}', file=path, mode=mode,
                         source=files[path], metadata=metadata, harness=harness)
-            if profile == PROMISE_PROFILE:
+            if profile in PROMISE_HOST_PROFILES:
                 case['completion_policy'] = int('async' in metadata['flags'])
             case['case_sha256'] = case_fingerprint(case)
             cases.append(case)
@@ -286,7 +290,7 @@ def case_fingerprint(case):
 def unsupported_reason(case, supported_features=SUPPORTED_FEATURES, profile=None):
     metadata = case['metadata']
     flags = set(metadata['flags'])
-    if profile == PROMISE_PROFILE:
+    if profile in PROMISE_HOST_PROFILES:
         policy = case.get('completion_policy')
         if (type(policy) is not int or policy not in (0, 1)
                 or policy != int('async' in flags)):
@@ -297,7 +301,7 @@ def unsupported_reason(case, supported_features=SUPPORTED_FEATURES, profile=None
         return 'module parsing/resolution is not implemented'
     if metadata['negative'] and metadata['negative']['type'] not in INTRINSIC_ERRORS:
         return 'negative error constructor identity is not implemented: ' + metadata['negative']['type']
-    if 'async' in flags and profile != PROMISE_PROFILE:
+    if 'async' in flags and profile not in PROMISE_HOST_PROFILES:
         return 'asynchronous completion and jobs are not implemented'
     if flags - KNOWN_FLAGS:
         return 'unknown execution flags: ' + ', '.join(sorted(flags - KNOWN_FLAGS))
@@ -326,7 +330,7 @@ def unsupported_reason(case, supported_features=SUPPORTED_FEATURES, profile=None
             and 'resizableArrayBufferUtils.js' in metadata['includes']):
         return 'TypedArray reverse policy excludes the complete resizableArrayBufferUtils helper'
     sources = [case['source']] + [source for _, source in case['harness']]
-    if profile == PROMISE_PROFILE:
+    if profile in PROMISE_HOST_PROFILES:
         if any(re.search(rb'\$262\b', source) for source in sources):
             return 'Test262 realm host hooks are not implemented (conservative source check)'
         return None
@@ -1363,6 +1367,8 @@ def array_from_preflight_variants():
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
+    if profile == PROMISE_ALL_PROFILE:
+        return promise_all_harness_preflight(files, binary, timeout)
     if profile == PROMISE_PROFILE:
         return promise_harness_preflight(files, binary, timeout)
     scripts = [
@@ -3299,6 +3305,138 @@ def promise_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+def promise_all_preflight_variants():
+    """Four held positive/mismatch pairs, separate from the unchanged host guards."""
+    return [{'name': 'api',
+      'source': "verifyProperty(Promise.all,'name',{value:'all',writable:false,enumerable:false,configurable:true});verifyProperty(Promise.all,'length',{value:1,writable:false,enumerable:false,configurable:true});assert.throws(TypeError,function(){new "
+                'Promise.all([]);});',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js'],
+      'origin': 'promise-all-pair',
+      'prerequisite': None},
+     {'name': 'api-mismatch',
+      'source': 'Promise.all=function '
+                "all(x){};verifyProperty(Promise.all,'name',{value:'all',writable:false,enumerable:false,configurable:true});verifyProperty(Promise.all,'length',{value:1,writable:false,enumerable:false,configurable:true});assert.throws(TypeError,function(){new "
+                'Promise.all([]);});',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js'],
+      'origin': 'promise-all-pair',
+      'prerequisite': 'api'},
+     {'name': 'order',
+      'source': 'var release;var pending=new '
+                "Promise(function(r){release=r;});Promise.all([pending,2]).then(function(values){assert.sameValue(values.join(','),'7,2');}).then($DONE,$DONE);release(7);",
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-all-pair',
+      'prerequisite': None},
+     {'name': 'order-mismatch',
+      'source': 'var release;var pending=new '
+                "Promise(function(r){release=r;});Promise.all([pending,2]).then(function(values){assert.sameValue(values.join(','),'2,7');}).then($DONE,$DONE);release(7);",
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-all-pair',
+      'prerequisite': 'order'},
+     {'name': 'reject',
+      'source': 'var marker={};Promise.all([Promise.reject(marker),new '
+                "Promise(function(){})]).then(function(){throw new Test262Error('unexpected "
+                "fulfillment');},function(reason){assert.sameValue(reason,marker);}).then($DONE,$DONE);",
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-all-pair',
+      'prerequisite': None},
+     {'name': 'reject-mismatch',
+      'source': 'var marker={};Promise.all([Promise.reject(marker),new '
+                "Promise(function(){})]).then(function(){throw new Test262Error('unexpected "
+                "fulfillment');},function(reason){assert.notSameValue(reason,marker);}).then($DONE,$DONE);",
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-all-pair',
+      'prerequisite': 'reject'},
+     {'name': 'iterator-once',
+      'source': 'var values,resolves=0,rejects=0,n=0;function '
+                'C(executor){executor(function(v){values=v;resolves++;},function(){rejects++;});}C.resolve=function(x){return '
+                '{then:function(f){f(x);f(99);}};};var it={next:function(){n++;return '
+                'n<=2?{done:false,value:n}:{done:true};}};var '
+                'source={};source[Symbol.iterator]=function(){return '
+                "it;};Promise.all.call(C,source);assert.sameValue(values.join(','),'1,2');assert.sameValue(resolves,1);assert.sameValue(rejects,0);assert.sameValue(n,3);",
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-all-pair',
+      'prerequisite': None},
+     {'name': 'iterator-once-mismatch',
+      'source': 'var values,resolves=0,rejects=0,n=0;function '
+                'C(executor){executor(function(v){values=v;resolves++;},function(){rejects++;});}C.resolve=function(x){return '
+                '{then:function(f){f(x);f(99);}};};var it={next:function(){n++;return '
+                'n<=2?{done:false,value:n}:{done:true};}};var '
+                'source={};source[Symbol.iterator]=function(){return '
+                "it;};Promise.all.call(C,source);assert.sameValue(values.join(','),'1,2');assert.sameValue(resolves,2);assert.sameValue(rejects,0);assert.sameValue(n,3);",
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-all-pair',
+      'prerequisite': 'iterator-once'}]
+
+
+def promise_all_preflight_healthy(outcomes):
+    common_count = 2 * len(promise_preflight_variants())
+    if not promise_preflight_healthy(outcomes[:common_count]):
+        return False
+    expected = {('promise-methods-' + row['name'], mode)
+                for mode in ('sloppy', 'strict') for row in promise_preflight_variants()}
+    expected.update(('promise-all-' + row['name'], mode)
+                    for mode in ('sloppy', 'strict') for row in promise_all_preflight_variants())
+    if len(outcomes) != len(expected):
+        return False
+    observed = set()
+    for item in outcomes:
+        identity = (item.get('name'), item.get('result', {}).get('mode'))
+        if identity not in expected or identity in observed or item.get('verified') is not True:
+            return False
+        observed.add(identity)
+    return observed == expected
+
+
+def promise_all_harness_preflight(files, binary, timeout):
+    # Preserve the original74 rows, their policy and all prerequisite evidence.
+    outcomes = promise_harness_preflight(files, binary, timeout)
+    by_identity = {(item['name'], item['result']['mode']): item for item in outcomes}
+    common_names = ['promise-methods-' + row['name'] for row in promise_preflight_variants()]
+    for mode in ('sloppy', 'strict'):
+        for row in promise_all_preflight_variants():
+            policy = row['completion_policy']
+            names = ['assert.js', 'sta.js'] + (['doneprintHandle.js'] if policy else []) + row['includes']
+            name = 'promise-all-' + row['name']
+            case = dict(id='harness-preflight:' + name, file='<preflight>', mode=mode,
+                        metadata=dict(flags=['async'] if policy else [], includes=row['includes'],
+                                      features=[], locale=[], negative=None),
+                        source=row['source'].encode(), harness=[(n, files['harness/' + n]) for n in names],
+                        completion_policy=policy)
+            case['case_sha256'] = case_fingerprint(case)
+            result = run_case(case, binary, timeout, PROMISE_ALL_FEATURES, PROMISE_ALL_PROFILE)
+            required = common_names.copy()
+            if row['prerequisite']:
+                required.append('promise-all-' + row['prerequisite'])
+            prerequisites = [dict(name=required_name, mode=mode,
+                verified=by_identity[(required_name, mode)]['verified'],
+                case_sha256=by_identity[(required_name, mode)]['result']['case_sha256'],
+                source_sha256=by_identity[(required_name, mode)]['result']['source_sha256'])
+                for required_name in required]
+            item = dict(name=name, expected=row['expected'],
+                        verified=(promise_preflight_verified(case, result, row['expected'])
+                                  and all(prerequisite['verified'] for prerequisite in prerequisites)),
+                        result=result, prerequisites=prerequisites)
+            outcomes.append(item)
+            by_identity[(name, mode)] = item
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -3343,10 +3481,11 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (promise_preflight_healthy(preflight) if args.profile == PROMISE_PROFILE
+        preflight_ok = (promise_all_preflight_healthy(preflight) if args.profile == PROMISE_ALL_PROFILE
+                        else promise_preflight_healthy(preflight) if args.profile == PROMISE_PROFILE
                         else all(item['verified'] for item in preflight))
         supported_features = PROFILE_FEATURES[args.profile]
-        if args.profile == PROMISE_PROFILE and not preflight_ok:
+        if args.profile in PROMISE_HOST_PROFILES and not preflight_ok:
             results = [dict(id=case['id'], file=case['file'], mode=case['mode'],
                             case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
                             expected_negative=case['metadata']['negative'], status='blocked',
@@ -3361,7 +3500,7 @@ def main():
                       timeout_seconds=args.timeout)
         if args.profile in {'typedarray-views', 'typedarray-search', 'typedarray-fill', 'typedarray-reverse', 'typedarray-copy-within'}:
             policy['excluded_harness'] = ['resizableArrayBufferUtils.js']
-        if args.profile == PROMISE_PROFILE:
+        if args.profile in PROMISE_HOST_PROFILES:
             policy.update(format=3, async_completion=True, host_hooks=True,
                           request_protocol='ERJS2', response_protocol='ERJR3',
                           adapter_feature='test262-host',

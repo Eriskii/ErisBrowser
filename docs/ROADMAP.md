@@ -9,7 +9,10 @@ thenable adoption, generic capabilities/species and a shared FIFO with
 profile. Its recorded results guide subsequent compatibility work.
 [`Promise.all`](promise-all.md) now implements ordered collection from synchronous
 iterables within the existing limits. Its separate 98-source, 196-mode upstream
-selection has been authenticated; execution results are forthcoming.
+selection now [records 170 passed, 18 failed and 8 unsupported modes](promise-all-test262.md),
+with all 90 harness controls passing. Call-spread syntax, classes and the
+distinction between host rejection policy and language conformance remain visible
+in this result. The existing 458-mode profile has no regressions.
 Remaining asynchronous work includes `race`, `allSettled`, `any`,
 async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.

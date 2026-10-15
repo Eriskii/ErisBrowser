@@ -1,7 +1,7 @@
 # Authenticated Promise Test262 host
 
 The optional `test262-host` feature lets `eris-js` run the pinned
-`promise-methods-async` profile with checked synchronous completion and
+`promise-methods-async` and [`promise-all`](promise-all-test262.md) profiles with checked synchronous completion and
 an authenticated `$DONE` path. Promise jobs use Eris's interpreter and existing
 microtask FIFO. This adds a test adapter contract; it does not add timers,
 async functions, combinators or the full browser event loop.
@@ -74,7 +74,7 @@ A completion entry costs 24 before ordinary callback work. Finalization costs
 These are resource-policy charges, not performance measurements.
 
 The feature is off by default. `ERJS2` requests and `ERJR3` evidence are confined
-to this profile; disabled builds reject the new request before Runtime creation.
+to these profiles; disabled builds reject the new request before Runtime creation.
 Existing `ERJS1`/`ERJR2` requests, old profile policies and baseline hashes retain
 their previous behavior, including when the binary was built with the feature.
 The new response has six text fields and eight evidence fields in a 12-byte

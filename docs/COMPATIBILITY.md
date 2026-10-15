@@ -15,7 +15,11 @@ The optional [Promise Test262 host](promise-test262-host.md) runs a separate
 232-source, 458-mode selection with authenticated `$DONE` and final unhandled
 rejection checks. All retained failures and unsupported modes belong in its
 result inventory; this does not add browser rejection notifications or imply
-complete Promise conformance.
+complete Promise conformance. Its separate [complete `Promise.all` selection](promise-all-test262.md)
+records **170 passed, 18 failed and 8 unsupported modes out of 196**. Four failures
+are parse errors at call-spread syntax; fourteen are final-unhandled host-policy
+failures. Eight class-bearing modes remain unsupported. All 90 harness controls
+pass, and the prior 458-mode selection retains its exact outcomes.
 The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
 preserving function properties and identities; they add no API coverage.
 The [Node accessor key-sharing follow-up](node-accessor-keys.md) similarly

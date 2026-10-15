@@ -18,8 +18,10 @@ once-only fulfillment callbacks. `race`, `allSettled`, `any`, async functions an
 rejection notifications remain unfinished.
 The optional [Promise Test262 host](docs/promise-test262-host.md) adds authenticated
 `$DONE` completion and a separate final-unhandled-rejection policy for a pinned
-232-source, 458-mode profile. Its validation record distinguishes corpus scope
-from observed results.
+232-source, 458-mode profile. The separate [complete `Promise.all` selection](docs/promise-all-test262.md)
+records 170 passed, 18 failed and 8 unsupported modes out of 196, with all 90
+harness controls passing. Its failures include missing call-spread syntax and
+the host's final-unhandled-rejection policy.
 
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors
