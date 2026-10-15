@@ -162,6 +162,118 @@ impl Runtime {
         self.observe_microtask_failure(result)
     }
 
+    pub(super) fn new_all_settled_snapshot(
+        &mut self,
+        kind: ReactionKind,
+        value: &Value,
+    ) -> Result<Value> {
+        let result = (|| {
+            // Fixed checks/planning, one payload clone and six owner releases.
+            // Lookup, object backing and staged bag/text/property fees follow.
+            self.work(17)?;
+            let (status, payload) = match kind {
+                ReactionKind::Fulfill => ("fulfilled", "value"),
+                ReactionKind::Reject => ("rejected", "reason"),
+            };
+            self.work(install::tree(self.prototypes.len()).0)?;
+            let prototype = self
+                .prototypes
+                .get("Object")
+                .copied()
+                .filter(|id| *id < self.objects.len())
+                .ok_or_else(invalid)?;
+            let objects =
+                factories::object_slot_plan(self.objects.len(), self.objects.capacity(), 1)?;
+            self.work(objects.work)?;
+            self.charge(objects.bytes)?;
+            reserve_all!(self.objects, objects, Objects);
+            let bag = self.dom_proto_object(Some(Value::Object(prototype)), 2)?;
+            let status_key = self.dom_proto_text("status")?;
+            let status_text = self.dom_proto_text(status)?;
+            let payload_key = self.dom_proto_text(payload)?;
+            self.dom_proto_property(
+                bag,
+                status_key.into(),
+                Property::data(Value::String(status_text), true, true, true),
+            )?;
+            self.dom_proto_property(
+                bag,
+                payload_key.into(),
+                Property::data(value.clone(), true, true, true),
+            )?;
+            Ok(Value::Object(bag))
+        })();
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn complete_all_settled_element(
+        &mut self,
+        id: AllCaptureId,
+        kind: ReactionKind,
+        value: &Value,
+    ) -> Result<Option<ReadyAllValues>> {
+        let result = (|| {
+            self.work(12)?;
+            let Some(AllCapture::Element {
+                group,
+                index,
+                called,
+            }) = self.promises.all_captures.records.get(id.0)
+            else {
+                return Err(invalid());
+            };
+            // Either callback consumes the same gate. Duplicates do not inspect
+            // moved-out Group storage or retain the caller's payload.
+            if *called {
+                return Ok(None);
+            }
+            let (group, index) = (*group, *index);
+            self.work(14)?;
+            let Some(AllCapture::Group {
+                values,
+                remaining,
+                input_done,
+                ..
+            }) = self.promises.all_captures.records.get(group.0)
+            else {
+                return Err(invalid());
+            };
+            if index >= values.records.len() || values.records.len() > values.admitted_capacity {
+                return Err(invalid());
+            }
+            let next = remaining.checked_sub(1).ok_or_else(invalid)?;
+            if next == 0 && !*input_done {
+                return Err(invalid());
+            }
+            let AllCapture::Element { called, .. } = &mut self.promises.all_captures.records[id.0]
+            else {
+                unreachable!("validated Promise.allSettled element");
+            };
+            *called = true;
+            // Snapshot creation has no author call or AllCapture mutation.
+            // A terminal refusal leaves this gate consumed and Group untouched.
+            let snapshot = self.new_all_settled_snapshot(kind, value)?;
+            let AllCapture::Group {
+                resolve,
+                values,
+                remaining,
+                ..
+            } = &mut self.promises.all_captures.records[group.0]
+            else {
+                unreachable!("validated Promise.allSettled group");
+            };
+            // All remaining publication is prepaid and cannot fail.
+            values.records[index] = snapshot;
+            *remaining = next;
+            Ok(if next == 0 {
+                Some(ready_values(resolve, values))
+            } else {
+                None
+            })
+        })();
+        self.observe_microtask_failure(result)
+    }
+
     pub(super) fn finish_all_input(&mut self, id: AllCaptureId) -> Result<Option<ReadyAllValues>> {
         let result = (|| {
             self.work(16)?;
@@ -243,3 +355,6 @@ impl Runtime {
         self.observe_microtask_failure(result)
     }
 }
+
+#[cfg(test)]
+mod all_settled_quota_tests;

@@ -19,8 +19,10 @@ preserving direct callbacks and ordinary iterator closing. Its complete pinned
 [94-source upstream profile](promise-race-test262.md) records 170 passed, 10 failed
 and 8 unsupported modes out of 188, with all 90 controls verified. The retained
 failures reflect host rejection policy; class support remains unfinished.
-Remaining asynchronous work includes `allSettled`, `any`,
-async functions/`await`, rejection notifications, timers,
+[`Promise.allSettled`](promise-all-settled.md) now collects both outcomes in
+input order with generic capabilities and paired callbacks sharing one gate.
+Its upstream profile remains a separate follow-up. Remaining asynchronous work
+includes `any`, async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 
 [Shared startup keys](pi-key-cache.md) reduce duplicate DOM metadata allocations
@@ -35,8 +37,9 @@ The [Node method follow-up](node-method-keys.md) saves another 250 work units an
 1,512 accounted heap bytes, leaving 275 units. Installing `Promise.race` uses
 121 units and leaves 154 under the unchanged startup allowance. The
 [Text metadata follow-up](text-metadata-keys.md) saves 60 further work units and
-336 accounted heap bytes, leaving 214. `allSettled` remains separate unfinished
-work. Call/new spread
+336 accounted heap bytes, leaving 214 at that checkpoint. The subsequent
+`allSettled` installation and its validation are recorded in the linked chapter.
+Call/new spread
 uses the same runtime limits. [Argument grammar contexts](call-argument-in.md)
 now restore `+In` inside argument lists nested in a `for` initializer, while
 preserving the surrounding `for-in` grammar. [Computed member keys and

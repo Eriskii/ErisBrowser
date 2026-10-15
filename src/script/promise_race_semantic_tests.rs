@@ -143,7 +143,7 @@ var distinct=true;for(var i=0;i<old.length;i++){if(f===old[i])distinct=false;}
 var check=[f===Promise.race,d.writable,!d.enumerable,d.configurable,n.value==='race',l.value===1,
 !n.writable,!n.enumerable,n.configurable,!l.writable,!l.enumerable,l.configurable,
 !Object.prototype.hasOwnProperty.call(f,'prototype'),Object.getPrototypeOf(f)===Function.prototype,noNew,distinct,
-Object.getOwnPropertyNames(Promise).join(',')==='length,name,prototype,resolve,reject,all,race'].every(function(v){return v;});
+Object.getOwnPropertyNames(Promise).join(',')==='length,name,prototype,resolve,reject,all,race,allSettled'].every(function(v){return v;});
 Object.defineProperty(f,'name',{value:'changed race'});Object.defineProperty(f,'length',{value:99});
 check=check&&Promise.all.name==='all'&&Promise.all.length===1&&Promise.resolve.name==='resolve'&&Promise.resolve.length===1;
 "###,

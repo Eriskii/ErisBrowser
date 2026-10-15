@@ -150,6 +150,8 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // Text metadata sharing saves60 work and336 bytes without new bags.
     // Race adds one method and no State header.
     let race_added = s + a + d + 3 * k + bpp + n + 1020;
+    // AllSettled adds one method bag; no further State or arena header.
+    let all_settled_added = s + a + d + 3 * k + bpp + n + 1074;
     assert_eq!(
         runtime.steps,
         5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
@@ -162,6 +164,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + 250
             - 121
             + 60
+            - 187
     );
     assert_eq!(
         runtime.allocated,
@@ -184,10 +187,11 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 1512
             + race_added
             - 336
+            + all_settled_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (751, 751)
+        (752, 752)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

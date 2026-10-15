@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>base</title>
+<style>
+html,body { margin:0; padding:0; border:0; background:#fff; }
+#red,#blue { display:block; position:absolute; top:2px; width:4px; height:4px; box-sizing:content-box; margin:0; padding:0; border:0; }
+#red { left:2px; background:#f00; }
+#blue { left:20px; background:#00f; }
+</style></head><body><div id="red"></div><div id="blue"></div>
+<script>
+var red=document.getElementById('red'),trace='S',rejectPending,token={offset:8};
+var pending=new Promise(function(resolve,reject){rejectPending=reject;});
+Promise.allSettled([Promise.resolve(4),pending,3]).then(function(v){
+  if(v.length!==3 || v[0].status!=='fulfilled' || v[0].value!==4 ||
+     v[1].status!=='rejected' || v[1].reason!==token ||
+     v[2].status!=='fulfilled' || v[2].value!==3) throw 'initial snapshots';
+  trace+='A';red.style.left=(v[0].value+v[1].reason.offset)+'px';document.title=trace;
+});
+queueMicrotask(function(){trace+='Q';rejectPending(token);});
+red.addEventListener('click',function(){
+  trace+='C';
+  Promise.allSettled([Promise.reject(token),16]).then(function(v){
+    if(v.length!==2 || v[0].status!=='rejected' || v[0].reason!==token ||
+       v[1].status!=='fulfilled' || v[1].value!==16) throw 'click snapshots';
+    trace+='D';red.style.left=v[1].value+'px';
+  });
+  queueMicrotask(function(){trace+='K';});
+});
+red.addEventListener('click',function(){trace+='B';document.title=trace;});
+</script></body></html>

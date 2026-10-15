@@ -113,8 +113,8 @@ fn text_metadata_keys_preserve_both_bags_before_sharing_constructor_payloads() {
             assert!(!*writable && !property.enumerable && property.configurable);
         }
     }
-    assert_eq!(runtime.objects.len(), 751);
-    assert_eq!(runtime.objects.capacity(), 751);
+    assert_eq!(runtime.objects.len(), 752);
+    assert_eq!(runtime.objects.capacity(), 752);
     assert_eq!(runtime.native_properties.len(), 299);
     assert_eq!(runtime.prototypes.len(), 25);
     assert_eq!(runtime.environments[0].bindings.len(), 212);
@@ -225,13 +225,13 @@ fn text_metadata_key_sharing_preserves_saved_behavior_and_mutation_isolation_in_
 }
 
 #[test]
-fn text_metadata_keys_raw_bootstrap_uses_99786_work_and_preserves_public_reset() {
+fn text_metadata_keys_raw_bootstrap_uses_99973_work_and_preserves_public_reset() {
     // Two removed key pairs save72 work and336 bytes; handoff8 plus clones4
     // leave a net60 work saving. The allowance and arena counts stay unchanged.
     assert_eq!(MAX_STEPS, 100_000);
     let mut complete_heap = None;
     for (allowance, success, remaining) in
-        [(99_785, false, 0), (99_786, true, 0), (100_000, true, 214)]
+        [(99_972, false, 0), (99_973, true, 0), (100_000, true, 27)]
     {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;
@@ -246,8 +246,8 @@ fn text_metadata_keys_raw_bootstrap_uses_99786_work_and_preserves_public_reset()
         }
         let runtime = result.unwrap();
         assert_eq!(runtime.steps, remaining);
-        assert_eq!(runtime.objects.len(), 751);
-        assert_eq!(runtime.objects.capacity(), 751);
+        assert_eq!(runtime.objects.len(), 752);
+        assert_eq!(runtime.objects.capacity(), 752);
         assert_eq!(runtime.native_properties.len(), 299);
         assert_eq!(runtime.prototypes.len(), 25);
         assert_eq!(runtime.environments[0].bindings.len(), 212);
@@ -262,6 +262,6 @@ fn text_metadata_keys_raw_bootstrap_uses_99786_work_and_preserves_public_reset()
     let runtime = Runtime::try_new().unwrap();
     assert_eq!(runtime.steps, 100_000);
     assert_eq!(Some(runtime.allocated), complete_heap);
-    assert_eq!(runtime.objects.len(), 751);
+    assert_eq!(runtime.objects.len(), 752);
     clean(&runtime);
 }

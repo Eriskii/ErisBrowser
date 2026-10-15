@@ -17,7 +17,7 @@ fn consumer_bytes() -> usize {
     let n = size_of::<Native>();
     let l = 16 * (k + size_of::<Property>()) + 32 * size_of::<usize>() + 64;
     let b = 16 * (size_of::<String>() + size_of::<Binding>()) + 32 * size_of::<usize>() + 64;
-    10 * a + 10 * d + 29 * k + 10 * l + 9 * n + 4 * b + 10208
+    11 * a + 11 * d + 32 * k + 11 * l + 10 * n + 4 * b + 11282
 }
 fn error<T>(result: Result<T>) -> ScriptError {
     match result {
@@ -49,7 +49,7 @@ fn empty(runtime: &Runtime) {
 fn replay() -> Runtime {
     let mut runtime = Runtime::try_new().unwrap();
     empty(&runtime);
-    assert_eq!(runtime.objects.len(), 751);
+    assert_eq!(runtime.objects.len(), 752);
     assert!(
         runtime.environments[0]
             .bindings
@@ -60,8 +60,8 @@ fn replay() -> Runtime {
     assert!(runtime.promises.intrinsics.take().is_some());
     // Retain all old bags. Physical preparation and restoration of the two
     // last global order positions are outside the measured installer call.
-    runtime.objects.try_reserve_exact(11).unwrap();
-    assert!(runtime.objects.capacity() >= 762);
+    runtime.objects.try_reserve_exact(12).unwrap();
+    assert!(runtime.objects.capacity() >= 764);
     assert_eq!(runtime.environments[0].bindings.len(), 210);
     runtime.next_global_order = 210;
     runtime.steps = MAX_STEPS;
@@ -73,7 +73,7 @@ fn consumer_fixture() -> (Runtime, [JsString; 2]) {
     let keys = runtime.install_microtask_intrinsic().unwrap();
     assert_eq!(runtime.steps, MAX_STEPS - 331);
     assert_eq!(runtime.allocated, producer_bytes());
-    assert_eq!(runtime.objects.len(), 752);
+    assert_eq!(runtime.objects.len(), 753);
     // The producer has already paid the keys' construction and future cleanup.
     // Resetting fixture counters isolates the consumer's additional charges.
     runtime.steps = 0;
@@ -140,11 +140,11 @@ fn shared_key_producer_exact331_and_heap_publish_only_after_full_admission() {
         if accepted {
             let keys = result.unwrap();
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects.len(), 752);
+            assert_eq!(runtime.objects.len(), 753);
             assert_eq!(runtime.environments[0].bindings.len(), 211);
             assert_eq!(runtime.next_global_order, 211);
             let owner = native_bag(&runtime, "queueMicrotask");
-            assert_eq!(owner, 751);
+            assert_eq!(owner, 752);
             for (index, name) in ["length", "name"].into_iter().enumerate() {
                 assert!(std::ptr::eq(
                     keys[index].units().as_ptr(),
@@ -170,12 +170,12 @@ fn shared_key_producer_exact331_and_heap_publish_only_after_full_admission() {
 }
 
 #[test]
-fn shared_key_consumer_exact1345_and_heap_preserve_the_published_producer_on_refusal() {
+fn shared_key_consumer_exact1532_and_heap_preserve_the_published_producer_on_refusal() {
     let bytes = consumer_bytes();
     for (work, allowance, accepted) in [
-        (1345, bytes, true),
-        (1344, bytes, false),
-        (1345, bytes - 1, false),
+        (1532, bytes, true),
+        (1531, bytes, false),
+        (1532, bytes - 1, false),
     ] {
         let (mut runtime, keys) = consumer_fixture();
         let capacity = runtime.objects.capacity();
@@ -191,7 +191,7 @@ fn shared_key_consumer_exact1345_and_heap_preserve_the_published_producer_on_ref
         if accepted {
             result.unwrap();
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects.len(), 762);
+            assert_eq!(runtime.objects.len(), 764);
             assert_eq!(runtime.next_global_order, 212);
             promise_coherent(&runtime);
         } else {
@@ -210,12 +210,12 @@ fn shared_key_consumer_exact1345_and_heap_preserve_the_published_producer_on_ref
 }
 
 #[test]
-fn shared_key_pair_exact1676_and_heap_keep_late_partial_state_unreturned() {
+fn shared_key_pair_exact1863_and_heap_keep_late_partial_state_unreturned() {
     let bytes = producer_bytes() + consumer_bytes();
     for (work, allowance, accepted) in [
-        (1676, bytes, true),
-        (1675, bytes, false),
-        (1676, bytes - 1, false),
+        (1863, bytes, true),
+        (1862, bytes, false),
+        (1863, bytes - 1, false),
     ] {
         let mut runtime = replay();
         let capacity = runtime.objects.capacity();
@@ -248,7 +248,7 @@ fn shared_key_pair_exact1676_and_heap_keep_late_partial_state_unreturned() {
         }
     }
     // Actual whole-bootstrap Err/success and public fresh-budget behavior are
-    // the independently migrated99785/99786/100000 witnesses, not this replay.
+    // the independently migrated99972/99973/100000 witnesses, not this replay.
 }
 
 #[test]
@@ -274,9 +274,9 @@ fn shared_key_producer_prepays_retained_cleanup_before_either_key_can_exist() {
         assert!(failure.is_resource_limit());
         assert_eq!(runtime.steps, 0);
         assert_eq!(runtime.allocated, bytes);
-        assert_eq!(runtime.objects.len(), 751 + added);
+        assert_eq!(runtime.objects.len(), 752 + added);
         if added != 0 {
-            assert_eq!(runtime.objects[751].values.len(), properties);
+            assert_eq!(runtime.objects[752].values.len(), properties);
         }
         assert!(
             !runtime.environments[0]
@@ -339,7 +339,7 @@ fn inject_invalid_install_state(runtime: &mut Runtime, which: usize) {
 #[test]
 fn shared_and_standalone_guards_refuse_all_eight_invalid_states_before_allocation() {
     for shared in [false, true] {
-        let fixed = if shared { 20 } else { 22 };
+        let fixed = if shared { 21 } else { 23 };
         for which in 0..8 {
             for work in [fixed - 1, fixed] {
                 let (mut runtime, keys) = consumer_fixture();
@@ -378,14 +378,14 @@ fn shared_and_standalone_guards_refuse_all_eight_invalid_states_before_allocatio
 #[test]
 fn standalone_guard_then_key_order_and_shared_move_have_distinct_exact_prefixes() {
     for (shared, work, bytes) in [
-        (false, 22, 0),
-        (false, 41, 0),
-        (false, 42, 88),
-        (false, 57, 88),
-        (false, 58, 168),
-        (true, 20, 0),
-        (true, 41, 0),
-        (true, 42, 92),
+        (false, 23, 0),
+        (false, 42, 0),
+        (false, 43, 88),
+        (false, 58, 88),
+        (false, 59, 168),
+        (true, 21, 0),
+        (true, 42, 0),
+        (true, 43, 92),
     ] {
         let (mut runtime, keys) = consumer_fixture();
         runtime.steps = work;
@@ -398,7 +398,7 @@ fn standalone_guard_then_key_order_and_shared_move_have_distinct_exact_prefixes(
         assert!(error(result).is_resource_limit());
         assert_eq!(runtime.steps, 0);
         assert_eq!(runtime.allocated, bytes);
-        assert_eq!(runtime.objects.len(), 752);
+        assert_eq!(runtime.objects.len(), 753);
         assert!(runtime.promises.intrinsics.is_none());
         assert!(!runtime.environments[0].bindings.contains_key("Promise"));
         empty(&runtime);

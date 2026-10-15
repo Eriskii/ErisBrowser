@@ -16,7 +16,9 @@ observable species and `then` behavior under the existing resource limits.
 input order, with observable constructor/resolve/iterator calls and bounded
 once-only fulfillment callbacks. [`Promise.race`](docs/promise-race.md) uses the
 first settlement, preserves the original capability callbacks and keeps
-observable iteration order. `allSettled`, `any`, async functions and rejection
+observable iteration order. [`Promise.allSettled`](docs/promise-all-settled.md)
+collects fulfilled and rejected outcome records in input order, with a shared
+once gate for each input’s two callbacks. `any`, async functions and rejection
 notifications remain unfinished.
 The optional [Promise Test262 host](docs/promise-test262-host.md) adds authenticated
 `$DONE` completion and a separate final-unhandled-rejection policy for a pinned

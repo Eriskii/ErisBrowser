@@ -301,6 +301,7 @@ impl Runtime {
                 "Promise.reject" => self.promise_reject(receiver, args, doc),
                 "Promise.all" => self.promise_all(receiver, args, doc),
                 "Promise.race" => self.promise_race(receiver, args, doc),
+                "Promise.allSettled" => self.promise_all_settled(receiver, args, doc),
                 "Promise.getSpecies" => Ok(receiver),
                 _ => Err(ScriptError::resource("invalid private Promise operation")),
             }
@@ -398,6 +399,17 @@ impl Runtime {
                 }
                 CallbackKind::AllResolve(element) => {
                     return self.run_all_callback(element, args, doc);
+                }
+                CallbackKind::AllSettledFulfill(element) => {
+                    return self.run_all_settled_callback(
+                        element,
+                        ReactionKind::Fulfill,
+                        args,
+                        doc,
+                    );
+                }
+                CallbackKind::AllSettledReject(element) => {
+                    return self.run_all_settled_callback(element, ReactionKind::Reject, args, doc);
                 }
                 CallbackKind::ReturnValue(capture) => return self.read_finally_outcome(capture),
                 CallbackKind::ThrowReason(capture) => {

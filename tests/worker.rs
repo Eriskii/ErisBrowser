@@ -2914,3 +2914,6 @@ mod call_spread;
 
 #[path = "worker/promise_race.rs"]
 mod promise_race;
+
+#[path = "worker/promise_all_settled.rs"]
+mod promise_all_settled;

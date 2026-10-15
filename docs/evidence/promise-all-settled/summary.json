@@ -1,0 +1,3188 @@
+{
+  "schema": 1,
+  "status": "verified",
+  "archive": {
+    "path": "sources-and-checks.tar.gz",
+    "bytes": 4462993,
+    "sha256": "2c273acef036f84002c697cd83204cf780b10b434a350e8f6c56947c801ecacb",
+    "member_bytes": 24554098,
+    "uncompressed_tar_bytes": 24893440,
+    "selected_max_uncompressed_bytes": 33554432
+  },
+  "source_count": 32,
+  "documentation_count": 4,
+  "artifact_count": 406,
+  "source_inventory": {
+    "path": "/tmp/eris-promise-all-settled-plan-1/source-final.json",
+    "bytes": 206006,
+    "sha256": "8a4bf07a6630201ac38774f4693a40b1fdf4dec679ccc2b8554f3a5b4ff178d4"
+  },
+  "claims": {
+    "base": "c97b200c9bddf1527cdbbc5a652beedba27c1d6d",
+    "scope": "Implement generic Promise.allSettled with ordered outcome snapshots, shared per-element completion gates, iterator-close semantics and terminal resource/unsupported behavior.",
+    "resource_change": {
+      "raw_startup_before": 99786,
+      "raw_startup_after": 99973,
+      "additional_work": 187,
+      "remaining_before": 214,
+      "remaining_after": 27,
+      "instruction_limit": 100000,
+      "heap_limit_bytes": 8388608,
+      "objects_before": 751,
+      "objects_after": 752,
+      "native_registry_entries": 299,
+      "prototypes": 25,
+      "globals": 212,
+      "standalone_installer_work": 1570,
+      "shared_installer_work": 1532,
+      "producer_plus_shared_installer_work": 1863,
+      "producer_work": 331,
+      "method_bag": 751,
+      "qualification": "Abstract work and heap accounting, not CPU timing, RSS or Chromium performance. Existing object IDs and registry sizes are preserved; the method adds one metadata object under unchanged caps."
+    },
+    "new_test_groups": 35,
+    "private_operation_rows": 138,
+    "parent_public_expected_failures": 15,
+    "parent_page_worker_expected_failures": 2,
+    "default_passed": 3124,
+    "host_vulkan_passed": 3478,
+    "exact_case_records": 842,
+    "exact_harness_records": 254,
+    "baseline_changes": 0,
+    "source_inputs": 1549,
+    "changed_source_inputs": 32,
+    "binary_sha256": "b653280c13235292194de1491cf134e3523e6b10e21c0eb73f9f19d6301d872a",
+    "qualifications": [
+      "The 1549-entry selected map preserves all1540 parent inputs and adds nine files. It is not a complete dependency/build-graph inventory.",
+      "Each of the15 original public parent groups stopped at its first sloppy-mode failure; strict parent rows were not reached. The original invalid descriptor setup did not reach its setup on the method-absent parent.",
+      "Public candidate-public-1 was a misnamed unchanged-parent replay after a pre-mutation importer status-string assertion failed. Actual first imported candidate execution is candidate-public-2. The import-attempt receipt preserves this distinction.",
+      "Candidate-public-2 passed15 groups and failed one invalid test fixture: an ordinary accessor descriptor inherited value and correctly triggered TypeError. The selected correction uses a null-prototype descriptor. All expected result strings and the other13 public fixtures are unchanged; original hold/failure and peer correction are retained.",
+      "Private hold2 adds one spare object slot after fixture callback allocation, correcting a source-review finding before private execution. All138 selected operation rows and cuts are unchanged. Original hold and exact correction are retained.",
+      "The five terminal groups were authored after production import and were not executed on the parent. The twelve private groups depend on new internals and were not parent-executable.",
+      "The first default full attempt ran inside the tool sandbox:2776 library groups passed and eight local TCP preflights failed with PermissionDenied; later integration targets were not reached. The unchanged-source escalated default-full-2 and host-vulkan-full-1 execute all tests successfully, including ignored groups.",
+      "The first parent Page command stopped before worker after its intended Page failure; the worker was then run separately. Both routes pass on the candidate with disabled-script controls and exact procedural pixel/hit/title/task observations.",
+      "Six files changed through formatting after selected raw imports; formatter diffs and pre-format bytes are retained. No expected observation changed through formatting.",
+      "Existing profile case and harness arrays are byte-content equivalent to the published parent; binary identity changes. No conformance baseline was edited."
+    ],
+    "limitations": [
+      "No upstream Promise.allSettled corpus/profile result is included in this implementation checkpoint.",
+      "The three existing Promise profiles still contain their recorded failed and unsupported cases.",
+      "Page/worker packed-plan comparisons execute CPU reference rasterization; no GPU or Chromium-speed claim is made.",
+      "Resource-limit and isolation tests are bounded validation, not a general security proof.",
+      "Full web compatibility and the overall browser objective remain incomplete."
+    ]
+  },
+  "claims_authority": {
+    "ledger": {
+      "path": "/tmp/eris-promise-all-settled-plan-1/root/final-validation.json",
+      "bytes": 15797,
+      "sha256": "5be66898625cc999070974c9fdbe3e9eed8a32b1608d7eb051b127c5b1263c80"
+    },
+    "peer": {
+      "path": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/final-review.json",
+      "bytes": 6381,
+      "sha256": "df796ed1346936c6fcfd85e717ef6ae74cd4d91dfaa0b700fefb2f62df8b519f"
+    }
+  },
+  "selection": {
+    "path": "/tmp/eris-promise-all-settled-plan-1/root/evidence-selection.json",
+    "bytes": 145578,
+    "sha256": "a5d8239406263ef1ed7d8db83152fca1c1724b265051d5799662e219a34f1d1b"
+  },
+  "members": [
+    {
+      "path": "artifacts/abort-tests-before-1/author.py",
+      "bytes": 12977,
+      "sha256": "b3d492897f2caff733e9f76b48df6707a26b4df6bbd1b915bd255d4df3bf8110",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/before/src/script.rs",
+      "bytes": 915469,
+      "sha256": "8c8b371f1d7cd1b863ac0dbb2a5f183e503c8248de660ff173f1eee04f7afae7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/before/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/diffs/module.patch",
+      "bytes": 12567,
+      "sha256": "2dcbac489e34d8bffbbc571786c4e9225e9dd9d736f55b82cc1463b948b8a169",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/diffs/module.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/helper-original.txt",
+      "bytes": 1653,
+      "sha256": "7d8e4a6f72114d3044250548db463d200c5b7de20f08fc67b31328d470811eae",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/helper-original.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/layout-review.json",
+      "bytes": 2555,
+      "sha256": "7f97df4579b4d33ce759bc35ba34e133c9869351cb3e99a851ad1e15842d9924",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/notes.txt",
+      "bytes": 1930,
+      "sha256": "794ae1c94eecabc2793fafbdec7ccbe5c49e53a61a37abb8fd9919b69014007d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/notes.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/oracle.json",
+      "bytes": 16024,
+      "sha256": "7c387f40df46f2f3e9fd81afcf88569eadaddfa4f9866df45ef9fc1eb0ef832e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/raw/src/script/promise_all_settled_abort_tests.rs",
+      "bytes": 12319,
+      "sha256": "9dabacc2327137ca404b594b2ec63574f75b4a05afa57a6c792f3aba745fc8f2",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/raw/src/script/promise_all_settled_abort_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/registration-append.txt",
+      "bytes": 51,
+      "sha256": "88a09c27a1683490dd7903acf9dd50e3481b650880da1652282fc8b74f8bbf2f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/registration-append.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/registration.patch",
+      "bytes": 179,
+      "sha256": "0d7b85d390c06daef2a340754570ccb4c06e090681297c92930a9a6e665bc7e1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/registration.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/registrations/src/script.rs",
+      "bytes": 915520,
+      "sha256": "12ce25f0df22438e29fb322515fae751e624b11e73b3a02b2b07d61363fa21ae",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/registrations/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/roster.json",
+      "bytes": 3262,
+      "sha256": "d07ac995a5d2043e4794886b1c1da18576c1f4054a84b4bd9cfb24fcba3346fb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-bindings.json",
+      "bytes": 5091,
+      "sha256": "eb23dba0589cc8941c4c6571b0c3112b1d13488e2cce2220930918bbc9765980",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-ready.json",
+      "bytes": 4703,
+      "sha256": "2f7e2b1e651d845394dfad1fa943e5014e2f29eb603caab0e583472bdac75f34",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-snapshots/src/script.rs",
+      "bytes": 915357,
+      "sha256": "4c0a1bcf23a09cc6359666e52885533b076d08b255ff43776d9f69edf654ec12",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-snapshots/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-snapshots/src/script/array_from.rs",
+      "bytes": 17448,
+      "sha256": "a424598cf4d994d59815538904969435fc8f617655f53751ed9c6061a04c873a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-snapshots/src/script/array_from.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-snapshots/src/script/microtasks.rs",
+      "bytes": 15374,
+      "sha256": "777109194f84f3540167ba421c3a9d916974627b74e6b85bc9e6f416559f2004",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-snapshots/src/script/microtasks.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-snapshots/src/script/promise_all_abort_tests.rs",
+      "bytes": 15336,
+      "sha256": "f3bea4b24e81746daa6a03cf3040aa492bc1065be0ccf5ae3af1544a1f940dda",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-snapshots/src/script/promise_all_abort_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-snapshots/src/script/promise_race_abort_tests.rs",
+      "bytes": 11934,
+      "sha256": "151fb0fc30790fc85a4a618eff560d1925b044c9c5a520cff42e3f0f4da4b83f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-snapshots/src/script/promise_race_abort_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-snapshots/src/script/promises/all_semantics.rs",
+      "bytes": 9384,
+      "sha256": "fa13b61422e0eeecaf135673cdd7cfd66d6eb2fa35c0a46374ed615c88775dbe",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-snapshots/src/script/promises/all_semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/abort-tests-before-1/source-snapshots/src/script/promises/semantics.rs",
+      "bytes": 19338,
+      "sha256": "d34dbfced813e8a32a2204680ed92ccd22c9e8b531e82422641a39d065fee6c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/abort-tests-before-1/source-snapshots/src/script/promises/semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/accounting-review-1/final-notes.json",
+      "bytes": 3209,
+      "sha256": "8d67ab0557b02ecb0c8738db56aa5ffc759753d5c6a8133649dde612c8049637",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/accounting-review-1/final-notes.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/accounting-review-1/notes-2.json",
+      "bytes": 8485,
+      "sha256": "f1a9b27f1d3be0ec3b9502009678b5f357ddada2d363488c4f8a13a43781b6db",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/accounting-review-1/notes-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/accounting-review-1/notes.json",
+      "bytes": 6566,
+      "sha256": "4ad7c65961a956c79bbef9095b24c30b89aca3fad9c717d1a42c50e4dadfe914",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/accounting-review-1/notes.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/candidate-source-review-1/check.py",
+      "bytes": 6171,
+      "sha256": "12a2cceed1e96da9498d69b3c553e96956829e8f537b5f86caa90913cbcdeddb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/candidate-source-review-1/check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/candidate-source-review-1/composition.json",
+      "bytes": 21268,
+      "sha256": "7625ec70d63b0505d504f34cc8e236347b4ecc2ce41dc17865fdad0a4167031a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/candidate-source-review-1/composition.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/candidate-source-review-1/new-roster.json",
+      "bytes": 3416,
+      "sha256": "37b90662152c61cca7af44979c9e974c409b3b9e0f0ae755a1f69f2f50683e35",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/candidate-source-review-1/new-roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/candidate-source-review-1/source-review.json",
+      "bytes": 5525,
+      "sha256": "58c5cd21c38c791e35e86a8d99a9083c16421a22d0f03c03cb91ec23c707621d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/candidate-source-review-1/source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/README.md",
+      "bytes": 62255,
+      "sha256": "82b7b91b477b4c3cef61c6b1008e3d7fe89a04e4b52cc66130849d51ee11d4a1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/before/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/COMPATIBILITY.md",
+      "bytes": 76815,
+      "sha256": "63aef119580692bf8bd21b5289c065a897c9a3359a13313e27473b60a810fb44",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/before/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/ROADMAP.md",
+      "bytes": 38177,
+      "sha256": "92bd96ab67057de19c9ef699a6acf66503de661e305d55b1a3262bf67bb0a044",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/before/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/claims.json",
+      "bytes": 1884,
+      "sha256": "3ebc2760cea68d5152d5ad1ad868954395e9f059e1ff57e7267d8f2f77373052",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/claims.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/README.md.patch",
+      "bytes": 805,
+      "sha256": "18e705e5c69e3ee3ed9f7001632c956ae8ea232d6b9165d501e79912bb7887d2",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/diffs/README.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__COMPATIBILITY.md.patch",
+      "bytes": 6699,
+      "sha256": "eb42704c24f7a494f4e41dc6b064a8c56523274fcd0f2b37438385e45f5f83d7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/diffs/docs__COMPATIBILITY.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__ROADMAP.md.patch",
+      "bytes": 1620,
+      "sha256": "e6bc8c1bc5e79d881421761563d9ff3af2c02642fdbf09ad770b999c1b9dba44",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/diffs/docs__ROADMAP.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__promise-all-settled.md.patch",
+      "bytes": 6451,
+      "sha256": "0e5d6647fbdb7c5860e592048483c42767db50890ab30d90806cd4b872f0974f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/diffs/docs__promise-all-settled.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/draft-state.json",
+      "bytes": 543,
+      "sha256": "cfc0866f1304dade31114a05ea8c21d72cefd117b33f07a8b6a9c5ace671abea",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/draft-state.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/README.md",
+      "bytes": 62415,
+      "sha256": "90fcbb3edcb41b4fab4f871db07d6592bc364cf19d0b58cb466d5326b96cb020",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/raw/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/COMPATIBILITY.md",
+      "bytes": 77029,
+      "sha256": "2c6fa8802acb5d9defea7b543f897ed6d4e7e69031dc91641680cfd387c29106",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/raw/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/ROADMAP.md",
+      "bytes": 38436,
+      "sha256": "13e3ff8110dc0b15cc589aab9ec41170ac14d2679107dc323eb276683887500b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/raw/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/promise-all-settled.md",
+      "bytes": 6285,
+      "sha256": "eda815af11a3ec4ffc8f9b0ac060e10801d2dcd747d2082fb9b70605bfc86185",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/raw/docs/promise-all-settled.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/source-ready.json",
+      "bytes": 3750,
+      "sha256": "c5d80013ec257d5f7ad99f22f748af36cb75c6c6741c1424cea5b644f2178020",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/documentation-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/checkpoint-outline.json",
+      "bytes": 2851,
+      "sha256": "12850b105166fa1149bb21b150b1445a2c7879bc4cd1da21eb4f7115d7dbc81b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/checkpoint-outline.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/design-2.json",
+      "bytes": 6602,
+      "sha256": "9fb545a24f529faa5b6efdc90ef8529708e0699459a1415ee70401b24de093da",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/design-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/design-2.patch",
+      "bytes": 1586,
+      "sha256": "2cd3bb0a1bc9414b33f30c21962c2706919844357112424446d7609a2f6b3134",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/design-2.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/design.json",
+      "bytes": 6563,
+      "sha256": "dc6888b62c6e3aeda30df29a2b19361976909659c4b42a71e1fcaaa37e0a3346",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/design.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/finish-plan.py",
+      "bytes": 10788,
+      "sha256": "af11f3ce07aa924fc5053c6115100f9551cf785fbe5d059b6a8e0b8185f91dc0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/finish-plan.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/layout-semantic-review.json",
+      "bytes": 8080,
+      "sha256": "824d08a79c5ab7d793e1fcf37c9ee915d365d5b0c2ed095b7dd18a377f162e70",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/layout-semantic-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/primary-rules.json",
+      "bytes": 1785,
+      "sha256": "237df831a16f7e09e83898b3b28109ff05a47aa8773d3d2c87e2d36e00f30866",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/primary-rules.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/resource-ledger-draft.json",
+      "bytes": 5496,
+      "sha256": "afc84bd84c9ddce3201d03d37f37b1ae9e012603668c3db5fe6b2a7fecc4c289",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/resource-ledger-draft.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/semantic-cases.json",
+      "bytes": 12834,
+      "sha256": "8bd5174e2d118101bed314ed74b586c1802b9bbc318f83d613e215b4cc2ab9f2",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/semantic-cases.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/source-bindings.json",
+      "bytes": 7889,
+      "sha256": "4fc6e875b1ee33e0ca2fb335eb6681a6e76bf3b6aa3c157d48f846d542a9d612",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/source-ready-2.json",
+      "bytes": 4129,
+      "sha256": "bf5054a1ac339cc0c7c932db3551a03762eca7f33997dc0b2e3a2ab50be8fc99",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/source-ready-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/source-ready.json",
+      "bytes": 3525,
+      "sha256": "6c8bd059edd2a91cb76ae93f72a98f2103708ce1d82aaff9011f8fd2d63af95e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/test-outline.json",
+      "bytes": 7485,
+      "sha256": "1768c7fb90bf0c36debb099992ec2ce6015d981b4b65dcdbd00047597d41b807",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/test-outline.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/write-cases.py",
+      "bytes": 11015,
+      "sha256": "f95a5b5073fa30140e3783e964d2fddc107441edc150dacc2557808868d3a3c7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/write-cases.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-1/write-plan.py",
+      "bytes": 14804,
+      "sha256": "7eda6281c1995edac7e13ca8c16a7607a4c1980e792b64b7258fb4fa8479ec99",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-1/write-plan.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/arithmetic-checks.json",
+      "bytes": 283,
+      "sha256": "6dd19ea65b73dfce2ed519855634ef2f561c1d4617c8e3173f27ef77100dc8d2",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/arithmetic-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/derived-cuts.json",
+      "bytes": 5697,
+      "sha256": "178d0a0c8b3bf107a184f990394502f8d099d9f4352325b41877b8b7fb198cef",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/derived-cuts.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/fee-proof.json",
+      "bytes": 10432,
+      "sha256": "aa46cde777f98e89a78e518ef581945614aa399aede864a837aab7a363386432",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/fee-proof.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/finish-proof.py",
+      "bytes": 12583,
+      "sha256": "9c498c867d61ab9fbc2ec67dfdf4570f91b87abe3113d238f93c5350048cf7a5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/finish-proof.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/layout-review.json",
+      "bytes": 4487,
+      "sha256": "f48741288f6f2f6395bf6177efa81368ceca2c74789cc81aab00990fef9e2552",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/pseudocode.txt",
+      "bytes": 7251,
+      "sha256": "198c26d207cd4f228c51f83ed5587627985afed8b950d235bd858bb1f2473c54",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/pseudocode.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/semantics-and-failure.json",
+      "bytes": 4340,
+      "sha256": "5380cd1ca27c6616800478fb708b81394c67d5f03ba13b846da92476eedcf6aa",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/semantics-and-failure.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/source-bindings.json",
+      "bytes": 5160,
+      "sha256": "5ef0c3b5946c36ae53016e8eee5021f88d01f11fdbef910214179338ab2346af",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/source-ready.json",
+      "bytes": 2289,
+      "sha256": "70d9ff6be9bd3cbe2fd7220744aa362b44882bdf921e76392b7f645b8918cb3d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/draft-2/write-proof.py",
+      "bytes": 9178,
+      "sha256": "0cc4e28a8f3423749838d166943a3cd4c2fac253272c9e563787048e7da2c4e8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/draft-2/write-proof.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/eris-js-host-final-1.json",
+      "bytes": 583,
+      "sha256": "aad845d71ebb379e31eb1e899d9ebd6a4db3f70bc661af1d1ab2761fe02b7afe",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/eris-js-host-final-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/baseline/default-full-1.json",
+      "bytes": 301,
+      "sha256": "f97d6296fa9e3dacbd53db99fcf9095531db8d11dd5689d1df3492ff5b2e55c4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/baseline/default-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/baseline/default-full-1.log",
+      "bytes": 328508,
+      "sha256": "5313d79142699a023b17c8b0639ff94c2022e524f01986176150a6e164a58366",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/baseline/default-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/baseline/default-ignored-1.json",
+      "bytes": 330,
+      "sha256": "1db77faf45e92f95aeea48388de8f95bf91ec353d3fb4b29975965271aba6796",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/baseline/default-ignored-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/baseline/default-ignored-1.log",
+      "bytes": 22797,
+      "sha256": "f319b4c56f7083d9f21e82ead482282368a5a3ac876e6bbf87e49237d0a4cd0d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/baseline/default-ignored-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/baseline/host-vulkan-full-1.json",
+      "bytes": 391,
+      "sha256": "df55419c25f44cd55268248e7b716dfbf57d30ae4c809bf8f57cce58d743ac14",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/baseline/host-vulkan-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/baseline/host-vulkan-full-1.log",
+      "bytes": 362398,
+      "sha256": "ce789be1a8ffd54c183dd808df5f59247c7aa96052a875916250181c1062c90d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/baseline/host-vulkan-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/check-final.py",
+      "bytes": 9389,
+      "sha256": "950af4f7bbc48561c1bab0cc6e092e5280fa2f295b024ab5846f8b9d0104fa89",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/check-final.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/check-replays.py",
+      "bytes": 6181,
+      "sha256": "be50748c595beb7a9908133a54f21b30d7710da3e5a6a3aa8f95e09b179b66bc",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/check-replays.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/check-rosters.py",
+      "bytes": 11036,
+      "sha256": "85600ee3034df427e4de746ac4cc2f2d41d2688e4ab75f5bb35238438942c557",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/check-rosters.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/final-review.json",
+      "bytes": 6381,
+      "sha256": "df796ed1346936c6fcfd85e717ef6ae74cd4d91dfaa0b700fefb2f62df8b519f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/final-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/replay-checks.json",
+      "bytes": 8609,
+      "sha256": "a6075fe92454aee0f2cf44fff8aba4bc66b4458b872d7b7d6993128b9ef0000a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/replay-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/rust-checks.json",
+      "bytes": 2941776,
+      "sha256": "87b0b99be5f34b05e887566ce1aa1b64b814c74d6c85c6e1261609f09173c8db",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/rust-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/final-validation-review-1/rust-review.json",
+      "bytes": 3380,
+      "sha256": "f362ba8881a81e385d40b62c3272f0c9df57c1549b2aaedf1874185d07448571",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/final-validation-review-1/rust-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src__script__promise_all_settled_abort_tests.rs.patch",
+      "bytes": 243,
+      "sha256": "ebf65fede2407839c78137ba4a014e1ec8b0e7994baafe0d5b0da9794ca640ed",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-1/src__script__promise_all_settled_abort_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src__script__promise_all_settled_semantic_tests.rs.patch",
+      "bytes": 854,
+      "sha256": "cb1de7a4dbddcfe1dfa84e317fed308abe79e0210c5a2d81ebae84f0309394e5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-1/src__script__promise_all_settled_semantic_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src__script__promises__all_semantics.rs.patch",
+      "bytes": 720,
+      "sha256": "3475d22cfb02318307812e46e7dab0918ea1e6ef18fa154daa51037c0358f081",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-1/src__script__promises__all_semantics.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src__script__promises__all_settled_layout_tests.rs.patch",
+      "bytes": 804,
+      "sha256": "ea7c579a2bf644c0901629ef1acfa597a36f552938d41c41bee1469b93af34c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-1/src__script__promises__all_settled_layout_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src__script__promises__all_state__all_settled_quota_tests.rs.patch",
+      "bytes": 43310,
+      "sha256": "6a1e13cd9c2b12a824db78f431a15c84da11daf52c939cfd7ecd8cc629d74985",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-1/src__script__promises__all_state__all_settled_quota_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-1/src__script__promises__semantics.rs.patch",
+      "bytes": 771,
+      "sha256": "182177c7e53ba8acf42a35bbf1002ebcc44865e2d6d3fa85eb511b0c615f236f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-1/src__script__promises__semantics.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script.rs",
+      "bytes": 915520,
+      "sha256": "12ce25f0df22438e29fb322515fae751e624b11e73b3a02b2b07d61363fa21ae",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/bootstrap_tests.rs",
+      "bytes": 16221,
+      "sha256": "8c9c7c60978830673243b87271164bbab34e96dfa0e00a47eaa78af875bff282",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/bootstrap_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/dom_bindings/identity_tests.rs",
+      "bytes": 35697,
+      "sha256": "7c2a7b365cae4e416b2a69a02f0e62937b5f93f1e38cda445257cdf66f9f6655",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/dom_bindings/identity_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/machine/calls.rs",
+      "bytes": 36918,
+      "sha256": "0678e4376dae3a56b986dd2d0270640e769292c72d34cdf0cf39dbdf380c2235",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/machine/calls.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/node_data/key_cache_fee_tests.rs",
+      "bytes": 10697,
+      "sha256": "1ab54995a2913fec7fd95aadf1d02a59a4fccb49d392e3c2c6b080c6e1e9e2cf",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/node_data/key_cache_fee_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/node_data/key_cache_tests.rs",
+      "bytes": 8315,
+      "sha256": "66ddd6e2b97e1e88bc75d54d121cabf3564aafdcacce83b480ca9219d881b67d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/node_data/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/node_data/method_key_tests.rs",
+      "bytes": 12107,
+      "sha256": "49e364a1d5c83372cb18bb8377626c722b278b576a9a373ced275720f53f61be",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/node_data/method_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/processing_instruction/key_cache_tests.rs",
+      "bytes": 10497,
+      "sha256": "20e5ca3d2e787d57e3048ceaaf4a1a2d73f7e08782966358eada9fd236c733cb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/processing_instruction/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promise_all_settled_abort_tests.rs",
+      "bytes": 12319,
+      "sha256": "9dabacc2327137ca404b594b2ec63574f75b4a05afa57a6c792f3aba745fc8f2",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promise_all_settled_abort_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promise_all_settled_semantic_tests.rs",
+      "bytes": 12183,
+      "sha256": "fea1982851c7790ad7acd39b40d760399ff2b0c9b0a3aff1233eab95fa1af28d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promise_all_settled_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promise_all_settled_supplemental_tests.rs",
+      "bytes": 3745,
+      "sha256": "90b5567c4d3aaf5c0bc63408f8bc26334a5a65d4575ca388e0b88d369036d3d3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promise_all_settled_supplemental_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promise_race_semantic_tests.rs",
+      "bytes": 53609,
+      "sha256": "4c846242b47285ae2698a587f0d02c0a9a262076cbbc6358cf9531c24c20acff",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promise_race_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promise_semantic_tests.rs",
+      "bytes": 16635,
+      "sha256": "c0209fbe28d5d1c5f564c695f9cb4684dc95f0fb2f660111c2b31fb945e93fb3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promise_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises.rs",
+      "bytes": 20817,
+      "sha256": "6a4ad272d0964c1226e06639cb557b57714b46748358e16b00237babe7079de8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/all_semantics.rs",
+      "bytes": 13733,
+      "sha256": "1ff4916d94fc47e56c97e67bbc469e5a7a126f7179b030264938a0ef74b4e44a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/all_semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/all_settled_layout_tests.rs",
+      "bytes": 2028,
+      "sha256": "fdd5a637e2f4a2432e0200e1689d530fcb943d75965e00b1e82534fb4517558e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/all_settled_layout_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/all_state.rs",
+      "bytes": 14360,
+      "sha256": "1234d0442de720e79397556dff4a65c2cd78671724b3d3e8c4ccd498434d2a85",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/all_state.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "bytes": 35534,
+      "sha256": "84cc1a07df0d9fa05fbe7ec1936240879acd346d7382511ad85f67c1b2ba5c97",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/factories.rs",
+      "bytes": 22652,
+      "sha256": "92ce7d5fa39584025a1610ec5f742853275d0a6bb85bff8ebb0ddc146d9d3e18",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/factories.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/install.rs",
+      "bytes": 10422,
+      "sha256": "3ec1f2d36729f3c6b8a4175e9db2a0e7e6a9e74ad4f89a15160c1dd0547c6196",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/install.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/install_tests.rs",
+      "bytes": 8102,
+      "sha256": "3550fcc00117196f49e4486040b72fb390ed4369025db4679199217a2500ab58",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/install_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/semantics.rs",
+      "bytes": 19785,
+      "sha256": "65e3e9d378f6a2699b406b8da7ee31c07f2b21df96bcd32a9d67dfd6664fa050",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/shared_key_identity_tests.rs",
+      "bytes": 6339,
+      "sha256": "b51de2ce0931748578b553ce7277e88baf345b4760a320abc98090d1a6bef2cd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/shared_key_identity_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/promises/shared_key_tests.rs",
+      "bytes": 15453,
+      "sha256": "c50ee03356541856ee7e24f873caf5d0eea6fe7ad2ec64ff61aeeb44e802d458",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/promises/shared_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/test262_host/quota_tests.rs",
+      "bytes": 15224,
+      "sha256": "4424d7300ef4a2b9dda86da9f1b778771aeea02b9e3c5fde1c45aa804980dff6",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/test262_host/quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/text_operations/key_cache_tests.rs",
+      "bytes": 11711,
+      "sha256": "18092b0a862e21eda88c347ba6dddfcc7f44cd6087acab0b9668d8cb08995631",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/text_operations/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/src/script/typed_array/tests.rs",
+      "bytes": 23404,
+      "sha256": "b3b4b16fea149e433b452050e1a8cf0d3d74c9586ff636a8f8004799306f567f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/src/script/typed_array/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/tests/fixtures/promise-all-settled.html",
+      "bytes": 1474,
+      "sha256": "fe5ffe2fc2f0d0503620c384ce610e0e8eaf02e3d6936948831ed21e7f772ec7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/tests/fixtures/promise-all-settled.html",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/tests/promise_all_settled.rs",
+      "bytes": 3046,
+      "sha256": "96eacae9058a923babf03283e504e4ea098b175a010d5e7a301a898ff14fa6b0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/tests/promise_all_settled.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/tests/support/promise_all_settled.rs",
+      "bytes": 1012,
+      "sha256": "f72cc311d21d04c553fb73e5d88b109c251b2ba35660350accbc224da922882a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/tests/support/promise_all_settled.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/tests/worker.rs",
+      "bytes": 109585,
+      "sha256": "2edeb19d1d83239a57fbdaf187ca6d7ba44c0031844b2b1bbdcd232a06b417d3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/tests/worker.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/formatting-before-1/tests/worker/promise_all_settled.rs",
+      "bytes": 4105,
+      "sha256": "2d9b8879f37356841e735ad6a08a12da9fa5351a1a01d0938f55785ebcd694c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/formatting-before-1/tests/worker/promise_all_settled.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/bootstrap_tests.rs",
+      "bytes": 16140,
+      "sha256": "38fedd729907ccd0fce7c2f7c73e2335aacfea86ed98bffe80acbcabc719c799",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/bootstrap_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/dom_bindings/identity_tests.rs",
+      "bytes": 35697,
+      "sha256": "61bf54ff5313b5fc9bb31d94f55b15d32a8e742e5607b42a5e0d8e99658d37a7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/dom_bindings/identity_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/node_data/key_cache_fee_tests.rs",
+      "bytes": 10697,
+      "sha256": "892670a43ceba8307fd29442b8bcf040f7e0c45e4e136380345765a4cc2b2d41",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/node_data/key_cache_fee_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/node_data/key_cache_tests.rs",
+      "bytes": 8315,
+      "sha256": "aaba9c537d9acf75b296fa1379d5f4b6cfd4001b3247a5d47efde231e3257496",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/node_data/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/node_data/method_key_tests.rs",
+      "bytes": 12107,
+      "sha256": "fec85a3f597a2e8b09f1b571f75412547ebbc2ad0c1b0c9443f757b5affa8f35",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/node_data/method_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/processing_instruction/key_cache_tests.rs",
+      "bytes": 10498,
+      "sha256": "ffb94268e1836a2d43f04def9912c71703fbfbf07fca74cce751e4407d22e832",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/processing_instruction/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/promise_race_semantic_tests.rs",
+      "bytes": 53598,
+      "sha256": "23b9c8ba6a1fb51507a05eb871251875d359385b62167a789da8276f0e4d7c73",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/promise_race_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/promise_semantic_tests.rs",
+      "bytes": 16624,
+      "sha256": "42399c7cfecbaba64809df2551b016527a5711044f029ecb1e29195801e48888",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/promise_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/promises/install_tests.rs",
+      "bytes": 8096,
+      "sha256": "bb09b63b391a147ec2ef2a597e8de826c4f42048c809f219ed87eb0bab869c3b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/promises/install_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/promises/shared_key_identity_tests.rs",
+      "bytes": 6285,
+      "sha256": "04cfe31639436b3ffef6e69e23e49c77321848e11553c6f9bb794f529bb19670",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/promises/shared_key_identity_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/promises/shared_key_tests.rs",
+      "bytes": 15452,
+      "sha256": "7fd83b2ad665358836a571362674a6924305d0e54fea980ef7e2119171e531dd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/promises/shared_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/test262_host/quota_tests.rs",
+      "bytes": 15225,
+      "sha256": "98d69fb514d7c8beda7cbc0edb9f2129dcd984cbaf2e71f9781bea4498a0a0b3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/test262_host/quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/text_operations/key_cache_tests.rs",
+      "bytes": 11712,
+      "sha256": "22a985482ca018dcbd2b881ada0819af27e544b0050cca5331bc4e8d8d5959dc",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/text_operations/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/before/src/script/typed_array/tests.rs",
+      "bytes": 23217,
+      "sha256": "0d094efc5564937dfdb16a24b76cd9fab04e87f10d5d4af93e8f83d7a3882d18",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/before/src/script/typed_array/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/derive.py",
+      "bytes": 14115,
+      "sha256": "cce4e6d6fdd622b193e5bd1f28042a7e435df143a5434e891960a28c806cab07",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/derive.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__bootstrap_tests.rs.patch",
+      "bytes": 722,
+      "sha256": "0f82c092166a8e498912666a48f58a51c86af20766589b75d725748ab5a76fae",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__bootstrap_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__dom_bindings__identity_tests.rs.patch",
+      "bytes": 530,
+      "sha256": "eb66f66c517cf35909a1ae4ed08ff2fa188f0436c219fe88e52ce33d6b9bba17",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__dom_bindings__identity_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__node_data__key_cache_fee_tests.rs.patch",
+      "bytes": 611,
+      "sha256": "0390ca350c4772e291bd77c212146d852c623b9197f13ea795d589ff0c85ca43",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__node_data__key_cache_fee_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__node_data__key_cache_tests.rs.patch",
+      "bytes": 416,
+      "sha256": "1b06f12a966809ae43711ef42c924be78a5f35349bb260c782fa6223f107d937",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__node_data__key_cache_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__node_data__method_key_tests.rs.patch",
+      "bytes": 418,
+      "sha256": "9dfb29f541cf506813d6718aea2521a00f79455e2d37a6f91971372fc17ef573",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__node_data__method_key_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__processing_instruction__key_cache_tests.rs.patch",
+      "bytes": 1337,
+      "sha256": "75a4e8eb93723a0487a9f0ea1f5f6b4cd84a3f056e0b1167aabf3709f0e03566",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__processing_instruction__key_cache_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__promise_race_semantic_tests.rs.patch",
+      "bytes": 919,
+      "sha256": "8b67b964d532d7676479a7d21da8e8e50e720102388fabc2cbbcb4ab5a871b35",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__promise_race_semantic_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__promise_semantic_tests.rs.patch",
+      "bytes": 865,
+      "sha256": "d93b5c9bfa0a37ecef74bb750723020d9049045bbd130e140672e03a26c1af36",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__promise_semantic_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__promises__install_tests.rs.patch",
+      "bytes": 4260,
+      "sha256": "f740824030b052ee3839db82833ce9b3845fa42c9505324e2af02848db48caad",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__promises__install_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__promises__shared_key_identity_tests.rs.patch",
+      "bytes": 3039,
+      "sha256": "581e60b2db3d7fb7f761b270e6062577284dd5733395c7c858108dafd957e183",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__promises__shared_key_identity_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__promises__shared_key_tests.rs.patch",
+      "bytes": 6286,
+      "sha256": "210b3b4bee010e9bc5225fee3d92ce50e7cba43e2d908d2763b7fd7c479d4fc1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__promises__shared_key_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__test262_host__quota_tests.rs.patch",
+      "bytes": 539,
+      "sha256": "287bf81ddefb662026490959e814eae19be99bef8f2a325741faa183eb5f3b3d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__test262_host__quota_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__text_operations__key_cache_tests.rs.patch",
+      "bytes": 2077,
+      "sha256": "1ccc334230ca50ad53f690ed75b9022bc44048f30a22060b4fa369919f2140f6",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__text_operations__key_cache_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/diffs/src__script__typed_array__tests.rs.patch",
+      "bytes": 1039,
+      "sha256": "802b1df68d11c451f52eac34b0a333f05bcbd1b88c30dea8de4e22af4c5217e3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/diffs/src__script__typed_array__tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/layout-review.json",
+      "bytes": 12398,
+      "sha256": "28107c8c3a4acdb8feee260d3d1fc84b06a5b60ff3b289222fba51ffd1689338",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/ledger.json",
+      "bytes": 25196,
+      "sha256": "7bca108431e890c26ae5996a4153ceb6a77bf8e2690a816dc6b622c24570aa54",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/ledger.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/bootstrap_tests.rs",
+      "bytes": 16221,
+      "sha256": "8c9c7c60978830673243b87271164bbab34e96dfa0e00a47eaa78af875bff282",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/bootstrap_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/dom_bindings/identity_tests.rs",
+      "bytes": 35697,
+      "sha256": "7c2a7b365cae4e416b2a69a02f0e62937b5f93f1e38cda445257cdf66f9f6655",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/dom_bindings/identity_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/node_data/key_cache_fee_tests.rs",
+      "bytes": 10697,
+      "sha256": "1ab54995a2913fec7fd95aadf1d02a59a4fccb49d392e3c2c6b080c6e1e9e2cf",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/node_data/key_cache_fee_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/node_data/key_cache_tests.rs",
+      "bytes": 8315,
+      "sha256": "66ddd6e2b97e1e88bc75d54d121cabf3564aafdcacce83b480ca9219d881b67d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/node_data/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/node_data/method_key_tests.rs",
+      "bytes": 12107,
+      "sha256": "49e364a1d5c83372cb18bb8377626c722b278b576a9a373ced275720f53f61be",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/node_data/method_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/processing_instruction/key_cache_tests.rs",
+      "bytes": 10497,
+      "sha256": "20e5ca3d2e787d57e3048ceaaf4a1a2d73f7e08782966358eada9fd236c733cb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/processing_instruction/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/promise_race_semantic_tests.rs",
+      "bytes": 53609,
+      "sha256": "4c846242b47285ae2698a587f0d02c0a9a262076cbbc6358cf9531c24c20acff",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/promise_race_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/promise_semantic_tests.rs",
+      "bytes": 16635,
+      "sha256": "c0209fbe28d5d1c5f564c695f9cb4684dc95f0fb2f660111c2b31fb945e93fb3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/promise_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/promises/install_tests.rs",
+      "bytes": 8102,
+      "sha256": "3550fcc00117196f49e4486040b72fb390ed4369025db4679199217a2500ab58",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/promises/install_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/promises/shared_key_identity_tests.rs",
+      "bytes": 6339,
+      "sha256": "b51de2ce0931748578b553ce7277e88baf345b4760a320abc98090d1a6bef2cd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/promises/shared_key_identity_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/promises/shared_key_tests.rs",
+      "bytes": 15453,
+      "sha256": "c50ee03356541856ee7e24f873caf5d0eea6fe7ad2ec64ff61aeeb44e802d458",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/promises/shared_key_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/test262_host/quota_tests.rs",
+      "bytes": 15224,
+      "sha256": "4424d7300ef4a2b9dda86da9f1b778771aeea02b9e3c5fde1c45aa804980dff6",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/test262_host/quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/text_operations/key_cache_tests.rs",
+      "bytes": 11711,
+      "sha256": "18092b0a862e21eda88c347ba6dddfcc7f44cd6087acab0b9668d8cb08995631",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/text_operations/key_cache_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/raw/src/script/typed_array/tests.rs",
+      "bytes": 23404,
+      "sha256": "b3b4b16fea149e433b452050e1a8cf0d3d74c9586ff636a8f8004799306f567f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/raw/src/script/typed_array/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-bindings.json",
+      "bytes": 2576,
+      "sha256": "d913e7ed83e1149f6dea8ceca322c4c64fbb8af0dc4dc2335afc32bbb384507c",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-ready.json",
+      "bytes": 13552,
+      "sha256": "293d567ceb210f51f0481e42244cc5876d67115c5d19615aa79f2b9a1c1bb3bc",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-snapshots/src/script.rs",
+      "bytes": 915357,
+      "sha256": "4c0a1bcf23a09cc6359666e52885533b076d08b255ff43776d9f69edf654ec12",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-snapshots/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-snapshots/src/script/dom_prototypes.rs",
+      "bytes": 36559,
+      "sha256": "0498f36a6d4bdd83b80c76a86b89dae7ad7547d6e80a391115afa2dbc13ebb76",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-snapshots/src/script/dom_prototypes.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-snapshots/src/script/promises.rs",
+      "bytes": 20700,
+      "sha256": "01449f08e66f545f88398d80bddf4ee7cadc30d1bca2440ee6fa43126b18311d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-snapshots/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-snapshots/src/script/promises/install.rs",
+      "bytes": 10072,
+      "sha256": "3397c5ecf25e0f53a5a640555c80d6389f46a9b98932491e34ab6558f5f82e91",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-snapshots/src/script/promises/install.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-snapshots/src/script/symbols.rs",
+      "bytes": 38063,
+      "sha256": "b725a0d0075c66a0666bd9769bef92936af4a46f597270fd195ba63bd9253c61",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-snapshots/src/script/symbols.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-snapshots/src/script/text_operations.rs",
+      "bytes": 8829,
+      "sha256": "47da4de8246c96bcad0ab11245283cc3250d52574925c5e95f51755caad6c6fc",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-snapshots/src/script/text_operations.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-outline-1/source-snapshots/src/script/text_operations/key_cache_fee_tests.rs",
+      "bytes": 11610,
+      "sha256": "697b6188172798b6581ed555f5e4aba8a9ab53d0b4133d0409b823c2021d68d2",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/migrations-outline-1/source-snapshots/src/script/text_operations/key_cache_fee_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/layout-review.json",
+      "bytes": 4256,
+      "sha256": "5da98a000de922e5d9a4a0e502a9a8112d8115eb678097f29509973a8642f4e5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/raw/tests/fixtures/promise-all-settled.html",
+      "bytes": 1474,
+      "sha256": "fe5ffe2fc2f0d0503620c384ce610e0e8eaf02e3d6936948831ed21e7f772ec7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/raw/tests/fixtures/promise-all-settled.html",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/raw/tests/promise_all_settled.rs",
+      "bytes": 3046,
+      "sha256": "96eacae9058a923babf03283e504e4ea098b175a010d5e7a301a898ff14fa6b0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/raw/tests/promise_all_settled.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/raw/tests/support/promise_all_settled.rs",
+      "bytes": 1012,
+      "sha256": "f72cc311d21d04c553fb73e5d88b109c251b2ba35660350accbc224da922882a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/raw/tests/support/promise_all_settled.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/raw/tests/worker.rs",
+      "bytes": 109585,
+      "sha256": "2edeb19d1d83239a57fbdaf187ca6d7ba44c0031844b2b1bbdcd232a06b417d3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/raw/tests/worker.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/raw/tests/worker/promise_all_settled.rs",
+      "bytes": 4105,
+      "sha256": "2d9b8879f37356841e735ad6a08a12da9fa5351a1a01d0938f55785ebcd694c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/raw/tests/worker/promise_all_settled.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/source-ready.json",
+      "bytes": 4432,
+      "sha256": "741268fe3ff05a59e61fb2f2d42b479a220a9310d7e85e1dbbabf503f4d5ee93",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/tests__fixtures__promise-all-settled.html.patch",
+      "bytes": 1612,
+      "sha256": "0d862f87c92ef7f226b425e6dd5a6d5d1c56adc52707e7d07763b181113f1c33",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/tests__fixtures__promise-all-settled.html.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/tests__promise_all_settled.rs.patch",
+      "bytes": 3210,
+      "sha256": "104f13240bd47f2a9bdc910dbee2a1558ef9e9899e92d91fc54ef18f819066f8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/tests__promise_all_settled.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/tests__support__promise_all_settled.rs.patch",
+      "bytes": 1143,
+      "sha256": "0bc2d2d04cec30b8aea37c5dd9dc7fe42ab36c739e5a426197d5b890906ebae3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/tests__support__promise_all_settled.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/tests__worker.rs.patch",
+      "bytes": 194,
+      "sha256": "359bc8f5a710d755dfd21ec9ea473c4c369604c64866c3e4be0ad6e71ca7abd0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/tests__worker.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/tests__worker__promise_all_settled.rs.patch",
+      "bytes": 4319,
+      "sha256": "c8213dd4d759b56f7653745ec8934cf887d2f7e7a66dd4dfbadb72a8b6aa0fc9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/tests__worker__promise_all_settled.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/worker-before.rs",
+      "bytes": 109517,
+      "sha256": "6efa6bb547d12bff220e38fb53174e12573d5a61e40123d8520d5dc569a86585",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/worker-before.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/page-tests-before-1/worker-registration.txt",
+      "bytes": 68,
+      "sha256": "f5df5371901d303ad659249064ef3b37a1d0dd5f9b1de9d2346500b928e92918",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/page-tests-before-1/worker-registration.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-ci-final.json",
+      "bytes": 31951,
+      "sha256": "63393a8f77d26b982d2e09416cafb8596ff65b85beade7510bb5644aa02f0205",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/parent-ci-final.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-ci-latest.json",
+      "bytes": 31951,
+      "sha256": "63393a8f77d26b982d2e09416cafb8596ff65b85beade7510bb5644aa02f0205",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/parent-ci-latest.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-source.json",
+      "bytes": 205029,
+      "sha256": "e30f5b782d6903382234ba5fa39f4e98df8e8568d3b6777907da6dc632a94db8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/parent-source.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/all_settled_quota_tests.patch",
+      "bytes": 36109,
+      "sha256": "3a71f57263efa5630afc7456bed701d52ba3962ce98aef104967d6f42c6bb873",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/all_settled_quota_tests.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/api.txt",
+      "bytes": 1688,
+      "sha256": "250bb428002a2c450934b2da3643b93c56dd031f730520f4e523ac74f2d2141b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/api.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/ledger.json",
+      "bytes": 2144,
+      "sha256": "8d17fea6ca5cb7f4b769682f917239895902b98e4122426cf2d7b9c25b7c9bfb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/ledger.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/literal-outline.json",
+      "bytes": 8182,
+      "sha256": "5215d727366d35f7930670fe23c246e4b162d215cc154938e08756ad683684b6",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/literal-outline.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/raw/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "bytes": 35305,
+      "sha256": "fe139ba1c9754c74e8ae981f79c4a9372b0ea960a90f74f97b0177c9385bf700",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/raw/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/registration.txt",
+      "bytes": 43,
+      "sha256": "871899854a7cc5a4f4467be34ce939babd5f99f525436f23b00684ed44aed551",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/registration.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/roster.json",
+      "bytes": 1848,
+      "sha256": "9b5507adc067e3596394f6d29a274978302676d3c3121b11a8cecb0a0b7fadc1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/source-bindings.json",
+      "bytes": 3096,
+      "sha256": "5a1223116fa6c1bf1997217cf7d74aeb61def81693e483e0d5a66c15a86be9db",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-1/source-ready.json",
+      "bytes": 3409,
+      "sha256": "82112e77c98d9d6fc28645099f77b1a9773533a5ca5ade6631317b8b8e3433da",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-2/correction.patch",
+      "bytes": 747,
+      "sha256": "9863411f133410bbe8477622ae7eb3a18e853ed37b7138c2d8d7bff49ef5302b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-2/correction.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-2/html-check.py",
+      "bytes": 6494,
+      "sha256": "a3ef118adda1ae4ffa79943c3f5e13be070106059e6e49c92744b9f7973ceda7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-2/html-check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-2/html-review.json",
+      "bytes": 5373,
+      "sha256": "2cd973ebe0e999d7560b237e83b8823434ef1c60f8a4b6573ed93f6052e1a8e0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-2/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-2/raw/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "bytes": 35534,
+      "sha256": "84cc1a07df0d9fa05fbe7ec1936240879acd346d7382511ad85f67c1b2ba5c97",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-2/raw/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/private-tests-outline-2/source-ready.json",
+      "bytes": 3112,
+      "sha256": "3cc4553ad3e5d4dbaa8eaa2f4fbcb27caebd878b245bc0d42e9d4191f03a425b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/private-tests-outline-2/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/machine/calls.rs",
+      "bytes": 36875,
+      "sha256": "dcf5a78e80121ddff70f3018553299d3a81bb846a253654ebc7cf78fe290dd02",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/before/src/script/machine/calls.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/promises.rs",
+      "bytes": 20700,
+      "sha256": "01449f08e66f545f88398d80bddf4ee7cadc30d1bca2440ee6fa43126b18311d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/before/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/promises/all_semantics.rs",
+      "bytes": 9384,
+      "sha256": "fa13b61422e0eeecaf135673cdd7cfd66d6eb2fa35c0a46374ed615c88775dbe",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/before/src/script/promises/all_semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/promises/all_state.rs",
+      "bytes": 10012,
+      "sha256": "d57a4900ce57cff4d3fb3e2ce853848d5189eed25f67fa31da03cdd23cd12655",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/before/src/script/promises/all_state.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/promises/factories.rs",
+      "bytes": 21732,
+      "sha256": "e2f6eaa52f05f981988c53ff71f802c32ce2c698f3eafd73d8b55a81c6745c4e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/before/src/script/promises/factories.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/promises/install.rs",
+      "bytes": 10072,
+      "sha256": "3397c5ecf25e0f53a5a640555c80d6389f46a9b98932491e34ab6558f5f82e91",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/before/src/script/promises/install.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/src/script/promises/semantics.rs",
+      "bytes": 19338,
+      "sha256": "d34dbfced813e8a32a2204680ed92ccd22c9e8b531e82422641a39d065fee6c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/before/src/script/promises/semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src__script__machine__calls.rs.patch",
+      "bytes": 399,
+      "sha256": "10a496a78120834918d25c64c5e5330963bcae425f56e615cdc5a0724c0fc325",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/diffs/src__script__machine__calls.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src__script__promises.rs.patch",
+      "bytes": 522,
+      "sha256": "402962eafd90511a81b7446e5d38112fe5e105bd94da947e64d64d1a696ce72b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/diffs/src__script__promises.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src__script__promises__all_semantics.rs.patch",
+      "bytes": 5003,
+      "sha256": "3bf6e9f8f656a7644b19a0d5f2e399320989cce870fc65fbc4475db922942655",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/diffs/src__script__promises__all_semantics.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src__script__promises__all_state.rs.patch",
+      "bytes": 4732,
+      "sha256": "d21453d092333aab5ed64058a68b770d8df76dbd0a9205154dd84f50e6b3d124",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/diffs/src__script__promises__all_state.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src__script__promises__factories.rs.patch",
+      "bytes": 1635,
+      "sha256": "39406ce7b5aaae0c7c19a59edfae00631060cd3a0ebcd17573556a3884c72e97",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/diffs/src__script__promises__factories.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src__script__promises__install.rs.patch",
+      "bytes": 3441,
+      "sha256": "c85cb415d94cff022e9631c8a1a3f14095ca52a2bc3d48b0967e15a731eede13",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/diffs/src__script__promises__install.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/src__script__promises__semantics.rs.patch",
+      "bytes": 1277,
+      "sha256": "a8a01adc4b2ad7a3ecf1d0a606588d5af7ffe76083dda452151aa9533bbd2166",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/diffs/src__script__promises__semantics.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/layout-resource-source-review.json",
+      "bytes": 8077,
+      "sha256": "24233d038228dcd614814aebf2ddb238dfc10dafc6c6cd7d4d5b1e5ec6ef1ee7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/layout-resource-source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/machine/calls.rs",
+      "bytes": 36918,
+      "sha256": "0678e4376dae3a56b986dd2d0270640e769292c72d34cdf0cf39dbdf380c2235",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/raw/src/script/machine/calls.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/promises.rs",
+      "bytes": 20773,
+      "sha256": "8076c539e9e871fb5ff690857b9c705a0b2c887122d117195f8b20957b8fb605",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/raw/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/promises/all_semantics.rs",
+      "bytes": 13733,
+      "sha256": "1ff4916d94fc47e56c97e67bbc469e5a7a126f7179b030264938a0ef74b4e44a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/raw/src/script/promises/all_semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/promises/all_state.rs",
+      "bytes": 14317,
+      "sha256": "ba09ca5799fad1addabc860a3bac1dfab4c7e6cba0b1e017b09319f941bb48af",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/raw/src/script/promises/all_state.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/promises/factories.rs",
+      "bytes": 22652,
+      "sha256": "92ce7d5fa39584025a1610ec5f742853275d0a6bb85bff8ebb0ddc146d9d3e18",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/raw/src/script/promises/factories.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/promises/install.rs",
+      "bytes": 10422,
+      "sha256": "3ec1f2d36729f3c6b8a4175e9db2a0e7e6a9e74ad4f89a15160c1dd0547c6196",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/raw/src/script/promises/install.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/src/script/promises/semantics.rs",
+      "bytes": 19785,
+      "sha256": "65e3e9d378f6a2699b406b8da7ee31c07f2b21df96bcd32a9d67dfd6664fa050",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/raw/src/script/promises/semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/source-ready.json",
+      "bytes": 6039,
+      "sha256": "7eb3e2e72034e10138c32db80f352d09d253215e76098b1cfba6ea19733eb77d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-review-1/check.py",
+      "bytes": 15617,
+      "sha256": "4d0902f57167ec8366313d35606d93d893119aa351c11c156397f5b3dcd2e29c",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-review-1/check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-review-1/source-review.json",
+      "bytes": 21372,
+      "sha256": "af9ca3630db8ebd515fcd09b5021bd118c90e3697529f9e629794164fa4b0efd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/production-review-1/source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/all-replay-report.json",
+      "bytes": 600030,
+      "sha256": "4ba177007f23de6b8c0767a8ec0c73d676a9b19268f0b626939ec73fb7e4e9f5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/replay-parent/all-replay-report.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/existing-replay-report.json",
+      "bytes": 616883,
+      "sha256": "d0fbae4ec4e0ccabcb821266444f20bf2ebe66c9e61109fa2add3b8ba6f20b2e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/replay-parent/existing-replay-report.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/race-replay-report.json",
+      "bytes": 593019,
+      "sha256": "37a4ce8ff1a9885f7379a5d6ca77a6a9aa6b2943572fd72d9bd7fe7993c029c8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/replay-parent/race-replay-report.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/root/controls-import-2.json",
+      "bytes": 2078,
+      "sha256": "e5e435e458ff814c0870dfdaffca5fb638f0672591da797f6713c0edfe561aa4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/controls-import-2.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/documentation-import.json",
+      "bytes": 1073,
+      "sha256": "7fab8763a200a3a0f0b1458003f8241bac00c83cb5f21e0851fa762417483c17",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/documentation-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/final-validation.json",
+      "bytes": 15797,
+      "sha256": "5be66898625cc999070974c9fdbe3e9eed8a32b1608d7eb051b127c5b1263c80",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/final-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/finalize-validation.py",
+      "bytes": 8974,
+      "sha256": "f8f5bdcf25c707fa8e64cc87f552dc191776a6c0d38dedcbb1cd05961592a51e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/finalize-validation.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/formatting.json",
+      "bytes": 2919,
+      "sha256": "49edcd09d964c9c4223971f198b0d6212aeed6d4302767c50725f50df0ddfd8b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/formatting.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/freeze-release-and-replay.py",
+      "bytes": 3021,
+      "sha256": "c63a9e0b1e769077b251f77b14a23904d779226c34617c54fe328a7438c9b6ed",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/freeze-release-and-replay.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/import-attempt-1.json",
+      "bytes": 611,
+      "sha256": "4f930f1fc0a93cc1ba48b4d31e5ac2f121eefb874698bd37ac7f43b9d7dd9a08",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/import-attempt-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/import-parent-controls.py",
+      "bytes": 2563,
+      "sha256": "55cc5e5812da5d9a3180bd8a1f3e14d98b11a656a1c8e0cda3ee294e80fdadbf",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/import-parent-controls.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/import-production.py",
+      "bytes": 2732,
+      "sha256": "775d6d64e6c0effc972280c4a47460597b2b2250d5ee0df29659e3a20fe56148",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/import-production.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/page-validation-1.json",
+      "bytes": 2764,
+      "sha256": "d97026d32811ddf68cb7c18e5cc7a92ba604074d72d07b32c5da4d190cb75465",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/page-validation-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-controls-import.json",
+      "bytes": 1055,
+      "sha256": "489bf1ff044400e9e9956159af99dfffde3395ab2def7c83ee89d2d727b26a12",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/parent-controls-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-validation-1.json",
+      "bytes": 11656,
+      "sha256": "5535ba5d77f4ddc79fd8b9fd00f00d3964e493586fd5a1c4b8f91cbb7fdc3dd1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/parent-validation-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/prepare-page-controls.py",
+      "bytes": 4588,
+      "sha256": "1a688d0509df568994b3a5cff835f2f4a8fa7ee500f0cc4e995d8f6caf277756",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/prepare-page-controls.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/prepare-production.py",
+      "bytes": 12040,
+      "sha256": "3a97ec8991a65b140bdac2611c28d45d992cdb1edbbe5f264a1b0486a8aa339d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/prepare-production.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/private-import.json",
+      "bytes": 870,
+      "sha256": "39bdfc250f686269768dc5468589bcc44da594629670f5f3a701ace071084b2f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/private-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/production-import.json",
+      "bytes": 1039,
+      "sha256": "57bfb2d4d0267701a1d1e85f1885e5f7ce1ffdc36cb0a034a79553c4810d1a0e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/production-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/publish-evidence.py",
+      "bytes": 5489,
+      "sha256": "aec47e0c10720d82759df42db14068f94a73ea7217fbc94ea896f551a04feb5e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/publish-evidence.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/publish-git.py",
+      "bytes": 2518,
+      "sha256": "d4d923d5502760f6a5e6135e1b6b3b98f92105d744b2c916671ba946d3930582",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/publish-git.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/replay-parent.json",
+      "bytes": 940,
+      "sha256": "c0f2bbc47bc8bacc93cf14969e66e5105ae41ac7306d6b6ba7cdf4286b1eab96",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/replay-parent.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/replay-validation.json",
+      "bytes": 4614,
+      "sha256": "dc867b614ecbcff5d01a93b254196f82ae330b9024bc2b9d3b56b1831fe86033",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/replay-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/selection-1.json",
+      "bytes": 1922,
+      "sha256": "5a5fe2c33335722f9e3d386238dcfb1ba02e440dbc0d1eb557d8ac9648351bc4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/selection-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/verify-publication.py",
+      "bytes": 2908,
+      "sha256": "186701e05c4d5868a6ee2683bc4519a4956bdd4e481a437b73ff2eb5a2209a4d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/root/verify-publication.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/run-check.py",
+      "bytes": 1252,
+      "sha256": "92948cda271466ab8d3419b47e73218c1f30aa9a639a8d75b46d14ecc749316f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/run-check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/run-tool.py",
+      "bytes": 726,
+      "sha256": "abea4ed0c4a338841442c6d7b4fc327f719dd3e5e57b7163cc92bc5517c8532b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/run-tool.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-1.json",
+      "bytes": 205802,
+      "sha256": "c46e14c55f71397c97564b766e3934f50f5b80b52f32bca82d7149bc5c65969b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/source-candidate-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-2.json",
+      "bytes": 205858,
+      "sha256": "d8ff9ed9b5ebb1ee79c44d35cf9abb6fa06080595929102e6f5a733a91c523f4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/source-candidate-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-3-raw.json",
+      "bytes": 205943,
+      "sha256": "2807d284f573cd47e5a7078b656f43c525d36eecf76e5502f6bc07545c5b3419",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/source-candidate-3-raw.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-3.json",
+      "bytes": 206006,
+      "sha256": "8a4bf07a6630201ac38774f4693a40b1fdf4dec679ccc2b8554f3a5b4ff178d4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/source-candidate-3.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-final.json",
+      "bytes": 206006,
+      "sha256": "8a4bf07a6630201ac38774f4693a40b1fdf4dec679ccc2b8554f3a5b4ff178d4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/source-final.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-parent-controls.json",
+      "bytes": 205365,
+      "sha256": "a774233f79c236be5634193a991c4d2889c9c8b15d5ae872a4f1fbbccc4569f7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/source-parent-controls.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-parent-pages.json",
+      "bytes": 205711,
+      "sha256": "82d3db8133df4de9bef7a400a417493d7d5031838e19f244278ff8c829decabd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/source-parent-pages.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/startup-review.json",
+      "bytes": 6262,
+      "sha256": "41d3b917ef38690ed27dc11f29115f958c23f7c57f92e4a4f252f5292088f3f5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/startup-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/author.py",
+      "bytes": 17779,
+      "sha256": "95f00fa8632fa2823707499d450b173abbc7b1f57bfd6fd04812f0bab5164b8a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/before/src/script.rs",
+      "bytes": 915357,
+      "sha256": "4c0a1bcf23a09cc6359666e52885533b076d08b255ff43776d9f69edf654ec12",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/before/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/before/src/script/promises.rs",
+      "bytes": 20700,
+      "sha256": "01449f08e66f545f88398d80bddf4ee7cadc30d1bca2440ee6fa43126b18311d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/before/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/conversion-checks.json",
+      "bytes": 343,
+      "sha256": "946757249d97391b22e461ab692055c3c8badff94125356c495e3061fee09b4f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/conversion-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/diffs/src__script.rs.patch",
+      "bytes": 200,
+      "sha256": "87c50559de6da37a4bc7ecc31f8a3e325a828d3a92e206e06be657f9de4cfc80",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/diffs/src__script.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/diffs/src__script__promise_all_settled_semantic_tests.rs.patch",
+      "bytes": 12533,
+      "sha256": "d97b2eda4e990d11b88ae37558b640062d817fa8608c55c739b2279a4d240a5c",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/diffs/src__script__promise_all_settled_semantic_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/diffs/src__script__promises.rs.patch",
+      "bytes": 173,
+      "sha256": "12eff560b1a6206d17d067c8919c10e23670aa03d65dcfd296f0097224a3605b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/diffs/src__script__promises.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/diffs/src__script__promises__all_settled_layout_probe.rs.patch",
+      "bytes": 9935,
+      "sha256": "6c95973ac51b0f36e2831313a8af25cabf6a14e2264c5bd6d0943faae44b129e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/diffs/src__script__promises__all_settled_layout_probe.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/helper-original.txt",
+      "bytes": 828,
+      "sha256": "5f20602e236fc08674673bb373d38678bc56da2eb68f0daf723efbb03ca01854",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/helper-original.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/helper-presence.patch",
+      "bytes": 848,
+      "sha256": "6c833bb379417f5953954c88c6bff799e3aad34eb50329a32be26ef650a624bb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/helper-presence.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/helper-selected.txt",
+      "bytes": 1351,
+      "sha256": "f139c731605e6a1526f2d7b02289345e03017177217b9e705b37dc86fc2e1661",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/helper-selected.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/html-check.py",
+      "bytes": 9015,
+      "sha256": "6f6f6e309ba1cf876780f14e5ec7545e1764253351f4b3785d4846edd19d1cd1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/html-check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/html-checks.json",
+      "bytes": 1222,
+      "sha256": "5826fa3cdef50ba5d4622bc2b5e46f7b39b9094b82a10c63f26a858083c29131",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/html-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/html-review.json",
+      "bytes": 2482,
+      "sha256": "cd1b0edf8061c44676a34cba00a3faf39a5e14f60854b225db747e10be78f309",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/mirror-declarations.json",
+      "bytes": 12528,
+      "sha256": "d18927bc76f1cd653679cab3b49e9fdf7af61c779a3fc415c8b559cec56f2643",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/mirror-declarations.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/notes.txt",
+      "bytes": 2269,
+      "sha256": "f12ff990ee4d3bbc042b9b4848d1177729d38c5ccb1ceba6c8bdf5d2e98fda1c",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/notes.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/oracle.json",
+      "bytes": 13264,
+      "sha256": "f1681a740a7ee4518506935c2ed02aa657e7a5bbb02e94633412524c1177080a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/raw/src/script/promise_all_settled_semantic_tests.rs",
+      "bytes": 12168,
+      "sha256": "d7c14c39275b5a9886c389f8d4b8c23e495f9eb234f2ed4cc13fe7dbc231e828",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/raw/src/script/promise_all_settled_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/raw/src/script/promises/all_settled_layout_probe.rs",
+      "bytes": 9570,
+      "sha256": "e2672e9efddfb59263b64e6d12455d5d858ad2a70c2c8412128d8b883eb5f349",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/raw/src/script/promises/all_settled_layout_probe.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/registrations/layout-append.txt",
+      "bytes": 44,
+      "sha256": "3ac2eba8cc0c2aa0d43ecd909e57d2f9a198c7e14187e968dfa7ced74f61c4de",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/registrations/layout-append.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/registrations/public-append.txt",
+      "bytes": 54,
+      "sha256": "4eede193d5e19d3d0db9f38dd9e6448c80bc41e4413afff794341b1d2e5779be",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/registrations/public-append.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/registrations/src/script.rs",
+      "bytes": 915411,
+      "sha256": "edeabc8be880a2c91e87bfc1a1b02e80740b4a7c77a09836e6897022bffc72ca",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/registrations/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/registrations/src/script/promises.rs",
+      "bytes": 20744,
+      "sha256": "c5ba9a0cc07f3618933e40469641160f023ef677a5847d4f111d8fe399319228",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/registrations/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/roster.json",
+      "bytes": 10670,
+      "sha256": "9ed086b5e2d612b98edb58a6e293923fbd0f2c07d44313376f122ab0f97cc8a9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-bindings.json",
+      "bytes": 8564,
+      "sha256": "072da4811de7621db04b1e5acb9f07835a124a2deaff521852186fbc082955a4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-ready.json",
+      "bytes": 8622,
+      "sha256": "e758b051f49e10c97b4e10da654039a1352a533b2d6f6570be69fe42fe1333f3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/Cargo.lock",
+      "bytes": 78968,
+      "sha256": "be64a7191be460ae51abdbe677ba22c719379745380400ec61fe4122eb382371",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/Cargo.lock",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/Cargo.toml",
+      "bytes": 1637,
+      "sha256": "91183ee75a2c19362a171db7e5b19de5f3f9777f0e9a7baaf2177f0ed4b1f246",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/Cargo.toml",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script.rs",
+      "bytes": 915357,
+      "sha256": "4c0a1bcf23a09cc6359666e52885533b076d08b255ff43776d9f69edf654ec12",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/microtasks.rs",
+      "bytes": 15374,
+      "sha256": "777109194f84f3540167ba421c3a9d916974627b74e6b85bc9e6f416559f2004",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/microtasks.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promise_all_semantic_tests.rs",
+      "bytes": 15755,
+      "sha256": "32454dd8eaa0056ade54893acda2d21536ddb4bd8b8c8e94d6ea4adcbfc65430",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promise_all_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promises.rs",
+      "bytes": 20700,
+      "sha256": "01449f08e66f545f88398d80bddf4ee7cadc30d1bca2440ee6fa43126b18311d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promises/all_layout_tests.rs",
+      "bytes": 2188,
+      "sha256": "15b77863868917e1efd68f30c0f6537cef316e2efb6d608b3b3c566f9fed08f1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promises/all_layout_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promises/all_semantics.rs",
+      "bytes": 9384,
+      "sha256": "fa13b61422e0eeecaf135673cdd7cfd66d6eb2fa35c0a46374ed615c88775dbe",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promises/all_semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promises/all_state.rs",
+      "bytes": 10012,
+      "sha256": "d57a4900ce57cff4d3fb3e2ce853848d5189eed25f67fa31da03cdd23cd12655",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promises/all_state.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promises/factories.rs",
+      "bytes": 21732,
+      "sha256": "e2f6eaa52f05f981988c53ff71f802c32ce2c698f3eafd73d8b55a81c6745c4e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promises/factories.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promises/install.rs",
+      "bytes": 10072,
+      "sha256": "3397c5ecf25e0f53a5a640555c80d6389f46a9b98932491e34ab6558f5f82e91",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promises/install.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/promises/semantics.rs",
+      "bytes": 19338,
+      "sha256": "d34dbfced813e8a32a2204680ed92ccd22c9e8b531e82422641a39d065fee6c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/promises/semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-snapshots/src/script/test262_host.rs",
+      "bytes": 18804,
+      "sha256": "eeb5dd8e50769c6f97cd344dc76ea71c92bc1689bcf8ffd8de4b48826f8ddef1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-before-1/source-snapshots/src/script/test262_host.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/author.py",
+      "bytes": 8212,
+      "sha256": "9d6a11a3d305c65116828b6525a589b9b2ba7af8d3ec9472be511818f0e65d45",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/before/candidate-formatted/src/script/promise_all_settled_semantic_tests.rs",
+      "bytes": 12168,
+      "sha256": "d7c14c39275b5a9886c389f8d4b8c23e495f9eb234f2ed4cc13fe7dbc231e828",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/before/candidate-formatted/src/script/promise_all_settled_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/before/original-held/src/script/promise_all_settled_semantic_tests.rs",
+      "bytes": 12168,
+      "sha256": "d7c14c39275b5a9886c389f8d4b8c23e495f9eb234f2ed4cc13fe7dbc231e828",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/before/original-held/src/script/promise_all_settled_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/diffs/candidate-formatted.patch",
+      "bytes": 1057,
+      "sha256": "828cfd3154c3866de2c917088fc4749f6fd9d40fd47755db6d65b36c478759c0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/diffs/candidate-formatted.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/diffs/original-held.patch",
+      "bytes": 1057,
+      "sha256": "828cfd3154c3866de2c917088fc4749f6fd9d40fd47755db6d65b36c478759c0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/diffs/original-held.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/html-check.py",
+      "bytes": 4902,
+      "sha256": "cb50da3be3071163c8a9a463d38744f99080b3bfcb0205aca8484a9cc8c31d92",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/html-check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/html-review.json",
+      "bytes": 3683,
+      "sha256": "f9745fffab487063b1b135cc3309dab64639ce35166b5f8be9b2d7e6407636d5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/notes.txt",
+      "bytes": 1247,
+      "sha256": "3c14b0edff708265395a5c9f176c521a3bf5025d1c0040b114cab6feee38cdea",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/notes.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/original-case.json",
+      "bytes": 1689,
+      "sha256": "588df5db3c56ee8c2ff843ba978c4ee566cf9cd457ca769ff8ecd44334ae404f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/original-case.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/original-setup.js",
+      "bytes": 266,
+      "sha256": "62ad23dc2287f608efcaa11ccce1736e8f46942f3c095e23b57e08beb18b6169",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/original-setup.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/property_descriptor-source.txt",
+      "bytes": 1756,
+      "sha256": "7fb635caff5565258d2a0f6a0f666d09b8b33a4137f38509fb3bb9d15573ec16",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/property_descriptor-source.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/raw/candidate-formatted/src/script/promise_all_settled_semantic_tests.rs",
+      "bytes": 12183,
+      "sha256": "fea1982851c7790ad7acd39b40d760399ff2b0c9b0a3aff1233eab95fa1af28d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/raw/candidate-formatted/src/script/promise_all_settled_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/raw/original-held/src/script/promise_all_settled_semantic_tests.rs",
+      "bytes": 12183,
+      "sha256": "fea1982851c7790ad7acd39b40d760399ff2b0c9b0a3aff1233eab95fa1af28d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/raw/original-held/src/script/promise_all_settled_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/reason.json",
+      "bytes": 2903,
+      "sha256": "1ebe723574a9071badbf65a6f9ba4e876b2938980230c498f0981f294183aba4",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/reason.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/retained/candidate-public-2.json",
+      "bytes": 368,
+      "sha256": "90834587a23ef07cf4efdccc381107ff4c766b55914d7a4ba1f9ef5cfc904ac0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/retained/candidate-public-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/retained/candidate-public-2.log",
+      "bytes": 3814,
+      "sha256": "5dce5c271820379481e48b4b9378c12db952f58679edbe75df6e1ea0da8db924",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/retained/candidate-public-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/selected-case.json",
+      "bytes": 1707,
+      "sha256": "43df84af6abcaf3eee638156a099a1785485ed78f64de8fa140d67ebdc7b4376",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/selected-case.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/selected-setup.js",
+      "bytes": 281,
+      "sha256": "31442132f3532f67be2b8cea3a04fba7853ccb08bff7c375d14217961ffb14e7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/selected-setup.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/source-bindings.json",
+      "bytes": 1517,
+      "sha256": "1308eca828763b5226987b9a2a37b9b63b1ff550b8056e379d060c9468a6e8c8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-correction-1/source-ready.json",
+      "bytes": 6505,
+      "sha256": "b158b0d699d393a382b3b73d56e1f0fd7a6666b00f00f5d5d13c3560f759aaf1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-correction-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/author.py",
+      "bytes": 8583,
+      "sha256": "19122d0d4feec254ecbbc6aa665f8914ca3cd7ba76e9adc1f9fc90e09c4f1a48",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/before/src/script/promises.rs",
+      "bytes": 20773,
+      "sha256": "8076c539e9e871fb5ff690857b9c705a0b2c887122d117195f8b20957b8fb605",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/before/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/diffs/module.patch",
+      "bytes": 2157,
+      "sha256": "d4c54713f5b974f2ee1b33f687bc07fcc094954d4f5098bf5e10d911cddd8a97",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/diffs/module.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/html-check.py",
+      "bytes": 4772,
+      "sha256": "555fd31ac84bd27b46f0b9b2f2f3c37f80105a486e18e4a4833ff69e9500bf6d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/html-check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/html-review.json",
+      "bytes": 4386,
+      "sha256": "8e3999a89b85d06dee4ffc86227532619dfccd61a833f4d13ae6f77f5484796d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/notes.txt",
+      "bytes": 1501,
+      "sha256": "2715b4b131cc27d926e1e408890e9e28ca4ffdea0d00b3050b98ee8f7493b6cc",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/notes.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/oracle.json",
+      "bytes": 5003,
+      "sha256": "3c3fc041a7b0d8aa959a4ca26df96c5cfe33cc3c81ce7b5ff511d5c40e092b14",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/raw/src/script/promises/all_settled_layout_tests.rs",
+      "bytes": 2028,
+      "sha256": "fdd5a637e2f4a2432e0200e1689d530fcb943d75965e00b1e82534fb4517558e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/raw/src/script/promises/all_settled_layout_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/registration-append.txt",
+      "bytes": 44,
+      "sha256": "ddadf371511a6a2570c52e24d21b021f6bae5aa84e7d5fb36da73a98495a60bb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/registration-append.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/registration.patch",
+      "bytes": 173,
+      "sha256": "e32c998f5dae481d6c11f08041f28eb614c2bb7bf224f7c468d334e9692dfafb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/registration.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/registrations/src/script/promises.rs",
+      "bytes": 20817,
+      "sha256": "6a4ad272d0964c1226e06639cb557b57714b46748358e16b00237babe7079de8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/registrations/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/roster.json",
+      "bytes": 540,
+      "sha256": "0304aa21c9a649d37f3f26d745688971334d4b13c14a23308640b1df80bd0c82",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/source-bindings.json",
+      "bytes": 1967,
+      "sha256": "ebc9b7e2944474e354cea17a6ab8d9f2305f474424f411354f39e88e98912ccd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-layout-actual-1/source-ready.json",
+      "bytes": 2771,
+      "sha256": "6c05ad47250bdc5302bbc4acac31972fce47d4f0bbef7656bef9f339545a95e3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-layout-actual-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/author.py",
+      "bytes": 7166,
+      "sha256": "abceaa9b549fc6b9f824302d22ec97fb900db7dca51dfaabd7cc9a95a83cf860",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/before/src/script.rs",
+      "bytes": 915411,
+      "sha256": "edeabc8be880a2c91e87bfc1a1b02e80740b4a7c77a09836e6897022bffc72ca",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/before/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/case.js",
+      "bytes": 2447,
+      "sha256": "48a24db217f87b85e4455df48702949d32ee2454215d045ad968a9b287e837eb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/case.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/diffs/module.patch",
+      "bytes": 3911,
+      "sha256": "9d0c5be9697b5f30ce8ee772b3ad0622923fdf6e9b5cbd596c0b66eae7c2e253",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/diffs/module.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/html-review.json",
+      "bytes": 1798,
+      "sha256": "970c1ea0ba96794c5acf62530125c9a91900e052d0eaef149ede8b4cdf49f1b6",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/notes.txt",
+      "bytes": 1346,
+      "sha256": "12847ee24a9e99c79c68f749beb9678040a4fcb56d5b802fb5ad95923eb866b7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/notes.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/oracle.json",
+      "bytes": 4769,
+      "sha256": "b0cbde2b26c8da6dc71a90f5d23542cbe3ce8afe3f198451e5c7083e2f68449a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/raw/src/script/promise_all_settled_supplemental_tests.rs",
+      "bytes": 3745,
+      "sha256": "90b5567c4d3aaf5c0bc63408f8bc26334a5a65d4575ca388e0b88d369036d3d3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/raw/src/script/promise_all_settled_supplemental_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/registration-append.txt",
+      "bytes": 58,
+      "sha256": "d2c2ef24f6de16e1d3cc1cb681f0164783703c84a7a4dbb49f768b0a96d395cd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/registration-append.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/registration.patch",
+      "bytes": 182,
+      "sha256": "9eeee16de5062939376d5f405d5c9cf03a8db5e43077f5ab341acdae732fbeb7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/registration.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/registrations/src/script.rs",
+      "bytes": 915469,
+      "sha256": "8c8b371f1d7cd1b863ac0dbb2a5f183e503c8248de660ff173f1eee04f7afae7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/registrations/src/script.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/roster.json",
+      "bytes": 217,
+      "sha256": "04e0ea09149ce9fc912e5b48df87d125c494b70ad9717553b51d2ebbbcbb0845",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-bindings.json",
+      "bytes": 5127,
+      "sha256": "7a251baabe59d85bde0e28e4633de7a9945b9b9f2baf871a0955e688190b0e62",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-ready.json",
+      "bytes": 4757,
+      "sha256": "903f2c33f09ea00eba84b90fcbe20f8fb80e30a2288ad37c01cc36b727ba7647",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-snapshots/src/script/dom_prototypes.rs",
+      "bytes": 36559,
+      "sha256": "0498f36a6d4bdd83b80c76a86b89dae7ad7547d6e80a391115afa2dbc13ebb76",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-snapshots/src/script/dom_prototypes.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-snapshots/src/script/promise_all_semantic_tests.rs",
+      "bytes": 15755,
+      "sha256": "32454dd8eaa0056ade54893acda2d21536ddb4bd8b8c8e94d6ea4adcbfc65430",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-snapshots/src/script/promise_all_semantic_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-snapshots/src/script/promises.rs",
+      "bytes": 20700,
+      "sha256": "01449f08e66f545f88398d80bddf4ee7cadc30d1bca2440ee6fa43126b18311d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-snapshots/src/script/promises.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-snapshots/src/script/promises/all_state.rs",
+      "bytes": 10012,
+      "sha256": "d57a4900ce57cff4d3fb3e2ce853848d5189eed25f67fa31da03cdd23cd12655",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-snapshots/src/script/promises/all_state.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-snapshots/src/script/promises/factories.rs",
+      "bytes": 21732,
+      "sha256": "e2f6eaa52f05f981988c53ff71f802c32ce2c698f3eafd73d8b55a81c6745c4e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-snapshots/src/script/promises/factories.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-snapshots/src/script/promises/install.rs",
+      "bytes": 10072,
+      "sha256": "3397c5ecf25e0f53a5a640555c80d6389f46a9b98932491e34ab6558f5f82e91",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-snapshots/src/script/promises/install.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-supplement-1/source-snapshots/src/script/promises/semantics.rs",
+      "bytes": 19338,
+      "sha256": "d34dbfced813e8a32a2204680ed92ccd22c9e8b531e82422641a39d065fee6c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/tests-supplement-1/source-snapshots/src/script/promises/semantics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/text-key-sharing-review.json",
+      "bytes": 12263,
+      "sha256": "2a7aa1aa6eac5f6d7f777d688cc84e9b6cbb57f33e593631242e4db3a5fd67e8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/text-key-sharing-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/upstream-all-1.json",
+      "bytes": 600036,
+      "sha256": "30bed67bea5e55308baabf10b9ff845bd1e00cedb4691e87b894ce6b6af2f50b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/upstream-all-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/upstream-existing-1.json",
+      "bytes": 616889,
+      "sha256": "755c1cb09c63221e7c3a864629db6abcccfb4cd7a093f3fd124801485056cd62",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/upstream-existing-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/upstream-race-1.json",
+      "bytes": 593025,
+      "sha256": "7f54bc1abbdb9411efb8b5020f23052f7d0396e8fd8f59c5bc5a2806c99492bd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/upstream-race-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-pages-1.json",
+      "bytes": 456,
+      "sha256": "8eba08625f4039cec66756cbb2cfa8e60d0f657856430234ad6dafc1b1517871",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-pages-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-pages-1.log",
+      "bytes": 855,
+      "sha256": "88e8a4e31289d2fa0013387a11e6976d4ce5115c99afc54d2b2b8a3d162ecfcb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-pages-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-private-1.json",
+      "bytes": 379,
+      "sha256": "da586a81164639ee54e255ef92298259922dc63758214822cdc54b9e6e10d22d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-private-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-private-1.log",
+      "bytes": 2050,
+      "sha256": "754d0d61409bebb20a044043197a57f087b935cefc571932aa8f515e91582a01",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-private-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-public-1.json",
+      "bytes": 369,
+      "sha256": "bfe6ced380120db70dbef072a851d50549f31f88f39f821c9947857f040ba49b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-public-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-public-1.log",
+      "bytes": 12041,
+      "sha256": "99615d4f1eb271ad920707826b352e5999471002aebff065ea0253fbc46c78d7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-public-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-public-2.json",
+      "bytes": 368,
+      "sha256": "90834587a23ef07cf4efdccc381107ff4c766b55914d7a4ba1f9ef5cfc904ac0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-public-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-public-2.log",
+      "bytes": 3814,
+      "sha256": "5dce5c271820379481e48b4b9378c12db952f58679edbe75df6e1ea0da8db924",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-public-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-public-3.json",
+      "bytes": 363,
+      "sha256": "ee953c1aed8dc29be52611a59e83385a52f5c43eef57deb3b8b47901af0501c6",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-public-3.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-public-3.log",
+      "bytes": 3805,
+      "sha256": "e61d6840815bebeed2ddbfdbb77bb1956aaa3520d66827e35fc2cde8261baa10",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/candidate-public-3.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-host-vulkan-1.json",
+      "bytes": 418,
+      "sha256": "2bfff8b26d2242d8b8f89facc3513ac0ba31cd41b74dbc0312209fdb7ad08b8b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/clippy-host-vulkan-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-host-vulkan-1.log",
+      "bytes": 258,
+      "sha256": "bdb0a77280ad75cbe93cdbd2b903b763d1dc24f7dda141a9653f4e442ac72caf",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/clippy-host-vulkan-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-msrv-1.json",
+      "bytes": 359,
+      "sha256": "0611fab0893403610c5f0bfb8204028b0b9f5b59d115b6ce88de13ce2dc77c30",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/clippy-msrv-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/clippy-msrv-1.log",
+      "bytes": 154,
+      "sha256": "4f924ab0bcf4d335043b5419829d6403e391e279747235ddd601c206745d91c7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/clippy-msrv-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-1.json",
+      "bytes": 337,
+      "sha256": "e9204f63f0f6a970672b2b2c9cc4fa245f5b2173ee371e1689e1f2a1d9c95ea5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/default-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-1.log",
+      "bytes": 288374,
+      "sha256": "a6501993232b399658b0db83adb3d6610bf7eb3b523262a03cd5dab0148d22c5",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/default-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-2.json",
+      "bytes": 335,
+      "sha256": "61b944845d50693797195c413dc17e77d2c57e4504d75e95a338946363b1c27f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/default-full-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-2.log",
+      "bytes": 324025,
+      "sha256": "bf238d7cc3de81930b721106c2a6d3d56fc4b09922731f23cf5f111cd7011697",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/default-full-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-apply-1.json",
+      "bytes": 347,
+      "sha256": "83fc95ac5027502484a24c4128e6d34214663b17e6a0a3db7f8f5a4f37bfdbff",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/format-apply-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-apply-1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/format-apply-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-check-1.json",
+      "bytes": 370,
+      "sha256": "fa4cf7b2959ea23ecf328130c552ed74f992867d8588ed4b7469ef75a6a7ab6a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/format-check-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-check-1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/format-check-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-release-1.json",
+      "bytes": 384,
+      "sha256": "9d2efed7105a6451f85596ad594edd9ed4e9b8c59b9ea34d129dca6cf9f1093b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/host-release-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-release-1.log",
+      "bytes": 144,
+      "sha256": "51d3a9bc69c64b58ba3301f271c57e40f4c08e88385b67f832edd91476958bbe",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/host-release-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-1.json",
+      "bytes": 391,
+      "sha256": "c220423a317b41e9d5200c683e48e9c76377c3b73b6fb33388677874a01419d9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/host-vulkan-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-1.log",
+      "bytes": 367150,
+      "sha256": "32b523609b4ecec524da05e6f3b9e5085f25f3507595788a874774ba452906c2",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/host-vulkan-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-all-settled-1.json",
+      "bytes": 369,
+      "sha256": "42eb3a9c876a9de948d5c408ddc9ce513d2eb2104ce5c72b50eb9ec8bc25e103",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-all-settled-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-all-settled-1.log",
+      "bytes": 12123,
+      "sha256": "d30f71d49efeee7f584a6ef83adf59ce4ad01c70a308760024ba77d8602c9ceb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-all-settled-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-mirror-msrv-host-1.json",
+      "bytes": 434,
+      "sha256": "0bbcfc63ccb8a4059c82ac6b250e7ef681c89536f6c4bed9c4f537551b7b1d68",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-mirror-msrv-host-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-mirror-msrv-host-1.log",
+      "bytes": 3174,
+      "sha256": "816979c7ddc0d2a3e0130c5cf24eea9d572d7a4f0c92c5be2dc2e378bca5bf68",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-mirror-msrv-host-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-mirror-stable-default-1.json",
+      "bytes": 400,
+      "sha256": "4f65beeb29c286a495da3e21bea9562c9182562bf947027e09fc18429e2a1668",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-mirror-stable-default-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-mirror-stable-default-1.log",
+      "bytes": 3175,
+      "sha256": "dd915e3c703170be42c3c0a052f0c6c0522c081b8910e0372eb872328ff38423",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-mirror-stable-default-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-mirror-stable-host-vulkan-1.json",
+      "bytes": 457,
+      "sha256": "47c609d023c7d60b760b663630e7d5e0a0319e9e929d61dd810af5184c147452",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-mirror-stable-host-vulkan-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-mirror-stable-host-vulkan-1.log",
+      "bytes": 3277,
+      "sha256": "faaeda11f5ea7fa0f8967bf83011e4d5a819b32db0a9e030f54d361cc9d1bd90",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-mirror-stable-host-vulkan-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-pages-1.json",
+      "bytes": 434,
+      "sha256": "632e7c4b61655c6ca25d95bef2920a818be6a749ca4a3f596fbb6dd68c54df04",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-pages-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-pages-1.log",
+      "bytes": 1053,
+      "sha256": "4263efb460279be51e188a24cca6c2be391be68ce0c3818e887c3c9a9dc01daf",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-pages-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-worker-1.json",
+      "bytes": 395,
+      "sha256": "0743c7ce3260b5f25996e46ec2627eb22f60089b730d93c100c3a8802228245e",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-worker-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-worker-1.log",
+      "bytes": 1063,
+      "sha256": "25983dbe4c1784ffb0a1997deedd9254400c79fb7a6df27c385aa9a0c4b12c43",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/parent-worker-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-all-1.json",
+      "bytes": 548,
+      "sha256": "188bf68a24a2f37a8bb9dda5d465602e1408a0331634887beb255562c9cf4612",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/upstream-all-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-all-1.log",
+      "bytes": 218,
+      "sha256": "a3fb5450a90c69701f507a83104c5b2b5808c7c6218630552fc8c1f1567db155",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/upstream-all-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-existing-1.json",
+      "bytes": 578,
+      "sha256": "9dd76b5d0107c05692c27243105affe7a1589baa1c348fe977999647ebe9939c",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/upstream-existing-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-existing-1.log",
+      "bytes": 224,
+      "sha256": "b9528e5a8d6af54867f2bf84ac8207262e49b79b6ba33e9293a0af27d7d91d48",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/upstream-existing-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-race-1.json",
+      "bytes": 552,
+      "sha256": "3591dd101ea517208cbd1ee75be94749109980a87ca2fb0dd9e700afd20bec39",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/upstream-race-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/upstream-race-1.log",
+      "bytes": 219,
+      "sha256": "004e03db27bbf683c51f3cf40eaa714cfb8c0f1ddbf77681550bea2eca7393e1",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/validation/upstream-race-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "documentation/README.md",
+      "bytes": 62415,
+      "sha256": "90fcbb3edcb41b4fab4f871db07d6592bc364cf19d0b58cb466d5326b96cb020",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/README.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/COMPATIBILITY.md",
+      "bytes": 77029,
+      "sha256": "2c6fa8802acb5d9defea7b543f897ed6d4e7e69031dc91641680cfd387c29106",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/docs/COMPATIBILITY.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/ROADMAP.md",
+      "bytes": 38436,
+      "sha256": "13e3ff8110dc0b15cc589aab9ec41170ac14d2679107dc323eb276683887500b",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/docs/ROADMAP.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/promise-all-settled.md",
+      "bytes": 6285,
+      "sha256": "eda815af11a3ec4ffc8f9b0ac060e10801d2dcd747d2082fb9b70605bfc86185",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/docs/promise-all-settled.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "sources/src/script.rs",
+      "bytes": 915520,
+      "sha256": "12ce25f0df22438e29fb322515fae751e624b11e73b3a02b2b07d61363fa21ae",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/bootstrap_tests.rs",
+      "bytes": 16221,
+      "sha256": "8c9c7c60978830673243b87271164bbab34e96dfa0e00a47eaa78af875bff282",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/bootstrap_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/dom_bindings/identity_tests.rs",
+      "bytes": 35697,
+      "sha256": "7c2a7b365cae4e416b2a69a02f0e62937b5f93f1e38cda445257cdf66f9f6655",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/dom_bindings/identity_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/machine/calls.rs",
+      "bytes": 36918,
+      "sha256": "0678e4376dae3a56b986dd2d0270640e769292c72d34cdf0cf39dbdf380c2235",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/machine/calls.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/node_data/key_cache_fee_tests.rs",
+      "bytes": 10697,
+      "sha256": "1ab54995a2913fec7fd95aadf1d02a59a4fccb49d392e3c2c6b080c6e1e9e2cf",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/node_data/key_cache_fee_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/node_data/key_cache_tests.rs",
+      "bytes": 8315,
+      "sha256": "66ddd6e2b97e1e88bc75d54d121cabf3564aafdcacce83b480ca9219d881b67d",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/node_data/key_cache_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/node_data/method_key_tests.rs",
+      "bytes": 12107,
+      "sha256": "49e364a1d5c83372cb18bb8377626c722b278b576a9a373ced275720f53f61be",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/node_data/method_key_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/processing_instruction/key_cache_tests.rs",
+      "bytes": 10497,
+      "sha256": "20e5ca3d2e787d57e3048ceaaf4a1a2d73f7e08782966358eada9fd236c733cb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/processing_instruction/key_cache_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promise_all_settled_abort_tests.rs",
+      "bytes": 12318,
+      "sha256": "5c7193f36a5ffa1a27fe1ba7faaacfd23fce95b5f340924b63f5a0c217fc4b51",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promise_all_settled_abort_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promise_all_settled_semantic_tests.rs",
+      "bytes": 12244,
+      "sha256": "8bb3d89da5e3290111977bfe233367a2227755b77c64c2f577d7c774401e9344",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promise_all_settled_semantic_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promise_all_settled_supplemental_tests.rs",
+      "bytes": 3745,
+      "sha256": "90b5567c4d3aaf5c0bc63408f8bc26334a5a65d4575ca388e0b88d369036d3d3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promise_all_settled_supplemental_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promise_race_semantic_tests.rs",
+      "bytes": 53609,
+      "sha256": "4c846242b47285ae2698a587f0d02c0a9a262076cbbc6358cf9531c24c20acff",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promise_race_semantic_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promise_semantic_tests.rs",
+      "bytes": 16635,
+      "sha256": "c0209fbe28d5d1c5f564c695f9cb4684dc95f0fb2f660111c2b31fb945e93fb3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promise_semantic_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises.rs",
+      "bytes": 20817,
+      "sha256": "6a4ad272d0964c1226e06639cb557b57714b46748358e16b00237babe7079de8",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/all_semantics.rs",
+      "bytes": 13773,
+      "sha256": "022026f691a0a736133ea5debc91185de25cac6528046b0db3b836936b6b8390",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/all_semantics.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/all_settled_layout_tests.rs",
+      "bytes": 2122,
+      "sha256": "0b7aab3e855a9537ead32183de8b6fbef3d762d463454c242b123341d23132e7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/all_settled_layout_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/all_state.rs",
+      "bytes": 14360,
+      "sha256": "1234d0442de720e79397556dff4a65c2cd78671724b3d3e8c4ccd498434d2a85",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/all_state.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "bytes": 40680,
+      "sha256": "a9cc335d6685b4d9e7781e427e8f21dd6db6452cec7664a8c012d41c63fe1f16",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/all_state/all_settled_quota_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/factories.rs",
+      "bytes": 22652,
+      "sha256": "92ce7d5fa39584025a1610ec5f742853275d0a6bb85bff8ebb0ddc146d9d3e18",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/factories.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/install.rs",
+      "bytes": 10422,
+      "sha256": "3ec1f2d36729f3c6b8a4175e9db2a0e7e6a9e74ad4f89a15160c1dd0547c6196",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/install.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/install_tests.rs",
+      "bytes": 8102,
+      "sha256": "3550fcc00117196f49e4486040b72fb390ed4369025db4679199217a2500ab58",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/install_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/semantics.rs",
+      "bytes": 19904,
+      "sha256": "8aa36c1a15a9de56225608aba3419a9f4282a7b792ed04e997dad40073900aeb",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/semantics.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/shared_key_identity_tests.rs",
+      "bytes": 6339,
+      "sha256": "b51de2ce0931748578b553ce7277e88baf345b4760a320abc98090d1a6bef2cd",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/shared_key_identity_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/promises/shared_key_tests.rs",
+      "bytes": 15453,
+      "sha256": "c50ee03356541856ee7e24f873caf5d0eea6fe7ad2ec64ff61aeeb44e802d458",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/promises/shared_key_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/test262_host/quota_tests.rs",
+      "bytes": 15224,
+      "sha256": "4424d7300ef4a2b9dda86da9f1b778771aeea02b9e3c5fde1c45aa804980dff6",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/test262_host/quota_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/text_operations/key_cache_tests.rs",
+      "bytes": 11711,
+      "sha256": "18092b0a862e21eda88c347ba6dddfcc7f44cd6087acab0b9668d8cb08995631",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/text_operations/key_cache_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/script/typed_array/tests.rs",
+      "bytes": 23404,
+      "sha256": "b3b4b16fea149e433b452050e1a8cf0d3d74c9586ff636a8f8004799306f567f",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/src/script/typed_array/tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/fixtures/promise-all-settled.html",
+      "bytes": 1474,
+      "sha256": "fe5ffe2fc2f0d0503620c384ce610e0e8eaf02e3d6936948831ed21e7f772ec7",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/tests/fixtures/promise-all-settled.html",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/promise_all_settled.rs",
+      "bytes": 3046,
+      "sha256": "96eacae9058a923babf03283e504e4ea098b175a010d5e7a301a898ff14fa6b0",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/tests/promise_all_settled.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/support/promise_all_settled.rs",
+      "bytes": 1012,
+      "sha256": "f72cc311d21d04c553fb73e5d88b109c251b2ba35660350accbc224da922882a",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/tests/support/promise_all_settled.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/worker.rs",
+      "bytes": 109585,
+      "sha256": "2edeb19d1d83239a57fbdaf187ca6d7ba44c0031844b2b1bbdcd232a06b417d3",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/tests/worker.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/worker/promise_all_settled.rs",
+      "bytes": 4105,
+      "sha256": "2d9b8879f37356841e735ad6a08a12da9fa5351a1a01d0938f55785ebcd694c9",
+      "origin": "/tmp/eris-promise-all-settled-plan-1/worktree/tests/worker/promise_all_settled.rs",
+      "role": "changed-source"
+    }
+  ]
+}

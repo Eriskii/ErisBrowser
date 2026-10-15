@@ -234,7 +234,7 @@ data(P,'name','Promise',false,false,true);data(P,'length',1,false,false,true);da
 data(P,'resolve',P.resolve,true,false,true);data(P,'reject',P.reject,true,false,true);
 data(proto,'constructor',P,true,false,true);data(proto,'then',proto.then,true,false,true);
 data(proto,Symbol.toStringTag,'Promise',false,false,true);
-check(Object.getOwnPropertyNames(P).join(',')==='length,name,prototype,resolve,reject,all,race');
+check(Object.getOwnPropertyNames(P).join(',')==='length,name,prototype,resolve,reject,all,race,allSettled');
 check(Object.getOwnPropertyNames(proto).join(',')==='constructor,then,catch,finally');
 check(Object.getOwnPropertySymbols(P).length===1&&Object.getOwnPropertySymbols(P)[0]===Symbol.species);
 check(Object.getOwnPropertySymbols(proto).length===1&&Object.getOwnPropertySymbols(proto)[0]===Symbol.toStringTag);

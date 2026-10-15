@@ -20821,3 +20821,12 @@ mod expression_in_tests;
 mod promise_race_abort_tests;
 #[cfg(test)]
 mod promise_race_semantic_tests;
+
+#[cfg(test)]
+mod promise_all_settled_semantic_tests;
+
+#[cfg(test)]
+mod promise_all_settled_supplemental_tests;
+
+#[cfg(test)]
+mod promise_all_settled_abort_tests;

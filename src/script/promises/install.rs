@@ -7,7 +7,7 @@ use std::num::NonZeroUsize;
 const GLOBAL: &str = "Promise";
 
 // Same pinned B=6 comparison/insertion envelope used by other installers.
-fn tree(count: usize) -> (usize, usize) {
+pub(super) fn tree(count: usize) -> (usize, usize) {
     if count == 0 {
         return (0, 0);
     }
@@ -67,9 +67,9 @@ impl Runtime {
 
     #[cfg(test)]
     pub(in crate::script) fn install_promise_intrinsics(&mut self) -> Result<()> {
-        // Preserve standalone guard-before-allocation ordering and all thirteen
+        // Preserve standalone guard-before-allocation ordering and all fourteen
         // temporary handle releases, including the two keys created here.
-        self.work(22)?;
+        self.work(23)?;
         self.check_promise_install_state()?;
         let keys = [self.dom_proto_text("length")?, self.dom_proto_text("name")?];
         self.install_promise_intrinsics_body(keys)
@@ -80,8 +80,8 @@ impl Runtime {
         keys: [JsString; 2],
     ) -> Result<()> {
         // The producer prepaid both supplied handles' releases, including
-        // refusal of this debit. Pay guards, publication and eleven pool releases.
-        self.work(20)?;
+        // refusal of this debit. Pay guards, publication and twelve pool releases.
+        self.work(21)?;
         self.check_promise_install_state()?;
         self.install_promise_intrinsics_body(keys)
     }
@@ -117,9 +117,10 @@ impl Runtime {
             self.dom_proto_text("finally")?,
             self.dom_proto_text("all")?,
             self.dom_proto_text("race")?,
+            self.dom_proto_text("allSettled")?,
         ];
-        // 27 string keys, 9 display names, 1 prototype tag, 2 constructor handles.
-        self.work(39)?;
+        // 30 string keys, 10 display names, 1 prototype tag, 2 constructor handles.
+        self.work(43)?;
         let (symbol_comparisons, _) = tree(self.well_known_symbol_count());
         self.work(symbol_comparisons * (1 + "species".len() / 8))?;
         let species = self.well_known_key("species");
@@ -134,7 +135,7 @@ impl Runtime {
             .ok_or_else(|| ScriptError::resource("Promise Object prototype missing"))?;
 
         let constructor_bag =
-            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 8)?;
+            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 9)?;
         let prototype = self.dom_proto_object(Some(Value::Object(object_prototype)), 5)?;
         self.dom_proto_property(
             constructor_bag,
@@ -163,6 +164,8 @@ impl Runtime {
             self.promise_intrinsic_method("Promise.finally", pool[10].clone(), 1, keys)?;
         let all = self.promise_intrinsic_method("Promise.all", pool[11].clone(), 1, keys)?;
         let race = self.promise_intrinsic_method("Promise.race", pool[12].clone(), 1, keys)?;
+        let all_settled =
+            self.promise_intrinsic_method("Promise.allSettled", pool[13].clone(), 1, keys)?;
         self.dom_proto_property(
             constructor_bag,
             pool[4].clone().into(),
@@ -182,6 +185,11 @@ impl Runtime {
             constructor_bag,
             pool[12].clone().into(),
             Property::data(race, true, false, true),
+        )?;
+        self.dom_proto_property(
+            constructor_bag,
+            pool[13].clone().into(),
+            Property::data(all_settled, true, false, true),
         )?;
         self.dom_proto_property(
             constructor_bag,

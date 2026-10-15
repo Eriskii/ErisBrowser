@@ -32,7 +32,7 @@ use factories::object_slot_plan;
 #[cfg(test)]
 mod layout_tests;
 
-pub(super) const METADATA_OBJECTS: usize = 10;
+pub(super) const METADATA_OBJECTS: usize = 11;
 
 pub(super) struct Arena<T> {
     pub(super) records: Vec<T>,
@@ -113,6 +113,8 @@ enum CallbackKind {
     ReturnValue(FinallyCaptureId),
     ThrowReason(FinallyCaptureId),
     AllResolve(AllCaptureId),
+    AllSettledFulfill(AllCaptureId),
+    AllSettledReject(AllCaptureId),
 }
 struct CapabilityCapture {
     resolve: Value,
@@ -661,3 +663,6 @@ impl Runtime {
 
 #[cfg(test)]
 mod shared_key_identity_tests;
+
+#[cfg(test)]
+mod all_settled_layout_tests;

@@ -191,7 +191,9 @@ impl Runtime {
                                 Some(FinallyCapture::Outcome(_))
                             )
                         }
-                        CallbackKind::AllResolve(id) => matches!(
+                        CallbackKind::AllResolve(id)
+                        | CallbackKind::AllSettledFulfill(id)
+                        | CallbackKind::AllSettledReject(id) => matches!(
                             self.promises.all_captures.records.get(id.0),
                             Some(AllCapture::Element { .. })
                         ),
@@ -422,6 +424,26 @@ impl Runtime {
                 FactoryExtra::AllElement(group, index),
             )
             .map(|[value]| value);
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn new_all_settled_elements(
+        &mut self,
+        group: AllCaptureId,
+        index: usize,
+    ) -> Result<(Value, Value)> {
+        // Both immutable callback identities share one append-only Element.
+        // The existing batch factory publishes its count once, after both bags.
+        let element = AllCaptureId(self.promises.all_captures.records.len());
+        let result = self
+            .build_promise_callbacks(
+                [
+                    CallbackKind::AllSettledFulfill(element),
+                    CallbackKind::AllSettledReject(element),
+                ],
+                FactoryExtra::AllElement(group, index),
+            )
+            .map(|[fulfilled, rejected]| (fulfilled, rejected));
         self.observe_microtask_failure(result)
     }
 
