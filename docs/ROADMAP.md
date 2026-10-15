@@ -15,7 +15,9 @@ MutationObserver delivery and multiple realms.
 within the existing bootstrap allowance, making room for Promise installation.
 The [job metadata follow-up](shared-job-keys.md) removes two more duplicate
 strings. Installing `finally` uses 122 of the 127 work units it made available,
-leaving five under the unchanged startup limit.
+leaving five under the unchanged startup limit. The
+[Node accessor follow-up](node-accessor-keys.md) saves another 128 units and
+672 accounted heap bytes, leaving 133 units for subsequent startup work.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity

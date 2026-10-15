@@ -23,6 +23,9 @@ allocations from ten DOM function metadata bags while keeping their descriptors
 and identities. Work and heap limits remain unchanged.
 The [job metadata follow-up](docs/shared-job-keys.md) also shares the immutable
 `length` and `name` keys between `queueMicrotask` and Promise function metadata.
+The [Node accessor follow-up](docs/node-accessor-keys.md) reuses those DOM keys
+for four accessor functions, saving 128 startup work units and 672 accounted
+heap bytes while preserving their separate identities and behavior.
 
 [Throw diagnostics](docs/throw-completion.md) retain the original JavaScript value
 without invoking constructor or name accessors. Data-only metadata inspection

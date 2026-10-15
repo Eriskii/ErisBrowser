@@ -152,6 +152,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 102
             + 34
             - 122
+            + 128
     );
     assert_eq!(
         runtime.allocated,
@@ -169,6 +170,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + catch_added
             - 168
             + finally_added
+            - 672
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),

@@ -16,6 +16,8 @@ result inventory; this does not add browser rejection notifications or imply
 complete Promise conformance.
 The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
 preserving function properties and identities; they add no API coverage.
+The [Node accessor key-sharing follow-up](node-accessor-keys.md) similarly
+reduces startup accounting while preserving the four existing accessors.
 
 [Object.is](../tests/conformance/object-is.md) implements SameValue for existing
 runtime values, including NaN, signed zero, exact UTF-16 strings and ordinary

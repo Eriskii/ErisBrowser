@@ -573,7 +573,7 @@ impl Runtime {
             }
             if interface.name == "Node" {
                 self.install_node_connected(prototype)?;
-                self.install_node_data_members(prototype)?;
+                self.install_node_data_members(prototype, [&keys[1], &keys[0]])?;
                 self.install_node_root(prototype)?;
                 self.install_node_has_child_nodes(prototype)?;
                 self.install_node_normalize(prototype)?;

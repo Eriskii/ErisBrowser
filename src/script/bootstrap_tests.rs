@@ -189,7 +189,8 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Reusing the existing PI name/length keys saves332 work; no cap change.
     // Promise with finally adds1154 standalone work and eight metadata bags.
     // Adjacent job installers share two keys, saving34 work and168 bytes.
-    assert_eq!(reference.steps, 5);
+    // Four Node accessors reuse the existing keys, saving128 work and672 bytes.
+    assert_eq!(reference.steps, 133);
     assert_eq!(reference.objects.len(), 749);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);

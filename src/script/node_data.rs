@@ -6,6 +6,10 @@ use crate::dom::DomMutationBudget;
 use processing_instruction::dom_data_error;
 
 #[cfg(test)]
+mod key_cache_fee_tests;
+#[cfg(test)]
+mod key_cache_tests;
+#[cfg(test)]
 mod tests;
 
 pub(super) const PREFIX: &str = "DOM.Node.";
@@ -65,7 +69,52 @@ impl Runtime {
         })))
     }
 
-    pub(super) fn install_node_data_members(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn node_data_function_with_keys(
+        &mut self,
+        suffix: &str,
+        display: &str,
+        length: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<Value> {
+        let properties =
+            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
+        let name = self.dom_proto_text(display)?;
+        // Pay both retained key clones before either metadata insertion.
+        self.work(2)?;
+        self.dom_proto_property(
+            properties,
+            metadata_keys[0].clone(),
+            Property::data(Value::Number(length as f64), false, false, true),
+        )?;
+        self.dom_proto_property(
+            properties,
+            metadata_keys[1].clone(),
+            Property::data(Value::String(name), false, false, true),
+        )?;
+        let length = PREFIX.len() + suffix.len();
+        self.work(8 + length)?;
+        self.charge(std::mem::size_of::<Native>() + 32 + length)?;
+        let mut name = String::new();
+        name.try_reserve_exact(length)
+            .map_err(|_| ScriptError::resource("Node accessor name allocation failed"))?;
+        name.push_str(PREFIX);
+        name.push_str(suffix);
+        let properties = std::num::NonZeroUsize::new(properties)
+            .ok_or_else(|| ScriptError::resource("Node accessor metadata ID is zero"))?;
+        Ok(Value::Native(Rc::new(Native {
+            properties: Some(properties),
+            name,
+            receiver: Value::Undefined,
+        })))
+    }
+
+    pub(super) fn install_node_data_members(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // One handoff of the existing immutable length/name pool.
+        self.work(8)?;
         self.work(4)?;
         for (property, get, set, getter, setter) in [
             (
@@ -83,8 +132,8 @@ impl Runtime {
                 "set textContent",
             ),
         ] {
-            let get = self.node_data_function(get, getter, 0)?;
-            let set = self.node_data_function(set, setter, 1)?;
+            let get = self.node_data_function_with_keys(get, getter, 0, metadata_keys)?;
+            let set = self.node_data_function_with_keys(set, setter, 1, metadata_keys)?;
             self.dom_proto_named(
                 prototype,
                 property,
