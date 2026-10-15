@@ -2905,3 +2905,6 @@ mod promise_catch;
 
 #[path = "worker/promise_finally.rs"]
 mod promise_finally;
+
+#[path = "worker/promise_all.rs"]
+mod promise_all;

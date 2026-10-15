@@ -145,6 +145,8 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     let catch_added = s + a + d + 3 * k + bpp + n + 1029;
     // Finally adds one method; the current State term above includes its arena header.
     let finally_added = s + a + d + 3 * k + bpp + n + 1047;
+    // All adds one method; the current State term above includes its arena header.
+    let all_added = s + a + d + 3 * k + bpp + n + 1011;
     assert_eq!(
         runtime.steps,
         5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
@@ -153,6 +155,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + 34
             - 122
             + 128
+            - 108
     );
     assert_eq!(
         runtime.allocated,
@@ -171,10 +174,11 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 168
             + finally_added
             - 672
+            + all_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (749, 749)
+        (750, 750)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

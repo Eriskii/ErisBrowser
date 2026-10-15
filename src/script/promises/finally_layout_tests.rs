@@ -17,7 +17,7 @@ fn finally_actual_capture_layout_matches_the_held_mirror_without_widening_queue_
             );
         };
     }
-    row!("State", State, 224);
+    row!("State", State, 256);
     row!("FinallyCapture", FinallyCapture, 48);
     row!("FinallyCaptureArena", Arena<FinallyCapture>, 32);
     row!("FinallyCaptureId", FinallyCaptureId, 8);

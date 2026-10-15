@@ -174,7 +174,7 @@ impl Runtime {
         Ok(())
     }
 
-    fn array_from_iterator_method(
+    pub(super) fn array_from_iterator_method(
         &mut self,
         source: &Value,
         doc: &mut Document,
@@ -404,7 +404,7 @@ impl Runtime {
         Ok(())
     }
 
-    fn array_from_close(
+    pub(super) fn array_from_close(
         &mut self,
         iterator: &Value,
         pending: ScriptError,

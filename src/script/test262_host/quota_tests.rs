@@ -100,14 +100,14 @@ fn host_setup_exact_work_and_heap_never_publish_partial_identity() {
 
 #[test]
 fn host_slot_growth_and_injected_reserve_failure_precede_all_metadata() {
-    let plan = object_plan(749, 749).unwrap();
-    assert_eq!(plan.target, Some(1498));
+    let plan = object_plan(750, 750).unwrap();
+    assert_eq!(plan.target, Some(1500));
     assert_eq!(
         plan.work,
-        8 + 1498 * size_of::<ScriptObject>().div_ceil(size_of::<Value>())
+        8 + 1500 * size_of::<ScriptObject>().div_ceil(size_of::<Value>())
     );
-    assert_eq!(plan.bytes, 32 + 1500 * size_of::<ScriptObject>());
-    let spare = object_plan(749, 751).unwrap();
+    assert_eq!(plan.bytes, 32 + 1502 * size_of::<ScriptObject>());
+    let spare = object_plan(750, 752).unwrap();
     assert_eq!(
         (spare.target, spare.work, spare.bytes),
         (None, 0, 2 * size_of::<ScriptObject>())
@@ -401,8 +401,8 @@ fn host_actual_inline_layout_and_inactive_bootstrap_are_observed_without_new_all
         2048.max(size_of::<Runtime>())
     );
     let runtime = raw.finish_bootstrap().unwrap();
-    assert_eq!(runtime.steps, 133);
-    assert_eq!(runtime.objects.len(), 749);
+    assert_eq!(runtime.steps, 25);
+    assert_eq!(runtime.objects.len(), 750);
     assert_eq!(runtime.environments[0].bindings.len(), 212);
     assert_eq!(runtime.native_properties.len(), 299);
     assert!(runtime.test262_session.is_none());

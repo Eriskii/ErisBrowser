@@ -67,9 +67,9 @@ impl Runtime {
 
     #[cfg(test)]
     pub(in crate::script) fn install_promise_intrinsics(&mut self) -> Result<()> {
-        // Preserve standalone guard-before-allocation ordering and all eleven
+        // Preserve standalone guard-before-allocation ordering and all twelve
         // temporary handle releases, including the two keys created here.
-        self.work(19)?;
+        self.work(21)?;
         self.check_promise_install_state()?;
         let keys = [self.dom_proto_text("length")?, self.dom_proto_text("name")?];
         self.install_promise_intrinsics_body(keys)
@@ -80,8 +80,8 @@ impl Runtime {
         keys: [JsString; 2],
     ) -> Result<()> {
         // The producer prepaid both supplied handles' releases, including
-        // refusal of this debit. Pay guards, publication and nine pool releases.
-        self.work(17)?;
+        // refusal of this debit. Pay guards, publication and ten pool releases.
+        self.work(19)?;
         self.check_promise_install_state()?;
         self.install_promise_intrinsics_body(keys)
     }
@@ -93,6 +93,7 @@ impl Runtime {
             || !self.promises.captures.records.is_empty()
             || !self.promises.jobs.records.is_empty()
             || !self.promises.finally_captures.records.is_empty()
+            || !self.promises.all_captures.records.is_empty()
             || self.promises.intrinsics.is_some()
         {
             return Err(ScriptError::resource("Promise state already initialized"));
@@ -114,9 +115,10 @@ impl Runtime {
             self.dom_proto_text("get [Symbol.species]")?,
             self.dom_proto_text("catch")?,
             self.dom_proto_text("finally")?,
+            self.dom_proto_text("all")?,
         ];
-        // 21 string keys, 7 display names, 1 prototype tag, 2 constructor handles.
-        self.work(31)?;
+        // 24 string keys, 8 display names, 1 prototype tag, 2 constructor handles.
+        self.work(35)?;
         let (symbol_comparisons, _) = tree(self.well_known_symbol_count());
         self.work(symbol_comparisons * (1 + "species".len() / 8))?;
         let species = self.well_known_key("species");
@@ -131,7 +133,7 @@ impl Runtime {
             .ok_or_else(|| ScriptError::resource("Promise Object prototype missing"))?;
 
         let constructor_bag =
-            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 6)?;
+            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 7)?;
         let prototype = self.dom_proto_object(Some(Value::Object(object_prototype)), 5)?;
         self.dom_proto_property(
             constructor_bag,
@@ -158,6 +160,7 @@ impl Runtime {
         let catch = self.promise_intrinsic_method("Promise.catch", pool[9].clone(), 1, keys)?;
         let finally =
             self.promise_intrinsic_method("Promise.finally", pool[10].clone(), 1, keys)?;
+        let all = self.promise_intrinsic_method("Promise.all", pool[11].clone(), 1, keys)?;
         self.dom_proto_property(
             constructor_bag,
             pool[4].clone().into(),
@@ -167,6 +170,11 @@ impl Runtime {
             constructor_bag,
             pool[5].clone().into(),
             Property::data(reject, true, false, true),
+        )?;
+        self.dom_proto_property(
+            constructor_bag,
+            pool[11].clone().into(),
+            Property::data(all, true, false, true),
         )?;
         self.dom_proto_property(
             constructor_bag,

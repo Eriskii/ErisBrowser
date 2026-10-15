@@ -25,7 +25,7 @@ fn species_key_work(count: usize) -> Result<usize> {
 }
 
 impl Runtime {
-    fn promise_named_get(
+    pub(super) fn promise_named_get(
         &mut self,
         receiver: Value,
         name: &str,
@@ -86,7 +86,7 @@ impl Runtime {
         Ok(species)
     }
 
-    fn new_promise_capability(
+    pub(super) fn new_promise_capability(
         &mut self,
         constructor: Value,
         doc: &mut Document,
@@ -299,6 +299,7 @@ impl Runtime {
                 "Promise.finally" => self.promise_finally(receiver, args, doc),
                 "Promise.resolve" => self.promise_resolve(receiver, args, doc),
                 "Promise.reject" => self.promise_reject(receiver, args, doc),
+                "Promise.all" => self.promise_all(receiver, args, doc),
                 "Promise.getSpecies" => Ok(receiver),
                 _ => Err(ScriptError::resource("invalid private Promise operation")),
             }
@@ -393,6 +394,9 @@ impl Runtime {
                 }
                 CallbackKind::CatchFinally(capture) => {
                     return self.run_finally_callback(capture, ReactionKind::Reject, args, doc);
+                }
+                CallbackKind::AllResolve(element) => {
+                    return self.run_all_callback(element, args, doc);
                 }
                 CallbackKind::ReturnValue(capture) => return self.read_finally_outcome(capture),
                 CallbackKind::ThrowReason(capture) => {

@@ -7,7 +7,10 @@ thenable adoption, generic capabilities/species and a shared FIFO with
 [Promise Test262 host](promise-test262-host.md) now supplies authenticated
 `$DONE` completion and a final unhandled-rejection check for a bounded pinned
 profile. Its recorded results guide subsequent compatibility work.
-Remaining asynchronous work includes combinators,
+[`Promise.all`](promise-all.md) now implements ordered collection from synchronous
+iterables within the existing limits. Its separate 98-source, 196-mode upstream
+selection has been authenticated; execution results are forthcoming.
+Remaining asynchronous work includes `race`, `allSettled`, `any`,
 async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 
@@ -17,7 +20,8 @@ The [job metadata follow-up](shared-job-keys.md) removes two more duplicate
 strings. Installing `finally` uses 122 of the 127 work units it made available,
 leaving five under the unchanged startup limit. The
 [Node accessor follow-up](node-accessor-keys.md) saves another 128 units and
-672 accounted heap bytes, leaving 133 units for subsequent startup work.
+672 accounted heap bytes, leaving 133 units at that checkpoint. Installing
+`Promise.all` uses 108 units and leaves 25 under the same startup allowance.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity

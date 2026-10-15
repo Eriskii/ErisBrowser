@@ -22,7 +22,7 @@ fn actual_promise_private_type_layouts_match_held_mirror() {
     row!("ScriptObject", ScriptObject, 216);
     row!("CurrentMicrotaskState", microtasks::State, 56);
     row!("ProposedMicrotaskState", microtasks::State, 56);
-    row!("State", State, 224);
+    row!("State", State, 256);
     row!("Intrinsics", Intrinsics, 32);
     row!("PromiseRecord", PromiseRecord, 80);
     row!("ReactionPair", ReactionPair, 120);

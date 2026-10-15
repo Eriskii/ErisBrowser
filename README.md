@@ -12,7 +12,10 @@ rejection values and share the existing work and storage limits. The [generic `c
 [`finally`](docs/promise-finally.md) now waits for cleanup, preserves the original
 outcome on success and adopts cleanup failures. Its reusable callbacks preserve
 observable species and `then` behavior under the existing resource limits.
-Combinators, async functions and rejection notifications remain unfinished.
+[`Promise.all`](docs/promise-all.md) now collects synchronous iterable inputs in
+input order, with observable constructor/resolve/iterator calls and bounded
+once-only fulfillment callbacks. `race`, `allSettled`, `any`, async functions and
+rejection notifications remain unfinished.
 The optional [Promise Test262 host](docs/promise-test262-host.md) adds authenticated
 `$DONE` completion and a separate final-unhandled-rejection policy for a pinned
 232-source, 458-mode profile. Its validation record distinguishes corpus scope

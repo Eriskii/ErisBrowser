@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>base</title>
+<style>
+html,body { margin:0; padding:0; border:0; background:#fff; }
+#red,#blue { display:block; position:absolute; top:2px; width:4px; height:4px; box-sizing:content-box; margin:0; padding:0; border:0; }
+#red { left:2px; background:#f00; }
+#blue { left:20px; background:#00f; }
+</style></head><body><div id="red"></div><div id="blue"></div>
+<script>
+var red=document.getElementById('red'),blue=document.getElementById('blue');
+var trace='S',release;var pending=new Promise(function(r){release=r;});Promise.all([Promise.resolve(4),pending]).then(function(v){trace+='A';red.style.left=(v[0]+v[1])+'px';document.title=trace;});queueMicrotask(function(){trace+='Q';release(8);});
+red.addEventListener('click',function(){trace+='C';Promise.all([]).then(function(){trace+='D';red.style.left='16px';});queueMicrotask(function(){trace+='K';});});
+red.addEventListener('click',function(){trace+='B';document.title=trace;});
+</script></body></html>

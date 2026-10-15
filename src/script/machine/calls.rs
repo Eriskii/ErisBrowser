@@ -149,6 +149,7 @@ fn invoke_native(
                     | "Promise.finally"
                     | "Promise.resolve"
                     | "Promise.reject"
+                    | "Promise.all"
                     | "Promise.getSpecies"
             ) {
                 runtime.promise_native_operation(&native.name, receiver, &arguments, doc)

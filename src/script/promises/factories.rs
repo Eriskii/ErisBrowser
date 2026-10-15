@@ -34,6 +34,7 @@ enum FactoryExtra<'a> {
     Capture,
     Finally(&'a Value, &'a Value),
     Outcome(&'a Value),
+    AllElement(AllCaptureId, usize),
 }
 
 impl Runtime {
@@ -144,6 +145,14 @@ impl Runtime {
                     1,
                 )?,
             ),
+            FactoryExtra::AllElement(_, _) => (
+                20,
+                growth_plan::<AllCapture>(
+                    self.promises.all_captures.records.len(),
+                    self.promises.all_captures.admitted_capacity,
+                    1,
+                )?,
+            ),
         };
         // Nine record operations plus six temporary-release credits per
         // callable precede every reserve/metadata allocation. Each metadata
@@ -182,6 +191,10 @@ impl Runtime {
                                 Some(FinallyCapture::Outcome(_))
                             )
                         }
+                        CallbackKind::AllResolve(id) => matches!(
+                            self.promises.all_captures.records.get(id.0),
+                            Some(AllCapture::Element { .. })
+                        ),
                     };
                     if !valid {
                         return Err(invalid());
@@ -190,6 +203,29 @@ impl Runtime {
             }
             _ => {}
         }
+        // The preceding C.resolve call may have run arbitrary author code.
+        // Validate the current group and prepare its count before metadata;
+        // only scalar IDs/counts survive the reserves below.
+        let all_remaining = if let FactoryExtra::AllElement(group, index) = extra {
+            let Some(AllCapture::Group {
+                values,
+                remaining,
+                input_done: false,
+                ..
+            }) = self.promises.all_captures.records.get(group.0)
+            else {
+                return Err(invalid());
+            };
+            if *remaining == 0
+                || index >= values.records.len()
+                || values.records.len() > values.admitted_capacity
+            {
+                return Err(invalid());
+            }
+            add(*remaining, 1)?
+        } else {
+            0
+        };
         self.charge(add(add(callbacks.bytes, objects.bytes)?, extra_plan.bytes)?)?;
         match extra {
             #[cfg(test)]
@@ -199,9 +235,36 @@ impl Runtime {
             FactoryExtra::Finally(_, _) | FactoryExtra::Outcome(_) => {
                 reserve_arena(&mut self.promises.finally_captures, extra_plan)?;
             }
+            FactoryExtra::AllElement(_, _) => {
+                #[cfg(test)]
+                if extra_plan.target.is_some() {
+                    all_allocation_probe::before(all_allocation_probe::ReserveSite::AllCapture)?;
+                }
+                reserve_arena(&mut self.promises.all_captures, extra_plan)?;
+                #[cfg(test)]
+                if extra_plan.target.is_some() {
+                    all_allocation_probe::completed(all_allocation_probe::ReserveSite::AllCapture);
+                }
+            }
+        }
+        #[cfg(test)]
+        if matches!(extra, FactoryExtra::AllElement(_, _)) && callbacks.target.is_some() {
+            all_allocation_probe::before(all_allocation_probe::ReserveSite::Callbacks)?;
         }
         reserve_arena(&mut self.promises.callbacks, callbacks)?;
+        #[cfg(test)]
+        if matches!(extra, FactoryExtra::AllElement(_, _)) && callbacks.target.is_some() {
+            all_allocation_probe::completed(all_allocation_probe::ReserveSite::Callbacks);
+        }
+        #[cfg(test)]
+        if matches!(extra, FactoryExtra::AllElement(_, _)) && objects.target.is_some() {
+            all_allocation_probe::before(all_allocation_probe::ReserveSite::Objects)?;
+        }
         self.reserve_promise_objects(objects)?;
+        #[cfg(test)]
+        if matches!(extra, FactoryExtra::AllElement(_, _)) && objects.target.is_some() {
+            all_allocation_probe::completed(all_allocation_probe::ReserveSite::Objects);
+        }
         let mut values = std::array::from_fn(|_| Value::Undefined);
         for (slot, kind) in values.iter_mut().zip(kinds) {
             let arity = match kind {
@@ -250,6 +313,23 @@ impl Runtime {
                     .records
                     .push(FinallyCapture::Outcome(value.clone()));
                 publish_arena(&mut self.promises.finally_captures, extra_plan);
+            }
+            FactoryExtra::AllElement(group, index) => {
+                self.promises
+                    .all_captures
+                    .records
+                    .push(AllCapture::Element {
+                        group,
+                        index,
+                        called: false,
+                    });
+                publish_arena(&mut self.promises.all_captures, extra_plan);
+                let AllCapture::Group { remaining, .. } =
+                    &mut self.promises.all_captures.records[group.0]
+                else {
+                    unreachable!("validated Promise.all group");
+                };
+                *remaining = all_remaining;
             }
         }
         for (value, kind) in values.iter().zip(kinds) {
@@ -326,6 +406,21 @@ impl Runtime {
         };
         let result = self
             .build_promise_callbacks([kind], FactoryExtra::Outcome(value))
+            .map(|[value]| value);
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn new_all_resolve_element(
+        &mut self,
+        group: AllCaptureId,
+        index: usize,
+    ) -> Result<Value> {
+        let element = AllCaptureId(self.promises.all_captures.records.len());
+        let result = self
+            .build_promise_callbacks(
+                [CallbackKind::AllResolve(element)],
+                FactoryExtra::AllElement(group, index),
+            )
             .map(|[value]| value);
         self.observe_microtask_failure(result)
     }

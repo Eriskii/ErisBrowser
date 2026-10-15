@@ -2,6 +2,16 @@
 use super::*;
 use std::mem::size_of;
 
+#[cfg(test)]
+mod all_allocation_probe;
+#[cfg(test)]
+mod all_layout_tests;
+#[cfg(test)]
+mod all_quota_tests;
+mod all_semantics;
+mod all_state;
+#[cfg(test)]
+use all_semantics::AllIterator;
 mod factories;
 #[cfg(test)]
 mod finally_layout_tests;
@@ -22,7 +32,7 @@ use factories::object_slot_plan;
 #[cfg(test)]
 mod layout_tests;
 
-pub(super) const METADATA_OBJECTS: usize = 8;
+pub(super) const METADATA_OBJECTS: usize = 9;
 
 pub(super) struct Arena<T> {
     pub(super) records: Vec<T>,
@@ -44,6 +54,7 @@ pub(super) struct State {
     captures: Arena<CapabilityCapture>,
     pub(super) jobs: Arena<Option<PromiseJob>>,
     finally_captures: Arena<FinallyCapture>,
+    all_captures: Arena<AllCapture>,
     intrinsics: Option<Intrinsics>,
 }
 pub(super) struct Intrinsics {
@@ -58,6 +69,8 @@ pub(super) struct GateId(pub(super) usize);
 pub(super) struct CaptureId(pub(super) usize);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct FinallyCaptureId(usize);
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct AllCaptureId(usize);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct JobId(pub(super) usize);
 
@@ -99,6 +112,7 @@ enum CallbackKind {
     CatchFinally(FinallyCaptureId),
     ReturnValue(FinallyCaptureId),
     ThrowReason(FinallyCaptureId),
+    AllResolve(AllCaptureId),
 }
 struct CapabilityCapture {
     resolve: Value,
@@ -111,6 +125,26 @@ enum FinallyCapture {
         on_finally: Value,
     },
     Outcome(Value),
+}
+
+// One append-only arena contains both group ownership and scalar element gates.
+// IDs, never borrowed entries, cross author callbacks.
+enum AllCapture {
+    Group {
+        resolve: Value,
+        values: Arena<Value>,
+        remaining: usize,
+        input_done: bool,
+    },
+    Element {
+        group: AllCaptureId,
+        index: usize,
+        called: bool,
+    },
+}
+struct ReadyAllValues {
+    resolve: Value,
+    values: Vec<Value>,
 }
 
 pub(super) enum PromiseJob {
