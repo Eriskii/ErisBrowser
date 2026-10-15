@@ -1,5 +1,8 @@
 use super::*;
 
+#[cfg(test)]
+mod argument_in_context_tests;
+
 pub(super) enum Frame {
     Assignment,
     AssignmentHead,
@@ -18,12 +21,12 @@ pub(super) enum Frame {
     Base(bool),
     PostfixResume(Postfix),
     Computed(Postfix),
-    // Argument flags are (any spread so far, current operand is spread).
-    Arguments(Postfix, Vec<ExprId>, bool, bool),
+    // Argument flags are (any spread, current operand is spread, saved allow_in).
+    Arguments(Postfix, Vec<ExprId>, bool, bool, bool),
     New,
     NewHead,
     NewComputed(NewState),
-    NewArguments(ExprId, Vec<ExprId>, bool, bool),
+    NewArguments(ExprId, Vec<ExprId>, bool, bool, bool),
     Primary,
     CoverItem(Cover, bool),
     ArrayItem(Array),
@@ -196,17 +199,19 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             state.value = p.emit_expr(Expr::Member(state.value, property))?;
             postfix(p, state)
         }
-        Frame::Arguments(state, mut arguments, has_spread, current_spread) => {
+        Frame::Arguments(state, mut arguments, has_spread, current_spread, saved_in) => {
             let mut item = expression(output);
             if current_spread {
                 item = p.emit_expr(Expr::SpreadArgument(item))?;
             }
             push(&mut arguments, item, &mut p.compile_budget)?;
             if p.eat(")") {
+                p.allow_in = saved_in;
                 call_done(p, state, arguments, has_spread)
             } else {
                 p.expect(",")?;
                 if p.eat(")") {
+                    p.allow_in = saved_in;
                     call_done(p, state, arguments, has_spread)
                 } else {
                     let current_spread = argument_spread(p)?;
@@ -216,6 +221,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                             arguments,
                             has_spread || current_spread,
                             current_spread,
+                            saved_in,
                         ),
                         Frame::Assignment,
                     )
@@ -248,17 +254,19 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             state.value = p.emit_expr(Expr::Member(state.value, key))?;
             new_members(p, state)
         }
-        Frame::NewArguments(constructor, mut arguments, has_spread, current_spread) => {
+        Frame::NewArguments(constructor, mut arguments, has_spread, current_spread, saved_in) => {
             let mut item = expression(output);
             if current_spread {
                 item = p.emit_expr(Expr::SpreadArgument(item))?;
             }
             push(&mut arguments, item, &mut p.compile_budget)?;
             if p.eat(")") {
+                p.allow_in = saved_in;
                 new_done(p, constructor, arguments, has_spread)
             } else {
                 p.expect(",")?;
                 if p.eat(")") {
+                    p.allow_in = saved_in;
                     new_done(p, constructor, arguments, has_spread)
                 } else {
                     let current_spread = argument_spread(p)?;
@@ -268,6 +276,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                             arguments,
                             has_spread || current_spread,
                             current_spread,
+                            saved_in,
                         ),
                         Frame::Assignment,
                     )
@@ -543,8 +552,10 @@ fn postfix(p: &mut Parser<'_>, mut state: Postfix) -> Result<Transition> {
                 return call_done(p, state, Vec::new(), false);
             }
             let current_spread = argument_spread(p)?;
+            let saved_in = p.allow_in;
+            p.allow_in = true;
             return child(
-                Frame::Arguments(state, Vec::new(), current_spread, current_spread),
+                Frame::Arguments(state, Vec::new(), current_spread, current_spread, saved_in),
                 Frame::Assignment,
             );
         } else if matches!(p.tokens[p.pos].kind, TokenKind::TemplateStart) {
@@ -629,8 +640,16 @@ fn new_members(p: &mut Parser<'_>, mut state: NewState) -> Result<Transition> {
     }
     if p.eat("(") && !p.eat(")") {
         let current_spread = argument_spread(p)?;
+        let saved_in = p.allow_in;
+        p.allow_in = true;
         child(
-            Frame::NewArguments(state.value, Vec::new(), current_spread, current_spread),
+            Frame::NewArguments(
+                state.value,
+                Vec::new(),
+                current_spread,
+                current_spread,
+                saved_in,
+            ),
             Frame::Assignment,
         )
     } else {

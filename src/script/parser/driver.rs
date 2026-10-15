@@ -167,29 +167,38 @@ pub(super) fn dynamic_function<'s>(
 }
 
 fn run(parser: &mut Parser<'_>, root: Kind) -> Result<Output> {
-    let mut frames = Vec::new();
-    enter(parser, &mut frames, root)?;
-    let mut output = None;
-    while let Some(frame) = frames.pop() {
-        parser.compile_budget.work(1).map_err(regexp_error)?;
-        let transition = match frame {
-            Kind::Expression(state) => expressions::step(parser, state, output.take()),
-            Kind::Statement(state) => statements::step(parser, state, output.take()),
-            Kind::Function(state) => functions::step(parser, state, output.take()),
-            Kind::Body(state) => statements::body_step(parser, state, output.take()),
-        }?;
-        match transition {
-            Transition::Done(value) => {
-                output = Some(value);
-            }
-            Transition::Again(kind) => frames.push(kind),
-            Transition::Child(parent, next) => {
-                frames.push(parent);
-                enter(parser, &mut frames, next)?;
+    let entry_in = parser.allow_in;
+    let result = (|| {
+        let mut frames = Vec::new();
+        enter(parser, &mut frames, root)?;
+        let mut output = None;
+        while let Some(frame) = frames.pop() {
+            parser.compile_budget.work(1).map_err(regexp_error)?;
+            let transition = match frame {
+                Kind::Expression(state) => expressions::step(parser, state, output.take()),
+                Kind::Statement(state) => statements::step(parser, state, output.take()),
+                Kind::Function(state) => functions::step(parser, state, output.take()),
+                Kind::Body(state) => statements::body_step(parser, state, output.take()),
+            }?;
+            match transition {
+                Transition::Done(value) => {
+                    output = Some(value);
+                }
+                Transition::Again(kind) => frames.push(kind),
+                Transition::Child(parent, next) => {
+                    frames.push(parent);
+                    enter(parser, &mut frames, next)?;
+                }
             }
         }
+        Ok(output.expect("root grammar output"))
+    })();
+    // Successful Dynamic parameters deliberately hand context to the body run.
+    // On errors, restore only this invocation's grammar flag; quotas stay spent.
+    if result.is_err() {
+        parser.allow_in = entry_in;
     }
-    Ok(output.expect("root grammar output"))
+    result
 }
 
 #[cfg(test)]

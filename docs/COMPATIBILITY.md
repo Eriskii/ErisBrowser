@@ -23,8 +23,10 @@ retains its exact outcomes.
 [Call and constructor spread arguments](call-spread.md) close the four prior
 parse failures. Mixed, multiple and empty spreads preserve iterator ordering,
 receiver identity and argument-before-callability semantics within shared limits.
-Array/object spread, classes and the inherited unparenthesized argument `in`
-grammar gap inside `for` initializers remain unfinished.
+[Argument grammar contexts](call-argument-in.md) now admit unparenthesized `in`
+inside ordinary and spread call/new arguments in `for` initializers. The outer
+`for-in` restrictions remain in effect. Array/object spread and classes remain
+unfinished.
 The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
 preserving function properties and identities; they add no API coverage.
 The [Node accessor key-sharing follow-up](node-accessor-keys.md) similarly

@@ -35,11 +35,12 @@ resume queued jobs; new work requires a fresh runtime.
 
 Compiled syntax uses flat expression IDs, with distinct call/new parents for
 spread lists and one marker per spread operand. Malformed internal markers are
-rejected in value and reference contexts. The parser carries two Boolean flags
+rejected in value and reference contexts. The parser carries spread flags
 per argument continuation and retains the existing rest-parameter grammar and
 fees. This does not implement array/object spread, classes or `super`, optional
-chaining, async iteration or dynamic `eval`. The inherited argument `in`-operator
-limitation inside an unparenthesized `for` initializer remains on the docket.
+chaining, async iteration or dynamic `eval`. The subsequent
+[argument-context correction](call-argument-in.md) admits `in` expressions in
+these arguments inside a `for` initializer.
 
 The frozen controls contain 18 public interpreter/parser groups, 26 private
 resource/layout groups and two page/worker groups. Parent controls retain three

@@ -28,10 +28,11 @@ leaving five under the unchanged startup limit. The
 `Promise.all` uses 108 units and leaves 25 under the same startup allowance.
 The [Node method follow-up](node-method-keys.md) saves another 250 work units and
 1,512 accounted heap bytes, leaving 275 units. Call/new spread now uses the same
-startup allowance and runtime limits. The next parser correction is restoring
-the `+In` grammar context inside argument lists nested in a `for` initializer,
-while preserving the surrounding `for-in` grammar. Array/object spread remains
-separate unfinished work.
+startup allowance and runtime limits. [Argument grammar contexts](call-argument-in.md)
+now restore `+In` inside argument lists nested in a `for` initializer, while
+preserving the surrounding `for-in` grammar. Computed member expressions and the
+true branch of conditional expressions still need their own grammar-context
+follow-up. Array/object spread remains separate unfinished work.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity

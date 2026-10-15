@@ -1295,26 +1295,37 @@ impl<'source> Parser<'source> {
                 let mut arguments = Vec::new();
                 let mut has_spread = false;
                 if !self.eat(")") {
-                    loop {
-                        let spread = self.is(".");
-                        if spread {
-                            self.argument_ellipsis()?;
-                        }
-                        let item = self.expression()?;
-                        arguments.push(if spread {
-                            Expr::SpreadArgument(Box::new(item))
-                        } else {
-                            item
-                        });
-                        has_spread |= spread;
-                        if self.eat(")") {
-                            break;
-                        }
-                        self.expect(",")?;
-                        if self.eat(")") {
-                            break;
-                        }
+                    let mut spread = self.is(".");
+                    if spread {
+                        self.argument_ellipsis()?;
                     }
+                    let saved_in = self.allow_in;
+                    self.allow_in = true;
+                    let result: Result<()> = (|| {
+                        loop {
+                            let item = self.expression()?;
+                            arguments.push(if spread {
+                                Expr::SpreadArgument(Box::new(item))
+                            } else {
+                                item
+                            });
+                            has_spread |= spread;
+                            if self.eat(")") {
+                                break;
+                            }
+                            self.expect(",")?;
+                            if self.eat(")") {
+                                break;
+                            }
+                            spread = self.is(".");
+                            if spread {
+                                self.argument_ellipsis()?;
+                            }
+                        }
+                        Ok(())
+                    })();
+                    self.allow_in = saved_in;
+                    result?;
                 }
                 if async_call && chain == 1 && self.is("=>") {
                     if self.tokens[self.pos].line_break_before {
@@ -1788,26 +1799,37 @@ impl<'source> Parser<'source> {
         let mut args = Vec::new();
         let mut has_spread = false;
         if self.eat("(") && !self.eat(")") {
-            loop {
-                let spread = self.is(".");
-                if spread {
-                    self.argument_ellipsis()?;
-                }
-                let item = self.expression()?;
-                args.push(if spread {
-                    Expr::SpreadArgument(Box::new(item))
-                } else {
-                    item
-                });
-                has_spread |= spread;
-                if self.eat(")") {
-                    break;
-                }
-                self.expect(",")?;
-                if self.eat(")") {
-                    break;
-                }
+            let mut spread = self.is(".");
+            if spread {
+                self.argument_ellipsis()?;
             }
+            let saved_in = self.allow_in;
+            self.allow_in = true;
+            let result: Result<()> = (|| {
+                loop {
+                    let item = self.expression()?;
+                    args.push(if spread {
+                        Expr::SpreadArgument(Box::new(item))
+                    } else {
+                        item
+                    });
+                    has_spread |= spread;
+                    if self.eat(")") {
+                        break;
+                    }
+                    self.expect(",")?;
+                    if self.eat(")") {
+                        break;
+                    }
+                    spread = self.is(".");
+                    if spread {
+                        self.argument_ellipsis()?;
+                    }
+                }
+                Ok(())
+            })();
+            self.allow_in = saved_in;
+            result?;
         }
         Ok(if has_spread {
             Expr::NewSpread(Box::new(constructor), args)

@@ -27,6 +27,9 @@ final-unhandled-rejection policy.
 including mixed, multiple and empty spreads and trailing commas. Iterator reads
 preserve evaluation order and share the existing resource limits. This closes
 four upstream Promise modes; array/object spread and classes remain unfinished.
+[Argument grammar contexts](docs/call-argument-in.md) also allow `in` expressions
+inside call and constructor arguments in `for` initializers, while preserving
+the surrounding `for-in` grammar.
 
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors
