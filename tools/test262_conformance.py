@@ -123,10 +123,20 @@ PROMISE_ALL_SETTLED_PROFILE = 'promise-all-settled'
 PROMISE_ALL_SETTLED_FEATURES = PROMISE_RACE_FEATURES | {'Promise.allSettled'}
 PROFILE_FEATURES[PROMISE_ALL_SETTLED_PROFILE] = PROMISE_ALL_SETTLED_FEATURES
 PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE, PROMISE_RACE_PROFILE, PROMISE_ALL_SETTLED_PROFILE}
+AGGREGATE_ERROR_PROFILE = 'aggregate-error'
+AGGREGATE_ERROR_FEATURES = {'AggregateError', 'error-cause', 'Reflect', 'Reflect.construct',
+                            'Symbol', 'Symbol.iterator', 'Symbol.toPrimitive'}
+PROFILE_FEATURES[AGGREGATE_ERROR_PROFILE] = AGGREGATE_ERROR_FEATURES
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
 BAD_RUN_STATUSES = {'adapter-error', 'timeout', 'resource'}
+
+
+def profile_intrinsic_errors(profile=None):
+    """Ordinary AggregateError transport is an explicit profile-local capability."""
+    names = frozenset(INTRINSIC_ERRORS)
+    return names | {'AggregateError'} if profile == AGGREGATE_ERROR_PROFILE else names
 
 
 def digest(data):
@@ -238,13 +248,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -305,7 +315,7 @@ def unsupported_reason(case, supported_features=SUPPORTED_FEATURES, profile=None
             return 'Promise profile supports only ordinary sloppy/strict script modes'
     if case['mode'] == 'module' or (metadata['negative'] or {}).get('phase') == 'resolution':
         return 'module parsing/resolution is not implemented'
-    if metadata['negative'] and metadata['negative']['type'] not in INTRINSIC_ERRORS:
+    if metadata['negative'] and metadata['negative']['type'] not in profile_intrinsic_errors(profile):
         return 'negative error constructor identity is not implemented: ' + metadata['negative']['type']
     if 'async' in flags and profile not in PROMISE_HOST_PROFILES:
         return 'asynchronous completion and jobs are not implemented'
@@ -372,7 +382,9 @@ def encode_request(case):
     return bytes(output)
 
 
-def decode_response(output):
+def decode_response(output, *, profile=None):
+    if profile == AGGREGATE_ERROR_PROFILE and not output.startswith(b'ERJR2'):
+        raise ValueError('AggregateError profile requires an ordinary ERJR2 response')
     if output.startswith(b'ERJR3'):
         return decode_promise_response(output)
     if not output.startswith(b'ERJR2'):
@@ -395,7 +407,7 @@ def decode_response(output):
         raise ValueError('unknown JS adapter response status')
     if phase not in {'parse', 'runtime', 'harness', 'mode'}:
         raise ValueError('unknown JS adapter response phase')
-    if fields['error_identity'] and fields['error_identity'] not in INTRINSIC_ERRORS:
+    if fields['error_identity'] and fields['error_identity'] not in profile_intrinsic_errors(profile):
         raise ValueError('unknown intrinsic error identity')
     if ((status == 'complete' and (phase not in {'parse', 'runtime'} or fields['error_type'] or fields['error_identity'] or fields['harness']))
             or (status == 'exception' and (phase not in {'parse', 'runtime'} or not fields['error_type'] or fields['harness']))
@@ -430,7 +442,8 @@ def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES, profi
         if exit_code:
             return dict(result, status='adapter-error', reason=f'adapter exit {exit_code}',
                         stderr=stderr.decode('utf-8', 'replace')[:4096])
-        observation = decode_response(output)
+        observation = (decode_response(output, profile=profile)
+                       if profile == AGGREGATE_ERROR_PROFILE else decode_response(output))
         return dict(result, status=classify(case, observation), observation=observation)
     except subprocess.TimeoutExpired:
         return dict(result, status='timeout', reason=f'adapter exceeded {timeout:g} seconds')
@@ -1373,6 +1386,8 @@ def array_from_preflight_variants():
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
+    if profile == AGGREGATE_ERROR_PROFILE:
+        return aggregate_error_harness_preflight(files, binary, timeout)
     if profile == PROMISE_ALL_SETTLED_PROFILE:
         return promise_all_settled_harness_preflight(files, binary, timeout)
     if profile == PROMISE_RACE_PROFILE:
@@ -4006,6 +4021,446 @@ def promise_all_settled_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+def aggregate_error_preflight_variants():
+    """Build the frozen ordinary32 and selected20 controls without observed digests."""
+    rows = []
+
+    def add(name, mode, source, expected, *, includes=(), negative=None,
+            error_type='', error_identity='', prerequisites=(), mode_id=False):
+        rows.append({
+            'name': name,
+            'mode': mode,
+            'id': 'harness-preflight:' + name + (':' + mode if mode_id else ''),
+            'source': source,
+            'metadata': {'features': [], 'flags': [], 'includes': list(includes),
+                         'locale': [], 'negative': None if negative is None else
+                         {'phase': 'runtime', 'type': negative}},
+            'expected': expected,
+            'required_observation': {'error_identity': error_identity,
+                                     'error_type': error_type, 'harness': '',
+                                     'phase': 'runtime',
+                                     'status': 'exception' if error_type else 'complete'},
+            'prerequisites': list(prerequisites),
+        })
+
+    # Existing ordinary controls: name, source, result, same-mode prerequisite.
+    common = [
+        ('success',
+         'assert.sameValue(1, 1); assert.sameValue(NaN, NaN);',
+         'passed', None),
+        ('assert-false',
+         'assert(false);',
+         'failed', 'success'),
+        ('same-value',
+         'assert.sameValue(1, 2);',
+         'failed', 'success'),
+        ('signed-zero',
+         'assert.sameValue(0, -0);',
+         'failed', 'success'),
+        ('not-same-value',
+         'assert.notSameValue(1, 1);',
+         'failed', 'success'),
+        ('throws-success',
+         'assert.throws(TypeError, function () { throw new TypeError(); });',
+         'passed', None),
+        ('throws-wrong-type',
+         'assert.throws(TypeError, function () { throw new RangeError(); });',
+         'failed', 'throws-success'),
+        ('throws-missing',
+         'assert.throws(TypeError, function () {});',
+         'failed', 'throws-success'),
+        ('array-mismatch',
+         'assert.compareArray([1], [2]);',
+         'failed', 'success'),
+        ('property-success',
+         "verifyProperty({x: 1}, 'x', {value: 1, writable: true, enumerable: true, configurable: true});",
+         'passed', None),
+        ('property-writable',
+         "verifyProperty({x: 1}, 'x', {writable: false});",
+         'failed', 'property-success'),
+        ('property-enumerable',
+         "verifyProperty({x: 1}, 'x', {enumerable: false});",
+         'failed', 'property-success'),
+        ('property-configurable',
+         "verifyProperty({x: 1}, 'x', {configurable: false});",
+         'failed', 'property-success'),
+    ]
+    for mode, prefix in (('sloppy', ''), ('strict', 'strict-')):
+        for name, source, expected, prerequisite in common:
+            add(prefix + name, mode, source, expected,
+                includes=('propertyHelper.js',) if 'property-' in name else (),
+                error_type='Test262Error' if expected == 'failed' else '',
+                prerequisites=([(prefix + prerequisite, mode)]
+                               if prerequisite is not None else []))
+
+    strict_only = [
+        ('strict-receiver',
+         'function f(){return this;} assert.sameValue(f(),undefined); assert.sameValue(f.call(null),null); assert.sameValue(f.call(3),3);'),
+        ('strict-unbound-write',
+         'assert.throws(ReferenceError,function(){missing=1;});'),
+        ('strict-readonly-write',
+         "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){o.x=2;});"),
+        ('strict-delete',
+         "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){delete o.x;});"),
+        ('strict-arguments',
+         'function f(a){arguments[0]=2;assert.sameValue(a,1);assert.throws(TypeError,()=>arguments.callee);}f(1);'),
+        ('strict-tdz',
+         'assert.throws(ReferenceError,function(){typeof x;let x;});'),
+    ]
+    for name, source in strict_only:
+        add(name, 'strict', source, 'passed')
+    common_refs = [(row['name'], row['mode']) for row in rows]
+
+    # Each new literal is written once and expanded into sloppy/strict rows.
+    # Identity mismatches deliberately retain the same source and vary metadata.
+    selected = [
+        {
+            'name': 'aggregate-error-metadata',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                'var A = AggregateError;\n'
+                'assert.sameValue(isConstructor(A), true);\n'
+                'assert.sameValue(isConstructor(() => {}), false);\n'
+                "verifyProperty(A, 'name', {value: 'AggregateError', writable: false, enumerable: false, configurable: true}, {restore: true});\n"
+                "verifyProperty(A, 'length', {value: 2, writable: false, enumerable: false, configurable: true}, {restore: true});\n"
+                "verifyProperty(A, 'prototype', {value: A.prototype, writable: false, enumerable: false, configurable: false}, {restore: true});\n"
+                'assert.sameValue(Object.getPrototypeOf(A), Error);\n'
+                'assert.sameValue(Object.getPrototypeOf(A.prototype), Error.prototype);\n'
+                'assert.sameValue(A.prototype.constructor, A);\n'
+                "assert.sameValue(Object.prototype.hasOwnProperty.call(A.prototype, 'errors'), false);\n"
+                'assert.sameValue(A.length, 2);\n'
+            ),
+            'includes': ('propertyHelper.js', 'isConstructor.js'),
+            'expected': 'passed',
+        },
+        {
+            'name': 'aggregate-error-metadata-mismatch',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                'var A = AggregateError;\n'
+                'assert.sameValue(isConstructor(A), true);\n'
+                'assert.sameValue(isConstructor(() => {}), false);\n'
+                "verifyProperty(A, 'name', {value: 'AggregateError', writable: false, enumerable: false, configurable: true}, {restore: true});\n"
+                "verifyProperty(A, 'length', {value: 2, writable: false, enumerable: false, configurable: true}, {restore: true});\n"
+                "verifyProperty(A, 'prototype', {value: A.prototype, writable: false, enumerable: false, configurable: false}, {restore: true});\n"
+                'assert.sameValue(Object.getPrototypeOf(A), Error);\n'
+                'assert.sameValue(Object.getPrototypeOf(A.prototype), Error.prototype);\n'
+                'assert.sameValue(A.prototype.constructor, A);\n'
+                "assert.sameValue(Object.prototype.hasOwnProperty.call(A.prototype, 'errors'), false);\n"
+                'assert.sameValue(A.length, 3);\n'
+            ),
+            'includes': ('propertyHelper.js', 'isConstructor.js'),
+            'expected': 'failed',
+            'error_type': 'Test262Error',
+            'prerequisite': 'aggregate-error-metadata',
+        },
+        {
+            'name': 'aggregate-error-iteration-and-data',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                "var A = AggregateError, trace = '', payload = {}, cause = {}, steps = 0;\n"
+                "var message = {toString: function () { trace += 'M'; return 'message'; }};\n"
+                'var options = {}, iterator = {}, source = {};\n'
+                "Object.defineProperty(options, 'cause', {get: function () { trace += 'C'; return cause; }});\n"
+                "Object.defineProperty(iterator, 'next', {get: function () {\n"
+                "  trace += 'N';\n"
+                '  return function () {\n'
+                "    trace += 'S';\n"
+                '    steps++;\n'
+                '    if (steps === 1) return {\n'
+                "      get done() { trace += 'D'; return false; },\n"
+                "      get value() { trace += 'V'; return payload; }\n"
+                '    };\n'
+                '    return {\n'
+                "      get done() { trace += 'D'; return true; },\n"
+                "      get value() { throw new Test262Error('exhausted value read'); }\n"
+                '    };\n'
+                '  };\n'
+                '}});\n'
+                'Object.defineProperty(source, Symbol.iterator, {get: function () {\n'
+                "  trace += 'I';\n"
+                "  return function () { trace += 'i'; return iterator; };\n"
+                '}});\n'
+                "AggregateError = function () { throw new Test262Error('replacement global called'); };\n"
+                'var result = A(source, message, options), values = result.errors;\n'
+                'assert.sameValue(Object.getPrototypeOf(result), A.prototype);\n'
+                "assert.sameValue(result.message, 'message');\n"
+                'assert.sameValue(result.cause, cause);\n'
+                'assert.sameValue(Array.isArray(values), true);\n'
+                'assert.sameValue(Object.getPrototypeOf(values), Array.prototype);\n'
+                'assert.sameValue(values.length, 1);\n'
+                'assert.sameValue(values[0], payload);\n'
+                "assert.sameValue(Object.prototype.hasOwnProperty.call(values, '0'), true);\n"
+                "var slot = Object.getOwnPropertyDescriptor(values, '0');\n"
+                'assert.sameValue(slot.value, payload);\n'
+                'assert.sameValue(slot.writable && slot.enumerable && slot.configurable, true);\n'
+                "verifyProperty(result, 'errors', {value: values, writable: true, enumerable: false, configurable: true}, {restore: true});\n"
+                'assert.sameValue(steps, 2);\n'
+                "assert.sameValue(trace, 'MCIiNSDVSD');\n"
+            ),
+            'includes': ('propertyHelper.js',),
+            'expected': 'passed',
+        },
+        {
+            'name': 'aggregate-error-iteration-and-data-mismatch',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                "var A = AggregateError, trace = '', payload = {}, cause = {}, steps = 0;\n"
+                "var message = {toString: function () { trace += 'M'; return 'message'; }};\n"
+                'var options = {}, iterator = {}, source = {};\n'
+                "Object.defineProperty(options, 'cause', {get: function () { trace += 'C'; return cause; }});\n"
+                "Object.defineProperty(iterator, 'next', {get: function () {\n"
+                "  trace += 'N';\n"
+                '  return function () {\n'
+                "    trace += 'S';\n"
+                '    steps++;\n'
+                '    if (steps === 1) return {\n'
+                "      get done() { trace += 'D'; return false; },\n"
+                "      get value() { trace += 'V'; return payload; }\n"
+                '    };\n'
+                '    return {\n'
+                "      get done() { trace += 'D'; return true; },\n"
+                "      get value() { throw new Test262Error('exhausted value read'); }\n"
+                '    };\n'
+                '  };\n'
+                '}});\n'
+                'Object.defineProperty(source, Symbol.iterator, {get: function () {\n'
+                "  trace += 'I';\n"
+                "  return function () { trace += 'i'; return iterator; };\n"
+                '}});\n'
+                "AggregateError = function () { throw new Test262Error('replacement global called'); };\n"
+                'var result = A(source, message, options), values = result.errors;\n'
+                'assert.sameValue(Object.getPrototypeOf(result), A.prototype);\n'
+                "assert.sameValue(result.message, 'message');\n"
+                'assert.sameValue(result.cause, cause);\n'
+                'assert.sameValue(Array.isArray(values), true);\n'
+                'assert.sameValue(Object.getPrototypeOf(values), Array.prototype);\n'
+                'assert.sameValue(values.length, 1);\n'
+                'assert.sameValue(values[0], payload);\n'
+                "assert.sameValue(Object.prototype.hasOwnProperty.call(values, '0'), true);\n"
+                "var slot = Object.getOwnPropertyDescriptor(values, '0');\n"
+                'assert.sameValue(slot.value, payload);\n'
+                'assert.sameValue(slot.writable && slot.enumerable && slot.configurable, true);\n'
+                "verifyProperty(result, 'errors', {value: values, writable: true, enumerable: false, configurable: true}, {restore: true});\n"
+                'assert.sameValue(steps, 2);\n'
+                "assert.sameValue(trace, 'MICiNSDVSD');\n"
+            ),
+            'includes': ('propertyHelper.js',),
+            'expected': 'failed',
+            'error_type': 'Test262Error',
+            'prerequisite': 'aggregate-error-iteration-and-data',
+        },
+        {
+            'name': 'aggregate-error-helper-sequence',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                'var result = AggregateError([1, 2, 3]);\n'
+                'assert.sameValue(Array.isArray(result.errors), true);\n'
+                'assert.compareArray(result.errors, [1, 2, 3]);\n'
+                'assert.sameValue(compareArray([1, 2], [1, 2]), true);\n'
+                'assert.sameValue(compareArray([1, 2], [2, 1]), false);\n'
+                'checkSequence([1, 2, 3]);\n'
+            ),
+            'includes': ('compareArray.js', 'promiseHelper.js'),
+            'expected': 'passed',
+        },
+        {
+            'name': 'aggregate-error-helper-sequence-mismatch',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                'var result = AggregateError([1, 2, 3]);\n'
+                'assert.sameValue(Array.isArray(result.errors), true);\n'
+                'assert.compareArray(result.errors, [1, 2, 3]);\n'
+                'assert.sameValue(compareArray([1, 2], [1, 2]), true);\n'
+                'assert.sameValue(compareArray([1, 2], [2, 1]), false);\n'
+                'checkSequence([1, 3, 2]);\n'
+            ),
+            'includes': ('compareArray.js', 'promiseHelper.js'),
+            'expected': 'failed',
+            'error_type': 'Test262Error',
+            'prerequisite': 'aggregate-error-helper-sequence',
+        },
+        {
+            'name': 'aggregate-error-genuine-identity',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                'var A = AggregateError;\n'
+                "var value = new A([1], 'aggregate identity control');\n"
+                "Object.defineProperty(A, 'name', {value: 'RenamedAggregateError', writable: false, enumerable: false, configurable: true});\n"
+                'throw value;\n'
+            ),
+            'includes': (),
+            'expected': 'passed',
+            'negative': 'AggregateError',
+            'error_type': 'RenamedAggregateError',
+            'error_identity': 'AggregateError',
+        },
+        {
+            'name': 'aggregate-error-genuine-identity-mismatch',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                'var A = AggregateError;\n'
+                "var value = new A([1], 'aggregate identity control');\n"
+                "Object.defineProperty(A, 'name', {value: 'RenamedAggregateError', writable: false, enumerable: false, configurable: true});\n"
+                'throw value;\n'
+            ),
+            'includes': (),
+            'expected': 'failed',
+            'negative': 'TypeError',
+            'error_type': 'RenamedAggregateError',
+            'error_identity': 'AggregateError',
+            'prerequisite': 'aggregate-error-genuine-identity',
+        },
+        {
+            'name': 'aggregate-error-fake-own-name-constructor',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                "throw {name: 'AggregateError', constructor: AggregateError};\n"
+            ),
+            'includes': (),
+            'expected': 'failed',
+            'negative': 'AggregateError',
+            'error_type': 'AggregateError',
+            'prerequisite': 'aggregate-error-genuine-identity',
+        },
+        {
+            'name': 'aggregate-error-fake-prototype',
+            'source': (
+                "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\n"
+                'throw Object.create(AggregateError.prototype);\n'
+            ),
+            'includes': (),
+            'expected': 'failed',
+            'negative': 'AggregateError',
+            'error_type': 'AggregateError',
+            'prerequisite': 'aggregate-error-genuine-identity',
+        },
+    ]
+    for control in selected:
+        for mode in ('sloppy', 'strict'):
+            prerequisites = list(common_refs)
+            if 'prerequisite' in control:
+                prerequisites.append((control['prerequisite'], mode))
+            add(control['name'], mode, control['source'], control['expected'],
+                includes=control['includes'], negative=control.get('negative'),
+                error_type=control.get('error_type', ''),
+                error_identity=control.get('error_identity', ''),
+                prerequisites=prerequisites, mode_id=True)
+    return rows
+
+
+def aggregate_error_preflight_cases(files):
+    """Rebuild canonical identities from literal controls and authenticated helpers."""
+    definitions = []
+    for row in aggregate_error_preflight_variants():
+        metadata = row['metadata']
+        case = dict(id=row['id'], file='<preflight>', mode=row['mode'],
+                    metadata=metadata, source=row['source'].encode(),
+                    harness=[(name, files['harness/' + name])
+                             for name in harness_names(metadata)])
+        case['case_sha256'] = case_fingerprint(case)
+        definitions.append((row, case))
+    return definitions
+
+
+def aggregate_error_preflight_reference(row, case):
+    return dict(name=row['name'], mode=case['mode'], id=case['id'],
+                case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
+                expected=row['expected'])
+
+
+def aggregate_error_preflight_checks(outcomes, files):
+    """Authenticate observations and the canonical prerequisite graph independently."""
+    try:
+        definitions = aggregate_error_preflight_cases(files)
+        if not isinstance(outcomes, list) or len(outcomes) != 52 or len(definitions) != 52:
+            return None
+        canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+        if len(canonical) != 52:
+            return None
+        observed = {}
+        for item in outcomes:
+            if (not isinstance(item, dict)
+                    or set(item) != {'name', 'expected', 'verified', 'result', 'prerequisites'}
+                    or not isinstance(item['name'], str)
+                    or type(item['verified']) is not bool
+                    or not isinstance(item['result'], dict)
+                    or not isinstance(item['result'].get('mode'), str)):
+                return None
+            identity = (item['name'], item['result']['mode'])
+            if identity in observed or identity not in canonical:
+                return None
+            observed[identity] = item
+        if observed.keys() != canonical.keys():
+            return None
+        raw_checks = {}
+        for identity, (row, case) in canonical.items():
+            item = observed[identity]
+            result = item['result']
+            expected_result = {key: case[key] for key in ('id', 'file', 'mode', 'case_sha256')}
+            expected_result.update(source_sha256=digest(case['source']),
+                                   expected_negative=case['metadata']['negative'],
+                                   status=row['expected'])
+            observation = result.get('observation')
+            raw_names = {'status', 'phase', 'error_type', 'error_identity', 'message', 'harness'}
+            expected_prerequisites = [aggregate_error_preflight_reference(*canonical[key])
+                                      for key in row['prerequisites']]
+            good = (item['expected'] == row['expected']
+                    and set(result) == set(expected_result) | {'observation'}
+                    and all(result.get(key) == value for key, value in expected_result.items())
+                    and item['prerequisites'] == expected_prerequisites
+                    and isinstance(observation, dict) and set(observation) == raw_names)
+            if good:
+                good = (all(isinstance(value, str) and len(value.encode('utf-8')) <= 16384
+                            for value in observation.values())
+                        and all(observation[key] == value
+                                for key, value in row['required_observation'].items())
+                        and classify(case, observation) == row['expected'])
+            raw_checks[identity] = good
+        checked, visiting = {}, set()
+
+        def healthy(identity):
+            if identity in checked:
+                return checked[identity]
+            if identity in visiting:
+                return False
+            visiting.add(identity)
+            row, _ = canonical[identity]
+            value = raw_checks[identity] and all(healthy(key) for key in row['prerequisites'])
+            visiting.remove(identity)
+            checked[identity] = value
+            return value
+
+        for identity in canonical:
+            healthy(identity)
+        return checked
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def aggregate_error_preflight_healthy(outcomes, files):
+    checks = aggregate_error_preflight_checks(outcomes, files)
+    return (checks is not None and len(checks) == 52 and all(checks.values())
+            and all(item['verified'] is True for item in outcomes))
+
+
+def aggregate_error_harness_preflight(files, binary, timeout):
+    definitions = aggregate_error_preflight_cases(files)
+    canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+    outcomes = []
+    for row, case in definitions:
+        result = run_case(case, binary, timeout, AGGREGATE_ERROR_FEATURES, AGGREGATE_ERROR_PROFILE)
+        prerequisites = [aggregate_error_preflight_reference(*canonical[key])
+                         for key in row['prerequisites']]
+        outcomes.append(dict(name=row['name'], expected=row['expected'], verified=False,
+                             result=result, prerequisites=prerequisites))
+    checks = aggregate_error_preflight_checks(outcomes, files)
+    if checks is not None:
+        for item in outcomes:
+            item['verified'] = checks[(item['name'], item['result']['mode'])]
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -4050,13 +4505,19 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (promise_all_settled_preflight_healthy(preflight) if args.profile == PROMISE_ALL_SETTLED_PROFILE
+        preflight_ok = (aggregate_error_preflight_healthy(preflight, files) if args.profile == AGGREGATE_ERROR_PROFILE
+                        else promise_all_settled_preflight_healthy(preflight) if args.profile == PROMISE_ALL_SETTLED_PROFILE
                         else promise_race_preflight_healthy(preflight) if args.profile == PROMISE_RACE_PROFILE
                         else promise_all_preflight_healthy(preflight) if args.profile == PROMISE_ALL_PROFILE
                         else promise_preflight_healthy(preflight) if args.profile == PROMISE_PROFILE
                         else all(item['verified'] for item in preflight))
         supported_features = PROFILE_FEATURES[args.profile]
-        if args.profile in PROMISE_HOST_PROFILES and not preflight_ok:
+        if args.profile == AGGREGATE_ERROR_PROFILE and not preflight_ok:
+            results = [dict(id=case['id'], file=case['file'], mode=case['mode'],
+                            case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
+                            expected_negative=case['metadata']['negative'], status='blocked',
+                            reason='AggregateError harness preflight failed') for case in cases]
+        elif args.profile in PROMISE_HOST_PROFILES and not preflight_ok:
             results = [dict(id=case['id'], file=case['file'], mode=case['mode'],
                             case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
                             expected_negative=case['metadata']['negative'], status='blocked',
@@ -4066,7 +4527,7 @@ def main():
                 results = list(pool.map(lambda case: run_case(case, binary, args.timeout, supported_features, args.profile), cases))
         counts = dict(Counter(result['status'] for result in results))
         policy = dict(format=2, supported_features=sorted(supported_features),
-                      negative_intrinsic_errors=sorted(INTRINSIC_ERRORS), strict=True,
+                      negative_intrinsic_errors=sorted(profile_intrinsic_errors(args.profile)), strict=True,
                       modules=False, async_completion=False, host_hooks=False,
                       timeout_seconds=args.timeout)
         if args.profile in {'typedarray-views', 'typedarray-search', 'typedarray-fill', 'typedarray-reverse', 'typedarray-copy-within'}:

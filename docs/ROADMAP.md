@@ -27,8 +27,9 @@ with all 94 controls verified. The twelve failures retain the final-unhandled
 host-policy reason, and eight class-bearing modes remain unsupported.
 [`AggregateError`](aggregate-error.md) now supplies ordered iterable errors,
 message/cause handling and genuine Error fallback branding under the existing
-limits. `Promise.any` and host decoding of uncaught AggregateError identities
-remain separate follow-ups; the constructor alone does not implement either.
+limits. Its separate [complete pinned upstream profile](aggregate-error-upstream.md)
+uses a profile-local ordinary-response AggregateError identity capability.
+`Promise.any`, wider host identity policy and multiple realms remain separate work.
 Remaining asynchronous work
 includes `any`, async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.

@@ -1,5 +1,24 @@
 # Validation record
 
+## Complete pinned AggregateError selection
+
+The [AggregateError upstream profile](aggregate-error-upstream.md) retains all
+25 sources and 50 modes. It records **44 passed, four failed and two unsupported**,
+with all 52 controls verified. The four dispatched Proxy modes report runtime
+ReferenceError; the two cross-realm modes are metadata exclusions.
+
+All 592 Python tests pass. Healthy baseline recording and replay preserve the
+exact 50 case and 52 control records, including nonpassing outcomes. The older
+four Promise profiles retain all 1,050 case and 348 control records, with no old
+policy or baseline changes. Only the new ordinary profile accepts an eighth
+intrinsic error identity; default decoding and all ERJR3 validators retain seven.
+
+The ordinary Rust 1.88 release adapter was built from the published API parent
+without optional features; older Promise replays reuse the published host
+adapter. Rust execution inputs are unchanged, and no new full Rust-suite or
+Clippy run is claimed. The chapter's evidence retains parent stopping points,
+raw results and binary bindings; the historical sections below stay unchanged.
+
 ## AggregateError and Error fallback branding
 
 The [AggregateError checkpoint](aggregate-error.md) adds call/new construction,

@@ -40,6 +40,8 @@ jobs:
         run: python3 tools/test262_conformance.py --profile array-find --baseline tests/conformance/test262-array-find-current.json --output artifacts/test262-array-find-gate.json
       - name: Preserve pinned core Date behavior
         run: python3 tools/test262_conformance.py --profile date --baseline tests/conformance/test262-date-current.json --output artifacts/test262-date-gate.json
+      - name: Preserve pinned AggregateError construction cases
+        run: python3 tools/test262_conformance.py --binary target/release/eris-js --profile aggregate-error --baseline tests/conformance/test262-aggregate-error-current.json --output artifacts/test262-aggregate-error-gate.json
       - name: Preserve pinned synchronous for-of behavior
         run: python3 tools/test262_conformance.py --profile for-of --baseline tests/conformance/test262-for-of-current.json --output artifacts/test262-for-of-gate.json
       - name: Preserve pinned core iterator behavior

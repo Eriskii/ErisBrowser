@@ -97,7 +97,7 @@ class ObjectHasOwnCorpusTests(unittest.TestCase):
         self.assertEqual(runner.OBJECT_HAS_OWN_FEATURES, FEATURES)
         self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES)
         self.assertNotIn('Object.hasOwn', runner.SUPPORTED_FEATURES)
-        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'typedarray-foundation', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties'}), 45)
+        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'typedarray-foundation', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties'}), 45)
         for name, features in runner.PROFILE_FEATURES.items():
             if name != PROFILE:
                 self.assertNotIn('Object.hasOwn', features)

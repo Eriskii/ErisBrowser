@@ -1,0 +1,301 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "Complete pinned AggregateError constructor and prototype subtree, including unsupported realm and untagged Proxy cases; original sources and helper closure unchanged.",
+  "directories": {
+    "AggregateError": [
+      "cause-property.js",
+      "errors-iterabletolist-failures.js",
+      "errors-iterabletolist.js",
+      "is-a-constructor.js",
+      "length.js",
+      "message-method-prop-cast.js",
+      "message-method-prop.js",
+      "message-tostring-abrupt-symbol.js",
+      "message-tostring-abrupt.js",
+      "message-undefined-no-prop.js",
+      "name.js",
+      "newtarget-is-undefined.js",
+      "newtarget-proto-custom.js",
+      "newtarget-proto-fallback.js",
+      "newtarget-proto.js",
+      "order-of-args-evaluation.js",
+      "prop-desc.js",
+      "proto-from-ctor-realm.js",
+      "proto.js"
+    ],
+    "AggregateError/prototype": [
+      "constructor.js",
+      "errors-absent-on-prototype.js",
+      "message.js",
+      "name.js",
+      "prop-desc.js",
+      "proto.js"
+    ]
+  },
+  "test_files": 25,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/promiseHelper.js",
+      "upstream_path": "harness/promiseHelper.js",
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/AggregateError/cause-property.js",
+      "upstream_path": "test/built-ins/AggregateError/cause-property.js",
+      "bytes": 1111,
+      "sha256": "105409164ee0d6a61a21bd1ff06d6a36c9823966c184844bd68a21d494b80d51"
+    },
+    {
+      "path": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+      "upstream_path": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+      "bytes": 3736,
+      "sha256": "e3d474c49e00d214cecaed0508a087e070d6180c45c2241d40c9b1350d3e55e5"
+    },
+    {
+      "path": "test/built-ins/AggregateError/errors-iterabletolist.js",
+      "upstream_path": "test/built-ins/AggregateError/errors-iterabletolist.js",
+      "bytes": 1773,
+      "sha256": "f17bcaa26443a42ebb3a8df3aa303846bf6845272286b2e935520ac5c5386fce"
+    },
+    {
+      "path": "test/built-ins/AggregateError/is-a-constructor.js",
+      "upstream_path": "test/built-ins/AggregateError/is-a-constructor.js",
+      "bytes": 866,
+      "sha256": "6b85f1fdb9f667ea2afc158caac5d390116a76e50c4e0f6a78fb0f8c39e0d63f"
+    },
+    {
+      "path": "test/built-ins/AggregateError/length.js",
+      "upstream_path": "test/built-ins/AggregateError/length.js",
+      "bytes": 1106,
+      "sha256": "9c3aa12013f323a3b40d0d887b889c7de9183a41fe280dfc9b3e2b9981a22b68"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-method-prop-cast.js",
+      "upstream_path": "test/built-ins/AggregateError/message-method-prop-cast.js",
+      "bytes": 1562,
+      "sha256": "a2f6b97f70afe49023f20e85b5aa7d6af10a51889e3a8e28c664e64e661eb872"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-method-prop.js",
+      "upstream_path": "test/built-ins/AggregateError/message-method-prop.js",
+      "bytes": 857,
+      "sha256": "e16238c3c5e025bc229fd80748469bc8a4a5257120762288221aa28dd878f454"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+      "upstream_path": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+      "bytes": 856,
+      "sha256": "d07529461fb3e9ca53bb6d0bc5da2d4a730fce7f8d4fe20b27965faacf17eee4"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+      "upstream_path": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+      "bytes": 1180,
+      "sha256": "ecd15a9e51445934d009e1570e67d3cb099f4e98b2c517bb178404993d71e1bb"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+      "upstream_path": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+      "bytes": 770,
+      "sha256": "b0b8eec0d6b2ec8916972b3d422b5c3c86a3587eeabf6b38383d8775e891b947"
+    },
+    {
+      "path": "test/built-ins/AggregateError/name.js",
+      "upstream_path": "test/built-ins/AggregateError/name.js",
+      "bytes": 1174,
+      "sha256": "39229a54965409452c33b040f8584e1f9b1d313e968dbed0a02b3a2ab8318311"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+      "upstream_path": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+      "bytes": 538,
+      "sha256": "cf9b9a146734ca947d78490b6b3b2a51ea64bd819cead2d691a0771823ede18d"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+      "upstream_path": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+      "bytes": 1420,
+      "sha256": "ae9d0ee0af3557195dd0fb1d61c858ab2a9f3adbe3f736057a4ab2730d6965de"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+      "upstream_path": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+      "bytes": 1651,
+      "sha256": "efa50936d077637ad43f2a043e07ba3a6c305906ed31257d61083658a5df4280"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-proto.js",
+      "upstream_path": "test/built-ins/AggregateError/newtarget-proto.js",
+      "bytes": 1228,
+      "sha256": "15851697371840b323cca65a115ef6b1cc9355de7f7ad76389cc70766672c0d9"
+    },
+    {
+      "path": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+      "upstream_path": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+      "bytes": 769,
+      "sha256": "eae9bfe1823d6a4f0cffa17f01d1ea47b8854da250fbcfb5de79ee4635e90273"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prop-desc.js",
+      "upstream_path": "test/built-ins/AggregateError/prop-desc.js",
+      "bytes": 716,
+      "sha256": "9ec2e1aaf727e65e91bf3336e30eaef4deb26c1527d9f4c42c3e4ee22a68c43f"
+    },
+    {
+      "path": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+      "upstream_path": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+      "bytes": 2455,
+      "sha256": "1c3451e247c6fed9e593dfb1287604331e130a87e42e261346c7cb65025e688a"
+    },
+    {
+      "path": "test/built-ins/AggregateError/proto.js",
+      "upstream_path": "test/built-ins/AggregateError/proto.js",
+      "bytes": 482,
+      "sha256": "3d980cdfd3ecce3b1c22398d30a66eef719237358055eb06f24168a0aa2f3330"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/constructor.js",
+      "upstream_path": "test/built-ins/AggregateError/prototype/constructor.js",
+      "bytes": 795,
+      "sha256": "2370eeeecd813974cfb8e9be8ea2fc1233ddafdb955f61b175a6bfe50d493618"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+      "upstream_path": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+      "bytes": 629,
+      "sha256": "9cc34f502de42b5fe8e5ef2a46703c0fdb45bc6ed92c8a8855a9aa8f26afc163"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/message.js",
+      "upstream_path": "test/built-ins/AggregateError/prototype/message.js",
+      "bytes": 790,
+      "sha256": "952f555b4bc3a2f096cfd3807b95f6cd6940d90a971c8101e29c1f8c0d6ecc32"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/name.js",
+      "upstream_path": "test/built-ins/AggregateError/prototype/name.js",
+      "bytes": 746,
+      "sha256": "2aac7c149c2f9981e1bf761988f3febbe7836cab85decb6114c577d8fac001ec"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/prop-desc.js",
+      "upstream_path": "test/built-ins/AggregateError/prototype/prop-desc.js",
+      "bytes": 716,
+      "sha256": "5f8c34ae9c2d177e3fd9422bd3eaceec6127aa349b7268c9c23e6d67210ae313"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/proto.js",
+      "upstream_path": "test/built-ins/AggregateError/prototype/proto.js",
+      "bytes": 573,
+      "sha256": "3e7e9ddd7ebc6f286cac2219e89e1cc9d9b5971db5c31759cdca900cfd3da99a"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-nonrecursive-git-trees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "directory_trees": {
+      "AggregateError": "29aa43922ae5a34467878bf9f498ffc4a89bdf67",
+      "AggregateError/prototype": "f1b375f2e936e2329af2c4307260ab896efd7daf"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/promiseHelper.js": "9a8bf627add65c5f8ab7e25768fb7ac6992bc47f",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/tree-29aa43922ae5a34467878bf9f498ffc4a89bdf67.json",
+        "bytes": 4658,
+        "sha256": "026068adf1848915904aa79644985b409386699bb318eab2d4aaeaa636c35239",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/29aa43922ae5a34467878bf9f498ffc4a89bdf67"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      },
+      {
+        "path": "inventory-proof/tree-f1b375f2e936e2329af2c4307260ab896efd7daf.json",
+        "bytes": 1476,
+        "sha256": "1b9fcc9a885e0a90694ff5c66f97094227f5ade528746a684364853daa0f73d4",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/f1b375f2e936e2329af2c4307260ab896efd7daf"
+      }
+    ]
+  }
+}

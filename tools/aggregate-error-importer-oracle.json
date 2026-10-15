@@ -1,0 +1,983 @@
+{
+  "format": 1,
+  "profile": "aggregate-error",
+  "published_parent": "d3efc9aba87102366b538ff69e83c2524a48eb6b",
+  "expected_manifest": {
+    "format": 1,
+    "repository": "https://github.com/tc39/test262",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "scope": "Complete pinned AggregateError constructor and prototype subtree, including unsupported realm and untagged Proxy cases; original sources and helper closure unchanged.",
+    "directories": {
+      "AggregateError": [
+        "cause-property.js",
+        "errors-iterabletolist-failures.js",
+        "errors-iterabletolist.js",
+        "is-a-constructor.js",
+        "length.js",
+        "message-method-prop-cast.js",
+        "message-method-prop.js",
+        "message-tostring-abrupt-symbol.js",
+        "message-tostring-abrupt.js",
+        "message-undefined-no-prop.js",
+        "name.js",
+        "newtarget-is-undefined.js",
+        "newtarget-proto-custom.js",
+        "newtarget-proto-fallback.js",
+        "newtarget-proto.js",
+        "order-of-args-evaluation.js",
+        "prop-desc.js",
+        "proto-from-ctor-realm.js",
+        "proto.js"
+      ],
+      "AggregateError/prototype": [
+        "constructor.js",
+        "errors-absent-on-prototype.js",
+        "message.js",
+        "name.js",
+        "prop-desc.js",
+        "proto.js"
+      ]
+    },
+    "test_files": 25,
+    "files": [
+      {
+        "path": "INTERPRETING.md",
+        "upstream_path": "INTERPRETING.md",
+        "bytes": 18611,
+        "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+      },
+      {
+        "path": "LICENSE",
+        "upstream_path": "LICENSE",
+        "bytes": 2213,
+        "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+      },
+      {
+        "path": "harness/assert.js",
+        "upstream_path": "harness/assert.js",
+        "bytes": 4881,
+        "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+      },
+      {
+        "path": "harness/compareArray.js",
+        "upstream_path": "harness/compareArray.js",
+        "bytes": 243,
+        "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+      },
+      {
+        "path": "harness/isConstructor.js",
+        "upstream_path": "harness/isConstructor.js",
+        "bytes": 544,
+        "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+      },
+      {
+        "path": "harness/promiseHelper.js",
+        "upstream_path": "harness/promiseHelper.js",
+        "bytes": 2411,
+        "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+      },
+      {
+        "path": "harness/propertyHelper.js",
+        "upstream_path": "harness/propertyHelper.js",
+        "bytes": 18956,
+        "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+      },
+      {
+        "path": "harness/sta.js",
+        "upstream_path": "harness/sta.js",
+        "bytes": 792,
+        "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+      },
+      {
+        "path": "test/built-ins/AggregateError/cause-property.js",
+        "upstream_path": "test/built-ins/AggregateError/cause-property.js",
+        "bytes": 1111,
+        "sha256": "105409164ee0d6a61a21bd1ff06d6a36c9823966c184844bd68a21d494b80d51"
+      },
+      {
+        "path": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+        "upstream_path": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+        "bytes": 3736,
+        "sha256": "e3d474c49e00d214cecaed0508a087e070d6180c45c2241d40c9b1350d3e55e5"
+      },
+      {
+        "path": "test/built-ins/AggregateError/errors-iterabletolist.js",
+        "upstream_path": "test/built-ins/AggregateError/errors-iterabletolist.js",
+        "bytes": 1773,
+        "sha256": "f17bcaa26443a42ebb3a8df3aa303846bf6845272286b2e935520ac5c5386fce"
+      },
+      {
+        "path": "test/built-ins/AggregateError/is-a-constructor.js",
+        "upstream_path": "test/built-ins/AggregateError/is-a-constructor.js",
+        "bytes": 866,
+        "sha256": "6b85f1fdb9f667ea2afc158caac5d390116a76e50c4e0f6a78fb0f8c39e0d63f"
+      },
+      {
+        "path": "test/built-ins/AggregateError/length.js",
+        "upstream_path": "test/built-ins/AggregateError/length.js",
+        "bytes": 1106,
+        "sha256": "9c3aa12013f323a3b40d0d887b889c7de9183a41fe280dfc9b3e2b9981a22b68"
+      },
+      {
+        "path": "test/built-ins/AggregateError/message-method-prop-cast.js",
+        "upstream_path": "test/built-ins/AggregateError/message-method-prop-cast.js",
+        "bytes": 1562,
+        "sha256": "a2f6b97f70afe49023f20e85b5aa7d6af10a51889e3a8e28c664e64e661eb872"
+      },
+      {
+        "path": "test/built-ins/AggregateError/message-method-prop.js",
+        "upstream_path": "test/built-ins/AggregateError/message-method-prop.js",
+        "bytes": 857,
+        "sha256": "e16238c3c5e025bc229fd80748469bc8a4a5257120762288221aa28dd878f454"
+      },
+      {
+        "path": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+        "upstream_path": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+        "bytes": 856,
+        "sha256": "d07529461fb3e9ca53bb6d0bc5da2d4a730fce7f8d4fe20b27965faacf17eee4"
+      },
+      {
+        "path": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+        "upstream_path": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+        "bytes": 1180,
+        "sha256": "ecd15a9e51445934d009e1570e67d3cb099f4e98b2c517bb178404993d71e1bb"
+      },
+      {
+        "path": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+        "upstream_path": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+        "bytes": 770,
+        "sha256": "b0b8eec0d6b2ec8916972b3d422b5c3c86a3587eeabf6b38383d8775e891b947"
+      },
+      {
+        "path": "test/built-ins/AggregateError/name.js",
+        "upstream_path": "test/built-ins/AggregateError/name.js",
+        "bytes": 1174,
+        "sha256": "39229a54965409452c33b040f8584e1f9b1d313e968dbed0a02b3a2ab8318311"
+      },
+      {
+        "path": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+        "bytes": 538,
+        "sha256": "cf9b9a146734ca947d78490b6b3b2a51ea64bd819cead2d691a0771823ede18d"
+      },
+      {
+        "path": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+        "bytes": 1420,
+        "sha256": "ae9d0ee0af3557195dd0fb1d61c858ab2a9f3adbe3f736057a4ab2730d6965de"
+      },
+      {
+        "path": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+        "bytes": 1651,
+        "sha256": "efa50936d077637ad43f2a043e07ba3a6c305906ed31257d61083658a5df4280"
+      },
+      {
+        "path": "test/built-ins/AggregateError/newtarget-proto.js",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-proto.js",
+        "bytes": 1228,
+        "sha256": "15851697371840b323cca65a115ef6b1cc9355de7f7ad76389cc70766672c0d9"
+      },
+      {
+        "path": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+        "upstream_path": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+        "bytes": 769,
+        "sha256": "eae9bfe1823d6a4f0cffa17f01d1ea47b8854da250fbcfb5de79ee4635e90273"
+      },
+      {
+        "path": "test/built-ins/AggregateError/prop-desc.js",
+        "upstream_path": "test/built-ins/AggregateError/prop-desc.js",
+        "bytes": 716,
+        "sha256": "9ec2e1aaf727e65e91bf3336e30eaef4deb26c1527d9f4c42c3e4ee22a68c43f"
+      },
+      {
+        "path": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+        "upstream_path": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+        "bytes": 2455,
+        "sha256": "1c3451e247c6fed9e593dfb1287604331e130a87e42e261346c7cb65025e688a"
+      },
+      {
+        "path": "test/built-ins/AggregateError/proto.js",
+        "upstream_path": "test/built-ins/AggregateError/proto.js",
+        "bytes": 482,
+        "sha256": "3d980cdfd3ecce3b1c22398d30a66eef719237358055eb06f24168a0aa2f3330"
+      },
+      {
+        "path": "test/built-ins/AggregateError/prototype/constructor.js",
+        "upstream_path": "test/built-ins/AggregateError/prototype/constructor.js",
+        "bytes": 795,
+        "sha256": "2370eeeecd813974cfb8e9be8ea2fc1233ddafdb955f61b175a6bfe50d493618"
+      },
+      {
+        "path": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+        "upstream_path": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+        "bytes": 629,
+        "sha256": "9cc34f502de42b5fe8e5ef2a46703c0fdb45bc6ed92c8a8855a9aa8f26afc163"
+      },
+      {
+        "path": "test/built-ins/AggregateError/prototype/message.js",
+        "upstream_path": "test/built-ins/AggregateError/prototype/message.js",
+        "bytes": 790,
+        "sha256": "952f555b4bc3a2f096cfd3807b95f6cd6940d90a971c8101e29c1f8c0d6ecc32"
+      },
+      {
+        "path": "test/built-ins/AggregateError/prototype/name.js",
+        "upstream_path": "test/built-ins/AggregateError/prototype/name.js",
+        "bytes": 746,
+        "sha256": "2aac7c149c2f9981e1bf761988f3febbe7836cab85decb6114c577d8fac001ec"
+      },
+      {
+        "path": "test/built-ins/AggregateError/prototype/prop-desc.js",
+        "upstream_path": "test/built-ins/AggregateError/prototype/prop-desc.js",
+        "bytes": 716,
+        "sha256": "5f8c34ae9c2d177e3fd9422bd3eaceec6127aa349b7268c9c23e6d67210ae313"
+      },
+      {
+        "path": "test/built-ins/AggregateError/prototype/proto.js",
+        "upstream_path": "test/built-ins/AggregateError/prototype/proto.js",
+        "bytes": 573,
+        "sha256": "3e7e9ddd7ebc6f286cac2219e89e1cc9d9b5971db5c31759cdca900cfd3da99a"
+      }
+    ],
+    "inventory_proof": {
+      "method": "complete-nonrecursive-git-trees",
+      "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+      "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+      "directory_trees": {
+        "AggregateError": "29aa43922ae5a34467878bf9f498ffc4a89bdf67",
+        "AggregateError/prototype": "f1b375f2e936e2329af2c4307260ab896efd7daf"
+      },
+      "auxiliary_blobs": {
+        "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+        "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+        "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+        "harness/promiseHelper.js": "9a8bf627add65c5f8ab7e25768fb7ac6992bc47f",
+        "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+        "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+        "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+        "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+      },
+      "files": [
+        {
+          "path": "inventory-proof/commit.json",
+          "bytes": 1094,
+          "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+          "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+        },
+        {
+          "path": "inventory-proof/tree-29aa43922ae5a34467878bf9f498ffc4a89bdf67.json",
+          "bytes": 4658,
+          "sha256": "026068adf1848915904aa79644985b409386699bb318eab2d4aaeaa636c35239",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/29aa43922ae5a34467878bf9f498ffc4a89bdf67"
+        },
+        {
+          "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+          "bytes": 5452,
+          "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+        },
+        {
+          "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+          "bytes": 1374,
+          "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+        },
+        {
+          "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+          "bytes": 13201,
+          "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+        },
+        {
+          "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+          "bytes": 7655,
+          "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+        },
+        {
+          "path": "inventory-proof/tree-f1b375f2e936e2329af2c4307260ab896efd7daf.json",
+          "bytes": 1476,
+          "sha256": "1b9fcc9a885e0a90694ff5c66f97094227f5ade528746a684364853daa0f73d4",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/f1b375f2e936e2329af2c4307260ab896efd7daf"
+        }
+      ]
+    }
+  },
+  "manifest_sha256": "ae30b6c1019a0e75df65de5199685f87caeb310f2750eea59c8f2b5b718fa1a1",
+  "all_files": [
+    {
+      "path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/promiseHelper.js",
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "inventory-proof/commit.json",
+      "bytes": 1094,
+      "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0"
+    },
+    {
+      "path": "inventory-proof/tree-29aa43922ae5a34467878bf9f498ffc4a89bdf67.json",
+      "bytes": 4658,
+      "sha256": "026068adf1848915904aa79644985b409386699bb318eab2d4aaeaa636c35239"
+    },
+    {
+      "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+      "bytes": 5452,
+      "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb"
+    },
+    {
+      "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+      "bytes": 1374,
+      "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e"
+    },
+    {
+      "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+      "bytes": 13201,
+      "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e"
+    },
+    {
+      "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+      "bytes": 7655,
+      "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105"
+    },
+    {
+      "path": "inventory-proof/tree-f1b375f2e936e2329af2c4307260ab896efd7daf.json",
+      "bytes": 1476,
+      "sha256": "1b9fcc9a885e0a90694ff5c66f97094227f5ade528746a684364853daa0f73d4"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 12635,
+      "sha256": "ae30b6c1019a0e75df65de5199685f87caeb310f2750eea59c8f2b5b718fa1a1"
+    },
+    {
+      "path": "test/built-ins/AggregateError/cause-property.js",
+      "bytes": 1111,
+      "sha256": "105409164ee0d6a61a21bd1ff06d6a36c9823966c184844bd68a21d494b80d51"
+    },
+    {
+      "path": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+      "bytes": 3736,
+      "sha256": "e3d474c49e00d214cecaed0508a087e070d6180c45c2241d40c9b1350d3e55e5"
+    },
+    {
+      "path": "test/built-ins/AggregateError/errors-iterabletolist.js",
+      "bytes": 1773,
+      "sha256": "f17bcaa26443a42ebb3a8df3aa303846bf6845272286b2e935520ac5c5386fce"
+    },
+    {
+      "path": "test/built-ins/AggregateError/is-a-constructor.js",
+      "bytes": 866,
+      "sha256": "6b85f1fdb9f667ea2afc158caac5d390116a76e50c4e0f6a78fb0f8c39e0d63f"
+    },
+    {
+      "path": "test/built-ins/AggregateError/length.js",
+      "bytes": 1106,
+      "sha256": "9c3aa12013f323a3b40d0d887b889c7de9183a41fe280dfc9b3e2b9981a22b68"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-method-prop-cast.js",
+      "bytes": 1562,
+      "sha256": "a2f6b97f70afe49023f20e85b5aa7d6af10a51889e3a8e28c664e64e661eb872"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-method-prop.js",
+      "bytes": 857,
+      "sha256": "e16238c3c5e025bc229fd80748469bc8a4a5257120762288221aa28dd878f454"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+      "bytes": 856,
+      "sha256": "d07529461fb3e9ca53bb6d0bc5da2d4a730fce7f8d4fe20b27965faacf17eee4"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+      "bytes": 1180,
+      "sha256": "ecd15a9e51445934d009e1570e67d3cb099f4e98b2c517bb178404993d71e1bb"
+    },
+    {
+      "path": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+      "bytes": 770,
+      "sha256": "b0b8eec0d6b2ec8916972b3d422b5c3c86a3587eeabf6b38383d8775e891b947"
+    },
+    {
+      "path": "test/built-ins/AggregateError/name.js",
+      "bytes": 1174,
+      "sha256": "39229a54965409452c33b040f8584e1f9b1d313e968dbed0a02b3a2ab8318311"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+      "bytes": 538,
+      "sha256": "cf9b9a146734ca947d78490b6b3b2a51ea64bd819cead2d691a0771823ede18d"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+      "bytes": 1420,
+      "sha256": "ae9d0ee0af3557195dd0fb1d61c858ab2a9f3adbe3f736057a4ab2730d6965de"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+      "bytes": 1651,
+      "sha256": "efa50936d077637ad43f2a043e07ba3a6c305906ed31257d61083658a5df4280"
+    },
+    {
+      "path": "test/built-ins/AggregateError/newtarget-proto.js",
+      "bytes": 1228,
+      "sha256": "15851697371840b323cca65a115ef6b1cc9355de7f7ad76389cc70766672c0d9"
+    },
+    {
+      "path": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+      "bytes": 769,
+      "sha256": "eae9bfe1823d6a4f0cffa17f01d1ea47b8854da250fbcfb5de79ee4635e90273"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prop-desc.js",
+      "bytes": 716,
+      "sha256": "9ec2e1aaf727e65e91bf3336e30eaef4deb26c1527d9f4c42c3e4ee22a68c43f"
+    },
+    {
+      "path": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+      "bytes": 2455,
+      "sha256": "1c3451e247c6fed9e593dfb1287604331e130a87e42e261346c7cb65025e688a"
+    },
+    {
+      "path": "test/built-ins/AggregateError/proto.js",
+      "bytes": 482,
+      "sha256": "3d980cdfd3ecce3b1c22398d30a66eef719237358055eb06f24168a0aa2f3330"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/constructor.js",
+      "bytes": 795,
+      "sha256": "2370eeeecd813974cfb8e9be8ea2fc1233ddafdb955f61b175a6bfe50d493618"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+      "bytes": 629,
+      "sha256": "9cc34f502de42b5fe8e5ef2a46703c0fdb45bc6ed92c8a8855a9aa8f26afc163"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/message.js",
+      "bytes": 790,
+      "sha256": "952f555b4bc3a2f096cfd3807b95f6cd6940d90a971c8101e29c1f8c0d6ecc32"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/name.js",
+      "bytes": 746,
+      "sha256": "2aac7c149c2f9981e1bf761988f3febbe7836cab85decb6114c577d8fac001ec"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/prop-desc.js",
+      "bytes": 716,
+      "sha256": "5f8c34ae9c2d177e3fd9422bd3eaceec6127aa349b7268c9c23e6d67210ae313"
+    },
+    {
+      "path": "test/built-ins/AggregateError/prototype/proto.js",
+      "bytes": 573,
+      "sha256": "3e7e9ddd7ebc6f286cac2219e89e1cc9d9b5971db5c31759cdca900cfd3da99a"
+    }
+  ],
+  "metadata": {
+    "test/built-ins/AggregateError/cause-property.js": {
+      "features": [
+        "AggregateError",
+        "error-cause"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/errors-iterabletolist-failures.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.iterator"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/errors-iterabletolist.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.iterator"
+      ],
+      "flags": [],
+      "includes": [
+        "compareArray.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/is-a-constructor.js": {
+      "features": [
+        "Reflect.construct",
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "isConstructor.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/length.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-method-prop-cast.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-method-prop.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js": {
+      "features": [
+        "AggregateError",
+        "Symbol",
+        "Symbol.toPrimitive"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-tostring-abrupt.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.toPrimitive"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-undefined-no-prop.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/name.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-is-undefined.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-proto-custom.js": {
+      "features": [
+        "AggregateError",
+        "Reflect.construct"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-proto-fallback.js": {
+      "features": [
+        "AggregateError",
+        "Symbol"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-proto.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/order-of-args-evaluation.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.iterator"
+      ],
+      "flags": [],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prop-desc.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/proto-from-ctor-realm.js": {
+      "features": [
+        "AggregateError",
+        "cross-realm",
+        "Reflect",
+        "Symbol"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/proto.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/constructor.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/message.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/name.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/prop-desc.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/proto.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    }
+  },
+  "case_identities": [
+    {
+      "id": "test/built-ins/AggregateError/cause-property.js:sloppy",
+      "case_sha256": "6e3424a092ee9ef0b3d95307e6d9bef85330a9bbf1cdadc1fe01cfb773b932bb"
+    },
+    {
+      "id": "test/built-ins/AggregateError/cause-property.js:strict",
+      "case_sha256": "7eb39877073e7b7cece0d856eb9f12fc65384c8a3ae7b7f612c420de43bb3b75"
+    },
+    {
+      "id": "test/built-ins/AggregateError/errors-iterabletolist-failures.js:sloppy",
+      "case_sha256": "614c20d43b8870b16196785c2a1ae7e7ce4bb09adda1703e258ff9f46a4e0acd"
+    },
+    {
+      "id": "test/built-ins/AggregateError/errors-iterabletolist-failures.js:strict",
+      "case_sha256": "bfd0a3bd7ebab076b468334ee8f2ca7238e6d185b2a1dc65c561ca1547a40ae8"
+    },
+    {
+      "id": "test/built-ins/AggregateError/errors-iterabletolist.js:sloppy",
+      "case_sha256": "68e186400b439a33406196c1dcd0cf7e43f1d96286851598f64717834d38f4a8"
+    },
+    {
+      "id": "test/built-ins/AggregateError/errors-iterabletolist.js:strict",
+      "case_sha256": "72c471805883ae129b58f44a39936a53c928a9b0ebdac77347904e2f88702844"
+    },
+    {
+      "id": "test/built-ins/AggregateError/is-a-constructor.js:sloppy",
+      "case_sha256": "812b58d651e32ffb51411105ed5520d4027736781490f487f0bd2e3345f6b94e"
+    },
+    {
+      "id": "test/built-ins/AggregateError/is-a-constructor.js:strict",
+      "case_sha256": "083f7a73410a44a410acaf9b5cebe2d6a7edf7fb4db16eadb87dd9849c6a3c74"
+    },
+    {
+      "id": "test/built-ins/AggregateError/length.js:sloppy",
+      "case_sha256": "b53178f1159e9b0b5eed22a19d8f42ef9c1d9575200cfef175184f50a9d8839b"
+    },
+    {
+      "id": "test/built-ins/AggregateError/length.js:strict",
+      "case_sha256": "cc50e0390a9ae09200f5ee32789c60ae8396ee3acf20545b4972538045bde35e"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-method-prop-cast.js:sloppy",
+      "case_sha256": "cefbf471851ebef43c5464bde822e56af07e5aa88b2166cde89499c5647dd678"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-method-prop-cast.js:strict",
+      "case_sha256": "31bd5b735e6979dfc97a0b7455a15907f5d31e152d152154eb5e6690e45013a2"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-method-prop.js:sloppy",
+      "case_sha256": "9b4060b2fe97aa816258203045af030c549bbf7953d80335967af62aa709674b"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-method-prop.js:strict",
+      "case_sha256": "f5c4f58ad58d917f95716a114e7ee6a3a2b50a1dc4f288716fde01350ecd5f4e"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js:sloppy",
+      "case_sha256": "cf92621edba6fb2a489534c504fa4a9e00a99f711cb459f665e45a59394eb128"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js:strict",
+      "case_sha256": "c11bc4fe7f97b8730702ea626a4501c9d4a52772eb88b4cb3b1d57b8ac9a3b92"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt.js:sloppy",
+      "case_sha256": "ca54d9cf5fd0e7d9af6d13e0945835f5855ee55cfca82c1ccd02948b407cbe0b"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt.js:strict",
+      "case_sha256": "2fdaf1657b2617909316e1d5b06de62c1f09d446eaeda0cd87554d3d969cde99"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-undefined-no-prop.js:sloppy",
+      "case_sha256": "2d6cd9a34c6df211befaf05245926c2d826b74a757aa371435171098da1c0e7f"
+    },
+    {
+      "id": "test/built-ins/AggregateError/message-undefined-no-prop.js:strict",
+      "case_sha256": "cbe7063d4257f044493c8a20a847e0f4f2573a2f3058ad0d7e70837e8ea7febf"
+    },
+    {
+      "id": "test/built-ins/AggregateError/name.js:sloppy",
+      "case_sha256": "8549a10625b4fbac68856447fcd38041304cd07527463da004a7308a3b181148"
+    },
+    {
+      "id": "test/built-ins/AggregateError/name.js:strict",
+      "case_sha256": "70ce759bd20e9cc5f4b577739a80789bbcc86971484f9a8e035ce0f052d4f3aa"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-is-undefined.js:sloppy",
+      "case_sha256": "09a9d2c8c57cc0101f6f6c7a946265ef92ccd9a9f168e32ea5afed187fe8a6af"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-is-undefined.js:strict",
+      "case_sha256": "dc06ea2af1d229f550d0ed4dd48b1277ba03af10c9c3e795fd3290d21d38ad72"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-proto-custom.js:sloppy",
+      "case_sha256": "aa7d849f532ccd7c1e544ee0ddb66babe648761a3a4111ed10438250e1877cfe"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-proto-custom.js:strict",
+      "case_sha256": "a20cfb65cb9dafb215946979359ec82458dfcd8a7122bb125ee9f39cf68ef622"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-proto-fallback.js:sloppy",
+      "case_sha256": "e336c829086097c5b29d8333eadf80536ad56451667961781bd8f13d38b3da42"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-proto-fallback.js:strict",
+      "case_sha256": "18d5ebe5d1d7ede8e9bd145bcaef27f2f6584f2181771dd53adc452d42a962b7"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-proto.js:sloppy",
+      "case_sha256": "eec53ad8c67955416f2708bac3374bf7d58931c852c6c3c008bda8d360c93d2f"
+    },
+    {
+      "id": "test/built-ins/AggregateError/newtarget-proto.js:strict",
+      "case_sha256": "eb7d6bf17d75879c091ee0442a6a53e762dcb4dd48f5631c759909602c1c2ec4"
+    },
+    {
+      "id": "test/built-ins/AggregateError/order-of-args-evaluation.js:sloppy",
+      "case_sha256": "28be589703bb99698f28bc0d6b9f28d362b9ee520f4fc8b2c46447bd8a0b5ea6"
+    },
+    {
+      "id": "test/built-ins/AggregateError/order-of-args-evaluation.js:strict",
+      "case_sha256": "165ea6977edff079ea8469fc7ace9d91bc4b72c6a924fbc55b4297f8001d4a50"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prop-desc.js:sloppy",
+      "case_sha256": "739dc1088581d1ff4d16dbd8f5ed5371f9aa6f7178c06e4290e4c6789fc7692b"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prop-desc.js:strict",
+      "case_sha256": "989e28566e5fbf760b4b4d841a26a1931f8d8dba542ff5ff0491a1be99393e72"
+    },
+    {
+      "id": "test/built-ins/AggregateError/proto-from-ctor-realm.js:sloppy",
+      "case_sha256": "3850f9ab431a97ce665f26830ec52e23dd60242c9669f7af9324b6dc3eb0cf4c"
+    },
+    {
+      "id": "test/built-ins/AggregateError/proto-from-ctor-realm.js:strict",
+      "case_sha256": "82126dedde8bc0f94265f4ede10eab4da9470a4611080a83ad4c9b9fb3a80282"
+    },
+    {
+      "id": "test/built-ins/AggregateError/proto.js:sloppy",
+      "case_sha256": "603adfbb5e9cff915101f1e2ffdfecbb437b26a5417de99274bb3c3818e68f1a"
+    },
+    {
+      "id": "test/built-ins/AggregateError/proto.js:strict",
+      "case_sha256": "326364310ba404f90d5bbbbdd565da13d7356af761fb8d96b700e71e2385c49a"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/constructor.js:sloppy",
+      "case_sha256": "90a4a38ba9510e9f2fc3445f5afd1ba6c6a11068619a14dd2e2bad1bffab799b"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/constructor.js:strict",
+      "case_sha256": "9f037c65ecba4a0668c7e1f621d6de689dda52cfa5fc0dfced1de491c5483422"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js:sloppy",
+      "case_sha256": "a975a3b432bd19325c86ed7028693e5d44bbc00cae6567033bcf41e2cae6c5b8"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js:strict",
+      "case_sha256": "a1659556844ab7830c62976c8a1fc1328208102394f5b6e646332108e467f0f1"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/message.js:sloppy",
+      "case_sha256": "b99e994bdc932bf16a1e3b995eb764c5c31493a1b330937db46cae2fd76c0026"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/message.js:strict",
+      "case_sha256": "36bd7b006d4960235844661448aaa49b70ef3f9c52b5cb7d667ad3faf0466ec6"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/name.js:sloppy",
+      "case_sha256": "32f0f8c3b53ee4c84fd1203a34079a7584670c6d1c732235d37beb2c9e8c18e9"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/name.js:strict",
+      "case_sha256": "543b04c8a90dd1913b59efa5fabd883be87cfe3f6bd163b508187ad373ed90b9"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/prop-desc.js:sloppy",
+      "case_sha256": "082fd30133ca428778298a28eb0ac3513f2b3ecf7b3c766459440b2476dcea43"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/prop-desc.js:strict",
+      "case_sha256": "1b76cd1b5c22992034516b2791caf97fd8f7accd5f5d306238eb668e34ac4f99"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/proto.js:sloppy",
+      "case_sha256": "7def004722691b6b1cd8588fc30c852cf66eff50c828d238d01b202d07b36063"
+    },
+    {
+      "id": "test/built-ins/AggregateError/prototype/proto.js:strict",
+      "case_sha256": "7a86be419b88105ce16c6fd7e5b331fbb824eb61bac6bd8c519f8a206982c80a"
+    }
+  ],
+  "qualification": "Frozen source-only import/identity oracle. No engine outcomes or filtering. Cross-realm two modes and untagged Proxy four modes remain in the full fifty."
+}

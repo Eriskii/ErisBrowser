@@ -1,0 +1,3705 @@
+{
+  "auxiliary_files": [
+    "INTERPRETING.md",
+    "LICENSE",
+    "harness/assert.js",
+    "harness/compareArray.js",
+    "harness/isConstructor.js",
+    "harness/promiseHelper.js",
+    "harness/propertyHelper.js",
+    "harness/sta.js"
+  ],
+  "case_identities": [
+    {
+      "case_sha256": "6e3424a092ee9ef0b3d95307e6d9bef85330a9bbf1cdadc1fe01cfb773b932bb",
+      "file": "test/built-ins/AggregateError/cause-property.js",
+      "id": "test/built-ins/AggregateError/cause-property.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "105409164ee0d6a61a21bd1ff06d6a36c9823966c184844bd68a21d494b80d51"
+    },
+    {
+      "case_sha256": "7eb39877073e7b7cece0d856eb9f12fc65384c8a3ae7b7f612c420de43bb3b75",
+      "file": "test/built-ins/AggregateError/cause-property.js",
+      "id": "test/built-ins/AggregateError/cause-property.js:strict",
+      "mode": "strict",
+      "source_sha256": "105409164ee0d6a61a21bd1ff06d6a36c9823966c184844bd68a21d494b80d51"
+    },
+    {
+      "case_sha256": "614c20d43b8870b16196785c2a1ae7e7ce4bb09adda1703e258ff9f46a4e0acd",
+      "file": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+      "id": "test/built-ins/AggregateError/errors-iterabletolist-failures.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "e3d474c49e00d214cecaed0508a087e070d6180c45c2241d40c9b1350d3e55e5"
+    },
+    {
+      "case_sha256": "bfd0a3bd7ebab076b468334ee8f2ca7238e6d185b2a1dc65c561ca1547a40ae8",
+      "file": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+      "id": "test/built-ins/AggregateError/errors-iterabletolist-failures.js:strict",
+      "mode": "strict",
+      "source_sha256": "e3d474c49e00d214cecaed0508a087e070d6180c45c2241d40c9b1350d3e55e5"
+    },
+    {
+      "case_sha256": "68e186400b439a33406196c1dcd0cf7e43f1d96286851598f64717834d38f4a8",
+      "file": "test/built-ins/AggregateError/errors-iterabletolist.js",
+      "id": "test/built-ins/AggregateError/errors-iterabletolist.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "f17bcaa26443a42ebb3a8df3aa303846bf6845272286b2e935520ac5c5386fce"
+    },
+    {
+      "case_sha256": "72c471805883ae129b58f44a39936a53c928a9b0ebdac77347904e2f88702844",
+      "file": "test/built-ins/AggregateError/errors-iterabletolist.js",
+      "id": "test/built-ins/AggregateError/errors-iterabletolist.js:strict",
+      "mode": "strict",
+      "source_sha256": "f17bcaa26443a42ebb3a8df3aa303846bf6845272286b2e935520ac5c5386fce"
+    },
+    {
+      "case_sha256": "812b58d651e32ffb51411105ed5520d4027736781490f487f0bd2e3345f6b94e",
+      "file": "test/built-ins/AggregateError/is-a-constructor.js",
+      "id": "test/built-ins/AggregateError/is-a-constructor.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "6b85f1fdb9f667ea2afc158caac5d390116a76e50c4e0f6a78fb0f8c39e0d63f"
+    },
+    {
+      "case_sha256": "083f7a73410a44a410acaf9b5cebe2d6a7edf7fb4db16eadb87dd9849c6a3c74",
+      "file": "test/built-ins/AggregateError/is-a-constructor.js",
+      "id": "test/built-ins/AggregateError/is-a-constructor.js:strict",
+      "mode": "strict",
+      "source_sha256": "6b85f1fdb9f667ea2afc158caac5d390116a76e50c4e0f6a78fb0f8c39e0d63f"
+    },
+    {
+      "case_sha256": "b53178f1159e9b0b5eed22a19d8f42ef9c1d9575200cfef175184f50a9d8839b",
+      "file": "test/built-ins/AggregateError/length.js",
+      "id": "test/built-ins/AggregateError/length.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "9c3aa12013f323a3b40d0d887b889c7de9183a41fe280dfc9b3e2b9981a22b68"
+    },
+    {
+      "case_sha256": "cc50e0390a9ae09200f5ee32789c60ae8396ee3acf20545b4972538045bde35e",
+      "file": "test/built-ins/AggregateError/length.js",
+      "id": "test/built-ins/AggregateError/length.js:strict",
+      "mode": "strict",
+      "source_sha256": "9c3aa12013f323a3b40d0d887b889c7de9183a41fe280dfc9b3e2b9981a22b68"
+    },
+    {
+      "case_sha256": "cefbf471851ebef43c5464bde822e56af07e5aa88b2166cde89499c5647dd678",
+      "file": "test/built-ins/AggregateError/message-method-prop-cast.js",
+      "id": "test/built-ins/AggregateError/message-method-prop-cast.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "a2f6b97f70afe49023f20e85b5aa7d6af10a51889e3a8e28c664e64e661eb872"
+    },
+    {
+      "case_sha256": "31bd5b735e6979dfc97a0b7455a15907f5d31e152d152154eb5e6690e45013a2",
+      "file": "test/built-ins/AggregateError/message-method-prop-cast.js",
+      "id": "test/built-ins/AggregateError/message-method-prop-cast.js:strict",
+      "mode": "strict",
+      "source_sha256": "a2f6b97f70afe49023f20e85b5aa7d6af10a51889e3a8e28c664e64e661eb872"
+    },
+    {
+      "case_sha256": "9b4060b2fe97aa816258203045af030c549bbf7953d80335967af62aa709674b",
+      "file": "test/built-ins/AggregateError/message-method-prop.js",
+      "id": "test/built-ins/AggregateError/message-method-prop.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "e16238c3c5e025bc229fd80748469bc8a4a5257120762288221aa28dd878f454"
+    },
+    {
+      "case_sha256": "f5c4f58ad58d917f95716a114e7ee6a3a2b50a1dc4f288716fde01350ecd5f4e",
+      "file": "test/built-ins/AggregateError/message-method-prop.js",
+      "id": "test/built-ins/AggregateError/message-method-prop.js:strict",
+      "mode": "strict",
+      "source_sha256": "e16238c3c5e025bc229fd80748469bc8a4a5257120762288221aa28dd878f454"
+    },
+    {
+      "case_sha256": "cf92621edba6fb2a489534c504fa4a9e00a99f711cb459f665e45a59394eb128",
+      "file": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "d07529461fb3e9ca53bb6d0bc5da2d4a730fce7f8d4fe20b27965faacf17eee4"
+    },
+    {
+      "case_sha256": "c11bc4fe7f97b8730702ea626a4501c9d4a52772eb88b4cb3b1d57b8ac9a3b92",
+      "file": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js:strict",
+      "mode": "strict",
+      "source_sha256": "d07529461fb3e9ca53bb6d0bc5da2d4a730fce7f8d4fe20b27965faacf17eee4"
+    },
+    {
+      "case_sha256": "ca54d9cf5fd0e7d9af6d13e0945835f5855ee55cfca82c1ccd02948b407cbe0b",
+      "file": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "ecd15a9e51445934d009e1570e67d3cb099f4e98b2c517bb178404993d71e1bb"
+    },
+    {
+      "case_sha256": "2fdaf1657b2617909316e1d5b06de62c1f09d446eaeda0cd87554d3d969cde99",
+      "file": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+      "id": "test/built-ins/AggregateError/message-tostring-abrupt.js:strict",
+      "mode": "strict",
+      "source_sha256": "ecd15a9e51445934d009e1570e67d3cb099f4e98b2c517bb178404993d71e1bb"
+    },
+    {
+      "case_sha256": "2d6cd9a34c6df211befaf05245926c2d826b74a757aa371435171098da1c0e7f",
+      "file": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+      "id": "test/built-ins/AggregateError/message-undefined-no-prop.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "b0b8eec0d6b2ec8916972b3d422b5c3c86a3587eeabf6b38383d8775e891b947"
+    },
+    {
+      "case_sha256": "cbe7063d4257f044493c8a20a847e0f4f2573a2f3058ad0d7e70837e8ea7febf",
+      "file": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+      "id": "test/built-ins/AggregateError/message-undefined-no-prop.js:strict",
+      "mode": "strict",
+      "source_sha256": "b0b8eec0d6b2ec8916972b3d422b5c3c86a3587eeabf6b38383d8775e891b947"
+    },
+    {
+      "case_sha256": "8549a10625b4fbac68856447fcd38041304cd07527463da004a7308a3b181148",
+      "file": "test/built-ins/AggregateError/name.js",
+      "id": "test/built-ins/AggregateError/name.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "39229a54965409452c33b040f8584e1f9b1d313e968dbed0a02b3a2ab8318311"
+    },
+    {
+      "case_sha256": "70ce759bd20e9cc5f4b577739a80789bbcc86971484f9a8e035ce0f052d4f3aa",
+      "file": "test/built-ins/AggregateError/name.js",
+      "id": "test/built-ins/AggregateError/name.js:strict",
+      "mode": "strict",
+      "source_sha256": "39229a54965409452c33b040f8584e1f9b1d313e968dbed0a02b3a2ab8318311"
+    },
+    {
+      "case_sha256": "09a9d2c8c57cc0101f6f6c7a946265ef92ccd9a9f168e32ea5afed187fe8a6af",
+      "file": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+      "id": "test/built-ins/AggregateError/newtarget-is-undefined.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "cf9b9a146734ca947d78490b6b3b2a51ea64bd819cead2d691a0771823ede18d"
+    },
+    {
+      "case_sha256": "dc06ea2af1d229f550d0ed4dd48b1277ba03af10c9c3e795fd3290d21d38ad72",
+      "file": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+      "id": "test/built-ins/AggregateError/newtarget-is-undefined.js:strict",
+      "mode": "strict",
+      "source_sha256": "cf9b9a146734ca947d78490b6b3b2a51ea64bd819cead2d691a0771823ede18d"
+    },
+    {
+      "case_sha256": "aa7d849f532ccd7c1e544ee0ddb66babe648761a3a4111ed10438250e1877cfe",
+      "file": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+      "id": "test/built-ins/AggregateError/newtarget-proto-custom.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "ae9d0ee0af3557195dd0fb1d61c858ab2a9f3adbe3f736057a4ab2730d6965de"
+    },
+    {
+      "case_sha256": "a20cfb65cb9dafb215946979359ec82458dfcd8a7122bb125ee9f39cf68ef622",
+      "file": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+      "id": "test/built-ins/AggregateError/newtarget-proto-custom.js:strict",
+      "mode": "strict",
+      "source_sha256": "ae9d0ee0af3557195dd0fb1d61c858ab2a9f3adbe3f736057a4ab2730d6965de"
+    },
+    {
+      "case_sha256": "e336c829086097c5b29d8333eadf80536ad56451667961781bd8f13d38b3da42",
+      "file": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+      "id": "test/built-ins/AggregateError/newtarget-proto-fallback.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "efa50936d077637ad43f2a043e07ba3a6c305906ed31257d61083658a5df4280"
+    },
+    {
+      "case_sha256": "18d5ebe5d1d7ede8e9bd145bcaef27f2f6584f2181771dd53adc452d42a962b7",
+      "file": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+      "id": "test/built-ins/AggregateError/newtarget-proto-fallback.js:strict",
+      "mode": "strict",
+      "source_sha256": "efa50936d077637ad43f2a043e07ba3a6c305906ed31257d61083658a5df4280"
+    },
+    {
+      "case_sha256": "eec53ad8c67955416f2708bac3374bf7d58931c852c6c3c008bda8d360c93d2f",
+      "file": "test/built-ins/AggregateError/newtarget-proto.js",
+      "id": "test/built-ins/AggregateError/newtarget-proto.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "15851697371840b323cca65a115ef6b1cc9355de7f7ad76389cc70766672c0d9"
+    },
+    {
+      "case_sha256": "eb7d6bf17d75879c091ee0442a6a53e762dcb4dd48f5631c759909602c1c2ec4",
+      "file": "test/built-ins/AggregateError/newtarget-proto.js",
+      "id": "test/built-ins/AggregateError/newtarget-proto.js:strict",
+      "mode": "strict",
+      "source_sha256": "15851697371840b323cca65a115ef6b1cc9355de7f7ad76389cc70766672c0d9"
+    },
+    {
+      "case_sha256": "28be589703bb99698f28bc0d6b9f28d362b9ee520f4fc8b2c46447bd8a0b5ea6",
+      "file": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+      "id": "test/built-ins/AggregateError/order-of-args-evaluation.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "eae9bfe1823d6a4f0cffa17f01d1ea47b8854da250fbcfb5de79ee4635e90273"
+    },
+    {
+      "case_sha256": "165ea6977edff079ea8469fc7ace9d91bc4b72c6a924fbc55b4297f8001d4a50",
+      "file": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+      "id": "test/built-ins/AggregateError/order-of-args-evaluation.js:strict",
+      "mode": "strict",
+      "source_sha256": "eae9bfe1823d6a4f0cffa17f01d1ea47b8854da250fbcfb5de79ee4635e90273"
+    },
+    {
+      "case_sha256": "739dc1088581d1ff4d16dbd8f5ed5371f9aa6f7178c06e4290e4c6789fc7692b",
+      "file": "test/built-ins/AggregateError/prop-desc.js",
+      "id": "test/built-ins/AggregateError/prop-desc.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "9ec2e1aaf727e65e91bf3336e30eaef4deb26c1527d9f4c42c3e4ee22a68c43f"
+    },
+    {
+      "case_sha256": "989e28566e5fbf760b4b4d841a26a1931f8d8dba542ff5ff0491a1be99393e72",
+      "file": "test/built-ins/AggregateError/prop-desc.js",
+      "id": "test/built-ins/AggregateError/prop-desc.js:strict",
+      "mode": "strict",
+      "source_sha256": "9ec2e1aaf727e65e91bf3336e30eaef4deb26c1527d9f4c42c3e4ee22a68c43f"
+    },
+    {
+      "case_sha256": "3850f9ab431a97ce665f26830ec52e23dd60242c9669f7af9324b6dc3eb0cf4c",
+      "file": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+      "id": "test/built-ins/AggregateError/proto-from-ctor-realm.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "1c3451e247c6fed9e593dfb1287604331e130a87e42e261346c7cb65025e688a"
+    },
+    {
+      "case_sha256": "82126dedde8bc0f94265f4ede10eab4da9470a4611080a83ad4c9b9fb3a80282",
+      "file": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+      "id": "test/built-ins/AggregateError/proto-from-ctor-realm.js:strict",
+      "mode": "strict",
+      "source_sha256": "1c3451e247c6fed9e593dfb1287604331e130a87e42e261346c7cb65025e688a"
+    },
+    {
+      "case_sha256": "603adfbb5e9cff915101f1e2ffdfecbb437b26a5417de99274bb3c3818e68f1a",
+      "file": "test/built-ins/AggregateError/proto.js",
+      "id": "test/built-ins/AggregateError/proto.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "3d980cdfd3ecce3b1c22398d30a66eef719237358055eb06f24168a0aa2f3330"
+    },
+    {
+      "case_sha256": "326364310ba404f90d5bbbbdd565da13d7356af761fb8d96b700e71e2385c49a",
+      "file": "test/built-ins/AggregateError/proto.js",
+      "id": "test/built-ins/AggregateError/proto.js:strict",
+      "mode": "strict",
+      "source_sha256": "3d980cdfd3ecce3b1c22398d30a66eef719237358055eb06f24168a0aa2f3330"
+    },
+    {
+      "case_sha256": "90a4a38ba9510e9f2fc3445f5afd1ba6c6a11068619a14dd2e2bad1bffab799b",
+      "file": "test/built-ins/AggregateError/prototype/constructor.js",
+      "id": "test/built-ins/AggregateError/prototype/constructor.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "2370eeeecd813974cfb8e9be8ea2fc1233ddafdb955f61b175a6bfe50d493618"
+    },
+    {
+      "case_sha256": "9f037c65ecba4a0668c7e1f621d6de689dda52cfa5fc0dfced1de491c5483422",
+      "file": "test/built-ins/AggregateError/prototype/constructor.js",
+      "id": "test/built-ins/AggregateError/prototype/constructor.js:strict",
+      "mode": "strict",
+      "source_sha256": "2370eeeecd813974cfb8e9be8ea2fc1233ddafdb955f61b175a6bfe50d493618"
+    },
+    {
+      "case_sha256": "a975a3b432bd19325c86ed7028693e5d44bbc00cae6567033bcf41e2cae6c5b8",
+      "file": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+      "id": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "9cc34f502de42b5fe8e5ef2a46703c0fdb45bc6ed92c8a8855a9aa8f26afc163"
+    },
+    {
+      "case_sha256": "a1659556844ab7830c62976c8a1fc1328208102394f5b6e646332108e467f0f1",
+      "file": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+      "id": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js:strict",
+      "mode": "strict",
+      "source_sha256": "9cc34f502de42b5fe8e5ef2a46703c0fdb45bc6ed92c8a8855a9aa8f26afc163"
+    },
+    {
+      "case_sha256": "b99e994bdc932bf16a1e3b995eb764c5c31493a1b330937db46cae2fd76c0026",
+      "file": "test/built-ins/AggregateError/prototype/message.js",
+      "id": "test/built-ins/AggregateError/prototype/message.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "952f555b4bc3a2f096cfd3807b95f6cd6940d90a971c8101e29c1f8c0d6ecc32"
+    },
+    {
+      "case_sha256": "36bd7b006d4960235844661448aaa49b70ef3f9c52b5cb7d667ad3faf0466ec6",
+      "file": "test/built-ins/AggregateError/prototype/message.js",
+      "id": "test/built-ins/AggregateError/prototype/message.js:strict",
+      "mode": "strict",
+      "source_sha256": "952f555b4bc3a2f096cfd3807b95f6cd6940d90a971c8101e29c1f8c0d6ecc32"
+    },
+    {
+      "case_sha256": "32f0f8c3b53ee4c84fd1203a34079a7584670c6d1c732235d37beb2c9e8c18e9",
+      "file": "test/built-ins/AggregateError/prototype/name.js",
+      "id": "test/built-ins/AggregateError/prototype/name.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "2aac7c149c2f9981e1bf761988f3febbe7836cab85decb6114c577d8fac001ec"
+    },
+    {
+      "case_sha256": "543b04c8a90dd1913b59efa5fabd883be87cfe3f6bd163b508187ad373ed90b9",
+      "file": "test/built-ins/AggregateError/prototype/name.js",
+      "id": "test/built-ins/AggregateError/prototype/name.js:strict",
+      "mode": "strict",
+      "source_sha256": "2aac7c149c2f9981e1bf761988f3febbe7836cab85decb6114c577d8fac001ec"
+    },
+    {
+      "case_sha256": "082fd30133ca428778298a28eb0ac3513f2b3ecf7b3c766459440b2476dcea43",
+      "file": "test/built-ins/AggregateError/prototype/prop-desc.js",
+      "id": "test/built-ins/AggregateError/prototype/prop-desc.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "5f8c34ae9c2d177e3fd9422bd3eaceec6127aa349b7268c9c23e6d67210ae313"
+    },
+    {
+      "case_sha256": "1b76cd1b5c22992034516b2791caf97fd8f7accd5f5d306238eb668e34ac4f99",
+      "file": "test/built-ins/AggregateError/prototype/prop-desc.js",
+      "id": "test/built-ins/AggregateError/prototype/prop-desc.js:strict",
+      "mode": "strict",
+      "source_sha256": "5f8c34ae9c2d177e3fd9422bd3eaceec6127aa349b7268c9c23e6d67210ae313"
+    },
+    {
+      "case_sha256": "7def004722691b6b1cd8588fc30c852cf66eff50c828d238d01b202d07b36063",
+      "file": "test/built-ins/AggregateError/prototype/proto.js",
+      "id": "test/built-ins/AggregateError/prototype/proto.js:sloppy",
+      "mode": "sloppy",
+      "source_sha256": "3e7e9ddd7ebc6f286cac2219e89e1cc9d9b5971db5c31759cdca900cfd3da99a"
+    },
+    {
+      "case_sha256": "7a86be419b88105ce16c6fd7e5b331fbb824eb61bac6bd8c519f8a206982c80a",
+      "file": "test/built-ins/AggregateError/prototype/proto.js",
+      "id": "test/built-ins/AggregateError/prototype/proto.js:strict",
+      "mode": "strict",
+      "source_sha256": "3e7e9ddd7ebc6f286cac2219e89e1cc9d9b5971db5c31759cdca900cfd3da99a"
+    }
+  ],
+  "controls": [
+    {
+      "case_sha256": "7fe7d94d9e84765c39e095ba88d5f54cb937df0d780785e185ff5dfd3bb74291",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:success",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "success",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(1, 1); assert.sameValue(NaN, NaN);",
+      "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849"
+    },
+    {
+      "case_sha256": "6470c0827c0de6472342233bbb189008df60df75393ac98843660e2729be2e41",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:assert-false",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "assert-false",
+      "prerequisite_ids": [
+        "harness-preflight:success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert(false);",
+      "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4"
+    },
+    {
+      "case_sha256": "a4d7d481cb816dc706a6b8f84e7dbcea5f1d7c6393094ab35cb6d47ab0d39494",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:same-value",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "same-value",
+      "prerequisite_ids": [
+        "harness-preflight:success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(1, 2);",
+      "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031"
+    },
+    {
+      "case_sha256": "8e329999cda16ae14b530d61dcc7794f2b572e0809370e4c6b8ee9faff63d074",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:signed-zero",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "signed-zero",
+      "prerequisite_ids": [
+        "harness-preflight:success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(0, -0);",
+      "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a"
+    },
+    {
+      "case_sha256": "738a0dd64663125af510063f604bec8e8f914f340be2cd3f430eaf1e5cf2cc0c",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:not-same-value",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "not-same-value",
+      "prerequisite_ids": [
+        "harness-preflight:success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.notSameValue(1, 1);",
+      "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415"
+    },
+    {
+      "case_sha256": "bdf648715c68784de062689b85db48546e44e14dc31df5644ff1e420e5623d1c",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:throws-success",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "throws-success",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.throws(TypeError, function () { throw new TypeError(); });",
+      "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7"
+    },
+    {
+      "case_sha256": "d0f5b25203199d201f006e90e7bb6b78023d5bb7ea803581daf5caf2d52fcf9c",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:throws-wrong-type",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "throws-wrong-type",
+      "prerequisite_ids": [
+        "harness-preflight:throws-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.throws(TypeError, function () { throw new RangeError(); });",
+      "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336"
+    },
+    {
+      "case_sha256": "29bc8742a93e811f9680ef2098bfcb4984e86673ea3da41c377e907067cde255",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:throws-missing",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "throws-missing",
+      "prerequisite_ids": [
+        "harness-preflight:throws-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.throws(TypeError, function () {});",
+      "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c"
+    },
+    {
+      "case_sha256": "a883850a23bc0f55e12bb5f3d09780b9935eb141e2af3892dabc5b5a35172096",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:array-mismatch",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "array-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.compareArray([1], [2]);",
+      "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea"
+    },
+    {
+      "case_sha256": "b35a36c10460a813dbcc5a40b356d1ae07c2d54c272b35a717dd6bddf667c51e",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:property-success",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "property-success",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {value: 1, writable: true, enumerable: true, configurable: true});",
+      "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04"
+    },
+    {
+      "case_sha256": "6cbcbbbcae8167c890124971bd07ceb81f6daf8e286ad12025bb4a82a0672944",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:property-writable",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "property-writable",
+      "prerequisite_ids": [
+        "harness-preflight:property-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {writable: false});",
+      "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5"
+    },
+    {
+      "case_sha256": "2a651b1aefd71f4a017d564e91b842569e6cd78d0145d03b20b48d0836c3c56d",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:property-enumerable",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "property-enumerable",
+      "prerequisite_ids": [
+        "harness-preflight:property-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {enumerable: false});",
+      "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5"
+    },
+    {
+      "case_sha256": "e18cf4dde2cd44993c84b43d6a01e68c021d56365f4e15673fe1fa2bdb774cd8",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:property-configurable",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "property-configurable",
+      "prerequisite_ids": [
+        "harness-preflight:property-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {configurable: false});",
+      "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6"
+    },
+    {
+      "case_sha256": "3c5650218df0ef937e5a3ecd6f9c7460f960e61f0c9832515a63b77b832d78cd",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-success",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-success",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(1, 1); assert.sameValue(NaN, NaN);",
+      "source_sha256": "2485acdeffa6a0eaa6c2483198a4384021f8b3dda5fbe0e31889ab4a21637849"
+    },
+    {
+      "case_sha256": "11fe2e709b0565e340d83176bc248895795e43c8d9eaa47619dcd939374937e7",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-assert-false",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-assert-false",
+      "prerequisite_ids": [
+        "harness-preflight:strict-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert(false);",
+      "source_sha256": "d0d1f50a5cc28c1ea72f93a59ff43e2de631ed7fb9add9964dd1f29a38d065f4"
+    },
+    {
+      "case_sha256": "03efed7bd86096fb67e4d8e0941b4768e61e8f7068c95f9b5ac63c86a95ee96f",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-same-value",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-same-value",
+      "prerequisite_ids": [
+        "harness-preflight:strict-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(1, 2);",
+      "source_sha256": "22ae75695ff709309cb80f46b82cf58252826926b3bd8e3fadfae56c72c2f031"
+    },
+    {
+      "case_sha256": "b4ce5d0baa51a09beb8d14cc65bf66e805a4f48e03ad306bd044f6bf0fba7631",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-signed-zero",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-signed-zero",
+      "prerequisite_ids": [
+        "harness-preflight:strict-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(0, -0);",
+      "source_sha256": "862870d24485db4c8763181434fcc45886c6504cb6c14f24740f0f8107cf665a"
+    },
+    {
+      "case_sha256": "615fa57db6e08e455e124d6f3eaf118f2e4eab20161f51aab723923c9a0f8d36",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-not-same-value",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-not-same-value",
+      "prerequisite_ids": [
+        "harness-preflight:strict-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.notSameValue(1, 1);",
+      "source_sha256": "524aa491b0239cd572a71a972f22557d333509659a55e3cb894bee0534ae8415"
+    },
+    {
+      "case_sha256": "bafcbdea8809ac7c1628fe502c6a060a0e2ad7ca9a8598faf3e902734673c4e4",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-throws-success",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-throws-success",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.throws(TypeError, function () { throw new TypeError(); });",
+      "source_sha256": "06adf2351bff48eebd68184c6e4a9fb74e0c00f9acc6e14f4d35808a2a5017a7"
+    },
+    {
+      "case_sha256": "f83aeacb9dc37b65255ab7bfd51a0d8052e8da2915d8fb7fe06777292780b078",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-throws-wrong-type",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-throws-wrong-type",
+      "prerequisite_ids": [
+        "harness-preflight:strict-throws-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.throws(TypeError, function () { throw new RangeError(); });",
+      "source_sha256": "99982c4b3bd8f707222e78c1742c855cbc5428ffb83171661392e6e461be1336"
+    },
+    {
+      "case_sha256": "a6d552fcd92dddd52b6239ebe82177f95648349f2b07847a36307aada0579e35",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-throws-missing",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-throws-missing",
+      "prerequisite_ids": [
+        "harness-preflight:strict-throws-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.throws(TypeError, function () {});",
+      "source_sha256": "25cc89bd353c7f8aa2fb23afb2e1f2e52324e36a385647a498e157e5ccd29f5c"
+    },
+    {
+      "case_sha256": "8f8086b6d6f7fc051eac7270c9ca4be3f85cbcb5ae935dabd4c6d264cc917338",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-array-mismatch",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-array-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:strict-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.compareArray([1], [2]);",
+      "source_sha256": "fccb44163731695919a45cb9cfbb1c99f5c508778937eac46f5fa5e97f5f60ea"
+    },
+    {
+      "case_sha256": "a46db4f2087865126ceac90ba93407c3877f00c0c698d8f4e604111f395780ba",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:strict-property-success",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-property-success",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {value: 1, writable: true, enumerable: true, configurable: true});",
+      "source_sha256": "5f3a5de6c5896c29b489bec40463fbf565e86f993f00ca214a7e65241be28f04"
+    },
+    {
+      "case_sha256": "412b91a8d1093f526f34b58ad29668225c387226712184ef8d79e36cd470bccd",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:strict-property-writable",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-property-writable",
+      "prerequisite_ids": [
+        "harness-preflight:strict-property-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {writable: false});",
+      "source_sha256": "58e50c0eb345267a90f035e104dc54b60455d981e5364651b5e0c1e4fda0deb5"
+    },
+    {
+      "case_sha256": "c571e812c4ddab362d7caabd07b4b3ed427f9962e91e728c61b272fe7f8004eb",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:strict-property-enumerable",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-property-enumerable",
+      "prerequisite_ids": [
+        "harness-preflight:strict-property-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {enumerable: false});",
+      "source_sha256": "6a029d9d45542346ad7bf0b5036fa32346522b049c4925588dc40db894ea19a5"
+    },
+    {
+      "case_sha256": "634b734df32d4d581162c58f74ddb831dc337fce988dd52d74f23fca1d93a126",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:strict-property-configurable",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-property-configurable",
+      "prerequisite_ids": [
+        "harness-preflight:strict-property-success"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "verifyProperty({x: 1}, 'x', {configurable: false});",
+      "source_sha256": "f0ec83e690c6d34e68680b9d10a7931ee5b4fba6810ee920902881494202d2e6"
+    },
+    {
+      "case_sha256": "9e721632d9643b3489c411eb2d5a3f87a08c3bea9f9cf9a673ebb102b24a5974",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-receiver",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-receiver",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "function f(){return this;} assert.sameValue(f(),undefined); assert.sameValue(f.call(null),null); assert.sameValue(f.call(3),3);",
+      "source_sha256": "d0e7bb44576a0bf890774b1736e79cd0166a2e32fe030a3ba86e5015f2c244bf"
+    },
+    {
+      "case_sha256": "2916d638664aa431071561dff0ba0337d5f005f08424cfe8c67d07c93c0cf792",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-unbound-write",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-unbound-write",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.throws(ReferenceError,function(){missing=1;});",
+      "source_sha256": "150659db8ea36d09b80df3f046ab341af7b1f64b691051fa9c866e2da4c5314d"
+    },
+    {
+      "case_sha256": "937d5d1a945b824e6d6d60304aea3337db809214469240d437ba6081a9bec231",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-readonly-write",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-readonly-write",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){o.x=2;});",
+      "source_sha256": "a1cce38d2daa07cbcc33a2d2db74f0e720a5f0deee03767480c699db33b4882b"
+    },
+    {
+      "case_sha256": "2c630739c1458f6444b889a03992a2be2de36b0e00dd56522bf0844fe2c54a2c",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-delete",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-delete",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "var o={};Object.defineProperty(o,'x',{value:1});assert.throws(TypeError,function(){delete o.x;});",
+      "source_sha256": "cb997e967d015ba97c122c1ea746bdd0fbcb2659573645728918558d1349a965"
+    },
+    {
+      "case_sha256": "54df002c837ca5ed70e5d5b49dc0375e40bbfb6b88580dfdc66b5ee7bec44171",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-arguments",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-arguments",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "function f(a){arguments[0]=2;assert.sameValue(a,1);assert.throws(TypeError,()=>arguments.callee);}f(1);",
+      "source_sha256": "a77f7981af7c3910476440f16ac4c18b7ffaf381714ad33e70fa0d0d5c953887"
+    },
+    {
+      "case_sha256": "cf503031beb1832405ad98ea6ca81c8b6de9bb1f90143829dac8788b2affbbfd",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:strict-tdz",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "strict-tdz",
+      "prerequisite_ids": [],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.throws(ReferenceError,function(){typeof x;let x;});",
+      "source_sha256": "2e0d83e7123f5fa749a3f10484c95aa95eac4140438da59faa19edfb82d1061f"
+    },
+    {
+      "case_sha256": "55883c5dd392d4a89dede7b29ef8275c632fa0f2b66f2645ce4cc1e92dc30454",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        },
+        {
+          "name": "isConstructor.js",
+          "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-metadata:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js",
+          "isConstructor.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-metadata",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nassert.sameValue(isConstructor(A), true);\nassert.sameValue(isConstructor(() => {}), false);\nverifyProperty(A, 'name', {value: 'AggregateError', writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'length', {value: 2, writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'prototype', {value: A.prototype, writable: false, enumerable: false, configurable: false}, {restore: true});\nassert.sameValue(Object.getPrototypeOf(A), Error);\nassert.sameValue(Object.getPrototypeOf(A.prototype), Error.prototype);\nassert.sameValue(A.prototype.constructor, A);\nassert.sameValue(Object.prototype.hasOwnProperty.call(A.prototype, 'errors'), false);\nassert.sameValue(A.length, 2);\n",
+      "source_sha256": "965c5a7b0cf8e679689ac564a13f34c8fb806e9e097b78655e0d7f9959d96607"
+    },
+    {
+      "case_sha256": "45d4e4ccc694bdf310ebe9154582bb075d2e725b361cd3a2e9dfda4fb192c07b",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        },
+        {
+          "name": "isConstructor.js",
+          "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-metadata:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js",
+          "isConstructor.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "aggregate-error-metadata",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nassert.sameValue(isConstructor(A), true);\nassert.sameValue(isConstructor(() => {}), false);\nverifyProperty(A, 'name', {value: 'AggregateError', writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'length', {value: 2, writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'prototype', {value: A.prototype, writable: false, enumerable: false, configurable: false}, {restore: true});\nassert.sameValue(Object.getPrototypeOf(A), Error);\nassert.sameValue(Object.getPrototypeOf(A.prototype), Error.prototype);\nassert.sameValue(A.prototype.constructor, A);\nassert.sameValue(Object.prototype.hasOwnProperty.call(A.prototype, 'errors'), false);\nassert.sameValue(A.length, 2);\n",
+      "source_sha256": "965c5a7b0cf8e679689ac564a13f34c8fb806e9e097b78655e0d7f9959d96607"
+    },
+    {
+      "case_sha256": "60a2b9b7612e4dddd64946391300c9df98eba0ed6b1094b614a7f555103a38af",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        },
+        {
+          "name": "isConstructor.js",
+          "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-metadata-mismatch:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js",
+          "isConstructor.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-metadata-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-metadata:sloppy"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nassert.sameValue(isConstructor(A), true);\nassert.sameValue(isConstructor(() => {}), false);\nverifyProperty(A, 'name', {value: 'AggregateError', writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'length', {value: 2, writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'prototype', {value: A.prototype, writable: false, enumerable: false, configurable: false}, {restore: true});\nassert.sameValue(Object.getPrototypeOf(A), Error);\nassert.sameValue(Object.getPrototypeOf(A.prototype), Error.prototype);\nassert.sameValue(A.prototype.constructor, A);\nassert.sameValue(Object.prototype.hasOwnProperty.call(A.prototype, 'errors'), false);\nassert.sameValue(A.length, 3);\n",
+      "source_sha256": "9d2ad11b3a7a5d6818e7871661beff96ce517aced24cdca30535b083974116d5"
+    },
+    {
+      "case_sha256": "caf5b9b1cbb3339ff66706ce2325cdeb1ed7f5c37462a6d6c3037fb17f13d9a4",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        },
+        {
+          "name": "isConstructor.js",
+          "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-metadata-mismatch:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js",
+          "isConstructor.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "aggregate-error-metadata-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-metadata:strict"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nassert.sameValue(isConstructor(A), true);\nassert.sameValue(isConstructor(() => {}), false);\nverifyProperty(A, 'name', {value: 'AggregateError', writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'length', {value: 2, writable: false, enumerable: false, configurable: true}, {restore: true});\nverifyProperty(A, 'prototype', {value: A.prototype, writable: false, enumerable: false, configurable: false}, {restore: true});\nassert.sameValue(Object.getPrototypeOf(A), Error);\nassert.sameValue(Object.getPrototypeOf(A.prototype), Error.prototype);\nassert.sameValue(A.prototype.constructor, A);\nassert.sameValue(Object.prototype.hasOwnProperty.call(A.prototype, 'errors'), false);\nassert.sameValue(A.length, 3);\n",
+      "source_sha256": "9d2ad11b3a7a5d6818e7871661beff96ce517aced24cdca30535b083974116d5"
+    },
+    {
+      "case_sha256": "51e10f7c467c16c11d9723839b518368deacdf0216e65fb8f14593ddccab8ec6",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-iteration-and-data:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-iteration-and-data",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError, trace = '', payload = {}, cause = {}, steps = 0;\nvar message = {toString: function () { trace += 'M'; return 'message'; }};\nvar options = {}, iterator = {}, source = {};\nObject.defineProperty(options, 'cause', {get: function () { trace += 'C'; return cause; }});\nObject.defineProperty(iterator, 'next', {get: function () {\n  trace += 'N';\n  return function () {\n    trace += 'S';\n    steps++;\n    if (steps === 1) return {\n      get done() { trace += 'D'; return false; },\n      get value() { trace += 'V'; return payload; }\n    };\n    return {\n      get done() { trace += 'D'; return true; },\n      get value() { throw new Test262Error('exhausted value read'); }\n    };\n  };\n}});\nObject.defineProperty(source, Symbol.iterator, {get: function () {\n  trace += 'I';\n  return function () { trace += 'i'; return iterator; };\n}});\nAggregateError = function () { throw new Test262Error('replacement global called'); };\nvar result = A(source, message, options), values = result.errors;\nassert.sameValue(Object.getPrototypeOf(result), A.prototype);\nassert.sameValue(result.message, 'message');\nassert.sameValue(result.cause, cause);\nassert.sameValue(Array.isArray(values), true);\nassert.sameValue(Object.getPrototypeOf(values), Array.prototype);\nassert.sameValue(values.length, 1);\nassert.sameValue(values[0], payload);\nassert.sameValue(Object.prototype.hasOwnProperty.call(values, '0'), true);\nvar slot = Object.getOwnPropertyDescriptor(values, '0');\nassert.sameValue(slot.value, payload);\nassert.sameValue(slot.writable && slot.enumerable && slot.configurable, true);\nverifyProperty(result, 'errors', {value: values, writable: true, enumerable: false, configurable: true}, {restore: true});\nassert.sameValue(steps, 2);\nassert.sameValue(trace, 'MCIiNSDVSD');\n",
+      "source_sha256": "e877288c4bd117f59abfde2b2b60ad1c84ac1acd102e9fb314221d28414b74a9"
+    },
+    {
+      "case_sha256": "70dee9a3bafc81506b894cd243fa1a37041ed5063fd0f08cc578f813be26ef07",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-iteration-and-data:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "aggregate-error-iteration-and-data",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError, trace = '', payload = {}, cause = {}, steps = 0;\nvar message = {toString: function () { trace += 'M'; return 'message'; }};\nvar options = {}, iterator = {}, source = {};\nObject.defineProperty(options, 'cause', {get: function () { trace += 'C'; return cause; }});\nObject.defineProperty(iterator, 'next', {get: function () {\n  trace += 'N';\n  return function () {\n    trace += 'S';\n    steps++;\n    if (steps === 1) return {\n      get done() { trace += 'D'; return false; },\n      get value() { trace += 'V'; return payload; }\n    };\n    return {\n      get done() { trace += 'D'; return true; },\n      get value() { throw new Test262Error('exhausted value read'); }\n    };\n  };\n}});\nObject.defineProperty(source, Symbol.iterator, {get: function () {\n  trace += 'I';\n  return function () { trace += 'i'; return iterator; };\n}});\nAggregateError = function () { throw new Test262Error('replacement global called'); };\nvar result = A(source, message, options), values = result.errors;\nassert.sameValue(Object.getPrototypeOf(result), A.prototype);\nassert.sameValue(result.message, 'message');\nassert.sameValue(result.cause, cause);\nassert.sameValue(Array.isArray(values), true);\nassert.sameValue(Object.getPrototypeOf(values), Array.prototype);\nassert.sameValue(values.length, 1);\nassert.sameValue(values[0], payload);\nassert.sameValue(Object.prototype.hasOwnProperty.call(values, '0'), true);\nvar slot = Object.getOwnPropertyDescriptor(values, '0');\nassert.sameValue(slot.value, payload);\nassert.sameValue(slot.writable && slot.enumerable && slot.configurable, true);\nverifyProperty(result, 'errors', {value: values, writable: true, enumerable: false, configurable: true}, {restore: true});\nassert.sameValue(steps, 2);\nassert.sameValue(trace, 'MCIiNSDVSD');\n",
+      "source_sha256": "e877288c4bd117f59abfde2b2b60ad1c84ac1acd102e9fb314221d28414b74a9"
+    },
+    {
+      "case_sha256": "4d16773a315d4fac7a9f0f4b635ce09411e72d1389494886c80e49a8784a2978",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-iteration-and-data-mismatch:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-iteration-and-data-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-iteration-and-data:sloppy"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError, trace = '', payload = {}, cause = {}, steps = 0;\nvar message = {toString: function () { trace += 'M'; return 'message'; }};\nvar options = {}, iterator = {}, source = {};\nObject.defineProperty(options, 'cause', {get: function () { trace += 'C'; return cause; }});\nObject.defineProperty(iterator, 'next', {get: function () {\n  trace += 'N';\n  return function () {\n    trace += 'S';\n    steps++;\n    if (steps === 1) return {\n      get done() { trace += 'D'; return false; },\n      get value() { trace += 'V'; return payload; }\n    };\n    return {\n      get done() { trace += 'D'; return true; },\n      get value() { throw new Test262Error('exhausted value read'); }\n    };\n  };\n}});\nObject.defineProperty(source, Symbol.iterator, {get: function () {\n  trace += 'I';\n  return function () { trace += 'i'; return iterator; };\n}});\nAggregateError = function () { throw new Test262Error('replacement global called'); };\nvar result = A(source, message, options), values = result.errors;\nassert.sameValue(Object.getPrototypeOf(result), A.prototype);\nassert.sameValue(result.message, 'message');\nassert.sameValue(result.cause, cause);\nassert.sameValue(Array.isArray(values), true);\nassert.sameValue(Object.getPrototypeOf(values), Array.prototype);\nassert.sameValue(values.length, 1);\nassert.sameValue(values[0], payload);\nassert.sameValue(Object.prototype.hasOwnProperty.call(values, '0'), true);\nvar slot = Object.getOwnPropertyDescriptor(values, '0');\nassert.sameValue(slot.value, payload);\nassert.sameValue(slot.writable && slot.enumerable && slot.configurable, true);\nverifyProperty(result, 'errors', {value: values, writable: true, enumerable: false, configurable: true}, {restore: true});\nassert.sameValue(steps, 2);\nassert.sameValue(trace, 'MICiNSDVSD');\n",
+      "source_sha256": "cc61fd827c2de95f762374b8f69c43a7e2f2154c31c933f755be7e8bf496cf33"
+    },
+    {
+      "case_sha256": "47868ba706a03b37557687f8bdb0beff4045a525af71662ff40b058e60766391",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "propertyHelper.js",
+          "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-iteration-and-data-mismatch:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "propertyHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "aggregate-error-iteration-and-data-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-iteration-and-data:strict"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError, trace = '', payload = {}, cause = {}, steps = 0;\nvar message = {toString: function () { trace += 'M'; return 'message'; }};\nvar options = {}, iterator = {}, source = {};\nObject.defineProperty(options, 'cause', {get: function () { trace += 'C'; return cause; }});\nObject.defineProperty(iterator, 'next', {get: function () {\n  trace += 'N';\n  return function () {\n    trace += 'S';\n    steps++;\n    if (steps === 1) return {\n      get done() { trace += 'D'; return false; },\n      get value() { trace += 'V'; return payload; }\n    };\n    return {\n      get done() { trace += 'D'; return true; },\n      get value() { throw new Test262Error('exhausted value read'); }\n    };\n  };\n}});\nObject.defineProperty(source, Symbol.iterator, {get: function () {\n  trace += 'I';\n  return function () { trace += 'i'; return iterator; };\n}});\nAggregateError = function () { throw new Test262Error('replacement global called'); };\nvar result = A(source, message, options), values = result.errors;\nassert.sameValue(Object.getPrototypeOf(result), A.prototype);\nassert.sameValue(result.message, 'message');\nassert.sameValue(result.cause, cause);\nassert.sameValue(Array.isArray(values), true);\nassert.sameValue(Object.getPrototypeOf(values), Array.prototype);\nassert.sameValue(values.length, 1);\nassert.sameValue(values[0], payload);\nassert.sameValue(Object.prototype.hasOwnProperty.call(values, '0'), true);\nvar slot = Object.getOwnPropertyDescriptor(values, '0');\nassert.sameValue(slot.value, payload);\nassert.sameValue(slot.writable && slot.enumerable && slot.configurable, true);\nverifyProperty(result, 'errors', {value: values, writable: true, enumerable: false, configurable: true}, {restore: true});\nassert.sameValue(steps, 2);\nassert.sameValue(trace, 'MICiNSDVSD');\n",
+      "source_sha256": "cc61fd827c2de95f762374b8f69c43a7e2f2154c31c933f755be7e8bf496cf33"
+    },
+    {
+      "case_sha256": "fb84c90719f192b2914d049ea9e2f3c77b24e83bc21a43f2c88bccc4a5efa0c3",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "compareArray.js",
+          "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+        },
+        {
+          "name": "promiseHelper.js",
+          "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-helper-sequence:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "compareArray.js",
+          "promiseHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-helper-sequence",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar result = AggregateError([1, 2, 3]);\nassert.sameValue(Array.isArray(result.errors), true);\nassert.compareArray(result.errors, [1, 2, 3]);\nassert.sameValue(compareArray([1, 2], [1, 2]), true);\nassert.sameValue(compareArray([1, 2], [2, 1]), false);\ncheckSequence([1, 2, 3]);\n",
+      "source_sha256": "2bca53ccb5536d1e7caf842e1efd74d2f73cb31362f20f9c8fdb835257f203fb"
+    },
+    {
+      "case_sha256": "edb9938a0a7f3eda422a34e5654e46692fca542b77f8ee167a3983578e2e6c58",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "compareArray.js",
+          "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+        },
+        {
+          "name": "promiseHelper.js",
+          "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-helper-sequence:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "compareArray.js",
+          "promiseHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "aggregate-error-helper-sequence",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "",
+        "harness": "",
+        "phase": "runtime",
+        "status": "complete"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar result = AggregateError([1, 2, 3]);\nassert.sameValue(Array.isArray(result.errors), true);\nassert.compareArray(result.errors, [1, 2, 3]);\nassert.sameValue(compareArray([1, 2], [1, 2]), true);\nassert.sameValue(compareArray([1, 2], [2, 1]), false);\ncheckSequence([1, 2, 3]);\n",
+      "source_sha256": "2bca53ccb5536d1e7caf842e1efd74d2f73cb31362f20f9c8fdb835257f203fb"
+    },
+    {
+      "case_sha256": "b5e4ceed67534f08be7837f648e5fa80b8803e356cdcefa4e48a27b33ac6d4fa",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "compareArray.js",
+          "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+        },
+        {
+          "name": "promiseHelper.js",
+          "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-helper-sequence-mismatch:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "compareArray.js",
+          "promiseHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-helper-sequence-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-helper-sequence:sloppy"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar result = AggregateError([1, 2, 3]);\nassert.sameValue(Array.isArray(result.errors), true);\nassert.compareArray(result.errors, [1, 2, 3]);\nassert.sameValue(compareArray([1, 2], [1, 2]), true);\nassert.sameValue(compareArray([1, 2], [2, 1]), false);\ncheckSequence([1, 3, 2]);\n",
+      "source_sha256": "590dc17cca7264ca6e9fb319bf72f22921652811f84a74ffd505866358622ae7"
+    },
+    {
+      "case_sha256": "59a5f91984ab2bd322e5568e731e341983b3a0120dab116e092cc334fd7ad3a6",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        },
+        {
+          "name": "compareArray.js",
+          "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+        },
+        {
+          "name": "promiseHelper.js",
+          "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-helper-sequence-mismatch:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [
+          "compareArray.js",
+          "promiseHelper.js"
+        ],
+        "locale": [],
+        "negative": null
+      },
+      "mode": "strict",
+      "name": "aggregate-error-helper-sequence-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-helper-sequence:strict"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "Test262Error",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar result = AggregateError([1, 2, 3]);\nassert.sameValue(Array.isArray(result.errors), true);\nassert.compareArray(result.errors, [1, 2, 3]);\nassert.sameValue(compareArray([1, 2], [1, 2]), true);\nassert.sameValue(compareArray([1, 2], [2, 1]), false);\ncheckSequence([1, 3, 2]);\n",
+      "source_sha256": "590dc17cca7264ca6e9fb319bf72f22921652811f84a74ffd505866358622ae7"
+    },
+    {
+      "case_sha256": "15f65a122dae5f2355cea44fe6ca4b309cd5b536f85ddcddb162f1aba2310185",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-genuine-identity:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "AggregateError"
+        }
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-genuine-identity",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "AggregateError",
+        "error_type": "RenamedAggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nvar value = new A([1], 'aggregate identity control');\nObject.defineProperty(A, 'name', {value: 'RenamedAggregateError', writable: false, enumerable: false, configurable: true});\nthrow value;\n",
+      "source_sha256": "945e328f26e94c339346a0d306ab2e23946c2a5bf2f354ec5db04a2f6f95b0d6"
+    },
+    {
+      "case_sha256": "8497f1a41c1878f4ce8ef92805ccf1ac6f1038abdeb2940d78533b2087e36c8c",
+      "expected": "passed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-genuine-identity:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "AggregateError"
+        }
+      },
+      "mode": "strict",
+      "name": "aggregate-error-genuine-identity",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz"
+      ],
+      "required_observation": {
+        "error_identity": "AggregateError",
+        "error_type": "RenamedAggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nvar value = new A([1], 'aggregate identity control');\nObject.defineProperty(A, 'name', {value: 'RenamedAggregateError', writable: false, enumerable: false, configurable: true});\nthrow value;\n",
+      "source_sha256": "945e328f26e94c339346a0d306ab2e23946c2a5bf2f354ec5db04a2f6f95b0d6"
+    },
+    {
+      "case_sha256": "8e262312b97764b5018175cba79359783da47915a552cdcec4c029e0cc572958",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-genuine-identity-mismatch:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "TypeError"
+        }
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-genuine-identity-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-genuine-identity:sloppy"
+      ],
+      "required_observation": {
+        "error_identity": "AggregateError",
+        "error_type": "RenamedAggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nvar value = new A([1], 'aggregate identity control');\nObject.defineProperty(A, 'name', {value: 'RenamedAggregateError', writable: false, enumerable: false, configurable: true});\nthrow value;\n",
+      "source_sha256": "945e328f26e94c339346a0d306ab2e23946c2a5bf2f354ec5db04a2f6f95b0d6"
+    },
+    {
+      "case_sha256": "694526209129a75a277c0ab00bd8283093ac86f48efc0d8aef2c0e6a271adbad",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-genuine-identity-mismatch:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "TypeError"
+        }
+      },
+      "mode": "strict",
+      "name": "aggregate-error-genuine-identity-mismatch",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-genuine-identity:strict"
+      ],
+      "required_observation": {
+        "error_identity": "AggregateError",
+        "error_type": "RenamedAggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nvar A = AggregateError;\nvar value = new A([1], 'aggregate identity control');\nObject.defineProperty(A, 'name', {value: 'RenamedAggregateError', writable: false, enumerable: false, configurable: true});\nthrow value;\n",
+      "source_sha256": "945e328f26e94c339346a0d306ab2e23946c2a5bf2f354ec5db04a2f6f95b0d6"
+    },
+    {
+      "case_sha256": "0131d2333e7f1ed129d0ce639a4204bfa6650ec532faee892096f142598b98c9",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-fake-own-name-constructor:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "AggregateError"
+        }
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-fake-own-name-constructor",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-genuine-identity:sloppy"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "AggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nthrow {name: 'AggregateError', constructor: AggregateError};\n",
+      "source_sha256": "cdaeabe54c106447e63b3a25936f0042ceb239adad1e564b833ff7a6d69fb2dd"
+    },
+    {
+      "case_sha256": "b2345526f130ae4c4dff3e8e3b1a43a002423cd08520b93acd38ff8f487072a0",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-fake-own-name-constructor:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "AggregateError"
+        }
+      },
+      "mode": "strict",
+      "name": "aggregate-error-fake-own-name-constructor",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-genuine-identity:strict"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "AggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nthrow {name: 'AggregateError', constructor: AggregateError};\n",
+      "source_sha256": "cdaeabe54c106447e63b3a25936f0042ceb239adad1e564b833ff7a6d69fb2dd"
+    },
+    {
+      "case_sha256": "f191c43f09bdf594603cc10b203e6c6e5c16725a636478f8640a5d977bf0267a",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-fake-prototype:sloppy",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "AggregateError"
+        }
+      },
+      "mode": "sloppy",
+      "name": "aggregate-error-fake-prototype",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-genuine-identity:sloppy"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "AggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nthrow Object.create(AggregateError.prototype);\n",
+      "source_sha256": "ead5f97fb1b6bd2e52f7b7eddf4e690fe6087b03ca925ff7d0bbc3eec84669b2"
+    },
+    {
+      "case_sha256": "622a5f8dee9b732ddf9fb7c560f214cd3898aa5280cd5aca34ce2589c57ed6ef",
+      "expected": "failed",
+      "file": "<preflight>",
+      "harness": [
+        {
+          "name": "assert.js",
+          "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+        },
+        {
+          "name": "sta.js",
+          "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+        }
+      ],
+      "id": "harness-preflight:aggregate-error-fake-prototype:strict",
+      "metadata": {
+        "features": [],
+        "flags": [],
+        "includes": [],
+        "locale": [],
+        "negative": {
+          "phase": "runtime",
+          "type": "AggregateError"
+        }
+      },
+      "mode": "strict",
+      "name": "aggregate-error-fake-prototype",
+      "prerequisite_ids": [
+        "harness-preflight:success",
+        "harness-preflight:assert-false",
+        "harness-preflight:same-value",
+        "harness-preflight:signed-zero",
+        "harness-preflight:not-same-value",
+        "harness-preflight:throws-success",
+        "harness-preflight:throws-wrong-type",
+        "harness-preflight:throws-missing",
+        "harness-preflight:array-mismatch",
+        "harness-preflight:property-success",
+        "harness-preflight:property-writable",
+        "harness-preflight:property-enumerable",
+        "harness-preflight:property-configurable",
+        "harness-preflight:strict-success",
+        "harness-preflight:strict-assert-false",
+        "harness-preflight:strict-same-value",
+        "harness-preflight:strict-signed-zero",
+        "harness-preflight:strict-not-same-value",
+        "harness-preflight:strict-throws-success",
+        "harness-preflight:strict-throws-wrong-type",
+        "harness-preflight:strict-throws-missing",
+        "harness-preflight:strict-array-mismatch",
+        "harness-preflight:strict-property-success",
+        "harness-preflight:strict-property-writable",
+        "harness-preflight:strict-property-enumerable",
+        "harness-preflight:strict-property-configurable",
+        "harness-preflight:strict-receiver",
+        "harness-preflight:strict-unbound-write",
+        "harness-preflight:strict-readonly-write",
+        "harness-preflight:strict-delete",
+        "harness-preflight:strict-arguments",
+        "harness-preflight:strict-tdz",
+        "harness-preflight:aggregate-error-genuine-identity:strict"
+      ],
+      "required_observation": {
+        "error_identity": "",
+        "error_type": "AggregateError",
+        "harness": "",
+        "phase": "runtime",
+        "status": "exception"
+      },
+      "source": "assert.sameValue(typeof AggregateError, 'function', 'AggregateError availability');\nthrow Object.create(AggregateError.prototype);\n",
+      "source_sha256": "ead5f97fb1b6bd2e52f7b7eddf4e690fe6087b03ca925ff7d0bbc3eec84669b2"
+    }
+  ],
+  "expected_manifest": {
+    "directories": {
+      "AggregateError": [
+        "cause-property.js",
+        "errors-iterabletolist-failures.js",
+        "errors-iterabletolist.js",
+        "is-a-constructor.js",
+        "length.js",
+        "message-method-prop-cast.js",
+        "message-method-prop.js",
+        "message-tostring-abrupt-symbol.js",
+        "message-tostring-abrupt.js",
+        "message-undefined-no-prop.js",
+        "name.js",
+        "newtarget-is-undefined.js",
+        "newtarget-proto-custom.js",
+        "newtarget-proto-fallback.js",
+        "newtarget-proto.js",
+        "order-of-args-evaluation.js",
+        "prop-desc.js",
+        "proto-from-ctor-realm.js",
+        "proto.js"
+      ],
+      "AggregateError/prototype": [
+        "constructor.js",
+        "errors-absent-on-prototype.js",
+        "message.js",
+        "name.js",
+        "prop-desc.js",
+        "proto.js"
+      ]
+    },
+    "files": [
+      {
+        "bytes": 18611,
+        "path": "INTERPRETING.md",
+        "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e",
+        "upstream_path": "INTERPRETING.md"
+      },
+      {
+        "bytes": 2213,
+        "path": "LICENSE",
+        "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+        "upstream_path": "LICENSE"
+      },
+      {
+        "bytes": 4881,
+        "path": "harness/assert.js",
+        "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+        "upstream_path": "harness/assert.js"
+      },
+      {
+        "bytes": 243,
+        "path": "harness/compareArray.js",
+        "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d",
+        "upstream_path": "harness/compareArray.js"
+      },
+      {
+        "bytes": 544,
+        "path": "harness/isConstructor.js",
+        "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32",
+        "upstream_path": "harness/isConstructor.js"
+      },
+      {
+        "bytes": 2411,
+        "path": "harness/promiseHelper.js",
+        "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c",
+        "upstream_path": "harness/promiseHelper.js"
+      },
+      {
+        "bytes": 18956,
+        "path": "harness/propertyHelper.js",
+        "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+        "upstream_path": "harness/propertyHelper.js"
+      },
+      {
+        "bytes": 792,
+        "path": "harness/sta.js",
+        "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+        "upstream_path": "harness/sta.js"
+      },
+      {
+        "bytes": 1111,
+        "path": "test/built-ins/AggregateError/cause-property.js",
+        "sha256": "105409164ee0d6a61a21bd1ff06d6a36c9823966c184844bd68a21d494b80d51",
+        "upstream_path": "test/built-ins/AggregateError/cause-property.js"
+      },
+      {
+        "bytes": 3736,
+        "path": "test/built-ins/AggregateError/errors-iterabletolist-failures.js",
+        "sha256": "e3d474c49e00d214cecaed0508a087e070d6180c45c2241d40c9b1350d3e55e5",
+        "upstream_path": "test/built-ins/AggregateError/errors-iterabletolist-failures.js"
+      },
+      {
+        "bytes": 1773,
+        "path": "test/built-ins/AggregateError/errors-iterabletolist.js",
+        "sha256": "f17bcaa26443a42ebb3a8df3aa303846bf6845272286b2e935520ac5c5386fce",
+        "upstream_path": "test/built-ins/AggregateError/errors-iterabletolist.js"
+      },
+      {
+        "bytes": 866,
+        "path": "test/built-ins/AggregateError/is-a-constructor.js",
+        "sha256": "6b85f1fdb9f667ea2afc158caac5d390116a76e50c4e0f6a78fb0f8c39e0d63f",
+        "upstream_path": "test/built-ins/AggregateError/is-a-constructor.js"
+      },
+      {
+        "bytes": 1106,
+        "path": "test/built-ins/AggregateError/length.js",
+        "sha256": "9c3aa12013f323a3b40d0d887b889c7de9183a41fe280dfc9b3e2b9981a22b68",
+        "upstream_path": "test/built-ins/AggregateError/length.js"
+      },
+      {
+        "bytes": 1562,
+        "path": "test/built-ins/AggregateError/message-method-prop-cast.js",
+        "sha256": "a2f6b97f70afe49023f20e85b5aa7d6af10a51889e3a8e28c664e64e661eb872",
+        "upstream_path": "test/built-ins/AggregateError/message-method-prop-cast.js"
+      },
+      {
+        "bytes": 857,
+        "path": "test/built-ins/AggregateError/message-method-prop.js",
+        "sha256": "e16238c3c5e025bc229fd80748469bc8a4a5257120762288221aa28dd878f454",
+        "upstream_path": "test/built-ins/AggregateError/message-method-prop.js"
+      },
+      {
+        "bytes": 856,
+        "path": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js",
+        "sha256": "d07529461fb3e9ca53bb6d0bc5da2d4a730fce7f8d4fe20b27965faacf17eee4",
+        "upstream_path": "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js"
+      },
+      {
+        "bytes": 1180,
+        "path": "test/built-ins/AggregateError/message-tostring-abrupt.js",
+        "sha256": "ecd15a9e51445934d009e1570e67d3cb099f4e98b2c517bb178404993d71e1bb",
+        "upstream_path": "test/built-ins/AggregateError/message-tostring-abrupt.js"
+      },
+      {
+        "bytes": 770,
+        "path": "test/built-ins/AggregateError/message-undefined-no-prop.js",
+        "sha256": "b0b8eec0d6b2ec8916972b3d422b5c3c86a3587eeabf6b38383d8775e891b947",
+        "upstream_path": "test/built-ins/AggregateError/message-undefined-no-prop.js"
+      },
+      {
+        "bytes": 1174,
+        "path": "test/built-ins/AggregateError/name.js",
+        "sha256": "39229a54965409452c33b040f8584e1f9b1d313e968dbed0a02b3a2ab8318311",
+        "upstream_path": "test/built-ins/AggregateError/name.js"
+      },
+      {
+        "bytes": 538,
+        "path": "test/built-ins/AggregateError/newtarget-is-undefined.js",
+        "sha256": "cf9b9a146734ca947d78490b6b3b2a51ea64bd819cead2d691a0771823ede18d",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-is-undefined.js"
+      },
+      {
+        "bytes": 1420,
+        "path": "test/built-ins/AggregateError/newtarget-proto-custom.js",
+        "sha256": "ae9d0ee0af3557195dd0fb1d61c858ab2a9f3adbe3f736057a4ab2730d6965de",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-proto-custom.js"
+      },
+      {
+        "bytes": 1651,
+        "path": "test/built-ins/AggregateError/newtarget-proto-fallback.js",
+        "sha256": "efa50936d077637ad43f2a043e07ba3a6c305906ed31257d61083658a5df4280",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-proto-fallback.js"
+      },
+      {
+        "bytes": 1228,
+        "path": "test/built-ins/AggregateError/newtarget-proto.js",
+        "sha256": "15851697371840b323cca65a115ef6b1cc9355de7f7ad76389cc70766672c0d9",
+        "upstream_path": "test/built-ins/AggregateError/newtarget-proto.js"
+      },
+      {
+        "bytes": 769,
+        "path": "test/built-ins/AggregateError/order-of-args-evaluation.js",
+        "sha256": "eae9bfe1823d6a4f0cffa17f01d1ea47b8854da250fbcfb5de79ee4635e90273",
+        "upstream_path": "test/built-ins/AggregateError/order-of-args-evaluation.js"
+      },
+      {
+        "bytes": 716,
+        "path": "test/built-ins/AggregateError/prop-desc.js",
+        "sha256": "9ec2e1aaf727e65e91bf3336e30eaef4deb26c1527d9f4c42c3e4ee22a68c43f",
+        "upstream_path": "test/built-ins/AggregateError/prop-desc.js"
+      },
+      {
+        "bytes": 2455,
+        "path": "test/built-ins/AggregateError/proto-from-ctor-realm.js",
+        "sha256": "1c3451e247c6fed9e593dfb1287604331e130a87e42e261346c7cb65025e688a",
+        "upstream_path": "test/built-ins/AggregateError/proto-from-ctor-realm.js"
+      },
+      {
+        "bytes": 482,
+        "path": "test/built-ins/AggregateError/proto.js",
+        "sha256": "3d980cdfd3ecce3b1c22398d30a66eef719237358055eb06f24168a0aa2f3330",
+        "upstream_path": "test/built-ins/AggregateError/proto.js"
+      },
+      {
+        "bytes": 795,
+        "path": "test/built-ins/AggregateError/prototype/constructor.js",
+        "sha256": "2370eeeecd813974cfb8e9be8ea2fc1233ddafdb955f61b175a6bfe50d493618",
+        "upstream_path": "test/built-ins/AggregateError/prototype/constructor.js"
+      },
+      {
+        "bytes": 629,
+        "path": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js",
+        "sha256": "9cc34f502de42b5fe8e5ef2a46703c0fdb45bc6ed92c8a8855a9aa8f26afc163",
+        "upstream_path": "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js"
+      },
+      {
+        "bytes": 790,
+        "path": "test/built-ins/AggregateError/prototype/message.js",
+        "sha256": "952f555b4bc3a2f096cfd3807b95f6cd6940d90a971c8101e29c1f8c0d6ecc32",
+        "upstream_path": "test/built-ins/AggregateError/prototype/message.js"
+      },
+      {
+        "bytes": 746,
+        "path": "test/built-ins/AggregateError/prototype/name.js",
+        "sha256": "2aac7c149c2f9981e1bf761988f3febbe7836cab85decb6114c577d8fac001ec",
+        "upstream_path": "test/built-ins/AggregateError/prototype/name.js"
+      },
+      {
+        "bytes": 716,
+        "path": "test/built-ins/AggregateError/prototype/prop-desc.js",
+        "sha256": "5f8c34ae9c2d177e3fd9422bd3eaceec6127aa349b7268c9c23e6d67210ae313",
+        "upstream_path": "test/built-ins/AggregateError/prototype/prop-desc.js"
+      },
+      {
+        "bytes": 573,
+        "path": "test/built-ins/AggregateError/prototype/proto.js",
+        "sha256": "3e7e9ddd7ebc6f286cac2219e89e1cc9d9b5971db5c31759cdca900cfd3da99a",
+        "upstream_path": "test/built-ins/AggregateError/prototype/proto.js"
+      }
+    ],
+    "format": 1,
+    "inventory_proof": {
+      "auxiliary_blobs": {
+        "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5",
+        "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+        "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+        "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+        "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+        "harness/promiseHelper.js": "9a8bf627add65c5f8ab7e25768fb7ac6992bc47f",
+        "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+        "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe"
+      },
+      "directory_trees": {
+        "AggregateError": "29aa43922ae5a34467878bf9f498ffc4a89bdf67",
+        "AggregateError/prototype": "f1b375f2e936e2329af2c4307260ab896efd7daf"
+      },
+      "files": [
+        {
+          "bytes": 1094,
+          "path": "inventory-proof/commit.json",
+          "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+          "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+        },
+        {
+          "bytes": 4658,
+          "path": "inventory-proof/tree-29aa43922ae5a34467878bf9f498ffc4a89bdf67.json",
+          "sha256": "026068adf1848915904aa79644985b409386699bb318eab2d4aaeaa636c35239",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/29aa43922ae5a34467878bf9f498ffc4a89bdf67"
+        },
+        {
+          "bytes": 5452,
+          "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+          "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+        },
+        {
+          "bytes": 1374,
+          "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+          "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+        },
+        {
+          "bytes": 13201,
+          "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+          "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+        },
+        {
+          "bytes": 7655,
+          "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+          "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+        },
+        {
+          "bytes": 1476,
+          "path": "inventory-proof/tree-f1b375f2e936e2329af2c4307260ab896efd7daf.json",
+          "sha256": "1b9fcc9a885e0a90694ff5c66f97094227f5ade528746a684364853daa0f73d4",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/f1b375f2e936e2329af2c4307260ab896efd7daf"
+        }
+      ],
+      "method": "complete-nonrecursive-git-trees",
+      "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+      "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+    },
+    "repository": "https://github.com/tc39/test262",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "scope": "Complete pinned AggregateError constructor and prototype subtree, including unsupported realm and untagged Proxy cases; original sources and helper closure unchanged.",
+    "test_files": 25
+  },
+  "features": [
+    "AggregateError",
+    "Reflect",
+    "Reflect.construct",
+    "Symbol",
+    "Symbol.iterator",
+    "Symbol.toPrimitive",
+    "error-cause"
+  ],
+  "helpers": [
+    "assert.js",
+    "sta.js",
+    "propertyHelper.js",
+    "compareArray.js",
+    "isConstructor.js",
+    "promiseHelper.js"
+  ],
+  "manifest_sha256": "ae30b6c1019a0e75df65de5199685f87caeb310f2750eea59c8f2b5b718fa1a1",
+  "metadata": {
+    "test/built-ins/AggregateError/cause-property.js": {
+      "features": [
+        "AggregateError",
+        "error-cause"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/errors-iterabletolist-failures.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.iterator"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/errors-iterabletolist.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.iterator"
+      ],
+      "flags": [],
+      "includes": [
+        "compareArray.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/is-a-constructor.js": {
+      "features": [
+        "Reflect.construct",
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "isConstructor.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/length.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-method-prop-cast.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-method-prop.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-tostring-abrupt-symbol.js": {
+      "features": [
+        "AggregateError",
+        "Symbol",
+        "Symbol.toPrimitive"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-tostring-abrupt.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.toPrimitive"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/message-undefined-no-prop.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/name.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-is-undefined.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-proto-custom.js": {
+      "features": [
+        "AggregateError",
+        "Reflect.construct"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-proto-fallback.js": {
+      "features": [
+        "AggregateError",
+        "Symbol"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/newtarget-proto.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/order-of-args-evaluation.js": {
+      "features": [
+        "AggregateError",
+        "Symbol.iterator"
+      ],
+      "flags": [],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prop-desc.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/proto-from-ctor-realm.js": {
+      "features": [
+        "AggregateError",
+        "cross-realm",
+        "Reflect",
+        "Symbol"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/proto.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/constructor.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/errors-absent-on-prototype.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/message.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/name.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/prop-desc.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/AggregateError/prototype/proto.js": {
+      "features": [
+        "AggregateError"
+      ],
+      "flags": [],
+      "includes": [],
+      "locale": [],
+      "negative": null
+    }
+  },
+  "metadata_exclusions": [
+    "test/built-ins/AggregateError/proto-from-ctor-realm.js:sloppy",
+    "test/built-ins/AggregateError/proto-from-ctor-realm.js:strict"
+  ],
+  "policy": {
+    "async_completion": false,
+    "format": 2,
+    "host_hooks": false,
+    "modules": false,
+    "negative_intrinsic_errors": [
+      "AggregateError",
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "supported_features": [
+      "AggregateError",
+      "Reflect",
+      "Reflect.construct",
+      "Symbol",
+      "Symbol.iterator",
+      "Symbol.toPrimitive",
+      "error-cause"
+    ],
+    "timeout_seconds": 3.0
+  },
+  "policy_sha256": "d3fe422ab0532bbe29312f1aeaae90f26589cc7bd16c85699ad07dea49ae1a84",
+  "profile": "aggregate-error",
+  "provenance": "Frozen source-only selected contracts; no observed adapter outcome or candidate implementation used.",
+  "untagged_proxy_sources": [
+    "test/built-ins/AggregateError/newtarget-proto-custom.js",
+    "test/built-ins/AggregateError/newtarget-proto-fallback.js"
+  ]
+}

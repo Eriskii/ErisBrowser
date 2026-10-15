@@ -330,6 +330,14 @@ author runtime. Partial metadata after refusal is not rolled back into a usable
 realm. This adds no renderer authority or host decoder acceptance, and the
 logical ledger does not account for all allocator overhead or process memory.
 
+The separate [AggregateError conformance profile](aggregate-error-upstream.md)
+allows one additional intrinsic error identity only for its ordinary ERJR2
+responses. It rejects ERJR3 responses before delegation; other profiles and
+Promise-host validators keep the seven-name identity policy. Exact source/helper
+identities, raw observations and prerequisite controls gate the full selection.
+This tooling change grants no renderer authority and changes no runtime limit,
+transport bytes or final-unhandled-rejection policy.
+
 ## Representative limits
 
 [Trusted runtime initialization](bootstrap-budget.md) has a finite 1,000,000-unit

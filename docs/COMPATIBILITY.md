@@ -22,9 +22,12 @@ message and cause, cached synchronous iteration and a fresh intrinsic errors
 Array. It preserves observable operation order and ordinary thrown values;
 iterator failures do not trigger closing. Genuine Error instances now have the
 Error fallback `Object.prototype.toString` tag, while string tag overrides and
-ordinary fake objects retain their distinctions. `Promise.any` is still absent,
-and the unchanged conformance decoder rejects an uncaught AggregateError
-intrinsic identity. This adds no full-standard or new upstream result claim.
+ordinary fake objects retain their distinctions. `Promise.any` is still absent.
+The separate [AggregateError upstream profile](aggregate-error-upstream.md) retains
+all 25 pinned sources and 50 modes. Only this profile accepts the AggregateError
+intrinsic identity in ordinary ERJR2 observations; other profiles and all ERJR3
+validators retain their existing identity policy. Its measured result inventory
+is a bounded selection, not full-standard conformance.
 The optional [Promise Test262 host](promise-test262-host.md) runs a separate
 232-source, 458-mode selection with authenticated `$DONE` and final unhandled
 rejection checks. All retained failures and unsupported modes belong in its
