@@ -154,6 +154,39 @@ impl Runtime {
         self.dom_proto_property(owner, key.into(), Property::data(method, true, false, true))
     }
 
+    pub(in crate::script) fn install_promise_try_intrinsic(&mut self) -> Result<()> {
+        // Eight bounded guards/control roles and four temporary releases.
+        // Append after withResolvers to preserve every earlier metadata ID.
+        self.work(12)?;
+        let intrinsics = self
+            .promises
+            .intrinsics
+            .as_ref()
+            .ok_or_else(|| ScriptError::resource("Promise intrinsics missing"))?;
+        let Value::Native(constructor) = &intrinsics.constructor else {
+            return Err(ScriptError::resource("invalid Promise constructor"));
+        };
+        let owner = constructor
+            .properties
+            .map(NonZeroUsize::get)
+            .filter(|id| *id < self.objects.len())
+            .ok_or_else(|| ScriptError::resource("Promise metadata missing"))?;
+        let bag = &self.objects[owner];
+        if bag.values.len() != 11 || bag.order.len() != 11 || bag.order.capacity() < bag.order.len()
+        {
+            return Err(ScriptError::resource("invalid Promise metadata shape"));
+        }
+        let length = self.dom_proto_text("length")?;
+        let name = self.dom_proto_text("name")?;
+        let key = self.dom_proto_text("try")?;
+        // Two metadata key copies and the display-name copy.
+        self.work(3)?;
+        let method =
+            self.promise_intrinsic_method("Promise.try", key.clone(), 1, [&length, &name])?;
+        // Existing insertion pays the B-tree threshold and physical order growth.
+        self.dom_proto_property(owner, key.into(), Property::data(method, true, false, true))
+    }
+
     fn check_promise_install_state(&self) -> Result<()> {
         if !self.promises.promises.records.is_empty()
             || !self.promises.gates.records.is_empty()

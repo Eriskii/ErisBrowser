@@ -619,6 +619,32 @@ impl Runtime {
         self.observe_microtask_failure(result)
     }
 
+    pub(super) fn promise_try_arguments(&mut self, arguments: &[Value]) -> Result<Vec<Value>> {
+        let result = (|| {
+            // Fixed planning/header cleanup, then clone, placement and eventual
+            // release for each borrowed handle. Zero keeps the same envelope.
+            self.work(8)?;
+            let count = arguments.len();
+            if count > 65_536 {
+                return Err(ScriptError::resource("Promise.try argument limit exceeded"));
+            }
+            let work = mul(3, count)?;
+            let bytes = add(32, mul(count, size_of::<Value>())?)?;
+            self.work(work)?;
+            self.charge(bytes)?;
+            let mut values = Vec::new();
+            values
+                .try_reserve_exact(count)
+                .map_err(|_| ScriptError::resource("Promise argument allocation failed"))?;
+            // Reserve and every fallible debit precede all handle copies.
+            for value in arguments {
+                values.push(value.clone());
+            }
+            Ok(values)
+        })();
+        self.observe_microtask_failure(result)
+    }
+
     pub(super) fn promise_arguments<const N: usize>(
         &mut self,
         arguments: [Value; N],

@@ -164,6 +164,8 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     let any_added = s + a + d + 12 * k + bpp + n + 1179;
     // withResolvers appends after Any, growing owner order from10 to11.
     let with_resolvers_added = s + a + d + 13 * k + bpp + n + 1269;
+    // Try crosses the count11 B-tree threshold and grows owner order to12.
+    let try_added = s + a + d + 14 * k + 4 * bpp + n + 1179;
     // The cumulative remainder below starts from MAX_STEPS; only its
     // allowance origin changes, not the installation work or heap ledger.
     assert_eq!(
@@ -184,6 +186,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 1103
             - 189
             - 326
+            - 268
     );
     assert_eq!(
         runtime.allocated,
@@ -211,10 +214,11 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + aggregate_error_added
             + any_added
             + with_resolvers_added
+            + try_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (756, 756)
+        (757, 757)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

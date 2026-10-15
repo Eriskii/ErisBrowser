@@ -284,11 +284,35 @@ fn with_resolvers_startup_records_physical_growth_and_public_budget_reset() {
         runtime.objects[id].order.len(),
         runtime.objects[id].order.capacity(),
     );
+    // Complete the later Try installer only after the old isolated measurements.
+    // The initial bootstrap preparation already paid its extra ScriptObject slot.
+    let try_before_order = (
+        runtime.objects[id].order.len(),
+        runtime.objects[id].order.capacity(),
+    );
+    assert_eq!(try_before_order.0, 11);
+    let try_grow = try_before_order.0 == try_before_order.1;
+    let try_work = if try_grow { 268 } else { 246 };
+    let try_heap = size_of::<Option<AbortSlot>>()
+        + size_of::<Option<f64>>()
+        + (if try_grow { 14 } else { 2 }) * size_of::<PropertyKey>()
+        + 4 * node_bytes()
+        + size_of::<Native>()
+        + 1179;
+    let try_before_heap = runtime.allocated;
+    runtime.steps = try_work;
+    runtime.install_promise_try_intrinsic().unwrap();
+    assert_eq!(runtime.steps, 0);
+    assert_eq!(runtime.allocated - try_before_heap, try_heap);
+    assert_eq!(runtime.objects[id].order.len(), 12);
     let raw = Runtime::uninitialized().finish_bootstrap().unwrap();
-    assert_eq!(raw.steps, BOOTSTRAP_STEPS - 100_797 - any_work - work);
+    assert_eq!(
+        raw.steps,
+        BOOTSTRAP_STEPS - 100_797 - any_work - work - try_work
+    );
     assert_eq!(raw.allocated, runtime.allocated);
-    assert_eq!(raw.objects.len(), 756);
-    assert!(raw.objects.capacity() >= 756);
+    assert_eq!(raw.objects.len(), 757);
+    assert!(raw.objects.capacity() >= 757);
     eprintln!(
         "withResolvers startup: before_order={before_order:?} after_order={after_order:?} before_objects={before_objects:?} raw_objects={:?} work={} remaining={} allocated={} maps={:?}",
         (raw.objects.len(), raw.objects.capacity()),

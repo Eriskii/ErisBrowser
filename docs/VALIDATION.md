@@ -1,5 +1,51 @@
 # Validation record
 
+## Promise.try runtime
+
+The [Promise.try checkpoint](promise-try.md) implements the current draft's
+callback-first operation, including generic receiver behavior and the distinct
+normal-result and ordinary-error paths. The frozen public contract has twelve
+semantic groups and three terminal groups. The published parent fails all 15 at
+the missing-method guard on their first sloppy source; later phases, strict
+attempts and terminal readbacks are unreached. All **25 new groups pass on the
+first candidate**: those 15 plus ten private groups. The completed loops cover
+140 public execute calls, 78 private measured attempts and four private sticky
+readbacks; these are not additional Rust test groups.
+
+Complete `--include-ignored` runs pass **3,246 Rust 1.88 default tests** and
+**3,600 Rust 1.99 tests with `test262-host,vulkan-raster`**. Each has 52 result
+rows and no failed, ignored or filtered tests. The full parent rosters survive
+four selected boundary renames and gain the 25 new groups. Strict all-target
+Clippy passes in both configurations, and formatting passes.
+
+The recorded x86_64 startup uses **101,580 work units**, leaves **898,420** and
+accounts for **1,775,866 heap bytes** across 757 objects. This adds 268 work and
+7,595 accounted bytes over the preceding runtime. Constructor property order
+grows from length/capacity 11/11 to 12/12; the 300 native entries, 26 prototypes
+and 213 globals are unchanged. The 1,000,000-unit bootstrap, 100,000-unit author
+and cumulative 8 MiB heap limits are unchanged. These are logical accounting
+observations, not CPU or process-memory measurements.
+
+Rebuilt Rust 1.88 ordinary and host adapters preserve all **1,300 case records
+and 546 control records** across the seven existing upstream profiles. Complete
+arrays, policies and corpus identities match the parent, including existing
+failed and unsupported outcomes; no baseline changes are made. Python tooling,
+host protocols and CI gates are unchanged, and no full Python-suite rerun is
+claimed.
+
+The first source-inventory comparison was interrupted before writing its output
+because the lexical matcher was slow; its replacement avoids redundant matching.
+The final inventory also corrects inherited descriptive scope text while keeping
+the same base and all 1,778 source hashes. Both bookkeeping corrections are
+retained; neither changes candidate source, tests, expectations or outcomes.
+
+The selected source inventory covers 1,778 inputs and has a separate tracked
+source review; it is not a complete build-graph inventory. No Python tooling,
+host protocol, profile or baseline changes are selected. There is no dedicated
+Promise.try upstream outcome. Prior CI success belongs to published commit
+`7149ab72`; this checkpoint makes no new remote CI claim. Evidence is linked from
+the chapter. All earlier validation text below remains byte-exact.
+
 ## Complete pinned Promise.withResolvers selection
 
 The [withResolvers upstream profile](promise-with-resolvers.md) retains all six

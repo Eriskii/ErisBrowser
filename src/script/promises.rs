@@ -35,6 +35,7 @@ mod layout_tests;
 pub(super) const METADATA_OBJECTS: usize = 11;
 pub(super) const ANY_METADATA_OBJECTS: usize = 1;
 pub(super) const WITH_RESOLVERS_METADATA_OBJECTS: usize = 1;
+pub(super) const TRY_METADATA_OBJECTS: usize = 1;
 
 pub(super) struct Arena<T> {
     pub(super) records: Vec<T>,
@@ -681,3 +682,6 @@ mod any_coupling_tests;
 
 #[cfg(test)]
 mod with_resolvers_quota_tests;
+
+#[cfg(test)]
+mod try_quota_tests;

@@ -40,6 +40,10 @@ capability's exact values in a fresh ordinary object under the existing limits.
 Its dedicated six-source, 12-mode upstream profile now records 10 passed and
 two class-metadata exclusions, with all 44 controls verified. The ordinary
 profile preserves all six older profile reports and adds no async host policy.
+[`Promise.try`](promise-try.md) now implements the current draft's callback-first
+operation, generic completion paths and terminal boundaries under the existing
+limits. A dedicated pinned upstream profile remains subsequent work; reference
+sources and readiness notes alone establish no upstream outcomes.
 Older profile policies remain unchanged. Remaining asynchronous work
 includes async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.

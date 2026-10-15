@@ -198,8 +198,9 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Title keys, PI owner names and CharacterData.length save279 work/1132 bytes.
     // Late Promise.any adds189 work and one bag; existing installer tariffs remain exact.
     // Later withResolvers adds326 work and one bag on the selected order-growth path.
-    assert_eq!(reference.steps, 898_688);
-    assert_eq!(reference.objects.len(), 756);
+    // Promise.try adds268 work at the next B-tree threshold and one reserved bag.
+    assert_eq!(reference.steps, 898_420);
+    assert_eq!(reference.objects.len(), 757);
     assert_eq!(reference.native_properties.len(), 300);
     assert_eq!(reference.prototypes.len(), 26);
     for mut runtime in [

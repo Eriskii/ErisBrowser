@@ -369,6 +369,16 @@ unhealthy gate blocks every source mode and prevents baseline recording. These
 checks rely on the trusted adapter; they grant no renderer authority and change
 no runtime, transport bytes or resource limits.
 
+[`Promise.try`](promise-try.md) prepays callback ownership and ordered argument
+copies before invoking author code. The separate tail helper checks its bound,
+work, heap and reserve admissions before cloning values. Ordinary callback
+errors survive capability construction before existing error conversion;
+terminal resource or unsupported-operation failures bypass rejection conversion
+and retain sticky suspension through the public operation. Constructor effects
+already performed are not rolled back by later refusal. Existing helper fees,
+host authority, decoder policies and runtime limits remain unchanged. Logical
+charges do not certify complete allocation coverage or process-memory bounds.
+
 ## Representative limits
 
 [Trusted runtime initialization](bootstrap-budget.md) has a finite 1,000,000-unit

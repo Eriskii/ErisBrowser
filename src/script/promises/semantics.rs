@@ -289,6 +289,44 @@ impl Runtime {
         self.new_promise_capability_result(capability)
     }
 
+    fn promise_try(
+        &mut self,
+        constructor: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // Nine control roles and seven path-dependent owned values. Incoming
+        // constructor cleanup is already funded by the public/caller envelope.
+        self.work(16)?;
+        if !js_object(&constructor) {
+            return Err(ScriptError::type_error(
+                "Promise.try receiver is not an object",
+            ));
+        }
+        self.work(1)?;
+        let callback = args.first().cloned().unwrap_or(Value::Undefined);
+        let arguments = self.promise_try_arguments(args.get(1..).unwrap_or(&[]))?;
+        // Call owns its copied callback and prepaid vector even if its first
+        // tick refuses. Normal completion enters the unchanged PromiseResolve.
+        match self.call(callback, arguments, Value::Undefined, doc) {
+            Ok(value) => self.promise_resolve_with_constructor(constructor, value, doc),
+            Err(error) if error.is_resource_limit() || error.is_unsupported() => Err(error),
+            Err(error) => {
+                let Capability {
+                    promise,
+                    resolve: _,
+                    reject,
+                } = self.new_promise_capability(constructor, doc)?;
+                // Preserve a thrown Value exactly; materialize an ordinary
+                // runtime error only after successful author construction.
+                let reason = self.exception_value(error)?;
+                let arguments = self.promise_arguments([reason])?;
+                self.call(reject, arguments, Value::Undefined, doc)?;
+                Ok(promise)
+            }
+        }
+    }
+
     pub(in crate::script) fn promise_native_operation(
         &mut self,
         name: &str,
@@ -312,6 +350,7 @@ impl Runtime {
                 "Promise.allSettled" => self.promise_all_settled(receiver, args, doc),
                 "Promise.any" => self.promise_any(receiver, args, doc),
                 "Promise.withResolvers" => self.promise_with_resolvers(receiver, doc),
+                "Promise.try" => self.promise_try(receiver, args, doc),
                 "Promise.getSpecies" => Ok(receiver),
                 _ => Err(ScriptError::resource("invalid private Promise operation")),
             }

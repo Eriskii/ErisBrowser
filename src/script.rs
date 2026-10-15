@@ -1885,7 +1885,8 @@ impl Runtime {
         self.install_promise_intrinsics_with_keys(keys)?;
         self.install_aggregate_error_intrinsics()?;
         self.install_promise_any_intrinsic()?;
-        self.install_promise_with_resolvers_intrinsic()
+        self.install_promise_with_resolvers_intrinsic()?;
+        self.install_promise_try_intrinsic()
     }
 
     fn initialize_intrinsics_before_typed_array(&mut self) -> Result<()> {
@@ -20856,3 +20857,8 @@ mod promise_any_input_tests;
 mod with_resolvers_abort_tests;
 #[cfg(test)]
 mod with_resolvers_semantics_tests;
+
+#[cfg(test)]
+mod try_abort_tests;
+#[cfg(test)]
+mod try_semantics_tests;

@@ -261,7 +261,7 @@ fn cached_pi_keys_share_the_existing_immutable_payload_for_every_bag() {
 }
 
 #[test]
-fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_101312_work_boundary() {
+fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_101580_work_boundary() {
     // Cached PI keys still save332; Promise with finally standalone installation adds1154.
     // Shared adjacent job keys independently save34 work without changing either limit.
     // Four Node accessor key pairs independently save128 work and672 bytes.
@@ -276,8 +276,10 @@ fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_101312_work_boundar
         (100_985, false, 0),
         (100_986, false, 0),
         (101_311, false, 0),
-        (101_312, true, 0),
-        (1_000_000, true, 898_688),
+        (101_312, false, 0),
+        (101_579, false, 0),
+        (101_580, true, 0),
+        (1_000_000, true, 898_420),
     ] {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;
@@ -292,7 +294,7 @@ fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_101312_work_boundar
         }
         let runtime = result.unwrap();
         assert_eq!(runtime.steps, remaining);
-        assert_eq!(runtime.objects.len(), 756);
+        assert_eq!(runtime.objects.len(), 757);
         assert_eq!(runtime.native_properties.len(), 300);
         assert_eq!(runtime.prototypes.len(), 26);
         assert_eq!(runtime.environments[0].bindings.len(), 213);
