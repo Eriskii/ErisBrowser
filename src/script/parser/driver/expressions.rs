@@ -3,10 +3,13 @@ use super::*;
 #[cfg(test)]
 mod argument_in_context_tests;
 
+#[cfg(test)]
+mod expression_in_context_tests;
+
 pub(super) enum Frame {
     Assignment,
     AssignmentHead,
-    ConditionalYes(ExprId),
+    ConditionalYes(ExprId, bool),
     ConditionalNo(ExprId, ExprId),
     AssignmentRight(String, ExprId),
     Sequence,
@@ -20,12 +23,12 @@ pub(super) enum Frame {
     PrefixUpdate(f64),
     Base(bool),
     PostfixResume(Postfix),
-    Computed(Postfix),
+    Computed(Postfix, bool),
     // Argument flags are (any spread, current operand is spread, saved allow_in).
     Arguments(Postfix, Vec<ExprId>, bool, bool, bool),
     New,
     NewHead,
-    NewComputed(NewState),
+    NewComputed(NewState, bool),
     NewArguments(ExprId, Vec<ExprId>, bool, bool, bool),
     Primary,
     CoverItem(Cover, bool),
@@ -96,14 +99,17 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
         Frame::AssignmentHead => {
             let left = expression(output);
             if p.eat("?") {
-                child(Frame::ConditionalYes(left), Frame::Assignment)
+                let saved_in = p.allow_in;
+                p.allow_in = true;
+                child(Frame::ConditionalYes(left, saved_in), Frame::Assignment)
             } else {
                 assignment_tail(p, left)
             }
         }
-        Frame::ConditionalYes(left) => {
+        Frame::ConditionalYes(left, saved_in) => {
             let yes = expression(output);
             p.expect(":")?;
+            p.allow_in = saved_in;
             child(Frame::ConditionalNo(left, yes), Frame::Assignment)
         }
         Frame::ConditionalNo(left, yes) => {
@@ -193,9 +199,10 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             },
         ),
         Frame::PostfixResume(state) => postfix(p, state),
-        Frame::Computed(mut state) => {
+        Frame::Computed(mut state, saved_in) => {
             let property = expression(output);
             p.expect("]")?;
+            p.allow_in = saved_in;
             state.value = p.emit_expr(Expr::Member(state.value, property))?;
             postfix(p, state)
         }
@@ -248,9 +255,10 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                 value: expression(output),
             },
         ),
-        Frame::NewComputed(mut state) => {
+        Frame::NewComputed(mut state, saved_in) => {
             let key = expression(output);
             p.expect("]")?;
+            p.allow_in = saved_in;
             state.value = p.emit_expr(Expr::Member(state.value, key))?;
             new_members(p, state)
         }
@@ -546,7 +554,9 @@ fn postfix(p: &mut Parser<'_>, mut state: Postfix) -> Result<Transition> {
             let key = p.emit_expr(Expr::Literal(Value::String(key)))?;
             state.value = p.emit_expr(Expr::Member(state.value, key))?;
         } else if p.eat("[") {
-            return child(Frame::Computed(state), Frame::Assignment);
+            let saved_in = p.allow_in;
+            p.allow_in = true;
+            return child(Frame::Computed(state, saved_in), Frame::Sequence);
         } else if p.eat("(") {
             if p.eat(")") {
                 return call_done(p, state, Vec::new(), false);
@@ -629,7 +639,9 @@ fn new_members(p: &mut Parser<'_>, mut state: NewState) -> Result<Transition> {
             let key = p.emit_expr(Expr::Literal(Value::String(key)))?;
             state.value = p.emit_expr(Expr::Member(state.value, key))?;
         } else if p.eat("[") {
-            return child(Frame::NewComputed(state), Frame::Assignment);
+            let saved_in = p.allow_in;
+            p.allow_in = true;
+            return child(Frame::NewComputed(state, saved_in), Frame::Sequence);
         } else if matches!(p.tokens[p.pos].kind, TokenKind::TemplateStart) {
             return Err(ScriptError::unsupported(
                 "tagged template literals are not implemented",

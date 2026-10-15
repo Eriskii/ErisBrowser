@@ -1126,8 +1126,15 @@ impl<'source> Parser<'source> {
     fn assignment(&mut self) -> Result<Expr> {
         let mut left = self.binary(1)?;
         if self.eat("?") {
-            let yes = self.expression()?;
-            self.expect(":")?;
+            let saved_in = self.allow_in;
+            self.allow_in = true;
+            let result: Result<Expr> = (|| {
+                let yes = self.expression()?;
+                self.expect(":")?;
+                Ok(yes)
+            })();
+            self.allow_in = saved_in;
+            let yes = result?;
             let no = self.expression()?;
             left = Expr::Conditional(Box::new(left), Box::new(yes), Box::new(no));
         }
@@ -1288,8 +1295,15 @@ impl<'source> Parser<'source> {
                     Box::new(Expr::Literal(Value::String(property))),
                 );
             } else if self.eat("[") {
-                let property = self.expression()?;
-                self.expect("]")?;
+                let saved_in = self.allow_in;
+                self.allow_in = true;
+                let result: Result<Expr> = (|| {
+                    let property = self.sequence()?;
+                    self.expect("]")?;
+                    Ok(property)
+                })();
+                self.allow_in = saved_in;
+                let property = result?;
                 value = Expr::Member(Box::new(value), Box::new(property));
             } else if self.eat("(") {
                 let mut arguments = Vec::new();
@@ -1785,8 +1799,15 @@ impl<'source> Parser<'source> {
                     Box::new(Expr::Literal(Value::String(key))),
                 );
             } else if self.eat("[") {
-                let key = self.expression()?;
-                self.expect("]")?;
+                let saved_in = self.allow_in;
+                self.allow_in = true;
+                let result: Result<Expr> = (|| {
+                    let key = self.sequence()?;
+                    self.expect("]")?;
+                    Ok(key)
+                })();
+                self.allow_in = saved_in;
+                let key = result?;
                 constructor = Expr::Member(Box::new(constructor), Box::new(key));
             } else if matches!(self.tokens[self.pos].kind, TokenKind::TemplateStart) {
                 return Err(ScriptError::unsupported(

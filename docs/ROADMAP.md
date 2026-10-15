@@ -30,9 +30,11 @@ The [Node method follow-up](node-method-keys.md) saves another 250 work units an
 1,512 accounted heap bytes, leaving 275 units. Call/new spread now uses the same
 startup allowance and runtime limits. [Argument grammar contexts](call-argument-in.md)
 now restore `+In` inside argument lists nested in a `for` initializer, while
-preserving the surrounding `for-in` grammar. Computed member expressions and the
-true branch of conditional expressions still need their own grammar-context
-follow-up. Array/object spread remains separate unfinished work.
+preserving the surrounding `for-in` grammar. [Computed member keys and
+conditional middle operands](expression-in.md) now handle their own `+In`
+contexts; brackets also admit comma expressions with ordered evaluation.
+Existing parser work and storage charges cover the added sequence parsing.
+Array/object spread remains separate unfinished work.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity

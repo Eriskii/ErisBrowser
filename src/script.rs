@@ -20813,3 +20813,6 @@ mod call_spread_guard_tests;
 
 #[cfg(test)]
 mod call_argument_in_tests;
+
+#[cfg(test)]
+mod expression_in_tests;

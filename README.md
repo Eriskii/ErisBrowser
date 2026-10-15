@@ -30,6 +30,10 @@ four upstream Promise modes; array/object spread and classes remain unfinished.
 [Argument grammar contexts](docs/call-argument-in.md) also allow `in` expressions
 inside call and constructor arguments in `for` initializers, while preserving
 the surrounding `for-in` grammar.
+[Computed keys and conditional contexts](docs/expression-in.md) now admit
+comma expressions inside brackets and `in` inside brackets or the middle of
+`?:`, including in `for` initializers. Evaluation order and outer restrictions
+are covered by interpreter and parser regressions.
 
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors

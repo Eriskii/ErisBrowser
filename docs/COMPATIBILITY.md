@@ -25,8 +25,11 @@ parse failures. Mixed, multiple and empty spreads preserve iterator ordering,
 receiver identity and argument-before-callability semantics within shared limits.
 [Argument grammar contexts](call-argument-in.md) now admit unparenthesized `in`
 inside ordinary and spread call/new arguments in `for` initializers. The outer
-`for-in` restrictions remain in effect. Array/object spread and classes remain
-unfinished.
+`for-in` restrictions remain in effect. [Computed keys and conditional
+contexts](expression-in.md) also admit comma expressions inside member brackets
+and enable `in` inside brackets and the middle of `?:`. Conditional tests and
+false operands retain their outer grammar context. Array/object spread and
+classes remain unfinished.
 The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
 preserving function properties and identities; they add no API coverage.
 The [Node accessor key-sharing follow-up](node-accessor-keys.md) similarly

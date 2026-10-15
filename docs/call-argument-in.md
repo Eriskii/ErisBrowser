@@ -52,7 +52,8 @@ It binds the complete build-input inventory to the parent Git commit rather
 than duplicating the unchanged repository in the archive.
 
 This correction does not complete ECMAScript grammar, web compatibility,
-production security or the Chromium-relative performance target. Computed
-member and conditional-expression contexts remain separate follow-ups.
+production security or the Chromium-relative performance target. The later
+[computed-member and conditional-expression follow-up](expression-in.md) handles
+their separate grammar contexts and comma expressions inside brackets.
 
 Specification: [Argument lists](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-argument-lists).
