@@ -27,6 +27,8 @@ fn stage() -> Runtime {
         order.extend(keys.iter().map(|text| PropertyKey::from(*text)));
         runtime.objects[id].order = order;
     }
+    // Exclude the new late prototype when reconstructing this earlier stage.
+    assert!(runtime.prototypes.remove("AggregateError").is_some());
     runtime.objects.truncate(first);
     runtime.array_buffers = super::super::State::default();
     assert_eq!(runtime.prototypes.len(), 25);
@@ -516,8 +518,8 @@ fn array_buffer_bootstrap_reports_raw_combined_initialization() {
     );
     assert!(runtime.steps > 0);
     assert!(runtime.steps < BOOTSTRAP_STEPS);
-    assert_eq!(runtime.native_properties.len(), 299);
-    assert_eq!(runtime.prototypes.len(), 25);
+    assert_eq!(runtime.native_properties.len(), 300);
+    assert_eq!(runtime.prototypes.len(), 26);
     assert!(runtime.array_buffers.intrinsic.is_some());
 }
 

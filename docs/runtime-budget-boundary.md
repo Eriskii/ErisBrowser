@@ -6,6 +6,13 @@ work allowance. Author execution retains its separate 100,000-unit allowance.
 runtime. A failure returns unchanged without publishing a realm. Allocation
 accounting stays cumulative across both phases, under the existing 8 MiB ceiling.
 
+The [AggregateError installation](aggregate-error.md) adds 1,103 charged work
+units. Its selected ledger totals 100,797 consumed units and leaves 899,203
+from trusted initialization; the returned author's 100,000 units are unchanged.
+The typed heap increment includes two upfront object slots and three late map
+entries, without a new Runtime field. Former 99,693/99,694/100,000 raw inputs
+remain explicit refusal controls beside the new exact and one-short boundaries.
+
 ## Original boundary checkpoint
 
 This makes the boundary explicit before adding DOM interface metadata. More

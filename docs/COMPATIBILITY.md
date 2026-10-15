@@ -16,6 +16,15 @@ fulfilled/rejected records from synchronous iterables, preserving generic
 capabilities and a shared gate for each input’s paired callbacks. `any`, async
 functions and rejection notifications remain absent. Authored regressions are
 not a full ECMAScript conformance result.
+
+[`AggregateError`](aggregate-error.md) supports call/new construction, optional
+message and cause, cached synchronous iteration and a fresh intrinsic errors
+Array. It preserves observable operation order and ordinary thrown values;
+iterator failures do not trigger closing. Genuine Error instances now have the
+Error fallback `Object.prototype.toString` tag, while string tag overrides and
+ordinary fake objects retain their distinctions. `Promise.any` is still absent,
+and the unchanged conformance decoder rejects an uncaught AggregateError
+intrinsic identity. This adds no full-standard or new upstream result claim.
 The optional [Promise Test262 host](promise-test262-host.md) runs a separate
 232-source, 458-mode selection with authenticated `$DONE` and final unhandled
 rejection checks. All retained failures and unsupported modes belong in its

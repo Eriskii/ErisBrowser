@@ -118,7 +118,7 @@ fn clone_bootstrap_reports_actual_admission_and_legacy_removal() {
     assert_eq!(runtime.objects.len(), dom_prototypes::BOOTSTRAP_OBJECTS);
     assert!(!runtime.native_properties.contains_key("DOM.cloneNode"));
     assert!(!runtime.native_properties.contains_key("DOM.Node.cloneNode"));
-    assert_eq!(runtime.native_properties.len(), 299);
+    assert_eq!(runtime.native_properties.len(), 300);
     assert!(runtime.steps > 0 && runtime.allocated < MAX_HEAP);
     // Preserve raw bootstrap observations, then use the successful public
     // constructor's fresh work allowance for metadata inspection.

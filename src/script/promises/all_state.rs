@@ -303,7 +303,7 @@ impl Runtime {
         self.observe_microtask_failure(result)
     }
 
-    pub(super) fn new_all_values_array(&mut self, values: Vec<Value>) -> Result<Value> {
+    pub(in crate::script) fn new_all_values_array(&mut self, values: Vec<Value>) -> Result<Value> {
         let result = (|| {
             self.work(23)?;
             let id = self.arrays.len();

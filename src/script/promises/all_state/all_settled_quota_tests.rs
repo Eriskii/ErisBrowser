@@ -236,7 +236,7 @@ fn completion_fixture() -> (Runtime, AllCaptureId, AllCaptureId, Value) {
     let element = raw_element(&mut runtime, group, 0, false);
     runtime.objects.try_reserve_exact(1).unwrap();
     assert!(runtime.objects.capacity() > runtime.objects.len());
-    assert_eq!(runtime.prototypes.len(), 25);
+    assert_eq!(runtime.prototypes.len(), 26);
     (runtime, group, element, handler())
 }
 
@@ -546,7 +546,7 @@ fn all_settled_snapshot17_saved_object_lookup22_and_existing98_or99_are_separate
         } else {
             *runtime.prototypes.get_mut("Object").unwrap() = usize::MAX;
         }
-        assert_eq!(runtime.prototypes.len(), if missing { 24 } else { 25 });
+        assert_eq!(runtime.prototypes.len(), if missing { 25 } else { 26 });
         let objects = runtime.objects.len();
         budget(&mut runtime, 39, MAX_HEAP);
         resource(runtime.new_all_settled_snapshot(ReactionKind::Fulfill, &payload));

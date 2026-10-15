@@ -196,10 +196,10 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Two Text factories share existing keys, saving60 work and336 bytes.
     // AllSettled adds187 metadata work and one bag, reusing the existing arenas.
     // Title keys, PI owner names and CharacterData.length save279 work/1132 bytes.
-    assert_eq!(reference.steps, 900_306);
-    assert_eq!(reference.objects.len(), 752);
-    assert_eq!(reference.native_properties.len(), 299);
-    assert_eq!(reference.prototypes.len(), 25);
+    assert_eq!(reference.steps, 899_203);
+    assert_eq!(reference.objects.len(), 754);
+    assert_eq!(reference.native_properties.len(), 300);
+    assert_eq!(reference.prototypes.len(), 26);
     for mut runtime in [
         Runtime::try_new().unwrap(),
         Runtime::new(),

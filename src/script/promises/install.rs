@@ -7,7 +7,7 @@ use std::num::NonZeroUsize;
 const GLOBAL: &str = "Promise";
 
 // Same pinned B=6 comparison/insertion envelope used by other installers.
-pub(super) fn tree(count: usize) -> (usize, usize) {
+pub(in crate::script) fn tree(count: usize) -> (usize, usize) {
     if count == 0 {
         return (0, 0);
     }
@@ -21,7 +21,7 @@ pub(super) fn tree(count: usize) -> (usize, usize) {
 }
 
 impl Runtime {
-    pub(super) fn promise_native(
+    pub(in crate::script) fn promise_native(
         &mut self,
         properties: usize,
         name: &str,

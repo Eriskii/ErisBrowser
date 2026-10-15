@@ -73,7 +73,8 @@ pub(super) const BOOTSTRAP_OBJECTS: usize = 351
     + node_equality::METADATA_OBJECTS
     + node_position::METADATA_OBJECTS
     + document_title::METADATA_OBJECTS
-    + text_operations::METADATA_OBJECTS;
+    + text_operations::METADATA_OBJECTS
+    + aggregate_error::METADATA_OBJECTS;
 
 #[derive(Default)]
 pub(super) struct State {

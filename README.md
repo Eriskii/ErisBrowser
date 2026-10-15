@@ -20,6 +20,12 @@ observable iteration order. [`Promise.allSettled`](docs/promise-all-settled.md)
 collects fulfilled and rejected outcome records in input order, with a shared
 once gate for each input’s two callbacks. `any`, async functions and rejection
 notifications remain unfinished.
+
+[`AggregateError`](docs/aggregate-error.md) adds callable and constructed errors
+with ordered synchronous iterable collection, optional message/cause properties
+and a fresh intrinsic `errors` Array. Genuine Error instances now receive the
+Error fallback tag from `Object.prototype.toString`. `Promise.any` and the
+conformance host's uncaught AggregateError identity decoder remain separate work.
 The optional [Promise Test262 host](docs/promise-test262-host.md) adds authenticated
 `$DONE` completion and a separate final-unhandled-rejection policy for a pinned
 232-source, 458-mode profile. The separate [complete `Promise.all` selection](docs/promise-all-test262.md)

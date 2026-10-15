@@ -131,8 +131,8 @@ fn node_method_factory_work_refusal_preserves_the_longest_name_stages() {
             assert_eq!(runtime.objects[old].values.len(), properties);
             assert_eq!(runtime.objects[old].order.len(), properties);
         }
-        assert_eq!(runtime.environments[0].bindings.len(), 212);
-        assert_eq!(runtime.native_properties.len(), 299);
+        assert_eq!(runtime.environments[0].bindings.len(), 213);
+        assert_eq!(runtime.native_properties.len(), 300);
     }
 }
 
@@ -259,8 +259,8 @@ fn node_method_seven_handoffs_precede_old_entry_work_and_any_metadata() {
             assert!(runtime.objects[owner].values.is_empty());
             assert!(runtime.objects[owner].order.is_empty());
             assert_eq!(runtime.next_global_order, order);
-            assert_eq!(runtime.native_properties.len(), 299);
-            assert_eq!(runtime.environments[0].bindings.len(), 212);
+            assert_eq!(runtime.native_properties.len(), 300);
+            assert_eq!(runtime.environments[0].bindings.len(), 213);
         }
     }
 }
@@ -293,7 +293,7 @@ fn node_method_complete_installer_endpoints_include_owner_publication_and_one_ha
             assert_eq!(runtime.objects.len(), old + count);
             assert_eq!(runtime.native_properties, registry);
             assert_eq!(runtime.next_global_order, global_order);
-            assert_eq!(runtime.environments[0].bindings.len(), 212);
+            assert_eq!(runtime.environments[0].bindings.len(), 213);
             let published = if accepted { count } else { count - 1 };
             let expected: Vec<PropertyKey> = installer.names[..published]
                 .iter()

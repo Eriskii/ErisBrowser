@@ -27,8 +27,8 @@ mod quota_tests;
 mod semantics;
 #[cfg(test)]
 mod shared_key_tests;
-#[cfg(test)]
-use factories::object_slot_plan;
+pub(super) use factories::object_slot_plan;
+pub(super) use install::tree as intrinsic_tree;
 #[cfg(test)]
 mod layout_tests;
 
@@ -190,12 +190,12 @@ fn search_work(count: usize) -> usize {
 }
 
 #[derive(Clone, Copy, Debug)]
-struct GrowthPlan {
-    target: Option<usize>,
-    work: usize,
-    bytes: usize,
+pub(super) struct GrowthPlan {
+    pub(super) target: Option<usize>,
+    pub(super) work: usize,
+    pub(super) bytes: usize,
 }
-fn growth_plan<T>(len: usize, admitted: usize, append: usize) -> Result<GrowthPlan> {
+pub(super) fn growth_plan<T>(len: usize, admitted: usize, append: usize) -> Result<GrowthPlan> {
     let width = size_of::<T>();
     if width == 0 || len > admitted {
         return Err(invalid());
@@ -666,3 +666,6 @@ mod shared_key_identity_tests;
 
 #[cfg(test)]
 mod all_settled_layout_tests;
+
+#[cfg(test)]
+mod aggregate_error_coupling_tests;

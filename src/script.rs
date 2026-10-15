@@ -19,6 +19,12 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::rc::Rc;
 
+mod aggregate_error;
+
+#[cfg(test)]
+mod aggregate_error_abort_tests;
+#[cfg(test)]
+mod aggregate_error_semantic_tests;
 #[cfg(test)]
 mod bootstrap_tests;
 mod code;
@@ -1876,7 +1882,8 @@ impl Runtime {
         self.install_object_has_own_intrinsic()?;
         self.initialize_reflect_property_intrinsics()?;
         let keys = self.install_microtask_intrinsic()?;
-        self.install_promise_intrinsics_with_keys(keys)
+        self.install_promise_intrinsics_with_keys(keys)?;
+        self.install_aggregate_error_intrinsics()
     }
 
     fn initialize_intrinsics_before_typed_array(&mut self) -> Result<()> {
@@ -8662,6 +8669,7 @@ impl Runtime {
                     Value::Number(_) => "Number",
                     Value::Bool(_) => "Boolean",
                     Value::Object(id) if self.objects[*id].arguments => "Arguments",
+                    Value::Object(id) if self.objects[*id].intrinsic_error.is_some() => "Error",
                     Value::Object(id) if self.objects[*id].regexp.is_some() => "RegExp",
                     Value::Object(id) if self.objects[*id].date_value.is_some() => "Date",
                     Value::Object(id) if self.objects[*id].event.is_some() => {

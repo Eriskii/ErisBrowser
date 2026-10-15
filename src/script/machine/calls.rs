@@ -134,6 +134,7 @@ fn invoke_native(
             runtime.queue_microtask(&receiver, &arguments)
         }
         "Promise.callback" => runtime.promise_callback(&native, &arguments, doc),
+        "AggregateError" => runtime.aggregate_error_call(&native, &arguments, doc),
         #[cfg(feature = "test262-host")]
         "Test262.print" | "Test262.done" => {
             // Stored private identity, dynamic this, and owned arguments all

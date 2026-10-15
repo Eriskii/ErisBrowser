@@ -1,7 +1,7 @@
 //! Bounded object adapters and immutable native callback captures.
 use super::*;
 
-pub(super) fn object_slot_plan(
+pub(in crate::script) fn object_slot_plan(
     len: usize,
     physical_capacity: usize,
     count: usize,

@@ -113,11 +113,11 @@ fn text_metadata_keys_preserve_both_bags_before_sharing_constructor_payloads() {
             assert!(!*writable && !property.enumerable && property.configurable);
         }
     }
-    assert_eq!(runtime.objects.len(), 752);
-    assert_eq!(runtime.objects.capacity(), 752);
-    assert_eq!(runtime.native_properties.len(), 299);
-    assert_eq!(runtime.prototypes.len(), 25);
-    assert_eq!(runtime.environments[0].bindings.len(), 212);
+    assert_eq!(runtime.objects.len(), 754);
+    assert_eq!(runtime.objects.capacity(), 754);
+    assert_eq!(runtime.native_properties.len(), 300);
+    assert_eq!(runtime.prototypes.len(), 26);
+    assert_eq!(runtime.environments[0].bindings.len(), 213);
     clean(&runtime);
 
     // All preservation controls above precede the first intended parent failure.
@@ -225,20 +225,26 @@ fn text_metadata_key_sharing_preserves_saved_behavior_and_mutation_isolation_in_
 }
 
 #[test]
-fn text_metadata_keys_raw_bootstrap_uses_99694_work_and_preserves_public_reset() {
+fn text_metadata_keys_raw_bootstrap_uses_100797_work_and_preserves_public_reset() {
     // Two removed key pairs save72 work and336 bytes; handoff8 plus clones4
-    // leave a net60 work saving. The allowance and arena counts stay unchanged.
+    // leave a net60 work saving. AggregateError subsequently adds1103 startup
+    // work and two bags; preserve the former raw inputs below as refusals.
     assert_eq!(MAX_STEPS, 100_000);
     let mut complete_heap = None;
-    for (allowance, success, remaining) in
-        [(99_693, false, 0), (99_694, true, 0), (100_000, true, 306)]
-    {
+    for (allowance, success, remaining) in [
+        (99_693, false, 0),
+        (99_694, false, 0),
+        (100_000, false, 0),
+        (100_796, false, 0),
+        (100_797, true, 0),
+        (1_000_000, true, 899_203),
+    ] {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;
         let result = runtime.finish_bootstrap();
         if !success {
             let error = match result {
-                Ok(_) => panic!("one-short Text key-cache bootstrap succeeded"),
+                Ok(_) => panic!("under-budget Text key-cache bootstrap succeeded"),
                 Err(error) => error,
             };
             assert!(error.is_resource_limit());
@@ -246,11 +252,11 @@ fn text_metadata_keys_raw_bootstrap_uses_99694_work_and_preserves_public_reset()
         }
         let runtime = result.unwrap();
         assert_eq!(runtime.steps, remaining);
-        assert_eq!(runtime.objects.len(), 752);
-        assert_eq!(runtime.objects.capacity(), 752);
-        assert_eq!(runtime.native_properties.len(), 299);
-        assert_eq!(runtime.prototypes.len(), 25);
-        assert_eq!(runtime.environments[0].bindings.len(), 212);
+        assert_eq!(runtime.objects.len(), 754);
+        assert_eq!(runtime.objects.capacity(), 754);
+        assert_eq!(runtime.native_properties.len(), 300);
+        assert_eq!(runtime.prototypes.len(), 26);
+        assert_eq!(runtime.environments[0].bindings.len(), 213);
         assert!(runtime.environments[0].bindings.contains_key("Text"));
         assert!(runtime.environments[0].bindings.contains_key("Promise"));
         clean(&runtime);
@@ -262,6 +268,6 @@ fn text_metadata_keys_raw_bootstrap_uses_99694_work_and_preserves_public_reset()
     let runtime = Runtime::try_new().unwrap();
     assert_eq!(runtime.steps, 100_000);
     assert_eq!(Some(runtime.allocated), complete_heap);
-    assert_eq!(runtime.objects.len(), 752);
+    assert_eq!(runtime.objects.len(), 754);
     clean(&runtime);
 }

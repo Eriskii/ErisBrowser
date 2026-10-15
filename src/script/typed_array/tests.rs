@@ -153,6 +153,12 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // AllSettled adds one method bag; no further State or arena header.
     // Title/PI metadata sharing saves279 work and1132 bytes without new bags.
     let all_settled_added = s + a + d + 3 * k + bpp + n + 1074;
+    // AggregateError adds two prepaid slots and three late map entries.
+    let b_static =
+        16 * (size_of::<&'static str>() + size_of::<usize>()) + 32 * size_of::<usize>() + 64;
+    let b_native = 16 * (size_of::<String>() + size_of::<usize>()) + 32 * size_of::<usize>() + 64;
+    let aggregate_error_added =
+        2 * s + 2 * a + 2 * d + 6 * k + 2 * bpp + n + 3 * b_static + 4 * b_native + 4 * bsb + 2634;
     // The cumulative remainder below starts from MAX_STEPS; only its
     // allowance origin changes, not the installation work or heap ledger.
     assert_eq!(
@@ -170,6 +176,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 187
             + 279
             + (BOOTSTRAP_STEPS - MAX_STEPS)
+            - 1103
     );
     assert_eq!(
         runtime.allocated,
@@ -194,16 +201,17 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             - 336
             + all_settled_added
             - 1132
+            + aggregate_error_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (752, 752)
+        (754, 754)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),
-        (299, 25)
+        (300, 26)
     );
-    assert_eq!(runtime.environments[0].bindings.len(), 212);
+    assert_eq!(runtime.environments[0].bindings.len(), 213);
     assert!(runtime.typed_arrays.records.is_empty());
     assert!(runtime.allocated < MAX_HEAP);
     clean(&runtime);

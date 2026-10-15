@@ -126,10 +126,10 @@ fn node_accessor_keys_share_existing_constructor_payloads_with_four_distinct_bag
         }
     }
     assert_eq!(bags.len(), 4);
-    assert_eq!(runtime.objects.len(), 752);
-    assert_eq!(runtime.native_properties.len(), 299);
-    assert_eq!(runtime.prototypes.len(), 25);
-    assert_eq!(runtime.environments[0].bindings.len(), 212);
+    assert_eq!(runtime.objects.len(), 754);
+    assert_eq!(runtime.native_properties.len(), 300);
+    assert_eq!(runtime.prototypes.len(), 26);
+    assert_eq!(runtime.environments[0].bindings.len(), 213);
 }
 
 #[test]

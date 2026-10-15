@@ -1,5 +1,51 @@
 # Validation record
 
+## AggregateError and Error fallback branding
+
+The [AggregateError checkpoint](aggregate-error.md) adds call/new construction,
+ordered synchronous iterable collection, message/cause properties and genuine
+Error fallback tagging. Its selected installation ledger adds 1,103 work units
+and two metadata bags, with the existing trusted/author/heap limits unchanged.
+
+The initial thirteen-group public parent run passed one string-tag override
+group and failed twelve groups. The additive cached-next group failed too.
+Five terminal-policy groups also failed at the initial missing-API boundary.
+Each failed group stopped in its first sloppy attempt; later readbacks and
+strict attempts were not reached. Generic Error diagnostics alone do not locate
+every internal assertion. The parent records remain retained.
+
+Retained corrections cover an initial unsigned arithmetic compile failure,
+an independently identified iterator-arrow setup allocation, six
+earlier-stage DataView fixture failures, and a strict lint refusal for a needless
+setup clone. They respectively reorder unchanged accounting terms, precreate
+the arrow before measurement, exclude only the late prototype from the old
+stage, and borrow the one-element slice. Production code and selected semantic
+and quota expectations remain unchanged. The earlier 33-test focused pass and
+47-pass/six-fail bootstrap run remain retained; the corrected bootstrap run
+passes all 53 tests.
+
+The final source passes **3,159 Rust 1.88 default tests** and **3,513 Rust 1.99
+tests with `test262-host,vulkan-raster`** in complete `--include-ignored` runs.
+Each has 52 result rows and no failed, ignored or filtered tests. Exact parent
+rosters survive four selected boundary-name renames and gain 27 groups. Both
+full suites were rerun after the lint-only fixture correction. Strict all-target
+Clippy passes in both configurations, and formatting passes. Raw diagnostics
+record 100,797 consumed trusted work units, 899,203 remaining and 1,761,871
+accounted bytes; successful public construction still returns 100,000 author
+work units under the unchanged shared 8 MiB heap ceiling.
+
+The rebuilt Rust 1.88 release host adapter preserves all **1,050 case records
+and 348 harness records** across four existing Promise profiles. Complete arrays
+match the published parent, including failed and unsupported outcomes; all
+controls verify. There are no regressions, improvements or baseline changes.
+No separate full Python suite rerun is claimed; its tools, corpora and baselines
+remain unchanged.
+
+There is no new AggregateError upstream selection or transport acceptance
+claim. The unchanged host decoder rejects an uncaught AggregateError intrinsic
+identity. The evidence links in the chapter bind the final published checkpoint;
+the historical sections below retain their original measurements.
+
 ## Separate trusted bootstrap allowance
 
 Fixed intrinsic initialization now has a finite 1,000,000-unit work allowance;

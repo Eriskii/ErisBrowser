@@ -321,6 +321,15 @@ aggregate data cannot enter or retain the scalar native editor, including during
 a pending acknowledgement. These are bounded interfaces, not universal
 allocation recovery or complete exact-string browser support.
 
+[AggregateError construction](aggregate-error.md) uses the existing work,
+checked-growth and cumulative heap policies. Ordinary iterable failures
+propagate without author iterator closing; resource and unsupported-operation
+failures retain terminal queue suspension. Its two late metadata bags consume
+the trusted initialization allowance, and only successful bootstrap returns an
+author runtime. Partial metadata after refusal is not rolled back into a usable
+realm. This adds no renderer authority or host decoder acceptance, and the
+logical ledger does not account for all allocator overhead or process memory.
+
 ## Representative limits
 
 [Trusted runtime initialization](bootstrap-budget.md) has a finite 1,000,000-unit

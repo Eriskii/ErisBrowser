@@ -55,16 +55,16 @@ fn promise_coherent(runtime: &Runtime) {
         runtime.environments[0].bindings["Promise"].global_order,
         211
     );
-    assert_eq!(runtime.native_properties.len(), 299);
-    assert_eq!(runtime.prototypes.len(), 25);
-    assert_eq!(runtime.environments[0].bindings.len(), 212);
+    assert_eq!(runtime.native_properties.len(), 300);
+    assert_eq!(runtime.prototypes.len(), 26);
+    assert_eq!(runtime.environments[0].bindings.len(), 213);
 }
 
 #[test]
 fn shared_job_key_payloads_preserve_all_eleven_function_bags_and_existing_ids() {
     let runtime = Runtime::try_new().unwrap();
-    assert_eq!(runtime.objects.len(), 752);
-    assert_eq!(runtime.objects.capacity(), 752);
+    assert_eq!(runtime.objects.len(), 754);
+    assert_eq!(runtime.objects.capacity(), 754);
     promise_coherent(&runtime);
     empty(&runtime);
     let producer = native_bag(&runtime, "queueMicrotask");

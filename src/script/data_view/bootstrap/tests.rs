@@ -25,6 +25,8 @@ fn stage() -> Runtime {
     let mut order = Vec::with_capacity(4);
     order.push(PropertyKey::from("constructor"));
     runtime.objects[owner].order = order;
+    // Exclude the late AggregateError prototype when reconstructing this earlier stage.
+    assert!(runtime.prototypes.remove("AggregateError").is_some());
     runtime.objects.truncate(first);
     runtime.data_views = super::super::State::default();
     runtime.steps = MAX_STEPS;

@@ -112,8 +112,8 @@ fn node_borrowed_factory_staged_work_refusals_preserve_the_exact_private_prefix(
             assert_eq!(runtime.objects[old].values.len(), properties);
             assert_eq!(runtime.objects[old].order.len(), properties);
         }
-        assert_eq!(runtime.environments[0].bindings.len(), 212);
-        assert_eq!(runtime.native_properties.len(), 299);
+        assert_eq!(runtime.environments[0].bindings.len(), 213);
+        assert_eq!(runtime.native_properties.len(), 300);
     }
 }
 
@@ -185,8 +185,8 @@ fn node_key_handoff_is_paid_once_before_the_existing_installer_and_four_factorie
         let result = runtime.install_node_data_members(owner, [&keys[0], &keys[1]]);
         assert_eq!(runtime.steps, remaining);
         assert_eq!(runtime.objects.len(), old + 4);
-        assert_eq!(runtime.native_properties.len(), 299);
-        assert_eq!(runtime.environments[0].bindings.len(), 212);
+        assert_eq!(runtime.native_properties.len(), 300);
+        assert_eq!(runtime.environments[0].bindings.len(), 213);
         if accepted {
             result.unwrap();
             assert_eq!(runtime.allocated, MAX_HEAP);
@@ -268,7 +268,7 @@ fn node_borrowed_factory_keeps_the_existing_eager_object_reservation_guard() {
     let keys = cached_keys(&runtime);
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (752, 752)
+        (754, 754)
     );
     runtime.steps = 98;
     runtime.allocated = 0;
@@ -283,8 +283,8 @@ fn node_borrowed_factory_keeps_the_existing_eager_object_reservation_guard() {
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (752, 752)
+        (754, 754)
     );
-    assert_eq!(runtime.native_properties.len(), 299);
-    assert_eq!(runtime.environments[0].bindings.len(), 212);
+    assert_eq!(runtime.native_properties.len(), 300);
+    assert_eq!(runtime.environments[0].bindings.len(), 213);
 }
