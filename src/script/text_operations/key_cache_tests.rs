@@ -113,8 +113,8 @@ fn text_metadata_keys_preserve_both_bags_before_sharing_constructor_payloads() {
             assert!(!*writable && !property.enumerable && property.configurable);
         }
     }
-    assert_eq!(runtime.objects.len(), 755);
-    assert_eq!(runtime.objects.capacity(), 755);
+    assert_eq!(runtime.objects.len(), 756);
+    assert_eq!(runtime.objects.capacity(), 756);
     assert_eq!(runtime.native_properties.len(), 300);
     assert_eq!(runtime.prototypes.len(), 26);
     assert_eq!(runtime.environments[0].bindings.len(), 213);
@@ -225,7 +225,7 @@ fn text_metadata_key_sharing_preserves_saved_behavior_and_mutation_isolation_in_
 }
 
 #[test]
-fn text_metadata_keys_raw_bootstrap_uses_100986_work_and_preserves_public_reset() {
+fn text_metadata_keys_raw_bootstrap_uses_101312_work_and_preserves_public_reset() {
     // Two removed key pairs save72 work and336 bytes; handoff8 plus clones4
     // leave a net60 work saving. AggregateError subsequently adds1103 startup
     // work and two bags; late Promise.any adds189 work and one bag.
@@ -239,8 +239,10 @@ fn text_metadata_keys_raw_bootstrap_uses_100986_work_and_preserves_public_reset(
         (100_796, false, 0),
         (100_797, false, 0),
         (100_985, false, 0),
-        (100_986, true, 0),
-        (1_000_000, true, 899_014),
+        (100_986, false, 0),
+        (101_311, false, 0),
+        (101_312, true, 0),
+        (1_000_000, true, 898_688),
     ] {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;
@@ -255,8 +257,8 @@ fn text_metadata_keys_raw_bootstrap_uses_100986_work_and_preserves_public_reset(
         }
         let runtime = result.unwrap();
         assert_eq!(runtime.steps, remaining);
-        assert_eq!(runtime.objects.len(), 755);
-        assert_eq!(runtime.objects.capacity(), 755);
+        assert_eq!(runtime.objects.len(), 756);
+        assert_eq!(runtime.objects.capacity(), 756);
         assert_eq!(runtime.native_properties.len(), 300);
         assert_eq!(runtime.prototypes.len(), 26);
         assert_eq!(runtime.environments[0].bindings.len(), 213);
@@ -271,6 +273,6 @@ fn text_metadata_keys_raw_bootstrap_uses_100986_work_and_preserves_public_reset(
     let runtime = Runtime::try_new().unwrap();
     assert_eq!(runtime.steps, 100_000);
     assert_eq!(Some(runtime.allocated), complete_heap);
-    assert_eq!(runtime.objects.len(), 755);
+    assert_eq!(runtime.objects.len(), 756);
     clean(&runtime);
 }

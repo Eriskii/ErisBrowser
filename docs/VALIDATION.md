@@ -1,5 +1,39 @@
 # Validation record
 
+## Promise.withResolvers runtime
+
+The [withResolvers checkpoint](promise-with-resolvers.md) adds generic capability
+creation followed by a fresh ordinary result with own `promise`, `resolve` and
+`reject` data properties. Callback identities and ordinary constructor throws
+are preserved; terminal failures retain queue suspension.
+
+All 15 public groups fail on the published parent at the missing-method guard
+in their first sloppy attempt; later phases, strict attempts and terminal
+readbacks are unreached. The first candidate run passes all 24 new groups:
+12 semantic, three terminal and nine private groups, with 67 measured private
+operations. No candidate source or expectation correction follows execution.
+
+Complete `--include-ignored` runs pass **3,221 Rust 1.88 default tests** and
+**3,575 Rust 1.99 tests with `test262-host,vulkan-raster`**, each across 52 result
+rows with no failed, ignored or filtered tests. Every parent identity survives
+four selected boundary-name renames, and all 24 groups are added. Strict
+all-target Clippy passes in both configurations, and formatting passes.
+
+Observed raw startup consumes 101,312 units, leaves 898,688 and accounts for
+1,768,271 bytes on the recorded x86_64 configuration. The added late metadata
+bag brings the object count to 756; constructor order length/capacity grows
+from 10/10 to 11/11. This branch adds 326 work and 3,253 accounted bytes.
+Trusted work remains 1,000,000, author work 100,000 and cumulative heap 8 MiB.
+
+Rebuilt Rust 1.88 ordinary and host adapters preserve the complete **1,288 case
+and 502 harness record arrays** across all six existing upstream profiles,
+including failed and unsupported outcomes. Policies, corpus identities and
+baselines remain unchanged. Tooling and CI gates are unchanged; there is no
+full Python-suite rerun or dedicated withResolvers upstream profile. Six pinned
+sources are retained only as authenticated references. The selected input
+inventory and separate tracked-source census do not claim a complete build
+graph. Historical sections below remain byte-exact.
+
 ## Complete pinned Promise.any selection
 
 The [Any upstream checkpoint](promise-any-upstream.md) retains all 94 sources

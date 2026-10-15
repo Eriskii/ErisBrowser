@@ -352,6 +352,14 @@ adds no host authority, decoder capability or budget-reset site. Existing work,
 heap, call and stack limits remain unchanged. These controls do not establish
 complete allocation coverage, process-memory bounds or production security.
 
+[`Promise.withResolvers`](promise-with-resolvers.md) creates the capability
+before admitting the result object and its three own data fields. Existing
+capability charges and fallible growth remain in force; partial admission does
+not roll back spent work or heap accounting. Resource and unsupported-operation
+failures retain sticky queue suspension. The late metadata bag uses the existing
+trusted allowance without changing author-entry resets, host authority or
+decoder policy. These logical charges do not establish process-memory bounds.
+
 ## Representative limits
 
 [Trusted runtime initialization](bootstrap-budget.md) has a finite 1,000,000-unit

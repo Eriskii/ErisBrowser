@@ -189,7 +189,7 @@ fn node_method_keys_share_constructor_payloads_after_preserving_all_nine_bags() 
         }
     }
     assert_eq!(bags.len(), 9);
-    assert_eq!(runtime.objects.len(), 755);
+    assert_eq!(runtime.objects.len(), 756);
     assert_eq!(runtime.native_properties.len(), 300);
     assert_eq!(runtime.prototypes.len(), 26);
     assert_eq!(runtime.environments[0].bindings.len(), 213);

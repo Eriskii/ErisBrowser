@@ -26,6 +26,12 @@ retains all 94 sources and 188 modes under a 102-control gate.
 It records **172 passed, 14 unsupported and two failed modes**, with all **102
 controls verified**.
 
+[`Promise.withResolvers`](docs/promise-with-resolvers.md) returns a fresh
+`{promise, resolve, reject}` result using a generic constructor and the exact
+capability callbacks. Ordinary constructor errors remain synchronous; existing
+settlement and terminal queue behavior are preserved. A dedicated upstream
+profile remains separate work.
+
 [`AggregateError`](docs/aggregate-error.md) adds callable and constructed errors
 with ordered synchronous iterable collection, optional message/cause properties
 and a fresh intrinsic `errors` Array. Genuine Error instances now receive the

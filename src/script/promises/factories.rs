@@ -47,6 +47,51 @@ impl Runtime {
         Ok(())
     }
 
+    pub(super) fn new_promise_capability_result(
+        &mut self,
+        capability: Capability,
+    ) -> Result<Value> {
+        let result = (|| {
+            // Four bounded control roles and five local owners: prototype,
+            // result and three keys. The producer prepaid capability cleanup.
+            self.work(9)?;
+            self.work(intrinsic_tree(self.prototypes.len()).0 * (1 + "Object".len() / 8))?;
+            let prototype = self
+                .prototypes
+                .get("Object")
+                .copied()
+                .filter(|id| *id < self.objects.len())
+                .ok_or_else(|| ScriptError::resource("Promise result Object prototype missing"))?;
+            // NewPromiseCapability may have run arbitrary author construction.
+            // Recompute the physical arena plan after all of those effects.
+            let plan = object_slot_plan(self.objects.len(), self.objects.capacity(), 1)?;
+            self.work(plan.work)?;
+            self.charge(plan.bytes)?;
+            self.reserve_promise_objects(plan)?;
+            let bag = self.dom_proto_object(Some(Value::Object(prototype)), 3)?;
+            let promise = self.dom_proto_text("promise")?;
+            let resolve = self.dom_proto_text("resolve")?;
+            let reject = self.dom_proto_text("reject")?;
+            self.dom_proto_property(
+                bag,
+                promise.into(),
+                Property::data(capability.promise, true, true, true),
+            )?;
+            self.dom_proto_property(
+                bag,
+                resolve.into(),
+                Property::data(capability.resolve, true, true, true),
+            )?;
+            self.dom_proto_property(
+                bag,
+                reject.into(),
+                Property::data(capability.reject, true, true, true),
+            )?;
+            Ok(Value::Object(bag))
+        })();
+        self.observe_microtask_failure(result)
+    }
+
     pub(super) fn new_pending_promise(&mut self, prototype: Value) -> Result<(PromiseId, Value)> {
         let result = (|| {
             let record = growth_plan::<PromiseRecord>(

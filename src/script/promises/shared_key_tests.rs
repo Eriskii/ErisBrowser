@@ -49,7 +49,7 @@ fn empty(runtime: &Runtime) {
 fn replay() -> Runtime {
     let mut runtime = Runtime::try_new().unwrap();
     empty(&runtime);
-    assert_eq!(runtime.objects.len(), 755);
+    assert_eq!(runtime.objects.len(), 756);
     assert!(
         runtime.environments[0]
             .bindings
@@ -67,7 +67,7 @@ fn replay() -> Runtime {
     assert_eq!(aggregate.global_order, 212);
     // Physical preparation and order restoration are inert fixture setup.
     runtime.objects.try_reserve_exact(12).unwrap();
-    assert!(runtime.objects.capacity() >= 767);
+    assert!(runtime.objects.capacity() >= 768);
     assert_eq!(runtime.environments[0].bindings.len(), 210);
     runtime.next_global_order = 210;
     runtime.steps = MAX_STEPS;
@@ -79,7 +79,7 @@ fn consumer_fixture() -> (Runtime, [JsString; 2]) {
     let keys = runtime.install_microtask_intrinsic().unwrap();
     assert_eq!(runtime.steps, MAX_STEPS - 331);
     assert_eq!(runtime.allocated, producer_bytes());
-    assert_eq!(runtime.objects.len(), 756);
+    assert_eq!(runtime.objects.len(), 757);
     // The producer has already paid the keys' construction and future cleanup.
     // Resetting fixture counters isolates the consumer's additional charges.
     runtime.steps = 0;
@@ -146,11 +146,11 @@ fn shared_key_producer_exact331_and_heap_publish_only_after_full_admission() {
         if accepted {
             let keys = result.unwrap();
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects.len(), 756);
+            assert_eq!(runtime.objects.len(), 757);
             assert_eq!(runtime.environments[0].bindings.len(), 211);
             assert_eq!(runtime.next_global_order, 211);
             let owner = native_bag(&runtime, "queueMicrotask");
-            assert_eq!(owner, 755);
+            assert_eq!(owner, 756);
             for (index, name) in ["length", "name"].into_iter().enumerate() {
                 assert!(std::ptr::eq(
                     keys[index].units().as_ptr(),
@@ -197,7 +197,7 @@ fn shared_key_consumer_exact1532_and_heap_preserve_the_published_producer_on_ref
         if accepted {
             result.unwrap();
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects.len(), 767);
+            assert_eq!(runtime.objects.len(), 768);
             assert_eq!(runtime.next_global_order, 212);
             promise_coherent(&runtime);
         } else {
@@ -254,7 +254,7 @@ fn shared_key_pair_exact1863_and_heap_keep_late_partial_state_unreturned() {
         }
     }
     // Actual whole-bootstrap Err/success and public fresh-budget behavior are
-    // the retained99693/99694/100000 refusals and new100986 boundary, not this replay.
+    // the retained99693/99694/100000/100986 refusals and new101312 boundary, not this replay.
 }
 
 #[test]
@@ -280,9 +280,9 @@ fn shared_key_producer_prepays_retained_cleanup_before_either_key_can_exist() {
         assert!(failure.is_resource_limit());
         assert_eq!(runtime.steps, 0);
         assert_eq!(runtime.allocated, bytes);
-        assert_eq!(runtime.objects.len(), 755 + added);
+        assert_eq!(runtime.objects.len(), 756 + added);
         if added != 0 {
-            assert_eq!(runtime.objects[755].values.len(), properties);
+            assert_eq!(runtime.objects[756].values.len(), properties);
         }
         assert!(
             !runtime.environments[0]
@@ -404,7 +404,7 @@ fn standalone_guard_then_key_order_and_shared_move_have_distinct_exact_prefixes(
         assert!(error(result).is_resource_limit());
         assert_eq!(runtime.steps, 0);
         assert_eq!(runtime.allocated, bytes);
-        assert_eq!(runtime.objects.len(), 756);
+        assert_eq!(runtime.objects.len(), 757);
         assert!(runtime.promises.intrinsics.is_none());
         assert!(!runtime.environments[0].bindings.contains_key("Promise"));
         empty(&runtime);

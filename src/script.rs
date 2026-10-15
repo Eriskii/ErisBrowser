@@ -1884,7 +1884,8 @@ impl Runtime {
         let keys = self.install_microtask_intrinsic()?;
         self.install_promise_intrinsics_with_keys(keys)?;
         self.install_aggregate_error_intrinsics()?;
-        self.install_promise_any_intrinsic()
+        self.install_promise_any_intrinsic()?;
+        self.install_promise_with_resolvers_intrinsic()
     }
 
     fn initialize_intrinsics_before_typed_array(&mut self) -> Result<()> {
@@ -20850,3 +20851,8 @@ mod promise_any_semantic_tests;
 
 #[cfg(test)]
 mod promise_any_input_tests;
+
+#[cfg(test)]
+mod with_resolvers_abort_tests;
+#[cfg(test)]
+mod with_resolvers_semantics_tests;

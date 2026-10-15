@@ -35,6 +35,10 @@ dedicated [94-source, 188-mode upstream profile](promise-any-upstream.md)
 uses a canonical 102-control gate and an Any-only ERJR3 AggregateError identity
 capability. It records **172 passed, 14 unsupported and two failed modes**, with all **102
 controls verified**.
+[`Promise.withResolvers`](promise-with-resolvers.md) now returns a generic
+capability's exact values in a fresh ordinary object under the existing limits.
+Its runtime controls and six older profile replays pass their selected checks;
+a dedicated withResolvers upstream profile remains separate work.
 Older profile policies remain unchanged. Remaining asynchronous work
 includes async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.

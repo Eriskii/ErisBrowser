@@ -197,8 +197,9 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // AllSettled adds187 metadata work and one bag, reusing the existing arenas.
     // Title keys, PI owner names and CharacterData.length save279 work/1132 bytes.
     // Late Promise.any adds189 work and one bag; existing installer tariffs remain exact.
-    assert_eq!(reference.steps, 899_014);
-    assert_eq!(reference.objects.len(), 755);
+    // Later withResolvers adds326 work and one bag on the selected order-growth path.
+    assert_eq!(reference.steps, 898_688);
+    assert_eq!(reference.objects.len(), 756);
     assert_eq!(reference.native_properties.len(), 300);
     assert_eq!(reference.prototypes.len(), 26);
     for mut runtime in [

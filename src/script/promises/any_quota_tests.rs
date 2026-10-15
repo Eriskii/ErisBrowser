@@ -244,12 +244,31 @@ fn any_raw_startup_observes_physical_order_branch_and_keeps_public_reset() {
         runtime.objects[id].order.len(),
         runtime.objects[id].order.capacity(),
     );
+    // Any remains independently measured above. Complete the later installer
+    // before comparing with whole bootstrap; all old IDs and Any fees stay exact.
+    let with_resolvers_grow = after_order.0 == after_order.1;
+    let with_resolvers_work = if with_resolvers_grow { 326 } else { 306 };
+    let with_resolvers_heap = size_of::<Option<AbortSlot>>()
+        + size_of::<Option<f64>>()
+        + (if with_resolvers_grow { 13 } else { 2 }) * size_of::<PropertyKey>()
+        + node_bytes()
+        + size_of::<Native>()
+        + 1269;
+    let before_later_heap = runtime.allocated;
+    // Inert Rust fixture counters isolate each real installer; no author work resumes.
+    runtime.steps = with_resolvers_work;
+    runtime.install_promise_with_resolvers_intrinsic().unwrap();
+    assert_eq!(runtime.steps, 0);
+    assert_eq!(runtime.allocated - before_later_heap, with_resolvers_heap);
     let raw = Runtime::uninitialized().finish_bootstrap().unwrap();
     let raw_id = owner(&raw);
-    // The retained capacity observation selects the formula; no allocator ABI is guessed.
-    assert_eq!(raw.steps, BOOTSTRAP_STEPS - 100_797 - work);
+    // Both retained order observations select fees without guessing allocator capacity.
+    assert_eq!(
+        raw.steps,
+        BOOTSTRAP_STEPS - 100_797 - work - with_resolvers_work
+    );
     assert_eq!(raw.allocated, runtime.allocated);
-    assert_eq!((raw.objects.len(), raw.objects.capacity()), (755, 755));
+    assert_eq!((raw.objects.len(), raw.objects.capacity()), (756, 756));
     assert_eq!(
         (
             raw.native_properties.len(),

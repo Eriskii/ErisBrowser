@@ -281,6 +281,14 @@ impl Runtime {
         Ok(promise)
     }
 
+    fn promise_with_resolvers(&mut self, constructor: Value, doc: &mut Document) -> Result<Value> {
+        // Fund the three returned capability handles before author construction,
+        // including their cleanup if the result factory's first debit refuses.
+        self.work(3)?;
+        let capability = self.new_promise_capability(constructor, doc)?;
+        self.new_promise_capability_result(capability)
+    }
+
     pub(in crate::script) fn promise_native_operation(
         &mut self,
         name: &str,
@@ -303,6 +311,7 @@ impl Runtime {
                 "Promise.race" => self.promise_race(receiver, args, doc),
                 "Promise.allSettled" => self.promise_all_settled(receiver, args, doc),
                 "Promise.any" => self.promise_any(receiver, args, doc),
+                "Promise.withResolvers" => self.promise_with_resolvers(receiver, doc),
                 "Promise.getSpecies" => Ok(receiver),
                 _ => Err(ScriptError::resource("invalid private Promise operation")),
             }
