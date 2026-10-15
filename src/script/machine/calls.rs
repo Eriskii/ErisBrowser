@@ -128,35 +128,142 @@ fn invoke_native(
     if !already_guarded {
         runtime.enter_stack(4)?;
     }
-    let result = if native.name == "queueMicrotask" {
-        // This Window operation uses the dynamic receiver without allocating a
-        // temporary Native name or bypassing unconditional stack cleanup.
-        runtime.queue_microtask(&receiver, &arguments)
-    } else if native.name == "Promise.callback" {
-        // Private capture identity is the stored metadata receiver. Do not
-        // substitute dynamic this or allocate a copied Native name.
-        runtime.promise_callback(&native, &arguments, doc)
-    } else if matches!(
-        native.name.as_str(),
-        "Promise"
-            | "Promise.then"
-            | "Promise.catch"
-            | "Promise.finally"
-            | "Promise.resolve"
-            | "Promise.reject"
-            | "Promise.getSpecies"
-    ) {
-        runtime.promise_native_operation(&native.name, receiver, &arguments, doc)
-    } else if NumberPredicate::from_name(&native.name).is_some()
-        || crate::script::dom_prototypes::is_interface_name(&native.name)
-    {
-        runtime.native_call(&native, arguments, doc)
-    } else if crate::script::dom_bindings::is_parent_method_name(&native.name) {
-        // Keep failure inside `result`: the stack ownership below must unwind
-        // even when admission rejects the temporary owned name before cloning.
-        runtime
-            .dom_parent_call_preflight(&native.name)
-            .and_then(|()| {
+    let result = match native.name.as_str() {
+        "queueMicrotask" => {
+            // This Window operation keeps its dynamic receiver and old fees.
+            runtime.queue_microtask(&receiver, &arguments)
+        }
+        "Promise.callback" => runtime.promise_callback(&native, &arguments, doc),
+        #[cfg(feature = "test262-host")]
+        "Test262.print" | "Test262.done" => {
+            // Stored private identity, dynamic this, and owned arguments all
+            // remain intact; no temporary Native name or early stack return.
+            runtime.test262_native_call(&native, arguments, receiver, doc)
+        }
+        _ => {
+            if matches!(
+                native.name.as_str(),
+                "Promise"
+                    | "Promise.then"
+                    | "Promise.catch"
+                    | "Promise.finally"
+                    | "Promise.resolve"
+                    | "Promise.reject"
+                    | "Promise.getSpecies"
+            ) {
+                runtime.promise_native_operation(&native.name, receiver, &arguments, doc)
+            } else if NumberPredicate::from_name(&native.name).is_some()
+                || crate::script::dom_prototypes::is_interface_name(&native.name)
+            {
+                runtime.native_call(&native, arguments, doc)
+            } else if crate::script::dom_bindings::is_parent_method_name(&native.name) {
+                // Keep failure inside `result`: the stack ownership below must unwind
+                // even when admission rejects the temporary owned name before cloning.
+                runtime
+                    .dom_parent_call_preflight(&native.name)
+                    .and_then(|()| {
+                        runtime.native_call(
+                            &Native {
+                                properties: native.properties,
+                                name: native.name.clone(),
+                                receiver,
+                            },
+                            arguments,
+                            doc,
+                        )
+                    })
+            } else if native
+                .name
+                .starts_with(crate::script::text_operations::PREFIX)
+            {
+                runtime
+                    .text_operations_call_preflight(&native.name)
+                    .and_then(|()| {
+                        runtime.native_call(
+                            &Native {
+                                properties: native.properties,
+                                name: native.name.clone(),
+                                receiver,
+                            },
+                            arguments,
+                            doc,
+                        )
+                    })
+            } else if native
+                .name
+                .starts_with(crate::script::document_title::PREFIX)
+            {
+                runtime
+                    .document_title_call_preflight(&native.name)
+                    .and_then(|()| {
+                        runtime.native_call(
+                            &Native {
+                                properties: native.properties,
+                                name: native.name.clone(),
+                                receiver,
+                            },
+                            arguments,
+                            doc,
+                        )
+                    })
+            } else if native.name.starts_with(crate::script::node_data::PREFIX) {
+                runtime
+                    .node_data_call_preflight(&native.name)
+                    .and_then(|()| {
+                        runtime.native_call(
+                            &Native {
+                                properties: native.properties,
+                                name: native.name.clone(),
+                                receiver,
+                            },
+                            arguments,
+                            doc,
+                        )
+                    })
+            } else if native
+                .name
+                .starts_with(crate::script::processing_instruction::PREFIX)
+            {
+                runtime.pi_call_preflight(&native.name).and_then(|()| {
+                    runtime.native_call(
+                        &Native {
+                            properties: native.properties,
+                            name: native.name.clone(),
+                            receiver,
+                        },
+                        arguments,
+                        doc,
+                    )
+                })
+            } else if native.name.starts_with("TypedArray.") {
+                runtime
+                    .typed_array_call_preflight(&native.name)
+                    .and_then(|()| {
+                        runtime.native_call(
+                            &Native {
+                                properties: native.properties,
+                                name: native.name.clone(),
+                                receiver,
+                            },
+                            arguments,
+                            doc,
+                        )
+                    })
+            } else if crate::script::reflect_properties_install::is_method(&native.name) {
+                runtime
+                    .reflect_property_call_preflight(&native.name)
+                    .and_then(|()| {
+                        runtime.native_call(
+                            &Native {
+                                properties: native.properties,
+                                name: native.name.clone(),
+                                receiver,
+                            },
+                            arguments,
+                            doc,
+                        )
+                    })
+            } else if native.name.contains('.') {
                 runtime.native_call(
                     &Native {
                         properties: native.properties,
@@ -166,110 +273,10 @@ fn invoke_native(
                     arguments,
                     doc,
                 )
-            })
-    } else if native
-        .name
-        .starts_with(crate::script::text_operations::PREFIX)
-    {
-        runtime
-            .text_operations_call_preflight(&native.name)
-            .and_then(|()| {
-                runtime.native_call(
-                    &Native {
-                        properties: native.properties,
-                        name: native.name.clone(),
-                        receiver,
-                    },
-                    arguments,
-                    doc,
-                )
-            })
-    } else if native
-        .name
-        .starts_with(crate::script::document_title::PREFIX)
-    {
-        runtime
-            .document_title_call_preflight(&native.name)
-            .and_then(|()| {
-                runtime.native_call(
-                    &Native {
-                        properties: native.properties,
-                        name: native.name.clone(),
-                        receiver,
-                    },
-                    arguments,
-                    doc,
-                )
-            })
-    } else if native.name.starts_with(crate::script::node_data::PREFIX) {
-        runtime
-            .node_data_call_preflight(&native.name)
-            .and_then(|()| {
-                runtime.native_call(
-                    &Native {
-                        properties: native.properties,
-                        name: native.name.clone(),
-                        receiver,
-                    },
-                    arguments,
-                    doc,
-                )
-            })
-    } else if native
-        .name
-        .starts_with(crate::script::processing_instruction::PREFIX)
-    {
-        runtime.pi_call_preflight(&native.name).and_then(|()| {
-            runtime.native_call(
-                &Native {
-                    properties: native.properties,
-                    name: native.name.clone(),
-                    receiver,
-                },
-                arguments,
-                doc,
-            )
-        })
-    } else if native.name.starts_with("TypedArray.") {
-        runtime
-            .typed_array_call_preflight(&native.name)
-            .and_then(|()| {
-                runtime.native_call(
-                    &Native {
-                        properties: native.properties,
-                        name: native.name.clone(),
-                        receiver,
-                    },
-                    arguments,
-                    doc,
-                )
-            })
-    } else if crate::script::reflect_properties_install::is_method(&native.name) {
-        runtime
-            .reflect_property_call_preflight(&native.name)
-            .and_then(|()| {
-                runtime.native_call(
-                    &Native {
-                        properties: native.properties,
-                        name: native.name.clone(),
-                        receiver,
-                    },
-                    arguments,
-                    doc,
-                )
-            })
-    } else if native.name.contains('.') {
-        runtime.native_call(
-            &Native {
-                properties: native.properties,
-                name: native.name.clone(),
-                receiver,
-            },
-            arguments,
-            doc,
-        )
-    } else {
-        runtime.native_call(&native, arguments, doc)
+            } else {
+                runtime.native_call(&native, arguments, doc)
+            }
+        }
     };
     if !already_guarded {
         runtime.stack_units -= 4;

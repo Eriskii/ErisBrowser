@@ -195,6 +195,8 @@ impl Runtime {
             .is_err_and(|error| error.is_resource_limit() || error.is_unsupported())
         {
             self.microtasks.suspended = true;
+            #[cfg(feature = "test262-host")]
+            self.test262_record_fatal();
         }
         result
     }
@@ -350,6 +352,11 @@ impl Runtime {
     }
 
     fn report_job_error(&mut self, prefix: &str, error: ScriptError) -> Result<()> {
+        // Record the private observation even when the old reporter is capped.
+        #[cfg(feature = "test262-host")]
+        if !error.is_resource_limit() && !error.is_unsupported() {
+            self.test262_record_job_error();
+        }
         let result = (|| {
             if error.is_resource_limit() || error.is_unsupported() {
                 return Err(error);

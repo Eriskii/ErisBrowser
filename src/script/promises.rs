@@ -599,5 +599,31 @@ mod allocation_probe {
     }
 }
 
+// Feature-only host audit. Promise reasons and metadata never leave this module.
+#[cfg(feature = "test262-host")]
+impl Runtime {
+    pub(in crate::script) fn count_test262_unhandled(&mut self) -> Result<u32> {
+        self.count_test262_unhandled_with(|| {})
+    }
+
+    // The visitor lets the isolated quota fixture prove no traversal occurred
+    // before admission; production uses the same loop with an empty visitor.
+    pub(in crate::script) fn count_test262_unhandled_with(
+        &mut self,
+        mut visited: impl FnMut(),
+    ) -> Result<u32> {
+        let count = self.promises.promises.records.len();
+        self.work(add(8, mul(3, count)?)?)?;
+        let mut unhandled = 0u32;
+        for record in &self.promises.promises.records {
+            visited();
+            if matches!(record.settlement, Settlement::Rejected(_)) && !record.handled {
+                unhandled = unhandled.checked_add(1).ok_or_else(overflow)?;
+            }
+        }
+        Ok(unhandled)
+    }
+}
+
 #[cfg(test)]
 mod shared_key_identity_tests;

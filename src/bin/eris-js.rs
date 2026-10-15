@@ -9,6 +9,28 @@ use std::io::{self, Read, Write};
 const MAX_INPUT: usize = 4 * 1024 * 1024;
 const MAX_SOURCE: usize = 2 * 1024 * 1024;
 
+#[cfg(feature = "test262-host")]
+#[path = "eris-js/test262_host.rs"]
+mod test262_host;
+
+#[cfg(test)]
+#[path = "eris-js/test262_dispatch_tests.rs"]
+mod test262_dispatch_tests;
+
+fn host_protocol(input: &[u8]) -> Result<bool, String> {
+    if !input.starts_with(b"ERJS2") {
+        return Ok(false);
+    }
+    #[cfg(feature = "test262-host")]
+    {
+        Ok(true)
+    }
+    #[cfg(not(feature = "test262-host"))]
+    {
+        Err("authenticated Test262 requests require test262-host".into())
+    }
+}
+
 struct Request {
     mode: u8,
     parse_only: bool,
@@ -83,6 +105,12 @@ fn run() -> Result<(), String> {
     if input.len() > MAX_INPUT {
         return Err("request exceeds adapter input budget".into());
     }
+    #[cfg(feature = "test262-host")]
+    if host_protocol(&input)? {
+        return test262_host::run(&input);
+    }
+    #[cfg(not(feature = "test262-host"))]
+    host_protocol(&input)?;
     let request = decode(&input)?;
     let outcome = evaluate_with_host(request, || {
         let mut discovery = eris::date_host::ZoneDiscoverySupervisor::new();

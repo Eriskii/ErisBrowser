@@ -108,6 +108,11 @@ PROFILE_FEATURES = {'typedarray-copy-within': TYPEDARRAY_COPY_WITHIN_FEATURES, '
                     'numeric-parsing': NUMERIC_PARSING_FEATURES,
                     'compound-assignment': COMPOUND_ASSIGNMENT_FEATURES,
                     'addition': ADDITION_FEATURES, 'logical-assignment': LOGICAL_ASSIGNMENT_FEATURES, 'uri': URI_FEATURES, 'relational': RELATIONAL_FEATURES, 'equality': EQUALITY_FEATURES, 'labels': LABELS_FEATURES}
+PROMISE_PROFILE = 'promise-methods-async'
+PROMISE_FEATURES = {'Promise', 'Promise.prototype.finally', 'Symbol.species',
+                    'Reflect.construct', 'arrow-function', 'Reflect',
+                    'Symbol.toStringTag', 'Symbol'}
+PROFILE_FEATURES[PROMISE_PROFILE] = PROMISE_FEATURES
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -223,13 +228,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -249,6 +254,8 @@ def load_corpus(directory, profile='string-json'):
         source = files[path].decode('utf-8')
         metadata = parse_metadata(source)
         names = harness_names(metadata)
+        if profile == PROMISE_PROFILE and len(set(names)) != len(names):
+            raise ValueError('duplicate Promise harness include')
         harness = []
         for name in names:
             key = f'harness/{name}'
@@ -258,6 +265,8 @@ def load_corpus(directory, profile='string-json'):
         for mode in modes(metadata):
             case = dict(id=f'{path}:{mode}', file=path, mode=mode,
                         source=files[path], metadata=metadata, harness=harness)
+            if profile == PROMISE_PROFILE:
+                case['completion_policy'] = int('async' in metadata['flags'])
             case['case_sha256'] = case_fingerprint(case)
             cases.append(case)
     if not cases or len({case['id'] for case in cases}) != len(cases):
@@ -269,17 +278,26 @@ def case_fingerprint(case):
     identity = dict(source_sha256=digest(case['source']), mode=case['mode'],
                     metadata=case['metadata'],
                     harness=[dict(name=name, sha256=digest(source)) for name, source in case['harness']])
+    if 'completion_policy' in case:
+        identity['completion_policy'] = case['completion_policy']
     return digest(json.dumps(identity, sort_keys=True, ensure_ascii=True).encode())
 
 
 def unsupported_reason(case, supported_features=SUPPORTED_FEATURES, profile=None):
     metadata = case['metadata']
     flags = set(metadata['flags'])
+    if profile == PROMISE_PROFILE:
+        policy = case.get('completion_policy')
+        if (type(policy) is not int or policy not in (0, 1)
+                or policy != int('async' in flags)):
+            return 'Promise completion policy does not match metadata'
+        if case['mode'] not in {'sloppy', 'strict'} or metadata['negative'] is not None:
+            return 'Promise profile supports only ordinary sloppy/strict script modes'
     if case['mode'] == 'module' or (metadata['negative'] or {}).get('phase') == 'resolution':
         return 'module parsing/resolution is not implemented'
     if metadata['negative'] and metadata['negative']['type'] not in INTRINSIC_ERRORS:
         return 'negative error constructor identity is not implemented: ' + metadata['negative']['type']
-    if 'async' in flags:
+    if 'async' in flags and profile != PROMISE_PROFILE:
         return 'asynchronous completion and jobs are not implemented'
     if flags - KNOWN_FLAGS:
         return 'unknown execution flags: ' + ', '.join(sorted(flags - KNOWN_FLAGS))
@@ -308,15 +326,29 @@ def unsupported_reason(case, supported_features=SUPPORTED_FEATURES, profile=None
             and 'resizableArrayBufferUtils.js' in metadata['includes']):
         return 'TypedArray reverse policy excludes the complete resizableArrayBufferUtils helper'
     sources = [case['source']] + [source for _, source in case['harness']]
+    if profile == PROMISE_PROFILE:
+        if any(re.search(rb'\$262\b', source) for source in sources):
+            return 'Test262 realm host hooks are not implemented (conservative source check)'
+        return None
     if any(re.search(rb'\$262\b|\$DONE\b|\bprint\s*\(', source) for source in sources):
         return 'Test262 host hooks are not implemented (conservative source check)'
     return None
 
 
 def encode_request(case):
-    output = bytearray(b'ERJS1')
+    selected = 'completion_policy' in case
+    if selected:
+        policy = case['completion_policy']
+        if (type(policy) is not int or policy not in (0, 1)
+                or policy != int('async' in case['metadata']['flags'])
+                or case['mode'] not in {'sloppy', 'strict'}
+                or (case['metadata']['negative'] or {}).get('phase') == 'parse'):
+            raise ValueError('invalid Promise completion policy or mode')
+    output = bytearray(b'ERJS2' if selected else b'ERJS1')
     output.append({'sloppy': 0, 'strict': 1, 'raw': 2, 'module': 3}[case['mode']])
     output.append(int((case['metadata']['negative'] or {}).get('phase') == 'parse'))
+    if selected:
+        output.append(policy)
     output.extend(struct.pack('<I', len(case['harness'])))
     def string(value):
         output.extend(struct.pack('<I', len(value)))
@@ -331,6 +363,8 @@ def encode_request(case):
 
 
 def decode_response(output):
+    if output.startswith(b'ERJR3'):
+        return decode_promise_response(output)
     if not output.startswith(b'ERJR2'):
         raise ValueError('invalid JS adapter response magic')
     offset = 5
@@ -361,6 +395,8 @@ def decode_response(output):
 
 
 def classify(case, observation):
+    if 'completion_policy' in case or 'completion' in observation:
+        return classify_promise(case, observation)
     status = observation['status']
     expected = case['metadata']['negative']
     if status in {'unsupported', 'resource', 'harness-error'}:
@@ -1327,6 +1363,8 @@ def array_from_preflight_variants():
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
+    if profile == PROMISE_PROFILE:
+        return promise_harness_preflight(files, binary, timeout)
     scripts = [
         ('success', 'assert.sameValue(1, 1); assert.sameValue(NaN, NaN);', 'passed'),
         ('assert-false', 'assert(false);', 'failed'),
@@ -2782,6 +2820,485 @@ def harness_preflight(files, binary, timeout, profile='string-json'):
     return outcomes
 
 
+def promise_preflight_variants():
+    """Frozen37 sources; both modes run, with no outcome-based selection."""
+    return [{'name': 'promise-api-positive',
+      'source': "assert.sameValue(typeof Promise,'function');assert.sameValue(typeof "
+                "Promise.resolve,'function');assert.sameValue(typeof "
+                "Promise.reject,'function');assert.sameValue(typeof "
+                "Promise.prototype.then,'function');assert.sameValue(typeof "
+                "Promise.prototype.catch,'function');assert.sameValue(typeof "
+                "Promise.prototype.finally,'function');var "
+                'p=Promise.resolve(7);assert.sameValue(Promise.resolve(p),p);',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'new-prerequisite',
+      'prerequisite': None},
+     {'name': 'promise-api-poisoned',
+      'source': "assert.sameValue(typeof Promise,'function');assert.sameValue(typeof "
+                "Promise.resolve,'function');assert.sameValue(typeof "
+                "Promise.reject,'function');assert.sameValue(typeof "
+                "Promise.prototype.then,'function');assert.sameValue(typeof "
+                "Promise.prototype.catch,'function');assert.sameValue(typeof "
+                "Promise.prototype.finally,'function');var "
+                'p=Promise.resolve(7);assert.notSameValue(Promise.resolve(p),p);',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'new-prerequisite',
+      'prerequisite': 'promise-api-positive'},
+     {'name': 'promise-helper-positive',
+      'source': 'assert.sameValue(typeof '
+                "checkSequence,'function');assert.sameValue(checkSequence([1,2,3]),true);",
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['promiseHelper.js'],
+      'origin': 'new-prerequisite',
+      'prerequisite': None},
+     {'name': 'promise-helper-poisoned',
+      'source': 'assert.sameValue(typeof '
+                "checkSequence,'function');assert.sameValue(checkSequence([1,3,2]),true);",
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['promiseHelper.js'],
+      'origin': 'new-prerequisite',
+      'prerequisite': 'promise-helper-positive'},
+     {'name': 'property-helper-positive',
+      'source': 'assert.sameValue(typeof '
+                "verifyProperty,'function');verifyProperty(Promise.prototype,'then',{value:Promise.prototype.then,writable:true,enumerable:false,configurable:true});",
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js'],
+      'origin': 'new-prerequisite',
+      'prerequisite': None},
+     {'name': 'property-helper-poisoned',
+      'source': 'assert.sameValue(typeof '
+                "verifyProperty,'function');verifyProperty(Promise.prototype,'then',{value:Promise.prototype.then,writable:true,enumerable:true,configurable:true});",
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js'],
+      'origin': 'new-prerequisite',
+      'prerequisite': 'property-helper-positive'},
+     {'name': 'one-async-completion',
+      'source': 'var reached=0; '
+                'Promise.resolve(7).then(function(v){assert.sameValue(v,7);reached++;}).then(function(){assert.sameValue(reached,1);$DONE();},$DONE);',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'poisoned-queued-assertion',
+      'source': 'var reached=0; '
+                'Promise.resolve(7).then(function(v){assert.sameValue(v,8);reached++;}).then(function(){assert.sameValue(reached,1);$DONE();},$DONE);',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'falsy-done-omitted',
+      'source': '$DONE();',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'falsy-done-undefined',
+      'source': '$DONE(undefined);',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'falsy-done-null',
+      'source': '$DONE(null);',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'falsy-done-false',
+      'source': '$DONE(false);',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'falsy-done-0',
+      'source': '$DONE(0);',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'falsy-done--0',
+      'source': '$DONE(-0);',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'falsy-done-NaN',
+      'source': '$DONE(NaN);',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': "falsy-done-''",
+      'source': "$DONE('');",
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'truthy-done-error',
+      'source': "$DONE(new Test262Error('marker'));",
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'truthy-error-getter-abrupt',
+      'source': 'var hits=0;try{$DONE({get name(){hits++;throw '
+                '7;}});}catch(e){assert.sameValue(e,7);}assert.sameValue(hits,1);',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'success-not-immediate-exit',
+      'source': "$DONE();throw new Test262Error('after');",
+      'expected': 'synchronous-exception',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'missing-completion',
+      'source': 'Promise.resolve(7).then(function(v){assert.sameValue(v,7);});',
+      'expected': 'missing-completion',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'duplicate-sync',
+      'source': '$DONE();try{$DONE();}catch(e){}',
+      'expected': 'duplicate-completion',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'duplicate-queued',
+      'source': '$DONE();Promise.resolve().then($DONE);',
+      'expected': 'duplicate-completion',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'queued-error-before-done',
+      'source': 'queueMicrotask(function(){throw new '
+                "Test262Error('job');});queueMicrotask(function(){$DONE();});",
+      'expected': 'queued-exception',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'queued-error-after-done',
+      'source': "$DONE();queueMicrotask(function(){throw new Test262Error('job');});",
+      'expected': 'queued-exception',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'custom-capability-job-error',
+      'source': "function C(executor){executor(function(){throw 'cap';},function(){});}var "
+                'p=Promise.resolve(1);p.constructor={};p.constructor[Symbol.species]=C;p.then();$DONE();',
+      'expected': 'queued-exception',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'handled-rejection',
+      'source': "Promise.reject('marker').then(undefined,function(v){assert.sameValue(v,'marker');}).then($DONE,$DONE);",
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'handled-later-in-checkpoint',
+      'source': 'var '
+                "p=Promise.reject('marker');queueMicrotask(function(){p.catch(function(v){assert.sameValue(v,'marker');}).then($DONE,$DONE);});",
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'unhandled-rejection-after-success',
+      'source': "$DONE();Promise.resolve().then(function(){throw 'marker';});",
+      'expected': 'unhandled-rejection',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'propagated-unhandled-child',
+      'source': "var p=Promise.reject('marker');p.then();p.catch(function(){});$DONE();",
+      'expected': 'unhandled-rejection',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'forged-print-no-done',
+      'source': "print('Test262:AsyncTestComplete');",
+      'expected': 'unauthenticated-completion',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'console-spoof',
+      'source': "console.log('Test262:AsyncTestComplete');",
+      'expected': 'missing-completion',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'overwritten-done-noop',
+      'source': '$DONE=function(){};$DONE();',
+      'expected': 'missing-completion',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'saved-done-alias',
+      'source': 'var done=$DONE;$DONE=function(){throw 7;};Promise.resolve().then(function(){done();});',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'overwritten-print-noop',
+      'source': 'print=function(){};$DONE();',
+      'expected': 'completion-protocol-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'fatal-after-success',
+      'source': '$DONE();queueMicrotask(function(){while(true){}});',
+      'expected': 'resource',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'checked-sync-queued-failure',
+      'source': "queueMicrotask(function(){throw 'marker';});",
+      'expected': 'queued-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None},
+     {'name': 'sync-no-done-required',
+      'source': 'Promise.resolve(1).then(function(v){assert.sameValue(v,1);});',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'original-literal',
+      'prerequisite': None}]
+
+
+def promise_completion_passes(evidence):
+    counts = (evidence['done_calls'], evidence['success_prints'], evidence['failure_prints'])
+    return (evidence['flags'] == 0 and evidence['quiescent'] and evidence['audited']
+            and evidence['unhandled'] == 0
+            and counts == ((0, 0, 0) if evidence['policy'] == 0 else (1, 1, 0)))
+
+
+def validate_promise_observation(fields):
+    names = ('status', 'phase', 'error_type', 'error_identity', 'message', 'harness')
+    if (set(fields) != set(names) | {'completion'}
+            or any(not isinstance(fields[name], str)
+                   or len(fields[name].encode('utf-8')) > 16384 for name in names)):
+        raise ValueError('invalid Promise adapter response fields')
+    evidence = fields['completion']
+    if (not isinstance(evidence, dict) or set(evidence) != {
+            'policy', 'done_calls', 'success_prints', 'failure_prints', 'flags',
+            'quiescent', 'audited', 'unhandled'}
+            or any(type(evidence[name]) is not int for name in
+                   ('policy', 'done_calls', 'success_prints', 'failure_prints', 'flags', 'unhandled'))
+            or any(type(evidence[name]) is not bool for name in ('quiescent', 'audited'))
+            or evidence['policy'] not in (0, 1)
+            or any(evidence[name] not in (0, 1, 2) for name in
+                   ('done_calls', 'success_prints', 'failure_prints'))
+            or not 0 <= evidence['flags'] <= 0x1ff
+            or not 0 <= evidence['unhandled'] <= 0xffffffff):
+        raise ValueError('invalid Promise completion evidence')
+    calls, success, failure = (evidence[name] for name in
+                               ('done_calls', 'success_prints', 'failure_prints'))
+    if ((evidence['audited'] and (not evidence['quiescent'] or evidence['flags'] & 8))
+            or (not evidence['audited'] and evidence['unhandled'])
+            or ((success or failure) and not calls)
+            or (evidence['policy'] == 0 and (calls or success or failure))):
+        raise ValueError('contradictory Promise completion evidence')
+    status, phase = fields['status'], fields['phase']
+    if status not in {'complete', 'exception', 'unsupported', 'resource', 'harness-error', 'host-failure'}:
+        raise ValueError('unknown Promise adapter response status')
+    if phase not in {'parse', 'runtime', 'harness', 'mode', 'host'}:
+        raise ValueError('unknown Promise adapter response phase')
+    if fields['error_identity'] and fields['error_identity'] not in INTRINSIC_ERRORS:
+        raise ValueError('unknown intrinsic error identity')
+    if phase == 'parse' and any(evidence[name] for name in evidence if name != 'policy'):
+        raise ValueError('parse response has executed completion evidence')
+    if ((status == 'complete' and (phase != 'runtime' or any(fields[name] for name in
+                ('error_type', 'error_identity', 'message', 'harness'))
+                or not promise_completion_passes(evidence)))
+            or (status == 'exception' and (phase not in {'parse', 'runtime'}
+                or not fields['error_type'] or fields['harness']
+                or (phase == 'runtime' and not evidence['flags'] & 256)))
+            or (status == 'harness-error' and (phase != 'harness' or not fields['harness']))
+            or (status == 'host-failure' and (phase != 'host' or fields['error_type']
+                or fields['error_identity'] or not fields['message']
+                or promise_completion_passes(evidence)))):
+        raise ValueError('inconsistent Promise adapter response')
+
+
+def decode_promise_response(output):
+    offset = 5
+    fields = {}
+    for name in ('status', 'phase', 'error_type', 'error_identity', 'message', 'harness'):
+        if len(output) - offset < 4:
+            raise ValueError('truncated Promise adapter response length')
+        length, = struct.unpack_from('<I', output, offset)
+        offset += 4
+        if length > 16384 or length > len(output) - offset:
+            raise ValueError('invalid Promise adapter response field length')
+        fields[name] = output[offset:offset + length].decode('utf-8')
+        offset += length
+    if len(output) - offset != 12:
+        raise ValueError('missing or trailing Promise completion evidence')
+    policy, calls, success, failure, flags, quiescent, audited, unhandled = struct.unpack_from('<BBBBHBBI', output, offset)
+    if quiescent not in (0, 1) or audited not in (0, 1):
+        raise ValueError('invalid Promise completion boolean')
+    fields['completion'] = dict(policy=policy, done_calls=calls, success_prints=success,
+        failure_prints=failure, flags=flags, quiescent=bool(quiescent),
+        audited=bool(audited), unhandled=unhandled)
+    validate_promise_observation(fields)
+    return fields
+
+
+def classify_promise(case, observation):
+    policy = case.get('completion_policy')
+    if type(policy) is not int or policy not in (0, 1):
+        return 'failed'
+    try:
+        validate_promise_observation(observation)
+    except (TypeError, KeyError, ValueError):
+        return 'failed'
+    if observation['completion']['policy'] != policy:
+        return 'failed'
+    status = observation['status']
+    if status in {'unsupported', 'resource', 'harness-error'}:
+        return status
+    return 'passed' if status == 'complete' and case['metadata']['negative'] is None else 'failed'
+
+
+def promise_host_reason(evidence):
+    for bit, reason in ((8, 'fatal-observation'), (2, 'premature-completion'),
+                        (4, 'queued-exception'), (1, 'completion-error'),
+                        (64, 'delegate-abrupt'), (128, 'session-violation'),
+                        (16, 'unauthenticated-completion'), (32, 'invalid-completion-print')):
+        if evidence['flags'] & bit:
+            return reason
+    if not evidence['quiescent']:
+        return 'nonquiescent-runtime'
+    if not evidence['audited']:
+        return 'unaudited-runtime'
+    if evidence['unhandled']:
+        return 'unhandled-rejection'
+    if evidence['policy'] == 1:
+        if evidence['done_calls'] == 2:
+            return 'duplicate-completion'
+        if evidence['done_calls'] == 0:
+            return 'missing-completion'
+        if evidence['success_prints'] != 1 or evidence['failure_prints'] != 0:
+            return 'completion-protocol-error'
+    return None
+
+
+def promise_preflight_verified(case, result, expected):
+    observation = result.get('observation', {})
+    try:
+        validate_promise_observation(observation)
+    except (TypeError, KeyError, ValueError):
+        return False
+    evidence = observation['completion']
+    if evidence['policy'] != case['completion_policy']:
+        return False
+    if expected == 'passed':
+        return result['status'] == 'passed' and observation['status'] == 'complete'
+    if expected == 'synchronous-exception':
+        return (result['status'] == 'failed' and observation['status'] == 'exception'
+                and observation['phase'] == 'runtime' and observation['error_type'] == 'Test262Error'
+                and observation['error_identity'] == '' and evidence['flags'] == 256
+                and evidence['quiescent'] and evidence['audited'] and evidence['unhandled'] == 0)
+    if expected == 'resource':
+        return (result['status'] == 'resource' and observation['status'] == 'resource'
+                and observation['phase'] == 'runtime' and observation['error_type'] == 'ResourceLimit'
+                and bool(evidence['flags'] & 8) and not evidence['audited'])
+    return (result['status'] == 'failed' and observation['status'] == 'host-failure'
+            and observation['message'] == expected and promise_host_reason(evidence) == expected)
+
+
+def promise_preflight_healthy(outcomes):
+    expected = {('promise-methods-' + row['name'], mode)
+                for mode in ('sloppy', 'strict') for row in promise_preflight_variants()}
+    if len(outcomes) != len(expected):
+        return False
+    observed = set()
+    for item in outcomes:
+        identity = (item.get('name'), item.get('result', {}).get('mode'))
+        if identity not in expected or identity in observed or item.get('verified') is not True:
+            return False
+        observed.add(identity)
+    return observed == expected
+
+
+def promise_harness_preflight(files, binary, timeout):
+    rows = promise_preflight_variants()
+    outcomes = []
+    by_identity = {}
+    for mode in ('sloppy', 'strict'):
+        for row in rows:
+            policy = row['completion_policy']
+            names = ['assert.js', 'sta.js'] + (['doneprintHandle.js'] if policy else []) + row['includes']
+            name = 'promise-methods-' + row['name']
+            case = dict(id='harness-preflight:' + name, file='<preflight>', mode=mode,
+                        metadata=dict(flags=['async'] if policy else [], includes=row['includes'],
+                                      features=[], locale=[], negative=None),
+                        source=row['source'].encode(), harness=[(n, files['harness/' + n]) for n in names],
+                        completion_policy=policy)
+            case['case_sha256'] = case_fingerprint(case)
+            result = run_case(case, binary, timeout, PROMISE_FEATURES, PROMISE_PROFILE)
+            item = dict(name=name, expected=row['expected'],
+                        verified=promise_preflight_verified(case, result, row['expected']), result=result)
+            outcomes.append(item)
+            by_identity[(row['name'], mode)] = item
+    for mode in ('sloppy', 'strict'):
+        for row in rows:
+            item = by_identity[(row['name'], mode)]
+            required = []
+            if row['prerequisite']:
+                required.append(row['prerequisite'])
+            if row['origin'] == 'original-literal':
+                required.extend(r['name'] for r in rows if r['origin'] == 'new-prerequisite')
+                if row['name'] != 'one-async-completion':
+                    required.append('one-async-completion')
+            item['prerequisites'] = [dict(name=by_identity[(name, mode)]['name'], mode=mode,
+                verified=by_identity[(name, mode)]['verified'],
+                case_sha256=by_identity[(name, mode)]['result']['case_sha256'],
+                source_sha256=by_identity[(name, mode)]['result']['source_sha256']) for name in required]
+            item['verified'] = item['verified'] and all(x['verified'] for x in item['prerequisites'])
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -2826,10 +3343,17 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = all(item['verified'] for item in preflight)
+        preflight_ok = (promise_preflight_healthy(preflight) if args.profile == PROMISE_PROFILE
+                        else all(item['verified'] for item in preflight))
         supported_features = PROFILE_FEATURES[args.profile]
-        with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            results = list(pool.map(lambda case: run_case(case, binary, args.timeout, supported_features, args.profile), cases))
+        if args.profile == PROMISE_PROFILE and not preflight_ok:
+            results = [dict(id=case['id'], file=case['file'], mode=case['mode'],
+                            case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
+                            expected_negative=case['metadata']['negative'], status='blocked',
+                            reason='Promise host preflight failed') for case in cases]
+        else:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
+                results = list(pool.map(lambda case: run_case(case, binary, args.timeout, supported_features, args.profile), cases))
         counts = dict(Counter(result['status'] for result in results))
         policy = dict(format=2, supported_features=sorted(supported_features),
                       negative_intrinsic_errors=sorted(INTRINSIC_ERRORS), strict=True,
@@ -2837,6 +3361,12 @@ def main():
                       timeout_seconds=args.timeout)
         if args.profile in {'typedarray-views', 'typedarray-search', 'typedarray-fill', 'typedarray-reverse', 'typedarray-copy-within'}:
             policy['excluded_harness'] = ['resizableArrayBufferUtils.js']
+        if args.profile == PROMISE_PROFILE:
+            policy.update(format=3, async_completion=True, host_hooks=True,
+                          request_protocol='ERJS2', response_protocol='ERJR3',
+                          adapter_feature='test262-host',
+                          completion_policy={'sync': 'checked-sync', 'async': 'authenticated-done'},
+                          unhandled_rejection_policy='final-quiescent-veto', print_only_completion=False)
         policy_hash = digest(json.dumps(policy, sort_keys=True).encode())
         if digest(binary.read_bytes()) != binary_hash:
             raise ValueError('adapter binary changed during the run; repeat with a stable build')

@@ -123,6 +123,60 @@ jobs:
       - name: Preserve passing cases in the complete String concat directory
         run: python3 tools/test262_conformance.py --profile string-concat --baseline tests/conformance/test262-string-concat-current.json --output artifacts/test262-string-concat-gate.json
       - run: timeout 180s target/release/eris-stress 5000
+  test262-host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        toolchain: [1.88.0, stable]
+    env:
+      RUSTUP_TOOLCHAIN: ${{ matrix.toolchain }}
+      CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER: python3 tools/ci_test_runner.py
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install ${{ matrix.toolchain }} --profile minimal --component clippy
+      - run: cargo clippy --locked --all-targets --features test262-host -- -D warnings
+      - name: Require all authenticated-host Runtime and adapter tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          runtime_listing="$RUNNER_TEMP/test262-host-runtime.txt"
+          adapter_listing="$RUNNER_TEMP/test262-host-adapter.txt"
+          cargo test --locked --lib --features test262-host script::test262_host:: -- --list > "$runtime_listing"
+          cargo test --locked --bin eris-js --features test262-host test262_ -- --list > "$adapter_listing"
+          python3 - "$runtime_listing" "$adapter_listing" <<'PYGUARD'
+          from pathlib import Path
+          import re
+          import sys
+
+          groups = (
+              (sys.argv[1], 17, (
+                  ('src/script/test262_host/tests.rs', 'script::test262_host::tests::', 9),
+                  ('src/script/test262_host/quota_tests.rs', 'script::test262_host::quota_tests::', 8),
+              )),
+              (sys.argv[2], 11, (
+                  ('src/bin/eris-js/test262_host_tests.rs', 'test262_host::tests::', 10),
+                  ('src/bin/eris-js/test262_dispatch_tests.rs', 'test262_dispatch_tests::', 1),
+              )),
+          )
+          for listing, total, modules in groups:
+              expected = set()
+              for source, prefix, count in modules:
+                  names = re.findall(r'(?m)^#\[test\]\s*\nfn ([A-Za-z_]\w*)\(', Path(source).read_text())
+                  if len(names) != count or len(set(names)) != count:
+                      raise SystemExit(f'{source}: expected {count} distinct test declarations, got {len(names)}')
+                  expected.update(prefix + name for name in names)
+              found = [line.removesuffix(': test') for line in Path(listing).read_text().splitlines()
+                       if line.endswith(': test')]
+              if len(expected) != total or len(found) != total or set(found) != expected:
+                  raise SystemExit(f'host discovery mismatch: expected={total}, found={len(found)}, '
+                                   f'missing={sorted(expected - set(found))}, extra={sorted(set(found) - expected)}')
+              print(f'Verified all {total} declared host tests are discoverable.')
+          PYGUARD
+      - run: cargo test --locked --features test262-host -- --include-ignored
+      - run: cargo build --locked --release --features test262-host --bin eris-js
+      - name: Preserve authenticated Promise completion and pinned method cases
+        run: python3 tools/test262_conformance.py --binary target/release/eris-js --profile promise-methods-async --baseline tests/conformance/test262-promise-methods-async-current.json --output artifacts/test262-promise-methods-async-gate.json
   presenter-variants:
     runs-on: ubuntu-latest
     timeout-minutes: 20

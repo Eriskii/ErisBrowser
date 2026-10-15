@@ -9,6 +9,11 @@ original outcome according to cleanup success or failure, including generic
 receivers, constructor/species selection and reusable callbacks.
 Combinators, async functions and rejection notifications remain absent;
 the authored regression tests are not a full ECMAScript conformance result.
+The optional [Promise Test262 host](promise-test262-host.md) runs a separate
+232-source, 458-mode selection with authenticated `$DONE` and final unhandled
+rejection checks. All retained failures and unsupported modes belong in its
+result inventory; this does not add browser rejection notifications or imply
+complete Promise conformance.
 The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
 preserving function properties and identities; they add no API coverage.
 

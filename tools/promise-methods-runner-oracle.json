@@ -1,0 +1,3068 @@
+{
+  "schema": 1,
+  "profile": "promise-methods-async",
+  "modes": [
+    "sloppy",
+    "strict"
+  ],
+  "observations": 74,
+  "guards_source": {
+    "path": "/tmp/eris-promise-test262-plan-1/guarded-cases.json",
+    "bytes": 13204,
+    "sha256": "2f0454ebd90c24cccf31b158d008c33ebcda7ce7bf582d5d368728aef1bb1b91"
+  },
+  "original_guard_records": [
+    {
+      "id": "one-async-completion",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "var reached=0; Promise.resolve(7).then(function(v){assert.sameValue(v,7);reached++;}).then(function(){assert.sameValue(reached,1);$DONE();},$DONE);",
+      "expected": "passed",
+      "reason": "Healthy actual queued assertion and exactly one completion; guard typeof Promise/then and exact reached value in preflight."
+    },
+    {
+      "id": "poisoned-queued-assertion",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "var reached=0; Promise.resolve(7).then(function(v){assert.sameValue(v,8);reached++;}).then(function(){assert.sameValue(reached,1);$DONE();},$DONE);",
+      "expected": "completion-error",
+      "reason": "Only7\u21928 differs from healthy partner; cannot succeed through missing Promise or ignored assertions."
+    },
+    {
+      "id": "falsy-done-omitted",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE();",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "falsy-done-undefined",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE(undefined);",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "falsy-done-null",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE(null);",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "falsy-done-false",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE(false);",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "falsy-done-0",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE(0);",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "falsy-done--0",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE(-0);",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "falsy-done-NaN",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE(NaN);",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "falsy-done-''",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE('');",
+      "expected": "passed",
+      "reason": "Retain pinned helper ToBoolean semantics; one fresh realm per argument."
+    },
+    {
+      "id": "truthy-done-error",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE(new Test262Error('marker'));",
+      "expected": "completion-error",
+      "reason": "Error path is nonpass regardless of formatting output."
+    },
+    {
+      "id": "truthy-error-getter-abrupt",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "var hits=0;try{$DONE({get name(){hits++;throw 7;}});}catch(e){assert.sameValue(e,7);}assert.sameValue(hits,1);",
+      "expected": "completion-error",
+      "reason": "Latch truthy failure before delegating; preserve exactly one genuine helper getter and its abrupt completion."
+    },
+    {
+      "id": "success-not-immediate-exit",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE();throw new Test262Error('after');",
+      "expected": "synchronous-exception",
+      "reason": "A provisional completion cannot hide later synchronous abrupt completion."
+    },
+    {
+      "id": "missing-completion",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "Promise.resolve(7).then(function(v){assert.sameValue(v,7);});",
+      "expected": "missing-completion",
+      "reason": "Synchronous return and quiescent FIFO are insufficient for async."
+    },
+    {
+      "id": "duplicate-sync",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE();try{$DONE();}catch(e){}",
+      "expected": "duplicate-completion",
+      "reason": "Private duplicate state cannot be erased by catching errors."
+    },
+    {
+      "id": "duplicate-queued",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE();Promise.resolve().then($DONE);",
+      "expected": "duplicate-completion",
+      "reason": "Must drain jobs after first success."
+    },
+    {
+      "id": "queued-error-before-done",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "queueMicrotask(function(){throw new Test262Error('job');});queueMicrotask(function(){$DONE();});",
+      "expected": "queued-exception",
+      "reason": "Ordinary callback error remains a sticky host observation even though the drain reaches completion."
+    },
+    {
+      "id": "queued-error-after-done",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE();queueMicrotask(function(){throw new Test262Error('job');});",
+      "expected": "queued-exception",
+      "reason": "Later queued error vetoes provisional success."
+    },
+    {
+      "id": "custom-capability-job-error",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "function C(executor){executor(function(){throw 'cap';},function(){});}var p=Promise.resolve(1);p.constructor={};p.constructor[Symbol.species]=C;p.then();$DONE();",
+      "expected": "queued-exception",
+      "reason": "Abrupt custom capability is reported as a Promise job error, not an ordinary handled rejection."
+    },
+    {
+      "id": "handled-rejection",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "Promise.reject('marker').then(undefined,function(v){assert.sameValue(v,'marker');}).then($DONE,$DONE);",
+      "expected": "passed",
+      "reason": "Expected handled rejection does not latch the ordinary reported-job-error flag."
+    },
+    {
+      "id": "handled-later-in-checkpoint",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "var p=Promise.reject('marker');queueMicrotask(function(){p.catch(function(v){assert.sameValue(v,'marker');}).then($DONE,$DONE);});",
+      "expected": "passed",
+      "reason": "Final quiescent state matters; do not permanently poison on initial rejection."
+    },
+    {
+      "id": "unhandled-rejection-after-success",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE();Promise.resolve().then(function(){throw 'marker';});",
+      "expected": "unhandled-rejection",
+      "reason": "A thrown handler becomes an unhandled rejected child even if no console reporter is called."
+    },
+    {
+      "id": "propagated-unhandled-child",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "var p=Promise.reject('marker');p.then();p.catch(function(){});$DONE();",
+      "expected": "unhandled-rejection",
+      "reason": "The handled parent does not excuse an unhandled child."
+    },
+    {
+      "id": "forged-print-no-done",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "print('Test262:AsyncTestComplete');",
+      "expected": "unauthenticated-completion",
+      "reason": "Exact public sentinel text alone is not a pass."
+    },
+    {
+      "id": "console-spoof",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "console.log('Test262:AsyncTestComplete');",
+      "expected": "missing-completion",
+      "reason": "Console text is never the completion channel."
+    },
+    {
+      "id": "overwritten-done-noop",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE=function(){};$DONE();",
+      "expected": "missing-completion",
+      "reason": "A function merely named $DONE cannot mutate private state."
+    },
+    {
+      "id": "saved-done-alias",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "var done=$DONE;$DONE=function(){throw 7;};Promise.resolve().then(function(){done();});",
+      "expected": "passed",
+      "reason": "The genuine saved callable remains authenticated after global replacement."
+    },
+    {
+      "id": "overwritten-print-noop",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "print=function(){};$DONE();",
+      "expected": "completion-protocol-error",
+      "reason": "Observer call alone cannot hide loss of the delegated original helper print path."
+    },
+    {
+      "id": "fatal-after-success",
+      "kind": "literal-js",
+      "policy": "authenticated-async",
+      "source": "$DONE();queueMicrotask(function(){while(true){}});",
+      "expected": "resource",
+      "reason": "No retry, increased limit or pass after exhausted checkpoint."
+    },
+    {
+      "id": "checked-sync-queued-failure",
+      "kind": "literal-js",
+      "policy": "checked-sync",
+      "source": "queueMicrotask(function(){throw 'marker';});",
+      "expected": "queued-exception",
+      "reason": "New profile synchronous rows require a healthy final checkpoint too."
+    },
+    {
+      "id": "sync-no-done-required",
+      "kind": "literal-js",
+      "policy": "checked-sync",
+      "source": "Promise.resolve(1).then(function(v){assert.sameValue(v,1);});",
+      "expected": "passed",
+      "reason": "Checked synchronous rows do not require async completion."
+    },
+    {
+      "id": "suppressed-reporter-private-control",
+      "kind": "private-rust-fixture-plan",
+      "policy": "authenticated-async",
+      "source": "Preload console at reporter admission threshold1024, queue an ordinary throwing callback followed by genuine DONE; independently repeat with a cleared console.",
+      "expected": "queued-exception",
+      "reason": "Latch before capped reporter/formatting; author console contents cannot authorize success."
+    },
+    {
+      "id": "audit-one-short",
+      "kind": "private-rust-fixture-plan",
+      "policy": "authenticated-async",
+      "source": "Run healthy async body with N private Promise records; exact remaining audit fee passes, one less refuses before traversing; no budget reset.",
+      "expected": "exact-pass-one-short-resource",
+      "reason": "Meaningful final-audit refusal contract; numerical fee to be selected from implementation source before tests are frozen."
+    },
+    {
+      "id": "setup-failure-before-arm",
+      "kind": "private-rust-fixture-plan",
+      "policy": "authenticated-async",
+      "source": "Inject metadata/global/session allocation refusal, then ensure no test body runs and no prepared success can be emitted.",
+      "expected": "adapter-initialization-error",
+      "reason": "Setup is not an author negative exception; no cap increases."
+    },
+    {
+      "id": "harness-premature-done",
+      "kind": "transport-harness-fixture-plan",
+      "policy": "authenticated-async",
+      "source": "A test include invokes the observed DONE before body arming; another include only queues a throwing callback.",
+      "expected": "harness-error",
+      "reason": "Neither case can be hidden by the next harness execute reset."
+    },
+    {
+      "id": "protocol-compatibility",
+      "kind": "binary-framing-fixture-plan",
+      "policy": "authenticated-async",
+      "source": "Retain exact ERJS1\u2192ERJR2 fixtures and all old runner policy baselines; add unknown magic/policy, illegal mode, truncation, oversized frame, duplicate/missing evidence and contradictory ERJR3 fixtures.",
+      "expected": "legacy-exact-new-invalid-nonpass",
+      "reason": "No unchecked defaulting from malformed async evidence."
+    },
+    {
+      "id": "parse-negative-compatibility",
+      "kind": "adapter-fixture-plan",
+      "policy": "authenticated-async",
+      "source": "Existing ERJS1 parse_only malformed source returns expected parse SyntaxError with a host-capture closure that would panic if invoked; runtime SyntaxError cannot pass a parse-negative.",
+      "expected": "legacy-exact",
+      "reason": "No Runtime/session/harness invocation before parsing."
+    }
+  ],
+  "ownership": {
+    "one-async-completion": "runner-preflight",
+    "poisoned-queued-assertion": "runner-preflight",
+    "falsy-done-omitted": "runner-preflight",
+    "falsy-done-undefined": "runner-preflight",
+    "falsy-done-null": "runner-preflight",
+    "falsy-done-false": "runner-preflight",
+    "falsy-done-0": "runner-preflight",
+    "falsy-done--0": "runner-preflight",
+    "falsy-done-NaN": "runner-preflight",
+    "falsy-done-''": "runner-preflight",
+    "truthy-done-error": "runner-preflight",
+    "truthy-error-getter-abrupt": "runner-preflight",
+    "success-not-immediate-exit": "runner-preflight",
+    "missing-completion": "runner-preflight",
+    "duplicate-sync": "runner-preflight",
+    "duplicate-queued": "runner-preflight",
+    "queued-error-before-done": "runner-preflight",
+    "queued-error-after-done": "runner-preflight",
+    "custom-capability-job-error": "runner-preflight",
+    "handled-rejection": "runner-preflight",
+    "handled-later-in-checkpoint": "runner-preflight",
+    "unhandled-rejection-after-success": "runner-preflight",
+    "propagated-unhandled-child": "runner-preflight",
+    "forged-print-no-done": "runner-preflight",
+    "console-spoof": "runner-preflight",
+    "overwritten-done-noop": "runner-preflight",
+    "saved-done-alias": "runner-preflight",
+    "overwritten-print-noop": "runner-preflight",
+    "fatal-after-success": "runner-preflight",
+    "checked-sync-queued-failure": "runner-preflight",
+    "sync-no-done-required": "runner-preflight",
+    "suppressed-reporter-private-control": "Script private Runtime",
+    "audit-one-short": "Script private Runtime",
+    "setup-failure-before-arm": "Script private Runtime",
+    "harness-premature-done": "HTML adapter",
+    "protocol-compatibility": "transport hold2",
+    "parse-negative-compatibility": "HTML adapter"
+  },
+  "controls": [
+    {
+      "name": "promise-api-positive",
+      "source": "assert.sameValue(typeof Promise,'function');assert.sameValue(typeof Promise.resolve,'function');assert.sameValue(typeof Promise.reject,'function');assert.sameValue(typeof Promise.prototype.then,'function');assert.sameValue(typeof Promise.prototype.catch,'function');assert.sameValue(typeof Promise.prototype.finally,'function');var p=Promise.resolve(7);assert.sameValue(Promise.resolve(p),p);",
+      "expected": "passed",
+      "completion_policy": 0,
+      "includes": [],
+      "origin": "new-prerequisite",
+      "prerequisite": null
+    },
+    {
+      "name": "promise-api-poisoned",
+      "source": "assert.sameValue(typeof Promise,'function');assert.sameValue(typeof Promise.resolve,'function');assert.sameValue(typeof Promise.reject,'function');assert.sameValue(typeof Promise.prototype.then,'function');assert.sameValue(typeof Promise.prototype.catch,'function');assert.sameValue(typeof Promise.prototype.finally,'function');var p=Promise.resolve(7);assert.notSameValue(Promise.resolve(p),p);",
+      "expected": "synchronous-exception",
+      "completion_policy": 0,
+      "includes": [],
+      "origin": "new-prerequisite",
+      "prerequisite": "promise-api-positive"
+    },
+    {
+      "name": "promise-helper-positive",
+      "source": "assert.sameValue(typeof checkSequence,'function');assert.sameValue(checkSequence([1,2,3]),true);",
+      "expected": "passed",
+      "completion_policy": 0,
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "origin": "new-prerequisite",
+      "prerequisite": null
+    },
+    {
+      "name": "promise-helper-poisoned",
+      "source": "assert.sameValue(typeof checkSequence,'function');assert.sameValue(checkSequence([1,3,2]),true);",
+      "expected": "synchronous-exception",
+      "completion_policy": 0,
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "origin": "new-prerequisite",
+      "prerequisite": "promise-helper-positive"
+    },
+    {
+      "name": "property-helper-positive",
+      "source": "assert.sameValue(typeof verifyProperty,'function');verifyProperty(Promise.prototype,'then',{value:Promise.prototype.then,writable:true,enumerable:false,configurable:true});",
+      "expected": "passed",
+      "completion_policy": 0,
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "origin": "new-prerequisite",
+      "prerequisite": null
+    },
+    {
+      "name": "property-helper-poisoned",
+      "source": "assert.sameValue(typeof verifyProperty,'function');verifyProperty(Promise.prototype,'then',{value:Promise.prototype.then,writable:true,enumerable:true,configurable:true});",
+      "expected": "synchronous-exception",
+      "completion_policy": 0,
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "origin": "new-prerequisite",
+      "prerequisite": "property-helper-positive"
+    },
+    {
+      "name": "one-async-completion",
+      "source": "var reached=0; Promise.resolve(7).then(function(v){assert.sameValue(v,7);reached++;}).then(function(){assert.sameValue(reached,1);$DONE();},$DONE);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "poisoned-queued-assertion",
+      "source": "var reached=0; Promise.resolve(7).then(function(v){assert.sameValue(v,8);reached++;}).then(function(){assert.sameValue(reached,1);$DONE();},$DONE);",
+      "expected": "completion-error",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done-omitted",
+      "source": "$DONE();",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done-undefined",
+      "source": "$DONE(undefined);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done-null",
+      "source": "$DONE(null);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done-false",
+      "source": "$DONE(false);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done-0",
+      "source": "$DONE(0);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done--0",
+      "source": "$DONE(-0);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done-NaN",
+      "source": "$DONE(NaN);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "falsy-done-''",
+      "source": "$DONE('');",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "truthy-done-error",
+      "source": "$DONE(new Test262Error('marker'));",
+      "expected": "completion-error",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "truthy-error-getter-abrupt",
+      "source": "var hits=0;try{$DONE({get name(){hits++;throw 7;}});}catch(e){assert.sameValue(e,7);}assert.sameValue(hits,1);",
+      "expected": "completion-error",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "success-not-immediate-exit",
+      "source": "$DONE();throw new Test262Error('after');",
+      "expected": "synchronous-exception",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "missing-completion",
+      "source": "Promise.resolve(7).then(function(v){assert.sameValue(v,7);});",
+      "expected": "missing-completion",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "duplicate-sync",
+      "source": "$DONE();try{$DONE();}catch(e){}",
+      "expected": "duplicate-completion",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "duplicate-queued",
+      "source": "$DONE();Promise.resolve().then($DONE);",
+      "expected": "duplicate-completion",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "queued-error-before-done",
+      "source": "queueMicrotask(function(){throw new Test262Error('job');});queueMicrotask(function(){$DONE();});",
+      "expected": "queued-exception",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "queued-error-after-done",
+      "source": "$DONE();queueMicrotask(function(){throw new Test262Error('job');});",
+      "expected": "queued-exception",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "custom-capability-job-error",
+      "source": "function C(executor){executor(function(){throw 'cap';},function(){});}var p=Promise.resolve(1);p.constructor={};p.constructor[Symbol.species]=C;p.then();$DONE();",
+      "expected": "queued-exception",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "handled-rejection",
+      "source": "Promise.reject('marker').then(undefined,function(v){assert.sameValue(v,'marker');}).then($DONE,$DONE);",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "handled-later-in-checkpoint",
+      "source": "var p=Promise.reject('marker');queueMicrotask(function(){p.catch(function(v){assert.sameValue(v,'marker');}).then($DONE,$DONE);});",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "unhandled-rejection-after-success",
+      "source": "$DONE();Promise.resolve().then(function(){throw 'marker';});",
+      "expected": "unhandled-rejection",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "propagated-unhandled-child",
+      "source": "var p=Promise.reject('marker');p.then();p.catch(function(){});$DONE();",
+      "expected": "unhandled-rejection",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "forged-print-no-done",
+      "source": "print('Test262:AsyncTestComplete');",
+      "expected": "unauthenticated-completion",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "console-spoof",
+      "source": "console.log('Test262:AsyncTestComplete');",
+      "expected": "missing-completion",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "overwritten-done-noop",
+      "source": "$DONE=function(){};$DONE();",
+      "expected": "missing-completion",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "saved-done-alias",
+      "source": "var done=$DONE;$DONE=function(){throw 7;};Promise.resolve().then(function(){done();});",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "overwritten-print-noop",
+      "source": "print=function(){};$DONE();",
+      "expected": "completion-protocol-error",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "fatal-after-success",
+      "source": "$DONE();queueMicrotask(function(){while(true){}});",
+      "expected": "resource",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "checked-sync-queued-failure",
+      "source": "queueMicrotask(function(){throw 'marker';});",
+      "expected": "queued-exception",
+      "completion_policy": 0,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    },
+    {
+      "name": "sync-no-done-required",
+      "source": "Promise.resolve(1).then(function(v){assert.sameValue(v,1);});",
+      "expected": "passed",
+      "completion_policy": 0,
+      "includes": [],
+      "origin": "original-literal",
+      "prerequisite": null
+    }
+  ],
+  "features": [
+    "Promise",
+    "Promise.prototype.finally",
+    "Reflect",
+    "Reflect.construct",
+    "Symbol",
+    "Symbol.species",
+    "Symbol.toStringTag",
+    "arrow-function"
+  ],
+  "new_policy": {
+    "format": 3,
+    "supported_features": [
+      "Promise",
+      "Promise.prototype.finally",
+      "Reflect",
+      "Reflect.construct",
+      "Symbol",
+      "Symbol.species",
+      "Symbol.toStringTag",
+      "arrow-function"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": true,
+    "host_hooks": true,
+    "timeout_seconds": 3.0,
+    "request_protocol": "ERJS2",
+    "response_protocol": "ERJR3",
+    "adapter_feature": "test262-host",
+    "completion_policy": {
+      "sync": "checked-sync",
+      "async": "authenticated-done"
+    },
+    "unhandled_rejection_policy": "final-quiescent-veto",
+    "print_only_completion": false
+  },
+  "new_policy_sha256": "cc53ccb2c71f7b7452034cf1b0410df6149b6ffe6458df3990049d5c98c916ed",
+  "old_policies": {
+    "typedarray-copy-within": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "ArrayBuffer",
+          "Reflect.construct",
+          "Symbol",
+          "TypedArray",
+          "arrow-function",
+          "resizable-arraybuffer"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0,
+        "excluded_harness": [
+          "resizableArrayBufferUtils.js"
+        ]
+      },
+      "sha256": "7b2e4ceeaa92428c9cc8092b6fd782970eee9d4a870f7332cc1d44bd6d60f1e8"
+    },
+    "typedarray-to-reversed": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect.construct",
+          "Symbol.species",
+          "TypedArray",
+          "change-array-by-copy"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "4d7ecc4425ca0c59b1e885864222769f61289d1d74b8be19f048a8a77a6b1750"
+    },
+    "typedarray-reverse": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "ArrayBuffer",
+          "Reflect.construct",
+          "Symbol",
+          "TypedArray",
+          "arrow-function",
+          "resizable-arraybuffer"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0,
+        "excluded_harness": [
+          "resizableArrayBufferUtils.js"
+        ]
+      },
+      "sha256": "7b2e4ceeaa92428c9cc8092b6fd782970eee9d4a870f7332cc1d44bd6d60f1e8"
+    },
+    "typedarray-fill": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "ArrayBuffer",
+          "Reflect.construct",
+          "Symbol",
+          "TypedArray",
+          "arrow-function",
+          "resizable-arraybuffer"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0,
+        "excluded_harness": [
+          "resizableArrayBufferUtils.js"
+        ]
+      },
+      "sha256": "7b2e4ceeaa92428c9cc8092b6fd782970eee9d4a870f7332cc1d44bd6d60f1e8"
+    },
+    "typedarray-search": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.includes",
+          "ArrayBuffer",
+          "Reflect.construct",
+          "Symbol",
+          "TypedArray",
+          "TypedArray.prototype.at",
+          "align-detached-buffer-semantics-with-web-reality",
+          "arrow-function",
+          "relative-indexing-method",
+          "resizable-arraybuffer"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0,
+        "excluded_harness": [
+          "resizableArrayBufferUtils.js"
+        ]
+      },
+      "sha256": "51308aaf8cfb633ad197ca9d30c40e90fb1fcbb991c8dfdbaf28315ddcb69450"
+    },
+    "typedarray-views": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "ArrayBuffer",
+          "Reflect.construct",
+          "Symbol",
+          "Symbol.species",
+          "TypedArray",
+          "align-detached-buffer-semantics-with-web-reality",
+          "arrow-function",
+          "resizable-arraybuffer"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0,
+        "excluded_harness": [
+          "resizableArrayBufferUtils.js"
+        ]
+      },
+      "sha256": "15bc8da1b7fcd244a091ff59ecc9908e9d1c2d3ecef2896486deb2a0e2d2fa57"
+    },
+    "reflect-properties": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.construct",
+          "Reflect.set",
+          "Reflect.setPrototypeOf",
+          "Symbol",
+          "Symbol.toStringTag",
+          "arrow-function"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "afcc64a267c4f3d239d5142632a826aa13bf7e069bc77de024d66d1f0f221202"
+    },
+    "typedarray-foundation": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.values",
+          "ArrayBuffer",
+          "DataView",
+          "DataView.prototype.getFloat32",
+          "DataView.prototype.getFloat64",
+          "DataView.prototype.getInt16",
+          "DataView.prototype.getInt32",
+          "DataView.prototype.getInt8",
+          "DataView.prototype.getUint16",
+          "DataView.prototype.getUint32",
+          "DataView.prototype.setUint8",
+          "Float16Array",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "TypedArray",
+          "align-detached-buffer-semantics-with-web-reality",
+          "arraybuffer-transfer",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "resizable-arraybuffer",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "64e96c41a351a3faaca6f321bdbf2b1482de9337ddd9b98899db0fe9ef2e1167"
+    },
+    "object-has-own": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Object.hasOwn",
+          "Reflect.construct",
+          "Symbol",
+          "Symbol.toPrimitive",
+          "arrow-function"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "ac943560e42343b05eebbefacd4cc77d1cb839ee060630fd5d4a1876a1fbcc7d"
+    },
+    "object-is": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Object.is",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "6f3ca031e99175a4a846bde462f4e91dacce79d7665b653483e933396a384ff4"
+    },
+    "data-view": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.values",
+          "ArrayBuffer",
+          "DataView",
+          "DataView.prototype.getFloat32",
+          "DataView.prototype.getFloat64",
+          "DataView.prototype.getInt16",
+          "DataView.prototype.getInt32",
+          "DataView.prototype.getInt8",
+          "DataView.prototype.getUint16",
+          "DataView.prototype.getUint32",
+          "DataView.prototype.setUint8",
+          "Float16Array",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "align-detached-buffer-semantics-with-web-reality",
+          "arraybuffer-transfer",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "resizable-arraybuffer",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c091b4e5d70f2ed1a8d21a1f503b7df4011c9474cade1c332cde3d9a2894f660"
+    },
+    "array-buffer": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.values",
+          "ArrayBuffer",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "align-detached-buffer-semantics-with-web-reality",
+          "arraybuffer-transfer",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "resizable-arraybuffer",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1ef26b5c6a79ac667ffba496ad693275a5336065a96067dc291d34cc62c897f3"
+    },
+    "array-concat": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.values",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "3ffb7cd01ba9148d4ef61806a0d476c682ebbb9f9dce37190188a963006a73da"
+    },
+    "array-splice": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.values",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "3ffb7cd01ba9148d4ef61806a0d476c682ebbb9f9dce37190188a963006a73da"
+    },
+    "array-from": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.values",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "3ffb7cd01ba9148d4ef61806a0d476c682ebbb9f9dce37190188a963006a73da"
+    },
+    "for-of": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "const",
+          "default-parameters",
+          "for-in-order",
+          "for-of",
+          "let",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "a8ca04723e940f044d57036a0935292efe7a8e53916e6dd71d7c0aabc2f468f4"
+    },
+    "core-iterators": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Array.prototype.values",
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "739e4c14931cd9bba8a6cefcd8dd67ba5d373a5f185022365cb90449e4a1baec"
+    },
+    "date": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391"
+    },
+    "array-find": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "array-find-from-last",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "5952fddca098c1f05b6f7504f9582b70af2e8c8af59a0df906075a8fa543979d"
+    },
+    "object-integrity": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391"
+    },
+    "array-predicates": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391"
+    },
+    "array-descriptors": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391"
+    },
+    "array-last-index-of": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391"
+    },
+    "string-last-index-of": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391"
+    },
+    "regexp-match-search": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "c93ebc27df493f0d52da1728fb7221c1066702178f037d6dde01f76d46b9b391"
+    },
+    "regexp-constructor": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "template",
+          "trailing-function-commas",
+          "u180e",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "74e43872e59c6ffc5e55a68ad3887f9ced2f69d5c9690a25136f9f9d1e6127d1"
+    },
+    "regexp-split": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245"
+    },
+    "string-search": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "String.prototype.endsWith",
+          "String.prototype.includes",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "a9ea3c01e1d4fea35619985a2e3c464b4be23d29c1581e69c493d9f8d73e26e3"
+    },
+    "function-constructor": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "rest-parameters",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "b764ad3478933d38f28aa720721553a3798d8f262fc42658470ca01791499c0f"
+    },
+    "string-concat": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "symbols": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "e77db9454b9331d6178bc7bc1c49e1de55095e4701baaac3e27aae7efd42eec3"
+    },
+    "string-json": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "regexp": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "regexp-dotall",
+          "regexp-match-indices",
+          "regexp-named-groups",
+          "regexp-sticky",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "639d025e85b6e45a09d82252ece92d6f5ee95c0619b16ce3e2d61987a03b4cdd"
+    },
+    "reflect-construction": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245"
+    },
+    "new-target": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "Reflect.ownKeys",
+          "String.fromCodePoint",
+          "Symbol",
+          "Symbol.asyncIterator",
+          "Symbol.hasInstance",
+          "Symbol.isConcatSpreadable",
+          "Symbol.iterator",
+          "Symbol.match",
+          "Symbol.matchAll",
+          "Symbol.prototype.description",
+          "Symbol.replace",
+          "Symbol.search",
+          "Symbol.species",
+          "Symbol.split",
+          "Symbol.toPrimitive",
+          "Symbol.toStringTag",
+          "Symbol.unscopables",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "template",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "0e8c2b54d69e660d939a6c02946e920f459695f6be4405163f7e94bf0547f245"
+    },
+    "template-literal": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "template",
+          "u180e",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "3d1f69f1130da33216d9acb7fb1d220dbf006ee45351b930eed3b8ef175c2462"
+    },
+    "functions": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "012c455ee75d314d1a222c23205bf5cb5c48058ecdf5a067270bb6cff73f0089"
+    },
+    "rest-parameters": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "computed-property-names",
+          "default-parameters",
+          "for-in-order",
+          "new.target",
+          "object-methods",
+          "rest-parameters",
+          "trailing-function-commas",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "a1f03c4f9590ec957d7dac54aaf1633e9b9c95f4faf7f7bdc7593ce337168a5b"
+    },
+    "is-prototype-of": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "global-values": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "globalThis",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "bc9da7274e62951b4b886406c4b0d0f71ade2a62979a7194fd7451484009a063"
+    },
+    "array-sort": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "stable-array-sort",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "8861817329776f3a0e78232610878c0086cd0daac7ccc896683dccfa3ef0b4aa"
+    },
+    "identifiers": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "u180e",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "666c0fd88cdb1f836c1e9706e43415e1ac5ae6b4b3ac244ae7eb4dd8701f6f7e"
+    },
+    "array-reduce": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "number-statics": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "numeric-conversion": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "numeric-parsing": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "compound-assignment": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "addition": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "logical-assignment": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "logical-assignment-operators",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "74a2627eaabaa31cba34e9ff9612cc8b944af7bae893c4e210fc1aa96f6868af"
+    },
+    "uri": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "relational": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "equality": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    },
+    "labels": {
+      "policy": {
+        "format": 2,
+        "supported_features": [
+          "Reflect",
+          "Reflect.apply",
+          "Reflect.construct",
+          "String.fromCodePoint",
+          "arrow-function",
+          "for-in-order",
+          "new.target",
+          "well-formed-json-stringify"
+        ],
+        "negative_intrinsic_errors": [
+          "Error",
+          "EvalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError"
+        ],
+        "strict": true,
+        "modules": false,
+        "async_completion": false,
+        "host_hooks": false,
+        "timeout_seconds": 3.0
+      },
+      "sha256": "1b68698f63cf2e2b18d09282ccc41f81a4c8cc907700a01cb6644653d5e65098"
+    }
+  },
+  "old_policy_map_sha256": "e14ab87f29af6f9d10424b066cc1b2cf6bc9d2dffcd2b1424b31af642f9b2d90",
+  "corpus_counts": {
+    "test_files": 232,
+    "directories": 8,
+    "source_bytes": 236187,
+    "auxiliary_files": 8,
+    "auxiliary_bytes": 49033,
+    "proof_files": 13,
+    "proof_bytes": 86344,
+    "files": 240,
+    "async": 113,
+    "sync": 119,
+    "modes": 458,
+    "async_modes": 222,
+    "sync_modes": 236,
+    "class_files": 7,
+    "cross_realm_files": 1
+  },
+  "auxiliary_files": {
+    "INTERPRETING.md": {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    "LICENSE": {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    "harness/assert.js": {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    "harness/doneprintHandle.js": {
+      "path": "harness/doneprintHandle.js",
+      "upstream_path": "harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    "harness/isConstructor.js": {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    "harness/promiseHelper.js": {
+      "path": "harness/promiseHelper.js",
+      "upstream_path": "harness/promiseHelper.js",
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+    },
+    "harness/propertyHelper.js": {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    "harness/sta.js": {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    }
+  },
+  "importer_oracle": {
+    "path": "/tmp/eris-promise-test262-plan-1/importer-1/raw/tools/promise-methods-importer-oracle.json",
+    "bytes": 85217,
+    "sha256": "d72a5e98e96d2162f1243d79fa93e1aecc4a21554ba54a82529cd7f42f41e7fe"
+  },
+  "scope": "Frozen expectation literals only; no adapter or JS run.31 original JS strings exact; six new prerequisite sources and74 selected observations are distinct from original37 plan records. Resource/host failures are intended preflight outcomes, not upstream passes."
+}

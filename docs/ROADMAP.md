@@ -3,9 +3,11 @@
 [Promise construction and reactions](promise-foundation.md) now include
 thenable adoption, generic capabilities/species and a shared FIFO with
 `queueMicrotask`. [Generic `catch`](promise-catch.md) and
-[`finally` cleanup](promise-finally.md) are implemented. The next conformance
-step needs an asynchronous Test262 host contract before upstream `$DONE` tests
-can run. Remaining asynchronous work includes combinators,
+[`finally` cleanup](promise-finally.md) are implemented. The optional
+[Promise Test262 host](promise-test262-host.md) now supplies authenticated
+`$DONE` completion and a final unhandled-rejection check for a bounded pinned
+profile. Its recorded results guide subsequent compatibility work.
+Remaining asynchronous work includes combinators,
 async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 

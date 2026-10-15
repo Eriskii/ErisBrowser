@@ -54,8 +54,11 @@ charges, not hardware performance measurements.
 
 Combinators, async functions/`await`, complete rejection notifications, multiple
 realms and garbage collection remain unfinished. These authored regressions
-are not a full Test262 result. The current upstream adapter still excludes
-asynchronous completion tests until it has a supported `$DONE` host contract.
+are not a full Test262 result. At this checkpoint, the upstream adapter still
+excluded asynchronous completion tests. The subsequent optional
+[Promise Test262 host](promise-test262-host.md) adds authenticated `$DONE` and
+final unhandled-rejection checks for a separate pinned profile; it records
+upstream outcomes independently of the results above.
 
 [Evidence](evidence/promise-finally/summary.json) records the held expectations,
 parent observations, source reviews, resource ledger and final checks.

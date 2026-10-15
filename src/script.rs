@@ -63,7 +63,11 @@ mod regexp_builtins;
 mod scalar_codec;
 mod string_builtins;
 mod symbols;
+#[cfg(feature = "test262-host")]
+mod test262_host;
 mod text_operations;
+#[cfg(feature = "test262-host")]
+pub use test262_host::{Test262Observation, Test262Policy};
 #[cfg(test)]
 mod throw_completion_tests;
 mod throw_metadata;
@@ -1576,6 +1580,8 @@ pub struct Runtime {
     dom_prototypes: dom_prototypes::State,
     microtasks: microtasks::State,
     promises: promises::State,
+    #[cfg(feature = "test262-host")]
+    test262_session: Option<test262_host::Session>,
     host_symbol_objects: BTreeMap<property_keys::HostKey, usize>,
     function_prototype: usize,
     events: Vec<EventState>,
@@ -1754,6 +1760,8 @@ impl Runtime {
             dom_prototypes: dom_prototypes::State::default(),
             microtasks: microtasks::State::default(),
             promises: promises::State::default(),
+            #[cfg(feature = "test262-host")]
+            test262_session: None,
             host_symbol_objects: BTreeMap::new(),
             function_prototype: 0,
             events: Vec::new(),
@@ -1764,7 +1772,25 @@ impl Runtime {
             readiness_fired: false,
             started: std::time::Instant::now(),
             steps: MAX_STEPS,
+            #[cfg(not(feature = "test262-host"))]
             allocated: 2048
+                + std::mem::size_of::<DateHost>()
+                + std::mem::size_of::<iterators::State>()
+                + std::mem::size_of::<array_buffer::State>()
+                + std::mem::size_of::<data_view::State>()
+                + std::mem::size_of::<typed_array::State>()
+                + std::mem::size_of::<dom_prototypes::State>()
+                + std::mem::size_of::<microtasks::State>()
+                + std::mem::size_of::<promises::State>()
+                + 4 * std::mem::size_of::<Option<Value>>()
+                + initial_binding_bytes
+                + native_names.len() * NATIVE_METADATA_BYTES
+                + TrackedGlobal::ALL
+                    .iter()
+                    .map(|kind| 64 + kind.name().len() * 6)
+                    .sum::<usize>(),
+            #[cfg(feature = "test262-host")]
+            allocated: 2048.max(std::mem::size_of::<Self>())
                 + std::mem::size_of::<DateHost>()
                 + std::mem::size_of::<iterators::State>()
                 + std::mem::size_of::<array_buffer::State>()
