@@ -136,6 +136,10 @@ PROFILE_FEATURES[AGGREGATE_ERROR_PROFILE] = AGGREGATE_ERROR_FEATURES
 PROMISE_WITH_RESOLVERS_PROFILE = 'promise-with-resolvers'
 PROMISE_WITH_RESOLVERS_FEATURES = {'promise-with-resolvers'}
 PROFILE_FEATURES[PROMISE_WITH_RESOLVERS_PROFILE] = PROMISE_WITH_RESOLVERS_FEATURES
+PROMISE_TRY_PROFILE = 'promise-try'
+PROMISE_TRY_FEATURES = {'Reflect.construct', 'promise-try'}
+PROFILE_FEATURES[PROMISE_TRY_PROFILE] = PROMISE_TRY_FEATURES
+PROMISE_HOST_PROFILES.add(PROMISE_TRY_PROFILE)
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -257,13 +261,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {PROMISE_WITH_RESOLVERS_PROFILE, 'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {PROMISE_TRY_PROFILE, PROMISE_WITH_RESOLVERS_PROFILE, 'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {PROMISE_WITH_RESOLVERS_PROFILE, 'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {PROMISE_TRY_PROFILE, PROMISE_WITH_RESOLVERS_PROFILE, 'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -392,6 +396,8 @@ def encode_request(case):
 
 
 def decode_response(output, *, profile=None):
+    if profile == PROMISE_TRY_PROFILE and not output.startswith(b'ERJR3'):
+        raise ValueError('Promise.try profile requires an ERJR3 response')
     if profile == PROMISE_WITH_RESOLVERS_PROFILE and not output.startswith(b'ERJR2'):
         raise ValueError('Promise.withResolvers profile requires an ordinary ERJR2 response')
     if profile == AGGREGATE_ERROR_PROFILE and not output.startswith(b'ERJR2'):
@@ -464,8 +470,9 @@ def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES, profi
                         stderr=stderr.decode('utf-8', 'replace')[:4096])
         observation = (decode_response(output, profile=profile)
                        if profile in {AGGREGATE_ERROR_PROFILE, PROMISE_ANY_PROFILE,
-                                      PROMISE_WITH_RESOLVERS_PROFILE} else decode_response(output))
-        status = (classify(case, observation, profile=profile)
+                                      PROMISE_WITH_RESOLVERS_PROFILE, PROMISE_TRY_PROFILE} else decode_response(output))
+        status = (classify_promise(case, observation) if profile == PROMISE_TRY_PROFILE
+                  else classify(case, observation, profile=profile)
                   if profile == PROMISE_ANY_PROFILE else classify(case, observation))
         return dict(result, status=status, observation=observation)
     except subprocess.TimeoutExpired:
@@ -1408,6 +1415,8 @@ def array_from_preflight_variants():
 
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
+    if profile == PROMISE_TRY_PROFILE:
+        return promise_try_harness_preflight(files, binary, timeout)
     """Fail closed if the upstream assertions no longer enforce basic failures."""
     if profile == PROMISE_WITH_RESOLVERS_PROFILE:
         return with_resolvers_harness_preflight(files, binary, timeout)
@@ -5465,6 +5474,432 @@ def with_resolvers_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+def promise_try_preflight_variants():
+    """Frozen Try literals, once per logical variant; modes expand below."""
+    return [{'name': 'api',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                'var method = Promise.try;\n'
+                "verifyProperty(Promise, 'try', {value: method, writable: true, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'name', {value: 'try', writable: false, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'length', {value: 1, writable: false, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                'assert.sameValue(Promise.try, method);\n'
+                'assert.notSameValue(method, Promise.resolve);\n'
+                "assert.sameValue(Object.prototype.hasOwnProperty.call(method, 'prototype'), false);\n"
+                'assert.sameValue(isConstructor(function () {}), true);\n'
+                'assert.throws(TypeError, function () { new method(function () {}); });\n'
+                "assert(isConstructor(method) === false, 'Promise.try constructibility');\n",
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js', 'isConstructor.js'],
+      'origin': 'promise-try-control',
+      'prerequisite': None},
+     {'name': 'api-mismatch',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                'var method = Promise.try;\n'
+                "verifyProperty(Promise, 'try', {value: method, writable: true, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'name', {value: 'try', writable: false, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'length', {value: 1, writable: false, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                'assert.sameValue(Promise.try, method);\n'
+                'assert.notSameValue(method, Promise.resolve);\n'
+                "assert.sameValue(Object.prototype.hasOwnProperty.call(method, 'prototype'), false);\n"
+                'assert.sameValue(isConstructor(function () {}), true);\n'
+                'assert.throws(TypeError, function () { new method(function () {}); });\n'
+                "assert(isConstructor(method) === true, 'Promise.try constructibility');\n",
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js', 'isConstructor.js'],
+      'origin': 'promise-try-control',
+      'prerequisite': 'api'},
+     {'name': 'callback-order-and-arguments',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                'var trace = [], first = {}, second = {}, holder = {}, seen;\n'
+                'function C(executor) {\n'
+                "  trace.push('C');\n"
+                '  executor(function (value) {\n'
+                "    'use strict';\n"
+                "    trace.push('R');\n"
+                '    assert.sameValue(this, undefined);\n'
+                '    assert.sameValue(value, first);\n'
+                "  }, function () { throw new Test262Error('unexpected reject'); });\n"
+                '  return holder;\n'
+                '}\n'
+                'var result = Promise.try.call(C, function (a, b, c) {\n'
+                "  'use strict';\n"
+                "  trace.push('F');\n"
+                '  assert.sameValue(this, undefined);\n'
+                '  assert.sameValue(arguments.length, 3);\n'
+                '  seen = [a, b, c];\n'
+                '  assert.compareArray(seen, [first, second, -0]);\n'
+                '  return a;\n'
+                '}, first, second, -0);\n'
+                'assert.sameValue(result, holder);\n'
+                'assert.sameValue(compareArray([first, second], [first, second]), true);\n'
+                'assert.sameValue(compareArray([first, second], [second, first]), false);\n'
+                "assert(compareArray(trace, ['F', 'C', 'R']), 'Promise.try callback order');\n",
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['compareArray.js'],
+      'origin': 'promise-try-control',
+      'prerequisite': None},
+     {'name': 'callback-order-and-arguments-mismatch',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                'var trace = [], first = {}, second = {}, holder = {}, seen;\n'
+                'function C(executor) {\n'
+                "  trace.push('C');\n"
+                '  executor(function (value) {\n'
+                "    'use strict';\n"
+                "    trace.push('R');\n"
+                '    assert.sameValue(this, undefined);\n'
+                '    assert.sameValue(value, first);\n'
+                "  }, function () { throw new Test262Error('unexpected reject'); });\n"
+                '  return holder;\n'
+                '}\n'
+                'var result = Promise.try.call(C, function (a, b, c) {\n'
+                "  'use strict';\n"
+                "  trace.push('F');\n"
+                '  assert.sameValue(this, undefined);\n'
+                '  assert.sameValue(arguments.length, 3);\n'
+                '  seen = [a, b, c];\n'
+                '  assert.compareArray(seen, [first, second, -0]);\n'
+                '  return a;\n'
+                '}, first, second, -0);\n'
+                'assert.sameValue(result, holder);\n'
+                'assert.sameValue(compareArray([first, second], [first, second]), true);\n'
+                'assert.sameValue(compareArray([first, second], [second, first]), false);\n'
+                "assert(compareArray(trace, ['C', 'F', 'R']), 'Promise.try callback order');\n",
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['compareArray.js'],
+      'origin': 'promise-try-control',
+      'prerequisite': 'callback-order-and-arguments'},
+     {'name': 'genuine-identity',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                "var P = Promise, method = P.try, trace = '', probes = 0;\n"
+                'var pending = new P(function () {}), receiver = {};\n'
+                "function poison() { probes++; throw new Test262Error('unexpected lookup'); }\n"
+                "Object.defineProperty(pending, 'constructor', {get: function () { trace += 'G'; "
+                'return receiver; }, configurable: true});\n'
+                "Object.defineProperty(receiver, 'resolve', {get: poison, configurable: true});\n"
+                'Object.defineProperty(receiver, Symbol.species, {get: poison, configurable: true});\n'
+                "Object.defineProperty(P, 'resolve', {get: poison, configurable: true});\n"
+                'Object.defineProperty(P, Symbol.species, {get: poison, configurable: true});\n'
+                "Promise = function () { probes++; throw new Test262Error('replacement Promise'); };\n"
+                "var result = method.call(receiver, function () { trace += 'F'; return pending; });\n"
+                "assert.sameValue(trace, 'FG');\n"
+                'assert.sameValue(probes, 0);\n'
+                'assert.sameValue(result, pending);\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-try-control',
+      'prerequisite': None},
+     {'name': 'genuine-identity-mismatch',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                "var P = Promise, method = P.try, trace = '', probes = 0;\n"
+                'var pending = new P(function () {}), receiver = {};\n'
+                "function poison() { probes++; throw new Test262Error('unexpected lookup'); }\n"
+                "Object.defineProperty(pending, 'constructor', {get: function () { trace += 'G'; "
+                'return receiver; }, configurable: true});\n'
+                "Object.defineProperty(receiver, 'resolve', {get: poison, configurable: true});\n"
+                'Object.defineProperty(receiver, Symbol.species, {get: poison, configurable: true});\n'
+                "Object.defineProperty(P, 'resolve', {get: poison, configurable: true});\n"
+                'Object.defineProperty(P, Symbol.species, {get: poison, configurable: true});\n'
+                "Promise = function () { probes++; throw new Test262Error('replacement Promise'); };\n"
+                "var result = method.call(receiver, function () { trace += 'F'; return pending; });\n"
+                "assert.sameValue(trace, 'FG');\n"
+                'assert.sameValue(probes, 0);\n'
+                'assert.notSameValue(result, pending);\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-try-control',
+      'prerequisite': 'genuine-identity'},
+     {'name': 'ordinary-rejection',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                'var trace = [], reason = {}, escaped = {}, holder = {}, rejects = 0, resolves = 0;\n'
+                'function C(executor) {\n'
+                "  trace.push('C');\n"
+                '  executor(function () { resolves++; }, function (value) {\n'
+                "    'use strict';\n"
+                "    trace.push('J'); rejects++;\n"
+                '    assert.sameValue(this, undefined);\n'
+                '    assert.sameValue(value, reason);\n'
+                '  });\n'
+                '  return holder;\n'
+                '}\n'
+                "var result = Promise.try.call(C, function () { trace.push('F'); throw reason; });\n"
+                'assert.sameValue(result, holder);\n'
+                'function Throwing(executor) {\n'
+                "  trace.push('C');\n"
+                '  executor(function () { resolves++; }, function (value) {\n'
+                "    'use strict';\n"
+                "    trace.push('J'); rejects++;\n"
+                '    assert.sameValue(this, undefined);\n'
+                '    assert.sameValue(value, reason);\n'
+                '    throw escaped;\n'
+                '  });\n'
+                '  return holder;\n'
+                '}\n'
+                'var caught = false;\n'
+                "try { Promise.try.call(Throwing, function () { trace.push('F'); throw reason; }); }\n"
+                'catch (error) { caught = true; assert.sameValue(error, escaped); }\n'
+                'assert.sameValue(caught, true);\n'
+                'assert.sameValue(rejects, 2);\n'
+                'assert.sameValue(resolves, 0);\n'
+                "assert(trace.join('') === 'FCJFCJ', 'Promise.try rejection order');\n",
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-try-control',
+      'prerequisite': None},
+     {'name': 'ordinary-rejection-mismatch',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                'var trace = [], reason = {}, escaped = {}, holder = {}, rejects = 0, resolves = 0;\n'
+                'function C(executor) {\n'
+                "  trace.push('C');\n"
+                '  executor(function () { resolves++; }, function (value) {\n'
+                "    'use strict';\n"
+                "    trace.push('J'); rejects++;\n"
+                '    assert.sameValue(this, undefined);\n'
+                '    assert.sameValue(value, reason);\n'
+                '  });\n'
+                '  return holder;\n'
+                '}\n'
+                "var result = Promise.try.call(C, function () { trace.push('F'); throw reason; });\n"
+                'assert.sameValue(result, holder);\n'
+                'function Throwing(executor) {\n'
+                "  trace.push('C');\n"
+                '  executor(function () { resolves++; }, function (value) {\n'
+                "    'use strict';\n"
+                "    trace.push('J'); rejects++;\n"
+                '    assert.sameValue(this, undefined);\n'
+                '    assert.sameValue(value, reason);\n'
+                '    throw escaped;\n'
+                '  });\n'
+                '  return holder;\n'
+                '}\n'
+                'var caught = false;\n'
+                "try { Promise.try.call(Throwing, function () { trace.push('F'); throw reason; }); }\n"
+                'catch (error) { caught = true; assert.sameValue(error, escaped); }\n'
+                'assert.sameValue(caught, true);\n'
+                'assert.sameValue(rejects, 2);\n'
+                'assert.sameValue(resolves, 0);\n'
+                "assert(trace.join('') === 'FCJFCJJ', 'Promise.try rejection order');\n",
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-try-control',
+      'prerequisite': 'ordinary-rejection'},
+     {'name': 'async-helper',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                "assert.sameValue(typeof asyncTest, 'function');\n"
+                "assert.sameValue(typeof assert.throwsAsync, 'function');\n"
+                'var token = {};\n'
+                'asyncTest(function () {\n'
+                '  return Promise.try(function () { return token; }).then(function (value) {\n'
+                '    assert.sameValue(value, token);\n'
+                '    return assert.throwsAsync(TypeError, function () {\n'
+                "      return Promise.try(function () { throw new TypeError('try-control'); });\n"
+                '    });\n'
+                '  });\n'
+                '});\n',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': ['asyncHelpers.js'],
+      'origin': 'promise-try-control',
+      'prerequisite': None},
+     {'name': 'async-helper-mismatch',
+      'source': "assert.sameValue(typeof Promise.try, 'function');\n"
+                "assert.sameValue(typeof asyncTest, 'function');\n"
+                "assert.sameValue(typeof assert.throwsAsync, 'function');\n"
+                'var token = {};\n'
+                'asyncTest(function () {\n'
+                '  return Promise.try(function () { return token; }).then(function (value) {\n'
+                '    assert.sameValue(value, token);\n'
+                '    return assert.throwsAsync(RangeError, function () {\n'
+                "      return Promise.try(function () { throw new TypeError('try-control'); });\n"
+                '    });\n'
+                '  });\n'
+                '});\n',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': ['asyncHelpers.js'],
+      'origin': 'promise-try-control',
+      'prerequisite': 'async-helper'}]
+
+
+def promise_try_preflight_cases(files):
+    """Canonical new-profile rows; the original74 case identities stay exact."""
+    common = promise_preflight_variants()
+    selected = promise_try_preflight_variants()
+    definitions = []
+    common_names = ['promise-methods-' + row['name'] for row in common]
+    for rows, prefix in ((common, 'promise-methods-'), (selected, 'promise-try-')):
+        for mode in ('sloppy', 'strict'):
+            for held in rows:
+                policy = held['completion_policy']
+                row = dict(held, name=prefix + held['name'])
+                if prefix == 'promise-methods-':
+                    required = []
+                    if held['prerequisite']:
+                        required.append('promise-methods-' + held['prerequisite'])
+                    if held['origin'] == 'original-literal':
+                        required.extend('promise-methods-' + item['name'] for item in common
+                                        if item['origin'] == 'new-prerequisite')
+                        if held['name'] != 'one-async-completion':
+                            required.append('promise-methods-one-async-completion')
+                else:
+                    required = common_names.copy()
+                    if held['name'] != 'api':
+                        required.append('promise-try-api')
+                    if held['prerequisite']:
+                        prerequisite = 'promise-try-' + held['prerequisite']
+                        if prerequisite not in required:
+                            required.append(prerequisite)
+                row['prerequisites'] = [(name, mode) for name in required]
+                names = ['assert.js', 'sta.js'] + (['doneprintHandle.js'] if policy else []) + held['includes']
+                case = dict(id='harness-preflight:' + row['name'], file='<preflight>', mode=mode,
+                            metadata=dict(flags=['async'] if policy else [], includes=held['includes'],
+                                          features=[], locale=[], negative=None),
+                            source=held['source'].encode(),
+                            harness=[(name, files['harness/' + name]) for name in names],
+                            completion_policy=policy)
+                case['case_sha256'] = case_fingerprint(case)
+                definitions.append((row, case))
+    return definitions
+
+
+def promise_try_preflight_reference(row, case):
+    return dict(name=row['name'], mode=case['mode'], verified=True,
+                case_sha256=case['case_sha256'], source_sha256=digest(case['source']))
+
+
+def promise_try_preflight_checks(outcomes, files):
+    """Recheck canonical identities, raw host evidence and prerequisite health."""
+    try:
+        definitions = promise_try_preflight_cases(files)
+        if not isinstance(outcomes, list) or len(outcomes) != 94 or len(definitions) != 94:
+            return None
+        canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+        if len(canonical) != 94:
+            return None
+        observed = {}
+        for item in outcomes:
+            if (not isinstance(item, dict)
+                    or set(item) != {'name', 'expected', 'verified', 'result', 'prerequisites'}
+                    or not isinstance(item['name'], str)
+                    or not isinstance(item['expected'], str)
+                    or type(item['verified']) is not bool
+                    or not isinstance(item['result'], dict)
+                    or not isinstance(item['result'].get('mode'), str)
+                    or not isinstance(item['prerequisites'], list)):
+                return None
+            identity = (item['name'], item['result']['mode'])
+            if identity in observed or identity not in canonical:
+                return None
+            observed[identity] = item
+        if observed.keys() != canonical.keys():
+            return None
+        raw_checks = {}
+        for identity, (row, case) in canonical.items():
+            item, result = observed[identity], observed[identity]['result']
+            expected_status = ('passed' if row['expected'] == 'passed' else
+                               'resource' if row['expected'] == 'resource' else 'failed')
+            expected_result = {key: case[key] for key in ('id', 'file', 'mode', 'case_sha256')}
+            expected_result.update(source_sha256=digest(case['source']),
+                                   expected_negative=case['metadata']['negative'], status=expected_status)
+            expected_prerequisites = [promise_try_preflight_reference(*canonical[key])
+                                      for key in row['prerequisites']]
+            prerequisites = item['prerequisites']
+            good = (item['expected'] == row['expected']
+                    and set(result) == set(expected_result) | {'observation'}
+                    and all(result.get(key) == value for key, value in expected_result.items())
+                    and len(prerequisites) == len(expected_prerequisites)
+                    and all(isinstance(ref, dict)
+                            and set(ref) == {'name', 'mode', 'verified', 'case_sha256', 'source_sha256'}
+                            and type(ref.get('verified')) is bool
+                            and all(isinstance(ref.get(key), str) for key in
+                                    ('name', 'mode', 'case_sha256', 'source_sha256'))
+                            for ref in prerequisites)
+                    and prerequisites == expected_prerequisites
+                    and isinstance(result.get('observation'), dict))
+            if good:
+                observation = result['observation']
+                try:
+                    validate_promise_observation(observation)
+                    good = (observation['completion']['policy'] == case['completion_policy']
+                            and classify_promise(case, observation) == expected_status
+                            and promise_preflight_verified(case, result, row['expected']))
+                    # Preserve common74 verifier semantics. New semantic rows
+                    # additionally freeze their complete successful setup and
+                    # completion counters; synchronous diagnostics stay bounded.
+                    if good and row['name'].startswith('promise-try-'):
+                        policy = case['completion_policy']
+                        counts = (1, 1, 0) if policy else (0, 0, 0)
+                        flags = 0
+                        if row['expected'] == 'synchronous-exception':
+                            flags = 256
+                        elif row['expected'] == 'completion-error':
+                            counts, flags = (1, 0, 1), 1
+                        good = observation['harness'] == '' and observation['completion'] == dict(
+                            policy=policy, done_calls=counts[0], success_prints=counts[1],
+                            failure_prints=counts[2], flags=flags,
+                            quiescent=True, audited=True, unhandled=0)
+                except (KeyError, TypeError, ValueError):
+                    good = False
+            raw_checks[identity] = good
+        checked, visiting = {}, set()
+
+        def healthy(identity):
+            if identity in checked:
+                return checked[identity]
+            if identity in visiting:
+                return False
+            visiting.add(identity)
+            row, _ = canonical[identity]
+            value = raw_checks[identity] and all(healthy(key) for key in row['prerequisites'])
+            visiting.remove(identity)
+            checked[identity] = value
+            return value
+
+        for identity in canonical:
+            healthy(identity)
+        return checked
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def promise_try_preflight_healthy(outcomes, files):
+    checks = promise_try_preflight_checks(outcomes, files)
+    return (checks is not None and len(checks) == 94 and all(checks.values())
+            and all(item['verified'] is True for item in outcomes))
+
+
+def promise_try_harness_preflight(files, binary, timeout):
+    definitions = promise_try_preflight_cases(files)
+    canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+    outcomes = []
+    for row, case in definitions:
+        result = run_case(case, binary, timeout, PROMISE_TRY_FEATURES, PROMISE_TRY_PROFILE)
+        prerequisites = [promise_try_preflight_reference(*canonical[key])
+                         for key in row['prerequisites']]
+        outcomes.append(dict(name=row['name'], expected=row['expected'], verified=False,
+                             result=result, prerequisites=prerequisites))
+    checks = promise_try_preflight_checks(outcomes, files)
+    if checks is not None:
+        for item in outcomes:
+            item['verified'] = checks[(item['name'], item['result']['mode'])]
+            for prerequisite in item['prerequisites']:
+                prerequisite['verified'] = checks[(prerequisite['name'], prerequisite['mode'])]
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -5509,7 +5944,8 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (with_resolvers_preflight_healthy(preflight, files) if args.profile == PROMISE_WITH_RESOLVERS_PROFILE
+        preflight_ok = (promise_try_preflight_healthy(preflight, files) if args.profile == PROMISE_TRY_PROFILE
+                        else with_resolvers_preflight_healthy(preflight, files) if args.profile == PROMISE_WITH_RESOLVERS_PROFILE
                         else promise_any_preflight_healthy(preflight, files) if args.profile == PROMISE_ANY_PROFILE
                         else aggregate_error_preflight_healthy(preflight, files) if args.profile == AGGREGATE_ERROR_PROFILE
                         else promise_all_settled_preflight_healthy(preflight) if args.profile == PROMISE_ALL_SETTLED_PROFILE

@@ -1,0 +1,242 @@
+{
+  "format": 1,
+  "repository": "https://github.com/tc39/test262",
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "scope": "all 15 original .js files in the complete Promise/try subtree; root-linked nonrecursive Git proofs and unchanged eight-helper closure including guard-only promiseHelper.js; all original feature metadata retained; no execution or conformance claim",
+  "directories": {
+    "Promise/try": [
+      "args.js",
+      "avoids-wrap-for-subclass.js",
+      "avoids-wrap.js",
+      "ctx-ctor-for-error.js",
+      "ctx-ctor-throws.js",
+      "ctx-ctor.js",
+      "ctx-non-ctor.js",
+      "ctx-non-object.js",
+      "length.js",
+      "name.js",
+      "not-a-constructor.js",
+      "promise.js",
+      "prop-desc.js",
+      "return-value.js",
+      "throws.js"
+    ]
+  },
+  "test_files": 15,
+  "files": [
+    {
+      "path": "INTERPRETING.md",
+      "upstream_path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "upstream_path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/asyncHelpers.js",
+      "upstream_path": "harness/asyncHelpers.js",
+      "bytes": 3570,
+      "sha256": "9afd9a18e080f30b998fa3b9c3e2303fc85fb1ebae664a532a58d56d86d3bcc9"
+    },
+    {
+      "path": "harness/compareArray.js",
+      "upstream_path": "harness/compareArray.js",
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    {
+      "path": "harness/doneprintHandle.js",
+      "upstream_path": "harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "upstream_path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/promiseHelper.js",
+      "upstream_path": "harness/promiseHelper.js",
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "upstream_path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "upstream_path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "test/built-ins/Promise/try/args.js",
+      "upstream_path": "test/built-ins/Promise/try/args.js",
+      "bytes": 543,
+      "sha256": "13d29a449e82ad6f08f44166e14972de7f398ff572f359fbf33f164d4a540e63"
+    },
+    {
+      "path": "test/built-ins/Promise/try/avoids-wrap-for-subclass.js",
+      "upstream_path": "test/built-ins/Promise/try/avoids-wrap-for-subclass.js",
+      "bytes": 580,
+      "sha256": "96c263037c9be38105ab34d20bef4a5cbf17c437d6258828483e3201cffa854c"
+    },
+    {
+      "path": "test/built-ins/Promise/try/avoids-wrap.js",
+      "upstream_path": "test/built-ins/Promise/try/avoids-wrap.js",
+      "bytes": 422,
+      "sha256": "bbcb3cb7f9c20c7042e85b28a5c12d02f16d61e17d47cddbb401e12c31f37342"
+    },
+    {
+      "path": "test/built-ins/Promise/try/ctx-ctor-for-error.js",
+      "upstream_path": "test/built-ins/Promise/try/ctx-ctor-for-error.js",
+      "bytes": 747,
+      "sha256": "ff779a0977603436e10c0b5a9e9ce1064ad50b7621019b92b1bf69d0f265f734"
+    },
+    {
+      "path": "test/built-ins/Promise/try/ctx-ctor-throws.js",
+      "upstream_path": "test/built-ins/Promise/try/ctx-ctor-throws.js",
+      "bytes": 416,
+      "sha256": "2b773aa6799554aa75049b4dbbafac669896f2f7975c2e078aa92acff2458aef"
+    },
+    {
+      "path": "test/built-ins/Promise/try/ctx-ctor.js",
+      "upstream_path": "test/built-ins/Promise/try/ctx-ctor.js",
+      "bytes": 661,
+      "sha256": "6735ab7241175c4612e7ce8bc42f9d9384ee38ed23bdb3c3d6d0c2715aadab08"
+    },
+    {
+      "path": "test/built-ins/Promise/try/ctx-non-ctor.js",
+      "upstream_path": "test/built-ins/Promise/try/ctx-non-ctor.js",
+      "bytes": 330,
+      "sha256": "6223fc0d087f1508839cd0369f61a4f24bf77eb4ffc02c25443adbee72ae237c"
+    },
+    {
+      "path": "test/built-ins/Promise/try/ctx-non-object.js",
+      "upstream_path": "test/built-ins/Promise/try/ctx-non-object.js",
+      "bytes": 687,
+      "sha256": "37278473586c34d7d0bc57721c377a2b268a2859429422bf32888eecb063ad15"
+    },
+    {
+      "path": "test/built-ins/Promise/try/length.js",
+      "upstream_path": "test/built-ins/Promise/try/length.js",
+      "bytes": 357,
+      "sha256": "2fc03a12520119bbe47077ef5867167de04e94f3095ad827ba33c5e9d0ad491a"
+    },
+    {
+      "path": "test/built-ins/Promise/try/name.js",
+      "upstream_path": "test/built-ins/Promise/try/name.js",
+      "bytes": 357,
+      "sha256": "01760c5b52cc7a6b24802479ec11f6f092badc3b47a52b729e2f7bb5a72bc68d"
+    },
+    {
+      "path": "test/built-ins/Promise/try/not-a-constructor.js",
+      "upstream_path": "test/built-ins/Promise/try/not-a-constructor.js",
+      "bytes": 476,
+      "sha256": "4e9a86ce659d2c71b0729cc7740ed4e796843fe2098961e441b2c44379e7de1a"
+    },
+    {
+      "path": "test/built-ins/Promise/try/promise.js",
+      "upstream_path": "test/built-ins/Promise/try/promise.js",
+      "bytes": 366,
+      "sha256": "337ecfc8ef534e2fe1416b0aa873277fd4cebe86ee1902bd48a5d879955a9c4b"
+    },
+    {
+      "path": "test/built-ins/Promise/try/prop-desc.js",
+      "upstream_path": "test/built-ins/Promise/try/prop-desc.js",
+      "bytes": 341,
+      "sha256": "7802d5195ccedd2382aef0a9e8e9db9da4c903ccac795b26c33ecf3ee63eb4bb"
+    },
+    {
+      "path": "test/built-ins/Promise/try/return-value.js",
+      "upstream_path": "test/built-ins/Promise/try/return-value.js",
+      "bytes": 501,
+      "sha256": "2e34e62cf1bce80052cc30f100114f8a0cf39c4837408bf6f1d8df8b9c44856a"
+    },
+    {
+      "path": "test/built-ins/Promise/try/throws.js",
+      "upstream_path": "test/built-ins/Promise/try/throws.js",
+      "bytes": 544,
+      "sha256": "5b52675fe06ff133232b275e53eb59f0f68fdb32bed9687e53d82d336597ad6f"
+    }
+  ],
+  "inventory_proof": {
+    "method": "complete-nonrecursive-git-trees",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+    "directory_trees": {
+      "Promise/try": "8e31e175a3e53480752c825f7f89f364220d643a"
+    },
+    "auxiliary_blobs": {
+      "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+      "harness/asyncHelpers.js": "67b4c645b88c887f448e57d79652e5c23de60d4d",
+      "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+      "harness/doneprintHandle.js": "334d19ec8ee58664502afb232bce3c1a74acfb16",
+      "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+      "harness/promiseHelper.js": "9a8bf627add65c5f8ab7e25768fb7ac6992bc47f",
+      "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+      "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+      "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+      "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+    },
+    "files": [
+      {
+        "path": "inventory-proof/commit.json",
+        "bytes": 1094,
+        "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+        "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+      },
+      {
+        "path": "inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+        "bytes": 15975,
+        "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/176043820c3a0729f2da2a047303a984cca036c6"
+      },
+      {
+        "path": "inventory-proof/tree-8e31e175a3e53480752c825f7f89f364220d643a.json",
+        "bytes": 3435,
+        "sha256": "c55e0e22b488b06e5b04871e4c5a684acd069b0e4844143599f1252915bdefd5",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/8e31e175a3e53480752c825f7f89f364220d643a"
+      },
+      {
+        "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+        "bytes": 5452,
+        "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+      },
+      {
+        "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+        "bytes": 1374,
+        "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+      },
+      {
+        "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+        "bytes": 13201,
+        "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+      },
+      {
+        "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+        "bytes": 7655,
+        "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+        "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+      }
+    ]
+  }
+}

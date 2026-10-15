@@ -41,7 +41,12 @@ PromiseResolve operation, including genuine Promise identity when its constructo
 matches. Ordinary callback throws create a rejection capability; constructor,
 conversion and rejection failures can still escape synchronously. Thenable jobs
 and terminal resource/unsupported failures retain their existing behavior.
-There is no dedicated Promise.try upstream result in this checkpoint.
+The separate [complete pinned Try profile](promise-try-upstream.md) retains
+all 15 sources and 30 modes, recording **24 passed and six unsupported** with
+all **94 controls verified**. Both modes of each of three class-tagged sources
+remain excluded before adapter execution. The profile uses existing ERJS2/ERJR3
+completion evidence and the seven intrinsic error identities; it adds no class,
+async-function or realm support.
 
 [`AggregateError`](aggregate-error.md) supports call/new construction, optional
 message and cause, cached synchronous iteration and a fresh intrinsic errors

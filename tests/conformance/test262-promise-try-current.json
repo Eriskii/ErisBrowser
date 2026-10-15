@@ -1,0 +1,158 @@
+{
+  "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+  "corpus_manifest_sha256": "f403d5aaadd8e81883b91a9ad7ec72e14ca75bad5ddcdc67a976d5f149403a9e",
+  "runner_policy_sha256": "f51d968145a05467503234bf6554fbd1d11e96136e31f3e2114b7cd8858b2232",
+  "binary_sha256": "9655090e7ffeeeef80c0adccf96bf1276bf80f6f164213d6afd965adb3480ab6",
+  "cases": {
+    "test/built-ins/Promise/try/args.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "17f56dd6871b972473e76b150967041b3a51f6aa2762f21f1d07c4518a824841",
+      "source_sha256": "13d29a449e82ad6f08f44166e14972de7f398ff572f359fbf33f164d4a540e63"
+    },
+    "test/built-ins/Promise/try/args.js:strict": {
+      "status": "passed",
+      "case_sha256": "2988e20f4fbc4a81beda10f9da9a56b2fb8e647cdf47028937997507a37e5465",
+      "source_sha256": "13d29a449e82ad6f08f44166e14972de7f398ff572f359fbf33f164d4a540e63"
+    },
+    "test/built-ins/Promise/try/avoids-wrap-for-subclass.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "fecfb774f35d2ec0162872faae7a0d6cf70f6764b2df2c0451ac705b751586b8",
+      "source_sha256": "96c263037c9be38105ab34d20bef4a5cbf17c437d6258828483e3201cffa854c"
+    },
+    "test/built-ins/Promise/try/avoids-wrap-for-subclass.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "692b511b50218c87029bd230a5b48806df9a8e7cb20f636e2f37b5910a78516e",
+      "source_sha256": "96c263037c9be38105ab34d20bef4a5cbf17c437d6258828483e3201cffa854c"
+    },
+    "test/built-ins/Promise/try/avoids-wrap.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "88153a0b538fcd6ed9a459aad48f3f643a2d8bdfc3aa772d224b174a51996edc",
+      "source_sha256": "bbcb3cb7f9c20c7042e85b28a5c12d02f16d61e17d47cddbb401e12c31f37342"
+    },
+    "test/built-ins/Promise/try/avoids-wrap.js:strict": {
+      "status": "passed",
+      "case_sha256": "0b6c9e95e38dcf8468f1aa51cdc1e211420fe734196a31b11969dea65b6ba4b6",
+      "source_sha256": "bbcb3cb7f9c20c7042e85b28a5c12d02f16d61e17d47cddbb401e12c31f37342"
+    },
+    "test/built-ins/Promise/try/ctx-ctor-for-error.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "f1ce2c895901d4f3ac7f19c6eb0f982e3d4ea4c53310a844d426d956517b88a4",
+      "source_sha256": "ff779a0977603436e10c0b5a9e9ce1064ad50b7621019b92b1bf69d0f265f734"
+    },
+    "test/built-ins/Promise/try/ctx-ctor-for-error.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "b1a5eb413091d2d59a18676410067a400f32fb10819f45081373353cd837924b",
+      "source_sha256": "ff779a0977603436e10c0b5a9e9ce1064ad50b7621019b92b1bf69d0f265f734"
+    },
+    "test/built-ins/Promise/try/ctx-ctor-throws.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "6dbae64ef294815ef8b127010fa20419381866a9ba0832e5bea1ccfb43d86a11",
+      "source_sha256": "2b773aa6799554aa75049b4dbbafac669896f2f7975c2e078aa92acff2458aef"
+    },
+    "test/built-ins/Promise/try/ctx-ctor-throws.js:strict": {
+      "status": "passed",
+      "case_sha256": "623a9c63c7ed936c6dc6b6eeff9d07baf0c931085d3f289c11b471923a8322a1",
+      "source_sha256": "2b773aa6799554aa75049b4dbbafac669896f2f7975c2e078aa92acff2458aef"
+    },
+    "test/built-ins/Promise/try/ctx-ctor.js:sloppy": {
+      "status": "unsupported",
+      "case_sha256": "0d6a871df9ee7c319ea2dea7a2df673395b6209b24df314728182c5e60ef0b36",
+      "source_sha256": "6735ab7241175c4612e7ce8bc42f9d9384ee38ed23bdb3c3d6d0c2715aadab08"
+    },
+    "test/built-ins/Promise/try/ctx-ctor.js:strict": {
+      "status": "unsupported",
+      "case_sha256": "86b0a09f4358d9c588427c0063f4247703ffc2d03060c949e79f3d7fcff3e356",
+      "source_sha256": "6735ab7241175c4612e7ce8bc42f9d9384ee38ed23bdb3c3d6d0c2715aadab08"
+    },
+    "test/built-ins/Promise/try/ctx-non-ctor.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "fc8a046d0f89710e4d3a73f166ae076d36ce713a91e6c4e7a17ea523c4767060",
+      "source_sha256": "6223fc0d087f1508839cd0369f61a4f24bf77eb4ffc02c25443adbee72ae237c"
+    },
+    "test/built-ins/Promise/try/ctx-non-ctor.js:strict": {
+      "status": "passed",
+      "case_sha256": "3dd88cd09a60647a18bc84536cf9eab1cf0f1c72307d7f94aee88cb615658971",
+      "source_sha256": "6223fc0d087f1508839cd0369f61a4f24bf77eb4ffc02c25443adbee72ae237c"
+    },
+    "test/built-ins/Promise/try/ctx-non-object.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "33f5e5d802eba3fd474ae3b47f6ff7e9e3522f7bc7f1fe52981bcb444c6231e9",
+      "source_sha256": "37278473586c34d7d0bc57721c377a2b268a2859429422bf32888eecb063ad15"
+    },
+    "test/built-ins/Promise/try/ctx-non-object.js:strict": {
+      "status": "passed",
+      "case_sha256": "87fe4feb11f69a0efa07922899d8588ef798461767549039186df3cb64aeabc7",
+      "source_sha256": "37278473586c34d7d0bc57721c377a2b268a2859429422bf32888eecb063ad15"
+    },
+    "test/built-ins/Promise/try/length.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "78de48481e3252edeeb58c40961b4691cbd5909100697769ee368e5b056d3eb3",
+      "source_sha256": "2fc03a12520119bbe47077ef5867167de04e94f3095ad827ba33c5e9d0ad491a"
+    },
+    "test/built-ins/Promise/try/length.js:strict": {
+      "status": "passed",
+      "case_sha256": "f578aef9a7ec274df090bcc696df2dd2fb1d2e22d187ff9dfa8a854151a53dc0",
+      "source_sha256": "2fc03a12520119bbe47077ef5867167de04e94f3095ad827ba33c5e9d0ad491a"
+    },
+    "test/built-ins/Promise/try/name.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "847177626fdd8dc537ad361af814b5d76d7737e40f9e0658f274b7919311d263",
+      "source_sha256": "01760c5b52cc7a6b24802479ec11f6f092badc3b47a52b729e2f7bb5a72bc68d"
+    },
+    "test/built-ins/Promise/try/name.js:strict": {
+      "status": "passed",
+      "case_sha256": "90eb14024d4fc31b9b1f0cf243a952042d1c02b139a62a105dfa0a8e4b97a151",
+      "source_sha256": "01760c5b52cc7a6b24802479ec11f6f092badc3b47a52b729e2f7bb5a72bc68d"
+    },
+    "test/built-ins/Promise/try/not-a-constructor.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "fee39664bcb3cf599bab100c3d08caa886361e0fa185f088ac13d834e42b95c0",
+      "source_sha256": "4e9a86ce659d2c71b0729cc7740ed4e796843fe2098961e441b2c44379e7de1a"
+    },
+    "test/built-ins/Promise/try/not-a-constructor.js:strict": {
+      "status": "passed",
+      "case_sha256": "49f92175f140cbfe11e96169301307b451174226ea8c3c533fbab312ea8e4532",
+      "source_sha256": "4e9a86ce659d2c71b0729cc7740ed4e796843fe2098961e441b2c44379e7de1a"
+    },
+    "test/built-ins/Promise/try/promise.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "74e3a3a6ad3433b36c6d1515828d3d23cbf7c91bf1e9f21d3851745e03c48991",
+      "source_sha256": "337ecfc8ef534e2fe1416b0aa873277fd4cebe86ee1902bd48a5d879955a9c4b"
+    },
+    "test/built-ins/Promise/try/promise.js:strict": {
+      "status": "passed",
+      "case_sha256": "a9255d41a925c657f6e692610cfdea76a423d2e078e5b2f6e29bfb8898a85cf3",
+      "source_sha256": "337ecfc8ef534e2fe1416b0aa873277fd4cebe86ee1902bd48a5d879955a9c4b"
+    },
+    "test/built-ins/Promise/try/prop-desc.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "ffa4ad42c5dd638b15a8914324445bf54eef17a5a4d5e3a1ffcc7daf0b631782",
+      "source_sha256": "7802d5195ccedd2382aef0a9e8e9db9da4c903ccac795b26c33ecf3ee63eb4bb"
+    },
+    "test/built-ins/Promise/try/prop-desc.js:strict": {
+      "status": "passed",
+      "case_sha256": "4cdd53539ae21ee6baf524526b834e14b0e65ec05c42e209c2a89d39cdfda49c",
+      "source_sha256": "7802d5195ccedd2382aef0a9e8e9db9da4c903ccac795b26c33ecf3ee63eb4bb"
+    },
+    "test/built-ins/Promise/try/return-value.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "fd35bffcca60b7f7a81dd447b3152f3382916a6ec95c7724d9c72a8bb47fdc2e",
+      "source_sha256": "2e34e62cf1bce80052cc30f100114f8a0cf39c4837408bf6f1d8df8b9c44856a"
+    },
+    "test/built-ins/Promise/try/return-value.js:strict": {
+      "status": "passed",
+      "case_sha256": "9f7e6eb2274672438c5084d14119bc71b770f0f5b7bf34e789fc501b0f9b47aa",
+      "source_sha256": "2e34e62cf1bce80052cc30f100114f8a0cf39c4837408bf6f1d8df8b9c44856a"
+    },
+    "test/built-ins/Promise/try/throws.js:sloppy": {
+      "status": "passed",
+      "case_sha256": "1ae666a92131b7ed842e7def71e66c79cf40a604fa653da2749039df820519da",
+      "source_sha256": "5b52675fe06ff133232b275e53eb59f0f68fdb32bed9687e53d82d336597ad6f"
+    },
+    "test/built-ins/Promise/try/throws.js:strict": {
+      "status": "passed",
+      "case_sha256": "29cc37e1dc5e1e27566673252da2c7fe1ef93631f57f97a41369ac9cf04289fc",
+      "source_sha256": "5b52675fe06ff133232b275e53eb59f0f68fdb32bed9687e53d82d336597ad6f"
+    }
+  }
+}

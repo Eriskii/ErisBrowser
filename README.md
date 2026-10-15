@@ -37,8 +37,11 @@ the profile uses ordinary requests and responses without a Promise host policy.
 [`Promise.try`](docs/promise-try.md) calls the callback synchronously before
 resolving its result or creating a rejection capability, following the current
 ECMAScript 2027 draft. It preserves generic receiver behavior, argument identity
-and existing terminal suspension. This runtime checkpoint adds no dedicated
-Promise.try upstream profile.
+and existing terminal suspension. Its separate [complete pinned upstream
+profile](docs/promise-try-upstream.md) retains all 15 sources and 30 modes:
+**24 passed and six unsupported**, with all **94 controls verified**.
+The six class-tagged modes remain excluded; authenticated completion uses the
+existing Promise host adapter.
 
 [`AggregateError`](docs/aggregate-error.md) adds callable and constructed errors
 with ordered synchronous iterable collection, optional message/cause properties

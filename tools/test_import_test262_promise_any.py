@@ -181,9 +181,9 @@ class PromiseAnyImporterTests(unittest.TestCase):
         with patch.object(importer, 'PROMISE_ANY_DIRECTORIES', {'Promise/any': 93}), \
                 patch.dict(importer.PROFILES, {PROFILE: {'Promise/any': 93}}), self.assertRaises(ValueError):
             importer.profile_tree_inventory(PROFILE, proof_reader())
-        tables = {'PROFILES': {k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'promise-with-resolvers'}},
-                  'PROFILE_ROOTS': {k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'promise-with-resolvers'}},
-                  'TREE_PROFILES': sorted(importer.TREE_PROFILES - {PROFILE, 'promise-with-resolvers'})}
+        tables = {'PROFILES': {k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'promise-with-resolvers', 'promise-try'}},
+                  'PROFILE_ROOTS': {k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'promise-with-resolvers', 'promise-try'}},
+                  'TREE_PROFILES': sorted(importer.TREE_PROFILES - {PROFILE, 'promise-with-resolvers', 'promise-try'})}
         self.assertEqual(len(tables['PROFILES']), self.oracle['old_profile_count'])
         self.assertEqual(self.oracle['old_profile_count'], 58)
         for name, values in tables.items():

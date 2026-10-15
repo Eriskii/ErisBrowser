@@ -379,6 +379,14 @@ already performed are not rolled back by later refusal. Existing helper fees,
 host authority, decoder policies and runtime limits remain unchanged. Logical
 charges do not certify complete allocation coverage or process-memory bounds.
 
+The [Try upstream profile](promise-try-upstream.md) requires the existing
+ERJS2/ERJR3 host transport and seven intrinsic error identities. Its 94-control
+gate checks canonical source/helper identities, complete raw completion fields
+and same-mode prerequisites, then recomputes the existing Promise classification.
+Missing, forged or unhealthy evidence blocks all 30 modes and prevents baseline
+writes. These checks rely on the trusted adapter and preserve older profile
+policies; they add no runtime authority, transport capability or resource limit.
+
 ## Representative limits
 
 [Trusted runtime initialization](bootstrap-budget.md) has a finite 1,000,000-unit

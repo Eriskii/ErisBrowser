@@ -1,5 +1,41 @@
 # Validation record
 
+## Complete pinned Promise.try selection
+
+The [Try upstream profile](promise-try-upstream.md) retains all 15 pinned sources
+and 30 modes. It records **24 passed and six unsupported modes**, with all
+**94 controls verified**. The unsupported rows are both modes of
+`avoids-wrap-for-subclass.js`, `ctx-ctor-for-error.js` and `ctx-ctor.js`, excluded
+for their declared `class` feature before adapter execution. All originals,
+including those exclusions, remain in the authenticated corpus and report.
+
+The complete Python suite passes **683 tests**, preserving all 652 parent
+identities and adding 31 groups. All 31 pass on the first candidate. Against the
+published parent, those groups record six passes and 25 nonpassing groups;
+the unittest totals of 60 failures and 46 errors include subtests and are not
+106 groups. No candidate, test or control correction was needed.
+
+The first profile run records a baseline with a healthy gate; recording and
+the subsequent baseline check both exit zero. Their complete **30 case and
+94 control arrays** are exact, with zero regressions or improvements. The seven
+older profiles preserve all **1,300 case and 546 control records**, policies,
+corpus identities and binary identities, including existing failed and
+unsupported outcomes. No old baseline changes are made.
+
+A report-checking assertion initially compared the empty `fixture_files` list
+with the numeric negative-source count. The corrected assertion checks their
+respective types and values. Both engine runs had already completed with healthy
+gates; this bookkeeping correction changes no source, test, oracle or report.
+
+This tooling checkpoint reuses the exact published Rust 1.88 ordinary and host
+adapters. Rust/Cargo/build inputs and runtime limits are unchanged; no new Rust
+suite, Clippy or build is claimed. The selected inventory contains 1,820 inputs
+and is supplemented by a tracked-source review, not a complete build graph.
+All 11 jobs of prior CI run `38817823918` passed for published parent `15db31c7`.
+The configured Try baseline CI step adds no current remote-success claim.
+Evidence is linked from the chapter. All prior validation text below remains
+byte-exact, including the earlier runtime checkpoint's scope.
+
 ## Promise.try runtime
 
 The [Promise.try checkpoint](promise-try.md) implements the current draft's

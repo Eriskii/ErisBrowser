@@ -47,10 +47,10 @@ class AggregateErrorPreservationTests(unittest.TestCase):
             self.addCleanup(guard.stop)
 
     def test_all_57_old_tables_features_and_actual_report_policies_remain_exact(self):
-        self.assertEqual({k: v for k, v in importer.PROFILES.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers'}}, self.old['profiles'])
-        self.assertEqual({k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers'}}, self.old['roots'])
-        self.assertEqual(sorted(importer.TREE_PROFILES - {NEW_PROFILE, 'promise-any', 'promise-with-resolvers'}), self.old['tree_profiles'])
-        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers'}}, self.old['features'])
+        self.assertEqual({k: v for k, v in importer.PROFILES.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}}, self.old['profiles'])
+        self.assertEqual({k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}}, self.old['roots'])
+        self.assertEqual(sorted(importer.TREE_PROFILES - {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}), self.old['tree_profiles'])
+        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}}, self.old['features'])
         self.assertEqual(len(self.old['profiles']), 57)
         self.assertEqual(sorted(runner.INTRINSIC_ERRORS), self.old['intrinsic_errors'])
         # Exercise main's real policy construction. An explicitly empty mocked
@@ -81,7 +81,7 @@ class AggregateErrorPreservationTests(unittest.TestCase):
 
     def test_default_seven_identities_and_existing_erjr3_rejection_are_preserved(self):
         self.assertEqual(runner.INTRINSIC_ERRORS, set(self.old['intrinsic_errors']))
-        self.assertEqual(runner.PROMISE_HOST_PROFILES - {'promise-any'},
+        self.assertEqual(runner.PROMISE_HOST_PROFILES - {'promise-any', 'promise-try'},
                          {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled'})
         ordinary = runner.decode_response(response('Error'))
         self.assertEqual((ordinary['error_type'], ordinary['error_identity']), ('RenamedError', 'Error'))

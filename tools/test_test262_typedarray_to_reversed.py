@@ -81,7 +81,7 @@ class TypedArrayToReversedTests(unittest.TestCase):
         self.assertEqual(reasons.count('Test262 host hooks are not implemented (conservative source check)'), 2)
         self.assertEqual(sum(runner.unsupported_reason(c, FEATURES) is None for c in cases), 16)
         self.assertEqual(sum('/BigInt/' in c['file'] for c in cases), 0)
-        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'promise-any', 'promise-with-resolvers', 'typedarray-copy-within'}), 52)
+        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'promise-any', 'promise-with-resolvers', 'promise-try', 'typedarray-copy-within'}), 52)
         self.assertTrue(all('change-array-by-copy' not in features for profile, features in runner.PROFILE_FEATURES.items() if profile != PROFILE))
 
     def test_controls_retain_frozen_bytes_modes_and_same_mode_positive_links(self):

@@ -85,7 +85,7 @@ class TypedArraySearchTests(unittest.TestCase):
         self.assertEqual(reasons.count('TypedArray search policy excludes the complete resizableArrayBufferUtils helper'), 26)
         self.assertEqual(sum(runner.unsupported_reason(c, FEATURES) is None for c in cases), 184)
         self.assertEqual(sum('/BigInt/' in c['file'] for c in cases), 88)
-        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'promise-any', 'promise-with-resolvers', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill'}), 49)
+        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'promise-any', 'promise-with-resolvers', 'promise-try', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill'}), 49)
         for name, features in runner.PROFILE_FEATURES.items():
             if name != PROFILE:
                 self.assertNotIn('TypedArray.prototype.at', features, name)

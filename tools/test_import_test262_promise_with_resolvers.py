@@ -179,9 +179,9 @@ class PromiseWithResolversImporterTests(unittest.TestCase):
         with patch.object(importer, 'PROMISE_WITH_RESOLVERS_DIRECTORIES', {'Promise/withResolvers': 5}), \
                 patch.dict(importer.PROFILES, {PROFILE: {'Promise/withResolvers': 5}}), self.assertRaises(ValueError):
             importer.profile_tree_inventory(PROFILE, proof_reader())
-        tables = {'PROFILES': {k: v for k, v in importer.PROFILES.items() if k != PROFILE},
-                  'PROFILE_ROOTS': {k: v for k, v in importer.PROFILE_ROOTS.items() if k != PROFILE},
-                  'TREE_PROFILES': sorted(importer.TREE_PROFILES - {PROFILE})}
+        tables = {'PROFILES': {k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'promise-try'}},
+                  'PROFILE_ROOTS': {k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'promise-try'}},
+                  'TREE_PROFILES': sorted(importer.TREE_PROFILES - {PROFILE, 'promise-try'})}
         self.assertEqual(len(tables['PROFILES']), self.oracle['old_profile_count'])
         self.assertEqual(self.oracle['old_profile_count'], 59)
         for name, values in tables.items():
