@@ -31,6 +31,9 @@ The [job metadata follow-up](docs/shared-job-keys.md) also shares the immutable
 The [Node accessor follow-up](docs/node-accessor-keys.md) reuses those DOM keys
 for four accessor functions, saving 128 startup work units and 672 accounted
 heap bytes while preserving their separate identities and behavior.
+The [Node method follow-up](docs/node-method-keys.md) extends this sharing to nine
+more functions, saving another 250 startup work units and 1,512 accounted heap
+bytes within the same limits.
 
 [Throw diagnostics](docs/throw-completion.md) retain the original JavaScript value
 without invoking constructor or name accessors. Data-only metadata inspection

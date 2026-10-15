@@ -43,9 +43,16 @@ pub(super) fn local_node(doc: &Document, id: NodeId) -> Result<&crate::dom::Node
 }
 
 impl Runtime {
-    pub(super) fn install_node_has_child_nodes(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn install_node_has_child_nodes(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // Transfer the existing immutable length/name keys before metadata work.
+        self.work(8)?;
         self.work(4)?;
-        let method = self.node_data_function("hasChildNodes", "hasChildNodes", 0)?;
+        let method =
+            self.node_data_function_with_keys("hasChildNodes", "hasChildNodes", 0, metadata_keys)?;
         self.dom_proto_named(
             prototype,
             "hasChildNodes",
@@ -53,10 +60,16 @@ impl Runtime {
         )
     }
 
-    pub(super) fn install_node_identity_members(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn install_node_identity_members(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // Transfer the existing immutable length/name keys before metadata work.
+        self.work(8)?;
         self.work(4)?;
         for name in ["isSameNode", "compareDocumentPosition", "contains"] {
-            let method = self.node_data_function(name, name, 1)?;
+            let method = self.node_data_function_with_keys(name, name, 1, metadata_keys)?;
             self.dom_proto_named(prototype, name, Property::data(method, true, true, true))?;
         }
         Ok(())

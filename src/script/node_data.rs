@@ -10,6 +10,10 @@ mod key_cache_fee_tests;
 #[cfg(test)]
 mod key_cache_tests;
 #[cfg(test)]
+mod method_key_fee_tests;
+#[cfg(test)]
+mod method_key_tests;
+#[cfg(test)]
 mod tests;
 
 pub(super) const PREFIX: &str = "DOM.Node.";
@@ -33,6 +37,7 @@ fn data_kind(id: NodeId, doc: &Document) -> Result<DataKind> {
 }
 
 impl Runtime {
+    #[cfg(test)]
     pub(super) fn node_data_function(
         &mut self,
         suffix: &str,

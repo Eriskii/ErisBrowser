@@ -24,6 +24,9 @@ The [shared job metadata keys](shared-job-keys.md) reduce startup charges while
 preserving function properties and identities; they add no API coverage.
 The [Node accessor key-sharing follow-up](node-accessor-keys.md) similarly
 reduces startup accounting while preserving the four existing accessors.
+The [Node method follow-up](node-method-keys.md) shares the same immutable keys
+across nine additional functions. It preserves their independent descriptors,
+identities and behavior and adds no new API coverage.
 
 [Object.is](../tests/conformance/object-is.md) implements SameValue for existing
 runtime values, including NaN, signed zero, exact UTF-16 strings and ordinary

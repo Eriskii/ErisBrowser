@@ -216,7 +216,7 @@ fn node_key_handoff_is_paid_once_before_the_existing_installer_and_four_factorie
 }
 
 #[test]
-fn node_unselected_original_factory_keeps_its_exact_fees_and_private_key_payloads() {
+fn node_standalone_original_factory_keeps_its_exact_fees_and_private_key_payloads() {
     let heap = shared() + 952;
     for (work, bytes, accepted) in [
         (127, heap, true),

@@ -572,14 +572,14 @@ impl Runtime {
                 self.install_dom_parent_prototype(interface.name, prototype)?;
             }
             if interface.name == "Node" {
-                self.install_node_connected(prototype)?;
+                self.install_node_connected(prototype, [&keys[1], &keys[0]])?;
                 self.install_node_data_members(prototype, [&keys[1], &keys[0]])?;
-                self.install_node_root(prototype)?;
-                self.install_node_has_child_nodes(prototype)?;
-                self.install_node_normalize(prototype)?;
-                self.install_node_clone(prototype)?;
-                self.install_node_equality(prototype)?;
-                self.install_node_identity_members(prototype)?;
+                self.install_node_root(prototype, [&keys[1], &keys[0]])?;
+                self.install_node_has_child_nodes(prototype, [&keys[1], &keys[0]])?;
+                self.install_node_normalize(prototype, [&keys[1], &keys[0]])?;
+                self.install_node_clone(prototype, [&keys[1], &keys[0]])?;
+                self.install_node_equality(prototype, [&keys[1], &keys[0]])?;
+                self.install_node_identity_members(prototype, [&keys[1], &keys[0]])?;
                 self.install_node_constants(prototype, properties, &tag_key)?;
             }
             self.install_pi_members(interface.name, prototype, pi_metadata_keys)?;

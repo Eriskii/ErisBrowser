@@ -25,6 +25,9 @@ leaving five under the unchanged startup limit. The
 [Node accessor follow-up](node-accessor-keys.md) saves another 128 units and
 672 accounted heap bytes, leaving 133 units at that checkpoint. Installing
 `Promise.all` uses 108 units and leaves 25 under the same startup allowance.
+The [Node method follow-up](node-method-keys.md) saves another 250 work units and
+1,512 accounted heap bytes, leaving 275 units. Call/new spread syntax is the next
+selected language gap; existing Promise failures remain in the upstream baseline.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity

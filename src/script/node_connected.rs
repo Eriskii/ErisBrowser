@@ -8,9 +8,20 @@ mod tests;
 pub(super) const METADATA_OBJECTS: usize = 1;
 
 impl Runtime {
-    pub(super) fn install_node_connected(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn install_node_connected(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // Transfer the existing immutable length/name keys before metadata work.
+        self.work(8)?;
         self.work(4)?;
-        let get = self.node_data_function("getIsConnected", "get isConnected", 0)?;
+        let get = self.node_data_function_with_keys(
+            "getIsConnected",
+            "get isConnected",
+            0,
+            metadata_keys,
+        )?;
         self.dom_proto_named(
             prototype,
             "isConnected",

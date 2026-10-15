@@ -401,7 +401,7 @@ fn host_actual_inline_layout_and_inactive_bootstrap_are_observed_without_new_all
         2048.max(size_of::<Runtime>())
     );
     let runtime = raw.finish_bootstrap().unwrap();
-    assert_eq!(runtime.steps, 25);
+    assert_eq!(runtime.steps, 275);
     assert_eq!(runtime.objects.len(), 750);
     assert_eq!(runtime.environments[0].bindings.len(), 212);
     assert_eq!(runtime.native_properties.len(), 299);

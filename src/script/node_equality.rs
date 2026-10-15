@@ -108,9 +108,16 @@ impl<'a> Attributes<'a> {
 }
 
 impl Runtime {
-    pub(super) fn install_node_equality(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn install_node_equality(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // Transfer the existing immutable length/name keys before metadata work.
+        self.work(8)?;
         self.work(4)?;
-        let method = self.node_data_function("isEqualNode", "isEqualNode", 1)?;
+        let method =
+            self.node_data_function_with_keys("isEqualNode", "isEqualNode", 1, metadata_keys)?;
         self.dom_proto_named(
             prototype,
             "isEqualNode",

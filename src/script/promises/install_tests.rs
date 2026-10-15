@@ -155,8 +155,8 @@ fn promise_installer_exact_helper_heap_and_one_short_keep_refused_realm_unpublis
 }
 
 #[test]
-fn promise_full_raw99975_and_public_reset_preserve_empty_paid_arenas() {
-    for (work, accepted, remaining) in [(99_974, false, 0), (99_975, true, 0), (100_000, true, 25)]
+fn promise_full_raw99725_and_public_reset_preserve_empty_paid_arenas() {
+    for (work, accepted, remaining) in [(99_724, false, 0), (99_725, true, 0), (100_000, true, 275)]
     {
         let mut runtime = Runtime::uninitialized();
         empty_arenas(&runtime);

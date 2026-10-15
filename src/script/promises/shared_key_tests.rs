@@ -248,7 +248,7 @@ fn shared_key_pair_exact1555_and_heap_keep_late_partial_state_unreturned() {
         }
     }
     // Actual whole-bootstrap Err/success and public fresh-budget behavior are
-    // the independently migrated99974/99975/100000 witnesses, not this replay.
+    // the independently migrated99724/99725/100000 witnesses, not this replay.
 }
 
 #[test]

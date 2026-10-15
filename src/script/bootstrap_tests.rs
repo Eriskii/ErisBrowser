@@ -191,7 +191,8 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Adjacent job installers share two keys, saving34 work and168 bytes.
     // Four Node accessors reuse the existing keys, saving128 work and672 bytes.
     // Promise.all adds107 metadata work and one arena guard, with no cap change.
-    assert_eq!(reference.steps, 25);
+    // Nine further Node factories share immutable keys:250 work/1512 bytes saved.
+    assert_eq!(reference.steps, 275);
     assert_eq!(reference.objects.len(), 750);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);

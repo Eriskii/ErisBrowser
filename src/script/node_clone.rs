@@ -20,9 +20,16 @@ fn clone_error(error: DomDataError) -> ScriptError {
 }
 
 impl Runtime {
-    pub(super) fn install_node_clone(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn install_node_clone(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // Transfer the existing immutable length/name keys before metadata work.
+        self.work(8)?;
         self.work(4)?;
-        let method = self.node_data_function("cloneNode", "cloneNode", 0)?;
+        let method =
+            self.node_data_function_with_keys("cloneNode", "cloneNode", 0, metadata_keys)?;
         self.dom_proto_named(
             prototype,
             "cloneNode",
