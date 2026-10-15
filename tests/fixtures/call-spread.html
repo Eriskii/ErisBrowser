@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>base</title>
+<style>
+html,body { margin:0; padding:0; border:0; background:#fff; }
+#red,#blue { display:block; position:absolute; top:2px; width:4px; height:4px; box-sizing:content-box; margin:0; padding:0; border:0; }
+#red { left:2px; background:#f00; }
+#blue { left:20px; background:#00f; }
+</style></head><body><div id="red"></div><div id="blue"></div>
+<script>
+var red=document.getElementById('red'),trace='S';
+function Box(a,b){this.x=a+b;}
+function move(a,b){red.style.left=(a+b)+'px';trace+='M';}
+var box=new Box(...[4,8],);
+move(...[box.x,0],);
+document.title=trace;
+red.addEventListener(...['click',function(event){
+  var bound=move.bind(null,4);
+  bound(...[12]);
+  trace+=event.type==='click'?'C':'?';
+  document.title=trace;
+}],);
+red.addEventListener('click',function(...args){
+  trace+='B';document.title=trace+args.length;
+},);
+</script></body></html>

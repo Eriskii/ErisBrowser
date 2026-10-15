@@ -915,18 +915,24 @@ impl<'source> Parser<'source> {
             rest: false,
         })
     }
-    fn rest_parameter(&mut self) -> Result<Parameter> {
-        // Identifier rest must be last and cannot have an initializer. Keep
-        // malformed ellipses distinct from unsupported binding patterns.
+    fn contiguous_ellipsis(&mut self, invalid_message: &'static str) -> Result<usize> {
         let start = self.tokens[self.pos].offset;
         for byte in 0..3 {
             if self.tokens[self.pos].offset != start + byte || !self.eat(".") {
-                return Err(self.error("invalid rest parameter ellipsis"));
+                return Err(self.error(invalid_message));
             }
         }
         if self.is(".") {
-            return Err(self.error("invalid rest parameter ellipsis"));
+            return Err(self.error(invalid_message));
         }
+        Ok(start)
+    }
+    fn argument_ellipsis(&mut self) -> Result<usize> {
+        self.compile_budget.work(8).map_err(regexp_error)?;
+        self.contiguous_ellipsis("invalid argument spread ellipsis")
+    }
+    fn rest_parameter(&mut self) -> Result<Parameter> {
+        let start = self.contiguous_ellipsis("invalid rest parameter ellipsis")?;
         if self.is("{") || self.is("[") {
             let mut error =
                 ScriptError::unsupported("destructuring rest parameters are not implemented");
@@ -1287,13 +1293,27 @@ impl<'source> Parser<'source> {
                 value = Expr::Member(Box::new(value), Box::new(property));
             } else if self.eat("(") {
                 let mut arguments = Vec::new();
+                let mut has_spread = false;
                 if !self.eat(")") {
                     loop {
-                        arguments.push(self.expression()?);
+                        let spread = self.is(".");
+                        if spread {
+                            self.argument_ellipsis()?;
+                        }
+                        let item = self.expression()?;
+                        arguments.push(if spread {
+                            Expr::SpreadArgument(Box::new(item))
+                        } else {
+                            item
+                        });
+                        has_spread |= spread;
                         if self.eat(")") {
                             break;
                         }
                         self.expect(",")?;
+                        if self.eat(")") {
+                            break;
+                        }
                     }
                 }
                 if async_call && chain == 1 && self.is("=>") {
@@ -1304,7 +1324,11 @@ impl<'source> Parser<'source> {
                         "async arrow functions are not implemented",
                     ));
                 }
-                value = Expr::Call(Box::new(value), arguments);
+                value = if has_spread {
+                    Expr::CallSpread(Box::new(value), arguments)
+                } else {
+                    Expr::Call(Box::new(value), arguments)
+                };
             } else if matches!(self.tokens[self.pos].kind, TokenKind::TemplateStart) {
                 return Err(ScriptError::unsupported(
                     "tagged template literals are not implemented",
@@ -1762,15 +1786,33 @@ impl<'source> Parser<'source> {
             }
         }
         let mut args = Vec::new();
+        let mut has_spread = false;
         if self.eat("(") && !self.eat(")") {
             loop {
-                args.push(self.expression()?);
+                let spread = self.is(".");
+                if spread {
+                    self.argument_ellipsis()?;
+                }
+                let item = self.expression()?;
+                args.push(if spread {
+                    Expr::SpreadArgument(Box::new(item))
+                } else {
+                    item
+                });
+                has_spread |= spread;
                 if self.eat(")") {
                     break;
                 }
                 self.expect(",")?;
+                if self.eat(")") {
+                    break;
+                }
             }
         }
-        Ok(Expr::New(Box::new(constructor), args))
+        Ok(if has_spread {
+            Expr::NewSpread(Box::new(constructor), args)
+        } else {
+            Expr::New(Box::new(constructor), args)
+        })
     }
 }

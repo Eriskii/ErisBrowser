@@ -996,6 +996,9 @@ enum Expr {
     Member(Box<Expr>, Box<Expr>),
     Call(Box<Expr>, Vec<Expr>),
     New(Box<Expr>, Vec<Expr>),
+    CallSpread(Box<Expr>, Vec<Expr>),
+    NewSpread(Box<Expr>, Vec<Expr>),
+    SpreadArgument(Box<Expr>),
     Function(FunctionCode),
     Sequence(Vec<Expr>),
     Template(JsString, Vec<(Expr, JsString)>),
@@ -20801,3 +20804,9 @@ mod promise_finally_tests;
 mod promise_all_abort_tests;
 #[cfg(test)]
 mod promise_all_semantic_tests;
+
+#[cfg(test)]
+mod call_spread_tests;
+
+#[cfg(test)]
+mod call_spread_guard_tests;

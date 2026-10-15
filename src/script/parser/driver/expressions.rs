@@ -18,11 +18,12 @@ pub(super) enum Frame {
     Base(bool),
     PostfixResume(Postfix),
     Computed(Postfix),
-    Arguments(Postfix, Vec<ExprId>),
+    // Argument flags are (any spread so far, current operand is spread).
+    Arguments(Postfix, Vec<ExprId>, bool, bool),
     New,
     NewHead,
     NewComputed(NewState),
-    NewArguments(ExprId, Vec<ExprId>),
+    NewArguments(ExprId, Vec<ExprId>, bool, bool),
     Primary,
     CoverItem(Cover, bool),
     ArrayItem(Array),
@@ -195,13 +196,30 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             state.value = p.emit_expr(Expr::Member(state.value, property))?;
             postfix(p, state)
         }
-        Frame::Arguments(state, mut arguments) => {
-            push(&mut arguments, expression(output), &mut p.compile_budget)?;
+        Frame::Arguments(state, mut arguments, has_spread, current_spread) => {
+            let mut item = expression(output);
+            if current_spread {
+                item = p.emit_expr(Expr::SpreadArgument(item))?;
+            }
+            push(&mut arguments, item, &mut p.compile_budget)?;
             if p.eat(")") {
-                call_done(p, state, arguments)
+                call_done(p, state, arguments, has_spread)
             } else {
                 p.expect(",")?;
-                child(Frame::Arguments(state, arguments), Frame::Assignment)
+                if p.eat(")") {
+                    call_done(p, state, arguments, has_spread)
+                } else {
+                    let current_spread = argument_spread(p)?;
+                    child(
+                        Frame::Arguments(
+                            state,
+                            arguments,
+                            has_spread || current_spread,
+                            current_spread,
+                        ),
+                        Frame::Assignment,
+                    )
+                }
             }
         }
         Frame::New => {
@@ -230,16 +248,30 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             state.value = p.emit_expr(Expr::Member(state.value, key))?;
             new_members(p, state)
         }
-        Frame::NewArguments(constructor, mut arguments) => {
-            push(&mut arguments, expression(output), &mut p.compile_budget)?;
+        Frame::NewArguments(constructor, mut arguments, has_spread, current_spread) => {
+            let mut item = expression(output);
+            if current_spread {
+                item = p.emit_expr(Expr::SpreadArgument(item))?;
+            }
+            push(&mut arguments, item, &mut p.compile_budget)?;
             if p.eat(")") {
-                done_expr(p, Expr::New(constructor, arguments))
+                new_done(p, constructor, arguments, has_spread)
             } else {
                 p.expect(",")?;
-                child(
-                    Frame::NewArguments(constructor, arguments),
-                    Frame::Assignment,
-                )
+                if p.eat(")") {
+                    new_done(p, constructor, arguments, has_spread)
+                } else {
+                    let current_spread = argument_spread(p)?;
+                    child(
+                        Frame::NewArguments(
+                            constructor,
+                            arguments,
+                            has_spread || current_spread,
+                            current_spread,
+                        ),
+                        Frame::Assignment,
+                    )
+                }
             }
         }
         Frame::Primary => primary(p),
@@ -508,9 +540,13 @@ fn postfix(p: &mut Parser<'_>, mut state: Postfix) -> Result<Transition> {
             return child(Frame::Computed(state), Frame::Assignment);
         } else if p.eat("(") {
             if p.eat(")") {
-                return call_done(p, state, Vec::new());
+                return call_done(p, state, Vec::new(), false);
             }
-            return child(Frame::Arguments(state, Vec::new()), Frame::Assignment);
+            let current_spread = argument_spread(p)?;
+            return child(
+                Frame::Arguments(state, Vec::new(), current_spread, current_spread),
+                Frame::Assignment,
+            );
         } else if matches!(p.tokens[p.pos].kind, TokenKind::TemplateStart) {
             return Err(ScriptError::unsupported(
                 "tagged template literals are not implemented",
@@ -528,7 +564,20 @@ fn postfix(p: &mut Parser<'_>, mut state: Postfix) -> Result<Transition> {
     }
     Ok(Transition::Done(Output::Expression(state.value)))
 }
-fn call_done(p: &mut Parser<'_>, mut state: Postfix, arguments: Vec<ExprId>) -> Result<Transition> {
+fn argument_spread(p: &mut Parser<'_>) -> Result<bool> {
+    if p.is(".") {
+        p.argument_ellipsis()?;
+        Ok(true)
+    } else {
+        Ok(false)
+    }
+}
+fn call_done(
+    p: &mut Parser<'_>,
+    mut state: Postfix,
+    arguments: Vec<ExprId>,
+    has_spread: bool,
+) -> Result<Transition> {
     if state.async_call && state.chain == 1 && p.is("=>") {
         if p.tokens[p.pos].line_break_before {
             return Err(p.error("line terminator before arrow"));
@@ -537,10 +586,29 @@ fn call_done(p: &mut Parser<'_>, mut state: Postfix, arguments: Vec<ExprId>) -> 
             "async arrow functions are not implemented",
         ));
     }
-    state.value = p.emit_expr(Expr::Call(state.value, arguments))?;
+    state.value = p.emit_expr(if has_spread {
+        Expr::CallSpread(state.value, arguments)
+    } else {
+        Expr::Call(state.value, arguments)
+    })?;
     // Resume through a frame even for empty argument lists: postfix/call_done
     // must not recursively retain one native frame per call in a long chain.
     Ok(Transition::Again(Frame::PostfixResume(state).into()))
+}
+fn new_done(
+    p: &mut Parser<'_>,
+    constructor: ExprId,
+    arguments: Vec<ExprId>,
+    has_spread: bool,
+) -> Result<Transition> {
+    done_expr(
+        p,
+        if has_spread {
+            Expr::NewSpread(constructor, arguments)
+        } else {
+            Expr::New(constructor, arguments)
+        },
+    )
 }
 fn new_members(p: &mut Parser<'_>, mut state: NewState) -> Result<Transition> {
     loop {
@@ -560,8 +628,9 @@ fn new_members(p: &mut Parser<'_>, mut state: NewState) -> Result<Transition> {
         }
     }
     if p.eat("(") && !p.eat(")") {
+        let current_spread = argument_spread(p)?;
         child(
-            Frame::NewArguments(state.value, Vec::new()),
+            Frame::NewArguments(state.value, Vec::new(), current_spread, current_spread),
             Frame::Assignment,
         )
     } else {

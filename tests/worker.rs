@@ -2908,3 +2908,6 @@ mod promise_finally;
 
 #[path = "worker/promise_all.rs"]
 mod promise_all;
+
+#[path = "worker/call_spread.rs"]
+mod call_spread;

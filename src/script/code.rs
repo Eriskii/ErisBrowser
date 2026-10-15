@@ -6,6 +6,8 @@ use super::{
     regexp, regexp_error,
 };
 use std::rc::Rc;
+#[cfg(test)]
+mod call_spread_layout_tests;
 mod records;
 use records::Records;
 
@@ -176,6 +178,9 @@ pub(super) enum Expr {
     Member(ExprId, ExprId),
     Call(ExprId, Vec<ExprId>),
     New(ExprId, Vec<ExprId>),
+    CallSpread(ExprId, Vec<ExprId>),
+    NewSpread(ExprId, Vec<ExprId>),
+    SpreadArgument(ExprId),
     Function(FunctionId),
     Sequence(Vec<ExprId>),
     Template(JsString, Vec<(ExprId, JsString)>),
@@ -430,6 +435,11 @@ impl<'a> Lower<'a> {
             E::Member(a, b) => Expr::Member(self.expr(a)?, self.expr(b)?),
             E::Call(head, args) => Expr::Call(self.expr(head)?, self.expressions(args)?),
             E::New(head, args) => Expr::New(self.expr(head)?, self.expressions(args)?),
+            E::CallSpread(head, args) => {
+                Expr::CallSpread(self.expr(head)?, self.expressions(args)?)
+            }
+            E::NewSpread(head, args) => Expr::NewSpread(self.expr(head)?, self.expressions(args)?),
+            E::SpreadArgument(child) => Expr::SpreadArgument(self.expr(child)?),
             E::Function(value) => Expr::Function(self.function(value)?),
             E::Sequence(values) => Expr::Sequence(self.expressions(values)?),
             E::Template(head, tail) => {
@@ -843,6 +853,9 @@ mod tests {
             Expr::Member(a, b) => E::Member(child(*a), child(*b)),
             Expr::Call(a, args) => E::Call(child(*a), children(args)),
             Expr::New(a, args) => E::New(child(*a), children(args)),
+            Expr::CallSpread(a, args) => E::CallSpread(child(*a), children(args)),
+            Expr::NewSpread(a, args) => E::NewSpread(child(*a), children(args)),
+            Expr::SpreadArgument(a) => E::SpreadArgument(child(*a)),
             Expr::Function(id) => E::Function(function(unit, *id)),
             Expr::Sequence(v) => E::Sequence(children(v)),
             Expr::Template(head, tail) => E::Template(

@@ -7,6 +7,9 @@ use super::{
 use std::collections::BTreeSet;
 use std::rc::Rc;
 
+mod call_spread;
+#[cfg(test)]
+mod call_spread_phase_tests;
 mod calls;
 mod statements;
 pub(super) use statements::ListOwner;
@@ -88,6 +91,12 @@ enum Phase {
         function: Value,
         receiver: Value,
         arguments: Vec<Value>,
+    },
+    SpreadArguments {
+        index: usize,
+        function: Value,
+        receiver: Value,
+        arguments: call_spread::Arguments,
     },
 }
 enum Output {
@@ -518,6 +527,34 @@ fn step(
                 doc,
             )
         }
+        Phase::SpreadArguments {
+            index,
+            function,
+            receiver,
+            mut arguments,
+        } => {
+            // Scheduling prepaid descriptor read/classification and receipt.
+            let incoming = call_spread::receive_prepaid(value(output));
+            let (code::Expr::CallSpread(_, items) | code::Expr::NewSpread(_, items)) =
+                unit.expr(id)
+            else {
+                unreachable!("spread continuation owner")
+            };
+            if matches!(unit.expr(items[index]), code::Expr::SpreadArgument(_)) {
+                arguments.spread_received(runtime, incoming, doc)?;
+            } else {
+                arguments.append_received(runtime, incoming)?;
+            }
+            spread_arguments_next(
+                runtime,
+                frame,
+                index + 1,
+                function,
+                receiver,
+                arguments,
+                doc,
+            )
+        }
     }
 }
 
@@ -525,6 +562,11 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
     let unit = frame.unit.clone();
     let id = frame.expression;
     let env = frame.env;
+    // Markers belong only to an argument-list continuation. Reject malformed
+    // internal records before the reference fast path as well as value paths.
+    if matches!(unit.expr(id), code::Expr::SpreadArgument(_)) {
+        return Err(ScriptError::resource("spread marker outside argument list"));
+    }
     if frame.reference {
         return match unit.expr(id) {
             code::Expr::Ident(name) => {
@@ -630,6 +672,19 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
             }
         }
         code::Expr::New(callee, _) => eval_child(runtime, frame, Phase::Callee, *callee),
+        code::Expr::CallSpread(callee, _) => {
+            call_spread::prepay_entry(runtime)?;
+            if matches!(unit.expr(*callee), code::Expr::Member(..)) {
+                reference_child(runtime, frame, Phase::MemberCallee, *callee)
+            } else {
+                eval_child(runtime, frame, Phase::Callee, *callee)
+            }
+        }
+        code::Expr::NewSpread(callee, _) => {
+            call_spread::prepay_entry(runtime)?;
+            eval_child(runtime, frame, Phase::Callee, *callee)
+        }
+        code::Expr::SpreadArgument(_) => unreachable!("marker rejected before reference routing"),
         code::Expr::Function(id) => runtime
             .function_value(&code::FunctionRef::new(&unit, *id), env)
             .map(|v| Some(Output::Value(v))),
@@ -913,6 +968,20 @@ fn arguments_start(
     doc: &mut Document,
 ) -> Result<Option<Output>> {
     let unit = frame.unit.clone();
+    if matches!(
+        unit.expr(frame.expression),
+        code::Expr::CallSpread(..) | code::Expr::NewSpread(..)
+    ) {
+        return spread_arguments_next(
+            runtime,
+            frame,
+            0,
+            function,
+            receiver,
+            call_spread::Arguments::empty_prepaid(),
+            doc,
+        );
+    }
     let (code::Expr::Call(_, items) | code::Expr::New(_, items)) = unit.expr(frame.expression)
     else {
         unreachable!()
@@ -948,6 +1017,58 @@ fn arguments_next(
         );
     }
     if matches!(unit.expr(frame.expression), code::Expr::New(..)) {
+        return runtime
+            .construct(function, arguments, doc)
+            .map(|value| Some(Output::Value(value)));
+    }
+    let mut frame = frame;
+    frame.phase = Phase::Identity;
+    push(runtime, Frame::Expression(frame))?;
+    enter_frame(
+        runtime,
+        Frame::Call(calls::Frame::new(function, arguments, receiver, false)),
+    )?;
+    Ok(None)
+}
+
+fn spread_arguments_next(
+    runtime: &mut Runtime,
+    frame: ExprFrame,
+    index: usize,
+    function: Value,
+    receiver: Value,
+    arguments: call_spread::Arguments,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    let unit = frame.unit.clone();
+    let (code::Expr::CallSpread(_, items) | code::Expr::NewSpread(_, items)) =
+        unit.expr(frame.expression)
+    else {
+        unreachable!("spread continuation owner")
+    };
+    if index < items.len() {
+        call_spread::prepay_item(runtime)?;
+        let item = items[index];
+        let expression = match unit.expr(item) {
+            code::Expr::SpreadArgument(operand) => *operand,
+            _ => item,
+        };
+        return eval_child(
+            runtime,
+            frame,
+            Phase::SpreadArguments {
+                index,
+                function,
+                receiver,
+                arguments,
+            },
+            expression,
+        );
+    }
+    let arguments = arguments.into_values();
+    // Final callability/constructability is checked only after every argument
+    // and iterator has completed, using the existing guarded dispatch paths.
+    if matches!(unit.expr(frame.expression), code::Expr::NewSpread(..)) {
         return runtime
             .construct(function, arguments, doc)
             .map(|value| Some(Output::Value(value)));

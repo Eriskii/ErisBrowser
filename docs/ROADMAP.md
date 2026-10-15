@@ -9,10 +9,11 @@ thenable adoption, generic capabilities/species and a shared FIFO with
 profile. Its recorded results guide subsequent compatibility work.
 [`Promise.all`](promise-all.md) now implements ordered collection from synchronous
 iterables within the existing limits. Its separate 98-source, 196-mode upstream
-selection now [records 170 passed, 18 failed and 8 unsupported modes](promise-all-test262.md),
-with all 90 harness controls passing. Call-spread syntax, classes and the
-distinction between host rejection policy and language conformance remain visible
-in this result. The existing 458-mode profile has no regressions.
+selection now [records 174 passed, 14 failed and 8 unsupported modes](promise-all-test262.md),
+with all 90 harness controls passing. [Call/new spread arguments](call-spread.md)
+close four prior syntax failures. Classes and the distinction between host
+rejection policy and language conformance remain visible in this result.
+The existing 458-mode profile has no regressions.
 Remaining asynchronous work includes `race`, `allSettled`, `any`,
 async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
@@ -26,8 +27,11 @@ leaving five under the unchanged startup limit. The
 672 accounted heap bytes, leaving 133 units at that checkpoint. Installing
 `Promise.all` uses 108 units and leaves 25 under the same startup allowance.
 The [Node method follow-up](node-method-keys.md) saves another 250 work units and
-1,512 accounted heap bytes, leaving 275 units. Call/new spread syntax is the next
-selected language gap; existing Promise failures remain in the upstream baseline.
+1,512 accounted heap bytes, leaving 275 units. Call/new spread now uses the same
+startup allowance and runtime limits. The next parser correction is restoring
+the `+In` grammar context inside argument lists nested in a `for` initializer,
+while preserving the surrounding `for-in` grammar. Array/object spread remains
+separate unfinished work.
 
 [Throw diagnostics](throw-completion.md) now preserve the original operand
 without running constructor/name getters. This removes an exception-identity

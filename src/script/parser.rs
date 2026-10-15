@@ -1,6 +1,8 @@
 //! Direct flat syntax construction with bounded grammar continuations.
 //! Child IDs never own syntax, including partially parsed functions/defaults.
 use super::*;
+#[cfg(test)]
+mod call_spread_cut_tests;
 mod driver;
 macro_rules! emit {
     ($parser:expr, $record:expr) => {{
@@ -419,18 +421,29 @@ impl<'source> Parser<'source> {
             rest: false,
         })
     }
-    fn rest_parameter(&mut self, dynamic: bool) -> Result<Parameter> {
-        // Identifier rest must be last and cannot have an initializer. Keep
-        // malformed ellipses distinct from unsupported binding patterns.
+    fn contiguous_ellipsis(&mut self, invalid_message: &'static str) -> Result<usize> {
         let start = self.tokens[self.pos].offset;
         for byte in 0..3 {
             if self.tokens[self.pos].offset != start + byte || !self.eat(".") {
-                return Err(self.error("invalid rest parameter ellipsis"));
+                return Err(self.error(invalid_message));
             }
         }
+        // A fourth dot token is invalid; the dot in a Number token such as
+        // .5 belongs to the operand and must remain available to its parser.
         if self.is(".") {
-            return Err(self.error("invalid rest parameter ellipsis"));
+            return Err(self.error(invalid_message));
         }
+        Ok(start)
+    }
+    fn argument_ellipsis(&mut self) -> Result<usize> {
+        // Three offset/token pairs, fourth-token guard and spread-state receipt.
+        // Pay before consuming dots; record/list publication has its own fees.
+        self.compile_budget.work(8).map_err(regexp_error)?;
+        self.contiguous_ellipsis("invalid argument spread ellipsis")
+    }
+    fn rest_parameter(&mut self, dynamic: bool) -> Result<Parameter> {
+        // Identifier rest keeps its existing recognition and binding fees.
+        let start = self.contiguous_ellipsis("invalid rest parameter ellipsis")?;
         if self.is("{") || self.is("[") {
             let mut error =
                 ScriptError::unsupported("destructuring rest parameters are not implemented");

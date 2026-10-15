@@ -81,7 +81,7 @@ totals remain attributed to source1; production code is unchanged by the cleanup
 
 The complete pinned Test262 `Promise/all` directory has 98 authenticated sources
 and 196 required modes. The [subsequent conformance record](promise-all-test262.md)
-reports 170 passed, 18 failed and 8 unsupported modes, with all 90 harness controls
+reports 174 passed, 14 failed and 8 unsupported modes after [call spread](call-spread.md), with all 90 harness controls
 passing. The earlier 232-source Promise-methods profile retains its exact
 outcomes on replay. These authored controls and selected upstream results do not establish
 full Promise or ECMAScript conformance. Other combinators, async functions,

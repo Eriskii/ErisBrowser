@@ -1,6 +1,8 @@
 //! Grammar continuations. Pending records own only flat IDs and bounded lists.
 use super::*;
 
+#[cfg(test)]
+mod call_spread_layout_tests;
 mod expressions;
 mod functions;
 mod statements;

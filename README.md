@@ -19,9 +19,14 @@ rejection notifications remain unfinished.
 The optional [Promise Test262 host](docs/promise-test262-host.md) adds authenticated
 `$DONE` completion and a separate final-unhandled-rejection policy for a pinned
 232-source, 458-mode profile. The separate [complete `Promise.all` selection](docs/promise-all-test262.md)
-records 170 passed, 18 failed and 8 unsupported modes out of 196, with all 90
-harness controls passing. Its failures include missing call-spread syntax and
-the host's final-unhandled-rejection policy.
+records 174 passed, 14 failed and 8 unsupported modes out of 196, with all 90
+harness controls passing. The remaining failures reflect the host's
+final-unhandled-rejection policy.
+
+[Spread arguments](docs/call-spread.md) now work in ordinary calls and `new`,
+including mixed, multiple and empty spreads and trailing commas. Iterator reads
+preserve evaluation order and share the existing resource limits. This closes
+four upstream Promise modes; array/object spread and classes remain unfinished.
 
 [Shared startup keys](docs/pi-key-cache.md) remove duplicate immutable key
 allocations from ten DOM function metadata bags while keeping their descriptors
