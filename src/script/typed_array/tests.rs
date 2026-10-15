@@ -159,6 +159,9 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     let b_native = 16 * (size_of::<String>() + size_of::<usize>()) + 32 * size_of::<usize>() + 64;
     let aggregate_error_added =
         2 * s + 2 * a + 2 * d + 6 * k + 2 * bpp + n + 3 * b_static + 4 * b_native + 4 * bsb + 2634;
+    // Late Promise.any preserves both earlier installers and grows the
+    // constructor order from9 to10; its one slot is reserved upfront.
+    let any_added = s + a + d + 12 * k + bpp + n + 1179;
     // The cumulative remainder below starts from MAX_STEPS; only its
     // allowance origin changes, not the installation work or heap ledger.
     assert_eq!(
@@ -177,6 +180,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + 279
             + (BOOTSTRAP_STEPS - MAX_STEPS)
             - 1103
+            - 189
     );
     assert_eq!(
         runtime.allocated,
@@ -202,10 +206,11 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + all_settled_added
             - 1132
             + aggregate_error_added
+            + any_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (754, 754)
+        (755, 755)
     );
     assert_eq!(
         (runtime.native_properties.len(), runtime.prototypes.len()),

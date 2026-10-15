@@ -29,9 +29,11 @@ host-policy reason, and eight class-bearing modes remain unsupported.
 message/cause handling and genuine Error fallback branding under the existing
 limits. Its separate [complete pinned upstream profile](aggregate-error-upstream.md)
 uses a profile-local ordinary-response AggregateError identity capability.
-`Promise.any`, wider host identity policy and multiple realms remain separate work.
-Remaining asynchronous work
-includes `any`, async functions/`await`, rejection notifications, timers,
+[`Promise.any`](promise-any.md) now implements generic synchronous iterable
+collection with shared fulfillment and once-only rejection callbacks. Its
+dedicated pinned upstream profile remains subsequent work; existing profile
+identity and rejection policies are unchanged. Remaining asynchronous work
+includes async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 
 [Shared startup keys](pi-key-cache.md) reduce duplicate DOM metadata allocations
@@ -52,8 +54,9 @@ The [startup metadata follow-up](startup-metadata-sharing.md) saves another 279
 work units and 1,132 accounted heap bytes, leaving 306 at that checkpoint.
 [Trusted initialization](bootstrap-budget.md) now has a separate finite
 1,000,000-unit allowance; author entries retain 100,000 and cumulative heap
-accounting remains 8 MiB. This policy headroom does not establish implementation
-or measured admission for the remaining Promise APIs.
+accounting remains 8 MiB. The later [Promise.any checkpoint](promise-any.md)
+records its own measured installation costs; policy headroom alone does not
+establish implementation or admission for future APIs.
 Call/new spread
 uses the same runtime limits. [Argument grammar contexts](call-argument-in.md)
 now restore `+In` inside argument lists nested in a `for` initializer, while

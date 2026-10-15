@@ -33,6 +33,7 @@ pub(super) use install::tree as intrinsic_tree;
 mod layout_tests;
 
 pub(super) const METADATA_OBJECTS: usize = 11;
+pub(super) const ANY_METADATA_OBJECTS: usize = 1;
 
 pub(super) struct Arena<T> {
     pub(super) records: Vec<T>,
@@ -113,6 +114,7 @@ enum CallbackKind {
     ReturnValue(FinallyCaptureId),
     ThrowReason(FinallyCaptureId),
     AllResolve(AllCaptureId),
+    AnyReject(AllCaptureId),
     AllSettledFulfill(AllCaptureId),
     AllSettledReject(AllCaptureId),
 }
@@ -669,3 +671,9 @@ mod all_settled_layout_tests;
 
 #[cfg(test)]
 mod aggregate_error_coupling_tests;
+
+#[cfg(test)]
+mod any_quota_tests;
+
+#[cfg(test)]
+mod any_coupling_tests;

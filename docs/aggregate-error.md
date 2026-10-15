@@ -4,6 +4,9 @@ This chapter records the AggregateError API checkpoint at `d3efc9aba871`.
 Its validation and decoder limitations below describe that checkpoint. The
 separate [upstream profile](aggregate-error-upstream.md) records the later
 profile-local ordinary-response identity capability and conformance selection.
+The later [Promise.any checkpoint](promise-any.md) reuses the saved intrinsic
+prototype and dense-array machinery for ordered rejection reasons; the API
+checkpoint measurements and limitations below remain historical.
 
 `AggregateError(errors, message, options)` works as a call or with `new` in the
 supported language subset. It collects a synchronous iterable into a fresh,

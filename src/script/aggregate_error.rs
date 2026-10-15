@@ -86,6 +86,30 @@ impl Runtime {
         Ok(Value::Object(object))
     }
 
+    pub(super) fn intrinsic_aggregate_error_from_list(
+        &mut self,
+        values: Vec<Value>,
+    ) -> Result<Value> {
+        let result = (|| {
+            // Four bounded transitions and four local ownership roles. The
+            // producer prepaid the moved list's per-element lifetime costs.
+            self.work(8)?;
+            let (comparisons, _) = promises::intrinsic_tree(self.prototypes.len());
+            self.work(comparisons * (1 + "AggregateError".len() / 8))?;
+            let prototype = self
+                .prototypes
+                .get("AggregateError")
+                .copied()
+                .filter(|id| *id < self.objects.len())
+                .ok_or_else(|| ScriptError::resource("AggregateError prototype missing"))?;
+            let object = self.new_aggregate_error_object(Value::Object(prototype))?;
+            let array = self.new_all_values_array(values)?;
+            self.define_aggregate_error_data(object, "errors", array)?;
+            Ok(Value::Object(object))
+        })();
+        self.observe_microtask_failure(result)
+    }
+
     fn aggregate_error_named_get(
         &mut self,
         receiver: Value,

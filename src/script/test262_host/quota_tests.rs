@@ -402,8 +402,8 @@ fn host_actual_inline_layout_and_inactive_bootstrap_are_observed_without_new_all
     );
     let runtime = raw.finish_bootstrap().unwrap();
     // This is the raw startup remainder; host and author limits stay unchanged.
-    assert_eq!(runtime.steps, 899_203);
-    assert_eq!(runtime.objects.len(), 754);
+    assert_eq!(runtime.steps, 899_014);
+    assert_eq!(runtime.objects.len(), 755);
     assert_eq!(runtime.environments[0].bindings.len(), 213);
     assert_eq!(runtime.native_properties.len(), 300);
     assert!(runtime.test262_session.is_none());

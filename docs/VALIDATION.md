@@ -1,5 +1,41 @@
 # Validation record
 
+## Promise.any runtime
+
+The [Promise.any checkpoint](promise-any.md) adds generic synchronous iterable
+collection, shared fulfillment callbacks and ordered once-only rejection
+storage. The late installer preserves earlier metadata IDs and isolated fees.
+Observed startup consumes 100,986 work units, leaves 899,014 from the finite
+trusted allowance and charges 1,765,018 bytes. Author work remains 100,000 and
+the shared cumulative heap ceiling remains 8 MiB.
+
+The public controls pass 26 groups across 62 mode attempts. Eleven private
+groups pass 92 measured operations. The additive final-callback group passes both modes and four sticky queue
+readbacks.
+Four existing actual-layout runs retain the prior type widths in both
+toolchains and selected ordinary/host configurations.
+
+The first default full-suite attempt stopped after 2,848 library passes and
+nine failures, before later targets. Eight socket/TCP fixtures were denied by
+the tool sandbox, and one old
+constructor-property count still expected nine instead of ten. The retained
+correction changes that single assertion; production and quota expectations
+are unchanged. A complete rerun uses the required test permissions.
+
+The complete runs pass 3,197 Rust 1.88 default tests and 3,551 Rust 1.99
+tests with `test262-host,vulkan-raster`, each across 52 result rows with no
+failed, ignored or filtered tests. The parent rosters survive four selected
+boundary-name renames and gain all 38 new groups. Strict all-target Clippy passes
+in both configurations, and formatting passes.
+
+The rebuilt Rust 1.88 ordinary and host adapters preserve all 1,100 case
+records and 400 harness records across the five existing profiles. Complete
+arrays match the published parent, including failed and unsupported outcomes;
+there are no baseline or policy changes. Later changes after those builds are
+test-only, with unchanged production inputs bound in the evidence.
+No Promise.any upstream profile or pass count is claimed. The historical
+checkpoint sections below retain their original results.
+
 ## Complete pinned AggregateError selection
 
 The [AggregateError upstream profile](aggregate-error-upstream.md) retains all

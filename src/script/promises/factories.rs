@@ -192,6 +192,7 @@ impl Runtime {
                             )
                         }
                         CallbackKind::AllResolve(id)
+                        | CallbackKind::AnyReject(id)
                         | CallbackKind::AllSettledFulfill(id)
                         | CallbackKind::AllSettledReject(id) => matches!(
                             self.promises.all_captures.records.get(id.0),
@@ -421,6 +422,21 @@ impl Runtime {
         let result = self
             .build_promise_callbacks(
                 [CallbackKind::AllResolve(element)],
+                FactoryExtra::AllElement(group, index),
+            )
+            .map(|[value]| value);
+        self.observe_microtask_failure(result)
+    }
+
+    pub(super) fn new_any_reject_element(
+        &mut self,
+        group: AllCaptureId,
+        index: usize,
+    ) -> Result<Value> {
+        let element = AllCaptureId(self.promises.all_captures.records.len());
+        let result = self
+            .build_promise_callbacks(
+                [CallbackKind::AnyReject(element)],
                 FactoryExtra::AllElement(group, index),
             )
             .map(|[value]| value);

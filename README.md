@@ -18,14 +18,16 @@ once-only fulfillment callbacks. [`Promise.race`](docs/promise-race.md) uses the
 first settlement, preserves the original capability callbacks and keeps
 observable iteration order. [`Promise.allSettled`](docs/promise-all-settled.md)
 collects fulfilled and rejected outcome records in input order, with a shared
-once gate for each input’s two callbacks. `any`, async functions and rejection
+once gate for each input’s two callbacks. [`Promise.any`](docs/promise-any.md)
+fulfills on the first fulfillment and collects ordered rejection reasons into an
+intrinsic AggregateError when every input rejects. Async functions and rejection
 notifications remain unfinished.
 
 [`AggregateError`](docs/aggregate-error.md) adds callable and constructed errors
 with ordered synchronous iterable collection, optional message/cause properties
 and a fresh intrinsic `errors` Array. Genuine Error instances now receive the
-Error fallback tag from `Object.prototype.toString`. `Promise.any` remains
-unfinished. The separate [AggregateError upstream profile](docs/aggregate-error-upstream.md)
+Error fallback tag from `Object.prototype.toString`.
+The separate [AggregateError upstream profile](docs/aggregate-error-upstream.md)
 retains all 25 pinned sources and 50 modes, with an ordinary-response identity
 capability confined to that profile.
 The optional [Promise Test262 host](docs/promise-test262-host.md) adds authenticated

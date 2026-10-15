@@ -200,7 +200,7 @@ fn title_borrowed_metadata_keys_preserve_two_distinct_accessor_bags() {
 }
 
 #[test]
-fn startup_headroom_raw_observation_precedes_the_frozen_100797_work_witness() {
+fn startup_headroom_raw_observation_precedes_the_frozen_100986_work_witness() {
     let runtime = Runtime::uninitialized().finish_bootstrap().unwrap();
     println!(
         "STARTUP_HEADROOM raw_work={} remaining={} allocated={} objects={} capacity={} globals={} natives={} prototypes={}",
@@ -213,8 +213,8 @@ fn startup_headroom_raw_observation_precedes_the_frozen_100797_work_witness() {
         runtime.native_properties.len(),
         runtime.prototypes.len()
     );
-    assert_eq!(runtime.objects.len(), 754);
-    assert!(runtime.objects.capacity() >= 754);
+    assert_eq!(runtime.objects.len(), 755);
+    assert!(runtime.objects.capacity() >= 755);
     assert_eq!(runtime.environments[0].bindings.len(), 213);
     assert_eq!(runtime.native_properties.len(), 300);
     assert_eq!(runtime.prototypes.len(), 26);
@@ -224,6 +224,6 @@ fn startup_headroom_raw_observation_precedes_the_frozen_100797_work_witness() {
         (runtime.calls, runtime.eval_depth, runtime.stack_units),
         (0, 0, 0)
     );
-    assert_eq!(BOOTSTRAP_STEPS - runtime.steps, 100_797);
-    assert_eq!(runtime.steps, 899_203);
+    assert_eq!(BOOTSTRAP_STEPS - runtime.steps, 100_986);
+    assert_eq!(runtime.steps, 899_014);
 }

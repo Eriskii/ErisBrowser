@@ -302,6 +302,7 @@ impl Runtime {
                 "Promise.all" => self.promise_all(receiver, args, doc),
                 "Promise.race" => self.promise_race(receiver, args, doc),
                 "Promise.allSettled" => self.promise_all_settled(receiver, args, doc),
+                "Promise.any" => self.promise_any(receiver, args, doc),
                 "Promise.getSpecies" => Ok(receiver),
                 _ => Err(ScriptError::resource("invalid private Promise operation")),
             }
@@ -396,6 +397,9 @@ impl Runtime {
                 }
                 CallbackKind::CatchFinally(capture) => {
                     return self.run_finally_callback(capture, ReactionKind::Reject, args, doc);
+                }
+                CallbackKind::AnyReject(element) => {
+                    return self.run_any_callback(element, args, doc);
                 }
                 CallbackKind::AllResolve(element) => {
                     return self.run_all_callback(element, args, doc);

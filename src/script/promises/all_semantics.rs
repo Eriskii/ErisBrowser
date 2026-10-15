@@ -179,6 +179,108 @@ impl Runtime {
         Ok(promise)
     }
 
+    pub(super) fn promise_any(
+        &mut self,
+        constructor: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // All's orchestration plus the outer resolve handle retained while
+        // the Group owns a separately paid copy of the reject handle.
+        self.work(17)?;
+        self.work(1)?;
+        let Capability {
+            promise,
+            resolve,
+            reject,
+        } = self.new_promise_capability(constructor.clone(), doc)?;
+        let mut iterator = None;
+        let result = (|| {
+            self.work(1)?;
+            let promise_resolve = self.promise_named_get(constructor.clone(), "resolve", doc)?;
+            if !json_callable(&promise_resolve) {
+                return Err(ScriptError::type_error("Promise resolve is not callable"));
+            }
+            self.work(1)?;
+            let items = args.first().cloned().unwrap_or(Value::Undefined);
+            let method = self
+                .array_from_iterator_method(&items, doc)?
+                .ok_or_else(|| ScriptError::type_error("Promise.any input is not iterable"))?;
+            let object = self.call(method, Vec::new(), items, doc)?;
+            if !js_object(&object) {
+                return Err(ScriptError::type_error("iterator is not an object"));
+            }
+            self.work(1)?;
+            let next = self.promise_named_get(object.clone(), "next", doc)?;
+            iterator = Some(AllIterator {
+                iterator: object,
+                next,
+                done: false,
+            });
+            self.work(1)?;
+            let group = self.new_all_group(reject.clone())?;
+            let record = iterator.as_mut().expect("acquired iterator record");
+            loop {
+                let Some(value) = self.all_iterator_step(record, doc)? else {
+                    if let Some(ready) = self.finish_all_input(group)? {
+                        self.reject_any_ready(ready, doc)?;
+                    }
+                    return Ok(());
+                };
+                let index = self.append_all_placeholder(group)?;
+                self.work(2)?;
+                let arguments = self.promise_arguments([value])?;
+                let next_promise =
+                    self.call(promise_resolve.clone(), arguments, constructor.clone(), doc)?;
+                // Count publication precedes the author then getter. Each
+                // rejection callback has its own once bit; resolve is shared.
+                let rejected = self.new_any_reject_element(group, index)?;
+                self.work(2)?;
+                let fulfilled = resolve.clone();
+                let then = self.promise_named_get(next_promise.clone(), "then", doc)?;
+                let arguments = self.promise_arguments([fulfilled, rejected])?;
+                self.call(then, arguments, next_promise, doc)?;
+            }
+        })();
+        if let Err(mut error) = result {
+            if terminal(&error) {
+                return Err(error);
+            }
+            if let Some(record) = iterator.as_ref().filter(|record| !record.done) {
+                error = self.array_from_close(&record.iterator, error, doc);
+            }
+            let reason = self.exception_value(error)?;
+            let arguments = self.promise_arguments([reason])?;
+            // A throwing EOF reject reaches this outer rejection once. The
+            // iterator is already done; a second reject throw escapes directly.
+            self.call(reject, arguments, Value::Undefined, doc)?;
+        }
+        Ok(promise)
+    }
+
+    fn reject_any_ready(&mut self, ready: ReadyAllValues, doc: &mut Document) -> Result<Value> {
+        let ReadyAllValues {
+            resolve: reject,
+            values,
+        } = ready;
+        let error = self.intrinsic_aggregate_error_from_list(values)?;
+        let arguments = self.promise_arguments([error])?;
+        self.call(reject, arguments, Value::Undefined, doc)
+    }
+
+    pub(super) fn run_any_callback(
+        &mut self,
+        element: AllCaptureId,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        let value = args.first().unwrap_or(&Value::Undefined);
+        match self.complete_all_element(element, value)? {
+            Some(ready) => self.reject_any_ready(ready, doc),
+            None => Ok(Value::Undefined),
+        }
+    }
+
     pub(super) fn promise_race(
         &mut self,
         constructor: Value,

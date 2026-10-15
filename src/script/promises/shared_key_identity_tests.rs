@@ -63,8 +63,8 @@ fn promise_coherent(runtime: &Runtime) {
 #[test]
 fn shared_job_key_payloads_preserve_all_eleven_function_bags_and_existing_ids() {
     let runtime = Runtime::try_new().unwrap();
-    assert_eq!(runtime.objects.len(), 754);
-    assert_eq!(runtime.objects.capacity(), 754);
+    assert_eq!(runtime.objects.len(), 755);
+    assert_eq!(runtime.objects.capacity(), 755);
     promise_coherent(&runtime);
     empty(&runtime);
     let producer = native_bag(&runtime, "queueMicrotask");
@@ -90,7 +90,7 @@ fn shared_job_key_payloads_preserve_all_eleven_function_bags_and_existing_ids() 
         }
     }
     // Sharing text never merges independently configurable property records.
-    assert_eq!(runtime.objects[constructor].values.len(), 9);
+    assert_eq!(runtime.objects[constructor].values.len(), 10);
     for owner in [740, 743, 744, 745, 746, 747, 748, 749, 750, 751] {
         assert_eq!(runtime.objects[owner].values.len(), 2);
     }
@@ -114,7 +114,7 @@ for(var i=0;i<rows.length;i++){
 ok=ok&&q===window.queueMicrotask&&q===globalThis.queueMicrotask;
 ok=ok&&Object.getOwnPropertyDescriptor(globalThis,'queueMicrotask').enumerable;
 ok=ok&&!Object.getOwnPropertyDescriptor(globalThis,'Promise').enumerable;
-ok=ok&&Object.getOwnPropertyNames(P).join(',')==='length,name,prototype,resolve,reject,all,race,allSettled';
+ok=ok&&Object.getOwnPropertyNames(P).join(',')==='length,name,prototype,resolve,reject,all,race,allSettled,any';
 ok=ok&&Object.getOwnPropertyNames(P.prototype).join(',')==='constructor,then,catch,finally';
 Object.defineProperty(q,'name',{value:'changed'});Object.defineProperty(q,'length',{value:99});
 Object.defineProperty(P.prototype.then,'name',{value:'changed then'});

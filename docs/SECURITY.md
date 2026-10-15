@@ -338,6 +338,14 @@ identities, raw observations and prerequisite controls gate the full selection.
 This tooling change grants no renderer authority and changes no runtime limit,
 transport bytes or final-unhandled-rejection policy.
 
+[`Promise.any`](promise-any.md) reuses existing Group/Element storage and the
+shared job queue. A consumed rejection gate and moved result storage stay
+consumed if intrinsic AggregateError construction refuses; queued author work
+remains suspended. The late metadata installer preserves earlier object IDs and
+adds no host authority, decoder capability or budget-reset site. Existing work,
+heap, call and stack limits remain unchanged. These controls do not establish
+complete allocation coverage, process-memory bounds or production security.
+
 ## Representative limits
 
 [Trusted runtime initialization](bootstrap-budget.md) has a finite 1,000,000-unit

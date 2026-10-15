@@ -153,6 +153,7 @@ fn invoke_native(
                     | "Promise.all"
                     | "Promise.race"
                     | "Promise.allSettled"
+                    | "Promise.any"
                     | "Promise.getSpecies"
             ) {
                 runtime.promise_native_operation(&native.name, receiver, &arguments, doc)
