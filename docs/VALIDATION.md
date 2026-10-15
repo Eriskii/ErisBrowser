@@ -1,5 +1,29 @@
 # Validation record
 
+## Separate trusted bootstrap allowance
+
+Fixed intrinsic initialization now has a finite 1,000,000-unit work allowance;
+a successfully returned runtime still starts with 100,000 author work units.
+The cumulative 8 MiB heap ceiling, charged operation costs, object identities
+and author-entry reset sites are unchanged. See the [mechanism and evidence](bootstrap-budget.md).
+
+The new control fails on the published parent at its first raw-budget equality,
+after the unchanged author/heap constants pass; later debit checks are unreached.
+It passes on the candidate, whose focused bootstrap run passes 53 tests. Raw
+diagnostics record 99,694 consumed units and 900,306 remaining, with unchanged
+accounted allocation and metadata counts.
+
+Complete `--include-ignored` runs pass **3,132 Rust 1.88 default tests** and
+**3,486 Rust 1.99 tests with `test262-host,vulkan-raster`**, each across 52 result
+rows with no failed, ignored or filtered tests. Both retain every prior test
+identity and add exactly one group. Strict all-target Clippy passes in both
+configurations, and formatting passes.
+
+The rebuilt Rust 1.88 release host adapter retains all **1,050 case records and
+348 harness records** across the four existing Promise profiles. Complete arrays
+match the published parent, including failures and unsupported outcomes; all
+controls verify. There are no regressions, improvements or baseline changes.
+
 ## Shared startup metadata payloads
 
 The [startup metadata follow-up](startup-metadata-sharing.md) reduces raw work

@@ -840,6 +840,6 @@ fn data_view_bootstrap_reports_actual_remaining_budget() {
     );
     // Bootstrap remains charged. The unchanged large native-operation tests
     // verify usable work; this diagnostic does not reset or enlarge a budget.
-    assert!(runtime.steps < MAX_STEPS);
+    assert!(runtime.steps < BOOTSTRAP_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
 }

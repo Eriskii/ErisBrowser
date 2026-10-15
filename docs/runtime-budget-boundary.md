@@ -1,10 +1,12 @@
 # Runtime initialization and author work
 
-Runtime construction and author execution each have a fixed 100,000-unit work
-allowance. `try_new` first completes the existing charged bootstrap. Only a
-successful result receives a fresh author allowance; a failure returns unchanged
-without publishing a realm. Allocation accounting stays cumulative across both
-phases, under the existing 8 MiB ceiling.
+[Trusted intrinsic initialization](bootstrap-budget.md) has a finite 1,000,000-unit
+work allowance. Author execution retains its separate 100,000-unit allowance.
+`try_new` completes the charged bootstrap before resetting work for the returned
+runtime. A failure returns unchanged without publishing a realm. Allocation
+accounting stays cumulative across both phases, under the existing 8 MiB ceiling.
+
+## Original boundary checkpoint
 
 This makes the boundary explicit before adding DOM interface metadata. More
 intrinsic installation work can consume the bootstrap allowance without reducing

@@ -945,7 +945,7 @@ fn dom_parent_bootstrap_reports_actual_remaining_budget_and_capacities() {
         runtime.objects.len(),
         runtime.objects.capacity()
     );
-    assert!(runtime.steps < MAX_STEPS);
+    assert!(runtime.steps < BOOTSTRAP_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
     assert_eq!(runtime.objects.len(), 752);
     assert!(runtime.objects.capacity() >= BOOTSTRAP_OBJECT_CAPACITY);

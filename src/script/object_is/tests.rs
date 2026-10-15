@@ -644,6 +644,6 @@ fn object_is_bootstrap_reports_actual_charged_budget() {
         runtime.prototypes.len(),
         runtime.objects[owner].order.capacity()
     );
-    assert!(runtime.steps < MAX_STEPS);
+    assert!(runtime.steps < BOOTSTRAP_STEPS);
     assert!(runtime.allocated < MAX_HEAP);
 }

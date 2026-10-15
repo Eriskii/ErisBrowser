@@ -57,6 +57,10 @@ keys. Its startup saving adds no Text or Promise API coverage.
 The [startup metadata follow-up](startup-metadata-sharing.md) also shares title
 keys and PI/CharacterData owner-name payloads while preserving their descriptors,
 identities and behavior. It changes accounting without adding API coverage.
+The separate [trusted bootstrap budget](bootstrap-budget.md) grants fixed
+intrinsic initialization 1,000,000 work units. Author entries retain 100,000
+and cumulative allocation accounting remains 8 MiB. This policy change adds
+no language or API support.
 
 [Object.is](../tests/conformance/object-is.md) implements SameValue for existing
 runtime values, including NaN, signed zero, exact UTF-16 strings and ordinary

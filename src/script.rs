@@ -98,6 +98,9 @@ const MAX_DEPTH: usize = 96;
 const MAX_CALLS: usize = 32;
 const MAX_STACK_UNITS: usize = 96;
 const MAX_STEPS: usize = 100_000;
+// Fixed intrinsic initialization has a separate finite work allowance.
+// Successful public construction resets author work to MAX_STEPS.
+const BOOTSTRAP_STEPS: usize = 1_000_000;
 const MAX_HEAP: usize = 8 * 1024 * 1024;
 const MAX_STRING: usize = 256 * 1024;
 const MAX_NODES: usize = 100_000;
@@ -1774,7 +1777,7 @@ impl Runtime {
             event_handlers: BTreeMap::new(),
             readiness_fired: false,
             started: std::time::Instant::now(),
-            steps: MAX_STEPS,
+            steps: BOOTSTRAP_STEPS,
             #[cfg(not(feature = "test262-host"))]
             allocated: 2048
                 + std::mem::size_of::<DateHost>()

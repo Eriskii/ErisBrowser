@@ -153,6 +153,8 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     // AllSettled adds one method bag; no further State or arena header.
     // Title/PI metadata sharing saves279 work and1132 bytes without new bags.
     let all_settled_added = s + a + d + 3 * k + bpp + n + 1074;
+    // The cumulative remainder below starts from MAX_STEPS; only its
+    // allowance origin changes, not the installation work or heap ledger.
     assert_eq!(
         runtime.steps,
         5941 - 5656 + 3489 - 3278 + 4675 - 1970 - 908 - 218 - 227 - 236 - 492 - 327 + 332
@@ -167,6 +169,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + 60
             - 187
             + 279
+            + (BOOTSTRAP_STEPS - MAX_STEPS)
     );
     assert_eq!(
         runtime.allocated,

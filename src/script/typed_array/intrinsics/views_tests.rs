@@ -804,7 +804,7 @@ fn typed_array_views_metadata_raw_bootstrap_diagnostic_and_public_reset() {
     );
     // Print raw totals for independent comparison with the source-derived
     // snapshot forecasts; the exact site contract has a separate test.
-    assert!(raw.steps < MAX_STEPS);
+    assert!(raw.steps < BOOTSTRAP_STEPS);
     assert_eq!(raw.objects.len(), raw.objects.capacity());
     assert!(raw.typed_arrays.records.is_empty());
     for (index, (name, _)) in KINDS.into_iter().enumerate() {

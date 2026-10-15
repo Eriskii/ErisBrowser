@@ -204,7 +204,7 @@ fn startup_headroom_raw_observation_precedes_the_frozen_99694_work_witness() {
     let runtime = Runtime::uninitialized().finish_bootstrap().unwrap();
     println!(
         "STARTUP_HEADROOM raw_work={} remaining={} allocated={} objects={} capacity={} globals={} natives={} prototypes={}",
-        100_000 - runtime.steps,
+        BOOTSTRAP_STEPS - runtime.steps,
         runtime.steps,
         runtime.allocated,
         runtime.objects.len(),
@@ -224,6 +224,6 @@ fn startup_headroom_raw_observation_precedes_the_frozen_99694_work_witness() {
         (runtime.calls, runtime.eval_depth, runtime.stack_units),
         (0, 0, 0)
     );
-    assert_eq!(100_000 - runtime.steps, 99_694);
-    assert_eq!(runtime.steps, 306);
+    assert_eq!(BOOTSTRAP_STEPS - runtime.steps, 99_694);
+    assert_eq!(runtime.steps, 900_306);
 }

@@ -44,8 +44,11 @@ The [Node method follow-up](node-method-keys.md) saves another 250 work units an
 336 accounted heap bytes, leaving 214 at that checkpoint. The subsequent
 `allSettled` installation and its validation are recorded in the linked chapter.
 The [startup metadata follow-up](startup-metadata-sharing.md) saves another 279
-work units and 1,132 accounted heap bytes, leaving 306 under the unchanged limit.
-This headroom does not establish admission for the remaining Promise APIs.
+work units and 1,132 accounted heap bytes, leaving 306 at that checkpoint.
+[Trusted initialization](bootstrap-budget.md) now has a separate finite
+1,000,000-unit allowance; author entries retain 100,000 and cumulative heap
+accounting remains 8 MiB. This policy headroom does not establish implementation
+or measured admission for the remaining Promise APIs.
 Call/new spread
 uses the same runtime limits. [Argument grammar contexts](call-argument-in.md)
 now restore `+In` inside argument lists nested in a `for` initializer, while

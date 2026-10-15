@@ -59,7 +59,7 @@ fn bootstrap_initial_reserve_heap_failure_is_returned_unchanged() {
     let mut witness = Runtime::uninitialized();
     witness.allocated = MAX_HEAP;
     let error = witness.reserve_bootstrap_objects().unwrap_err();
-    assert_eq!(witness.steps, MAX_STEPS - 1);
+    assert_eq!(witness.steps, BOOTSTRAP_STEPS - 1);
     assert_eq!(witness.objects.capacity(), 0);
     assert_eq!(witness.frames.capacity(), 0);
     assert!(witness.native_properties.is_empty());
@@ -130,7 +130,7 @@ fn bootstrap_intrinsic_work_failure_preserves_the_original_resource_error() {
 #[test]
 fn bootstrap_late_work_boundary_returns_error_or_the_complete_realm() {
     let complete = Runtime::uninitialized().finish_bootstrap().unwrap();
-    let consumed = MAX_STEPS - complete.steps;
+    let consumed = BOOTSTRAP_STEPS - complete.steps;
     let mut witness = Runtime::uninitialized();
     witness.steps = consumed - 1;
     witness.reserve_bootstrap_objects().unwrap();
@@ -196,7 +196,7 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Two Text factories share existing keys, saving60 work and336 bytes.
     // AllSettled adds187 metadata work and one bag, reusing the existing arenas.
     // Title keys, PI owner names and CharacterData.length save279 work/1132 bytes.
-    assert_eq!(reference.steps, 306);
+    assert_eq!(reference.steps, 900_306);
     assert_eq!(reference.objects.len(), 752);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);
@@ -407,4 +407,28 @@ fn bootstrap_callbacks_and_nested_dispatch_cannot_refresh_author_work() {
     assert!(event.path.is_empty());
     assert_eq!(event.current_target, Value::Null);
     idle(&runtime);
+}
+
+#[test]
+fn bootstrap_raw_allowance_is_separate_and_still_finite() {
+    assert_eq!(MAX_STEPS, 100_000);
+    assert_eq!(MAX_HEAP, 8 * 1024 * 1024);
+    for amount in [1_000_000usize, 1_000_001] {
+        let mut raw = Runtime::uninitialized();
+        assert_eq!(raw.steps, 1_000_000);
+        let allocated = raw.allocated;
+        let result = raw.work(amount);
+        assert_eq!(raw.steps, 0);
+        assert_eq!(raw.allocated, allocated);
+        assert!(raw.objects.is_empty());
+        assert!(raw.native_properties.is_empty());
+        assert!(raw.frames.is_empty());
+        if amount == 1_000_000 {
+            result.unwrap();
+            assert!(raw.work(1).unwrap_err().is_resource_limit());
+            assert_eq!(raw.steps, 0);
+        } else {
+            assert!(result.unwrap_err().is_resource_limit());
+        }
+    }
 }

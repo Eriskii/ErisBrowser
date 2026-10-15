@@ -511,7 +511,7 @@ fn dom_native_metadata_slot_allocation_is_admitted_before_factory_return() {
         }
         assert!(runtime.objects.is_empty());
         assert!(runtime.native_properties.is_empty());
-        assert_eq!(runtime.steps, MAX_STEPS);
+        assert_eq!(runtime.steps, BOOTSTRAP_STEPS);
     }
 }
 
