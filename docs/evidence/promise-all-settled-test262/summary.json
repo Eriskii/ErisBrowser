@@ -1,0 +1,3705 @@
+{
+  "schema": 1,
+  "status": "verified",
+  "archive": {
+    "path": "sources-and-checks.tar.gz",
+    "bytes": 2646992,
+    "sha256": "4b2117da14be6a1222493fce13fb328925aa850cb590e8cffbdf40b0d57170ae",
+    "member_bytes": 16437635,
+    "uncompressed_tar_bytes": 16824320,
+    "selected_max_uncompressed_bytes": 33554432
+  },
+  "source_count": 142,
+  "documentation_count": 5,
+  "artifact_count": 368,
+  "source_inventory": {
+    "path": "/tmp/eris-promise-all-settled-upstream-plan-1/source-final.json",
+    "bytes": 227840,
+    "sha256": "60a0a525f7bddad865fa8303b45efbe3ab2189b93a4f3cb16de750bb432eea0e"
+  },
+  "claims": {
+    "base": "486bca305a08b3711077123dff8b2e968f13ef19",
+    "scope": "Add the complete pinned104-source/208-mode Promise.allSettled conformance profile with94 authenticated harness controls and a measured baseline, preserving existing profiles.",
+    "corpus": {
+      "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+      "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+      "subtree": "bb56695b0f924495618e34495079f998fe83581a",
+      "raw_sources": 104,
+      "modes": 208,
+      "async_sources": 57,
+      "sync_sources": 47,
+      "raw_source_bytes": 136313,
+      "helper_and_legal_bytes": 49033,
+      "proof_documents": 7,
+      "proof_bytes": 69114,
+      "helpers": 6,
+      "auxiliary_files": 8,
+      "manifest": {
+        "path": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/manifest.json",
+        "bytes": 39132,
+        "sha256": "bca16210396a6aa07adac947ff47166cde4b4da97f4f7a82d24e9d8763b7ef8e"
+      },
+      "raw_source_or_harness_edits": 0,
+      "filtered_sources": 0
+    },
+    "counts": {
+      "passed": 188,
+      "failed": 12,
+      "unsupported": 8
+    },
+    "new_controls": 94,
+    "controls_verified": 94,
+    "python_passed": 569,
+    "new_python_groups": 13,
+    "parent_passed": 2,
+    "parent_affected_groups": 11,
+    "parent_error_rows": 35,
+    "new_cases": 208,
+    "exact_old_case_records": 842,
+    "exact_old_control_records": 254,
+    "old_baseline_changes": 0,
+    "source_inputs": 1672,
+    "changed_source_inputs": 142,
+    "reused_binary_sha256": "b653280c13235292194de1491cf134e3523e6b10e21c0eb73f9f19d6301d872a",
+    "qualifications": [
+      "Parent execution occurs after exact corpus/test import and before profile production import. Two metadata/old-profile groups pass; eleven absent-profile groups generate35 error rows. One error is old generic success dispatch reaching a profile-specific mock, not an engine failure. Deeper negative assertions are not reached on the parent.",
+      "All prospective test/oracle, control and production bytes remain unchanged after execution. No assertion, outcome, helper or source was retuned to obtain the baseline.",
+      "The initial no-baseline command exits1 because some cases are nonpassing, despite a healthy harness. Baseline recording and checking exit0 while retaining all failed and unsupported cases. No resource, timeout, blocked or adapter-error row is admitted.",
+      "The published API release adapter is reused byte-exact. No Rust sources, build manifests, host protocol, runtime caps or library behavior change; no local Rust rebuild or Rust-suite rerun is claimed for this Python/corpus checkpoint.",
+      "All56 prior profile tables/features and the245 touched old test-group names/literals are preserved. Actual full case/control replay is limited to the three existing Promise profiles, totaling842/254.",
+      "The1672-entry map is a selected input inventory, not the full dependency/build graph. Historical selected maps and evidence archives remain unchanged.",
+      "The CI change is an adjacent gate using the existing release host build. No remote CI outcome for this unpublished profile commit is claimed."
+    ],
+    "limitations": [
+      "This complete directory at one pinned Test262 revision is not full ECMAScript conformance.",
+      "All12 failed and8 unsupported modes remain visible in the baseline and reports.",
+      "Classes, async functions, Promise.any, multiple realms and browser rejection notifications remain unfinished.",
+      "No GPU execution, Chromium-relative speed measurement or general security proof is established here.",
+      "Full web compatibility and the overall browser objective remain incomplete."
+    ]
+  },
+  "claims_authority": {
+    "ledger": {
+      "path": "/tmp/eris-promise-all-settled-upstream-plan-1/root/final-validation.json",
+      "bytes": 28596,
+      "sha256": "be7666e49451c9da085e083907c079420602eee3fa21ccfe93f961c2cf6f0adb"
+    },
+    "peer": {
+      "path": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/final-review.json",
+      "bytes": 10112,
+      "sha256": "57ffc16859dd776468bc6be5f47cb9acdcf1feaa6e80bb9047661d807aa8a143"
+    }
+  },
+  "selection": {
+    "path": "/tmp/eris-promise-all-settled-upstream-plan-1/root/evidence-selection.json",
+    "bytes": 191304,
+    "sha256": "1d361a548f6af80d450b10e5e9225a4e7e51b2e85c1eda0559b22c6635a6f511"
+  },
+  "members": [
+    {
+      "path": "artifacts/all-replay-1.json",
+      "bytes": 600051,
+      "sha256": "90bb5362ba890d05f5bc627e6691dff9f720b20fd4cfa31b9c24a8c38d354cea",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/all-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/all-settled-observed-1.json",
+      "bytes": 669521,
+      "sha256": "5797803946620c3801803ae61f59545763ba465fd01a633843e5fb3ec3fae959",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/all-settled-observed-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/all-settled-record-1.json",
+      "bytes": 669521,
+      "sha256": "25f1f98f2afb8f42f6ddeb858cd38171b21ca3ad706115f1ac42d1df1cedb81c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/all-settled-record-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/all-settled-replay-1.json",
+      "bytes": 669521,
+      "sha256": "5797803946620c3801803ae61f59545763ba465fd01a633843e5fb3ec3fae959",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/all-settled-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/author-controls.py",
+      "bytes": 9548,
+      "sha256": "08408bd3608357fd740bc2bb487de7f1e6cfb8121395b77d3b12f495c18564f9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/author-controls.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/auxiliary.json",
+      "bytes": 2586,
+      "sha256": "924f6d14304eacc716db923e351725cbc93e2fc919bf23094ef2ff4280ef3483",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/auxiliary.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/case-identities.json",
+      "bytes": 61529,
+      "sha256": "735e614c3b5ba81ac57c4bfe08942637169b253ad0df32072cc4ee28dafc36a0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/case-identities.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/census.json",
+      "bytes": 1569,
+      "sha256": "4277dbe223a6ae59178657a6dbf4a60d43ddb454c890aa3ed31b7f388a1f1a34",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/census.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/ci-1/author.py",
+      "bytes": 2544,
+      "sha256": "dd0a17f6c073786df5a5032df726e6896847068d70903621613208957885310f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/ci-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/ci-1/before/.github/workflows/check.yml",
+      "bytes": 24011,
+      "sha256": "caffa783d224dbca7fdc6c20b8a8d0b45f60498d229e807c860a4fbebb878849",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/ci-1/before/.github/workflows/check.yml",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/ci-1/diffs/check.yml.patch",
+      "bytes": 970,
+      "sha256": "3e393f8138f4386344a0236563e7b9ffb6d4d5a0b5e0947108c2d71b3b10b913",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/ci-1/diffs/check.yml.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/ci-1/inverse.json",
+      "bytes": 648,
+      "sha256": "1efc2ad501c2f4a71c91e4704850a4944c30d3c1b28f2cf1399327d1fdbee947",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/ci-1/inverse.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/ci-1/layout-review.json",
+      "bytes": 1232,
+      "sha256": "a232cfbf48efc3d5fd60ecca3ceacaf4bdb2a66a4e4076212b08e695d60cf9f6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/ci-1/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/ci-1/raw/.github/workflows/check.yml",
+      "bytes": 24314,
+      "sha256": "b194063b3d6de7550e169d70da95bc046aca055c63fe8077025db4f260ee1214",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/ci-1/raw/.github/workflows/check.yml",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/ci-1/source-ready.json",
+      "bytes": 2075,
+      "sha256": "000dc1209f3b9b751cf8524232a0ac263b0590c59e6b5c4db1cf783983c99a55",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/ci-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/layout-review.json",
+      "bytes": 7495,
+      "sha256": "8d846dbc4f67eb6b250d4fb42c897080f9101d116e7568f48a58d8810fc99ad1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/notes.json",
+      "bytes": 1827,
+      "sha256": "d287bb97c406e099926cb14a562ab2b4d20b26bdbdceebcd5d5d54c657457093",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/notes.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/observations.json",
+      "bytes": 9330,
+      "sha256": "47ea9f2cfc9abce899064b16318bc9ac41f735518a7b9bf4579689bd31543afd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/observations.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/prerequisites.json",
+      "bytes": 1429,
+      "sha256": "3dfa8f7dc9552db467aa6090d4a5c2e091e35e1e3a4794a70a9029c5ad66ed60",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/prerequisites.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/abrupt-close-mismatch.js",
+      "bytes": 1143,
+      "sha256": "caf3dd3993dec785877a98d6c5f631d44313c5ecb89c37028abf1ae90353519f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/abrupt-close-mismatch.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/abrupt-close.js",
+      "bytes": 1140,
+      "sha256": "7aba38da5cc696f9ce567d5b9426bb8c785f200742f14a5a861b7e556db312cd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/abrupt-close.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/api-mismatch.js",
+      "bytes": 668,
+      "sha256": "ecef3fbaeb0263df0b4a51cd2ecccd51020591dd0cff604107d2975d98442c33",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/api-mismatch.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/api.js",
+      "bytes": 616,
+      "sha256": "243e6a37a25bd52525856c77894a591978824d63361507f04c11213455af40ed",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/api.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/settled-helper-mismatch.js",
+      "bytes": 662,
+      "sha256": "4469bad40f0f9efa6f971707433f089c6835f80b05770ee22c88247b71f29500",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/settled-helper-mismatch.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/settled-helper.js",
+      "bytes": 624,
+      "sha256": "30e8784493bcbe884abd3c309cb601a1190b3ca8319464e8d0742d0032c95b5f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/settled-helper.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/settlement-mismatch.js",
+      "bytes": 1050,
+      "sha256": "6210be2fa0cbf6516f8f72b0c380b6bc050ba2694cdd2e13627a233ec21deced",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/settlement-mismatch.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/settlement.js",
+      "bytes": 1050,
+      "sha256": "b8020f30bb80dee27ecd04956d4ea72b68a7637ec11339b1c39317a070b90be8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/settlement.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/shared-gate-mismatch.js",
+      "bytes": 1178,
+      "sha256": "3e34f99421d1d0c0aae652bf08206c21b28a667c98457d81ff9aaa240fb004e4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/shared-gate-mismatch.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/raw/shared-gate.js",
+      "bytes": 1178,
+      "sha256": "b907d1dd3a7be46d9ee0c69640bf518900bfcb5831104a4a9df40791ea9cce83",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/raw/shared-gate.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/source-ready.json",
+      "bytes": 3392,
+      "sha256": "d13c715615ceee00bbd7c5bf5441a19edc2b70e14274f6b618e6fff4d173892e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/controls-proposed-1/variants.json",
+      "bytes": 12876,
+      "sha256": "04ec5b8fc6b45e401b2c36c0b06683efbb3fb147c00aa105a93fcf89f2be0824",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/controls-proposed-1/variants.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/current-source-review-1/preliminary.json",
+      "bytes": 61613,
+      "sha256": "7ea00bf582549a60376ba0a12aeac51292e6c85e74a9a7d03170d1d2a3983fb3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/current-source-review-1/preliminary.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/current-source-review-1/source-review.json",
+      "bytes": 6034,
+      "sha256": "76ef7238398db1b053534f981777aadc12f8e26c959f5c8b3ebbef200acce956",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/current-source-review-1/source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/INTERPRETING.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/LICENSE",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/harness/assert.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/harness/doneprintHandle.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/harness/isConstructor.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/harness/promiseHelper.js",
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/harness/promiseHelper.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/harness/propertyHelper.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/harness/sta.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/call-resolve-element-after-return.js",
+      "bytes": 1587,
+      "sha256": "0eb00c06a24fc7e1d69338a47349f916274e3357e1ae2f3fc619a15761dc433d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/call-resolve-element-after-return.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/call-resolve-element-items.js",
+      "bytes": 1445,
+      "sha256": "7b5a5216aae0e5fc660f37c58764be43575883ab7536339299b9eff5153e01ea",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/call-resolve-element-items.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/call-resolve-element.js",
+      "bytes": 1223,
+      "sha256": "4b814811bf9b6b722da39c81236bef92b57f2d085198172e7b2720ad636c3d83",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/call-resolve-element.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/capability-executor-called-twice.js",
+      "bytes": 2939,
+      "sha256": "bbddd20112831cd894df663b80e6b294cc51d838a91b185516c63de1bfb57d67",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/capability-executor-called-twice.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/capability-executor-not-callable.js",
+      "bytes": 3135,
+      "sha256": "bdb94d66ddb4114e6d2eb7519bfb2f13267ea6717164cc329d464236c9f16ab4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/capability-executor-not-callable.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/capability-resolve-throws-no-close.js",
+      "bytes": 1599,
+      "sha256": "13b66e098486cd94cf36ed74711cb550c40d13db76bdeae99a489eedafafa27f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/capability-resolve-throws-no-close.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/capability-resolve-throws-reject.js",
+      "bytes": 1577,
+      "sha256": "bcd847d94157f94c4074e1ecc7946c4cda601dade483241e5961972949d23f69",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/capability-resolve-throws-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/ctx-ctor-throws.js",
+      "bytes": 588,
+      "sha256": "0c90e24cd74287fffd00b0565026c2928c57cd888a4165cd1133c537f92ed41b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/ctx-ctor-throws.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/ctx-ctor.js",
+      "bytes": 865,
+      "sha256": "9fbdc718fc77f088182f27c0895d0d0cb6cffcf634c527646d4138d3e71201de",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/ctx-ctor.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/ctx-non-ctor.js",
+      "bytes": 512,
+      "sha256": "09a966da88bd58263d2822478649b224aa96622d86e49aa02eab4bdca600bb6c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/ctx-non-ctor.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/ctx-non-object.js",
+      "bytes": 862,
+      "sha256": "85ee262f8fb0ee0660cb1e0bafc381554beafd68d899ca6378d0e1351b6cf543",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/ctx-non-object.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/does-not-invoke-array-setters.js",
+      "bytes": 1409,
+      "sha256": "8037f95c6bcc8dbdcad1172d9514b56383e7a3e6e2633c467c2e1ffcfb176737",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/does-not-invoke-array-setters.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-error-close.js",
+      "bytes": 1071,
+      "sha256": "dec3928f782d03a3a5201993076146ce0fa60e6a3a765b8633ed2ca00a4ae935",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-error-close.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-error-reject.js",
+      "bytes": 1076,
+      "sha256": "9c7cb9f11f7c02b336ca88812a63c422b07a35ab6ad19cc561be31dd013916e5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-error-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-get-error-reject.js",
+      "bytes": 1058,
+      "sha256": "8d5869b8ec3c51295df9dd431a828ae262af111b2b1c66cdf208e1e28d74ba68",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-get-error-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-get-error.js",
+      "bytes": 1026,
+      "sha256": "113707c0b32e950f3b1ae69285928b4fb7b959329ec4f53f81ed5f752270879e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-get-error.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-get-once-multiple-calls.js",
+      "bytes": 1265,
+      "sha256": "daf3d19af092e9366c729bd040870cb14ac44a14d8c0feeadf761bd4a5b8489d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-get-once-multiple-calls.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-get-once-no-calls.js",
+      "bytes": 1129,
+      "sha256": "3b362e382def80d2e78222371342cf7d1006ce703f5d2abf7b80f7fac4cf1c1c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-get-once-no-calls.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-custom.js",
+      "bytes": 1287,
+      "sha256": "3e771636f906b729be94e0fbe6fc80c7e3756351a741bb6386b743eb5fd63602",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-custom.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-promise.js",
+      "bytes": 929,
+      "sha256": "4c31687b22f7df6ca76fe6e67b167334402feb202779e0a41afd984ff1150c24",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-promise.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-on-values-every-iteration-of-promise.js",
+      "bytes": 944,
+      "sha256": "34fabe51c30feeeb81c88222a39b4cd6ebff4e54efc048c1987172a36d1a8c2f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-on-values-every-iteration-of-promise.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve-return.js",
+      "bytes": 1115,
+      "sha256": "a9b613b7f487f3e4f3178ca806e713e29fd7f4f2b172555388b58a8430029977",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve-return.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-resolve.js",
+      "bytes": 1353,
+      "sha256": "b67ef27b3ad2845a9046686aa5d4f2d2f0324077c40811408b24077b5ddce2d9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-resolve.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-then-error-close.js",
+      "bytes": 1133,
+      "sha256": "1faad576c2086a8a12a66a78a2db72238d1d4cc71c63bfca36cc4ba79062cf75",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-then-error-close.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-then-error-reject.js",
+      "bytes": 1037,
+      "sha256": "70145c01fe59d142099b7470beaa34bbff24ab15d112726c82418c7f346d07dd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-then-error-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-then-get-error-close.js",
+      "bytes": 1163,
+      "sha256": "9dc072358c8a615ae746ea0c76b72ba6d82f38cff611e0875862ef4d8cc5da87",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-then-get-error-close.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-then-get-error-reject.js",
+      "bytes": 1067,
+      "sha256": "3db69dacb8fc877e325124d1faa6be5ecb84a0ffe5773b8d3c37033368004567",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-then-get-error-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/invoke-then.js",
+      "bytes": 1624,
+      "sha256": "642ce9728a91179b9c9156c3072fde69600180993e0a085518bb013422c88dc8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/invoke-then.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/is-function.js",
+      "bytes": 301,
+      "sha256": "421d01bac8c843517098165c6991de94111aa97def9ee3a4461a5ef0a08f8d28",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/is-function.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-false-reject.js",
+      "bytes": 1012,
+      "sha256": "feb6f572386f2a5670ba95cdfb0b867e0f2d70ae2fe4576d9eabdcb007de38fa",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-false-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-null-reject.js",
+      "bytes": 1010,
+      "sha256": "67327fb99973707299a272f9af10aa0b08e203d6d38f90b231870d3d702fddda",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-null-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-number-reject.js",
+      "bytes": 1009,
+      "sha256": "653df03a3305eb304220ea339d6594a06ceebeaf129be1f64b42d9a40c6d7200",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-number-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-poisoned.js",
+      "bytes": 1017,
+      "sha256": "bbcf2d73fc9aea9e9f589e8c80c12ec17f9041aa8727c739e9d216fe5c3e0746",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-poisoned.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-string-resolve.js",
+      "bytes": 929,
+      "sha256": "cb4141c3b1626eea976a526b80a9efb5fc160c184344075f6fd5a90deae47156",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-string-resolve.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-symbol-reject.js",
+      "bytes": 1409,
+      "sha256": "be9e31424b26464c4b6bcfb1907fe50bfa43dc48df2f7d6bc75b285db412b8b7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-symbol-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-true-reject.js",
+      "bytes": 1403,
+      "sha256": "b903a3500c8d1dda1d8bd3d3500be6f2d925a4be5ebf2b5a5271063f7540efd4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-true-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-arg-is-undefined-reject.js",
+      "bytes": 1413,
+      "sha256": "15b9c9cbe449a028a647e9d497aa159f0ddf6ce9fca520815912e8f88a1c79b9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-arg-is-undefined-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-assigned-false-reject.js",
+      "bytes": 1574,
+      "sha256": "e9e4ad7c267fa3d1f10ebd0084c707dd948ee452c15ce53416aa3ee5fd95f15e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-assigned-false-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-assigned-null-reject.js",
+      "bytes": 1468,
+      "sha256": "68c37262a55d90269433ea352dc968de52c7a7fff161cfc3366ec353054ee2d7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-assigned-null-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-assigned-number-reject.js",
+      "bytes": 1462,
+      "sha256": "9178cc11e8539d94116ab85c4e9b293eded054119f41357a7b1b83cf447c6e5f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-assigned-number-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-assigned-string-reject.js",
+      "bytes": 1464,
+      "sha256": "b90b3934cfb3822e9df6e2f90573883a9c148ad98e5595bede1e2c85b714fc2c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-assigned-string-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-assigned-symbol-reject.js",
+      "bytes": 1476,
+      "sha256": "a4d36319d9189aafda50a4a167f8ab3399eceb03b0611774b2d392b796a30fa0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-assigned-symbol-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-assigned-true-reject.js",
+      "bytes": 1468,
+      "sha256": "109773e7be8f03869f62c48e6762e3f307725d816ee9acffcc53c0996ce2331c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-assigned-true-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-assigned-undefined-reject.js",
+      "bytes": 1478,
+      "sha256": "b9d236be1873066ac558df32ea95b64cd21caf10147321199e364c840cf43237",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-assigned-undefined-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-next-err-reject.js",
+      "bytes": 1594,
+      "sha256": "108fa9b71986fcca951d4a6db4541638cba868d0a8abbc6042c058ea11f5fcf6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-next-err-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-next-val-err-no-close.js",
+      "bytes": 1402,
+      "sha256": "ffba8dedb9487c7678a09dcd78f03149358f45b02c9aac6efac81fce25964976",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-next-val-err-no-close.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-next-val-err-reject.js",
+      "bytes": 1361,
+      "sha256": "9d21c0721f33faf44c8b094309e9c69b1313b24f8cc9811e40b5191e08591467",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-next-val-err-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-returns-false-reject.js",
+      "bytes": 1478,
+      "sha256": "4411d25c099326a16c19f7ad3da9b2f43ceff51dd543c5e587da4f9a9b0e5b92",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-returns-false-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-returns-null-reject.js",
+      "bytes": 1476,
+      "sha256": "208e5b7c8af48a14fb806eafa0ea5297c91005ab1478ce25d2a1835202460c63",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-returns-null-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-returns-number-reject.js",
+      "bytes": 1477,
+      "sha256": "29390bfdf6c51b5aa3928a963e5b2b924636902014fd9cc544d340f83772537a",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-returns-number-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-returns-string-reject.js",
+      "bytes": 1478,
+      "sha256": "cdc0b00e4d8f7a629f37020c011aac948da426eb4b19ef1162d339f28f911809",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-returns-string-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-returns-symbol-reject.js",
+      "bytes": 1484,
+      "sha256": "91f822a961feb7f147ab2c5baf131b16819df3fc529d29ca28fe5871d5153d69",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-returns-symbol-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-returns-true-reject.js",
+      "bytes": 1476,
+      "sha256": "9f1cd3df94b0f2d9b426a60905ba92bd8cd7ba4759db23f2d75a895cba0a7dcd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-returns-true-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-returns-undefined-reject.js",
+      "bytes": 1486,
+      "sha256": "0d1cc9537c692abab7219cbf6d72dc0372bf59a2eb2749b2ebbf28f17a5a091f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-returns-undefined-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-step-err-no-close.js",
+      "bytes": 1332,
+      "sha256": "bb4510ef15bd1113320d136604c277d94d60a4514a4faea0e879efaac0a46df4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-step-err-no-close.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/iter-step-err-reject.js",
+      "bytes": 1428,
+      "sha256": "efa657ca1ede76029dfe60bbb158a49cfa9f067a201c19398180aebb004dd0f7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/iter-step-err-reject.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/length.js",
+      "bytes": 910,
+      "sha256": "8a62682be9e4094dbd1cf7174967b2c6aa8f70b13457a541f84dfe16a615d8c8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/length.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/name.js",
+      "bytes": 897,
+      "sha256": "dcc0bb369e495726ef8671f18e61b1b3f3930e379845910ea68dcdc5452035be",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/name.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/new-reject-function.js",
+      "bytes": 1272,
+      "sha256": "3629a33a7af6adf8f298f3e0e72d7b5ca8ce1b294e8159b1020e7b83058df539",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/new-reject-function.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/new-resolve-function.js",
+      "bytes": 1457,
+      "sha256": "2f3137662ca8a89a60d579e048a6ca042b39992714483f962451d97602e727eb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/new-resolve-function.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/not-a-constructor.js",
+      "bytes": 892,
+      "sha256": "b34a8031a6e2b08ec81297e7ff7b46e43927b74e06154387bc35df60d3028a43",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/not-a-constructor.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/prop-desc.js",
+      "bytes": 613,
+      "sha256": "9f441311c07af4c17d44fe8fb150bb0c73bd62013f40a784a86d7da7b75403e4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/prop-desc.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-deferred.js",
+      "bytes": 1493,
+      "sha256": "ee9e57f3e95102e3bf09db7c8083ed3628b06d93459c875f70c257c64dd5ebf0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-deferred.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-element-function-extensible.js",
+      "bytes": 816,
+      "sha256": "46f4c0dcd96ef4160cdcf2aaabba75d07797d96d9f1457fc5c33a086f310cdda",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-element-function-extensible.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-element-function-length.js",
+      "bytes": 1110,
+      "sha256": "6b8a9555fbc8517c5edd40ddaa2d4fda514d05ec79b5d2f95efb557e7307e3d1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-element-function-length.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-element-function-multiple-calls.js",
+      "bytes": 1441,
+      "sha256": "f99b16b60bf9fea672db1825ca47c8aed2c20b85fbf5eb4619805089c84f9864",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-element-function-multiple-calls.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-element-function-name.js",
+      "bytes": 1272,
+      "sha256": "277469ec4f13872d09271754be9172971f4d41638154c5d2596c51b306066430",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-element-function-name.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-element-function-nonconstructor.js",
+      "bytes": 1011,
+      "sha256": "bc3e424d9d9a8003d9a0c98e28694d11b64b3c55b50bfbd1033ad935a2a703fe",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-element-function-nonconstructor.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-element-function-property-order.js",
+      "bytes": 902,
+      "sha256": "4f107040c1973cbeca11662d4c2c48ba65a4c6a1de38de343387d3a918fe67cf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-element-function-property-order.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-element-function-prototype.js",
+      "bytes": 978,
+      "sha256": "fa8583361b7f515fbac810dbc4727917cec210593e122e11e385e349ec761df7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-element-function-prototype.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-ignored-deferred.js",
+      "bytes": 1302,
+      "sha256": "ef33ba79c12a122c3474eaf7336849000509e404c8ad4ea44cfc86c54a2137b8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-ignored-deferred.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-ignored-immed.js",
+      "bytes": 1102,
+      "sha256": "0efc8165c47e3a7afba79f8628cde4b3006f02d4843d228b1fa06bca9555064c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-ignored-immed.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/reject-immed.js",
+      "bytes": 827,
+      "sha256": "b21b329c88e3dd943d15fbb3188a23e9ac5cf10dcd992ce91289d5f5cd0512b7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/reject-immed.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-before-loop-exit-from-same.js",
+      "bytes": 2117,
+      "sha256": "448998ffc2e76816faf8273ae02b8ebe8a8e11c24c92466b56443b96a2b12fd0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-before-loop-exit-from-same.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-before-loop-exit.js",
+      "bytes": 2018,
+      "sha256": "5084d2b7157f1394b58227d3d5f4a107fa7ac7c3b0cb9f929e5711fa9d7e9017",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-before-loop-exit.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-element-function-extensible.js",
+      "bytes": 820,
+      "sha256": "0f6980a93c8d1f80e141e5f56bfd20ca94c9d549d10db8690785ce5d80f9ba29",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-element-function-extensible.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-element-function-length.js",
+      "bytes": 1063,
+      "sha256": "9aeeaa77b3bdc7a1e7886cf7b87009ea12dae080ca60dd384fe9ded60d8224ae",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-element-function-length.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-element-function-name.js",
+      "bytes": 1276,
+      "sha256": "3778eb58318c90ef51a8bf353893d8790e2a25ad727e7d94f00ecead22bb4798",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-element-function-name.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-element-function-nonconstructor.js",
+      "bytes": 1016,
+      "sha256": "b7239cf19aacf7803e230ae225deae6196c3cd0ab38ed8344c9dd43b7844489c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-element-function-nonconstructor.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-element-function-property-order.js",
+      "bytes": 905,
+      "sha256": "a2e2ce1349a26e6034cae530cf5ce6cfa907a96d6ecf41d631dff876e4afa791",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-element-function-property-order.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-element-function-prototype.js",
+      "bytes": 982,
+      "sha256": "046d18f4ed5e609162ab771f287f6ddc86f45693545922ff515bb1bd66fd5eeb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-element-function-prototype.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-from-same-thenable.js",
+      "bytes": 2341,
+      "sha256": "39a7356966f6f5aaba74c31d602bee3fc47665497dac960baef9b871ad167aa5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-from-same-thenable.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection-deferred.js",
+      "bytes": 1199,
+      "sha256": "c7748b31efd3a1dc7089a75c6c689d4300d1239a7681a1bc49344e23fcee65cf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection-deferred.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection.js",
+      "bytes": 1069,
+      "sha256": "8f8a4e18e71436a66064aa91adc5877d8ebdc2f01319a35aeec9350dbbbad936",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-non-callable.js",
+      "bytes": 1025,
+      "sha256": "3867cec371bca2545f899d7200ef749fc98850d7bf985bd2bb7ac502613e7a06",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-non-callable.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-non-thenable.js",
+      "bytes": 985,
+      "sha256": "f2df2a602838160d663d2d161aeec583950770114700b59108de68af99f9da90",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-non-thenable.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-not-callable-reject-with-typeerror.js",
+      "bytes": 796,
+      "sha256": "08a68ef123f2dd11b2523893e4040198dae652de6033a78950bfc0ccf2df24d3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-not-callable-reject-with-typeerror.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-poisoned-then.js",
+      "bytes": 1221,
+      "sha256": "fbbf7b469647d7f0881a46891441d2c740045960fc992c95c92190ac52b83ae7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-poisoned-then.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-thenable.js",
+      "bytes": 663,
+      "sha256": "3d85ec835839061e524bc38cf03fbdf929e04c0355836d3d58d70aeef99d5695",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-thenable.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-is-not-callable.js",
+      "bytes": 1834,
+      "sha256": "3551cb9eb68dcb9d7e763368e864ce466a4321ae9c69a444706326b2a77baa57",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-is-not-callable.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-null-or-undefined.js",
+      "bytes": 1847,
+      "sha256": "7de58acd1311417b0e892aee7c7f0c439b22a64d42aaae049bb8077fd4369248",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-null-or-undefined.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-all-fulfilled.js",
+      "bytes": 2520,
+      "sha256": "61006938fa6e95527a32199860950cd0c01f5b0513351565b6ef04352e4a26d5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-all-fulfilled.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-all-mixed.js",
+      "bytes": 2872,
+      "sha256": "2d7d64de1d59eb2edec47f128f2edd244b0edca505415f1999389d471b01670d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-all-mixed.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-all-rejected.js",
+      "bytes": 2540,
+      "sha256": "3ca5f00b44bd067c94450b3290b384e49b1d3fab44ad52af0987f6960ac754b0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-all-rejected.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-immed.js",
+      "bytes": 647,
+      "sha256": "4801c63d972965401d4864627f4a036700871858e90f09176e418bc7462a4dd8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-immed.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-sequence-extra-ticks.js",
+      "bytes": 1449,
+      "sha256": "7497937fa367097d994f87310732f6e40dcb054c468973ceab26c48c9d5c8c2b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-sequence-extra-ticks.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-sequence-mixed.js",
+      "bytes": 1705,
+      "sha256": "9db33c7ebe9e9780b2445bdaa6418fc8ef07ff885fdc06c7ccf0cc8312d9fd07",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-sequence-mixed.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-sequence-with-rejections.js",
+      "bytes": 1482,
+      "sha256": "84e17f2c6edabe1cc708ffa361cf35d7ed691d6695bb6d230fabefbeea2a57a4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-sequence-with-rejections.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-sequence.js",
+      "bytes": 1470,
+      "sha256": "fb55daac0153079f1aab3e5a4373aeee82ea1598e81d876d2a9a066dcb608ce3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-sequence.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolved-then-catch-finally.js",
+      "bytes": 3164,
+      "sha256": "c8f42d81d00e524b078ae3a028c2fe628449c2610eed6c4e855fa19571a3fee1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolved-then-catch-finally.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolves-empty-array.js",
+      "bytes": 918,
+      "sha256": "e727801fb432a0b3a5b092578edc82f413f4dd91521202d7d6d5ae1006df7a7c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolves-empty-array.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/resolves-to-array.js",
+      "bytes": 1027,
+      "sha256": "707d2665ee22b8a95ca794fa299db6998922305c2985180af597c7a9557a81c9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/resolves-to-array.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/returns-promise.js",
+      "bytes": 903,
+      "sha256": "62bbe2b70d021d05ac9cf0e45fa21859981916a4f41de9db6ade61387103de1f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/returns-promise.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/data/test/built-ins/Promise/allSettled/species-get-error.js",
+      "bytes": 761,
+      "sha256": "56a098abe7d4e6bd9aaa740e6321cc92d3b53f42a2ad6fb5bd907c6e3c6e2f27",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/data/test/built-ins/Promise/allSettled/species-get-error.js",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/derive-census.py",
+      "bytes": 4794,
+      "sha256": "b64065e54144d2f91787c6e9c413842302a839e7a6f20b11946a8f2c2555d5c2",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/derive-census.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/README.md",
+      "bytes": 62415,
+      "sha256": "90fcbb3edcb41b4fab4f871db07d6592bc364cf19d0b58cb466d5326b96cb020",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/before/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/COMPATIBILITY.md",
+      "bytes": 77029,
+      "sha256": "2c6fa8802acb5d9defea7b543f897ed6d4e7e69031dc91641680cfd387c29106",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/before/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/ROADMAP.md",
+      "bytes": 38436,
+      "sha256": "13e3ff8110dc0b15cc589aab9ec41170ac14d2679107dc323eb276683887500b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/before/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/VALIDATION.md",
+      "bytes": 359422,
+      "sha256": "3c6d709be5491887143a928d039e041437998efbc2a9b2803df53e13853b1b6e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/before/docs/VALIDATION.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/promise-all-settled-test262.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/before/docs/promise-all-settled-test262.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/compose.py",
+      "bytes": 12134,
+      "sha256": "95d895b08d1807ff185c471205125dcd3bf11e67008517c8dc10b47ccb73f2bb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/compose.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/README.md.patch",
+      "bytes": 860,
+      "sha256": "7b4daf8dc23d650b43bd98c4d1934c62302945d790441f1ecd45f1f275a3cd8f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/diffs/README.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__COMPATIBILITY.md.patch",
+      "bytes": 978,
+      "sha256": "6afcb477105684d6038c92604f359dea0d45955cfc7d054c3a55fd609bdd10b5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/diffs/docs__COMPATIBILITY.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__ROADMAP.md.patch",
+      "bytes": 848,
+      "sha256": "1f1a647ea73b50884efb688e583dcb09fd7a5f160066753388273682b4134bbf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/diffs/docs__ROADMAP.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__VALIDATION.md.patch",
+      "bytes": 1482,
+      "sha256": "8f71661337a4233b2cbee31de9190408966b64d1c2ef1d5812d95bc6fa46fb17",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/diffs/docs__VALIDATION.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diffs/docs__promise-all-settled-test262.md.patch",
+      "bytes": 8105,
+      "sha256": "92144003029d833379d949c8567cf6b10fe26ef2e99e516fd67d03725e6eb062",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/diffs/docs__promise-all-settled-test262.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/html-review.json",
+      "bytes": 7790,
+      "sha256": "ae63c6f1020379124679c70e77d89c136f2593f4f561a77529c64048175c1873",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/notes.json",
+      "bytes": 1498,
+      "sha256": "339c4df93a4dd0a647859eef4940b1f6b0ceb7effb2380f25d0033334cd088a9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/notes.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/README.md",
+      "bytes": 62788,
+      "sha256": "9aa1d1e62ad771f86dbb3240dbf9b97df60928a60911af88008ef16bfd51c411",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/raw/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/COMPATIBILITY.md",
+      "bytes": 77466,
+      "sha256": "650225a50210e9699a2d4c1b9ba9566947118c8929397339fddb6ac2acb3f0a5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/raw/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/ROADMAP.md",
+      "bytes": 38694,
+      "sha256": "9d10611d47370e101d342bea285939154f0f938e8b8158d826db2bb54cc2db70",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/raw/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/VALIDATION.md",
+      "bytes": 360741,
+      "sha256": "51ec848e1f089d9667d2c5afeaef3ecad3538304d32035ec06b2ac948235fef1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/raw/docs/VALIDATION.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/promise-all-settled-test262.md",
+      "bytes": 7893,
+      "sha256": "eb9e93cccf48b11c7b4bdfc1238f7aa1a706d34acd4ce8ec60dc47d5a3339c67",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/raw/docs/promise-all-settled-test262.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/source-ready-2.json",
+      "bytes": 12161,
+      "sha256": "78e69dd75a080ee1781e3ffb5c2d55fd530900b23f17f01520dc6dbb6aed9a9b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/source-ready-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/source-ready.json",
+      "bytes": 11576,
+      "sha256": "347352ead19660ce50e18786c40d921e7b05a3d4c4f5de5856e35e7a21576fef",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/author.py",
+      "bytes": 9705,
+      "sha256": "702dcb1dafe21d0a46dde98e6bc036e23493e800a90915b2942ea5271bdc9b02",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/before/README.md",
+      "bytes": 62415,
+      "sha256": "90fcbb3edcb41b4fab4f871db07d6592bc364cf19d0b58cb466d5326b96cb020",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/before/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/before/docs/COMPATIBILITY.md",
+      "bytes": 77029,
+      "sha256": "2c6fa8802acb5d9defea7b543f897ed6d4e7e69031dc91641680cfd387c29106",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/before/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/before/docs/ROADMAP.md",
+      "bytes": 38436,
+      "sha256": "13e3ff8110dc0b15cc589aab9ec41170ac14d2679107dc323eb276683887500b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/before/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/before/docs/VALIDATION.md",
+      "bytes": 359422,
+      "sha256": "3c6d709be5491887143a928d039e041437998efbc2a9b2803df53e13853b1b6e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/before/docs/VALIDATION.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/before/docs/promise-all-settled-test262.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/before/docs/promise-all-settled-test262.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/diffs/README.md.patch",
+      "bytes": 674,
+      "sha256": "fa4c258bd43d7b531d2e91ad8e332c49bed5ba30406562a0943ec5b28f0dccbb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/diffs/README.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/diffs/docs__COMPATIBILITY.md.patch",
+      "bytes": 767,
+      "sha256": "1e13ba4e49930d34176d8aecdbaa6969e30c49449b330a4bbd7e8f8e411d562f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/diffs/docs__COMPATIBILITY.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/diffs/docs__ROADMAP.md.patch",
+      "bytes": 681,
+      "sha256": "1ffca0c2a612f61e5dc1e97bcfb6ae1a55d35618a7ac6a826bfc80b74d3e3eb5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/diffs/docs__ROADMAP.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/diffs/docs__VALIDATION.md.patch",
+      "bytes": 521,
+      "sha256": "90aa3a1181b0a591995053e0a87747ae792ad13c538e0db2e697422cc1282d68",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/diffs/docs__VALIDATION.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/diffs/docs__promise-all-settled-test262.md.patch",
+      "bytes": 5241,
+      "sha256": "f9957bd7a7b3b06cacd3dad239d52660a06df9bae14469dce9d263d45d4804df",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/diffs/docs__promise-all-settled-test262.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/draft-index.json",
+      "bytes": 8826,
+      "sha256": "5b8ac48c8697dd0a19db443a1c831109d2d9ab648eedfa8910b53f47542eb740",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/draft-index.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/raw/README.md",
+      "bytes": 62605,
+      "sha256": "8ea06aeacb108105705870d16145c35cf32aacff2e1616a55268cb80e2560489",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/raw/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/raw/docs/COMPATIBILITY.md",
+      "bytes": 77259,
+      "sha256": "76cd287f8cadf2edf765f20118f9b09e6fe7eaff5b9b2f152e5d470c61ad1157",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/raw/docs/COMPATIBILITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/raw/docs/ROADMAP.md",
+      "bytes": 38530,
+      "sha256": "945c70b5a4380b30ad85bd8de9ce474bbd24416766ca7dcd9fafadd23af3152d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/raw/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/raw/docs/VALIDATION.md",
+      "bytes": 359793,
+      "sha256": "2b520c8d9d3cd3ed4cfc435fc1ced66895450ed489f94694f9cecefe5f6faa34",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/raw/docs/VALIDATION.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-draft-1/raw/docs/promise-all-settled-test262.md",
+      "bytes": 5077,
+      "sha256": "f1cbf9b55287fca1fc482a2d437b489d81ed8c98c508cf9e82ae9e40b1de9a77",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/documentation-draft-1/raw/docs/promise-all-settled-test262.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/existing-profile-tables.json",
+      "bytes": 47868,
+      "sha256": "1e9abe5093ee850eb2573adb607d06827b830416dd4e3197e12d7ce364c079b0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/existing-profile-tables.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/fetch-data.py",
+      "bytes": 3306,
+      "sha256": "3d0687e43e3020e93d8d85c840351c8579a06ef11f0969bd372c70447c17a7a2",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/fetch-data.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/fetch-receipt.json",
+      "bytes": 64326,
+      "sha256": "939e0981039850e4ad21bbb3bd3aa5b3f99e3fdff4b25e3ec9c51d97a8238c42",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/fetch-receipt.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/file-plan.json",
+      "bytes": 1957,
+      "sha256": "7eed8f89a5a44c83cf6898e1440774bcf2f5668eb9cfe3ea51e866d2c31ad732",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/file-plan.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/first-results-review-1/replay-addendum.json",
+      "bytes": 19457,
+      "sha256": "0854e3623c2ec85482cd5556f5e8c16ca7e21fc31350589d829b9ba2132d9a08",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/first-results-review-1/replay-addendum.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/first-results-review-1/replay-addendum.py",
+      "bytes": 5119,
+      "sha256": "7de9287d172258953248eb73592d518d473bd0bd17eec196787515ed97edbf3f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/first-results-review-1/replay-addendum.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/first-results-review-1/review.py",
+      "bytes": 9564,
+      "sha256": "87cc5dea6a07cc5cf2922435e9048d941eacdab1519b1b9bf8b03fa1d33eaf43",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/first-results-review-1/review.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/first-results-review-1/source-review.json",
+      "bytes": 28131,
+      "sha256": "8f743d16ae01dc99acd4800c4196672f55f41027277e000d093fd6c0879e68d6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/first-results-review-1/source-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/html-corpus-audit-1/census.json",
+      "bytes": 94391,
+      "sha256": "b871d1ce074e194a7a5c2892e64f173b49db0e717e82c8680405e1d34ecfa2b4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/html-corpus-audit-1/census.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/html-corpus-audit-1/check-plan.py",
+      "bytes": 9629,
+      "sha256": "c3698530fa4f4dabff9ed70b8e73c98311d1db9a4097686c751a87df52c19a05",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/html-corpus-audit-1/check-plan.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/html-corpus-audit-1/derive.py",
+      "bytes": 6257,
+      "sha256": "b4f8aef734aad68049a5061d2d6e489dd747778bd031bfb9f1e2ade52f818c1b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/html-corpus-audit-1/derive.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/html-corpus-audit-1/review.json",
+      "bytes": 5289,
+      "sha256": "e706815312fc7f456fd41d8872a77b50945703456cf4a2a5c24bb99a4d41121b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/html-corpus-audit-1/review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-proof/commit.json",
+      "bytes": 1094,
+      "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory-proof/commit.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+      "bytes": 15975,
+      "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+      "bytes": 5452,
+      "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+      "bytes": 1374,
+      "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+      "bytes": 13201,
+      "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-proof/tree-bb56695b0f924495618e34495079f998fe83581a.json",
+      "bytes": 24363,
+      "sha256": "de9c7aaa0509dddd316f182362cf63b0a6c754fda00d3f15a9e8989dff84ab1f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory-proof/tree-bb56695b0f924495618e34495079f998fe83581a.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+      "bytes": 7655,
+      "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/inventory.json",
+      "bytes": 63577,
+      "sha256": "9185decda54bce5d340cfa0892cf611d5c0d6d736cb1728b465bbbc3adc0f42b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/inventory.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/legacy-adapters.json",
+      "bytes": 9607,
+      "sha256": "e0e9a40b273feef87f410e7ef0cea37160f0edf941b78558c40235d17d6cfb3c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/legacy-adapters.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/metadata.json",
+      "bytes": 24094,
+      "sha256": "f081ee8c50dfcba93f56c092ed9eea2f9f6f2c22eb0cd40f8a308dafa664b13f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/metadata.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/methods-replay-1.json",
+      "bytes": 616904,
+      "sha256": "abe3c76f41ee892de0962c40c02e0d09af40d6088c44387b7552f66babfbcf55",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/methods-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/author.py",
+      "bytes": 3923,
+      "sha256": "78ce01873bc18a798c2ac049781cfa4fc18e3f928c290dad44a39636a2e57626",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_import_test262_promise.py",
+      "bytes": 10195,
+      "sha256": "34eb6002004b74729cb643ae3dffb07e8c853899e0942cb5ae0ff138550f2a0c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_import_test262_promise.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_array_predicates.py",
+      "bytes": 9870,
+      "sha256": "5ebcb10851476d23ba5741bf406f6d008b075c98ba5c1513f266c6a8ffaa2b30",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_array_predicates.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_conformance.py",
+      "bytes": 184164,
+      "sha256": "ef0a9f84783e71fce0d4b74987979ffe0553dced252912e9a086415cbb7f819c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_conformance.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_construction.py",
+      "bytes": 7211,
+      "sha256": "d76212096b9dce4d770f386f85a987bc99e44c81c9be3b724da02a1ea14315cc",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_construction.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_object_has_own.py",
+      "bytes": 19010,
+      "sha256": "efc18506a091f64eedc820635b5d4d154650296ab522a0a989fcc7cbb7b77991",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_object_has_own.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_object_integrity.py",
+      "bytes": 13974,
+      "sha256": "a31e54e6c45dfad56a2e2d9b50f89d6277a7b04d55abfefdedf28ac799ce54b6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_object_integrity.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_promise_race_profile.py",
+      "bytes": 26533,
+      "sha256": "ef975a5caf53d28d413dafd1b8fc0a8097f4ac75557a8c0ec2cfd4f177372c16",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_promise_race_profile.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_promise_runner.py",
+      "bytes": 17702,
+      "sha256": "57a7caa172beacc43b5317a27ffa6c41b7d668edd88a9c663d816c0f21bf1f1d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_promise_runner.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_reflect_properties.py",
+      "bytes": 10858,
+      "sha256": "af969e4e5c263afed2d052fcda266700ebf2690e019d243bad8b309107e97ffd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_reflect_properties.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_typedarray_copy_within.py",
+      "bytes": 14777,
+      "sha256": "a313ab7731f3c96af770019e38eb2827974de3ded6f2d5f3f96b5922d72b79f7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_typedarray_copy_within.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_typedarray_fill.py",
+      "bytes": 14642,
+      "sha256": "3976cce039738f87cc59a7bb8548445d54a1e9cb8f65bb57979fc552fac5446f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_typedarray_fill.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_typedarray_foundation.py",
+      "bytes": 12753,
+      "sha256": "6320f3eb81f4bc4a5d851a33735bb33db066573a3800a4855211e6ce2b1f0b2f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_typedarray_foundation.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_typedarray_reverse.py",
+      "bytes": 14665,
+      "sha256": "c32673fdbc7aac6568c1f2d8daa946c446e5475a2a639605e1daafa7700e9b96",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_typedarray_reverse.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_typedarray_search.py",
+      "bytes": 15158,
+      "sha256": "eb6a72b41c9423e7c0f8a754ac6d02bed56fc32acffebd218e57e75f9b3db956",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_typedarray_search.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_typedarray_to_reversed.py",
+      "bytes": 15054,
+      "sha256": "8f196861f8be1fe9a8934ffc30250283de0b5d0e39d12e0db7139246ecbd8c7c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_typedarray_to_reversed.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/before/tools/test_test262_typedarray_views.py",
+      "bytes": 12456,
+      "sha256": "b810ba8db7d691d8d450fdd9b2469f543ef679021861c2ffb480bfc6c425227c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/before/tools/test_test262_typedarray_views.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_import_test262_promise.py.patch",
+      "bytes": 1308,
+      "sha256": "d618b80355fa8b6a1886862419a2fabb51fd3673af7e9100f285c7cb1913d1e5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_import_test262_promise.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_array_predicates.py.patch",
+      "bytes": 1360,
+      "sha256": "a22bb820df8ad422232c137723cc02d48d0b83535b6b8a7016cc61804c15d660",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_array_predicates.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_conformance.py.patch",
+      "bytes": 1414,
+      "sha256": "1d023a44d767217614ea4f2911688199d8d220b029846310afce796d0020463a",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_conformance.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_construction.py.patch",
+      "bytes": 1429,
+      "sha256": "e5f783ef707994a8f9625e6f4368504a2c7f7697a8d0809175766ed805b1a4fa",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_construction.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_object_has_own.py.patch",
+      "bytes": 1094,
+      "sha256": "d7d1ca50bd1f13856d897a7a872238a697d6ac129dedea8202e30c813005a80c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_object_has_own.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_object_integrity.py.patch",
+      "bytes": 826,
+      "sha256": "e857c2c1c156f1de23bf0efb5218028c093b1e444123a97af21480fc1398af7e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_object_integrity.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_promise_race_profile.py.patch",
+      "bytes": 1166,
+      "sha256": "6ee55aa5b3ba2349dc9fda244d5fde4ff5757cb8b10e4493b229341530e0a1cb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_promise_race_profile.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_promise_runner.py.patch",
+      "bytes": 580,
+      "sha256": "d16f39bc1b272351f4eb67bbca309c04647d37ace2a4114a15d1934fe389dc9a",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_promise_runner.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_reflect_properties.py.patch",
+      "bytes": 949,
+      "sha256": "4670fea30debbf667e44038a8049c8ab1f0ee15f21d6abd981837dc53cd8a0c5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_reflect_properties.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_typedarray_copy_within.py.patch",
+      "bytes": 810,
+      "sha256": "85066a9d3d4169c6aaa521ce386c47a3c63f25e3462c951a9e1f0629f45621c0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_typedarray_copy_within.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_typedarray_fill.py.patch",
+      "bytes": 938,
+      "sha256": "00cba0803ddbbc8a3c156eab477b6ff336c42910cb7d24093adf5816dc6237b6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_typedarray_fill.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_typedarray_foundation.py.patch",
+      "bytes": 1016,
+      "sha256": "60f9fc98aec5e4ea60c6bf600598ff42568c7767c9ca94fef79c3d0cf6c3ade0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_typedarray_foundation.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_typedarray_reverse.py.patch",
+      "bytes": 903,
+      "sha256": "51a91aa22407b0ddb9b515b8778f6b396c94c72a39ddc85d824c70298d013e6b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_typedarray_reverse.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_typedarray_search.py.patch",
+      "bytes": 1034,
+      "sha256": "881b94ef2f1ab34588bce81c42b2d6268098b91683ac0c45230c876748142241",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_typedarray_search.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_typedarray_to_reversed.py.patch",
+      "bytes": 956,
+      "sha256": "911dd962e378485741040b20aa89b08433485f2477acc7d6989b5fc5aad577fc",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_typedarray_to_reversed.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/diffs/tools__test_test262_typedarray_views.py.patch",
+      "bytes": 1023,
+      "sha256": "ec23fe95f08aa0efbf704d5207b7b2f9f3f32dee1571818bf76a02a417dc6d53",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/diffs/tools__test_test262_typedarray_views.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/html-review.json",
+      "bytes": 2876,
+      "sha256": "72b862fefce4ed4afed13c2e0a4afab19d754542b562476f78d5c53dad2f5edd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/layout-review.json",
+      "bytes": 12673,
+      "sha256": "26d7c008e6cc18b23d0b18ff01231fb272778f608e5d1eb5085f6351331ad147",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_import_test262_promise.py",
+      "bytes": 10264,
+      "sha256": "e740fd06ae9d15866a781443f0f9f34021fda0b4f51941b42927f84910d67156",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_import_test262_promise.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_array_predicates.py",
+      "bytes": 9893,
+      "sha256": "baff6ffe6605b17191a0e34bd0d09a05833a51daa3d2bdac6502a3225be6d8e5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_array_predicates.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_conformance.py",
+      "bytes": 184187,
+      "sha256": "7946260942a91eda41a158729a02f3fc753460ce53dcceecc8144405b9163f85",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_conformance.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_construction.py",
+      "bytes": 7234,
+      "sha256": "d2f03ee0c1d182fc93f3f85ea2f1126b9a7d67834c1724999d7fec6285f010cc",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_construction.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_object_has_own.py",
+      "bytes": 19033,
+      "sha256": "f315ba36bbc74eaf5961250c92499e4ac050b10f1bc6eb6e24829de3883ab753",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_object_has_own.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_object_integrity.py",
+      "bytes": 13997,
+      "sha256": "09b5d878139387fc71e43f78d207254bb6acf8e5a2c9b7c98422de3c7490b4c0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_object_integrity.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_promise_race_profile.py",
+      "bytes": 26614,
+      "sha256": "70cc66ff1d50b06fdfea49354286ecc3b94bcce88b0b11b64eeb5d1fac7048be",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_promise_race_profile.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_promise_runner.py",
+      "bytes": 17725,
+      "sha256": "3b9f45f4ae105eb6b213dd8f4dabb4559927e1a3ac72c12320b1171038ba4203",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_promise_runner.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_reflect_properties.py",
+      "bytes": 10881,
+      "sha256": "d15ad20a9747103ef9199044291351880088ccefd34dc04a3470369cef2efdf9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_reflect_properties.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_typedarray_copy_within.py",
+      "bytes": 14800,
+      "sha256": "cf6cf7f91f93741791560f7cf808c20ad651a14d1beb69ebf525e60ff39a8965",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_typedarray_copy_within.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_typedarray_fill.py",
+      "bytes": 14665,
+      "sha256": "a521370de4b5b46b3413265d5fa9839c82bf169abfda464b33070d91734d3a9c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_typedarray_fill.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_typedarray_foundation.py",
+      "bytes": 12776,
+      "sha256": "ed2ba77517d1887b7b8dff776572137c4753a471032d552e867c2ec4d0fc3e36",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_typedarray_foundation.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_typedarray_reverse.py",
+      "bytes": 14688,
+      "sha256": "fbc7c483b304141ce51eea99e16189e26adbb16e2fd193957eacf197ba667b54",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_typedarray_reverse.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_typedarray_search.py",
+      "bytes": 15181,
+      "sha256": "cc57a8d9f7ab2127827c44ecbb6badfb2f421dadefa29bf29f03b7361dc1cc60",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_typedarray_search.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_typedarray_to_reversed.py",
+      "bytes": 15077,
+      "sha256": "ec08b9826ac52c6f37e836296401a6dd19c230b7e78a734ad6f3553871a2f08f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_typedarray_to_reversed.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/raw/tools/test_test262_typedarray_views.py",
+      "bytes": 12479,
+      "sha256": "a22ed83a2d61ee05cbd2f5a3ba4f48ed87555714c5f7a038931663ed39500014",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/raw/tools/test_test262_typedarray_views.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/selection.json",
+      "bytes": 35514,
+      "sha256": "1caf208568bc1bb287677334687696f6f255e57349d8834758e6ae3ba4f00ae1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/selection.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-before-1/source-ready.json",
+      "bytes": 13090,
+      "sha256": "b5fd111aa43a3cab940d49c8f1c2f407d8eb187b0a46abc3c29e71d40ecc2d58",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/migrations-before-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-ci-final.json",
+      "bytes": 32023,
+      "sha256": "0d0e6fa9b03bb3a24e60f5f345985a8d7d57df8c57dff9eb7e9764ab4d6585b0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/parent-ci-final.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/parent-source.json",
+      "bytes": 206006,
+      "sha256": "8a4bf07a6630201ac38774f4693a40b1fdf4dec679ccc2b8554f3a5b4ff178d4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/parent-source.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/plan.json",
+      "bytes": 7378,
+      "sha256": "f739c64ab7a2db36af4db753d78ccc5bd7f1c1069636d7238e3a77ea04c95674",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/plan.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/author.py",
+      "bytes": 9655,
+      "sha256": "f6d19f3bc63b56551b860eeecae7a151e8de9f5310dd29ee1f20629c481ce438",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/tools/import_test262.py",
+      "bytes": 81838,
+      "sha256": "cd41b9fa80565e6d82bbff27ddfea75a246d156c159396e8c228e636fd6aee6e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/before/tools/import_test262.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/before/tools/test262_conformance.py",
+      "bytes": 300410,
+      "sha256": "b18e067560c8da0ffe213a10bf61e6a03041b54c8860baeb15e8c176fb2b4881",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/before/tools/test262_conformance.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/tools__import_test262.py.patch",
+      "bytes": 12248,
+      "sha256": "70a8138da64d024092e5d6b1e27cab22e469526f2995c5d38c98d3fd76403248",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/diffs/tools__import_test262.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/diffs/tools__test262_conformance.py.patch",
+      "bytes": 24578,
+      "sha256": "2db23f198bcc9ff742836b45d6f5e0a1959c21f13873c6ec0298aa6093b107e6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/diffs/tools__test262_conformance.py.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/inverse-edits.json",
+      "bytes": 24217,
+      "sha256": "37a141bbeaa624162721ea0f6a01b2b57cb16035caddf19a1a411d12770d387d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/inverse-edits.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/layout-review.json",
+      "bytes": 8447,
+      "sha256": "9120e19c69e6a668e3046345230f4a123d35d9c09561ba4f92d07f3d58538ccb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/layout-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/notes.json",
+      "bytes": 11495,
+      "sha256": "e81c68f9ebb80465f998fb90fa5feb8d3a4759ebfb2b44b65b2f0c671cdce4a6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/notes.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/tools/import_test262.py",
+      "bytes": 83329,
+      "sha256": "818ca38c2406c9a16c9f03be28ca8c4e6d8cb0dcbe6cd3eacc913212cadbecbf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/raw/tools/import_test262.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/raw/tools/test262_conformance.py",
+      "bytes": 320244,
+      "sha256": "1c5520a10d404cc9ee34d6d4e1e93c79e923baead23317b397caa7a9bddeba6f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/raw/tools/test262_conformance.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/source-bindings.json",
+      "bytes": 1288,
+      "sha256": "058542db4c4cc3cd78c54eaf321c943322ec555b54a05eb8ff813b5aefd271a3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-1/source-ready.json",
+      "bytes": 3183,
+      "sha256": "138f7e2431b52578f990ddb2331ec1a063577445333555505326fb4c6e8214f0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/production-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/race-replay-1.json",
+      "bytes": 593040,
+      "sha256": "e4969a04f1cd6d5a5b26070318785eb8afb9c11af1e5980a6b1c88310c04a1f0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/race-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/upstream-all-1.json",
+      "bytes": 600036,
+      "sha256": "30bed67bea5e55308baabf10b9ff845bd1e00cedb4691e87b894ce6b6af2f50b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/replay-parent/upstream-all-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/upstream-existing-1.json",
+      "bytes": 616889,
+      "sha256": "755c1cb09c63221e7c3a864629db6abcccfb4cd7a093f3fd124801485056cd62",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/replay-parent/upstream-existing-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/replay-parent/upstream-race-1.json",
+      "bytes": 593025,
+      "sha256": "7f54bc1abbdb9411efb8b5020f23052f7d0396e8fd8f59c5bc5a2806c99492bd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/replay-parent/upstream-race-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/root/ci-import.json",
+      "bytes": 284,
+      "sha256": "3bf751fb3544ef328f1ac731b2cb4dea50cd67afed557f418a17c9589cae6ace",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/ci-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/documentation-import.json",
+      "bytes": 1550,
+      "sha256": "9580b41f3f76ce7ab0c7f0fe02a24803cb9edb86b11a26c1fc937abd3dcc54f0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/documentation-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/final-validation.json",
+      "bytes": 28596,
+      "sha256": "be7666e49451c9da085e083907c079420602eee3fa21ccfe93f961c2cf6f0adb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/final-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/finalize-validation.py",
+      "bytes": 8514,
+      "sha256": "c1d46b30f344f4d610d8404a103ba9aeddeae84533493f74f864c4bcb110819b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/finalize-validation.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/import-parent-controls.py",
+      "bytes": 3803,
+      "sha256": "d33c76cedf4d0e66d2c2cece2d17f17788fb25d1d171a7fcb26376703af503d7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/import-parent-controls.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/import-production.py",
+      "bytes": 3595,
+      "sha256": "277f0cf03b61853bc0480d2c2caa631b4e1d667b55f3d6fe9e1a3d3d3c88f242",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/import-production.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-controls-import.json",
+      "bytes": 15311,
+      "sha256": "c684f0e1e5220fc03525c028d7eeef8a949858d90d4d64997cebb494dcf8c809",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/parent-controls-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-publication-snapshot-1.json",
+      "bytes": 249,
+      "sha256": "85925cc4ff8f37391e99c1ce62c18c667e54c5cc5a0257913bb39915c4dbc2a5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/parent-publication-snapshot-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-validation.json",
+      "bytes": 2229,
+      "sha256": "f4e3d09cfc8e09179c6f8428ea26044221c7d701624c9a4ef144ca92c3c48e53",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/parent-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/production-import.json",
+      "bytes": 1730,
+      "sha256": "8f2c818ebb85ffe0a7a065e67d9a0a1444ccc54cf69416eeea82ebffa649f762",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/production-import.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/publish-evidence.py",
+      "bytes": 5373,
+      "sha256": "4844d0639f40957f4f4437e5c8e8efca3ec7b59fd2ce1dd3e77eac6faae2d3b5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/publish-evidence.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/publish-git.py",
+      "bytes": 2414,
+      "sha256": "02811cf28ffdf27515aeec871ae2d80d6aa8832227ed1768b1062554d0cda249",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/publish-git.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/record-and-replay.py",
+      "bytes": 5107,
+      "sha256": "abdd3af0b45c005aaa57f60fb1327f8a194f141a835db7247030ac5fa252a186",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/record-and-replay.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/replay-validation.json",
+      "bytes": 4794,
+      "sha256": "5a3cb9ac41b03783e024aa0daacc604af900cb3cc34d0a3101453d1645b8f41e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/replay-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/selection-1.json",
+      "bytes": 2972,
+      "sha256": "f6a60a14a87cfd2932e745bbc86b4378d20d0ddad723eaff52ac1c7129419d60",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/selection-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/verify-publication.py",
+      "bytes": 2961,
+      "sha256": "6283451a5b0f708567c4a3359fb434900666b442ba34c68738df39de15d5a988",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/root/verify-publication.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/run-tool.py",
+      "bytes": 726,
+      "sha256": "abea4ed0c4a338841442c6d7b4fc327f719dd3e5e57b7163cc92bc5517c8532b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/run-tool.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/seal-plan.py",
+      "bytes": 20079,
+      "sha256": "e3cbea200858eae7d444989453126cb42964ec9fac0162df1f4994df312ac6a3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/seal-plan.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-bindings.json",
+      "bytes": 11308,
+      "sha256": "398103360743b15f0236e93a2839f9e48079436f9e4fc60767593fe6bf7349ee",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-1.json",
+      "bytes": 227665,
+      "sha256": "a5201965eecfc232f8b919be9371821194d84889a1efde48c60ce2513d4f669d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-candidate-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-2.json",
+      "bytes": 227580,
+      "sha256": "b285459ac11cc6ca7a11ab962ce7fe3b52d2c77cea1fa70e33ed8d6ee03d24f8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-candidate-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-final.json",
+      "bytes": 227840,
+      "sha256": "60a0a525f7bddad865fa8303b45efbe3ab2189b93a4f3cb16de750bb432eea0e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-final.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-parent-controls.json",
+      "bytes": 227656,
+      "sha256": "233f34f68438b07ad656e1121a8f240cb6a5cf4715efb909fbcf92294044ccb1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-parent-controls.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-policy-caveats.json",
+      "bytes": 3782,
+      "sha256": "adcda73f2fc5eac95f6ca5d89cd882a63cecdafee2490052f207993a9394a915",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-policy-caveats.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-ready.json",
+      "bytes": 43265,
+      "sha256": "365a74f55944cdda5b2c48f7f35c7ceb8034b5114ef2609a0194818523d488ab",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tests/upstream/test262-promise-all/manifest.json",
+      "bytes": 35388,
+      "sha256": "400769ca8bcdc92b3ef0edaa76ef3ae84aa20e277fd27de568a0e2f0999fa8bc",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tests/upstream/test262-promise-all/manifest.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tests/upstream/test262-promise-methods-async/manifest.json",
+      "bytes": 80885,
+      "sha256": "cf8d1ea1c354de83add3e0ca734159806d6d293b1a750d6bb5f972f0a0d2bde9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tests/upstream/test262-promise-methods-async/manifest.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tests/upstream/test262-promise-race/manifest.json",
+      "bytes": 34208,
+      "sha256": "2ab40518270734883d2af5493c27b1316b5e38867575882468b7ec6b977e8558",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tests/upstream/test262-promise-race/manifest.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/import_test262.py",
+      "bytes": 81838,
+      "sha256": "cd41b9fa80565e6d82bbff27ddfea75a246d156c159396e8c228e636fd6aee6e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/import_test262.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/promise-all-profile-oracle.json",
+      "bytes": 365483,
+      "sha256": "0a8c1db76b33216daec60e0062363708f0a8bbb3910f8b9b150b0b227faab2d2",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/promise-all-profile-oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/promise-methods-runner-oracle.json",
+      "bytes": 92372,
+      "sha256": "feeeb6ffb8e7b8f80385426e7c7922b9ce9adcc9212d7016b9dde80b10ffb02b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/promise-methods-runner-oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/promise-race-profile-oracle.json",
+      "bytes": 170496,
+      "sha256": "252b2740d577254459311092942a04ef5d9b8b03b58b313397bb031997fc0427",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/promise-race-profile-oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test262_conformance.py",
+      "bytes": 300410,
+      "sha256": "b18e067560c8da0ffe213a10bf61e6a03041b54c8860baeb15e8c176fb2b4881",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test262_conformance.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_import_test262_promise.py",
+      "bytes": 10195,
+      "sha256": "34eb6002004b74729cb643ae3dffb07e8c853899e0942cb5ae0ff138550f2a0c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_import_test262_promise.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_array_predicates.py",
+      "bytes": 9870,
+      "sha256": "5ebcb10851476d23ba5741bf406f6d008b075c98ba5c1513f266c6a8ffaa2b30",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_array_predicates.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_conformance.py",
+      "bytes": 184164,
+      "sha256": "ef0a9f84783e71fce0d4b74987979ffe0553dced252912e9a086415cbb7f819c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_conformance.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_construction.py",
+      "bytes": 7211,
+      "sha256": "d76212096b9dce4d770f386f85a987bc99e44c81c9be3b724da02a1ea14315cc",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_construction.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_object_has_own.py",
+      "bytes": 19010,
+      "sha256": "efc18506a091f64eedc820635b5d4d154650296ab522a0a989fcc7cbb7b77991",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_object_has_own.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_object_integrity.py",
+      "bytes": 13974,
+      "sha256": "a31e54e6c45dfad56a2e2d9b50f89d6277a7b04d55abfefdedf28ac799ce54b6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_object_integrity.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_promise_all_profile.py",
+      "bytes": 18587,
+      "sha256": "9e750ae9d92e28c7b41cb07025d1ebaf41e7a4d5e95f90aa194bd85d3f7d321f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_promise_all_profile.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_promise_race_profile.py",
+      "bytes": 26533,
+      "sha256": "ef975a5caf53d28d413dafd1b8fc0a8097f4ac75557a8c0ec2cfd4f177372c16",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_promise_race_profile.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_promise_runner.py",
+      "bytes": 17702,
+      "sha256": "57a7caa172beacc43b5317a27ffa6c41b7d668edd88a9c663d816c0f21bf1f1d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_promise_runner.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_reflect_properties.py",
+      "bytes": 10858,
+      "sha256": "af969e4e5c263afed2d052fcda266700ebf2690e019d243bad8b309107e97ffd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_reflect_properties.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_typedarray_copy_within.py",
+      "bytes": 14777,
+      "sha256": "a313ab7731f3c96af770019e38eb2827974de3ded6f2d5f3f96b5922d72b79f7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_typedarray_copy_within.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_typedarray_fill.py",
+      "bytes": 14642,
+      "sha256": "3976cce039738f87cc59a7bb8548445d54a1e9cb8f65bb57979fc552fac5446f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_typedarray_fill.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_typedarray_foundation.py",
+      "bytes": 12753,
+      "sha256": "6320f3eb81f4bc4a5d851a33735bb33db066573a3800a4855211e6ce2b1f0b2f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_typedarray_foundation.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_typedarray_reverse.py",
+      "bytes": 14665,
+      "sha256": "c32673fdbc7aac6568c1f2d8daa946c446e5475a2a639605e1daafa7700e9b96",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_typedarray_reverse.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_typedarray_search.py",
+      "bytes": 15158,
+      "sha256": "eb6a72b41c9423e7c0f8a754ac6d02bed56fc32acffebd218e57e75f9b3db956",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_typedarray_search.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_typedarray_to_reversed.py",
+      "bytes": 15054,
+      "sha256": "8f196861f8be1fe9a8934ffc30250283de0b5d0e39d12e0db7139246ecbd8c7c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_typedarray_to_reversed.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-snapshots/tools/test_test262_typedarray_views.py",
+      "bytes": 12456,
+      "sha256": "b810ba8db7d691d8d450fdd9b2469f543ef679021861c2ffb480bfc6c425227c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/source-snapshots/tools/test_test262_typedarray_views.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/adaptation.patch",
+      "bytes": 24454,
+      "sha256": "aed19cdebcc82ab289a1fa2bbf3cf4db12bdf76c27bc5a01454d9d82c2cf5f08",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/adaptation.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/author.py",
+      "bytes": 17647,
+      "sha256": "e2cca781cf5a17b8cdb0b9c70d6bda7cb92e6c0cc0802cafecaba82743f157a2",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/author.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/before/tools/test_test262_promise_race_profile.py",
+      "bytes": 26533,
+      "sha256": "ef975a5caf53d28d413dafd1b8fc0a8097f4ac75557a8c0ec2cfd4f177372c16",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/before/tools/test_test262_promise_race_profile.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/corpus-ready.json",
+      "bytes": 40111,
+      "sha256": "7ec767bba599284d3748129fb3bd5201078d7cd7f8fabf85c89c387788566632",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/corpus-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/expected-manifest.json",
+      "bytes": 39132,
+      "sha256": "bca16210396a6aa07adac947ff47166cde4b4da97f4f7a82d24e9d8763b7ef8e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/expected-manifest.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/html-check.py",
+      "bytes": 11178,
+      "sha256": "e5d43d391af68e74e6e00d6942bd63e7586393a2c0db0f746934a406a4b8b4d4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/html-check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/html-review.json",
+      "bytes": 3917,
+      "sha256": "42b0d60e32fa818f73ca331ffd5ff2e6fac761425b619920a8ec930d6303a4cf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/html-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/notes.json",
+      "bytes": 1356,
+      "sha256": "48e9924be76fd71342e81b6a9ec9b34e389cd06c472b9a2f9964818395556d7b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/notes.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/raw/tools/promise-all-settled-profile-oracle.json",
+      "bytes": 278329,
+      "sha256": "af3b68ef78970aeb06c671ca52608ad8f1e38824421b2a95b24ab99ebd19c654",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/raw/tools/promise-all-settled-profile-oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/raw/tools/test_test262_promise_all_settled_profile.py",
+      "bytes": 28443,
+      "sha256": "14e7ec9b0eb9da6829fde4622408eed9b3791f665c01bd629fa7829633f8fd13",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/raw/tools/test_test262_promise_all_settled_profile.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/roster.json",
+      "bytes": 5234,
+      "sha256": "29b705f76620aef4364b71ea931bd987041bd320acb1118bfe45929141979b81",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-bindings.json",
+      "bytes": 3114,
+      "sha256": "9d808231b888a37b510d74f36f268cce75afb60db099632c2788bcb10268c49a",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-before-1/source-ready.json",
+      "bytes": 3278,
+      "sha256": "439e2ed93dc359286d85d228b65e0d3a48dcf6cfaf332795244bde5010d6eed8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-before-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/tests-outline.json",
+      "bytes": 3349,
+      "sha256": "ce1ecad4255ba4125a3a074e07a427b215653a7a25bf2437af2eafc37e7cbb45",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/tests-outline.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/baseline/candidate-python-1.json",
+      "bytes": 317,
+      "sha256": "e670d6a70e0b7f4db0bac436852f7d53a71c1df4f73467249a4b0c79d4e1334b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/baseline/candidate-python-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/baseline/candidate-python-1.log",
+      "bytes": 102831,
+      "sha256": "3b9ca887df3ee4382d733f27a4f93a4fbfbf5b8daf1508eadd67d8aa5fb33364",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/baseline/candidate-python-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/check-final-evidence.py",
+      "bytes": 15916,
+      "sha256": "503c52c03d7127a6f3c658dcfc71e63339d64379ae31724bc488dcf085a92265",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/check-final-evidence.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/check-python-rosters.py",
+      "bytes": 7436,
+      "sha256": "2c3c179cfbf7627964ecd762f38927859b130b2a94a7cdcdbee42cbf2a4d7971",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/check-python-rosters.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/final-checks.json",
+      "bytes": 16905,
+      "sha256": "03fb48391b9e1b61d85cde202c256845aac5bd173f2f39dd069a6311b88014a2",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/final-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/final-review.json",
+      "bytes": 10112,
+      "sha256": "57ffc16859dd776468bc6be5f47cb9acdcf1feaa6e80bb9047661d807aa8a143",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/final-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/python-review.json",
+      "bytes": 12161,
+      "sha256": "9bdc8a947d5c07500097b9ffdcf77f872b79cd4d1471175077206b6e92c89722",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/python-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/python-rosters.json",
+      "bytes": 146775,
+      "sha256": "b797cd21cbcb0cd1170b74f447a06c1c35d0ca371655403e33c6f5c083240aa0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation-review-1/python-rosters.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-replay-1.json",
+      "bytes": 568,
+      "sha256": "aaa7ee502ebebbc887ea3eeb0becb5b8493739ad4c7832ec99a60843cf78abd2",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-replay-1.log",
+      "bytes": 225,
+      "sha256": "1a865f7bcd62b486d3c556b0d2d1f972d2985f30366749035cf70ee5bb305438",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-replay-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-settled-observed-1.json",
+      "bytes": 492,
+      "sha256": "c48de09966ffb5320379297c52aa476d777a7bee9002df54d14fd2769ecee04c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-settled-observed-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-settled-observed-1.log",
+      "bytes": 199,
+      "sha256": "d4ed227d0cf48f9cf1747457a9da9c4bd2299ae8167e09f5166249aeaa4854a8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-settled-observed-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-settled-record-1.json",
+      "bytes": 607,
+      "sha256": "ec54bd4ab6db4fd28bcca4b42d22e791eb0f9445b7c7b709a3c192868ec54cb0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-settled-record-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-settled-record-1.log",
+      "bytes": 197,
+      "sha256": "0a590878f11bf803836d526d13edb4e53400e954719ec39429d7464a5a2a33f5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-settled-record-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-settled-replay-1.json",
+      "bytes": 600,
+      "sha256": "d743eccfbf79087dff094d022b77374ce5e31b5ffb1dc9728a376280148842a8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-settled-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/all-settled-replay-1.log",
+      "bytes": 234,
+      "sha256": "614f53f99290de0b6d0df415e4149906b68ecb1620cdc613544cf466361c3ec3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/all-settled-replay-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-profile-1.json",
+      "bytes": 353,
+      "sha256": "63c2f1965c05b31a1cbcf8a818e18f20d65ba80111407e2656049936db1ba311",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/candidate-profile-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-profile-1.log",
+      "bytes": 3007,
+      "sha256": "7d07414b4e2fb7b9bf79aeecddb8b7354b5f735cd0333c6075edb2d707a88423",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/candidate-profile-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/methods-replay-1.json",
+      "bytes": 596,
+      "sha256": "a0e8014296f4b6f69727e89124adec7ba879e9c1b91a555f8f3f2beb5db862c5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/methods-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/methods-replay-1.log",
+      "bytes": 230,
+      "sha256": "a8b2bdf18651830b60bbbd394de1bb61850ca00110ccee9e46d0e2736bc13564",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/methods-replay-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-profile-1.json",
+      "bytes": 350,
+      "sha256": "6d3adae9fc72302a24d7363c1ba02cd0333481a56a95ff7d3c5f6723b325502f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/parent-profile-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-profile-1.log",
+      "bytes": 46414,
+      "sha256": "b60300c91f5144c6d50e4c05d887c4f7ad3ef52c3b4c8251760eff2d2ce936e3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/parent-profile-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/python-all-1.json",
+      "bytes": 311,
+      "sha256": "0a383994af50658895f1e63e8b3949200756cc581d3ed313364c92c9ddf49e7c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/python-all-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/python-all-1.log",
+      "bytes": 105739,
+      "sha256": "eab6e6c2f032dd53dccad10cf169176f7ff17ab39e6be759a5935a237838b3dc",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/python-all-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/race-replay-1.json",
+      "bytes": 572,
+      "sha256": "8b9ad8c917c5adf030da6b3779347ca6f653685a520d992af5b4a8df74b9c806",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/race-replay-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/race-replay-1.log",
+      "bytes": 226,
+      "sha256": "337b34681ff98cd97f28882b56b49d497afe225f0991428f84e518196f8c86bb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/validation/race-replay-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "documentation/README.md",
+      "bytes": 62788,
+      "sha256": "9aa1d1e62ad771f86dbb3240dbf9b97df60928a60911af88008ef16bfd51c411",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/README.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/COMPATIBILITY.md",
+      "bytes": 77466,
+      "sha256": "650225a50210e9699a2d4c1b9ba9566947118c8929397339fddb6ac2acb3f0a5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/docs/COMPATIBILITY.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/ROADMAP.md",
+      "bytes": 38694,
+      "sha256": "9d10611d47370e101d342bea285939154f0f938e8b8158d826db2bb54cc2db70",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/docs/ROADMAP.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/VALIDATION.md",
+      "bytes": 360741,
+      "sha256": "51ec848e1f089d9667d2c5afeaef3ecad3538304d32035ec06b2ac948235fef1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/docs/VALIDATION.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/promise-all-settled-test262.md",
+      "bytes": 7893,
+      "sha256": "eb9e93cccf48b11c7b4bdfc1238f7aa1a706d34acd4ce8ec60dc47d5a3339c67",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/docs/promise-all-settled-test262.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "sources/.github/workflows/check.yml",
+      "bytes": 24314,
+      "sha256": "b194063b3d6de7550e169d70da95bc046aca055c63fe8077025db4f260ee1214",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/.github/workflows/check.yml",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/conformance/test262-promise-all-settled-current.json",
+      "bytes": 61089,
+      "sha256": "0650b17dc47f52be63850d725c37bb892b376c5669fb526bf869493597e95072",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/conformance/test262-promise-all-settled-current.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/INTERPRETING.md",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/LICENSE",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/harness/assert.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/harness/doneprintHandle.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/harness/isConstructor.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/harness/promiseHelper.js",
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/harness/promiseHelper.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/harness/propertyHelper.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/harness/sta.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/inventory-proof/commit.json",
+      "bytes": 1094,
+      "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/inventory-proof/commit.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+      "bytes": 15975,
+      "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+      "bytes": 5452,
+      "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+      "bytes": 1374,
+      "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+      "bytes": 13201,
+      "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/inventory-proof/tree-bb56695b0f924495618e34495079f998fe83581a.json",
+      "bytes": 24363,
+      "sha256": "de9c7aaa0509dddd316f182362cf63b0a6c754fda00d3f15a9e8989dff84ab1f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/inventory-proof/tree-bb56695b0f924495618e34495079f998fe83581a.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+      "bytes": 7655,
+      "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/manifest.json",
+      "bytes": 39132,
+      "sha256": "bca16210396a6aa07adac947ff47166cde4b4da97f4f7a82d24e9d8763b7ef8e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/manifest.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/call-resolve-element-after-return.js",
+      "bytes": 1587,
+      "sha256": "0eb00c06a24fc7e1d69338a47349f916274e3357e1ae2f3fc619a15761dc433d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/call-resolve-element-after-return.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/call-resolve-element-items.js",
+      "bytes": 1445,
+      "sha256": "7b5a5216aae0e5fc660f37c58764be43575883ab7536339299b9eff5153e01ea",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/call-resolve-element-items.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/call-resolve-element.js",
+      "bytes": 1223,
+      "sha256": "4b814811bf9b6b722da39c81236bef92b57f2d085198172e7b2720ad636c3d83",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/call-resolve-element.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-executor-called-twice.js",
+      "bytes": 2939,
+      "sha256": "bbddd20112831cd894df663b80e6b294cc51d838a91b185516c63de1bfb57d67",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-executor-called-twice.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-executor-not-callable.js",
+      "bytes": 3135,
+      "sha256": "bdb94d66ddb4114e6d2eb7519bfb2f13267ea6717164cc329d464236c9f16ab4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-executor-not-callable.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-resolve-throws-no-close.js",
+      "bytes": 1599,
+      "sha256": "13b66e098486cd94cf36ed74711cb550c40d13db76bdeae99a489eedafafa27f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-resolve-throws-no-close.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-resolve-throws-reject.js",
+      "bytes": 1577,
+      "sha256": "bcd847d94157f94c4074e1ecc7946c4cda601dade483241e5961972949d23f69",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/capability-resolve-throws-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-ctor-throws.js",
+      "bytes": 588,
+      "sha256": "0c90e24cd74287fffd00b0565026c2928c57cd888a4165cd1133c537f92ed41b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-ctor-throws.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-ctor.js",
+      "bytes": 865,
+      "sha256": "9fbdc718fc77f088182f27c0895d0d0cb6cffcf634c527646d4138d3e71201de",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-ctor.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-non-ctor.js",
+      "bytes": 512,
+      "sha256": "09a966da88bd58263d2822478649b224aa96622d86e49aa02eab4bdca600bb6c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-non-ctor.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-non-object.js",
+      "bytes": 862,
+      "sha256": "85ee262f8fb0ee0660cb1e0bafc381554beafd68d899ca6378d0e1351b6cf543",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/ctx-non-object.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/does-not-invoke-array-setters.js",
+      "bytes": 1409,
+      "sha256": "8037f95c6bcc8dbdcad1172d9514b56383e7a3e6e2633c467c2e1ffcfb176737",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/does-not-invoke-array-setters.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-error-close.js",
+      "bytes": 1071,
+      "sha256": "dec3928f782d03a3a5201993076146ce0fa60e6a3a765b8633ed2ca00a4ae935",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-error-close.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-error-reject.js",
+      "bytes": 1076,
+      "sha256": "9c7cb9f11f7c02b336ca88812a63c422b07a35ab6ad19cc561be31dd013916e5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-error-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-error-reject.js",
+      "bytes": 1058,
+      "sha256": "8d5869b8ec3c51295df9dd431a828ae262af111b2b1c66cdf208e1e28d74ba68",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-error-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-error.js",
+      "bytes": 1026,
+      "sha256": "113707c0b32e950f3b1ae69285928b4fb7b959329ec4f53f81ed5f752270879e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-error.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-once-multiple-calls.js",
+      "bytes": 1265,
+      "sha256": "daf3d19af092e9366c729bd040870cb14ac44a14d8c0feeadf761bd4a5b8489d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-once-multiple-calls.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-once-no-calls.js",
+      "bytes": 1129,
+      "sha256": "3b362e382def80d2e78222371342cf7d1006ce703f5d2abf7b80f7fac4cf1c1c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-get-once-no-calls.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-custom.js",
+      "bytes": 1287,
+      "sha256": "3e771636f906b729be94e0fbe6fc80c7e3756351a741bb6386b743eb5fd63602",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-custom.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-promise.js",
+      "bytes": 929,
+      "sha256": "4c31687b22f7df6ca76fe6e67b167334402feb202779e0a41afd984ff1150c24",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-promise.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-on-values-every-iteration-of-promise.js",
+      "bytes": 944,
+      "sha256": "34fabe51c30feeeb81c88222a39b4cd6ebff4e54efc048c1987172a36d1a8c2f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-on-values-every-iteration-of-promise.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-return.js",
+      "bytes": 1115,
+      "sha256": "a9b613b7f487f3e4f3178ca806e713e29fd7f4f2b172555388b58a8430029977",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve-return.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve.js",
+      "bytes": 1353,
+      "sha256": "b67ef27b3ad2845a9046686aa5d4f2d2f0324077c40811408b24077b5ddce2d9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-resolve.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-error-close.js",
+      "bytes": 1133,
+      "sha256": "1faad576c2086a8a12a66a78a2db72238d1d4cc71c63bfca36cc4ba79062cf75",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-error-close.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-error-reject.js",
+      "bytes": 1037,
+      "sha256": "70145c01fe59d142099b7470beaa34bbff24ab15d112726c82418c7f346d07dd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-error-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-get-error-close.js",
+      "bytes": 1163,
+      "sha256": "9dc072358c8a615ae746ea0c76b72ba6d82f38cff611e0875862ef4d8cc5da87",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-get-error-close.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-get-error-reject.js",
+      "bytes": 1067,
+      "sha256": "3db69dacb8fc877e325124d1faa6be5ecb84a0ffe5773b8d3c37033368004567",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then-get-error-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then.js",
+      "bytes": 1624,
+      "sha256": "642ce9728a91179b9c9156c3072fde69600180993e0a085518bb013422c88dc8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/invoke-then.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/is-function.js",
+      "bytes": 301,
+      "sha256": "421d01bac8c843517098165c6991de94111aa97def9ee3a4461a5ef0a08f8d28",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/is-function.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-false-reject.js",
+      "bytes": 1012,
+      "sha256": "feb6f572386f2a5670ba95cdfb0b867e0f2d70ae2fe4576d9eabdcb007de38fa",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-false-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-null-reject.js",
+      "bytes": 1010,
+      "sha256": "67327fb99973707299a272f9af10aa0b08e203d6d38f90b231870d3d702fddda",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-null-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-number-reject.js",
+      "bytes": 1009,
+      "sha256": "653df03a3305eb304220ea339d6594a06ceebeaf129be1f64b42d9a40c6d7200",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-number-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-poisoned.js",
+      "bytes": 1017,
+      "sha256": "bbcf2d73fc9aea9e9f589e8c80c12ec17f9041aa8727c739e9d216fe5c3e0746",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-poisoned.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-string-resolve.js",
+      "bytes": 929,
+      "sha256": "cb4141c3b1626eea976a526b80a9efb5fc160c184344075f6fd5a90deae47156",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-string-resolve.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-symbol-reject.js",
+      "bytes": 1409,
+      "sha256": "be9e31424b26464c4b6bcfb1907fe50bfa43dc48df2f7d6bc75b285db412b8b7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-symbol-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-true-reject.js",
+      "bytes": 1403,
+      "sha256": "b903a3500c8d1dda1d8bd3d3500be6f2d925a4be5ebf2b5a5271063f7540efd4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-true-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-undefined-reject.js",
+      "bytes": 1413,
+      "sha256": "15b9c9cbe449a028a647e9d497aa159f0ddf6ce9fca520815912e8f88a1c79b9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-arg-is-undefined-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-false-reject.js",
+      "bytes": 1574,
+      "sha256": "e9e4ad7c267fa3d1f10ebd0084c707dd948ee452c15ce53416aa3ee5fd95f15e",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-false-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-null-reject.js",
+      "bytes": 1468,
+      "sha256": "68c37262a55d90269433ea352dc968de52c7a7fff161cfc3366ec353054ee2d7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-null-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-number-reject.js",
+      "bytes": 1462,
+      "sha256": "9178cc11e8539d94116ab85c4e9b293eded054119f41357a7b1b83cf447c6e5f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-number-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-string-reject.js",
+      "bytes": 1464,
+      "sha256": "b90b3934cfb3822e9df6e2f90573883a9c148ad98e5595bede1e2c85b714fc2c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-string-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-symbol-reject.js",
+      "bytes": 1476,
+      "sha256": "a4d36319d9189aafda50a4a167f8ab3399eceb03b0611774b2d392b796a30fa0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-symbol-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-true-reject.js",
+      "bytes": 1468,
+      "sha256": "109773e7be8f03869f62c48e6762e3f307725d816ee9acffcc53c0996ce2331c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-true-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-undefined-reject.js",
+      "bytes": 1478,
+      "sha256": "b9d236be1873066ac558df32ea95b64cd21caf10147321199e364c840cf43237",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-assigned-undefined-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-next-err-reject.js",
+      "bytes": 1594,
+      "sha256": "108fa9b71986fcca951d4a6db4541638cba868d0a8abbc6042c058ea11f5fcf6",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-next-err-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-next-val-err-no-close.js",
+      "bytes": 1402,
+      "sha256": "ffba8dedb9487c7678a09dcd78f03149358f45b02c9aac6efac81fce25964976",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-next-val-err-no-close.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-next-val-err-reject.js",
+      "bytes": 1361,
+      "sha256": "9d21c0721f33faf44c8b094309e9c69b1313b24f8cc9811e40b5191e08591467",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-next-val-err-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-false-reject.js",
+      "bytes": 1478,
+      "sha256": "4411d25c099326a16c19f7ad3da9b2f43ceff51dd543c5e587da4f9a9b0e5b92",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-false-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-null-reject.js",
+      "bytes": 1476,
+      "sha256": "208e5b7c8af48a14fb806eafa0ea5297c91005ab1478ce25d2a1835202460c63",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-null-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-number-reject.js",
+      "bytes": 1477,
+      "sha256": "29390bfdf6c51b5aa3928a963e5b2b924636902014fd9cc544d340f83772537a",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-number-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-string-reject.js",
+      "bytes": 1478,
+      "sha256": "cdc0b00e4d8f7a629f37020c011aac948da426eb4b19ef1162d339f28f911809",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-string-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-symbol-reject.js",
+      "bytes": 1484,
+      "sha256": "91f822a961feb7f147ab2c5baf131b16819df3fc529d29ca28fe5871d5153d69",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-symbol-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-true-reject.js",
+      "bytes": 1476,
+      "sha256": "9f1cd3df94b0f2d9b426a60905ba92bd8cd7ba4759db23f2d75a895cba0a7dcd",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-true-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-undefined-reject.js",
+      "bytes": 1486,
+      "sha256": "0d1cc9537c692abab7219cbf6d72dc0372bf59a2eb2749b2ebbf28f17a5a091f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-returns-undefined-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-step-err-no-close.js",
+      "bytes": 1332,
+      "sha256": "bb4510ef15bd1113320d136604c277d94d60a4514a4faea0e879efaac0a46df4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-step-err-no-close.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-step-err-reject.js",
+      "bytes": 1428,
+      "sha256": "efa657ca1ede76029dfe60bbb158a49cfa9f067a201c19398180aebb004dd0f7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/iter-step-err-reject.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/length.js",
+      "bytes": 910,
+      "sha256": "8a62682be9e4094dbd1cf7174967b2c6aa8f70b13457a541f84dfe16a615d8c8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/length.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/name.js",
+      "bytes": 897,
+      "sha256": "dcc0bb369e495726ef8671f18e61b1b3f3930e379845910ea68dcdc5452035be",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/name.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/new-reject-function.js",
+      "bytes": 1272,
+      "sha256": "3629a33a7af6adf8f298f3e0e72d7b5ca8ce1b294e8159b1020e7b83058df539",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/new-reject-function.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/new-resolve-function.js",
+      "bytes": 1457,
+      "sha256": "2f3137662ca8a89a60d579e048a6ca042b39992714483f962451d97602e727eb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/new-resolve-function.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/not-a-constructor.js",
+      "bytes": 892,
+      "sha256": "b34a8031a6e2b08ec81297e7ff7b46e43927b74e06154387bc35df60d3028a43",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/not-a-constructor.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/prop-desc.js",
+      "bytes": 613,
+      "sha256": "9f441311c07af4c17d44fe8fb150bb0c73bd62013f40a784a86d7da7b75403e4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/prop-desc.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-deferred.js",
+      "bytes": 1493,
+      "sha256": "ee9e57f3e95102e3bf09db7c8083ed3628b06d93459c875f70c257c64dd5ebf0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-deferred.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-extensible.js",
+      "bytes": 816,
+      "sha256": "46f4c0dcd96ef4160cdcf2aaabba75d07797d96d9f1457fc5c33a086f310cdda",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-extensible.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-length.js",
+      "bytes": 1110,
+      "sha256": "6b8a9555fbc8517c5edd40ddaa2d4fda514d05ec79b5d2f95efb557e7307e3d1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-length.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-multiple-calls.js",
+      "bytes": 1441,
+      "sha256": "f99b16b60bf9fea672db1825ca47c8aed2c20b85fbf5eb4619805089c84f9864",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-multiple-calls.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-name.js",
+      "bytes": 1272,
+      "sha256": "277469ec4f13872d09271754be9172971f4d41638154c5d2596c51b306066430",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-name.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-nonconstructor.js",
+      "bytes": 1011,
+      "sha256": "bc3e424d9d9a8003d9a0c98e28694d11b64b3c55b50bfbd1033ad935a2a703fe",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-nonconstructor.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-property-order.js",
+      "bytes": 902,
+      "sha256": "4f107040c1973cbeca11662d4c2c48ba65a4c6a1de38de343387d3a918fe67cf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-property-order.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-prototype.js",
+      "bytes": 978,
+      "sha256": "fa8583361b7f515fbac810dbc4727917cec210593e122e11e385e349ec761df7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-element-function-prototype.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-ignored-deferred.js",
+      "bytes": 1302,
+      "sha256": "ef33ba79c12a122c3474eaf7336849000509e404c8ad4ea44cfc86c54a2137b8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-ignored-deferred.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-ignored-immed.js",
+      "bytes": 1102,
+      "sha256": "0efc8165c47e3a7afba79f8628cde4b3006f02d4843d228b1fa06bca9555064c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-ignored-immed.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-immed.js",
+      "bytes": 827,
+      "sha256": "b21b329c88e3dd943d15fbb3188a23e9ac5cf10dcd992ce91289d5f5cd0512b7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/reject-immed.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-before-loop-exit-from-same.js",
+      "bytes": 2117,
+      "sha256": "448998ffc2e76816faf8273ae02b8ebe8a8e11c24c92466b56443b96a2b12fd0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-before-loop-exit-from-same.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-before-loop-exit.js",
+      "bytes": 2018,
+      "sha256": "5084d2b7157f1394b58227d3d5f4a107fa7ac7c3b0cb9f929e5711fa9d7e9017",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-before-loop-exit.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-extensible.js",
+      "bytes": 820,
+      "sha256": "0f6980a93c8d1f80e141e5f56bfd20ca94c9d549d10db8690785ce5d80f9ba29",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-extensible.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-length.js",
+      "bytes": 1063,
+      "sha256": "9aeeaa77b3bdc7a1e7886cf7b87009ea12dae080ca60dd384fe9ded60d8224ae",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-length.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-name.js",
+      "bytes": 1276,
+      "sha256": "3778eb58318c90ef51a8bf353893d8790e2a25ad727e7d94f00ecead22bb4798",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-name.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-nonconstructor.js",
+      "bytes": 1016,
+      "sha256": "b7239cf19aacf7803e230ae225deae6196c3cd0ab38ed8344c9dd43b7844489c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-nonconstructor.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-property-order.js",
+      "bytes": 905,
+      "sha256": "a2e2ce1349a26e6034cae530cf5ce6cfa907a96d6ecf41d631dff876e4afa791",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-property-order.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-prototype.js",
+      "bytes": 982,
+      "sha256": "046d18f4ed5e609162ab771f287f6ddc86f45693545922ff515bb1bd66fd5eeb",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-element-function-prototype.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-from-same-thenable.js",
+      "bytes": 2341,
+      "sha256": "39a7356966f6f5aaba74c31d602bee3fc47665497dac960baef9b871ad167aa5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-from-same-thenable.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection-deferred.js",
+      "bytes": 1199,
+      "sha256": "c7748b31efd3a1dc7089a75c6c689d4300d1239a7681a1bc49344e23fcee65cf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection-deferred.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection.js",
+      "bytes": 1069,
+      "sha256": "8f8a4e18e71436a66064aa91adc5877d8ebdc2f01319a35aeec9350dbbbad936",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-ignores-late-rejection.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-non-callable.js",
+      "bytes": 1025,
+      "sha256": "3867cec371bca2545f899d7200ef749fc98850d7bf985bd2bb7ac502613e7a06",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-non-callable.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-non-thenable.js",
+      "bytes": 985,
+      "sha256": "f2df2a602838160d663d2d161aeec583950770114700b59108de68af99f9da90",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-non-thenable.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-not-callable-reject-with-typeerror.js",
+      "bytes": 796,
+      "sha256": "08a68ef123f2dd11b2523893e4040198dae652de6033a78950bfc0ccf2df24d3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-not-callable-reject-with-typeerror.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-poisoned-then.js",
+      "bytes": 1221,
+      "sha256": "fbbf7b469647d7f0881a46891441d2c740045960fc992c95c92190ac52b83ae7",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-poisoned-then.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-thenable.js",
+      "bytes": 663,
+      "sha256": "3d85ec835839061e524bc38cf03fbdf929e04c0355836d3d58d70aeef99d5695",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-thenable.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-is-not-callable.js",
+      "bytes": 1834,
+      "sha256": "3551cb9eb68dcb9d7e763368e864ce466a4321ae9c69a444706326b2a77baa57",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-is-not-callable.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-null-or-undefined.js",
+      "bytes": 1847,
+      "sha256": "7de58acd1311417b0e892aee7c7f0c439b22a64d42aaae049bb8077fd4369248",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolve-throws-iterator-return-null-or-undefined.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-all-fulfilled.js",
+      "bytes": 2520,
+      "sha256": "61006938fa6e95527a32199860950cd0c01f5b0513351565b6ef04352e4a26d5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-all-fulfilled.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-all-mixed.js",
+      "bytes": 2872,
+      "sha256": "2d7d64de1d59eb2edec47f128f2edd244b0edca505415f1999389d471b01670d",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-all-mixed.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-all-rejected.js",
+      "bytes": 2540,
+      "sha256": "3ca5f00b44bd067c94450b3290b384e49b1d3fab44ad52af0987f6960ac754b0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-all-rejected.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-immed.js",
+      "bytes": 647,
+      "sha256": "4801c63d972965401d4864627f4a036700871858e90f09176e418bc7462a4dd8",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-immed.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence-extra-ticks.js",
+      "bytes": 1449,
+      "sha256": "7497937fa367097d994f87310732f6e40dcb054c468973ceab26c48c9d5c8c2b",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence-extra-ticks.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence-mixed.js",
+      "bytes": 1705,
+      "sha256": "9db33c7ebe9e9780b2445bdaa6418fc8ef07ff885fdc06c7ccf0cc8312d9fd07",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence-mixed.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence-with-rejections.js",
+      "bytes": 1482,
+      "sha256": "84e17f2c6edabe1cc708ffa361cf35d7ed691d6695bb6d230fabefbeea2a57a4",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence-with-rejections.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence.js",
+      "bytes": 1470,
+      "sha256": "fb55daac0153079f1aab3e5a4373aeee82ea1598e81d876d2a9a066dcb608ce3",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-sequence.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-then-catch-finally.js",
+      "bytes": 3164,
+      "sha256": "c8f42d81d00e524b078ae3a028c2fe628449c2610eed6c4e855fa19571a3fee1",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolved-then-catch-finally.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolves-empty-array.js",
+      "bytes": 918,
+      "sha256": "e727801fb432a0b3a5b092578edc82f413f4dd91521202d7d6d5ae1006df7a7c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolves-empty-array.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolves-to-array.js",
+      "bytes": 1027,
+      "sha256": "707d2665ee22b8a95ca794fa299db6998922305c2985180af597c7a9557a81c9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/resolves-to-array.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/returns-promise.js",
+      "bytes": 903,
+      "sha256": "62bbe2b70d021d05ac9cf0e45fa21859981916a4f41de9db6ade61387103de1f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/returns-promise.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/species-get-error.js",
+      "bytes": 761,
+      "sha256": "56a098abe7d4e6bd9aaa740e6321cc92d3b53f42a2ad6fb5bd907c6e3c6e2f27",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tests/upstream/test262-promise-all-settled/test/built-ins/Promise/allSettled/species-get-error.js",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/import_test262.py",
+      "bytes": 83329,
+      "sha256": "818ca38c2406c9a16c9f03be28ca8c4e6d8cb0dcbe6cd3eacc913212cadbecbf",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/import_test262.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/promise-all-settled-profile-oracle.json",
+      "bytes": 278329,
+      "sha256": "af3b68ef78970aeb06c671ca52608ad8f1e38824421b2a95b24ab99ebd19c654",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/promise-all-settled-profile-oracle.json",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test262_conformance.py",
+      "bytes": 320244,
+      "sha256": "1c5520a10d404cc9ee34d6d4e1e93c79e923baead23317b397caa7a9bddeba6f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test262_conformance.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_import_test262_promise.py",
+      "bytes": 10264,
+      "sha256": "e740fd06ae9d15866a781443f0f9f34021fda0b4f51941b42927f84910d67156",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_import_test262_promise.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_array_predicates.py",
+      "bytes": 9893,
+      "sha256": "baff6ffe6605b17191a0e34bd0d09a05833a51daa3d2bdac6502a3225be6d8e5",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_array_predicates.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_conformance.py",
+      "bytes": 184187,
+      "sha256": "7946260942a91eda41a158729a02f3fc753460ce53dcceecc8144405b9163f85",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_conformance.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_construction.py",
+      "bytes": 7234,
+      "sha256": "d2f03ee0c1d182fc93f3f85ea2f1126b9a7d67834c1724999d7fec6285f010cc",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_construction.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_object_has_own.py",
+      "bytes": 19033,
+      "sha256": "f315ba36bbc74eaf5961250c92499e4ac050b10f1bc6eb6e24829de3883ab753",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_object_has_own.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_object_integrity.py",
+      "bytes": 13997,
+      "sha256": "09b5d878139387fc71e43f78d207254bb6acf8e5a2c9b7c98422de3c7490b4c0",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_object_integrity.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_promise_all_settled_profile.py",
+      "bytes": 28443,
+      "sha256": "14e7ec9b0eb9da6829fde4622408eed9b3791f665c01bd629fa7829633f8fd13",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_promise_all_settled_profile.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_promise_race_profile.py",
+      "bytes": 26614,
+      "sha256": "70cc66ff1d50b06fdfea49354286ecc3b94bcce88b0b11b64eeb5d1fac7048be",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_promise_race_profile.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_promise_runner.py",
+      "bytes": 17725,
+      "sha256": "3b9f45f4ae105eb6b213dd8f4dabb4559927e1a3ac72c12320b1171038ba4203",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_promise_runner.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_reflect_properties.py",
+      "bytes": 10881,
+      "sha256": "d15ad20a9747103ef9199044291351880088ccefd34dc04a3470369cef2efdf9",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_reflect_properties.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_typedarray_copy_within.py",
+      "bytes": 14800,
+      "sha256": "cf6cf7f91f93741791560f7cf808c20ad651a14d1beb69ebf525e60ff39a8965",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_typedarray_copy_within.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_typedarray_fill.py",
+      "bytes": 14665,
+      "sha256": "a521370de4b5b46b3413265d5fa9839c82bf169abfda464b33070d91734d3a9c",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_typedarray_fill.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_typedarray_foundation.py",
+      "bytes": 12776,
+      "sha256": "ed2ba77517d1887b7b8dff776572137c4753a471032d552e867c2ec4d0fc3e36",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_typedarray_foundation.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_typedarray_reverse.py",
+      "bytes": 14688,
+      "sha256": "fbc7c483b304141ce51eea99e16189e26adbb16e2fd193957eacf197ba667b54",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_typedarray_reverse.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_typedarray_search.py",
+      "bytes": 15181,
+      "sha256": "cc57a8d9f7ab2127827c44ecbb6badfb2f421dadefa29bf29f03b7361dc1cc60",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_typedarray_search.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_typedarray_to_reversed.py",
+      "bytes": 15077,
+      "sha256": "ec08b9826ac52c6f37e836296401a6dd19c230b7e78a734ad6f3553871a2f08f",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_typedarray_to_reversed.py",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tools/test_test262_typedarray_views.py",
+      "bytes": 12479,
+      "sha256": "a22ed83a2d61ee05cbd2f5a3ba4f48ed87555714c5f7a038931663ed39500014",
+      "origin": "/tmp/eris-promise-all-settled-upstream-plan-1/worktree/tools/test_test262_typedarray_views.py",
+      "role": "changed-source"
+    }
+  ]
+}

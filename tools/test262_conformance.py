@@ -119,7 +119,10 @@ PROFILE_FEATURES[PROMISE_ALL_PROFILE] = PROMISE_ALL_FEATURES
 PROMISE_RACE_PROFILE = 'promise-race'
 PROMISE_RACE_FEATURES = PROMISE_ALL_FEATURES.copy()
 PROFILE_FEATURES[PROMISE_RACE_PROFILE] = PROMISE_RACE_FEATURES
-PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE, PROMISE_RACE_PROFILE}
+PROMISE_ALL_SETTLED_PROFILE = 'promise-all-settled'
+PROMISE_ALL_SETTLED_FEATURES = PROMISE_RACE_FEATURES | {'Promise.allSettled'}
+PROFILE_FEATURES[PROMISE_ALL_SETTLED_PROFILE] = PROMISE_ALL_SETTLED_FEATURES
+PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE, PROMISE_RACE_PROFILE, PROMISE_ALL_SETTLED_PROFILE}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -235,13 +238,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -1370,6 +1373,8 @@ def array_from_preflight_variants():
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
+    if profile == PROMISE_ALL_SETTLED_PROFILE:
+        return promise_all_settled_harness_preflight(files, binary, timeout)
     if profile == PROMISE_RACE_PROFILE:
         return promise_race_harness_preflight(files, binary, timeout)
     if profile == PROMISE_ALL_PROFILE:
@@ -3672,6 +3677,335 @@ def promise_race_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+def promise_all_settled_preflight_variants():
+    # Literal pairs frozen before this profile's runner implementation.
+    return [{'name': 'api',
+      'source': "assert.sameValue(typeof Promise.allSettled, 'function');\n"
+                "verifyProperty(Promise, 'allSettled', {\n"
+                '  value: Promise.allSettled, writable: true, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.allSettled, 'name', {\n"
+                "  value: 'allSettled', writable: false, enumerable: false, configurable: true\n"
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.allSettled, 'length', {\n"
+                '  value: 1, writable: false, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                'assert.sameValue(isConstructor(Promise.allSettled), false);\n'
+                'assert.throws(TypeError, function() { new Promise.allSettled([]); });\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js', 'isConstructor.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': None,
+      'additional_prerequisites': []},
+     {'name': 'api-mismatch',
+      'source': 'Promise.allSettled = function allSettled(value) {};\n'
+                "assert.sameValue(typeof Promise.allSettled, 'function');\n"
+                "verifyProperty(Promise, 'allSettled', {\n"
+                '  value: Promise.allSettled, writable: true, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.allSettled, 'name', {\n"
+                "  value: 'allSettled', writable: false, enumerable: false, configurable: true\n"
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.allSettled, 'length', {\n"
+                '  value: 1, writable: false, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                'assert.sameValue(isConstructor(Promise.allSettled), false);\n'
+                'assert.throws(TypeError, function() { new Promise.allSettled([]); });\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js', 'isConstructor.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': 'api',
+      'additional_prerequisites': []},
+     {'name': 'settled-helper',
+      'source': "assert.sameValue(typeof checkSettledPromises, 'function');\n"
+                'var value = {}, reason = {}, wrong = {};\n'
+                "var settled = [{ status: 'fulfilled', value: value }, { status: 'rejected', reason: "
+                'reason }];\n'
+                "checkSettledPromises(settled, [{ status: 'fulfilled', value: value }, { status: "
+                "'rejected', reason: reason }]);\n"
+                'assert.throws(Test262Error, function() {\n'
+                "  checkSettledPromises(settled, [{ status: 'fulfilled', value: wrong }, { status: "
+                "'rejected', reason: reason }]);\n"
+                '});\n'
+                'assert.throws(Test262Error, function() {\n'
+                "  checkSettledPromises(settled, [{ status: 'fulfilled', value: value }, { status: "
+                "'rejected', reason: wrong }]);\n"
+                '});\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['promiseHelper.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': None,
+      'additional_prerequisites': []},
+     {'name': 'settled-helper-mismatch',
+      'source': 'checkSettledPromises = function() {};\n'
+                "assert.sameValue(typeof checkSettledPromises, 'function');\n"
+                'var value = {}, reason = {}, wrong = {};\n'
+                "var settled = [{ status: 'fulfilled', value: value }, { status: 'rejected', reason: "
+                'reason }];\n'
+                "checkSettledPromises(settled, [{ status: 'fulfilled', value: value }, { status: "
+                "'rejected', reason: reason }]);\n"
+                'assert.throws(Test262Error, function() {\n'
+                "  checkSettledPromises(settled, [{ status: 'fulfilled', value: wrong }, { status: "
+                "'rejected', reason: reason }]);\n"
+                '});\n'
+                'assert.throws(Test262Error, function() {\n'
+                "  checkSettledPromises(settled, [{ status: 'fulfilled', value: value }, { status: "
+                "'rejected', reason: wrong }]);\n"
+                '});\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['promiseHelper.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': 'settled-helper',
+      'additional_prerequisites': []},
+     {'name': 'settlement',
+      'source': 'var value = {}, reason = {}, release;\n'
+                'var pending = new Promise(function(resolve) { release = resolve; });\n'
+                'Promise.allSettled([pending, Promise.reject(reason), 7]).then(function(values) {\n'
+                "  checkSettledPromises(values, [{ status: 'fulfilled', value: value }, { status: "
+                "'rejected', reason: reason }, { status: 'fulfilled', value: 7 }]);\n"
+                '  assert.sameValue(Object.getPrototypeOf(values[0]), Object.prototype);\n'
+                '  assert.sameValue(Object.getPrototypeOf(values[1]), Object.prototype);\n'
+                "  verifyProperty(values[0], 'status', { value: 'fulfilled', writable: true, "
+                'enumerable: true, configurable: true }, { restore: true });\n'
+                "  verifyProperty(values[0], 'value', { value: value, writable: true, enumerable: "
+                'true, configurable: true }, { restore: true });\n'
+                "  verifyProperty(values[1], 'status', { value: 'rejected', writable: true, "
+                'enumerable: true, configurable: true }, { restore: true });\n'
+                "  verifyProperty(values[1], 'reason', { value: reason, writable: true, enumerable: "
+                'true, configurable: true }, { restore: true });\n'
+                '}).then($DONE, $DONE);\n'
+                'release(value);\n',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': ['promiseHelper.js', 'propertyHelper.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': None,
+      'additional_prerequisites': ['settled-helper']},
+     {'name': 'settlement-mismatch',
+      'source': 'var value = {}, reason = {}, release;\n'
+                'var pending = new Promise(function(resolve) { release = resolve; });\n'
+                'Promise.allSettled([pending, Promise.reject(reason), 7]).then(function(values) {\n'
+                "  checkSettledPromises(values, [{ status: 'fulfilled', value: value }, { status: "
+                "'rejected', reason: reason }, { status: 'fulfilled', value: 8 }]);\n"
+                '  assert.sameValue(Object.getPrototypeOf(values[0]), Object.prototype);\n'
+                '  assert.sameValue(Object.getPrototypeOf(values[1]), Object.prototype);\n'
+                "  verifyProperty(values[0], 'status', { value: 'fulfilled', writable: true, "
+                'enumerable: true, configurable: true }, { restore: true });\n'
+                "  verifyProperty(values[0], 'value', { value: value, writable: true, enumerable: "
+                'true, configurable: true }, { restore: true });\n'
+                "  verifyProperty(values[1], 'status', { value: 'rejected', writable: true, "
+                'enumerable: true, configurable: true }, { restore: true });\n'
+                "  verifyProperty(values[1], 'reason', { value: reason, writable: true, enumerable: "
+                'true, configurable: true }, { restore: true });\n'
+                '}).then($DONE, $DONE);\n'
+                'release(value);\n',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': ['promiseHelper.js', 'propertyHelper.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': 'settlement',
+      'additional_prerequisites': ['settled-helper']},
+     {'name': 'shared-gate',
+      'source': 'var fulfilled = [], rejected = [], calls = 0, values, returnValue = {}, first = {}, '
+                'second = {};\n'
+                'function C(executor) {\n'
+                '  executor(function(result) { calls++; values = result; return returnValue; }, '
+                "function() { throw new Test262Error('unexpected aggregate rejection'); });\n"
+                '}\n'
+                'C.resolve = function(value) { return value; };\n'
+                'function input(index) { return { then: function(f, r) { fulfilled[index] = f; '
+                'rejected[index] = r; } }; }\n'
+                'var result = Promise.allSettled.call(C, [input(0), input(1)]);\n'
+                'assert.sameValue(result instanceof C, true);\n'
+                'assert.sameValue(calls, 0);\n'
+                'assert.notSameValue(fulfilled[0], rejected[0]);\n'
+                'assert.notSameValue(fulfilled[0], fulfilled[1]);\n'
+                'assert.notSameValue(rejected[0], rejected[1]);\n'
+                'assert.sameValue(rejected[1](second), undefined);\n'
+                'assert.sameValue(fulfilled[1](first), undefined);\n'
+                'assert.sameValue(rejected[1](first), undefined);\n'
+                'assert.sameValue(calls, 0);\n'
+                'assert.sameValue(fulfilled[0](first), returnValue);\n'
+                'assert.sameValue(rejected[0](second), undefined);\n'
+                'assert.sameValue(fulfilled[0](second), undefined);\n'
+                'assert.sameValue(calls, 1);\n'
+                "checkSettledPromises(values, [{ status: 'fulfilled', value: first }, { status: "
+                "'rejected', reason: second }]);\n",
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['promiseHelper.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': None,
+      'additional_prerequisites': ['settled-helper']},
+     {'name': 'shared-gate-mismatch',
+      'source': 'var fulfilled = [], rejected = [], calls = 0, values, returnValue = {}, first = {}, '
+                'second = {};\n'
+                'function C(executor) {\n'
+                '  executor(function(result) { calls++; values = result; return returnValue; }, '
+                "function() { throw new Test262Error('unexpected aggregate rejection'); });\n"
+                '}\n'
+                'C.resolve = function(value) { return value; };\n'
+                'function input(index) { return { then: function(f, r) { fulfilled[index] = f; '
+                'rejected[index] = r; } }; }\n'
+                'var result = Promise.allSettled.call(C, [input(0), input(1)]);\n'
+                'assert.sameValue(result instanceof C, true);\n'
+                'assert.sameValue(calls, 0);\n'
+                'assert.notSameValue(fulfilled[0], rejected[0]);\n'
+                'assert.notSameValue(fulfilled[0], fulfilled[1]);\n'
+                'assert.notSameValue(rejected[0], rejected[1]);\n'
+                'assert.sameValue(rejected[1](second), undefined);\n'
+                'assert.sameValue(fulfilled[1](first), undefined);\n'
+                'assert.sameValue(rejected[1](first), undefined);\n'
+                'assert.sameValue(calls, 0);\n'
+                'assert.sameValue(fulfilled[0](first), returnValue);\n'
+                'assert.sameValue(rejected[0](second), undefined);\n'
+                'assert.sameValue(fulfilled[0](second), undefined);\n'
+                'assert.sameValue(calls, 2);\n'
+                "checkSettledPromises(values, [{ status: 'fulfilled', value: first }, { status: "
+                "'rejected', reason: second }]);\n",
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['promiseHelper.js'],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': 'shared-gate',
+      'additional_prerequisites': ['settled-helper']},
+     {'name': 'abrupt-close',
+      'source': 'var marker = {}, rejected, rejects = 0, resolves = 0, nexts = 0, resolveCalls = 0, '
+                'returnGets = 0, returnCalls = 0, savedF, savedR;\n'
+                'function C(executor) {\n'
+                '  executor(function() { resolves++; }, function(reason) { rejects++; rejected = '
+                'reason; });\n'
+                '}\n'
+                'C.resolve = function(value) {\n'
+                '  resolveCalls++;\n'
+                '  if (resolveCalls === 2) throw marker;\n'
+                '  return { then: function(f, r) { savedF = f; savedR = r; } };\n'
+                '};\n'
+                'var iterator = { next: function() { nexts++; return { done: false, value: nexts }; } '
+                '};\n'
+                "Object.defineProperty(iterator, 'return', { get: function() {\n"
+                '  returnGets++;\n'
+                '  return function() { returnCalls++; return {}; };\n'
+                '} });\n'
+                'var input = {};\n'
+                'input[Symbol.iterator] = function() { return iterator; };\n'
+                'var result = Promise.allSettled.call(C, input);\n'
+                'assert.sameValue(result instanceof C, true);\n'
+                'assert.sameValue(rejected, marker);\n'
+                'assert.sameValue(rejects, 1);\n'
+                'assert.sameValue(returnGets, 1);\n'
+                'assert.sameValue(returnCalls, 1);\n'
+                'assert.sameValue(nexts, 2);\n'
+                'assert.sameValue(resolveCalls, 2);\n'
+                'assert.sameValue(savedF(marker), undefined);\n'
+                'assert.sameValue(savedR(marker), undefined);\n'
+                'assert.sameValue(resolves, 0);\n'
+                'assert.sameValue(rejects, 1);\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': None,
+      'additional_prerequisites': []},
+     {'name': 'abrupt-close-mismatch',
+      'source': 'var marker = {}, rejected, rejects = 0, resolves = 0, nexts = 0, resolveCalls = 0, '
+                'returnGets = 0, returnCalls = 0, savedF, savedR;\n'
+                'function C(executor) {\n'
+                '  executor(function() { resolves++; }, function(reason) { rejects++; rejected = '
+                'reason; });\n'
+                '}\n'
+                'C.resolve = function(value) {\n'
+                '  resolveCalls++;\n'
+                '  if (resolveCalls === 2) throw marker;\n'
+                '  return { then: function(f, r) { savedF = f; savedR = r; } };\n'
+                '};\n'
+                'var iterator = { next: function() { nexts++; return { done: false, value: nexts }; } '
+                '};\n'
+                "Object.defineProperty(iterator, 'return', { get: function() {\n"
+                '  returnGets++;\n'
+                '  return function() { returnCalls++; return {}; };\n'
+                '} });\n'
+                'var input = {};\n'
+                'input[Symbol.iterator] = function() { return iterator; };\n'
+                'var result = Promise.allSettled.call(C, input);\n'
+                'assert.sameValue(result instanceof C, true);\n'
+                'assert.sameValue(rejected, undefined);\n'
+                'assert.sameValue(rejects, 1);\n'
+                'assert.sameValue(returnGets, 1);\n'
+                'assert.sameValue(returnCalls, 1);\n'
+                'assert.sameValue(nexts, 2);\n'
+                'assert.sameValue(resolveCalls, 2);\n'
+                'assert.sameValue(savedF(marker), undefined);\n'
+                'assert.sameValue(savedR(marker), undefined);\n'
+                'assert.sameValue(resolves, 0);\n'
+                'assert.sameValue(rejects, 1);\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-all-settled-pair',
+      'prerequisite': 'abrupt-close',
+      'additional_prerequisites': []}]
+
+
+def promise_all_settled_preflight_healthy(outcomes):
+    common_count = 2 * len(promise_preflight_variants())
+    if not promise_preflight_healthy(outcomes[:common_count]):
+        return False
+    expected = {('promise-methods-' + row['name'], mode)
+                for mode in ('sloppy', 'strict') for row in promise_preflight_variants()}
+    expected.update(('promise-all-settled-' + row['name'], mode)
+                    for mode in ('sloppy', 'strict') for row in promise_all_settled_preflight_variants())
+    if len(outcomes) != len(expected):
+        return False
+    observed = set()
+    for item in outcomes:
+        identity = (item.get('name'), item.get('result', {}).get('mode'))
+        if identity not in expected or identity in observed or item.get('verified') is not True:
+            return False
+        observed.add(identity)
+    return observed == expected
+
+
+def promise_all_settled_harness_preflight(files, binary, timeout):
+    # Preserve the original74 rows, their policy and all prerequisite evidence.
+    outcomes = promise_harness_preflight(files, binary, timeout)
+    by_identity = {(item['name'], item['result']['mode']): item for item in outcomes}
+    common_names = ['promise-methods-' + row['name'] for row in promise_preflight_variants()]
+    for mode in ('sloppy', 'strict'):
+        for row in promise_all_settled_preflight_variants():
+            policy = row['completion_policy']
+            names = ['assert.js', 'sta.js'] + (['doneprintHandle.js'] if policy else []) + row['includes']
+            name = 'promise-all-settled-' + row['name']
+            case = dict(id='harness-preflight:' + name, file='<preflight>', mode=mode,
+                        metadata=dict(flags=['async'] if policy else [], includes=row['includes'],
+                                      features=[], locale=[], negative=None),
+                        source=row['source'].encode(), harness=[(n, files['harness/' + n]) for n in names],
+                        completion_policy=policy)
+            case['case_sha256'] = case_fingerprint(case)
+            result = run_case(case, binary, timeout, PROMISE_ALL_SETTLED_FEATURES, PROMISE_ALL_SETTLED_PROFILE)
+            required = common_names.copy()
+            required.extend('promise-all-settled-' + name
+                            for name in row['additional_prerequisites'])
+            if row['prerequisite']:
+                required.append('promise-all-settled-' + row['prerequisite'])
+            prerequisites = [dict(name=required_name, mode=mode,
+                verified=by_identity[(required_name, mode)]['verified'],
+                case_sha256=by_identity[(required_name, mode)]['result']['case_sha256'],
+                source_sha256=by_identity[(required_name, mode)]['result']['source_sha256'])
+                for required_name in required]
+            item = dict(name=name, expected=row['expected'],
+                        verified=(promise_preflight_verified(case, result, row['expected'])
+                                  and all(prerequisite['verified'] for prerequisite in prerequisites)),
+                        result=result, prerequisites=prerequisites)
+            outcomes.append(item)
+            by_identity[(name, mode)] = item
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -3716,7 +4050,8 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (promise_race_preflight_healthy(preflight) if args.profile == PROMISE_RACE_PROFILE
+        preflight_ok = (promise_all_settled_preflight_healthy(preflight) if args.profile == PROMISE_ALL_SETTLED_PROFILE
+                        else promise_race_preflight_healthy(preflight) if args.profile == PROMISE_RACE_PROFILE
                         else promise_all_preflight_healthy(preflight) if args.profile == PROMISE_ALL_PROFILE
                         else promise_preflight_healthy(preflight) if args.profile == PROMISE_PROFILE
                         else all(item['verified'] for item in preflight))

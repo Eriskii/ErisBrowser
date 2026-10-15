@@ -28,6 +28,11 @@ harness controls passing. The remaining failures reflect the host's
 final-unhandled-rejection policy. The [complete `Promise.race` selection](docs/promise-race-test262.md)
 records 170 passed, 10 failed and 8 unsupported modes out of 188, with all 90
 controls verified. Its failures retain the same separate host-policy reason.
+The separate [complete `Promise.allSettled` selection](docs/promise-all-settled-test262.md)
+retains all 104 sources and 208 modes under a 94-control gate.
+It records 188 passed, 12 failed and 8 unsupported, with all 94 controls verified.
+The twelve failures are final-unhandled host-policy vetoes; the eight unsupported
+modes retain their class metadata or parser reasons.
 
 [Spread arguments](docs/call-spread.md) now work in ordinary calls and `new`,
 including mixed, multiple and empty spreads and trailing commas. Iterator reads

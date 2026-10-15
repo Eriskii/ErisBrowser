@@ -28,6 +28,12 @@ retains its exact outcomes. The separate [complete `Promise.race` selection](pro
 records **170 passed, 10 failed and 8 unsupported modes out of 188**, with all 90
 controls verified. Its ten failures are final-unhandled host-policy observations;
 eight class-bearing modes remain unsupported.
+The separate [complete `Promise.allSettled` selection](promise-all-settled-test262.md)
+retains all 104 sources and 208 modes with the same authenticated host policy
+and a 94-control gate. It records **188 passed, 12 failed and
+8 unsupported**, with all 94 controls verified. The twelve failures are final
+unhandled-rejection host vetoes; four modes are class-feature exclusions and
+four encounter unsupported class syntax in the parser.
 [Call and constructor spread arguments](call-spread.md) close the four prior
 parse failures. Mixed, multiple and empty spreads preserve iterator ordering,
 receiver identity and argument-before-callability semantics within shared limits.

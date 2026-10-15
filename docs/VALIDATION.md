@@ -1,5 +1,26 @@
 # Validation record
 
+## Complete pinned Promise.allSettled selection
+
+The [new profile](promise-all-settled-test262.md) retains all 104 pinned sources
+and 208 modes, with 94 required control rows.
+Observed results are **188 passed, 12 failed and 8 unsupported**, with all
+94 controls verified. The twelve failures are final-quiescent unhandled-rejection
+vetoes; four unsupported modes have class metadata and four reach a parser class
+refusal. All 13 new Python groups and the complete 569-group Python suite pass.
+The test-only parent observation is two groups passing and eleven affected
+groups producing 35 error rows, including one old generic-preflight mock lookup;
+deeper negative assertions were not reached there.
+
+Healthy baseline recording and replay retain the exact 208 case and 94 control
+records. The older methods, all and race profiles retain all 842 case and
+254 control records, with no old baseline changes. The common 74 controls also
+remain exact. The published API release adapter is reused byte-for-byte; this
+checkpoint changes no Rust execution inputs and claims no Rust-suite rerun.
+CI is configured with the new adjacent gate; no remote result is claimed here.
+Its reports distinguish host-policy vetoes from upstream assertion failures,
+and preserve the older Promise profiles without changing their baselines.
+
 ## Persistent pending inline declarations
 
 The [CSSOM pending-state increment](cssom-pending.md) passes 3,046 Rust 1.88

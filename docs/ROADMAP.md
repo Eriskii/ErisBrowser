@@ -21,7 +21,11 @@ and 8 unsupported modes out of 188, with all 90 controls verified. The retained
 failures reflect host rejection policy; class support remains unfinished.
 [`Promise.allSettled`](promise-all-settled.md) now collects both outcomes in
 input order with generic capabilities and paired callbacks sharing one gate.
-Its upstream profile remains a separate follow-up. Remaining asynchronous work
+Its separate [104-source, 208-mode upstream profile](promise-all-settled-test262.md)
+uses a 94-control gate. It records 188 passed, 12 failed and 8 unsupported,
+with all 94 controls verified. The twelve failures retain the final-unhandled
+host-policy reason, and eight class-bearing modes remain unsupported.
+Remaining asynchronous work
 includes `any`, async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 
