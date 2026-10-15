@@ -19,7 +19,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "create",
         display: "createProcessingInstruction",
         arity: 2,
-        work: 118,
+        work: 119,
         heap_constant: 841,
     },
     Case {
@@ -29,7 +29,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "target",
         display: "get target",
         arity: 0,
-        work: 84,
+        work: 85,
         heap_constant: 773,
     },
     Case {
@@ -39,7 +39,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "data",
         display: "get data",
         arity: 0,
-        work: 78,
+        work: 79,
         heap_constant: 763,
     },
     Case {
@@ -49,7 +49,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "setData",
         display: "set data",
         arity: 1,
-        work: 81,
+        work: 82,
         heap_constant: 766,
     },
     Case {
@@ -59,7 +59,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "length",
         display: "get length",
         arity: 0,
-        work: 84,
+        work: 85,
         heap_constant: 773,
     },
     Case {
@@ -69,7 +69,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "substringData",
         display: "substringData",
         arity: 2,
-        work: 97,
+        work: 98,
         heap_constant: 792,
     },
     Case {
@@ -79,7 +79,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "appendData",
         display: "appendData",
         arity: 1,
-        work: 88,
+        work: 89,
         heap_constant: 777,
     },
     Case {
@@ -89,7 +89,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "insertData",
         display: "insertData",
         arity: 2,
-        work: 88,
+        work: 89,
         heap_constant: 777,
     },
     Case {
@@ -99,7 +99,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "deleteData",
         display: "deleteData",
         arity: 2,
-        work: 88,
+        work: 89,
         heap_constant: 777,
     },
     Case {
@@ -109,7 +109,7 @@ pub(super) const CASES: [Case; 10] = [
         suffix: "replaceData",
         display: "replaceData",
         arity: 3,
-        work: 91,
+        work: 92,
         heap_constant: 782,
     },
 ];
@@ -243,8 +243,8 @@ fn cached_pi_keys_share_the_existing_immutable_payload_for_every_bag() {
         }
     }
     assert_eq!(ids.len(), 10);
-    // The ordinary CharacterData.length accessor remains a separate property;
-    // only each function's metadata keys participate in the saving.
+    // CharacterData.length shares its immutable key with the metadata pool;
+    // its accessor descriptor and getter metadata bag remain separate.
     let owner = prototype(&runtime, "CharacterData");
     let property = runtime.objects[owner]
         .values
@@ -261,13 +261,13 @@ fn cached_pi_keys_share_the_existing_immutable_payload_for_every_bag() {
 }
 
 #[test]
-fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99973_work_boundary() {
+fn cached_pi_keys_raw_bootstrap_with_promise_uses_the_frozen_99694_work_boundary() {
     // Cached PI keys still save332; Promise with finally standalone installation adds1154.
     // Shared adjacent job keys independently save34 work without changing either limit.
     // Four Node accessor key pairs independently save128 work and672 bytes.
     // Promise.all independently adds107 metadata work and one arena guard.
     for (allowance, success, remaining) in
-        [(99_972, false, 0), (99_973, true, 0), (100_000, true, 27)]
+        [(99_693, false, 0), (99_694, true, 0), (100_000, true, 306)]
     {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;

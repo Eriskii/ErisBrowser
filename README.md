@@ -60,6 +60,9 @@ bytes within the same limits.
 The [Text metadata follow-up](docs/text-metadata-keys.md) shares the existing keys
 for `wholeText` and `splitText`, saving 60 startup work units and 336 accounted
 heap bytes while preserving both functions and their behavior.
+The [startup metadata follow-up](docs/startup-metadata-sharing.md) shares title
+keys and PI/CharacterData owner-name payloads, saving 279 more startup work units
+and 1,132 accounted heap bytes. Raw startup leaves 306 units under the same limit.
 
 [Throw diagnostics](docs/throw-completion.md) retain the original JavaScript value
 without invoking constructor or name accessors. Data-only metadata inspection

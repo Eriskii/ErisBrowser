@@ -54,6 +54,9 @@ identities and behavior and adds no new API coverage.
 The [Text metadata follow-up](text-metadata-keys.md) preserves the separate
 `wholeText` getter and `splitText` method while reusing their immutable metadata
 keys. Its startup saving adds no Text or Promise API coverage.
+The [startup metadata follow-up](startup-metadata-sharing.md) also shares title
+keys and PI/CharacterData owner-name payloads while preserving their descriptors,
+identities and behavior. It changes accounting without adding API coverage.
 
 [Object.is](../tests/conformance/object-is.md) implements SameValue for existing
 runtime values, including NaN, signed zero, exact UTF-16 strings and ordinary

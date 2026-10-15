@@ -225,13 +225,13 @@ fn text_metadata_key_sharing_preserves_saved_behavior_and_mutation_isolation_in_
 }
 
 #[test]
-fn text_metadata_keys_raw_bootstrap_uses_99973_work_and_preserves_public_reset() {
+fn text_metadata_keys_raw_bootstrap_uses_99694_work_and_preserves_public_reset() {
     // Two removed key pairs save72 work and336 bytes; handoff8 plus clones4
     // leave a net60 work saving. The allowance and arena counts stay unchanged.
     assert_eq!(MAX_STEPS, 100_000);
     let mut complete_heap = None;
     for (allowance, success, remaining) in
-        [(99_972, false, 0), (99_973, true, 0), (100_000, true, 27)]
+        [(99_693, false, 0), (99_694, true, 0), (100_000, true, 306)]
     {
         let mut runtime = Runtime::uninitialized();
         runtime.steps = allowance;

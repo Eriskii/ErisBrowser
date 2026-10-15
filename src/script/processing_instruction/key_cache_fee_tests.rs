@@ -38,7 +38,7 @@ fn cached_pi_function_fees_are_exact_and_one_short_refuses_the_callable() {
             assert_eq!(runtime.environments[0].bindings.len(), old_global_count);
             assert_eq!(runtime.next_global_order, old_order);
             if success {
-                let Value::Native(native) = result.unwrap() else {
+                let (Value::Native(native), _) = result.unwrap() else {
                     panic!("native");
                 };
                 assert_eq!(runtime.allocated, MAX_HEAP);

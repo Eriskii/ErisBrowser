@@ -1,5 +1,33 @@
 # Validation record
 
+## Shared startup metadata payloads
+
+The [startup metadata follow-up](startup-metadata-sharing.md) reduces raw work
+from 99,973 to 99,694 and leaves 306 under the unchanged 100,000-unit limit.
+The focused default allocation observations differ by exactly 1,132 accounted
+bytes, with object, native, prototype and global counts unchanged. All three
+parent-compatible controls fail at their intended new boundaries after their
+preservation checks; the same candidate controls pass. All 90 focused tests pass
+(66 PI and 24 title), including the seven new groups and 84 private admission
+and ownership operations.
+
+The first full default run stopped after the library's 2,790 passes and one
+stale cumulative-work assertion. The omitted typed-array ledger migration adds
+the previously selected accounting terms; its heap assertion and later targets
+were not reached in that first run. The failed run remains retained.
+
+The completed `--include-ignored` runs pass **3,131 Rust 1.88 default tests** and
+**3,485 Rust 1.99 tests with `test262-host,vulkan-raster`**, each across 52 result
+rows with no failures or ignored/filtered tests. Both preserve the prior roster
+apart from three accounting-test renames and add exactly seven groups. Strict
+all-target Clippy passes in both configurations; Rust 1.99 formatting passes.
+
+The rebuilt Rust 1.88 release host adapter preserves all 1,050 case and 348
+control records across the four existing Promise profiles, including their
+failed and unsupported outcomes. All controls verify; no regression,
+improvement or baseline change is recorded. See the chapter's linked evidence
+manifest and source/check archive.
+
 ## Complete pinned Promise.allSettled selection
 
 The [new profile](promise-all-settled-test262.md) retains all 104 pinned sources

@@ -566,7 +566,7 @@ impl Runtime {
                 )?;
             }
             if interface.name == "Document" {
-                self.install_document_title(prototype)?;
+                self.install_document_title(prototype, [&keys[1], &keys[0]])?;
             }
             if methods != 0 {
                 self.install_dom_parent_prototype(interface.name, prototype)?;

@@ -26,18 +26,21 @@ impl Runtime {
         suffix: &str,
         display: &str,
         length: usize,
+        metadata_keys: [&PropertyKey; 2],
     ) -> Result<Value> {
         let properties =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
         let name = self.dom_proto_text(display)?;
-        self.dom_proto_named(
+        // Pay both retained key clones before publishing either descriptor.
+        self.work(2)?;
+        self.dom_proto_property(
             properties,
-            "length",
+            metadata_keys[0].clone(),
             Property::data(Value::Number(length as f64), false, false, true),
         )?;
-        self.dom_proto_named(
+        self.dom_proto_property(
             properties,
-            "name",
+            metadata_keys[1].clone(),
             Property::data(Value::String(name), false, false, true),
         )?;
         let length = PREFIX.len() + suffix.len();
@@ -57,10 +60,16 @@ impl Runtime {
         })))
     }
 
-    pub(super) fn install_document_title(&mut self, prototype: usize) -> Result<()> {
+    pub(super) fn install_document_title(
+        &mut self,
+        prototype: usize,
+        metadata_keys: [&PropertyKey; 2],
+    ) -> Result<()> {
+        // Forward the existing immutable length/name pool once for both bags.
+        self.work(8)?;
         self.work(4)?;
-        let get = self.document_title_function("get", "get title", 0)?;
-        let set = self.document_title_function("set", "set title", 1)?;
+        let get = self.document_title_function("get", "get title", 0, metadata_keys)?;
+        let set = self.document_title_function("set", "set title", 1, metadata_keys)?;
         self.dom_proto_named(
             prototype,
             "title",
@@ -162,3 +171,6 @@ impl Runtime {
         Ok(Value::Undefined)
     }
 }
+
+#[cfg(test)]
+mod key_cache_fee_tests;

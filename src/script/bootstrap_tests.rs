@@ -195,7 +195,8 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Promise.race adds121 metadata work and one reserved bag, with no new arena.
     // Two Text factories share existing keys, saving60 work and336 bytes.
     // AllSettled adds187 metadata work and one bag, reusing the existing arenas.
-    assert_eq!(reference.steps, 27);
+    // Title keys, PI owner names and CharacterData.length save279 work/1132 bytes.
+    assert_eq!(reference.steps, 306);
     assert_eq!(reference.objects.len(), 752);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);

@@ -36,10 +36,13 @@ impl Runtime {
         display: &str,
         length: usize,
         metadata_keys: [&PropertyKey; 2],
-    ) -> Result<Value> {
+    ) -> Result<(Value, PropertyKey)> {
         let properties =
             self.dom_proto_object(Some(Value::Function(self.function_prototype)), 2)?;
         let name = self.dom_proto_text(display)?;
+        // Retain the immutable display once for the eventual owner key.
+        self.work(1)?;
+        let owner_key = PropertyKey::String(name.clone());
         // Pay for both borrowed-key clones before retaining either handle.
         self.work(2)?;
         self.dom_proto_property(
@@ -62,11 +65,14 @@ impl Runtime {
         name.push_str(suffix);
         let properties = std::num::NonZeroUsize::new(properties)
             .ok_or_else(|| ScriptError::resource("PI metadata ID is zero"))?;
-        Ok(Value::Native(Rc::new(Native {
-            properties: Some(properties),
-            name,
-            receiver: Value::Undefined,
-        })))
+        Ok((
+            Value::Native(Rc::new(Native {
+                properties: Some(properties),
+                name,
+                receiver: Value::Undefined,
+            })),
+            owner_key,
+        ))
     }
 
     pub(super) fn install_pi_members(
@@ -78,16 +84,18 @@ impl Runtime {
         self.work(4)?;
         match interface {
             "Document" => {
-                let function =
+                let (function, key) =
                     self.pi_function("create", "createProcessingInstruction", 2, metadata_keys)?;
-                self.dom_proto_named(
+                self.dom_proto_property(
                     prototype,
-                    "createProcessingInstruction",
+                    key,
                     Property::data(function, true, true, true),
                 )?;
             }
             "ProcessingInstruction" => {
-                let get = self.pi_function("target", "get target", 0, metadata_keys)?;
+                let (get, display_key) =
+                    self.pi_function("target", "get target", 0, metadata_keys)?;
+                drop(display_key);
                 self.dom_proto_named(
                     prototype,
                     "target",
@@ -102,8 +110,11 @@ impl Runtime {
                 )?;
             }
             "CharacterData" => {
-                let get = self.pi_function("data", "get data", 0, metadata_keys)?;
-                let set = self.pi_function("setData", "set data", 1, metadata_keys)?;
+                let (get, display_key) = self.pi_function("data", "get data", 0, metadata_keys)?;
+                drop(display_key);
+                let (set, display_key) =
+                    self.pi_function("setData", "set data", 1, metadata_keys)?;
+                drop(display_key);
                 self.dom_proto_named(
                     prototype,
                     "data",
@@ -113,10 +124,14 @@ impl Runtime {
                         configurable: true,
                     },
                 )?;
-                let get = self.pi_function("length", "get length", 0, metadata_keys)?;
-                self.dom_proto_named(
+                let (get, display_key) =
+                    self.pi_function("length", "get length", 0, metadata_keys)?;
+                drop(display_key);
+                // The existing metadata pool already owns this exact key.
+                self.work(1)?;
+                self.dom_proto_property(
                     prototype,
-                    "length",
+                    metadata_keys[0].clone(),
                     Property {
                         value: PropertyValue::Accessor {
                             get,
@@ -128,10 +143,10 @@ impl Runtime {
                 )?;
                 self.work(character_data::METHODS.len())?;
                 for &(name, length) in character_data::METHODS {
-                    let function = self.pi_function(name, name, length, metadata_keys)?;
-                    self.dom_proto_named(
+                    let (function, key) = self.pi_function(name, name, length, metadata_keys)?;
+                    self.dom_proto_property(
                         prototype,
-                        name,
+                        key,
                         Property::data(function, true, true, true),
                     )?;
                 }
@@ -366,3 +381,9 @@ impl Runtime {
         }
     }
 }
+
+#[cfg(test)]
+mod display_key_tests;
+
+#[cfg(test)]
+mod display_key_fee_tests;
