@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>base</title>
+<style>
+html,body { margin:0; padding:0; border:0; background:#fff; }
+#red,#blue { display:block; position:absolute; top:2px; width:4px; height:4px; box-sizing:content-box; margin:0; padding:0; border:0; }
+#red { left:2px; background:#f00; }
+#blue { left:20px; background:#00f; }
+</style></head><body><div id="red"></div><div id="blue"></div>
+<script>
+var red=document.getElementById('red');
+var trace='S';
+Promise.race([Promise.resolve(7),Promise.resolve(9)]).then(function(v){trace+='W'+v;red.style.left=(v-1)+'px';document.title=trace;});
+Promise.resolve().then(function(){trace+='P';});
+queueMicrotask(function(){trace+='Q';});
+trace+='E';
+red.addEventListener('click',function(){
+  trace+='A';var token={};
+  Promise.race([Promise.reject(token),Promise.resolve(9)]).then(function(){trace+='BAD';document.title=trace;},function(e){trace+=e===token?'R':'BAD';red.style.left='10px';document.title=trace;});
+  queueMicrotask(function(){trace+='Q';});
+  trace+='C';
+});
+</script></body></html>

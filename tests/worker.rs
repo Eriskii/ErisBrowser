@@ -2911,3 +2911,6 @@ mod promise_all;
 
 #[path = "worker/call_spread.rs"]
 mod call_spread;
+
+#[path = "worker/promise_race.rs"]
+mod promise_race;

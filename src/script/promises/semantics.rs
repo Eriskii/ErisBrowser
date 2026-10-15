@@ -300,6 +300,7 @@ impl Runtime {
                 "Promise.resolve" => self.promise_resolve(receiver, args, doc),
                 "Promise.reject" => self.promise_reject(receiver, args, doc),
                 "Promise.all" => self.promise_all(receiver, args, doc),
+                "Promise.race" => self.promise_race(receiver, args, doc),
                 "Promise.getSpecies" => Ok(receiver),
                 _ => Err(ScriptError::resource("invalid private Promise operation")),
             }

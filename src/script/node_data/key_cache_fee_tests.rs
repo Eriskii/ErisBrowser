@@ -268,7 +268,7 @@ fn node_borrowed_factory_keeps_the_existing_eager_object_reservation_guard() {
     let keys = cached_keys(&runtime);
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (750, 750)
+        (751, 751)
     );
     runtime.steps = 98;
     runtime.allocated = 0;
@@ -283,7 +283,7 @@ fn node_borrowed_factory_keeps_the_existing_eager_object_reservation_guard() {
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),
-        (750, 750)
+        (751, 751)
     );
     assert_eq!(runtime.native_properties.len(), 299);
     assert_eq!(runtime.environments[0].bindings.len(), 212);

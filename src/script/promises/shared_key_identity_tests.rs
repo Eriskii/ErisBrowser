@@ -61,17 +61,17 @@ fn promise_coherent(runtime: &Runtime) {
 }
 
 #[test]
-fn shared_job_key_payloads_preserve_all_nine_function_bags_and_existing_ids() {
+fn shared_job_key_payloads_preserve_all_ten_function_bags_and_existing_ids() {
     let runtime = Runtime::try_new().unwrap();
-    assert_eq!(runtime.objects.len(), 750);
-    assert_eq!(runtime.objects.capacity(), 750);
+    assert_eq!(runtime.objects.len(), 751);
+    assert_eq!(runtime.objects.capacity(), 751);
     promise_coherent(&runtime);
     empty(&runtime);
     let producer = native_bag(&runtime, "queueMicrotask");
     let constructor = native_bag(&runtime, "Promise");
     assert_eq!((producer, constructor), (740, 741));
     assert_eq!(runtime.promises.intrinsics.as_ref().unwrap().prototype, 742);
-    for owner in [740, 741, 743, 744, 745, 746, 747, 748, 749] {
+    for owner in [740, 741, 743, 744, 745, 746, 747, 748, 749, 750] {
         for (index, name) in ["length", "name"].into_iter().enumerate() {
             let expected = named_key(&runtime, producer, name);
             let actual = named_key(&runtime, owner, name);
@@ -90,8 +90,8 @@ fn shared_job_key_payloads_preserve_all_nine_function_bags_and_existing_ids() {
         }
     }
     // Sharing text never merges independently configurable property records.
-    assert_eq!(runtime.objects[constructor].values.len(), 7);
-    for owner in [740, 743, 744, 745, 746, 747, 748, 749] {
+    assert_eq!(runtime.objects[constructor].values.len(), 8);
+    for owner in [740, 743, 744, 745, 746, 747, 748, 749, 750] {
         assert_eq!(runtime.objects[owner].values.len(), 2);
     }
 }
@@ -103,7 +103,7 @@ var log='',ok=true,q=queueMicrotask,P=Promise;
 var rows=[[q,'queueMicrotask',1],[P,'Promise',1],[P.prototype.then,'then',2],
 [P.resolve,'resolve',1],[P.reject,'reject',1],
 [Object.getOwnPropertyDescriptor(P,Symbol.species).get,'get [Symbol.species]',0],
-[P.prototype.catch,'catch',1],[P.prototype.finally,'finally',1],[P.all,'all',1]];
+[P.prototype.catch,'catch',1],[P.prototype.finally,'finally',1],[P.all,'all',1],[P.race,'race',1]];
 for(var i=0;i<rows.length;i++){
  var f=rows[i][0],n=Object.getOwnPropertyDescriptor(f,'name'),l=Object.getOwnPropertyDescriptor(f,'length');
  ok=ok&&n.value===rows[i][1]&&!n.writable&&!n.enumerable&&n.configurable;
@@ -114,7 +114,7 @@ for(var i=0;i<rows.length;i++){
 ok=ok&&q===window.queueMicrotask&&q===globalThis.queueMicrotask;
 ok=ok&&Object.getOwnPropertyDescriptor(globalThis,'queueMicrotask').enumerable;
 ok=ok&&!Object.getOwnPropertyDescriptor(globalThis,'Promise').enumerable;
-ok=ok&&Object.getOwnPropertyNames(P).join(',')==='length,name,prototype,resolve,reject,all';
+ok=ok&&Object.getOwnPropertyNames(P).join(',')==='length,name,prototype,resolve,reject,all,race';
 ok=ok&&Object.getOwnPropertyNames(P.prototype).join(',')==='constructor,then,catch,finally';
 Object.defineProperty(q,'name',{value:'changed'});Object.defineProperty(q,'length',{value:99});
 Object.defineProperty(P.prototype.then,'name',{value:'changed then'});

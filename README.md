@@ -14,8 +14,10 @@ outcome on success and adopts cleanup failures. Its reusable callbacks preserve
 observable species and `then` behavior under the existing resource limits.
 [`Promise.all`](docs/promise-all.md) now collects synchronous iterable inputs in
 input order, with observable constructor/resolve/iterator calls and bounded
-once-only fulfillment callbacks. `race`, `allSettled`, `any`, async functions and
-rejection notifications remain unfinished.
+once-only fulfillment callbacks. [`Promise.race`](docs/promise-race.md) uses the
+first settlement, preserves the original capability callbacks and keeps
+observable iteration order. `allSettled`, `any`, async functions and rejection
+notifications remain unfinished.
 The optional [Promise Test262 host](docs/promise-test262-host.md) adds authenticated
 `$DONE` completion and a separate final-unhandled-rejection policy for a pinned
 232-source, 458-mode profile. The separate [complete `Promise.all` selection](docs/promise-all-test262.md)

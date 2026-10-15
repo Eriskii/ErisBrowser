@@ -13,9 +13,9 @@ fn helper_bytes() -> usize {
     let n = size_of::<Native>();
     let bpp = 16 * (k + size_of::<Property>()) + 32 * size_of::<usize>() + 64;
     let bsb = 16 * (size_of::<String>() + size_of::<Binding>()) + 32 * size_of::<usize>() + 64;
-    // Excludes the new State header and the nine initial ScriptObject arena
+    // Excludes the new State header and the ten initial ScriptObject arena
     // slots. Their charges belong to uninitialized/reserve_bootstrap_objects.
-    9 * a + 9 * d + 26 * k + 9 * bpp + 8 * n + 4 * bsb + 9356
+    10 * a + 10 * d + 29 * k + 10 * bpp + 9 * n + 4 * bsb + 10376
 }
 
 fn empty_arenas(runtime: &Runtime) {
@@ -76,14 +76,14 @@ fn replay_fixture() -> Runtime {
     let mut runtime = Runtime::try_new().unwrap();
     empty_arenas(&runtime);
     coherent_intrinsics(&runtime);
-    assert_eq!(runtime.objects.len(), 750);
+    assert_eq!(runtime.objects.len(), 751);
     assert!(runtime.environments[0].bindings.remove("Promise").is_some());
     assert!(runtime.promises.intrinsics.take().is_some());
-    // Inert Rust fixture setup: retain all old bags, reserve nine additional
+    // Inert Rust fixture setup: retain all old bags, reserve ten additional
     // slots and then reset counters. This does not resume author callbacks,
     // assert allocation rollback, or alter the production admission policy.
-    runtime.objects.try_reserve_exact(9).unwrap();
-    assert!(runtime.objects.capacity() >= runtime.objects.len() + 9);
+    runtime.objects.try_reserve_exact(10).unwrap();
+    assert!(runtime.objects.capacity() >= runtime.objects.len() + 10);
     assert_eq!(runtime.environments[0].bindings.len(), 211);
     runtime.steps = 0;
     runtime.allocated = 0;
@@ -91,8 +91,8 @@ fn replay_fixture() -> Runtime {
 }
 
 #[test]
-fn promise_installer_exact1262_and_one_short1261_precede_global_cache_publication() {
-    for (work, accepted) in [(1262, true), (1261, false)] {
+fn promise_installer_exact1383_and_one_short1382_precede_global_cache_publication() {
+    for (work, accepted) in [(1383, true), (1382, false)] {
         let mut runtime = replay_fixture();
         let capacity = runtime.objects.capacity();
         runtime.steps = work;
@@ -105,7 +105,7 @@ fn promise_installer_exact1262_and_one_short1261_precede_global_cache_publicatio
         empty_arenas(&runtime);
         if accepted {
             assert_eq!(runtime.allocated, helper_bytes());
-            assert_eq!(runtime.objects.len(), 759);
+            assert_eq!(runtime.objects.len(), 761);
             assert_eq!(runtime.environments[0].bindings.len(), 212);
             coherent_intrinsics(&runtime);
         } else {
@@ -128,7 +128,7 @@ fn promise_installer_exact_helper_heap_and_one_short_keep_refused_realm_unpublis
     for (allowance, accepted) in [(bytes, true), (bytes - 1, false)] {
         let mut runtime = replay_fixture();
         let capacity = runtime.objects.capacity();
-        runtime.steps = 1262;
+        runtime.steps = 1383;
         runtime.allocated = MAX_HEAP - allowance;
         let result = runtime.install_promise_intrinsics();
         assert_eq!(result.is_ok(), accepted);
@@ -139,7 +139,7 @@ fn promise_installer_exact_helper_heap_and_one_short_keep_refused_realm_unpublis
         empty_arenas(&runtime);
         if accepted {
             assert_eq!(runtime.allocated, MAX_HEAP);
-            assert_eq!(runtime.objects.len(), 759);
+            assert_eq!(runtime.objects.len(), 761);
             assert_eq!(runtime.environments[0].bindings.len(), 212);
             coherent_intrinsics(&runtime);
         } else {
@@ -155,8 +155,8 @@ fn promise_installer_exact_helper_heap_and_one_short_keep_refused_realm_unpublis
 }
 
 #[test]
-fn promise_full_raw99725_and_public_reset_preserve_empty_paid_arenas() {
-    for (work, accepted, remaining) in [(99_724, false, 0), (99_725, true, 0), (100_000, true, 275)]
+fn promise_full_raw99846_and_public_reset_preserve_empty_paid_arenas() {
+    for (work, accepted, remaining) in [(99_845, false, 0), (99_846, true, 0), (100_000, true, 154)]
     {
         let mut runtime = Runtime::uninitialized();
         empty_arenas(&runtime);
@@ -168,7 +168,7 @@ fn promise_full_raw99725_and_public_reset_preserve_empty_paid_arenas() {
                 assert_eq!(runtime.steps, remaining);
                 assert_eq!(
                     (runtime.objects.len(), runtime.objects.capacity()),
-                    (750, 750)
+                    (751, 751)
                 );
                 assert_eq!(runtime.environments[0].bindings.len(), 212);
                 assert_eq!(runtime.native_properties.len(), 299);

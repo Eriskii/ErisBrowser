@@ -1,4 +1,4 @@
-//! Observable Promise.all iteration over the realm's existing job machinery.
+//! Observable Promise.all and Promise.race iteration over the realm's job machinery.
 use super::*;
 
 pub(super) struct AllIterator {
@@ -95,6 +95,76 @@ impl Runtime {
         Ok(promise)
     }
 
+    pub(super) fn promise_race(
+        &mut self,
+        constructor: Value,
+        args: &[Value],
+        doc: &mut Document,
+    ) -> Result<Value> {
+        // Eight units for orchestration, nine for outer handle cleanup.
+        // Unlike all, race retains resolve without transferring it to a Group.
+        self.work(17)?;
+        self.work(1)?;
+        let Capability {
+            promise,
+            resolve,
+            reject,
+        } = self.new_promise_capability(constructor.clone(), doc)?;
+        let mut iterator = None;
+        let result = (|| {
+            self.work(1)?;
+            let promise_resolve = self.promise_named_get(constructor.clone(), "resolve", doc)?;
+            if !json_callable(&promise_resolve) {
+                return Err(ScriptError::type_error("Promise resolve is not callable"));
+            }
+            self.work(1)?;
+            let items = args.first().cloned().unwrap_or(Value::Undefined);
+            let method = self
+                .array_from_iterator_method(&items, doc)?
+                .ok_or_else(|| ScriptError::type_error("Promise.race input is not iterable"))?;
+            let object = self.call(method, Vec::new(), items, doc)?;
+            if !js_object(&object) {
+                return Err(ScriptError::type_error("iterator is not an object"));
+            }
+            self.work(1)?;
+            let next = self.promise_named_get(object.clone(), "next", doc)?;
+            iterator = Some(AllIterator {
+                iterator: object,
+                next,
+                done: false,
+            });
+            let record = iterator.as_mut().expect("acquired iterator record");
+            loop {
+                let Some(value) = self.all_iterator_step(record, doc)? else {
+                    // Empty/exhausted input does not itself settle the capability.
+                    return Ok(());
+                };
+                self.work(2)?;
+                let arguments = self.promise_arguments([value])?;
+                let next_promise =
+                    self.call(promise_resolve.clone(), arguments, constructor.clone(), doc)?;
+                // Retain the Get receiver and both shared capability callbacks.
+                // No per-element wrapper or early-settlement check is introduced.
+                self.work(3)?;
+                let then = self.promise_named_get(next_promise.clone(), "then", doc)?;
+                let arguments = self.promise_arguments([resolve.clone(), reject.clone()])?;
+                self.call(then, arguments, next_promise, doc)?;
+            }
+        })();
+        if let Err(mut error) = result {
+            if terminal(&error) {
+                return Err(error);
+            }
+            if let Some(record) = iterator.as_ref().filter(|record| !record.done) {
+                error = self.array_from_close(&record.iterator, error, doc);
+            }
+            let reason = self.exception_value(error)?;
+            let arguments = self.promise_arguments([reason])?;
+            self.call(reject, arguments, Value::Undefined, doc)?;
+        }
+        Ok(promise)
+    }
+
     fn all_iterator_step(
         &mut self,
         record: &mut AllIterator,
@@ -150,3 +220,6 @@ impl Runtime {
         }
     }
 }
+
+#[cfg(test)]
+mod race_quota_tests;

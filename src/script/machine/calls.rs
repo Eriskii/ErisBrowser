@@ -150,6 +150,7 @@ fn invoke_native(
                     | "Promise.resolve"
                     | "Promise.reject"
                     | "Promise.all"
+                    | "Promise.race"
                     | "Promise.getSpecies"
             ) {
                 runtime.promise_native_operation(&native.name, receiver, &arguments, doc)

@@ -192,8 +192,9 @@ fn bootstrap_convenience_and_try_paths_separate_work_and_retain_heap() {
     // Four Node accessors reuse the existing keys, saving128 work and672 bytes.
     // Promise.all adds107 metadata work and one arena guard, with no cap change.
     // Nine further Node factories share immutable keys:250 work/1512 bytes saved.
-    assert_eq!(reference.steps, 275);
-    assert_eq!(reference.objects.len(), 750);
+    // Promise.race adds121 metadata work and one reserved bag, with no new arena.
+    assert_eq!(reference.steps, 154);
+    assert_eq!(reference.objects.len(), 751);
     assert_eq!(reference.native_properties.len(), 299);
     assert_eq!(reference.prototypes.len(), 25);
     for mut runtime in [

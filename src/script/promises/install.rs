@@ -67,9 +67,9 @@ impl Runtime {
 
     #[cfg(test)]
     pub(in crate::script) fn install_promise_intrinsics(&mut self) -> Result<()> {
-        // Preserve standalone guard-before-allocation ordering and all twelve
+        // Preserve standalone guard-before-allocation ordering and all thirteen
         // temporary handle releases, including the two keys created here.
-        self.work(21)?;
+        self.work(22)?;
         self.check_promise_install_state()?;
         let keys = [self.dom_proto_text("length")?, self.dom_proto_text("name")?];
         self.install_promise_intrinsics_body(keys)
@@ -80,8 +80,8 @@ impl Runtime {
         keys: [JsString; 2],
     ) -> Result<()> {
         // The producer prepaid both supplied handles' releases, including
-        // refusal of this debit. Pay guards, publication and ten pool releases.
-        self.work(19)?;
+        // refusal of this debit. Pay guards, publication and eleven pool releases.
+        self.work(20)?;
         self.check_promise_install_state()?;
         self.install_promise_intrinsics_body(keys)
     }
@@ -116,9 +116,10 @@ impl Runtime {
             self.dom_proto_text("catch")?,
             self.dom_proto_text("finally")?,
             self.dom_proto_text("all")?,
+            self.dom_proto_text("race")?,
         ];
-        // 24 string keys, 8 display names, 1 prototype tag, 2 constructor handles.
-        self.work(35)?;
+        // 27 string keys, 9 display names, 1 prototype tag, 2 constructor handles.
+        self.work(39)?;
         let (symbol_comparisons, _) = tree(self.well_known_symbol_count());
         self.work(symbol_comparisons * (1 + "species".len() / 8))?;
         let species = self.well_known_key("species");
@@ -133,7 +134,7 @@ impl Runtime {
             .ok_or_else(|| ScriptError::resource("Promise Object prototype missing"))?;
 
         let constructor_bag =
-            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 7)?;
+            self.dom_proto_object(Some(Value::Function(self.function_prototype)), 8)?;
         let prototype = self.dom_proto_object(Some(Value::Object(object_prototype)), 5)?;
         self.dom_proto_property(
             constructor_bag,
@@ -161,6 +162,7 @@ impl Runtime {
         let finally =
             self.promise_intrinsic_method("Promise.finally", pool[10].clone(), 1, keys)?;
         let all = self.promise_intrinsic_method("Promise.all", pool[11].clone(), 1, keys)?;
+        let race = self.promise_intrinsic_method("Promise.race", pool[12].clone(), 1, keys)?;
         self.dom_proto_property(
             constructor_bag,
             pool[4].clone().into(),
@@ -175,6 +177,11 @@ impl Runtime {
             constructor_bag,
             pool[11].clone().into(),
             Property::data(all, true, false, true),
+        )?;
+        self.dom_proto_property(
+            constructor_bag,
+            pool[12].clone().into(),
+            Property::data(race, true, false, true),
         )?;
         self.dom_proto_property(
             constructor_bag,

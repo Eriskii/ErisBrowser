@@ -14,7 +14,10 @@ with all 90 harness controls passing. [Call/new spread arguments](call-spread.md
 close four prior syntax failures. Classes and the distinction between host
 rejection policy and language conformance remain visible in this result.
 The existing 458-mode profile has no regressions.
-Remaining asynchronous work includes `race`, `allSettled`, `any`,
+[`Promise.race`](promise-race.md) now reuses capabilities and the shared FIFO,
+preserving direct callbacks and ordinary iterator closing. Its complete pinned
+94-source upstream profile remains a separate follow-up.
+Remaining asynchronous work includes `allSettled`, `any`,
 async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 
@@ -27,8 +30,9 @@ leaving five under the unchanged startup limit. The
 672 accounted heap bytes, leaving 133 units at that checkpoint. Installing
 `Promise.all` uses 108 units and leaves 25 under the same startup allowance.
 The [Node method follow-up](node-method-keys.md) saves another 250 work units and
-1,512 accounted heap bytes, leaving 275 units. Call/new spread now uses the same
-startup allowance and runtime limits. [Argument grammar contexts](call-argument-in.md)
+1,512 accounted heap bytes, leaving 275 units. Installing `Promise.race` uses
+121 units and leaves 154 under the unchanged startup allowance. Call/new spread
+uses the same runtime limits. [Argument grammar contexts](call-argument-in.md)
 now restore `+In` inside argument lists nested in a `for` initializer, while
 preserving the surrounding `for-in` grammar. [Computed member keys and
 conditional middle operands](expression-in.md) now handle their own `+In`
