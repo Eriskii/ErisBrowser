@@ -238,7 +238,7 @@ class PromiseRunnerTests(unittest.TestCase):
             return code, report, baseline.exists(), calls
 
     def test_all_53_old_serialized_policies_and_hashes_remain_exact(self):
-        names = set(runner.PROFILES) - {PROFILE, 'promise-all'}
+        names = set(runner.PROFILES) - {PROFILE, 'promise-all', 'promise-race'}
         self.assertEqual(names, set(self.oracle['old_policies']))
         self.assertEqual(len(names), 53)
         for name in sorted(names):

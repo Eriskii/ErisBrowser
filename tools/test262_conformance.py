@@ -116,7 +116,10 @@ PROFILE_FEATURES[PROMISE_PROFILE] = PROMISE_FEATURES
 PROMISE_ALL_PROFILE = 'promise-all'
 PROMISE_ALL_FEATURES = PROMISE_FEATURES | {'Symbol.iterator'}
 PROFILE_FEATURES[PROMISE_ALL_PROFILE] = PROMISE_ALL_FEATURES
-PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE}
+PROMISE_RACE_PROFILE = 'promise-race'
+PROMISE_RACE_FEATURES = PROMISE_ALL_FEATURES.copy()
+PROFILE_FEATURES[PROMISE_RACE_PROFILE] = PROMISE_RACE_FEATURES
+PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE, PROMISE_RACE_PROFILE}
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
 KNOWN_FLAGS = {'onlyStrict', 'noStrict', 'module', 'raw', 'async', 'generated',
                'CanBlockIsFalse', 'CanBlockIsTrue', 'non-deterministic'}
@@ -232,13 +235,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -1367,6 +1370,8 @@ def array_from_preflight_variants():
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
+    if profile == PROMISE_RACE_PROFILE:
+        return promise_race_harness_preflight(files, binary, timeout)
     if profile == PROMISE_ALL_PROFILE:
         return promise_all_harness_preflight(files, binary, timeout)
     if profile == PROMISE_PROFILE:
@@ -3437,6 +3442,236 @@ def promise_all_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+def promise_race_preflight_variants():
+    """Four frozen race pairs; common host controls remain unchanged."""
+    return [{'name': 'api',
+      'source': "verifyProperty(Promise, 'race', {\n"
+                '  value: Promise.race, writable: true, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.race, 'name', {\n"
+                "  value: 'race', writable: false, enumerable: false, configurable: true\n"
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.race, 'length', {\n"
+                '  value: 1, writable: false, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                'assert.throws(TypeError, function() { new Promise.race([]); });\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js'],
+      'origin': 'promise-race-pair',
+      'prerequisite': None},
+     {'name': 'api-mismatch',
+      'source': 'Promise.race = function race(value) {};\n'
+                "verifyProperty(Promise, 'race', {\n"
+                '  value: Promise.race, writable: true, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.race, 'name', {\n"
+                "  value: 'race', writable: false, enumerable: false, configurable: true\n"
+                '}, { restore: true });\n'
+                "verifyProperty(Promise.race, 'length', {\n"
+                '  value: 1, writable: false, enumerable: false, configurable: true\n'
+                '}, { restore: true });\n'
+                'assert.throws(TypeError, function() { new Promise.race([]); });\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js'],
+      'origin': 'promise-race-pair',
+      'prerequisite': 'api'},
+     {'name': 'winner',
+      'source': "assert.sameValue(typeof compareArray, 'function');\n"
+                "assert.sameValue(typeof assert.compareArray, 'function');\n"
+                'assert.sameValue(compareArray([1, 2], [1, 2]), true);\n'
+                'assert.sameValue(compareArray([1, 2], [2, 1]), false);\n'
+                'var emptyCalls = 0;\n'
+                'Promise.race([]).then(\n'
+                '  function() { emptyCalls++; },\n'
+                '  function() { emptyCalls++; }\n'
+                ');\n'
+                'var release;\n'
+                'var pending = new Promise(function(resolve) { release = resolve; });\n'
+                'Promise.race([pending, Promise.resolve(7), 9]).then(function(value) {\n'
+                '  assert.sameValue(emptyCalls, 0);\n'
+                '  assert.compareArray([value], [7]);\n'
+                '}).then($DONE, $DONE);\n'
+                'release(3);\n',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': ['compareArray.js'],
+      'origin': 'promise-race-pair',
+      'prerequisite': None},
+     {'name': 'winner-mismatch',
+      'source': "assert.sameValue(typeof compareArray, 'function');\n"
+                "assert.sameValue(typeof assert.compareArray, 'function');\n"
+                'assert.sameValue(compareArray([1, 2], [1, 2]), true);\n'
+                'assert.sameValue(compareArray([1, 2], [2, 1]), false);\n'
+                'var emptyCalls = 0;\n'
+                'Promise.race([]).then(\n'
+                '  function() { emptyCalls++; },\n'
+                '  function() { emptyCalls++; }\n'
+                ');\n'
+                'var release;\n'
+                'var pending = new Promise(function(resolve) { release = resolve; });\n'
+                'Promise.race([pending, Promise.resolve(7), 9]).then(function(value) {\n'
+                '  assert.sameValue(emptyCalls, 0);\n'
+                '  assert.compareArray([value], [3]);\n'
+                '}).then($DONE, $DONE);\n'
+                'release(3);\n',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': ['compareArray.js'],
+      'origin': 'promise-race-pair',
+      'prerequisite': 'winner'},
+     {'name': 'rejection-identity',
+      'source': 'var marker = {};\n'
+                'Promise.race([Promise.reject(marker), new Promise(function() {})]).then(\n'
+                "  function() { throw new Test262Error('unexpected fulfillment'); },\n"
+                '  function(reason) { assert.sameValue(reason, marker); }\n'
+                ').then($DONE, $DONE);\n',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-race-pair',
+      'prerequisite': None},
+     {'name': 'rejection-identity-mismatch',
+      'source': 'var marker = {};\n'
+                'Promise.race([Promise.reject(marker), new Promise(function() {})]).then(\n'
+                "  function() { throw new Test262Error('unexpected fulfillment'); },\n"
+                '  function(reason) { assert.notSameValue(reason, marker); }\n'
+                ').then($DONE, $DONE);\n',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-race-pair',
+      'prerequisite': 'rejection-identity'},
+     {'name': 'shared-callbacks',
+      'source': 'var capability = {};\n'
+                'var resolves = 0;\n'
+                'var rejects = 0;\n'
+                'var nextCalls = 0;\n'
+                "function fulfilled(value) { resolves++; return 'F' + value; }\n"
+                "function rejected(value) { rejects++; return 'R' + value; }\n"
+                'function C(executor) {\n'
+                '  executor(fulfilled, rejected);\n'
+                '  return capability;\n'
+                '}\n'
+                'C.resolve = function(value) {\n'
+                '  assert.sameValue(this, C);\n'
+                '  return { then: function(onFulfilled, onRejected) {\n'
+                '    assert.sameValue(onFulfilled, fulfilled);\n'
+                '    assert.sameValue(onRejected, rejected);\n'
+                "    assert.sameValue(onFulfilled(value), 'F' + value);\n"
+                "    assert.sameValue(onFulfilled(value + 10), 'F' + (value + 10));\n"
+                "    assert.sameValue(onRejected(value), 'R' + value);\n"
+                "    assert.sameValue(onRejected(value + 10), 'R' + (value + 10));\n"
+                '  } };\n'
+                '};\n'
+                'var iterator = { next: function() {\n'
+                '  nextCalls++;\n'
+                '  return nextCalls <= 2 ? { done: false, value: nextCalls } : { done: true };\n'
+                '} };\n'
+                'var source = {};\n'
+                'source[Symbol.iterator] = function() { return iterator; };\n'
+                'assert.sameValue(Promise.race.call(C, source), capability);\n'
+                'assert.sameValue(resolves, 4);\n'
+                'assert.sameValue(rejects, 4);\n'
+                'assert.sameValue(nextCalls, 3);\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-race-pair',
+      'prerequisite': None},
+     {'name': 'shared-callbacks-mismatch',
+      'source': 'var capability = {};\n'
+                'var resolves = 0;\n'
+                'var rejects = 0;\n'
+                'var nextCalls = 0;\n'
+                "function fulfilled(value) { resolves++; return 'F' + value; }\n"
+                "function rejected(value) { rejects++; return 'R' + value; }\n"
+                'function C(executor) {\n'
+                '  executor(fulfilled, rejected);\n'
+                '  return capability;\n'
+                '}\n'
+                'C.resolve = function(value) {\n'
+                '  assert.sameValue(this, C);\n'
+                '  return { then: function(onFulfilled, onRejected) {\n'
+                '    assert.sameValue(onFulfilled, fulfilled);\n'
+                '    assert.sameValue(onRejected, rejected);\n'
+                "    assert.sameValue(onFulfilled(value), 'F' + value);\n"
+                "    assert.sameValue(onFulfilled(value + 10), 'F' + (value + 10));\n"
+                "    assert.sameValue(onRejected(value), 'R' + value);\n"
+                "    assert.sameValue(onRejected(value + 10), 'R' + (value + 10));\n"
+                '  } };\n'
+                '};\n'
+                'var iterator = { next: function() {\n'
+                '  nextCalls++;\n'
+                '  return nextCalls <= 2 ? { done: false, value: nextCalls } : { done: true };\n'
+                '} };\n'
+                'var source = {};\n'
+                'source[Symbol.iterator] = function() { return iterator; };\n'
+                'assert.sameValue(Promise.race.call(C, source), capability);\n'
+                'assert.sameValue(resolves, 2);\n'
+                'assert.sameValue(rejects, 4);\n'
+                'assert.sameValue(nextCalls, 3);\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-race-pair',
+      'prerequisite': 'shared-callbacks'}]
+
+
+def promise_race_preflight_healthy(outcomes):
+    common_count = 2 * len(promise_preflight_variants())
+    if not promise_preflight_healthy(outcomes[:common_count]):
+        return False
+    expected = {('promise-methods-' + row['name'], mode)
+                for mode in ('sloppy', 'strict') for row in promise_preflight_variants()}
+    expected.update(('promise-race-' + row['name'], mode)
+                    for mode in ('sloppy', 'strict') for row in promise_race_preflight_variants())
+    if len(outcomes) != len(expected):
+        return False
+    observed = set()
+    for item in outcomes:
+        identity = (item.get('name'), item.get('result', {}).get('mode'))
+        if identity not in expected or identity in observed or item.get('verified') is not True:
+            return False
+        observed.add(identity)
+    return observed == expected
+
+
+def promise_race_harness_preflight(files, binary, timeout):
+    # Preserve the original74 rows, their policy and all prerequisite evidence.
+    outcomes = promise_harness_preflight(files, binary, timeout)
+    by_identity = {(item['name'], item['result']['mode']): item for item in outcomes}
+    common_names = ['promise-methods-' + row['name'] for row in promise_preflight_variants()]
+    for mode in ('sloppy', 'strict'):
+        for row in promise_race_preflight_variants():
+            policy = row['completion_policy']
+            names = ['assert.js', 'sta.js'] + (['doneprintHandle.js'] if policy else []) + row['includes']
+            name = 'promise-race-' + row['name']
+            case = dict(id='harness-preflight:' + name, file='<preflight>', mode=mode,
+                        metadata=dict(flags=['async'] if policy else [], includes=row['includes'],
+                                      features=[], locale=[], negative=None),
+                        source=row['source'].encode(), harness=[(n, files['harness/' + n]) for n in names],
+                        completion_policy=policy)
+            case['case_sha256'] = case_fingerprint(case)
+            result = run_case(case, binary, timeout, PROMISE_RACE_FEATURES, PROMISE_RACE_PROFILE)
+            required = common_names.copy()
+            if row['prerequisite']:
+                required.append('promise-race-' + row['prerequisite'])
+            prerequisites = [dict(name=required_name, mode=mode,
+                verified=by_identity[(required_name, mode)]['verified'],
+                case_sha256=by_identity[(required_name, mode)]['result']['case_sha256'],
+                source_sha256=by_identity[(required_name, mode)]['result']['source_sha256'])
+                for required_name in required]
+            item = dict(name=name, expected=row['expected'],
+                        verified=(promise_preflight_verified(case, result, row['expected'])
+                                  and all(prerequisite['verified'] for prerequisite in prerequisites)),
+                        result=result, prerequisites=prerequisites)
+            outcomes.append(item)
+            by_identity[(name, mode)] = item
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -3481,7 +3716,8 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (promise_all_preflight_healthy(preflight) if args.profile == PROMISE_ALL_PROFILE
+        preflight_ok = (promise_race_preflight_healthy(preflight) if args.profile == PROMISE_RACE_PROFILE
+                        else promise_all_preflight_healthy(preflight) if args.profile == PROMISE_ALL_PROFILE
                         else promise_preflight_healthy(preflight) if args.profile == PROMISE_PROFILE
                         else all(item['verified'] for item in preflight))
         supported_features = PROFILE_FEATURES[args.profile]

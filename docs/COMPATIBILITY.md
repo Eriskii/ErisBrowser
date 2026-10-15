@@ -21,7 +21,10 @@ complete Promise conformance. Its separate [complete `Promise.all` selection](pr
 records **174 passed, 14 failed and 8 unsupported modes out of 196**. The fourteen
 failures are final-unhandled host-policy failures. Eight class-bearing modes
 remain unsupported. All 90 harness controls pass, and the prior 458-mode selection
-retains its exact outcomes.
+retains its exact outcomes. The separate [complete `Promise.race` selection](promise-race-test262.md)
+records **170 passed, 10 failed and 8 unsupported modes out of 188**, with all 90
+controls verified. Its ten failures are final-unhandled host-policy observations;
+eight class-bearing modes remain unsupported.
 [Call and constructor spread arguments](call-spread.md) close the four prior
 parse failures. Mixed, multiple and empty spreads preserve iterator ordering,
 receiver identity and argument-before-callability semantics within shared limits.

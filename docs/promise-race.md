@@ -64,9 +64,10 @@ and 8 unsupported out of 196; the earlier profile remains 420 passed, 8 failed
 and 30 unsupported out of 458. All 164 harness controls pass. These checks preserve
 existing outcomes; they are not a new `Promise.race` conformance result.
 
-The authenticated 94-source `Promise/race` directory remains a separate upstream
-profile follow-up; the retained 20-source sample is not a complete run. Authored
-controls do not establish full Promise or ECMAScript compatibility. `allSettled`,
+The separate [complete pinned `Promise/race` profile](promise-race-test262.md) now
+records observed upstream results for all 94 sources and 188 modes. The API
+validation above remains its own implementation checkpoint. Authored controls
+do not establish full Promise or ECMAScript compatibility. `allSettled`,
 `any`, async functions, browser rejection notifications and multiple realms
 remain unfinished.
 

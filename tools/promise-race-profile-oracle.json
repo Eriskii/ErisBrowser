@@ -1,0 +1,5047 @@
+{
+  "schema": 1,
+  "profile": "promise-race",
+  "expected_manifest": {
+    "format": 1,
+    "repository": "https://github.com/tc39/test262",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "scope": "all 94 original .js files in the complete immediate Promise/race directory; root-linked nonrecursive Git proofs and unchanged harness bytes; all original feature metadata retained; no execution or conformance claim",
+    "directories": {
+      "Promise/race": [
+        "S25.4.4.3_A1.1_T1.js",
+        "S25.4.4.3_A2.1_T1.js",
+        "S25.4.4.3_A2.2_T1.js",
+        "S25.4.4.3_A2.2_T2.js",
+        "S25.4.4.3_A2.2_T3.js",
+        "S25.4.4.3_A3.1_T1.js",
+        "S25.4.4.3_A3.1_T2.js",
+        "S25.4.4.3_A4.1_T1.js",
+        "S25.4.4.3_A4.1_T2.js",
+        "S25.4.4.3_A5.1_T1.js",
+        "S25.4.4.3_A6.1_T1.js",
+        "S25.4.4.3_A6.2_T1.js",
+        "S25.4.4.3_A7.1_T1.js",
+        "S25.4.4.3_A7.1_T2.js",
+        "S25.4.4.3_A7.1_T3.js",
+        "S25.4.4.3_A7.2_T1.js",
+        "S25.4.4.3_A7.3_T1.js",
+        "S25.4.4.3_A7.3_T2.js",
+        "capability-executor-called-twice.js",
+        "capability-executor-not-callable.js",
+        "ctx-ctor-throws.js",
+        "ctx-ctor.js",
+        "ctx-non-ctor.js",
+        "ctx-non-object.js",
+        "invoke-resolve-error-close.js",
+        "invoke-resolve-error-reject.js",
+        "invoke-resolve-get-error-reject.js",
+        "invoke-resolve-get-error.js",
+        "invoke-resolve-get-once-multiple-calls.js",
+        "invoke-resolve-get-once-no-calls.js",
+        "invoke-resolve-on-promises-every-iteration-of-custom.js",
+        "invoke-resolve-on-promises-every-iteration-of-promise.js",
+        "invoke-resolve-on-values-every-iteration-of-promise.js",
+        "invoke-resolve-return.js",
+        "invoke-resolve.js",
+        "invoke-then-error-close.js",
+        "invoke-then-error-reject.js",
+        "invoke-then-get-error-close.js",
+        "invoke-then-get-error-reject.js",
+        "invoke-then.js",
+        "iter-arg-is-false-reject.js",
+        "iter-arg-is-null-reject.js",
+        "iter-arg-is-number-reject.js",
+        "iter-arg-is-string-resolve.js",
+        "iter-arg-is-symbol-reject.js",
+        "iter-arg-is-true-reject.js",
+        "iter-arg-is-undefined-reject.js",
+        "iter-assigned-false-reject.js",
+        "iter-assigned-null-reject.js",
+        "iter-assigned-number-reject.js",
+        "iter-assigned-string-reject.js",
+        "iter-assigned-symbol-reject.js",
+        "iter-assigned-true-reject.js",
+        "iter-assigned-undefined-reject.js",
+        "iter-next-val-err-no-close.js",
+        "iter-next-val-err-reject.js",
+        "iter-returns-false-reject.js",
+        "iter-returns-null-reject.js",
+        "iter-returns-number-reject.js",
+        "iter-returns-string-reject.js",
+        "iter-returns-symbol-reject.js",
+        "iter-returns-true-reject.js",
+        "iter-returns-undefined-reject.js",
+        "iter-step-err-no-close.js",
+        "iter-step-err-reject.js",
+        "length.js",
+        "name.js",
+        "not-a-constructor.js",
+        "prop-desc.js",
+        "reject-deferred.js",
+        "reject-from-same-thenable.js",
+        "reject-ignored-deferred.js",
+        "reject-ignored-immed.js",
+        "reject-immed.js",
+        "resolve-from-same-thenable.js",
+        "resolve-ignores-late-rejection-deferred.js",
+        "resolve-ignores-late-rejection.js",
+        "resolve-non-callable.js",
+        "resolve-non-obj.js",
+        "resolve-non-thenable.js",
+        "resolve-poisoned-then.js",
+        "resolve-prms-cstm-then.js",
+        "resolve-self.js",
+        "resolve-thenable.js",
+        "resolve-throws-iterator-return-is-not-callable.js",
+        "resolve-throws-iterator-return-null-or-undefined.js",
+        "resolved-sequence-extra-ticks.js",
+        "resolved-sequence-mixed.js",
+        "resolved-sequence-with-rejections.js",
+        "resolved-sequence.js",
+        "resolved-then-catch-finally.js",
+        "same-reject-function.js",
+        "same-resolve-function.js",
+        "species-get-error.js"
+      ]
+    },
+    "test_files": 94,
+    "files": [
+      {
+        "path": "INTERPRETING.md",
+        "upstream_path": "INTERPRETING.md",
+        "bytes": 18611,
+        "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+      },
+      {
+        "path": "LICENSE",
+        "upstream_path": "LICENSE",
+        "bytes": 2213,
+        "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+      },
+      {
+        "path": "harness/assert.js",
+        "upstream_path": "harness/assert.js",
+        "bytes": 4881,
+        "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+      },
+      {
+        "path": "harness/compareArray.js",
+        "upstream_path": "harness/compareArray.js",
+        "bytes": 243,
+        "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+      },
+      {
+        "path": "harness/doneprintHandle.js",
+        "upstream_path": "harness/doneprintHandle.js",
+        "bytes": 625,
+        "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+      },
+      {
+        "path": "harness/isConstructor.js",
+        "upstream_path": "harness/isConstructor.js",
+        "bytes": 544,
+        "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+      },
+      {
+        "path": "harness/promiseHelper.js",
+        "upstream_path": "harness/promiseHelper.js",
+        "bytes": 2411,
+        "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+      },
+      {
+        "path": "harness/propertyHelper.js",
+        "upstream_path": "harness/propertyHelper.js",
+        "bytes": 18956,
+        "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+      },
+      {
+        "path": "harness/sta.js",
+        "upstream_path": "harness/sta.js",
+        "bytes": 792,
+        "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A1.1_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A1.1_T1.js",
+        "bytes": 331,
+        "sha256": "d6994351d792cd0cac61c7b78731cab26c890b90245675c706b12caffcb48422"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A2.1_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A2.1_T1.js",
+        "bytes": 359,
+        "sha256": "72b5ae6251703d83bf5c70bef1c432a92f300e5e5f109d1ebfa0325cfa0a18c8"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T1.js",
+        "bytes": 617,
+        "sha256": "3355cc8bd32a31c4ff9b3c5c5732e594562023c40f65a7a720b133786ab780a0"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T2.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T2.js",
+        "bytes": 607,
+        "sha256": "d67210585be628c7c8d78beef3150c5d7d411346c661a213572773d357127a55"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T3.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T3.js",
+        "bytes": 858,
+        "sha256": "1a09dc367f626c89390963bec46d9b9efbce90fc0fa76ac601a29bc09cb63665"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T1.js",
+        "bytes": 513,
+        "sha256": "1ec46d0015984eebb89d1801d23ac891753d31773954a314f7b6170e451bdad3"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T2.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T2.js",
+        "bytes": 564,
+        "sha256": "b7ddecb9c887f60712d9bdba6e73a9a2b802ac24978930c34e36abf29ddb4ea4"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T1.js",
+        "bytes": 704,
+        "sha256": "f1c9336f10de696d33163efd07f4e6c7cb683fd693db101e3d4c0edfc3cb2763"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T2.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T2.js",
+        "bytes": 887,
+        "sha256": "26d07bd2ba0cf1f3de5044ff0c3bd73ef4632105a765f6b5a481475e71251253"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A5.1_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A5.1_T1.js",
+        "bytes": 527,
+        "sha256": "ebb6daf19b889aed18eadd8ef4e7dbe9bb2840436dd38eee58dd12e6d3f4ee93"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A6.1_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A6.1_T1.js",
+        "bytes": 772,
+        "sha256": "35feef4bf3513efa7df58640b69223d27265d5d4519d718bce94c4756c8619e4"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A6.2_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A6.2_T1.js",
+        "bytes": 1019,
+        "sha256": "e81b5642234fd53ef66b7ab16b52e0dfdf79d2a981c7b90504344aacb6c54b9e"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T1.js",
+        "bytes": 1080,
+        "sha256": "51b755b64476e5fb55febe0d8bfe15330463d4c4492a101ce027f27690e1e8f1"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T2.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T2.js",
+        "bytes": 1088,
+        "sha256": "75f6d7fd85e439fe376aae653bf4bc77835225a21b121375d96f5e6e91e116e3"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T3.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T3.js",
+        "bytes": 1088,
+        "sha256": "f172c6f9b733f8cbc4084508bbb2996a13174f8277fae6980deb42354c61e976"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A7.2_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A7.2_T1.js",
+        "bytes": 1170,
+        "sha256": "5b67f150ada8a6d02349a3e84a7d985b7cf02402c4f2223e66532db71ad73f0f"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T1.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T1.js",
+        "bytes": 634,
+        "sha256": "5c1b2e93321c4e6d7b9246a0a6cc255a2be8f5f876e77b23a332e2a6c1cb3177"
+      },
+      {
+        "path": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T2.js",
+        "upstream_path": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T2.js",
+        "bytes": 657,
+        "sha256": "9500ce33d0a4562efd3016a2a83168a97405c19bc95755417f5bea443e79cb1f"
+      },
+      {
+        "path": "test/built-ins/Promise/race/capability-executor-called-twice.js",
+        "upstream_path": "test/built-ins/Promise/race/capability-executor-called-twice.js",
+        "bytes": 2910,
+        "sha256": "7c47ad2fdfe85dcba112f878887f599ffbe131b9634e30d740569ecd0f56c634"
+      },
+      {
+        "path": "test/built-ins/Promise/race/capability-executor-not-callable.js",
+        "upstream_path": "test/built-ins/Promise/race/capability-executor-not-callable.js",
+        "bytes": 2727,
+        "sha256": "cd5f7b9d793b4f07fc85fd28aa419e0068731c5fc4f2c23c09abe989f2bedcb0"
+      },
+      {
+        "path": "test/built-ins/Promise/race/ctx-ctor-throws.js",
+        "upstream_path": "test/built-ins/Promise/race/ctx-ctor-throws.js",
+        "bytes": 676,
+        "sha256": "bb195a8c2eae258723aa61a6e6517a31acde5dadf0c482719aadf444daa852b2"
+      },
+      {
+        "path": "test/built-ins/Promise/race/ctx-ctor.js",
+        "upstream_path": "test/built-ins/Promise/race/ctx-ctor.js",
+        "bytes": 966,
+        "sha256": "30200573998ec9542487fb2991dd6feb6583079d4e5b1b53a7634eb5d3c90d47"
+      },
+      {
+        "path": "test/built-ins/Promise/race/ctx-non-ctor.js",
+        "upstream_path": "test/built-ins/Promise/race/ctx-non-ctor.js",
+        "bytes": 531,
+        "sha256": "03d39c795eeb8472873cbe76b2011e844ab28a2672f391b6d14702a60f12d0f5"
+      },
+      {
+        "path": "test/built-ins/Promise/race/ctx-non-object.js",
+        "upstream_path": "test/built-ins/Promise/race/ctx-non-object.js",
+        "bytes": 807,
+        "sha256": "3dd1ba55753a6bbb05e9467280cb94e314e6f91cf75cad6171f9b52366ef1d47"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-error-close.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-error-close.js",
+        "bytes": 1174,
+        "sha256": "57a6371e9dfda066b899bc4ffcd93f139b5de1559128bb9f89827aac5557693e"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-error-reject.js",
+        "bytes": 1126,
+        "sha256": "634598fdf4a513cf242f78a92842cb91725b9b7977f178054d32e461f5c78501"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-get-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-get-error-reject.js",
+        "bytes": 1101,
+        "sha256": "0f4bcd38acb9cbbaa11ffa4b1dffcc6ef7dcd381fef2bd55609010684b0a0e8a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-get-error.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-get-error.js",
+        "bytes": 1000,
+        "sha256": "f81166f088ba98a374c61c3b001a3f3918967e4f0940e70e2c52fe989cf74810"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-get-once-multiple-calls.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-get-once-multiple-calls.js",
+        "bytes": 1146,
+        "sha256": "833a193abdeeaaf1d2d2dd05790643df9d96041be05636fafa46e0a94adb20e2"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-get-once-no-calls.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-get-once-no-calls.js",
+        "bytes": 1010,
+        "sha256": "7946d42066315d6e25596d3864a9493046811ae0e3f638c8ea3da0e94d610a65"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-custom.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-custom.js",
+        "bytes": 1238,
+        "sha256": "0d2aaeab621742057384a1ded8cf1de9e77ddb703aed152f07b63524b5bd958f"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-promise.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-promise.js",
+        "bytes": 882,
+        "sha256": "7a06c07848df426762791c0db7ed61550350ee90507596c7468f70f698b9eca3"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-on-values-every-iteration-of-promise.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-on-values-every-iteration-of-promise.js",
+        "bytes": 897,
+        "sha256": "57344ce0f6743deb1a8dec9f8e35906568293b3570fc666c82b99a27a37e1916"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve-return.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve-return.js",
+        "bytes": 1247,
+        "sha256": "0f8d39f768151afa521976fdec30045f676b2293b583ff2393a6a35fbb12a457"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-resolve.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-resolve.js",
+        "bytes": 1243,
+        "sha256": "4b03eb2105c7bfdf2f2d5f24b1bc3bd1f9e85ad71c5cf19b78dc951d5903e501"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-then-error-close.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-then-error-close.js",
+        "bytes": 1271,
+        "sha256": "1d9892ddd044543eb9c982e3e57171f86d2c88682ef832361cabb3c847bd110c"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-then-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-then-error-reject.js",
+        "bytes": 1144,
+        "sha256": "330e89b859faaee016806af88df1d06c8bf2bfc5d9a9267603a62eb966cd969a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-then-get-error-close.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-then-get-error-close.js",
+        "bytes": 1311,
+        "sha256": "5310bd5f2702e488fbd0fdbf3683422fb8f9233704ebc057f2d90d4c84039355"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-then-get-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-then-get-error-reject.js",
+        "bytes": 1184,
+        "sha256": "edb226f26fc11242d22a30ddc9b1884938226dfbd1fb7e4c4adc53cb56b6ccd7"
+      },
+      {
+        "path": "test/built-ins/Promise/race/invoke-then.js",
+        "upstream_path": "test/built-ins/Promise/race/invoke-then.js",
+        "bytes": 1548,
+        "sha256": "a69bb9611b3dba1007d3f7af1c44810cd97d5540793ba42fa6b2bd8bf519f4e3"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-arg-is-false-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-arg-is-false-reject.js",
+        "bytes": 888,
+        "sha256": "cd7b23540bc16c93e80e7a5b598cf353b5429655395b44d09167d6c3137932dd"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-arg-is-null-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-arg-is-null-reject.js",
+        "bytes": 886,
+        "sha256": "3e1b28f9ee28a0b3d1c586a0c652ed9554f8349724ed7a747606ad3c255972b9"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-arg-is-number-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-arg-is-number-reject.js",
+        "bytes": 885,
+        "sha256": "f55b3f3f19f2948b27b429a7def7466796013e8cc7162b35e8f10c9bfe90ceaa"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-arg-is-string-resolve.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-arg-is-string-resolve.js",
+        "bytes": 874,
+        "sha256": "3ba7b171bcf12b1f066c49f7c5d1b1f850ae2b68961fa5b6cbb5fd3867f06f85"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-arg-is-symbol-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-arg-is-symbol-reject.js",
+        "bytes": 892,
+        "sha256": "1ca3eaf716827e72552df40ce9a33cf5c6ad7af9c52f5c7e7eecd24eb0654a19"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-arg-is-true-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-arg-is-true-reject.js",
+        "bytes": 886,
+        "sha256": "b0dfcc0cd612f9720bef85953f2fe2cacbfde65845b40db9af77b2588d109f2f"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-arg-is-undefined-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-arg-is-undefined-reject.js",
+        "bytes": 896,
+        "sha256": "45c0211734ec699feaa50369ff9a2f3e895f8dfebf3ec43f5d58fdb5ae0744cc"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-assigned-false-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-assigned-false-reject.js",
+        "bytes": 953,
+        "sha256": "0a23f3e2ac59f4abbfa6ce7edb7c466e2c4dbc3bfa417b4d50b5f287b2ae9a76"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-assigned-null-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-assigned-null-reject.js",
+        "bytes": 951,
+        "sha256": "4b91b26626840124f3c35ff0bf85f6e5ecc485841d5dbbd4c515e5e68e4257a4"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-assigned-number-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-assigned-number-reject.js",
+        "bytes": 945,
+        "sha256": "23eaf746597dd9e4558006b9cd83e79fa544201bce77e16fbc56f2d979db575b"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-assigned-string-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-assigned-string-reject.js",
+        "bytes": 947,
+        "sha256": "61873c1d544d501e7e9016cd93f3d707976aa15426e2558bca9303f8d8a28acc"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-assigned-symbol-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-assigned-symbol-reject.js",
+        "bytes": 959,
+        "sha256": "4d14ae584d2dd000da8b2b41f916965475d96e5fdd1a2d5f582d864469b7fd9d"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-assigned-true-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-assigned-true-reject.js",
+        "bytes": 951,
+        "sha256": "72aca8026be3d2ed7d7d05c8ee6d7639d25faeaf62f986e827c7477cb09082de"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-assigned-undefined-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-assigned-undefined-reject.js",
+        "bytes": 961,
+        "sha256": "02103046339f06e7b2a8de4a2c8e70de3336332b9a523077a0adfc1dffee4de3"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-next-val-err-no-close.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-next-val-err-no-close.js",
+        "bytes": 1338,
+        "sha256": "682fc7935313a939c1779d95486e93f13cf39d693ce6daa088e46a7ed78eafbf"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-next-val-err-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-next-val-err-reject.js",
+        "bytes": 1379,
+        "sha256": "a1deb9e3d1684de6f5394548467d938bd8da6ebf96dc8493a5156c790968ee9e"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-returns-false-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-returns-false-reject.js",
+        "bytes": 961,
+        "sha256": "436d0b9839d0998bae7512538ab8c0f0719f9b402a5b443bacda4b23511cc094"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-returns-null-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-returns-null-reject.js",
+        "bytes": 959,
+        "sha256": "7e80b449e36dc7e2b0b29900ce27d0a925f6f81e623add5d83934c6476b80acf"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-returns-number-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-returns-number-reject.js",
+        "bytes": 960,
+        "sha256": "a9ee2a505ed7f1a960d1285ee8decf8e1d1735f4a08636b545b571bcffe38557"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-returns-string-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-returns-string-reject.js",
+        "bytes": 961,
+        "sha256": "30576c8b2360f3f8a4090965897b668c80ec6b2bbe6f1b80b5d19d8289c4b8f2"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-returns-symbol-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-returns-symbol-reject.js",
+        "bytes": 967,
+        "sha256": "f934c3c7579b5a6b33a50a5ab2c011b465b1f35c7e73e604d355676c017df92a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-returns-true-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-returns-true-reject.js",
+        "bytes": 959,
+        "sha256": "842ce7e38561695821551fae251661fc8977ea4739d7dc740ae27a47080bb9a6"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-returns-undefined-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-returns-undefined-reject.js",
+        "bytes": 969,
+        "sha256": "53849bc18ccb3f1e637430b286f7cf925bc8d25307a30c0702069f9e6168963a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-step-err-no-close.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-step-err-no-close.js",
+        "bytes": 1430,
+        "sha256": "5299a0915eb9aafc6fab8591acb83a1e5f9d794f84eae1844dcff6f11e0adacf"
+      },
+      {
+        "path": "test/built-ins/Promise/race/iter-step-err-reject.js",
+        "upstream_path": "test/built-ins/Promise/race/iter-step-err-reject.js",
+        "bytes": 1472,
+        "sha256": "23dff4958776196a3644a7864714556b82a04482fbfbaf9be1b53ca61de4a2f1"
+      },
+      {
+        "path": "test/built-ins/Promise/race/length.js",
+        "upstream_path": "test/built-ins/Promise/race/length.js",
+        "bytes": 883,
+        "sha256": "233a2bec5c98050fa64d5f743f98536ebfab89d1a104837338cf5820a2b0de2a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/name.js",
+        "upstream_path": "test/built-ins/Promise/race/name.js",
+        "bytes": 864,
+        "sha256": "552ddc322a93df6b34db9b10c26385cd8db2dd31d11658e192cc5f9e5cd6e004"
+      },
+      {
+        "path": "test/built-ins/Promise/race/not-a-constructor.js",
+        "upstream_path": "test/built-ins/Promise/race/not-a-constructor.js",
+        "bytes": 850,
+        "sha256": "b34e7b52fa015d76095598949b8820855496098221f3bda28467c2baeb8f2cc1"
+      },
+      {
+        "path": "test/built-ins/Promise/race/prop-desc.js",
+        "upstream_path": "test/built-ins/Promise/race/prop-desc.js",
+        "bytes": 554,
+        "sha256": "17b0e9d720bfb14feadaefccc1fa5b3c60c40aee35c16531fec3f9ce23cea5c9"
+      },
+      {
+        "path": "test/built-ins/Promise/race/reject-deferred.js",
+        "upstream_path": "test/built-ins/Promise/race/reject-deferred.js",
+        "bytes": 1055,
+        "sha256": "e239ec6129cf204b82208c86d465b498fe75f0faa871a5ac9e1b32ea15bbe953"
+      },
+      {
+        "path": "test/built-ins/Promise/race/reject-from-same-thenable.js",
+        "upstream_path": "test/built-ins/Promise/race/reject-from-same-thenable.js",
+        "bytes": 1606,
+        "sha256": "219d91ed2b8b672635df73f1375d7c9d5127b73085f41222c3053ee00cdfabf2"
+      },
+      {
+        "path": "test/built-ins/Promise/race/reject-ignored-deferred.js",
+        "upstream_path": "test/built-ins/Promise/race/reject-ignored-deferred.js",
+        "bytes": 1444,
+        "sha256": "ec17bb192df2540aeff404f2f811d8074f6d095decb4c4cb0282bc6be99bb98a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/reject-ignored-immed.js",
+        "upstream_path": "test/built-ins/Promise/race/reject-ignored-immed.js",
+        "bytes": 1239,
+        "sha256": "d15a7d9878f278523a4edd56e49f96506913327b9cba308aff1f1252f97ca224"
+      },
+      {
+        "path": "test/built-ins/Promise/race/reject-immed.js",
+        "upstream_path": "test/built-ins/Promise/race/reject-immed.js",
+        "bytes": 953,
+        "sha256": "d5fe7735929ae2cbfcb68c3d417e1e63658ceef02d9e402036051c8d2ef5fa6d"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-from-same-thenable.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-from-same-thenable.js",
+        "bytes": 1598,
+        "sha256": "6133c1e6c98c5410f5712cb316c1df730a92402d27dd605d9d1c8ec25594504d"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-ignores-late-rejection-deferred.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-ignores-late-rejection-deferred.js",
+        "bytes": 1138,
+        "sha256": "095a0d84073fd4519ed1c9d590413323f355701716ec911816b91dcb98bd95b9"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-ignores-late-rejection.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-ignores-late-rejection.js",
+        "bytes": 865,
+        "sha256": "bd6ced5fb7d964fc04271221a02d572252517456d9d7849fb7a596c1f1c59752"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-non-callable.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-non-callable.js",
+        "bytes": 987,
+        "sha256": "f050a943f14406e280d55c837fdae97eaf27a137eca2bd79a4e6f99f2f0c4331"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-non-obj.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-non-obj.js",
+        "bytes": 1089,
+        "sha256": "1487b3b2650697b71d5f1cad7cf0810970c0c1ebbd416a974f0ea5c62d684f9d"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-non-thenable.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-non-thenable.js",
+        "bytes": 1263,
+        "sha256": "4d7634268c08368be3d5c2b50a05b63b19d6381cb7cd0c2cac212f9d59455574"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-poisoned-then.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-poisoned-then.js",
+        "bytes": 1285,
+        "sha256": "9cd38e1809427030944b30ec6fdafbb4bfc350276d6cb3c6c69e7eb357ced406"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-prms-cstm-then.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-prms-cstm-then.js",
+        "bytes": 1512,
+        "sha256": "f8b178f2a620efc6d73ab16325a25551a85a237c5ad785ab869a4b92e77bd0c4"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-self.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-self.js",
+        "bytes": 1478,
+        "sha256": "ea4def050fdcc7621db8833cddd81fbb7f6ae09ff08f5cf09be92934096cda8a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-thenable.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-thenable.js",
+        "bytes": 1418,
+        "sha256": "4cc04d1d5df8dc1b9762b916e9776ad581d387e47c95d35f3037d43a6b6976fd"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-throws-iterator-return-is-not-callable.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-throws-iterator-return-is-not-callable.js",
+        "bytes": 1810,
+        "sha256": "07017b9be3a439a09a690eb69d6f8753a0cb0a31f40421b543971bdfa3e32c59"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolve-throws-iterator-return-null-or-undefined.js",
+        "upstream_path": "test/built-ins/Promise/race/resolve-throws-iterator-return-null-or-undefined.js",
+        "bytes": 1823,
+        "sha256": "bd0a3e1928be02993c11fb69e8d0d32f87ba247663ff7d32abe0b8511a33c884"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolved-sequence-extra-ticks.js",
+        "upstream_path": "test/built-ins/Promise/race/resolved-sequence-extra-ticks.js",
+        "bytes": 1287,
+        "sha256": "d74550028fae74941dcfd948fa093c7dba11d798382d9f48f322f173378d2082"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolved-sequence-mixed.js",
+        "upstream_path": "test/built-ins/Promise/race/resolved-sequence-mixed.js",
+        "bytes": 1472,
+        "sha256": "e4bc2098e4fe95ca04db60f5b3fabc1e9255e88f04527230001717455ac66f8c"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolved-sequence-with-rejections.js",
+        "upstream_path": "test/built-ins/Promise/race/resolved-sequence-with-rejections.js",
+        "bytes": 1726,
+        "sha256": "640c7bbc7157709963d320e818d2c63c0254145fb68353e0e2b9201d5e5cd19e"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolved-sequence.js",
+        "upstream_path": "test/built-ins/Promise/race/resolved-sequence.js",
+        "bytes": 1714,
+        "sha256": "63e05dbab3b6b6ea874189baa75abcbec949df0c0953845e81ea54cb2a35e83f"
+      },
+      {
+        "path": "test/built-ins/Promise/race/resolved-then-catch-finally.js",
+        "upstream_path": "test/built-ins/Promise/race/resolved-then-catch-finally.js",
+        "bytes": 1453,
+        "sha256": "87200a3312a177e1902bf2f1180807a79138f93c88757ca8d8dfb1cc06a13c9a"
+      },
+      {
+        "path": "test/built-ins/Promise/race/same-reject-function.js",
+        "upstream_path": "test/built-ins/Promise/race/same-reject-function.js",
+        "bytes": 1109,
+        "sha256": "47498e7648dfdeef9ffd693110b9efa23ff150c940fe3f1eb43c587ce3b25884"
+      },
+      {
+        "path": "test/built-ins/Promise/race/same-resolve-function.js",
+        "upstream_path": "test/built-ins/Promise/race/same-resolve-function.js",
+        "bytes": 1116,
+        "sha256": "86108c201a47bbb728168b7471aaad5d585c58432f4b14fde9df3655b5a7f4f1"
+      },
+      {
+        "path": "test/built-ins/Promise/race/species-get-error.js",
+        "upstream_path": "test/built-ins/Promise/race/species-get-error.js",
+        "bytes": 737,
+        "sha256": "e4fe19057951763dd0e0970529d59a321766dd7efcb6b7addf26e2a7d1a85fc3"
+      }
+    ],
+    "inventory_proof": {
+      "method": "complete-nonrecursive-git-trees",
+      "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+      "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+      "directory_trees": {
+        "Promise/race": "fe8e0bf36a2323ffb4f03d63d56e1516e0855900"
+      },
+      "auxiliary_blobs": {
+        "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+        "harness/compareArray.js": "fa5eae5f4c7c60d6178ef992fe8c2e1dd0c394f3",
+        "harness/doneprintHandle.js": "334d19ec8ee58664502afb232bce3c1a74acfb16",
+        "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+        "harness/promiseHelper.js": "9a8bf627add65c5f8ab7e25768fb7ac6992bc47f",
+        "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+        "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+        "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+        "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+      },
+      "files": [
+        {
+          "path": "inventory-proof/commit.json",
+          "bytes": 1094,
+          "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+          "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+        },
+        {
+          "path": "inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+          "bytes": 15975,
+          "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/176043820c3a0729f2da2a047303a984cca036c6"
+        },
+        {
+          "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+          "bytes": 5452,
+          "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+        },
+        {
+          "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+          "bytes": 1374,
+          "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+        },
+        {
+          "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+          "bytes": 13201,
+          "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+        },
+        {
+          "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+          "bytes": 7655,
+          "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+        },
+        {
+          "path": "inventory-proof/tree-fe8e0bf36a2323ffb4f03d63d56e1516e0855900.json",
+          "bytes": 21755,
+          "sha256": "6a9f7680f776e2fb4681952f664df1c10bf2875a59dfceec1f14f9e309b997e6",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/fe8e0bf36a2323ffb4f03d63d56e1516e0855900"
+        }
+      ]
+    }
+  },
+  "manifest_sha256": "2ab40518270734883d2af5493c27b1316b5e38867575882468b7ec6b977e8558",
+  "counts": {
+    "source_files": 94,
+    "mode_cases": 188,
+    "sloppy": 94,
+    "strict": 94,
+    "async_sources": 63,
+    "sync_sources": 31,
+    "negative_sources": 0,
+    "class_sources": 2,
+    "source_bytes": 102171,
+    "all_blob_bytes": 151447,
+    "proof_documents": 7,
+    "proof_bytes": 66506,
+    "flags": {
+      "async": 63
+    },
+    "features": {
+      "Symbol.iterator": 33,
+      "class": 2,
+      "Symbol": 1,
+      "arrow-function": 6,
+      "Reflect.construct": 1,
+      "Symbol.species": 1
+    },
+    "includes": {
+      "promiseHelper.js": 13,
+      "propertyHelper.js": 3,
+      "isConstructor.js": 1,
+      "compareArray.js": 2
+    }
+  },
+  "metadata": {
+    "test/built-ins/Promise/race/S25.4.4.3_A1.1_T1.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A2.1_T1.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A2.2_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A2.2_T2.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A2.2_T3.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A3.1_T1.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A3.1_T2.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A4.1_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A4.1_T2.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A5.1_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A6.1_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A6.2_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A7.1_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A7.1_T2.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A7.1_T3.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A7.2_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A7.3_T1.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/S25.4.4.3_A7.3_T2.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/capability-executor-called-twice.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/capability-executor-not-callable.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/ctx-ctor-throws.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/ctx-ctor.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "class"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/ctx-non-ctor.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/ctx-non-object.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Symbol"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-error-close.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-get-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-get-error.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-get-once-multiple-calls.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-get-once-no-calls.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-custom.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "class",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-promise.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-on-values-every-iteration-of-promise.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve-return.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-resolve.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-then-error-close.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-then-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-then-get-error-close.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-then-get-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/invoke-then.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-arg-is-false-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-arg-is-null-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-arg-is-number-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-arg-is-string-resolve.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-arg-is-symbol-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-arg-is-true-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-arg-is-undefined-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-assigned-false-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-assigned-null-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-assigned-number-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-assigned-string-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-assigned-symbol-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-assigned-true-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-assigned-undefined-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-next-val-err-no-close.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-next-val-err-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-returns-false-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-returns-null-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-returns-number-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-returns-string-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-returns-symbol-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-returns-true-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-returns-undefined-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-step-err-no-close.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/iter-step-err-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/length.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/name.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/not-a-constructor.js": {
+      "flags": [],
+      "includes": [
+        "isConstructor.js"
+      ],
+      "features": [
+        "Reflect.construct",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/prop-desc.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/reject-deferred.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/reject-from-same-thenable.js": {
+      "flags": [],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/reject-ignored-deferred.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/reject-ignored-immed.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/reject-immed.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-from-same-thenable.js": {
+      "flags": [],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-ignores-late-rejection-deferred.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-ignores-late-rejection.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-non-callable.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-non-obj.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-non-thenable.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-poisoned-then.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-prms-cstm-then.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-self.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-thenable.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-throws-iterator-return-is-not-callable.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolve-throws-iterator-return-null-or-undefined.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolved-sequence-extra-ticks.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolved-sequence-mixed.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolved-sequence-with-rejections.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "compareArray.js",
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolved-sequence.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "compareArray.js",
+        "promiseHelper.js"
+      ],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/resolved-then-catch-finally.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/same-reject-function.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/same-resolve-function.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/race/species-get-error.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Symbol.species"
+      ],
+      "locale": [],
+      "negative": null
+    }
+  },
+  "auxiliary_files": {
+    "INTERPRETING.md": {
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    "LICENSE": {
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    "harness/assert.js": {
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    "harness/compareArray.js": {
+      "bytes": 243,
+      "sha256": "3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d"
+    },
+    "harness/doneprintHandle.js": {
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    "harness/isConstructor.js": {
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    "harness/promiseHelper.js": {
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+    },
+    "harness/propertyHelper.js": {
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    "harness/sta.js": {
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    }
+  },
+  "case_identities": [
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A1.1_T1.js:sloppy",
+      "case_sha256": "607e5ca34e8323164aea45e22f4a6f793672699ffd27c0d4c777fd6d0fd081c8",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A1.1_T1.js:strict",
+      "case_sha256": "b6726ead6a8dcf984039e93bfe820be323de85c922585bdd457f95911dc3f5e4",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.1_T1.js:sloppy",
+      "case_sha256": "73419fb42703a16088d89140e2738e34406cdd4d85d323c7869e1193e4cc3cff",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.1_T1.js:strict",
+      "case_sha256": "7c7c574c95f99019fdb86de3a2e31d2a6b5bfb5c6276839332e8a594e0cb3c45",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T1.js:sloppy",
+      "case_sha256": "a0312b2a653043e79952493ade8cf4cfe6c2909d44712adfd2d5d144a1c69b0b",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T1.js:strict",
+      "case_sha256": "16ee6ac40a2e0fec4384e460c679fb9ef9d02962a8b8374095de20488f7b0f8e",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T2.js:sloppy",
+      "case_sha256": "375460e66e6d294d06f305104fbd6a7ccbebb2c83db08dd4fb5ff72a99a0cb57",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T2.js:strict",
+      "case_sha256": "2b34526d6afdc378425d6a4a7b09ac30f22bc63ba25446f74fc64b516558e0e1",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T3.js:sloppy",
+      "case_sha256": "1d13a855b09ecda227b788c8b3602f28d0a75c55f405cc1c982b0db3e19aa849",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A2.2_T3.js:strict",
+      "case_sha256": "760a5b06881e5e8b78a0aca6053c904e30da927202e5abcb51036ea9e07c7149",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T1.js:sloppy",
+      "case_sha256": "094584b410cfd4c5d06e4577d794ea298dd461cd2aa46f99730fde17e247a4bb",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T1.js:strict",
+      "case_sha256": "0b90f7729b7ba3579a19dbaf9b1c13cdd58dd48fcb2693657cdf6803dacf547e",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T2.js:sloppy",
+      "case_sha256": "cbfdf0b2d73166ea6d7216b54ae134150f36d0f446cb697b7e97155fc543dfc6",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A3.1_T2.js:strict",
+      "case_sha256": "555c7ea0a4d38e70bd6b527794ec5c293712a162fbdd7b926a9c4c1e2cde66d6",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T1.js:sloppy",
+      "case_sha256": "69585b66aeeff41260d5776f594422cde07d4cdd0aac14fa0ba3d80c47523f67",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T1.js:strict",
+      "case_sha256": "2001ee32807b68e6dd1efe6d150e7c75e63ac8811e811118f65a7edf2190b317",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T2.js:sloppy",
+      "case_sha256": "7afde0a4c38dacf82f4fea6da1f37a260c9dce21ad364f6884fff587b5b67dc7",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A4.1_T2.js:strict",
+      "case_sha256": "2453d995e5175217349055383392d75e7ffcdc3918c0898a1006014b53c75f87",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A5.1_T1.js:sloppy",
+      "case_sha256": "729daa2dda543ca35f68d6193a47bb6072459fbe62b954a5f088bf5ec6586772",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A5.1_T1.js:strict",
+      "case_sha256": "d96134e1670ceb254e86420123ec0be3286977211c56fade92aa55c1f144d8e5",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A6.1_T1.js:sloppy",
+      "case_sha256": "c4e2b5dcc3917a70e3e5d931b832203414c9b84cb5b16ac633de78ebb4cdaf88",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A6.1_T1.js:strict",
+      "case_sha256": "daa5b825f83f01f3f65b4009b1f535a7b4b35e104f68e2fbfd0208b72976e6c1",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A6.2_T1.js:sloppy",
+      "case_sha256": "210df678ac2019c049437aad4c6c59c0273def9e48e233e9b38d56e2090b68f4",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A6.2_T1.js:strict",
+      "case_sha256": "00dc1bfda13b00b30ee4c03335666e9e1445b09ee1dd81c047b95ca690c60d51",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T1.js:sloppy",
+      "case_sha256": "a8b0124ecac13851ce5babeb89b81c615ef4a5c6749735650ea863703cdb912f",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T1.js:strict",
+      "case_sha256": "ff336fed3f53536bb9df8dd4f2770dd218524b99f70ebbe3e7a4b8b23916c9f6",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T2.js:sloppy",
+      "case_sha256": "c8496af9ea37c3af17f0a5210d1c8792c9b8b9502a94644ea873677856be9d0f",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T2.js:strict",
+      "case_sha256": "28b153f5390e8259e79e26dd62b0bcab3ed74b2cca7479d8383f27894c9246ff",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T3.js:sloppy",
+      "case_sha256": "48a3e3a7e8395f175fe6a06540a57a3fd2b3c15ca7a2cf5735e663df33dfacec",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.1_T3.js:strict",
+      "case_sha256": "8dfc8a5bcd36f02a38e441ad5fed7107c08be5aea0deceb68eb95e9dc67dd541",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.2_T1.js:sloppy",
+      "case_sha256": "79515ae06ad0f25a2af9fd17c697bccb7a3f6291a26d17322c91bfd9afb1fcd5",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.2_T1.js:strict",
+      "case_sha256": "f316326feeb82634fddffcbbeed111cb5a6482bbcd84a1d443f52db754c2c089",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T1.js:sloppy",
+      "case_sha256": "d123e5085f26065c490782eb81801ac148bed91440c327401ce703d2d3dbf1e4",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T1.js:strict",
+      "case_sha256": "4e86e1b0f43048961e5541d1790767f9b05ea40ca195d4201998fa3aeb6869cf",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T2.js:sloppy",
+      "case_sha256": "a61f391d1668fdf07e0e7d4012ff5009291feab990807e372d4c66ea90464ff4",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/S25.4.4.3_A7.3_T2.js:strict",
+      "case_sha256": "88735489f2d91a463572ccb6f5bec7165a811415b46dc64665a168fff1ee4104",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/capability-executor-called-twice.js:sloppy",
+      "case_sha256": "61930065c3392567fec946770eac97447a5b28ba5d20050f2c5318aa06f44224",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/capability-executor-called-twice.js:strict",
+      "case_sha256": "53b51fefecb0198fb5ec6b89199ebc0965b73e2f6ed38fe4149dd44bf9b2cacb",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/capability-executor-not-callable.js:sloppy",
+      "case_sha256": "63640f8f58c35c52b6c43b9d4188ecc3af295c2215352e13eecffb7b4291d458",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/capability-executor-not-callable.js:strict",
+      "case_sha256": "607171862abf89465a63aa960658c39c731816b382e4db92c85a347505705deb",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-ctor-throws.js:sloppy",
+      "case_sha256": "3b331c90e470eb7e792a6694b25bb1be804c2bfb58574e06b7f42f84e372afe9",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-ctor-throws.js:strict",
+      "case_sha256": "c34136687411deec1a69f09142b57b6068ff99c1101d20cec583e4864f6b44d3",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-ctor.js:sloppy",
+      "case_sha256": "a16942bdf5df4f2bb771b8308c24820c1090aa6ad024b77f3dcce6966b69ef64",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": true
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-ctor.js:strict",
+      "case_sha256": "1ad7016fe1377f36bd726d288a0375ff49c94a34cc7899be8d56bf20a74545e2",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": true
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-non-ctor.js:sloppy",
+      "case_sha256": "392e36791d346e11a14d23a14ded52818ba5bba8ead73eada4e8859bf40749dc",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-non-ctor.js:strict",
+      "case_sha256": "aa90ce97fc2403a2eb9ad05c931d2754985abe53b6a43bbd540ec03319a8ad26",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-non-object.js:sloppy",
+      "case_sha256": "7058dc0490872ea0fb54e719b66e941125369dbd3ef767a76dcb7425fb1d8511",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/ctx-non-object.js:strict",
+      "case_sha256": "d187fd5a78594fb3edeeff437b7960e115059e5042ffeb0a4cfc4392a5be8e56",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-error-close.js:sloppy",
+      "case_sha256": "c3ee91407b73818d0ea0226ccd455bc21b2421238cfb6ff9efaaa7eab001d79d",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-error-close.js:strict",
+      "case_sha256": "22c65f97eecff83736dca23a7269fb4a726e7ec3d724841119d613a52dd469f6",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-error-reject.js:sloppy",
+      "case_sha256": "dcd79994257dbff524c7e13eff44abe339baa2e3d840a79c69b8784c5718c673",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-error-reject.js:strict",
+      "case_sha256": "a557b4f144dbef3a981723052d899eb39722516d84406b788ef365ba03858900",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-error-reject.js:sloppy",
+      "case_sha256": "abf130c905f446c6d5fb0edb4f6e32d5b898808d361c4bc9f4ebebbee2f0131a",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-error-reject.js:strict",
+      "case_sha256": "f19d62ab6071d439646747b68b5608176b4b28145b930383de74f2e3a06c3db7",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-error.js:sloppy",
+      "case_sha256": "aadcae38cb079e87e6a2d14dfc81e7266df60e2e22ef3bb875b2792d939aa875",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-error.js:strict",
+      "case_sha256": "587b91e7ab39d51b7deb7a8f6a21e5c92ac25dadc9c091d24b81572ad2afe287",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-once-multiple-calls.js:sloppy",
+      "case_sha256": "2e675be50eb01672d3f51b7efd033bbf0fdd3cd96cfb5848257def4f633f716f",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-once-multiple-calls.js:strict",
+      "case_sha256": "8b065351fb30457a7c9924b2902f3823e92ee8ad1f52d6042faa377665052c6f",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-once-no-calls.js:sloppy",
+      "case_sha256": "9ff6eebda49e6037235c1f3b49cd2436acd0b888aab5ded1b6c49a43d381e748",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-get-once-no-calls.js:strict",
+      "case_sha256": "874fb3a9eb4dc468b6db1bef215365348b42208070bfdcf69056c11172e249d7",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-custom.js:sloppy",
+      "case_sha256": "2dd586f45ee9560f1e830d58df4d82edaa7e3fd91faf386561bf99cf5f00705a",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": true
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-custom.js:strict",
+      "case_sha256": "32472ab54c0b66e005019e1c52daa0ef84bbb07b9d13d15ff711935fccd9925d",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": true
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-promise.js:sloppy",
+      "case_sha256": "ad015169e00aae900bcb0d921685e6e042a01ba612e1f716ba597672768798de",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-promise.js:strict",
+      "case_sha256": "f75f20e2d2a512e3483f35ef6fdfd7ed99928827a82c25cababe43c785384ed0",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-on-values-every-iteration-of-promise.js:sloppy",
+      "case_sha256": "d8e15ed25133da8f1e93bc5ca6b3ed0d33a60806c4eec525c6d0db8dc68acbc9",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-on-values-every-iteration-of-promise.js:strict",
+      "case_sha256": "f0f54815b28017a4c4729f92ce05af2109b89208ad79e2b995ab27901158ed3b",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-return.js:sloppy",
+      "case_sha256": "82a349011024ea7f98b1d6bd89b80cf895365c36cbaf94f6c2ecb9764ef5403e",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve-return.js:strict",
+      "case_sha256": "e38ba262777a9089a959afab8166ca5bcb666e196cd0ffd1f23b44d1cf815bbc",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve.js:sloppy",
+      "case_sha256": "506c67a8fecf09097b57107392b22dc74adbfa65fa92c1a991914a68b884c5e5",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-resolve.js:strict",
+      "case_sha256": "6d752744268e4ccc8c86c575b377f5246dc577483971a6bc0fbe1cae5b498298",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-error-close.js:sloppy",
+      "case_sha256": "52a9b5b6663175e28f09d76b855f9d9e564717050f0231d1958b7fd757ba8c17",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-error-close.js:strict",
+      "case_sha256": "5fac7b195e6ffa7050c572a15f2eeee1bf4be9e6cad6ca8029db9f43ed992607",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-error-reject.js:sloppy",
+      "case_sha256": "a5efdfee8f706d2bbb445c12edbb3c2aeccb6f4262e64f007371fba0954e0522",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-error-reject.js:strict",
+      "case_sha256": "afd9c80db8522ab69f354bd8753293e7903b1e9e147af3ca97d874b3117bb690",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-get-error-close.js:sloppy",
+      "case_sha256": "e1e564345c9adb77e36df49cb1e802a32b358fa7e5400d530ab4154c4da37100",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-get-error-close.js:strict",
+      "case_sha256": "98e6920fe21193af662d05802b8b259015a8e98e45f117fc8f41b71298a659fd",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-get-error-reject.js:sloppy",
+      "case_sha256": "60e72916fde3bf08595054474fa7d23b7770bb43cb8be7df167ae5ed34d61a44",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then-get-error-reject.js:strict",
+      "case_sha256": "db5b7e996081230017cc6d8d086ebe6dc8446e96fabd28292e89b0ecd02f8c24",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then.js:sloppy",
+      "case_sha256": "ae87ebb0da7e12a298c048aa534ca20fb987c0143423267dff393579dfd66679",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/invoke-then.js:strict",
+      "case_sha256": "988a3725772153421ad8acf788226e3645ff0ed7c6728d666ef71c6fa3b6102b",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-false-reject.js:sloppy",
+      "case_sha256": "cda415096c47705ce3a1bc4fa9a9dbfe61a738aca9a10a04f35c7073d17d0860",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-false-reject.js:strict",
+      "case_sha256": "9fce7e3e031052e5ca21946faec4a75f265a20ad9a4a4f45c6c0a077fee2c1b5",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-null-reject.js:sloppy",
+      "case_sha256": "a08e7d9ff9a0d09afc1d842418d41e7641b76bd4eedcd780910aa47b5e9df448",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-null-reject.js:strict",
+      "case_sha256": "e0919c4b80e788dd62762fac9cb8a0e3bfb72c080a6d6222bebe42fae9374bbf",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-number-reject.js:sloppy",
+      "case_sha256": "4a987f8791817b723d6e4cded5046b848270bbe171bf20b327c6283c870f637d",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-number-reject.js:strict",
+      "case_sha256": "7f677dd8830cbf29b5997160dd2c866619cb8ff41a65b1e802cf3b8b0719a2bc",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-string-resolve.js:sloppy",
+      "case_sha256": "57e0c47b24aa85d2c9a50a21e1f3aca948cba68af77975fbb26873a3ed9b4c82",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-string-resolve.js:strict",
+      "case_sha256": "c5fa82a96a8a71c11a77cf6f7f9393894c64d7131290fd0a3ecb0628f44222f9",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-symbol-reject.js:sloppy",
+      "case_sha256": "411c65ab194b6df38fe8bf0d142bc61687bece191dbfa1f71dc4b3f540bb95f6",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-symbol-reject.js:strict",
+      "case_sha256": "9df9df1c80195741b72d8c494373ab6a448cd47f1cf6a560a2ca8b65bea572c0",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-true-reject.js:sloppy",
+      "case_sha256": "991d5baab581c7185ee0eddddecf932496f8ef831a283b8990f6f62a4c3a06a2",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-true-reject.js:strict",
+      "case_sha256": "fddd7213f21a8021e05ec3e59b7f3d0fa8c47c983c02fd5e5f0c69f937c0ebc7",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-undefined-reject.js:sloppy",
+      "case_sha256": "20620d0af68f0f4e9bb68f7e526a0d887871260bed37a2742903d8e2717eab14",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-arg-is-undefined-reject.js:strict",
+      "case_sha256": "7385f6bd458b517a648293f303a349dd2d6506bd8b364aa80642ce9a4642c2e7",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-false-reject.js:sloppy",
+      "case_sha256": "534cc5cccb58dffefb78176323327cd8452e4505c2cf435455c9b4019b157e58",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-false-reject.js:strict",
+      "case_sha256": "ac0718c8a39070a751b83a54e2ffdffe8f94b88b202740e497a77bd4f70f26d4",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-null-reject.js:sloppy",
+      "case_sha256": "caeacd81faf37e532e7f2287e6cee1ade8adbeb2128844b0634216f1a2c88fa1",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-null-reject.js:strict",
+      "case_sha256": "f96636d80e216c80f2261ef873819f24be714067a19e89f9783eb3718c48d30d",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-number-reject.js:sloppy",
+      "case_sha256": "3683f16a163703be29e664f768486dca4de3f03043a5aa5e5eb322c43aae9003",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-number-reject.js:strict",
+      "case_sha256": "806c89b0e732c32a996030d9c1d3e4411e2fe81bdd8b4d963af58317a070edc7",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-string-reject.js:sloppy",
+      "case_sha256": "132048f0f4187d4f96cd02b9c2a7cfa14d190bb10ba647c74b77759b26743350",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-string-reject.js:strict",
+      "case_sha256": "11775abfef88ebcee91802004ac54894079056eeb556abe6cd627edb07676fc7",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-symbol-reject.js:sloppy",
+      "case_sha256": "2ca12c646cd316dde1033014a19b113465981c56795b3948d4058ecc113fb038",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-symbol-reject.js:strict",
+      "case_sha256": "dbd5e825832761aab7a62744b09b4001300ffaece23271863b153a1e502d1aa6",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-true-reject.js:sloppy",
+      "case_sha256": "2183a757a52a74b08d6afaf20055c0e88c612789dd8bbd8c023b5ab6ceb327c3",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-true-reject.js:strict",
+      "case_sha256": "6b0fe9e76604837f5cf8840d5056f492fd30e063eb01b88e0e2f12ad2c0dfcf5",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-undefined-reject.js:sloppy",
+      "case_sha256": "05e82012f792c65d3b5fe6bfc8b6cd43da721924cdc7c189220f8c06695f4e2b",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-assigned-undefined-reject.js:strict",
+      "case_sha256": "e03edf2ac1d84f0e04613454d073334e0ab634bf90c6d8ccf01da523d6075526",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-next-val-err-no-close.js:sloppy",
+      "case_sha256": "f6f6d02986a03918ed9b9d93fc3d268031b26bda49bb7ced47b0c52ce19cee26",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-next-val-err-no-close.js:strict",
+      "case_sha256": "8d2aed13790411c635f304fb1195c3704d7e8b10dcdf3956f104b680a8b428e8",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-next-val-err-reject.js:sloppy",
+      "case_sha256": "1c454d904607ef6c720accd33d38e310259ea09ef7a9d41166eda4801425a225",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-next-val-err-reject.js:strict",
+      "case_sha256": "603af94522e2631971d5ae6fab47b9c8f8403c249859072a9b31cabc66330cc7",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-false-reject.js:sloppy",
+      "case_sha256": "a087337dd8e5edc829fa9ff6e4dd1d5c0135d6d65ecd7d541bbf991566ed3452",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-false-reject.js:strict",
+      "case_sha256": "abe6046d09698ed6250632a93723090f2ca31479277c14a4a3ee61e3f8066f28",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-null-reject.js:sloppy",
+      "case_sha256": "ec7deaab9579350c2465210fc0939aca9d45eca94ff95bcbc421f0a859e12193",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-null-reject.js:strict",
+      "case_sha256": "fa31067a3c03307f490e18c6eb328fce2d748220748bf332ce0f2a9c686807da",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-number-reject.js:sloppy",
+      "case_sha256": "cf4ad0baf1a36e885ee1e099fc8dfa09df819e4916dc0ec85f328601d06cb5c5",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-number-reject.js:strict",
+      "case_sha256": "357fbc84ca9565514f47b805bcd901e735fc4d31d53ba73f985d2f68916ad93c",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-string-reject.js:sloppy",
+      "case_sha256": "3c32b44b8474bc92982a55777117c128217ca1d75ccd95824c7b97fdfbd98e14",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-string-reject.js:strict",
+      "case_sha256": "70c91fc334ad6af0023ea51186ffa833168c104a0fc25e55c7c745b82c31afb1",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-symbol-reject.js:sloppy",
+      "case_sha256": "2853ac10b880912a7d798bd563152063ef36831904ee7dbb1c06ef929f1b457e",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-symbol-reject.js:strict",
+      "case_sha256": "e33cd1d16f39a6f41d7974e421b33a93a0a5f2e403d5f2d3f8c93c35b2cdca62",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-true-reject.js:sloppy",
+      "case_sha256": "7d2c41dc7b63b145da84207fb5eae4d2027613c1471ddc06a10f06a1ffd39a9c",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-true-reject.js:strict",
+      "case_sha256": "a9b6a65a1e38d1a2da955b19de0c37043b3231749ac2aa1f09f068a1011300f6",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-undefined-reject.js:sloppy",
+      "case_sha256": "968b9fcdf033a0d6a53eabfa4ee1d98e4491751ee691a8849c4847c91053cc6b",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-returns-undefined-reject.js:strict",
+      "case_sha256": "717217fc51fa7372a9e17a7bba53f7076c415956e72b23018fa9ae164f958e89",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-step-err-no-close.js:sloppy",
+      "case_sha256": "486782d572aa01c4a69d49b8edfd67d44611c8507d835030038e3d78383909d3",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-step-err-no-close.js:strict",
+      "case_sha256": "b2993a59c8d9defca0170f66891370516d168cc7f9231e221d791f8992469004",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-step-err-reject.js:sloppy",
+      "case_sha256": "f775f176c0877ac21791ea83ea6482880fc00386900a261a0369c7bee64c2278",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/iter-step-err-reject.js:strict",
+      "case_sha256": "3a8c37346ad2437cf5d16bfc2f78fb0ac7e4f1040230a2bb0f81fb18f341d3de",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/length.js:sloppy",
+      "case_sha256": "596a7a4255e9f921a300be3594c089c666faf65c58ee6c793e5ed53c59967ac5",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "propertyHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/length.js:strict",
+      "case_sha256": "f1d568a0d0b794a1d93defc8a7ffaab8282d08828864c3b85248baf708c3af7d",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "propertyHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/name.js:sloppy",
+      "case_sha256": "a7bdbf6d8bbc5321368b3162437493178717dfaa1816d14d35688ce9590b8a8e",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "propertyHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/name.js:strict",
+      "case_sha256": "2ccf73b739793f0c1a94182935cf942bcaf6f5f5c48d0660a3176be7a12a5b10",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "propertyHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/not-a-constructor.js:sloppy",
+      "case_sha256": "e48564e27dceda9bd55fe3f671636fb216819798c4b1e56f6f3dc387486cb394",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "isConstructor.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/not-a-constructor.js:strict",
+      "case_sha256": "ffdd03a89e8189df072441aba97de514a65ebf51d29aa0309aedb375a01a4e24",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "isConstructor.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/prop-desc.js:sloppy",
+      "case_sha256": "524e431f8a131a63a4eac3b4dbed3824a15641e874adb768d01bfa2d514b4f3f",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "propertyHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/prop-desc.js:strict",
+      "case_sha256": "36a46b7f7dcd72719be1a851280b9da1db043cf3f1ce94ff5534ca574cb8bb89",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "propertyHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-deferred.js:sloppy",
+      "case_sha256": "346e335782618cbb6eeec4b6a598bce1eda28a181ba91660e609b43eaa44fe21",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-deferred.js:strict",
+      "case_sha256": "5326139724315fd9eff2ddc672afa0c450ac6259386def243971ba99279d2378",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-from-same-thenable.js:sloppy",
+      "case_sha256": "60627f33ec8f66ca30ce44bc8d68dbcb272993d403a79cc4091eb9c100b4ad89",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-from-same-thenable.js:strict",
+      "case_sha256": "1f104bd345a73d63656966bac0e536bead25273f1f14e9c78b26ff72630e9515",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-ignored-deferred.js:sloppy",
+      "case_sha256": "13823179ced0f3d0f7e86a1e64c821a948a1e6d31cd2c6931d9360387252a2c0",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-ignored-deferred.js:strict",
+      "case_sha256": "cb132f1cd86c5792176c4a29c3b51e96950967da33457623374662ed68e3943e",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-ignored-immed.js:sloppy",
+      "case_sha256": "626fbdf71a67165fef67acceb667fa1bee5862f3fa001919298be4010357ecb5",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-ignored-immed.js:strict",
+      "case_sha256": "c67d7f300db7dd402b1afd31c461ac79233dd30580095f7454b29e8058eb13d4",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-immed.js:sloppy",
+      "case_sha256": "348f64066e794f8e82600e67483e251df24cd5fd10304e304380d38049e13ab0",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/reject-immed.js:strict",
+      "case_sha256": "8a9af31229035882429544efd925bd048411786485cb933cc40d45d93991c236",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-from-same-thenable.js:sloppy",
+      "case_sha256": "baad4e0d55d764910daff9671cc8af34acf67448da0dbf3cb31e39dc9829cd59",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-from-same-thenable.js:strict",
+      "case_sha256": "c3c2781f11c890e016cc49c5589fe9512340c1eb21cbdcb27df053ac0d14c8dc",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-ignores-late-rejection-deferred.js:sloppy",
+      "case_sha256": "6b621c91d59d1bd818c5aa01be067b65486057f5de7d055ca7fb549df905a9d0",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-ignores-late-rejection-deferred.js:strict",
+      "case_sha256": "9cc39e393e0abd9a7049354a9b133289e038ad803a344837a5fe7e1f3200ae99",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-ignores-late-rejection.js:sloppy",
+      "case_sha256": "92f0d989178f538bd8ed93e76446355ab04bcd2606fe2335f9c7821f3fd72138",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-ignores-late-rejection.js:strict",
+      "case_sha256": "905df42337b4a23f7bb0d0df29810db98dc4a6ce378cba03163ae076be8a0a5e",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-non-callable.js:sloppy",
+      "case_sha256": "18fa06609ba8d9556aec6bcfa0c4f8ac62972774d5e49f2fdab572799d6d18d1",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-non-callable.js:strict",
+      "case_sha256": "074554d5e5f8055554115c2bf6cdbbd2a40fc92ff5b4d704feabaa21025ddefb",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-non-obj.js:sloppy",
+      "case_sha256": "1cd8337237854a21eb0ba741c302249369358c485170d6f88d965260001b3903",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-non-obj.js:strict",
+      "case_sha256": "604eab61b5eeed8b64d33a4486c40306ccb7fe3403e9c590e71ee43283c16141",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-non-thenable.js:sloppy",
+      "case_sha256": "f793fc52d58639c09b853f2bc95b9e7604dadfc8681391310e5a97611a0db9e2",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-non-thenable.js:strict",
+      "case_sha256": "d7b25c18b40ea3240178e5205789a135147af1e21553f5b547e5636b6fbc49a1",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-poisoned-then.js:sloppy",
+      "case_sha256": "2d1ad2dc0934f1761d7284edc603328ff35115d1057754b3d4a6b59bdb2b4005",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-poisoned-then.js:strict",
+      "case_sha256": "1d024a7d2451ad5e35be772ca9b926ffc4eeee04f3112e6d350fb0fcd31400ab",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-prms-cstm-then.js:sloppy",
+      "case_sha256": "994fb99cbe0eadcc8c840c06b5fa973dba64c5d6e94874854c1cf63e667f81e1",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-prms-cstm-then.js:strict",
+      "case_sha256": "338c1896a541219e3d8d607c677cf1ca86d04592a4ef096d728aa13647277c91",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-self.js:sloppy",
+      "case_sha256": "a47d25047652b3645f2095d212a6f5b5855db4792ab83c134655ad262d9f9879",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-self.js:strict",
+      "case_sha256": "4b27157299216d3bf5edeeaa2503d1a478b73d59ffcf7744883f1a9873bfe565",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-thenable.js:sloppy",
+      "case_sha256": "87817a498b7fc67b506cb4524e4d5c90a2c6d502381bc4c0537f2e80f68ae7e0",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-thenable.js:strict",
+      "case_sha256": "1cfb8576bebb97c6697bf6647389d5e45ce1a513b00907b9993216a70e3935ba",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-throws-iterator-return-is-not-callable.js:sloppy",
+      "case_sha256": "67626fc9bc3fc8dc6194c1fe8fc59c13833edf3b2dafd8844ded74e5702e26a3",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-throws-iterator-return-is-not-callable.js:strict",
+      "case_sha256": "94ee6b59fe32ff26616509a9de52b8f4c9a701217a87e6a85c4249f9780dbe3d",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-throws-iterator-return-null-or-undefined.js:sloppy",
+      "case_sha256": "e2abff12737c3835f37a117b3ade0945eeea3c13687cf6c2b43887c80d5e0c87",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolve-throws-iterator-return-null-or-undefined.js:strict",
+      "case_sha256": "23f1baebff6b11f2dd166eb9613c4f674bc8a08000e3aaad131d9381c9050fa3",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence-extra-ticks.js:sloppy",
+      "case_sha256": "c593f686e521f51f6c0f5bbd69ee84805aa0b456aa6159db27f8610b090e28b9",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence-extra-ticks.js:strict",
+      "case_sha256": "a0df0ba07dad83f74db1e29ddde8504bc5234ac4402af45d58c93ab438a60c31",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence-mixed.js:sloppy",
+      "case_sha256": "cd245e74d3a3537618afde9ca1b2502e7a25ecd20c89d28b25211d9ed64433d9",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence-mixed.js:strict",
+      "case_sha256": "903ae9596e9c0eb13831678c22ccb702715c479cc79e8e7eb2de58d764f5feef",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence-with-rejections.js:sloppy",
+      "case_sha256": "3c789f6d7c59adc0fc3261d99894c9b2c3214695ab367b9497c16c68e9505dcf",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "compareArray.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence-with-rejections.js:strict",
+      "case_sha256": "2c7591618d7d2353f43c645beecab85946ac5f2d7aea2b978bce48f68019e00f",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "compareArray.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence.js:sloppy",
+      "case_sha256": "abf1a9f0be8dbc3f1c8c5c53061e3dc4758ba7466b4969efe382fa0a043e86fe",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "compareArray.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-sequence.js:strict",
+      "case_sha256": "50393b5e551a6492fc86a2276b6f2dfddc8536405966daaeaa382e2359b6d9c0",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js",
+        "compareArray.js",
+        "promiseHelper.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-then-catch-finally.js:sloppy",
+      "case_sha256": "3e80a56f389e5758fa1ccdbb4a59e223c74d84fee7a8843fd7b60098f37c84da",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/resolved-then-catch-finally.js:strict",
+      "case_sha256": "2e8f41355147710a88cb0fef3629a8ff5d9183d71729dae7f6611583ed7aa74c",
+      "policy": 1,
+      "harness": [
+        "assert.js",
+        "sta.js",
+        "doneprintHandle.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/same-reject-function.js:sloppy",
+      "case_sha256": "f328571027e7f2e5850abb970b2263bc34e0f04772fb2c2bf8ad28f6082ebf27",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/same-reject-function.js:strict",
+      "case_sha256": "e3244f96126ed22fa3a10080be5949ccdb8749a9edeb39e30319f1af240e8e7f",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/same-resolve-function.js:sloppy",
+      "case_sha256": "f43fb008730c65613d6cd2af72852499ebf9a2d36cf39b6d3a22bf4f7058269f",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/same-resolve-function.js:strict",
+      "case_sha256": "7c0e5eea5f6add0679faa27aaa5a9758a83e6eac31059ee716f3f3fe35d6640a",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/species-get-error.js:sloppy",
+      "case_sha256": "59e76859e6fd1620da0874a10bbe16a3d2341535576f207f3ecb9ebe5781eac9",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    },
+    {
+      "id": "test/built-ins/Promise/race/species-get-error.js:strict",
+      "case_sha256": "5b517e26b7f9d53882b7ddbe5016dc15ce7e57190f377ffa19fe2e122086a325",
+      "policy": 0,
+      "harness": [
+        "assert.js",
+        "sta.js"
+      ],
+      "class_excluded": false
+    }
+  ],
+  "case_identities_sha256": "6ce110114e686fe0d91847e76cff8ffeb0eed4fc0d42a17701814a784d0b64b3",
+  "class_sources": [
+    "test/built-ins/Promise/race/ctx-ctor.js",
+    "test/built-ins/Promise/race/invoke-resolve-on-promises-every-iteration-of-custom.js"
+  ],
+  "features": [
+    "Promise",
+    "Promise.prototype.finally",
+    "Reflect",
+    "Reflect.construct",
+    "Symbol",
+    "Symbol.iterator",
+    "Symbol.species",
+    "Symbol.toStringTag",
+    "arrow-function"
+  ],
+  "policy": {
+    "format": 3,
+    "supported_features": [
+      "Promise",
+      "Promise.prototype.finally",
+      "Reflect",
+      "Reflect.construct",
+      "Symbol",
+      "Symbol.iterator",
+      "Symbol.species",
+      "Symbol.toStringTag",
+      "arrow-function"
+    ],
+    "negative_intrinsic_errors": [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError"
+    ],
+    "strict": true,
+    "modules": false,
+    "async_completion": true,
+    "host_hooks": true,
+    "timeout_seconds": 3.0,
+    "request_protocol": "ERJS2",
+    "response_protocol": "ERJR3",
+    "adapter_feature": "test262-host",
+    "completion_policy": {
+      "sync": "checked-sync",
+      "async": "authenticated-done"
+    },
+    "unhandled_rejection_policy": "final-quiescent-veto",
+    "print_only_completion": false
+  },
+  "policy_sha256": "f3ac930d9b0645e2102690a770971bf42d0bf2510444051438788e131941dfa2",
+  "controls": [
+    {
+      "name": "api",
+      "source": "verifyProperty(Promise, 'race', {\n  value: Promise.race, writable: true, enumerable: false, configurable: true\n}, { restore: true });\nverifyProperty(Promise.race, 'name', {\n  value: 'race', writable: false, enumerable: false, configurable: true\n}, { restore: true });\nverifyProperty(Promise.race, 'length', {\n  value: 1, writable: false, enumerable: false, configurable: true\n}, { restore: true });\nassert.throws(TypeError, function() { new Promise.race([]); });\n",
+      "expected": "passed",
+      "completion_policy": 0,
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "origin": "promise-race-pair",
+      "prerequisite": null
+    },
+    {
+      "name": "api-mismatch",
+      "source": "Promise.race = function race(value) {};\nverifyProperty(Promise, 'race', {\n  value: Promise.race, writable: true, enumerable: false, configurable: true\n}, { restore: true });\nverifyProperty(Promise.race, 'name', {\n  value: 'race', writable: false, enumerable: false, configurable: true\n}, { restore: true });\nverifyProperty(Promise.race, 'length', {\n  value: 1, writable: false, enumerable: false, configurable: true\n}, { restore: true });\nassert.throws(TypeError, function() { new Promise.race([]); });\n",
+      "expected": "synchronous-exception",
+      "completion_policy": 0,
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "origin": "promise-race-pair",
+      "prerequisite": "api"
+    },
+    {
+      "name": "winner",
+      "source": "assert.sameValue(typeof compareArray, 'function');\nassert.sameValue(typeof assert.compareArray, 'function');\nassert.sameValue(compareArray([1, 2], [1, 2]), true);\nassert.sameValue(compareArray([1, 2], [2, 1]), false);\nvar emptyCalls = 0;\nPromise.race([]).then(\n  function() { emptyCalls++; },\n  function() { emptyCalls++; }\n);\nvar release;\nvar pending = new Promise(function(resolve) { release = resolve; });\nPromise.race([pending, Promise.resolve(7), 9]).then(function(value) {\n  assert.sameValue(emptyCalls, 0);\n  assert.compareArray([value], [7]);\n}).then($DONE, $DONE);\nrelease(3);\n",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [
+        "compareArray.js"
+      ],
+      "origin": "promise-race-pair",
+      "prerequisite": null
+    },
+    {
+      "name": "winner-mismatch",
+      "source": "assert.sameValue(typeof compareArray, 'function');\nassert.sameValue(typeof assert.compareArray, 'function');\nassert.sameValue(compareArray([1, 2], [1, 2]), true);\nassert.sameValue(compareArray([1, 2], [2, 1]), false);\nvar emptyCalls = 0;\nPromise.race([]).then(\n  function() { emptyCalls++; },\n  function() { emptyCalls++; }\n);\nvar release;\nvar pending = new Promise(function(resolve) { release = resolve; });\nPromise.race([pending, Promise.resolve(7), 9]).then(function(value) {\n  assert.sameValue(emptyCalls, 0);\n  assert.compareArray([value], [3]);\n}).then($DONE, $DONE);\nrelease(3);\n",
+      "expected": "completion-error",
+      "completion_policy": 1,
+      "includes": [
+        "compareArray.js"
+      ],
+      "origin": "promise-race-pair",
+      "prerequisite": "winner"
+    },
+    {
+      "name": "rejection-identity",
+      "source": "var marker = {};\nPromise.race([Promise.reject(marker), new Promise(function() {})]).then(\n  function() { throw new Test262Error('unexpected fulfillment'); },\n  function(reason) { assert.sameValue(reason, marker); }\n).then($DONE, $DONE);\n",
+      "expected": "passed",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "promise-race-pair",
+      "prerequisite": null
+    },
+    {
+      "name": "rejection-identity-mismatch",
+      "source": "var marker = {};\nPromise.race([Promise.reject(marker), new Promise(function() {})]).then(\n  function() { throw new Test262Error('unexpected fulfillment'); },\n  function(reason) { assert.notSameValue(reason, marker); }\n).then($DONE, $DONE);\n",
+      "expected": "completion-error",
+      "completion_policy": 1,
+      "includes": [],
+      "origin": "promise-race-pair",
+      "prerequisite": "rejection-identity"
+    },
+    {
+      "name": "shared-callbacks",
+      "source": "var capability = {};\nvar resolves = 0;\nvar rejects = 0;\nvar nextCalls = 0;\nfunction fulfilled(value) { resolves++; return 'F' + value; }\nfunction rejected(value) { rejects++; return 'R' + value; }\nfunction C(executor) {\n  executor(fulfilled, rejected);\n  return capability;\n}\nC.resolve = function(value) {\n  assert.sameValue(this, C);\n  return { then: function(onFulfilled, onRejected) {\n    assert.sameValue(onFulfilled, fulfilled);\n    assert.sameValue(onRejected, rejected);\n    assert.sameValue(onFulfilled(value), 'F' + value);\n    assert.sameValue(onFulfilled(value + 10), 'F' + (value + 10));\n    assert.sameValue(onRejected(value), 'R' + value);\n    assert.sameValue(onRejected(value + 10), 'R' + (value + 10));\n  } };\n};\nvar iterator = { next: function() {\n  nextCalls++;\n  return nextCalls <= 2 ? { done: false, value: nextCalls } : { done: true };\n} };\nvar source = {};\nsource[Symbol.iterator] = function() { return iterator; };\nassert.sameValue(Promise.race.call(C, source), capability);\nassert.sameValue(resolves, 4);\nassert.sameValue(rejects, 4);\nassert.sameValue(nextCalls, 3);\n",
+      "expected": "passed",
+      "completion_policy": 0,
+      "includes": [],
+      "origin": "promise-race-pair",
+      "prerequisite": null
+    },
+    {
+      "name": "shared-callbacks-mismatch",
+      "source": "var capability = {};\nvar resolves = 0;\nvar rejects = 0;\nvar nextCalls = 0;\nfunction fulfilled(value) { resolves++; return 'F' + value; }\nfunction rejected(value) { rejects++; return 'R' + value; }\nfunction C(executor) {\n  executor(fulfilled, rejected);\n  return capability;\n}\nC.resolve = function(value) {\n  assert.sameValue(this, C);\n  return { then: function(onFulfilled, onRejected) {\n    assert.sameValue(onFulfilled, fulfilled);\n    assert.sameValue(onRejected, rejected);\n    assert.sameValue(onFulfilled(value), 'F' + value);\n    assert.sameValue(onFulfilled(value + 10), 'F' + (value + 10));\n    assert.sameValue(onRejected(value), 'R' + value);\n    assert.sameValue(onRejected(value + 10), 'R' + (value + 10));\n  } };\n};\nvar iterator = { next: function() {\n  nextCalls++;\n  return nextCalls <= 2 ? { done: false, value: nextCalls } : { done: true };\n} };\nvar source = {};\nsource[Symbol.iterator] = function() { return iterator; };\nassert.sameValue(Promise.race.call(C, source), capability);\nassert.sameValue(resolves, 2);\nassert.sameValue(rejects, 4);\nassert.sameValue(nextCalls, 3);\n",
+      "expected": "synchronous-exception",
+      "completion_policy": 0,
+      "includes": [],
+      "origin": "promise-race-pair",
+      "prerequisite": "shared-callbacks"
+    }
+  ],
+  "preflight": [
+    {
+      "name": "promise-race-api",
+      "mode": "sloppy",
+      "case_sha256": "a8702cec345ba1a5df061ce09d499df449ca32011b6056d4c6e7bed865327544",
+      "source_sha256": "ba568327a47ca607be2ffe94eeb7f2747da86987050a777d51407b9c438e28ef"
+    },
+    {
+      "name": "promise-race-api-mismatch",
+      "mode": "sloppy",
+      "case_sha256": "606556fed7e619c3dc318be59313377ba346f2e4f12a7edcdbdd5e8959867696",
+      "source_sha256": "f8bbb0b279e302d3ccf71167fe9fbe94b23dc49d277a9c2b724d97885cfa0f4e"
+    },
+    {
+      "name": "promise-race-winner",
+      "mode": "sloppy",
+      "case_sha256": "0a5fb2093c5d8ebf21a1f765996f12d7584587eebd6fb52dc1b826b39827a9c8",
+      "source_sha256": "a7c64dc8a52aa08d6b222b93b66106d7a245d11af7bdb3cf8283df764d36fde6"
+    },
+    {
+      "name": "promise-race-winner-mismatch",
+      "mode": "sloppy",
+      "case_sha256": "06b9b0d3fd899ea511d004676ebe658b46ec931951b1011e93a88706cb2a6561",
+      "source_sha256": "886eda3e963c2b59cd0625d23ff0050c4235a532c35a55cfe2fa98eaa64dd47c"
+    },
+    {
+      "name": "promise-race-rejection-identity",
+      "mode": "sloppy",
+      "case_sha256": "51f0c8c226f1f5ca853c60a298d27cf62e049278a8aacfe986a11fb81bb5b388",
+      "source_sha256": "bd3c5dc03bcafba784fb6cf6fe7c8af7f938b99cb2f0d1e62561e56e6d51c27b"
+    },
+    {
+      "name": "promise-race-rejection-identity-mismatch",
+      "mode": "sloppy",
+      "case_sha256": "9a935afb8620f067839eef7fc7d6aa6f0cbad57c7c357d7e61fb65ddbb9825c5",
+      "source_sha256": "31949f2fabf504dd076daeb3956cdec8368ee63bd1641629dff05f5680383c0a"
+    },
+    {
+      "name": "promise-race-shared-callbacks",
+      "mode": "sloppy",
+      "case_sha256": "d3742df78d569da273990f1d8becca2c38f5ae8af05566cd320b5d4b3b8365ea",
+      "source_sha256": "9a0848d79ee9b2d38f2f8bf20c04bececbab341aa9975b49abd19f03bc37dba3"
+    },
+    {
+      "name": "promise-race-shared-callbacks-mismatch",
+      "mode": "sloppy",
+      "case_sha256": "be57c8c5b795bb7c2a09127a9d7d214a1ee6ccb1c0ea21234a8846c4b9ba4cef",
+      "source_sha256": "dfd608fddde72c4f2aa3d8f16043865d0382cfe2363d06469c0396d05dba0ec4"
+    },
+    {
+      "name": "promise-race-api",
+      "mode": "strict",
+      "case_sha256": "597f8d941ff50d784a63083bf57faa7451545919c9b390ef60762daca9057220",
+      "source_sha256": "ba568327a47ca607be2ffe94eeb7f2747da86987050a777d51407b9c438e28ef"
+    },
+    {
+      "name": "promise-race-api-mismatch",
+      "mode": "strict",
+      "case_sha256": "52643c48683e778ccde2fdad127537ca2e36c87c384b08670d5dbd0f9bf9dfc8",
+      "source_sha256": "f8bbb0b279e302d3ccf71167fe9fbe94b23dc49d277a9c2b724d97885cfa0f4e"
+    },
+    {
+      "name": "promise-race-winner",
+      "mode": "strict",
+      "case_sha256": "3d0924362e9206e7845082eaadb6c8bf25441f8b88bfcde4028d9c2ff0ce2069",
+      "source_sha256": "a7c64dc8a52aa08d6b222b93b66106d7a245d11af7bdb3cf8283df764d36fde6"
+    },
+    {
+      "name": "promise-race-winner-mismatch",
+      "mode": "strict",
+      "case_sha256": "022738d0ed5452a8ce623ef6dd620cba0690503673914ac1275fb0e4f486b4bc",
+      "source_sha256": "886eda3e963c2b59cd0625d23ff0050c4235a532c35a55cfe2fa98eaa64dd47c"
+    },
+    {
+      "name": "promise-race-rejection-identity",
+      "mode": "strict",
+      "case_sha256": "2a56071aed600c60031b9fbb7ccfa6a27ec1de2bf851e978062dbfe684c3822c",
+      "source_sha256": "bd3c5dc03bcafba784fb6cf6fe7c8af7f938b99cb2f0d1e62561e56e6d51c27b"
+    },
+    {
+      "name": "promise-race-rejection-identity-mismatch",
+      "mode": "strict",
+      "case_sha256": "639f398597924d4be0f4ffad1b4a8b36743bbc909c7f4dc2478d416130175990",
+      "source_sha256": "31949f2fabf504dd076daeb3956cdec8368ee63bd1641629dff05f5680383c0a"
+    },
+    {
+      "name": "promise-race-shared-callbacks",
+      "mode": "strict",
+      "case_sha256": "19eb35f281af8397d81a5bac48ad564fe337f815745e9891585a0c6d6eec93a8",
+      "source_sha256": "9a0848d79ee9b2d38f2f8bf20c04bececbab341aa9975b49abd19f03bc37dba3"
+    },
+    {
+      "name": "promise-race-shared-callbacks-mismatch",
+      "mode": "strict",
+      "case_sha256": "431fa61e4c13ecd00c48ad536b2c2f3dc4f21b99c757a542262a7ccf91f87b81",
+      "source_sha256": "dfd608fddde72c4f2aa3d8f16043865d0382cfe2363d06469c0396d05dba0ec4"
+    }
+  ],
+  "common74": [
+    {
+      "name": "promise-methods-promise-api-positive",
+      "mode": "sloppy",
+      "case_sha256": "9ade3621cc7cd369269226fc901e19b2967d9f516098d38fa8bba79192dceef3",
+      "source_sha256": "00da508a86860a848e16c67778cbb0e28912f5efd857aa6bd74cf23c3acbbc48"
+    },
+    {
+      "name": "promise-methods-promise-api-poisoned",
+      "mode": "sloppy",
+      "case_sha256": "dd718f416b1aed481b5ad536b188909277c6573d3f06f82563af5f6a09b089e5",
+      "source_sha256": "a1f266beee88fe8a5724bf896206a8712af59d1c473f89d2e05eeb242bc27c61"
+    },
+    {
+      "name": "promise-methods-promise-helper-positive",
+      "mode": "sloppy",
+      "case_sha256": "6ee7fb188f7a4674be2d74915671dba9240bc4bceefaa738d2dbed6b18809602",
+      "source_sha256": "ddf206d7e3f8ebf4c02835939571f7f415bc3f865602763925acdad8fb0df201"
+    },
+    {
+      "name": "promise-methods-promise-helper-poisoned",
+      "mode": "sloppy",
+      "case_sha256": "2c828425f0b666f4a960b58713bc101b5256fd08d8ab506e9548e41ac247c622",
+      "source_sha256": "42a14c9c3c2e3dd0de48dbc0f5e66cd3af434e1accdf6449e31a61019a18945d"
+    },
+    {
+      "name": "promise-methods-property-helper-positive",
+      "mode": "sloppy",
+      "case_sha256": "bd626d26687673cc2080da861a3d4de4a91c2b32a6bacc57c36cf9cbcb7c36ab",
+      "source_sha256": "1b33c43dcbfc7f1ac0ba6c502adfdcad9fded589725460cbd8e28b0abab2f27b"
+    },
+    {
+      "name": "promise-methods-property-helper-poisoned",
+      "mode": "sloppy",
+      "case_sha256": "26702f613c54d0615b96daedee69914813779a3cd654c8e21050ec3837d28ade",
+      "source_sha256": "fdc2c6b3866e42082da0fccaf14953df4dc8dfe52eeb653f6fcfdb8942836239"
+    },
+    {
+      "name": "promise-methods-one-async-completion",
+      "mode": "sloppy",
+      "case_sha256": "d13df8d4d9887d3d49019a32efc313b49833f197e5bf672cdcaeb4e82c2e5ab0",
+      "source_sha256": "d2b62d18040246abe6a93c2e462ed1e343b668a6b179a4fbd1a362bad2252780"
+    },
+    {
+      "name": "promise-methods-poisoned-queued-assertion",
+      "mode": "sloppy",
+      "case_sha256": "5db9690b285092b32a07db84d7903aec7f4a9b25df9b6b6f4eb78c41359d3acf",
+      "source_sha256": "f712a5ac2e4623872af4b00b172ca1151141571c9d13013003f0acf67a0e5ddd"
+    },
+    {
+      "name": "promise-methods-falsy-done-omitted",
+      "mode": "sloppy",
+      "case_sha256": "2cef2b464dc88b6e71a9dcf4a8f75b1015f55ee531e22f741aa90e170954f5c4",
+      "source_sha256": "e8df10f59188b9108c35b1d73bedf118339311498d31db665d2bf552db6b5c81"
+    },
+    {
+      "name": "promise-methods-falsy-done-undefined",
+      "mode": "sloppy",
+      "case_sha256": "39a2ec636aa19245c0f1ce9780b39289ffa9441617ec357488e371e0f662353f",
+      "source_sha256": "51a3f473fbb536d8d9339d5022217f2606db6519ec97f29a9edc3bdc2089135a"
+    },
+    {
+      "name": "promise-methods-falsy-done-null",
+      "mode": "sloppy",
+      "case_sha256": "90d1db6a25d3b930879330d53b5a31c06f233a78a7e9b6c9dc59cf8781f66748",
+      "source_sha256": "fd8a0a8bf837380d7dd5248292a917f9ce8d063a752d307edf0d8e4c137b7016"
+    },
+    {
+      "name": "promise-methods-falsy-done-false",
+      "mode": "sloppy",
+      "case_sha256": "b9a2d0ab41b97c2fa2171fb125492f54a54503313d60fcef75d250dcac45e373",
+      "source_sha256": "02a40e64fac9bab81cf83083706e2753b5534e7e25b9e0ff3f6aa6f1f4c76d14"
+    },
+    {
+      "name": "promise-methods-falsy-done-0",
+      "mode": "sloppy",
+      "case_sha256": "4d6bb926e8997351a6c1779606e53e509739da9e387fa6b827312dd9ce8a8088",
+      "source_sha256": "f3b85aa8fd255ff3d742ffd6dae87e035b0cc414032703014ebf0819f927ec6b"
+    },
+    {
+      "name": "promise-methods-falsy-done--0",
+      "mode": "sloppy",
+      "case_sha256": "43c49f0de67c8cd924c9dd39f22efe6b975dfa0f5cac221620b3acb3f417759f",
+      "source_sha256": "3568e74f9d5c4c82d7420f9e885a98c6e3e002be060e812fa2a7a88b8c7f0a57"
+    },
+    {
+      "name": "promise-methods-falsy-done-NaN",
+      "mode": "sloppy",
+      "case_sha256": "cb5334ee8849ae13eefc8544ee2a5df46383aa6b371597ff8fa02e064190596c",
+      "source_sha256": "37786bb7d67b5a484c4fe29d4793bfbeaf99ceb9eb6e0c823e31c26dc44dc064"
+    },
+    {
+      "name": "promise-methods-falsy-done-''",
+      "mode": "sloppy",
+      "case_sha256": "25cf2ccdbc41c140abaa691a69bb31a34fe979840c090b822c5eb608ba840298",
+      "source_sha256": "04d520746090fdda365097a0076428256a12c9c63d046d4f8ca23879d43c73d7"
+    },
+    {
+      "name": "promise-methods-truthy-done-error",
+      "mode": "sloppy",
+      "case_sha256": "7abfd63336af9757e511ee0a3abfa739ca1cba0097d012cac7dc89a57353c2b0",
+      "source_sha256": "ec10d32ef2bc03668b52e8e518568ad409b55d13693da59fb0f39377fd13fd80"
+    },
+    {
+      "name": "promise-methods-truthy-error-getter-abrupt",
+      "mode": "sloppy",
+      "case_sha256": "07c9df2f8db5266a707830cd6f6b9e23fe2afddc4359e039bbaa9c0c011639cd",
+      "source_sha256": "bf70a0f182243af1db423d3b28213a0432b53cfa16da132fd7faa93ad6e994eb"
+    },
+    {
+      "name": "promise-methods-success-not-immediate-exit",
+      "mode": "sloppy",
+      "case_sha256": "1e32bac688049deecadccd32e1a18098c6ca1144b2bc01e73f236446e2c4b76e",
+      "source_sha256": "b846f7b61408339ba78ecadbab0d020e5e9bf09cf7083c8bb0a07c05f444188a"
+    },
+    {
+      "name": "promise-methods-missing-completion",
+      "mode": "sloppy",
+      "case_sha256": "18d475c765b08c594425a58b095337340ee6653ea4c148edebf9eed43de050ad",
+      "source_sha256": "234211b5da9b66aea93f4457f23449a928b18dd46f747f97714ffa374c733410"
+    },
+    {
+      "name": "promise-methods-duplicate-sync",
+      "mode": "sloppy",
+      "case_sha256": "0ca70b288c72869a5668a14954c06cdfb914ec6c74f89f0d8c61e15ce51f9d06",
+      "source_sha256": "1404ce4c2e4de76595a7750fc43724593ac44a032249519dadbacbccdc43fd36"
+    },
+    {
+      "name": "promise-methods-duplicate-queued",
+      "mode": "sloppy",
+      "case_sha256": "28595c341af6640733fc8f6c4159d30eca52dc2b6a25e15ee10769cd7784dde4",
+      "source_sha256": "c63d9c5794f1e5afa01f1554fbeb2166fc391dcaca79ce5fa5052e0679b47086"
+    },
+    {
+      "name": "promise-methods-queued-error-before-done",
+      "mode": "sloppy",
+      "case_sha256": "88023354beef1dac197a663bd34b72ea0acea97c78ff5ead30c705aaa0a7df4c",
+      "source_sha256": "de97e604cffc2b0596df422cc2021441b542f5f3272cffbc717f4d8e0bd93548"
+    },
+    {
+      "name": "promise-methods-queued-error-after-done",
+      "mode": "sloppy",
+      "case_sha256": "740a479d1a2e14bba0a67565c570287b92aa97ad1c33318a59eee35b6402d07e",
+      "source_sha256": "d761b500311c6f01164a4aae58d9f24f478b814a3dbec337c9dea73e57b82f65"
+    },
+    {
+      "name": "promise-methods-custom-capability-job-error",
+      "mode": "sloppy",
+      "case_sha256": "b43eb4363bca4a65a9c80cc66a5bb29b2cbaec943504edf58a9d732e5ea9fac5",
+      "source_sha256": "2cf141e6a36985c332acf63f271cbacbe9f002560abded9bf5b068cc91f3e9c8"
+    },
+    {
+      "name": "promise-methods-handled-rejection",
+      "mode": "sloppy",
+      "case_sha256": "3bfd538ac419deef83196d0cbe9fedb7e3d32d541ac39ee46d38c18f2100aca9",
+      "source_sha256": "0a419eb5b00443f82e9c7561d6cb913e87877e620eef837a03c5f53b7751747b"
+    },
+    {
+      "name": "promise-methods-handled-later-in-checkpoint",
+      "mode": "sloppy",
+      "case_sha256": "34780c4abe39b99463e941399663695f0fbbaba93847f678bae4837c22fea683",
+      "source_sha256": "5fc1e66f8e32a889b41cb92ea4480cbf7ad21f42fa0f39a7bb9e48eb7106e3a6"
+    },
+    {
+      "name": "promise-methods-unhandled-rejection-after-success",
+      "mode": "sloppy",
+      "case_sha256": "c130d8aac8e13987fa2157bbfc82aa60eac571b917b060715848525f24747387",
+      "source_sha256": "c6934b56250626e82633bd0b5783d435dda33a607eaa92eb6fba3007e2a5e1a1"
+    },
+    {
+      "name": "promise-methods-propagated-unhandled-child",
+      "mode": "sloppy",
+      "case_sha256": "d9698cc63e3513555decf3352a8aece72c4448037f70877095da910f7e86c342",
+      "source_sha256": "e594c595394d51ce3d9c273056b1cf2b76b5151e331cb52fa50da63e3a0362e0"
+    },
+    {
+      "name": "promise-methods-forged-print-no-done",
+      "mode": "sloppy",
+      "case_sha256": "112623e64b67c733651bfb3e1083d8f7f08690d6b08020fcc6009daa3747325e",
+      "source_sha256": "2dde64047ba890aff01ef3ab168201b9e6ba69dd0e47e781762e55d984f7f919"
+    },
+    {
+      "name": "promise-methods-console-spoof",
+      "mode": "sloppy",
+      "case_sha256": "80ae5e1da5374de89fbcabd774c6f5ac42a0379078c7b1da0a05b979bf896449",
+      "source_sha256": "136666e3604c6499e191045ab245ae92c5d177376b568e1b276fa3b171a8cf36"
+    },
+    {
+      "name": "promise-methods-overwritten-done-noop",
+      "mode": "sloppy",
+      "case_sha256": "142fd81eb9bcc22e44b74672599f25325a9bc824666aafa0761581eef7a89796",
+      "source_sha256": "d6ebf960674d9dc6c31ec6a0465c7bc9e8ba262f11263a938bc97dcbf79efbc7"
+    },
+    {
+      "name": "promise-methods-saved-done-alias",
+      "mode": "sloppy",
+      "case_sha256": "2016f4cea6d3d23c2370c0cf99791d5f5962471450cb7efc7966038be7b88267",
+      "source_sha256": "0a8d8cbbc9ea7406d65279f2b1508e0db3da95b5ef4cfb394d5dd4d326bb58c8"
+    },
+    {
+      "name": "promise-methods-overwritten-print-noop",
+      "mode": "sloppy",
+      "case_sha256": "7a16ab1956b9e1d64ccd0cc3abe40ef3d2bd372241b99fd1283d73c598ffa2b9",
+      "source_sha256": "e6f8e0d4f704a4810e904782569866a745471cd137284cb836ab83b82c53bab8"
+    },
+    {
+      "name": "promise-methods-fatal-after-success",
+      "mode": "sloppy",
+      "case_sha256": "65987d8a3bc4bcc0d49a451e1f3f850a782c7a30401d3c6084af171d367e925d",
+      "source_sha256": "9e7bd4b18cf8a7f166c41f79367065d6690c64df52b1607fe6552a4b50dad07d"
+    },
+    {
+      "name": "promise-methods-checked-sync-queued-failure",
+      "mode": "sloppy",
+      "case_sha256": "9e5c510bc39171ec6cabbfa5d19b560ae25828d664fa09026f33d34587d53bb2",
+      "source_sha256": "c7a98a494f572e945d122f0a12c51e5273d98852ff3b8465aa7ae2802d61c562"
+    },
+    {
+      "name": "promise-methods-sync-no-done-required",
+      "mode": "sloppy",
+      "case_sha256": "835ecb1499efc89dbba5bafb1913bc634e218e80aa5ac24c8085a03835d846d8",
+      "source_sha256": "ff96e6a06c098bde292883402af4d327328502004cce4ce6704e06a789a3826f"
+    },
+    {
+      "name": "promise-methods-promise-api-positive",
+      "mode": "strict",
+      "case_sha256": "8925a3516fb3e089d3f51f26e4e85129772276957ac86dbdf62cfdc0f6927486",
+      "source_sha256": "00da508a86860a848e16c67778cbb0e28912f5efd857aa6bd74cf23c3acbbc48"
+    },
+    {
+      "name": "promise-methods-promise-api-poisoned",
+      "mode": "strict",
+      "case_sha256": "6b291bd10d9e87e11370706494e873a60944b84ba4176dc570131e099df5502c",
+      "source_sha256": "a1f266beee88fe8a5724bf896206a8712af59d1c473f89d2e05eeb242bc27c61"
+    },
+    {
+      "name": "promise-methods-promise-helper-positive",
+      "mode": "strict",
+      "case_sha256": "824ab70f07a2e8ffe61e8975dff14d013cf8e19211cc807a772dee9b8d6bd8f7",
+      "source_sha256": "ddf206d7e3f8ebf4c02835939571f7f415bc3f865602763925acdad8fb0df201"
+    },
+    {
+      "name": "promise-methods-promise-helper-poisoned",
+      "mode": "strict",
+      "case_sha256": "34f0d95b57fd98e0ac3fa7c4ae116e4864940db8067b00200b59efb25a645ca9",
+      "source_sha256": "42a14c9c3c2e3dd0de48dbc0f5e66cd3af434e1accdf6449e31a61019a18945d"
+    },
+    {
+      "name": "promise-methods-property-helper-positive",
+      "mode": "strict",
+      "case_sha256": "ecfaff3b63754498a4608840b58fa5065dc93aab98373909dc908a939fe459f8",
+      "source_sha256": "1b33c43dcbfc7f1ac0ba6c502adfdcad9fded589725460cbd8e28b0abab2f27b"
+    },
+    {
+      "name": "promise-methods-property-helper-poisoned",
+      "mode": "strict",
+      "case_sha256": "6b83c53f0447e5a53be27e475c6bc24cb9a8f213c553cd3866c2a40f72d109ee",
+      "source_sha256": "fdc2c6b3866e42082da0fccaf14953df4dc8dfe52eeb653f6fcfdb8942836239"
+    },
+    {
+      "name": "promise-methods-one-async-completion",
+      "mode": "strict",
+      "case_sha256": "644677f23c164585c4009ba8ce6034d97f6a30915ac4b22fb1defb9517794085",
+      "source_sha256": "d2b62d18040246abe6a93c2e462ed1e343b668a6b179a4fbd1a362bad2252780"
+    },
+    {
+      "name": "promise-methods-poisoned-queued-assertion",
+      "mode": "strict",
+      "case_sha256": "d34027b9189d7f193caeb5d672f8cebb1a22281e240b3d9194810090131e4ceb",
+      "source_sha256": "f712a5ac2e4623872af4b00b172ca1151141571c9d13013003f0acf67a0e5ddd"
+    },
+    {
+      "name": "promise-methods-falsy-done-omitted",
+      "mode": "strict",
+      "case_sha256": "e43c8a8a915ee363c2c1c9bac291bfb2bcd99fc1debe59ae7b001889d5db46ce",
+      "source_sha256": "e8df10f59188b9108c35b1d73bedf118339311498d31db665d2bf552db6b5c81"
+    },
+    {
+      "name": "promise-methods-falsy-done-undefined",
+      "mode": "strict",
+      "case_sha256": "73192bfc51c9bb65f6ddff488ef1e015c7f6a664b725e419725556729010b9a2",
+      "source_sha256": "51a3f473fbb536d8d9339d5022217f2606db6519ec97f29a9edc3bdc2089135a"
+    },
+    {
+      "name": "promise-methods-falsy-done-null",
+      "mode": "strict",
+      "case_sha256": "b2192720807cc9093211b762d7c6b0e00c92ad30af4652c29232db5cfb22edb3",
+      "source_sha256": "fd8a0a8bf837380d7dd5248292a917f9ce8d063a752d307edf0d8e4c137b7016"
+    },
+    {
+      "name": "promise-methods-falsy-done-false",
+      "mode": "strict",
+      "case_sha256": "21bae2c8cab5794edbbc8b4ba88158db92e414670fda2fcc69424b70f8ac4649",
+      "source_sha256": "02a40e64fac9bab81cf83083706e2753b5534e7e25b9e0ff3f6aa6f1f4c76d14"
+    },
+    {
+      "name": "promise-methods-falsy-done-0",
+      "mode": "strict",
+      "case_sha256": "2a81f8216a7ed47c57115735212711afb2d0d22b9b3b3cfcebb76e55943a0cfe",
+      "source_sha256": "f3b85aa8fd255ff3d742ffd6dae87e035b0cc414032703014ebf0819f927ec6b"
+    },
+    {
+      "name": "promise-methods-falsy-done--0",
+      "mode": "strict",
+      "case_sha256": "893bc75ffeef792fbc7fe890b8c76b42f3ffade382e5cb51010ba0ae0851a927",
+      "source_sha256": "3568e74f9d5c4c82d7420f9e885a98c6e3e002be060e812fa2a7a88b8c7f0a57"
+    },
+    {
+      "name": "promise-methods-falsy-done-NaN",
+      "mode": "strict",
+      "case_sha256": "c0274e368b978976c4c279e40b9ed87bfd78ddc5982bcc9c1cd7288951d86cf0",
+      "source_sha256": "37786bb7d67b5a484c4fe29d4793bfbeaf99ceb9eb6e0c823e31c26dc44dc064"
+    },
+    {
+      "name": "promise-methods-falsy-done-''",
+      "mode": "strict",
+      "case_sha256": "b38091801b4eba99798e13a032824c402f6bee9dae7cb4e52618cb34332a7b98",
+      "source_sha256": "04d520746090fdda365097a0076428256a12c9c63d046d4f8ca23879d43c73d7"
+    },
+    {
+      "name": "promise-methods-truthy-done-error",
+      "mode": "strict",
+      "case_sha256": "05fe2f2a4a9e9325fb77b514b00da8a86172a7590f10b7434bccc7f5379bc004",
+      "source_sha256": "ec10d32ef2bc03668b52e8e518568ad409b55d13693da59fb0f39377fd13fd80"
+    },
+    {
+      "name": "promise-methods-truthy-error-getter-abrupt",
+      "mode": "strict",
+      "case_sha256": "f95fe3eefa7bcc57bde647bbd6250cdf69f865a31753cec7b5c6ae25c1f39675",
+      "source_sha256": "bf70a0f182243af1db423d3b28213a0432b53cfa16da132fd7faa93ad6e994eb"
+    },
+    {
+      "name": "promise-methods-success-not-immediate-exit",
+      "mode": "strict",
+      "case_sha256": "2662d0fe62248e7d6e7ea25fd10c98d481f18db824dbbfed2230fe02c93a928a",
+      "source_sha256": "b846f7b61408339ba78ecadbab0d020e5e9bf09cf7083c8bb0a07c05f444188a"
+    },
+    {
+      "name": "promise-methods-missing-completion",
+      "mode": "strict",
+      "case_sha256": "849ee8cdc604dd5b09ca22eff0bd9c2de386b7226c8a9d4ec0457ad746349d03",
+      "source_sha256": "234211b5da9b66aea93f4457f23449a928b18dd46f747f97714ffa374c733410"
+    },
+    {
+      "name": "promise-methods-duplicate-sync",
+      "mode": "strict",
+      "case_sha256": "040a5d6153380976783d554bd8773579baac2543d0f818ae24a9dabc43c8d2a7",
+      "source_sha256": "1404ce4c2e4de76595a7750fc43724593ac44a032249519dadbacbccdc43fd36"
+    },
+    {
+      "name": "promise-methods-duplicate-queued",
+      "mode": "strict",
+      "case_sha256": "093f0a33ac311332b9c27fac2c4872109a797ff6c26d4f7436c589fd88b92274",
+      "source_sha256": "c63d9c5794f1e5afa01f1554fbeb2166fc391dcaca79ce5fa5052e0679b47086"
+    },
+    {
+      "name": "promise-methods-queued-error-before-done",
+      "mode": "strict",
+      "case_sha256": "0e1597b1ae8fc3b691547ad01a790bed43d7b570c396aa9b14262c10543f1843",
+      "source_sha256": "de97e604cffc2b0596df422cc2021441b542f5f3272cffbc717f4d8e0bd93548"
+    },
+    {
+      "name": "promise-methods-queued-error-after-done",
+      "mode": "strict",
+      "case_sha256": "62a6a13f677d355f0ef6cc81d63bccf866ed80ee8d7163a6a981808c2e3fea4c",
+      "source_sha256": "d761b500311c6f01164a4aae58d9f24f478b814a3dbec337c9dea73e57b82f65"
+    },
+    {
+      "name": "promise-methods-custom-capability-job-error",
+      "mode": "strict",
+      "case_sha256": "ecfd778c824565534af985114ae1dc48279efe0f08a98348929f19da34c1e91d",
+      "source_sha256": "2cf141e6a36985c332acf63f271cbacbe9f002560abded9bf5b068cc91f3e9c8"
+    },
+    {
+      "name": "promise-methods-handled-rejection",
+      "mode": "strict",
+      "case_sha256": "fa1fa4d126291df9f80afa5dac66786484e29989e93ad5edce252832808143dd",
+      "source_sha256": "0a419eb5b00443f82e9c7561d6cb913e87877e620eef837a03c5f53b7751747b"
+    },
+    {
+      "name": "promise-methods-handled-later-in-checkpoint",
+      "mode": "strict",
+      "case_sha256": "c8a165fa852138368be85dcdc68bc79901a0e3e8558b90530ed51e36f07732e2",
+      "source_sha256": "5fc1e66f8e32a889b41cb92ea4480cbf7ad21f42fa0f39a7bb9e48eb7106e3a6"
+    },
+    {
+      "name": "promise-methods-unhandled-rejection-after-success",
+      "mode": "strict",
+      "case_sha256": "48eecc1e69063f671dc626b43433fd4b6122374d554e3fb2136e3cebdf8703c7",
+      "source_sha256": "c6934b56250626e82633bd0b5783d435dda33a607eaa92eb6fba3007e2a5e1a1"
+    },
+    {
+      "name": "promise-methods-propagated-unhandled-child",
+      "mode": "strict",
+      "case_sha256": "b52adea67948a13bf1ed0e6bfce694199a01407948f8b7a8a14a56f359c2e02a",
+      "source_sha256": "e594c595394d51ce3d9c273056b1cf2b76b5151e331cb52fa50da63e3a0362e0"
+    },
+    {
+      "name": "promise-methods-forged-print-no-done",
+      "mode": "strict",
+      "case_sha256": "9d36f7133b2dc05a6a4cadb58233a47d6f568976f4056053467faa3e1cf0290a",
+      "source_sha256": "2dde64047ba890aff01ef3ab168201b9e6ba69dd0e47e781762e55d984f7f919"
+    },
+    {
+      "name": "promise-methods-console-spoof",
+      "mode": "strict",
+      "case_sha256": "945563d2f0d3670afe4a7e5c238763f0a2ec8120322e6c72a454fa9c9a2876fc",
+      "source_sha256": "136666e3604c6499e191045ab245ae92c5d177376b568e1b276fa3b171a8cf36"
+    },
+    {
+      "name": "promise-methods-overwritten-done-noop",
+      "mode": "strict",
+      "case_sha256": "0909a4fc69e3a58e5f94f639f33e8be6cc8bd83676eb3b46b06bf4e0f85379a9",
+      "source_sha256": "d6ebf960674d9dc6c31ec6a0465c7bc9e8ba262f11263a938bc97dcbf79efbc7"
+    },
+    {
+      "name": "promise-methods-saved-done-alias",
+      "mode": "strict",
+      "case_sha256": "1df5c655d5982746253077c92ca37a43577bc250489727d89bf385b59658faf3",
+      "source_sha256": "0a8d8cbbc9ea7406d65279f2b1508e0db3da95b5ef4cfb394d5dd4d326bb58c8"
+    },
+    {
+      "name": "promise-methods-overwritten-print-noop",
+      "mode": "strict",
+      "case_sha256": "ac5fcfea1edea4d68e3ef75ed149630abbe56f1cf370cea5ff242846226b18d0",
+      "source_sha256": "e6f8e0d4f704a4810e904782569866a745471cd137284cb836ab83b82c53bab8"
+    },
+    {
+      "name": "promise-methods-fatal-after-success",
+      "mode": "strict",
+      "case_sha256": "eb897fc5298e378afdf23c069860a029763d8682adc1f5fca2945b867f121377",
+      "source_sha256": "9e7bd4b18cf8a7f166c41f79367065d6690c64df52b1607fe6552a4b50dad07d"
+    },
+    {
+      "name": "promise-methods-checked-sync-queued-failure",
+      "mode": "strict",
+      "case_sha256": "64952af6a2e63923be78ec76632576bc5c798c3ca1240b639bc12fa19e301d36",
+      "source_sha256": "c7a98a494f572e945d122f0a12c51e5273d98852ff3b8465aa7ae2802d61c562"
+    },
+    {
+      "name": "promise-methods-sync-no-done-required",
+      "mode": "strict",
+      "case_sha256": "d3aeecad24502c2b96880e9da6ce354e63449df9c3ba2c355f565c53d4ea4f54",
+      "source_sha256": "ff96e6a06c098bde292883402af4d327328502004cce4ce6704e06a789a3826f"
+    }
+  ],
+  "old_tables": {
+    "profiles": {
+      "promise-all": {
+        "Promise/all": 98
+      },
+      "promise-methods-async": {
+        "Promise": 58,
+        "Promise/Symbol.species": 5,
+        "Promise/prototype": 6,
+        "Promise/prototype/catch": 14,
+        "Promise/prototype/finally": 29,
+        "Promise/prototype/then": 75,
+        "Promise/reject": 15,
+        "Promise/resolve": 30
+      },
+      "typedarray-copy-within": {
+        "TypedArray/prototype/copyWithin/BigInt": 24,
+        "TypedArray/prototype/copyWithin": 41
+      },
+      "typedarray-to-reversed": {
+        "TypedArray/prototype/toReversed": 9
+      },
+      "typedarray-reverse": {
+        "TypedArray/prototype/reverse/BigInt": 6,
+        "TypedArray/prototype/reverse": 16
+      },
+      "typedarray-fill": {
+        "TypedArray/prototype/fill/BigInt": 18,
+        "TypedArray/prototype/fill": 34
+      },
+      "typedarray-search": {
+        "TypedArray/prototype/at": 14,
+        "TypedArray/prototype/at/BigInt": 1,
+        "TypedArray/prototype/includes": 31,
+        "TypedArray/prototype/includes/BigInt": 14,
+        "TypedArray/prototype/indexOf": 28,
+        "TypedArray/prototype/indexOf/BigInt": 15,
+        "TypedArray/prototype/lastIndexOf": 28,
+        "TypedArray/prototype/lastIndexOf/BigInt": 14
+      },
+      "typedarray-views": {
+        "TypedArray/prototype": 1,
+        "TypedArray/prototype/join": 23,
+        "TypedArray/prototype/join/BigInt": 9,
+        "TypedArray/prototype/subarray": 40,
+        "TypedArray/prototype/subarray/BigInt": 27,
+        "TypedArray/prototype/toString": 2,
+        "TypedArray/prototype/toString/BigInt": 1
+      },
+      "reflect-properties": {
+        "Reflect": 3,
+        "Reflect/deleteProperty": 11,
+        "Reflect/get": 11,
+        "Reflect/getOwnPropertyDescriptor": 13,
+        "Reflect/getPrototypeOf": 10,
+        "Reflect/has": 10,
+        "Reflect/isExtensible": 8,
+        "Reflect/preventExtensions": 10,
+        "Reflect/set": 18,
+        "Reflect/setPrototypeOf": 14
+      },
+      "typedarray-foundation": {
+        "TypedArray": 9,
+        "TypedArray/Symbol.species": 4,
+        "TypedArray/prototype": 4,
+        "TypedArray/prototype/Symbol.iterator": 1,
+        "TypedArray/prototype/Symbol.toStringTag": 9,
+        "TypedArray/prototype/Symbol.toStringTag/BigInt": 9,
+        "TypedArray/prototype/buffer": 10,
+        "TypedArray/prototype/buffer/BigInt": 2,
+        "TypedArray/prototype/byteLength": 14,
+        "TypedArray/prototype/byteLength/BigInt": 4,
+        "TypedArray/prototype/byteOffset": 12,
+        "TypedArray/prototype/byteOffset/BigInt": 4,
+        "TypedArray/prototype/entries": 15,
+        "TypedArray/prototype/entries/BigInt": 4,
+        "TypedArray/prototype/keys": 15,
+        "TypedArray/prototype/keys/BigInt": 4,
+        "TypedArray/prototype/length": 14,
+        "TypedArray/prototype/length/BigInt": 4,
+        "TypedArray/prototype/values": 17,
+        "TypedArray/prototype/values/BigInt": 4,
+        "TypedArrayConstructors/Float32Array": 7,
+        "TypedArrayConstructors/Float32Array/prototype": 4,
+        "TypedArrayConstructors/Float64Array": 7,
+        "TypedArrayConstructors/Float64Array/prototype": 4,
+        "TypedArrayConstructors/Int16Array": 7,
+        "TypedArrayConstructors/Int16Array/prototype": 4,
+        "TypedArrayConstructors/Int32Array": 7,
+        "TypedArrayConstructors/Int32Array/prototype": 4,
+        "TypedArrayConstructors/Int8Array": 7,
+        "TypedArrayConstructors/Int8Array/prototype": 4,
+        "TypedArrayConstructors/Uint16Array": 7,
+        "TypedArrayConstructors/Uint16Array/prototype": 4,
+        "TypedArrayConstructors/Uint32Array": 7,
+        "TypedArrayConstructors/Uint32Array/prototype": 4,
+        "TypedArrayConstructors/Uint8Array": 7,
+        "TypedArrayConstructors/Uint8Array/prototype": 4,
+        "TypedArrayConstructors/Uint8ClampedArray": 7,
+        "TypedArrayConstructors/Uint8ClampedArray/prototype": 4,
+        "TypedArrayConstructors/ctors": 1,
+        "TypedArrayConstructors/ctors/buffer-arg": 54,
+        "TypedArrayConstructors/ctors/length-arg": 12,
+        "TypedArrayConstructors/ctors/no-args": 7,
+        "TypedArrayConstructors/ctors/object-arg": 28,
+        "TypedArrayConstructors/ctors/typedarray-arg": 14,
+        "TypedArrayConstructors/internals/DefineOwnProperty": 28,
+        "TypedArrayConstructors/internals/DefineOwnProperty/BigInt": 26,
+        "TypedArrayConstructors/internals/Delete": 20,
+        "TypedArrayConstructors/internals/Delete/BigInt": 19,
+        "TypedArrayConstructors/internals/Get": 14,
+        "TypedArrayConstructors/internals/Get/BigInt": 14,
+        "TypedArrayConstructors/internals/GetOwnProperty": 12,
+        "TypedArrayConstructors/internals/GetOwnProperty/BigInt": 12,
+        "TypedArrayConstructors/internals/HasProperty": 17,
+        "TypedArrayConstructors/internals/HasProperty/BigInt": 15,
+        "TypedArrayConstructors/internals/OwnPropertyKeys": 6,
+        "TypedArrayConstructors/internals/OwnPropertyKeys/BigInt": 4,
+        "TypedArrayConstructors/internals/Set": 26,
+        "TypedArrayConstructors/internals/Set/BigInt": 27,
+        "TypedArrayConstructors/prototype": 2,
+        "TypedArrayConstructors/prototype/Symbol.toStringTag": 2,
+        "TypedArrayConstructors/prototype/buffer": 2,
+        "TypedArrayConstructors/prototype/byteLength": 2,
+        "TypedArrayConstructors/prototype/byteOffset": 2,
+        "TypedArrayConstructors/prototype/entries": 2,
+        "TypedArrayConstructors/prototype/keys": 2,
+        "TypedArrayConstructors/prototype/length": 2,
+        "TypedArrayConstructors/prototype/values": 2
+      },
+      "object-has-own": {
+        "Object/hasOwn": 62
+      },
+      "object-is": {
+        "Object/is": 21
+      },
+      "data-view": {
+        "DataView": 62,
+        "DataView/prototype": 1,
+        "DataView/prototype/buffer": 11,
+        "DataView/prototype/byteLength": 14,
+        "DataView/prototype/byteOffset": 13,
+        "DataView/prototype/getBigInt64": 21,
+        "DataView/prototype/getBigUint64": 21,
+        "DataView/prototype/getFloat16": 21,
+        "DataView/prototype/getFloat32": 21,
+        "DataView/prototype/getFloat64": 21,
+        "DataView/prototype/getInt16": 18,
+        "DataView/prototype/getInt32": 28,
+        "DataView/prototype/getInt8": 17,
+        "DataView/prototype/getUint16": 18,
+        "DataView/prototype/getUint32": 18,
+        "DataView/prototype/getUint8": 17,
+        "DataView/prototype/setBigInt64": 24,
+        "DataView/prototype/setBigUint64": 3,
+        "DataView/prototype/setFloat16": 24,
+        "DataView/prototype/setFloat32": 24,
+        "DataView/prototype/setFloat64": 24,
+        "DataView/prototype/setInt16": 24,
+        "DataView/prototype/setInt32": 24,
+        "DataView/prototype/setInt8": 22,
+        "DataView/prototype/setUint16": 24,
+        "DataView/prototype/setUint32": 24,
+        "DataView/prototype/setUint8": 22
+      },
+      "array-buffer": {
+        "ArrayBuffer": 28,
+        "ArrayBuffer/Symbol.species": 4,
+        "ArrayBuffer/isView": 17,
+        "ArrayBuffer/prototype": 2,
+        "ArrayBuffer/prototype/byteLength": 10,
+        "ArrayBuffer/prototype/detached": 11,
+        "ArrayBuffer/prototype/immutable": 5,
+        "ArrayBuffer/prototype/maxByteLength": 11,
+        "ArrayBuffer/prototype/resizable": 10,
+        "ArrayBuffer/prototype/resize": 22,
+        "ArrayBuffer/prototype/slice": 33,
+        "ArrayBuffer/prototype/sliceToImmutable": 11,
+        "ArrayBuffer/prototype/transfer": 24,
+        "ArrayBuffer/prototype/transferToFixedLength": 24,
+        "ArrayBuffer/prototype/transferToImmutable": 9
+      },
+      "array-concat": {
+        "Array/prototype/concat": 69
+      },
+      "array-splice": {
+        "Array/prototype/splice": 81
+      },
+      "array-from": {
+        "Array/from": 47
+      },
+      "for-of": {
+        "statements/for-of": 182,
+        "statements/for-of/dstr": 569
+      },
+      "core-iterators": {
+        "Array/prototype/values": 12,
+        "Array/prototype/keys": 12,
+        "Array/prototype/entries": 12,
+        "String/prototype/Symbol.iterator": 6,
+        "ArrayIteratorPrototype": 0,
+        "ArrayIteratorPrototype/Symbol.toStringTag": 3,
+        "ArrayIteratorPrototype/next": 24,
+        "StringIteratorPrototype": 2,
+        "StringIteratorPrototype/next": 5
+      },
+      "date": {
+        "Date": 78,
+        "Date/UTC": 17,
+        "Date/now": 6,
+        "Date/parse": 8,
+        "Date/prototype": 44,
+        "Date/prototype/Symbol.toPrimitive": 18,
+        "Date/prototype/constructor": 1,
+        "Date/prototype/getDate": 8,
+        "Date/prototype/getDay": 8,
+        "Date/prototype/getFullYear": 8,
+        "Date/prototype/getHours": 8,
+        "Date/prototype/getMilliseconds": 8,
+        "Date/prototype/getMinutes": 8,
+        "Date/prototype/getMonth": 8,
+        "Date/prototype/getSeconds": 8,
+        "Date/prototype/getTime": 8,
+        "Date/prototype/getTimezoneOffset": 8,
+        "Date/prototype/getUTCDate": 8,
+        "Date/prototype/getUTCDay": 8,
+        "Date/prototype/getUTCFullYear": 8,
+        "Date/prototype/getUTCHours": 8,
+        "Date/prototype/getUTCMilliseconds": 8,
+        "Date/prototype/getUTCMinutes": 8,
+        "Date/prototype/getUTCMonth": 8,
+        "Date/prototype/getUTCSeconds": 8,
+        "Date/prototype/setDate": 14,
+        "Date/prototype/setFullYear": 20,
+        "Date/prototype/setHours": 23,
+        "Date/prototype/setMilliseconds": 14,
+        "Date/prototype/setMinutes": 18,
+        "Date/prototype/setMonth": 17,
+        "Date/prototype/setSeconds": 17,
+        "Date/prototype/setTime": 11,
+        "Date/prototype/setUTCDate": 7,
+        "Date/prototype/setUTCFullYear": 6,
+        "Date/prototype/setUTCHours": 11,
+        "Date/prototype/setUTCMilliseconds": 8,
+        "Date/prototype/setUTCMinutes": 8,
+        "Date/prototype/setUTCMonth": 9,
+        "Date/prototype/setUTCSeconds": 9,
+        "Date/prototype/toDateString": 7,
+        "Date/prototype/toISOString": 17,
+        "Date/prototype/toJSON": 13,
+        "Date/prototype/toLocaleDateString": 4,
+        "Date/prototype/toLocaleString": 4,
+        "Date/prototype/toLocaleTimeString": 4,
+        "Date/prototype/toString": 8,
+        "Date/prototype/toTemporalInstant": 8,
+        "Date/prototype/toTimeString": 6,
+        "Date/prototype/toUTCString": 9,
+        "Date/prototype/valueOf": 6
+      },
+      "array-find": {
+        "Array/prototype/find": 23,
+        "Array/prototype/findIndex": 23,
+        "Array/prototype/findLast": 24,
+        "Array/prototype/findLastIndex": 24
+      },
+      "object-integrity": {
+        "Object/seal": 94,
+        "Object/freeze": 53,
+        "Object/isSealed": 33,
+        "Object/isFrozen": 59
+      },
+      "array-predicates": {
+        "Array/prototype/every": 218,
+        "Array/prototype/some": 219
+      },
+      "array-descriptors": {
+        "Object/defineProperty": 1131,
+        "Object/defineProperties": 632,
+        "Array/length": 30
+      },
+      "array-last-index-of": {
+        "Array/prototype/lastIndexOf": 198
+      },
+      "string-last-index-of": {
+        "String/prototype/lastIndexOf": 25
+      },
+      "regexp-match-search": {
+        "String/prototype/match": 51,
+        "String/prototype/search": 43,
+        "RegExp/prototype/Symbol.match": 53,
+        "RegExp/prototype/Symbol.search": 23
+      },
+      "regexp-constructor": {
+        "RegExp": 488
+      },
+      "regexp-split": {
+        "RegExp/prototype/Symbol.split": 44,
+        "RegExp/Symbol.species": 4
+      },
+      "string-search": {
+        "String/prototype/includes": 27,
+        "String/prototype/indexOf": 47,
+        "String/prototype/startsWith": 21,
+        "String/prototype/endsWith": 27,
+        "String/prototype/split": 120
+      },
+      "string-concat": {
+        "String/prototype/concat": 22
+      },
+      "symbols": {
+        "Object/getOwnPropertySymbols": 12,
+        "Reflect/ownKeys": 13,
+        "Symbol": 12,
+        "Symbol/asyncDispose": 3,
+        "Symbol/asyncIterator": 2,
+        "Symbol/dispose": 3,
+        "Symbol/for": 9,
+        "Symbol/hasInstance": 2,
+        "Symbol/isConcatSpreadable": 2,
+        "Symbol/iterator": 2,
+        "Symbol/keyFor": 8,
+        "Symbol/match": 2,
+        "Symbol/matchAll": 2,
+        "Symbol/prototype": 3,
+        "Symbol/prototype/Symbol.toPrimitive": 9,
+        "Symbol/prototype/description": 7,
+        "Symbol/prototype/toString": 8,
+        "Symbol/prototype/valueOf": 8,
+        "Symbol/replace": 2,
+        "Symbol/search": 2,
+        "Symbol/species": 4,
+        "Symbol/split": 2,
+        "Symbol/toPrimitive": 2,
+        "Symbol/toStringTag": 2,
+        "Symbol/unscopables": 2
+      },
+      "string-json": {
+        "JSON/parse": 77,
+        "JSON/stringify": 66,
+        "String/prototype/charAt": 30,
+        "String/prototype/charCodeAt": 25,
+        "String/prototype/codePointAt": 16,
+        "String/prototype/slice": 38,
+        "String/prototype/substring": 46,
+        "String/fromCharCode": 17,
+        "String/fromCodePoint": 11
+      },
+      "regexp": {
+        "RegExp/prototype/exec": 79,
+        "RegExp/prototype/test": 45,
+        "RegExp/prototype/toString": 9,
+        "RegExp/prototype/source": 12
+      },
+      "function-constructor": {
+        "Function": 179,
+        "Function/length": 13,
+        "Function/internals/Construct": 6,
+        "Function/internals/Call": 2
+      },
+      "reflect-construction": {
+        "Reflect/apply": 9,
+        "Reflect/construct": 10
+      },
+      "new-target": {
+        "expressions/new.target": 14
+      },
+      "template-literal": {
+        "expressions/template-literal": 57
+      },
+      "functions": {
+        "expressions/function": 69,
+        "statements/function": 256,
+        "expressions/arrow-function": 55,
+        "expressions/object/method-definition": 283
+      },
+      "rest-parameters": {
+        "rest-parameters": 11
+      },
+      "is-prototype-of": {
+        "Object/prototype/isPrototypeOf": 10
+      },
+      "global-values": {
+        "global": 29,
+        "undefined": 8,
+        "NaN": 6,
+        "Infinity": 6
+      },
+      "array-sort": {
+        "Array/prototype/sort": 54
+      },
+      "identifiers": {
+        "identifiers": 268,
+        "white-space": 67
+      },
+      "array-reduce": {
+        "Array/prototype/reduce": 260,
+        "Array/prototype/reduceRight": 260
+      },
+      "number-statics": {
+        "Number": 120,
+        "Number/MAX_VALUE": 4,
+        "Number/MIN_VALUE": 4,
+        "Number/NEGATIVE_INFINITY": 4,
+        "Number/POSITIVE_INFINITY": 4,
+        "Number/isFinite": 8,
+        "Number/isInteger": 9,
+        "Number/isNaN": 7,
+        "Number/isSafeInteger": 10
+      },
+      "numeric-conversion": {
+        "isFinite": 15,
+        "isNaN": 15
+      },
+      "numeric-parsing": {
+        "parseInt": 55,
+        "parseFloat": 54
+      },
+      "compound-assignment": {
+        "expressions/compound-assignment": 454
+      },
+      "addition": {
+        "expressions/addition": 48
+      },
+      "logical-assignment": {
+        "expressions/logical-assignment": 78
+      },
+      "uri": {
+        "encodeURI": 31,
+        "encodeURIComponent": 31,
+        "decodeURI": 55,
+        "decodeURIComponent": 56
+      },
+      "relational": {
+        "expressions/less-than": 45,
+        "expressions/greater-than": 49,
+        "expressions/less-than-or-equal": 47,
+        "expressions/greater-than-or-equal": 43
+      },
+      "equality": {
+        "expressions/equals": 47,
+        "expressions/does-not-equals": 38,
+        "expressions/strict-equals": 30,
+        "expressions/strict-does-not-equals": 30
+      },
+      "labels": {
+        "statements/labeled": 24,
+        "statements/break": 20,
+        "statements/continue": 24
+      }
+    },
+    "roots": {
+      "promise-all": "test/built-ins",
+      "promise-methods-async": "test/built-ins",
+      "typedarray-copy-within": "test/built-ins",
+      "typedarray-to-reversed": "test/built-ins",
+      "typedarray-reverse": "test/built-ins",
+      "typedarray-fill": "test/built-ins",
+      "typedarray-search": "test/built-ins",
+      "typedarray-views": "test/built-ins",
+      "reflect-properties": "test/built-ins",
+      "typedarray-foundation": "test/built-ins",
+      "object-has-own": "test/built-ins",
+      "object-is": "test/built-ins",
+      "data-view": "test/built-ins",
+      "array-buffer": "test/built-ins",
+      "array-concat": "test/built-ins",
+      "array-splice": "test/built-ins",
+      "array-from": "test/built-ins",
+      "for-of": "test/language",
+      "core-iterators": "test/built-ins",
+      "date": "test/built-ins",
+      "array-find": "test/built-ins",
+      "object-integrity": "test/built-ins",
+      "array-predicates": "test/built-ins",
+      "array-descriptors": "test/built-ins",
+      "array-last-index-of": "test/built-ins",
+      "string-last-index-of": "test/built-ins",
+      "regexp-match-search": "test/built-ins",
+      "regexp-constructor": "test/built-ins",
+      "regexp-split": "test/built-ins",
+      "string-search": "test/built-ins",
+      "string-concat": "test/built-ins",
+      "symbols": "test/built-ins",
+      "string-json": "test/built-ins",
+      "regexp": "test/built-ins",
+      "function-constructor": "test/built-ins",
+      "reflect-construction": "test/built-ins",
+      "new-target": "test/language",
+      "template-literal": "test/language",
+      "functions": "test/language",
+      "rest-parameters": "test/language",
+      "is-prototype-of": "test/built-ins",
+      "global-values": "test/built-ins",
+      "array-sort": "test/built-ins",
+      "identifiers": "test/language",
+      "array-reduce": "test/built-ins",
+      "number-statics": "test/built-ins",
+      "numeric-conversion": "test/built-ins",
+      "numeric-parsing": "test/built-ins",
+      "compound-assignment": "test/language",
+      "addition": "test/language",
+      "logical-assignment": "test/language",
+      "uri": "test/built-ins",
+      "relational": "test/language",
+      "equality": "test/language",
+      "labels": "test/language"
+    },
+    "tree_profiles": [
+      "array-buffer",
+      "array-concat",
+      "array-descriptors",
+      "array-find",
+      "array-from",
+      "array-predicates",
+      "array-splice",
+      "core-iterators",
+      "data-view",
+      "date",
+      "for-of",
+      "object-has-own",
+      "object-integrity",
+      "object-is",
+      "promise-all",
+      "promise-methods-async",
+      "reflect-properties",
+      "typedarray-copy-within",
+      "typedarray-fill",
+      "typedarray-foundation",
+      "typedarray-reverse",
+      "typedarray-search",
+      "typedarray-to-reversed",
+      "typedarray-views"
+    ]
+  },
+  "old_tables_sha256": "d40389657206ea81274af9f56917af5bf36d8ba325f780d86ece9ea95db591c6",
+  "original53_sha256": "e51b4b6882c1163b10fa3eb84321fac4b923acadc8a29a41b648c0d399a502e6",
+  "existing_oracles": {
+    "promise-all-profile-oracle.json": {
+      "bytes": 365483,
+      "sha256": "0a8c1db76b33216daec60e0062363708f0a8bbb3910f8b9b150b0b227faab2d2"
+    },
+    "promise-methods-runner-oracle.json": {
+      "bytes": 92372,
+      "sha256": "feeeb6ffb8e7b8f80385426e7c7922b9ce9adcc9212d7016b9dde80b10ffb02b"
+    }
+  },
+  "old_manifest_hashes": {
+    "promise-methods-async": "cf8d1ea1c354de83add3e0ca734159806d6d293b1a750d6bb5f972f0a0d2bde9",
+    "promise-all": "400769ca8bcdc92b3ef0edaa76ef3ae84aa20e277fd27de568a0e2f0999fa8bc"
+  },
+  "scope": "Source-derived identities and prospective mocked controls only; no engine results. Preserve both old Promise corpora and complete common/all guard records via their existing immutable oracles, without duplicating their source archives."
+}

@@ -16,7 +16,9 @@ rejection policy and language conformance remain visible in this result.
 The existing 458-mode profile has no regressions.
 [`Promise.race`](promise-race.md) now reuses capabilities and the shared FIFO,
 preserving direct callbacks and ordinary iterator closing. Its complete pinned
-94-source upstream profile remains a separate follow-up.
+[94-source upstream profile](promise-race-test262.md) records 170 passed, 10 failed
+and 8 unsupported modes out of 188, with all 90 controls verified. The retained
+failures reflect host rejection policy; class support remains unfinished.
 Remaining asynchronous work includes `allSettled`, `any`,
 async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.

@@ -23,7 +23,9 @@ The optional [Promise Test262 host](docs/promise-test262-host.md) adds authentic
 232-source, 458-mode profile. The separate [complete `Promise.all` selection](docs/promise-all-test262.md)
 records 174 passed, 14 failed and 8 unsupported modes out of 196, with all 90
 harness controls passing. The remaining failures reflect the host's
-final-unhandled-rejection policy.
+final-unhandled-rejection policy. The [complete `Promise.race` selection](docs/promise-race-test262.md)
+records 170 passed, 10 failed and 8 unsupported modes out of 188, with all 90
+controls verified. Its failures retain the same separate host-policy reason.
 
 [Spread arguments](docs/call-spread.md) now work in ordinary calls and `new`,
 including mixed, multiple and empty spreads and trailing commas. Iterator reads
