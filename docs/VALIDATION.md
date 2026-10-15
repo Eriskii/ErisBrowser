@@ -1,5 +1,35 @@
 # Validation record
 
+## Complete pinned Promise.any selection
+
+The [Any upstream checkpoint](promise-any-upstream.md) retains all 94 sources
+and 188 modes, with 102 canonical controls. It records **172 passed, 14 unsupported and two failed modes**, with all **102
+controls verified**.
+Both modes of `returns-promise.js` encounter the unchanged host's
+final-unhandled-rejection veto after `Promise.any([])`; this is a host-policy
+failure, not a reported body assertion or algorithm failure. Fourteen modes
+remain unsupported: six declare classes, four declare destructured bindings,
+and four untagged modes encounter class syntax in the parser.
+
+The focused run also passes all 32 groups after the gate correction. All **624 Python tests pass**, including the 32 new focused groups. The parent run passed 592 tests.
+The first focused candidate run passed 31 groups and failed one forged-harness guard. An empty-harness check confined to the new semantic controls corrects that gate omission; frozen literals, oracles and test expectations stay unchanged.
+
+The measured Any baseline and replay preserve the exact 188 case and 102
+control records. The five older profiles retain their complete 1,100 case and
+400 control arrays, including failed and unsupported outcomes, with no policy
+or baseline changes.
+All 58 prior policies and the old source/control identities remain unchanged.
+Only the selected Any host route gains AggregateError identity acceptance;
+ordinary AggregateError remains ERJR2-only and older host/default routes keep
+seven identities. The new gate rejects malformed or forged canonical records,
+blocks case dispatch and refuses baseline recording when unhealthy.
+
+This checkpoint changes tooling, authenticated corpus data and CI gates. It
+reuses the published runtime checkpoint's Rust 1.88 ordinary/host adapters;
+Rust execution inputs, wire bytes, runtime caps and build settings are unchanged.
+No new Rust full-suite, Clippy or build result is claimed. The prior Promise.any
+runtime section and all earlier validation records remain historical.
+
 ## Promise.any runtime
 
 The [Promise.any checkpoint](promise-any.md) adds generic synchronous iterable

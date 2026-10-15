@@ -125,6 +125,9 @@ PROMISE_METHOD_DIRECTORIES = {
 }
 PROMISE_METHOD_HELPERS = {'assert.js', 'sta.js', 'doneprintHandle.js',
                           'isConstructor.js', 'promiseHelper.js', 'propertyHelper.js'}
+PROMISE_ANY_DIRECTORIES = {'Promise/any': 94}
+PROMISE_ANY_HELPERS = {'assert.js', 'sta.js', 'doneprintHandle.js',
+                       'propertyHelper.js', 'isConstructor.js', 'promiseHelper.js'}
 PROMISE_ALL_DIRECTORIES = {'Promise/all': 98}
 PROMISE_ALL_HELPERS = {'assert.js', 'sta.js', 'doneprintHandle.js',
                        'isConstructor.js', 'promiseHelper.js', 'propertyHelper.js'}
@@ -137,7 +140,7 @@ PROMISE_ALL_SETTLED_HELPERS = {'assert.js', 'sta.js', 'doneprintHandle.js',
 AGGREGATE_ERROR_DIRECTORIES = {'AggregateError': 19, 'AggregateError/prototype': 6}
 AGGREGATE_ERROR_HELPERS = {'assert.js', 'sta.js', 'propertyHelper.js',
                            'compareArray.js', 'isConstructor.js', 'promiseHelper.js'}
-TREE_PROFILES = {'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
+TREE_PROFILES = {'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators', 'date', 'array-descriptors', 'array-predicates', 'object-integrity', 'array-find'}
 DIRECTORIES = {
     'JSON/parse': 77, 'JSON/stringify': 66,
     'String/prototype/charAt': 30, 'String/prototype/charCodeAt': 25,
@@ -215,7 +218,7 @@ SYMBOL_DIRECTORIES = {
     'Symbol/toStringTag': 2,
     'Symbol/unscopables': 2,
 }
-PROFILES = {'aggregate-error': AGGREGATE_ERROR_DIRECTORIES, 'promise-all-settled': PROMISE_ALL_SETTLED_DIRECTORIES, 'promise-race': PROMISE_RACE_DIRECTORIES, 'promise-all': PROMISE_ALL_DIRECTORIES, 'promise-methods-async': PROMISE_METHOD_DIRECTORIES, 'typedarray-copy-within': TYPEDARRAY_COPY_WITHIN_DIRECTORIES, 'typedarray-to-reversed': TYPEDARRAY_TO_REVERSED_DIRECTORIES, 'typedarray-reverse': TYPEDARRAY_REVERSE_DIRECTORIES, 'typedarray-fill': TYPEDARRAY_FILL_DIRECTORIES, 'typedarray-search': TYPEDARRAY_SEARCH_DIRECTORIES, 'typedarray-views': TYPEDARRAY_VIEW_DIRECTORIES, 'reflect-properties': REFLECT_PROPERTY_DIRECTORIES, 'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
+PROFILES = {'promise-any': PROMISE_ANY_DIRECTORIES, 'aggregate-error': AGGREGATE_ERROR_DIRECTORIES, 'promise-all-settled': PROMISE_ALL_SETTLED_DIRECTORIES, 'promise-race': PROMISE_RACE_DIRECTORIES, 'promise-all': PROMISE_ALL_DIRECTORIES, 'promise-methods-async': PROMISE_METHOD_DIRECTORIES, 'typedarray-copy-within': TYPEDARRAY_COPY_WITHIN_DIRECTORIES, 'typedarray-to-reversed': TYPEDARRAY_TO_REVERSED_DIRECTORIES, 'typedarray-reverse': TYPEDARRAY_REVERSE_DIRECTORIES, 'typedarray-fill': TYPEDARRAY_FILL_DIRECTORIES, 'typedarray-search': TYPEDARRAY_SEARCH_DIRECTORIES, 'typedarray-views': TYPEDARRAY_VIEW_DIRECTORIES, 'reflect-properties': REFLECT_PROPERTY_DIRECTORIES, 'typedarray-foundation': TYPEDARRAY_DIRECTORIES, 'object-has-own': OBJECT_HAS_OWN_DIRECTORIES, 'object-is': OBJECT_IS_DIRECTORIES, 'data-view': DATA_VIEW_DIRECTORIES, 'array-buffer': ARRAY_BUFFER_DIRECTORIES, 'array-concat': ARRAY_CONCAT_DIRECTORIES, 'array-splice': ARRAY_SPLICE_DIRECTORIES, 'array-from': ARRAY_FROM_DIRECTORIES, 'for-of': FOR_OF_DIRECTORIES, 'core-iterators': CORE_ITERATOR_DIRECTORIES, 'date': DATE_DIRECTORIES, 'array-find': ARRAY_FIND_DIRECTORIES, 'object-integrity': OBJECT_INTEGRITY_DIRECTORIES, 'array-predicates': ARRAY_PREDICATE_DIRECTORIES, 'array-descriptors': ARRAY_DESCRIPTOR_DIRECTORIES, 'array-last-index-of': ARRAY_LAST_INDEX_OF_DIRECTORIES, 'string-last-index-of': STRING_LAST_INDEX_OF_DIRECTORIES, 'regexp-match-search': REGEXP_MATCH_SEARCH_DIRECTORIES, 'regexp-constructor': REGEXP_CONSTRUCTOR_DIRECTORIES, 'regexp-split': REGEXP_SPLIT_DIRECTORIES, 'string-search': STRING_SEARCH_DIRECTORIES, 'string-concat': STRING_CONCAT_DIRECTORIES, 'symbols': SYMBOL_DIRECTORIES, 'string-json': DIRECTORIES, 'regexp': REGEXP_DIRECTORIES,
             'function-constructor': FUNCTION_CONSTRUCTOR_DIRECTORIES,
             'reflect-construction': REFLECT_CONSTRUCTION_DIRECTORIES, 'new-target': NEW_TARGET_DIRECTORIES,
             'template-literal': TEMPLATE_DIRECTORIES, 'functions': FUNCTION_DIRECTORIES,
@@ -228,7 +231,7 @@ PROFILES = {'aggregate-error': AGGREGATE_ERROR_DIRECTORIES, 'promise-all-settled
             'numeric-parsing': NUMERIC_PARSING_DIRECTORIES,
             'compound-assignment': COMPOUND_ASSIGNMENT_DIRECTORIES,
             'addition': ADDITION_DIRECTORIES, 'logical-assignment': LOGICAL_ASSIGNMENT_DIRECTORIES, 'uri': URI_DIRECTORIES, 'relational': RELATIONAL_DIRECTORIES, 'equality': EQUALITY_DIRECTORIES, 'labels': LABELS_DIRECTORIES}
-PROFILE_ROOTS = {'aggregate-error': 'test/built-ins', 'promise-all-settled': 'test/built-ins', 'promise-race': 'test/built-ins', 'promise-all': 'test/built-ins', 'promise-methods-async': 'test/built-ins', 'typedarray-copy-within': 'test/built-ins', 'typedarray-to-reversed': 'test/built-ins', 'typedarray-reverse': 'test/built-ins', 'typedarray-fill': 'test/built-ins', 'typedarray-search': 'test/built-ins', 'typedarray-views': 'test/built-ins', 'reflect-properties': 'test/built-ins', 'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
+PROFILE_ROOTS = {'promise-any': 'test/built-ins', 'aggregate-error': 'test/built-ins', 'promise-all-settled': 'test/built-ins', 'promise-race': 'test/built-ins', 'promise-all': 'test/built-ins', 'promise-methods-async': 'test/built-ins', 'typedarray-copy-within': 'test/built-ins', 'typedarray-to-reversed': 'test/built-ins', 'typedarray-reverse': 'test/built-ins', 'typedarray-fill': 'test/built-ins', 'typedarray-search': 'test/built-ins', 'typedarray-views': 'test/built-ins', 'reflect-properties': 'test/built-ins', 'typedarray-foundation': 'test/built-ins', 'object-has-own': 'test/built-ins', 'object-is': 'test/built-ins', 'data-view': 'test/built-ins', 'array-buffer': 'test/built-ins', 'array-concat': 'test/built-ins', 'array-splice': 'test/built-ins', 'array-from': 'test/built-ins', 'for-of': 'test/language', 'core-iterators': 'test/built-ins', 'date': 'test/built-ins', 'array-find': 'test/built-ins', 'object-integrity': 'test/built-ins', 'array-predicates': 'test/built-ins', 'array-descriptors': 'test/built-ins', 'array-last-index-of': 'test/built-ins', 'string-last-index-of': 'test/built-ins', 'regexp-match-search': 'test/built-ins', 'regexp-constructor': 'test/built-ins', 'regexp-split': 'test/built-ins', 'string-search': 'test/built-ins', 'string-concat': 'test/built-ins', 'symbols': 'test/built-ins', 'string-json': 'test/built-ins', 'regexp': 'test/built-ins',
                  'function-constructor': 'test/built-ins', 'reflect-construction': 'test/built-ins', 'new-target': 'test/language',
                  'template-literal': 'test/language', 'functions': 'test/language',
                  'rest-parameters': 'test/language', 'is-prototype-of': 'test/built-ins',
@@ -940,6 +943,22 @@ def typedarray_view_tree_inventory(read=None):
 
 
 def profile_tree_inventory(profile, read=None):
+    if profile == 'promise-any':
+        expected = {'Promise/any': 94}
+        if (PROMISE_ANY_DIRECTORIES != expected or PROFILES[profile] != expected
+                or PROFILE_ROOTS[profile] != 'test/built-ins'):
+            raise ValueError('Promise.any frozen directory selection mismatch')
+        listings, proof, description = git_tree_inventory(
+            expected, 'test/built-ins', read, auxiliary_helpers=PROMISE_ANY_HELPERS)
+        if any(len(listings[name]) != count for name, count in expected.items()):
+            raise ValueError('Promise.any complete directory counts differ')
+        # The authenticated pinned Any tree has no child directories.
+        # Keep that closure explicit instead of silently selecting only direct files.
+        sha = description['directory_trees']['Promise/any']
+        tree = json.loads(proof[tree_proof_path('trees/' + sha)])
+        if any(entry['type'] == 'tree' for entry in tree['tree']):
+            raise ValueError('Promise.any incomplete descendant selection')
+        return listings, proof, description
     if profile == 'aggregate-error':
         expected = {'AggregateError': 19, 'AggregateError/prototype': 6}
         if (AGGREGATE_ERROR_DIRECTORIES != expected or PROFILES[profile] != expected
@@ -1074,6 +1093,8 @@ def import_corpus(output, profile='string-json'):
         raise ValueError('Reflect property requested harness differs from the frozen five helpers')
     if profile == 'typedarray-foundation' and harness != TYPEDARRAY_HELPERS:
         raise ValueError('TypedArray requested harness differs from the frozen ten helpers')
+    if profile == 'promise-any' and harness != PROMISE_ANY_HELPERS:
+        raise ValueError('Promise.any requested harness differs from the frozen six helpers')
     if profile == 'aggregate-error' and harness != AGGREGATE_ERROR_HELPERS:
         raise ValueError('AggregateError requested harness differs from the frozen six helpers')
     if profile == 'promise-all-settled' and harness != PROMISE_ALL_SETTLED_HELPERS:
@@ -1087,7 +1108,7 @@ def import_corpus(output, profile='string-json'):
     additional = ['LICENSE', 'INTERPRETING.md'] + [f'harness/{name}' for name in sorted(harness)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         sources.update(zip(additional, pool.map(lambda path: fetch(raw + path), additional)))
-    if profile in {'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-views', 'reflect-properties', 'date', 'typedarray-foundation'} or profile in ITERATION_SUBTREES:
+    if profile in {'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-views', 'reflect-properties', 'date', 'typedarray-foundation'} or profile in ITERATION_SUBTREES:
         for path, expected_blob in proof_description['auxiliary_blobs'].items():
             data = sources.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
@@ -1096,6 +1117,7 @@ def import_corpus(output, profile='string-json'):
     if sum(map(len, sources.values())) + sum(map(len, proof.values())) > MAX_TOTAL:
         raise ValueError('Test262 selection exceeds aggregate import limit')
     scope = {
+        'promise-any': 'all 94 original .js files in the complete Promise/any subtree; root-linked nonrecursive Git proofs and unchanged six-helper closure; all original feature metadata retained; no execution or conformance claim',
         'aggregate-error': 'Complete pinned AggregateError constructor and prototype subtree, including unsupported realm and untagged Proxy cases; original sources and helper closure unchanged.',
         'promise-all-settled': 'all 104 original .js files in the complete immediate Promise/allSettled directory; root-linked nonrecursive Git proofs and unchanged harness bytes; all original feature metadata retained; no execution or conformance claim',
         'promise-race': 'all 94 original .js files in the complete immediate Promise/race directory; root-linked nonrecursive Git proofs and unchanged harness bytes; all original feature metadata retained; no execution or conformance claim',

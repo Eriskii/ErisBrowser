@@ -377,9 +377,9 @@ class PromiseRaceProfileTests(unittest.TestCase):
 
     def test_existing_55_tables_and_both_promise_profiles_remain_exact(self):
         # Parent-compatible control: no lookup of the new profile occurs here.
-        tables = dict(profiles={k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'promise-all-settled', 'aggregate-error'}},
-                      roots={k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'promise-all-settled', 'aggregate-error'}},
-                      tree_profiles=sorted(importer.TREE_PROFILES - {PROFILE, 'promise-all-settled', 'aggregate-error'}))
+        tables = dict(profiles={k: v for k, v in importer.PROFILES.items() if k not in {PROFILE, 'promise-all-settled', 'aggregate-error', 'promise-any'}},
+                      roots={k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {PROFILE, 'promise-all-settled', 'aggregate-error', 'promise-any'}},
+                      tree_profiles=sorted(importer.TREE_PROFILES - {PROFILE, 'promise-all-settled', 'aggregate-error', 'promise-any'}))
         self.assertEqual(tables, self.oracle['old_tables'])
         self.assertEqual((len(tables['profiles']), digest(canonical(tables))), (55, self.oracle['old_tables_sha256']))
         self.assertEqual(runner.promise_preflight_variants(), self.common)

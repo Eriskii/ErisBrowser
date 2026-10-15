@@ -89,7 +89,7 @@ class TypedArrayFoundationTests(unittest.TestCase):
         self.assertEqual(runner.TYPEDARRAY_FEATURES,
                          runner.DATA_VIEW_FEATURES | {'TypedArray', 'Float16Array'})
         self.assertNotIn('TypedArray', runner.SUPPORTED_FEATURES)
-        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views'}), 47)
+        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'promise-any', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views'}), 47)
 
     def test_recursive_authentication_rejects_changes_outside_selected_directories(self):
         root = importer.TYPEDARRAY_ROOTS['TypedArrayConstructors']

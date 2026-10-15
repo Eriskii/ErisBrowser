@@ -31,8 +31,11 @@ limits. Its separate [complete pinned upstream profile](aggregate-error-upstream
 uses a profile-local ordinary-response AggregateError identity capability.
 [`Promise.any`](promise-any.md) now implements generic synchronous iterable
 collection with shared fulfillment and once-only rejection callbacks. Its
-dedicated pinned upstream profile remains subsequent work; existing profile
-identity and rejection policies are unchanged. Remaining asynchronous work
+dedicated [94-source, 188-mode upstream profile](promise-any-upstream.md)
+uses a canonical 102-control gate and an Any-only ERJR3 AggregateError identity
+capability. It records **172 passed, 14 unsupported and two failed modes**, with all **102
+controls verified**.
+Older profile policies remain unchanged. Remaining asynchronous work
 includes async functions/`await`, rejection notifications, timers,
 MutationObserver delivery and multiple realms.
 

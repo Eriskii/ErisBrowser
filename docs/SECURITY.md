@@ -332,11 +332,17 @@ logical ledger does not account for all allocator overhead or process memory.
 
 The separate [AggregateError conformance profile](aggregate-error-upstream.md)
 allows one additional intrinsic error identity only for its ordinary ERJR2
-responses. It rejects ERJR3 responses before delegation; other profiles and
-Promise-host validators keep the seven-name identity policy. Exact source/helper
+responses. It rejects ERJR3 responses before delegation. The separate
+[Any upstream profile](promise-any-upstream.md) admits the eighth identity only
+under its explicit ERJR3 profile context; default decoding and older host
+profiles keep seven. Exact source/helper
 identities, raw observations and prerequisite controls gate the full selection.
 This tooling change grants no renderer authority and changes no runtime limit,
-transport bytes or final-unhandled-rejection policy.
+transport bytes or final-unhandled-rejection policy. The Any gate revalidates
+canonical nested records and prerequisites and recomputes classification.
+Genuine, renamed and forged-object controls test the diagnostic/identity boundary;
+a schema-valid known identity still relies on trusted adapter output and is not
+proof against a compromised adapter.
 
 [`Promise.any`](promise-any.md) reuses existing Group/Element storage and the
 shared job queue. A consumed rejection gate and moved result storage stay

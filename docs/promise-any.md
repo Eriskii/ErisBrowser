@@ -1,5 +1,9 @@
 # Promise.any
 
+This chapter retains the runtime checkpoint and its original validation scope.
+The subsequent [complete pinned upstream profile](promise-any-upstream.md) adds
+measured conformance records and an Any-only host identity capability.
+
 `Promise.any` consumes a synchronous iterable and fulfills the built-in Promise
 result on the first fulfillment. If every input rejects, it rejects with an
 intrinsic AggregateError whose dense `errors` Array preserves input order and

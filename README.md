@@ -21,7 +21,10 @@ collects fulfilled and rejected outcome records in input order, with a shared
 once gate for each input’s two callbacks. [`Promise.any`](docs/promise-any.md)
 fulfills on the first fulfillment and collects ordered rejection reasons into an
 intrinsic AggregateError when every input rejects. Async functions and rejection
-notifications remain unfinished.
+notifications remain unfinished. Its separate [complete pinned upstream profile](docs/promise-any-upstream.md)
+retains all 94 sources and 188 modes under a 102-control gate.
+It records **172 passed, 14 unsupported and two failed modes**, with all **102
+controls verified**.
 
 [`AggregateError`](docs/aggregate-error.md) adds callable and constructed errors
 with ordered synchronous iterable collection, optional message/cause properties

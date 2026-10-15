@@ -185,6 +185,8 @@ jobs:
         run: python3 tools/test262_conformance.py --binary target/release/eris-js --profile promise-race --baseline tests/conformance/test262-promise-race-current.json --output artifacts/test262-promise-race-gate.json
       - name: Preserve complete pinned Promise.allSettled cases
         run: python3 tools/test262_conformance.py --binary target/release/eris-js --profile promise-all-settled --baseline tests/conformance/test262-promise-all-settled-current.json --output artifacts/test262-promise-all-settled-gate.json
+      - name: Preserve complete pinned Promise.any cases and intrinsic error identity
+        run: python3 tools/test262_conformance.py --binary target/release/eris-js --profile promise-any --baseline tests/conformance/test262-promise-any-current.json --output artifacts/test262-promise-any-gate.json
   presenter-variants:
     runs-on: ubuntu-latest
     timeout-minutes: 20

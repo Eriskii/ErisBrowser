@@ -157,7 +157,7 @@ def capture_contracts(excluded=()):
     profiles = {}
     # A second guard prevents any future direct invocation from escaping capture.
     with patch.object(runner, 'bounded_process', side_effect=AssertionError('actual adapter execution forbidden')):
-        for name in sorted(set(runner.PROFILES) - set(excluded) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error'}):
+        for name in sorted(set(runner.PROFILES) - set(excluded) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'promise-any'}):
             manifest, files, cases, fixtures, manifest_hash = runner.load_corpus(
                 runner.ROOT/'tests/upstream'/runner.corpus_name(name), name)
             features = runner.PROFILE_FEATURES[name]

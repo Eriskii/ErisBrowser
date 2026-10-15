@@ -18,7 +18,10 @@ capabilities and a shared gate for each input’s paired callbacks.
 uses once-only rejection callbacks to collect reasons in input order. Empty or
 all-rejected input uses an intrinsic AggregateError. Async functions and rejection
 notifications remain absent. These authored regressions are not a full
-ECMAScript conformance result; a dedicated Any upstream profile is separate work.
+ECMAScript conformance result. The separate [complete Any upstream selection](promise-any-upstream.md)
+retains all 94 pinned sources and 188 modes, with a 102-control gate.
+It records **172 passed, 14 unsupported and two failed modes**, with all **102
+controls verified**.
 
 [`AggregateError`](aggregate-error.md) supports call/new construction, optional
 message and cause, cached synchronous iteration and a fresh intrinsic errors
@@ -29,8 +32,9 @@ ordinary fake objects retain their distinctions. Promise.any reuses the saved
 intrinsic AggregateError prototype without consulting the mutable global.
 The separate [AggregateError upstream profile](aggregate-error-upstream.md) retains
 all 25 pinned sources and 50 modes. Only this profile accepts the AggregateError
-intrinsic identity in ordinary ERJR2 observations; other profiles and all ERJR3
-validators retain their existing identity policy. Its measured result inventory
+intrinsic identity in ordinary ERJR2 observations. The Any profile separately
+accepts it in authenticated ERJR3 responses; default decoding and older host
+profiles retain their seven-name policy. Its measured result inventory
 is a bounded selection, not full-standard conformance.
 The optional [Promise Test262 host](promise-test262-host.md) runs a separate
 232-source, 458-mode selection with authenticated `$DONE` and final unhandled

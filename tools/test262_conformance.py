@@ -122,7 +122,13 @@ PROFILE_FEATURES[PROMISE_RACE_PROFILE] = PROMISE_RACE_FEATURES
 PROMISE_ALL_SETTLED_PROFILE = 'promise-all-settled'
 PROMISE_ALL_SETTLED_FEATURES = PROMISE_RACE_FEATURES | {'Promise.allSettled'}
 PROFILE_FEATURES[PROMISE_ALL_SETTLED_PROFILE] = PROMISE_ALL_SETTLED_FEATURES
+PROMISE_ANY_PROFILE = 'promise-any'
+PROMISE_ANY_FEATURES = {'AggregateError', 'Promise.any', 'Reflect.construct', 'Symbol',
+                        'Symbol.iterator', 'Symbol.species', 'arrow-function',
+                        'computed-property-names'}
+PROFILE_FEATURES[PROMISE_ANY_PROFILE] = PROMISE_ANY_FEATURES
 PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE, PROMISE_RACE_PROFILE, PROMISE_ALL_SETTLED_PROFILE}
+PROMISE_HOST_PROFILES.add(PROMISE_ANY_PROFILE)
 AGGREGATE_ERROR_PROFILE = 'aggregate-error'
 AGGREGATE_ERROR_FEATURES = {'AggregateError', 'error-cause', 'Reflect', 'Reflect.construct',
                             'Symbol', 'Symbol.iterator', 'Symbol.toPrimitive'}
@@ -134,9 +140,9 @@ BAD_RUN_STATUSES = {'adapter-error', 'timeout', 'resource'}
 
 
 def profile_intrinsic_errors(profile=None):
-    """Ordinary AggregateError transport is an explicit profile-local capability."""
+    """Additional intrinsic identities require an explicit selected profile."""
     names = frozenset(INTRINSIC_ERRORS)
-    return names | {'AggregateError'} if profile == AGGREGATE_ERROR_PROFILE else names
+    return names | {'AggregateError'} if profile in {AGGREGATE_ERROR_PROFILE, PROMISE_ANY_PROFILE} else names
 
 
 def digest(data):
@@ -248,13 +254,13 @@ def load_corpus(directory, profile='string-json'):
                 blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
                 if blob != entry['sha']:
                     raise ValueError('test source differs from pinned Git tree blob')
-    if profile in {'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
+    if profile in {'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'date', 'for-of', 'core-iterators'}:
         for path, expected_blob in expected_proof['auxiliary_blobs'].items():
             data = files.get(path, b'')
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             if blob != expected_blob:
                 raise ValueError('helper or legal bytes differ from pinned Git blob')
-        if profile in {'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
+        if profile in {'promise-any', 'aggregate-error', 'promise-all-settled', 'promise-race', 'promise-all', 'promise-methods-async', 'typedarray-copy-within', 'typedarray-to-reversed', 'typedarray-reverse', 'typedarray-fill', 'typedarray-search', 'typedarray-views', 'reflect-properties', 'typedarray-foundation', 'object-has-own', 'object-is', 'data-view', 'array-buffer', 'array-concat', 'array-splice', 'array-from', 'for-of', 'core-iterators'} and files.keys() != (
                 expected_tests | expected_proof['auxiliary_blobs'].keys()):
             raise ValueError('iteration auxiliary inventory differs from pinned selection')
     actual_tests = {path for path in files if path.startswith('test/')}
@@ -385,7 +391,11 @@ def encode_request(case):
 def decode_response(output, *, profile=None):
     if profile == AGGREGATE_ERROR_PROFILE and not output.startswith(b'ERJR2'):
         raise ValueError('AggregateError profile requires an ordinary ERJR2 response')
+    if profile == PROMISE_ANY_PROFILE and not output.startswith(b'ERJR3'):
+        raise ValueError('Promise.any profile requires an ERJR3 response')
     if output.startswith(b'ERJR3'):
+        if profile == PROMISE_ANY_PROFILE:
+            return decode_promise_response(output, profile=profile)
         return decode_promise_response(output)
     if not output.startswith(b'ERJR2'):
         raise ValueError('invalid JS adapter response magic')
@@ -416,7 +426,9 @@ def decode_response(output, *, profile=None):
     return fields
 
 
-def classify(case, observation):
+def classify(case, observation, *, profile=None):
+    if profile == PROMISE_ANY_PROFILE:
+        return classify_promise(case, observation, profile=profile)
     if 'completion_policy' in case or 'completion' in observation:
         return classify_promise(case, observation)
     status = observation['status']
@@ -443,8 +455,10 @@ def run_case(case, binary, timeout, supported_features=SUPPORTED_FEATURES, profi
             return dict(result, status='adapter-error', reason=f'adapter exit {exit_code}',
                         stderr=stderr.decode('utf-8', 'replace')[:4096])
         observation = (decode_response(output, profile=profile)
-                       if profile == AGGREGATE_ERROR_PROFILE else decode_response(output))
-        return dict(result, status=classify(case, observation), observation=observation)
+                       if profile in {AGGREGATE_ERROR_PROFILE, PROMISE_ANY_PROFILE} else decode_response(output))
+        status = (classify(case, observation, profile=profile)
+                  if profile == PROMISE_ANY_PROFILE else classify(case, observation))
+        return dict(result, status=status, observation=observation)
     except subprocess.TimeoutExpired:
         return dict(result, status='timeout', reason=f'adapter exceeded {timeout:g} seconds')
     except (OSError, ValueError) as error:
@@ -1386,6 +1400,8 @@ def array_from_preflight_variants():
 
 def harness_preflight(files, binary, timeout, profile='string-json'):
     """Fail closed if the upstream assertions no longer enforce basic failures."""
+    if profile == PROMISE_ANY_PROFILE:
+        return promise_any_harness_preflight(files, binary, timeout)
     if profile == AGGREGATE_ERROR_PROFILE:
         return aggregate_error_harness_preflight(files, binary, timeout)
     if profile == PROMISE_ALL_SETTLED_PROFILE:
@@ -3143,7 +3159,7 @@ def promise_completion_passes(evidence):
             and counts == ((0, 0, 0) if evidence['policy'] == 0 else (1, 1, 0)))
 
 
-def validate_promise_observation(fields):
+def validate_promise_observation(fields, *, profile=None):
     names = ('status', 'phase', 'error_type', 'error_identity', 'message', 'harness')
     if (set(fields) != set(names) | {'completion'}
             or any(not isinstance(fields[name], str)
@@ -3174,7 +3190,8 @@ def validate_promise_observation(fields):
         raise ValueError('unknown Promise adapter response status')
     if phase not in {'parse', 'runtime', 'harness', 'mode', 'host'}:
         raise ValueError('unknown Promise adapter response phase')
-    if fields['error_identity'] and fields['error_identity'] not in INTRINSIC_ERRORS:
+    identities = profile_intrinsic_errors(profile if profile == PROMISE_ANY_PROFILE else None)
+    if fields['error_identity'] and fields['error_identity'] not in identities:
         raise ValueError('unknown intrinsic error identity')
     if phase == 'parse' and any(evidence[name] for name in evidence if name != 'policy'):
         raise ValueError('parse response has executed completion evidence')
@@ -3191,7 +3208,9 @@ def validate_promise_observation(fields):
         raise ValueError('inconsistent Promise adapter response')
 
 
-def decode_promise_response(output):
+def decode_promise_response(output, *, profile=None):
+    if profile == PROMISE_ANY_PROFILE and not output.startswith(b'ERJR3'):
+        raise ValueError('Promise.any profile requires an ERJR3 response')
     offset = 5
     fields = {}
     for name in ('status', 'phase', 'error_type', 'error_identity', 'message', 'harness'):
@@ -3211,16 +3230,22 @@ def decode_promise_response(output):
     fields['completion'] = dict(policy=policy, done_calls=calls, success_prints=success,
         failure_prints=failure, flags=flags, quiescent=bool(quiescent),
         audited=bool(audited), unhandled=unhandled)
-    validate_promise_observation(fields)
+    if profile == PROMISE_ANY_PROFILE:
+        validate_promise_observation(fields, profile=profile)
+    else:
+        validate_promise_observation(fields)
     return fields
 
 
-def classify_promise(case, observation):
+def classify_promise(case, observation, *, profile=None):
     policy = case.get('completion_policy')
     if type(policy) is not int or policy not in (0, 1):
         return 'failed'
     try:
-        validate_promise_observation(observation)
+        if profile == PROMISE_ANY_PROFILE:
+            validate_promise_observation(observation, profile=profile)
+        else:
+            validate_promise_observation(observation)
     except (TypeError, KeyError, ValueError):
         return 'failed'
     if observation['completion']['policy'] != policy:
@@ -3254,10 +3279,13 @@ def promise_host_reason(evidence):
     return None
 
 
-def promise_preflight_verified(case, result, expected):
+def promise_preflight_verified(case, result, expected, *, profile=None):
     observation = result.get('observation', {})
     try:
-        validate_promise_observation(observation)
+        if profile == PROMISE_ANY_PROFILE:
+            validate_promise_observation(observation, profile=profile)
+        else:
+            validate_promise_observation(observation)
     except (TypeError, KeyError, ValueError):
         return False
     evidence = observation['completion']
@@ -4461,6 +4489,555 @@ def aggregate_error_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+def promise_any_preflight_variants():
+    """Fourteen frozen Any literals; each is exercised in both modes."""
+    return [{'name': 'api',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var method = Promise.any;\n'
+                "verifyProperty(Promise, 'any', {value: method, writable: true, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'name', {value: 'any', writable: false, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'length', {value: 1, writable: false, enumerable: false, configurable: "
+                'true}, {restore: true});\n'
+                'assert.sameValue(isConstructor(function () {}), true);\n'
+                'assert.sameValue(isConstructor(method), false);\n'
+                'assert.throws(TypeError, function () { new method([]); });\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js', 'isConstructor.js'],
+      'origin': 'promise-any-control',
+      'prerequisite': None,
+      'required_observation': None},
+     {'name': 'api-mismatch',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'Promise.any = function any(value) {};\n'
+                'var method = Promise.any;\n'
+                "verifyProperty(Promise, 'any', {value: method, writable: true, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'name', {value: 'any', writable: false, enumerable: false, "
+                'configurable: true}, {restore: true});\n'
+                "verifyProperty(method, 'length', {value: 1, writable: false, enumerable: false, configurable: "
+                'true}, {restore: true});\n'
+                'assert.sameValue(isConstructor(function () {}), true);\n'
+                'assert.sameValue(isConstructor(method), false);\n'
+                'assert.throws(TypeError, function () { new method([]); });\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': ['propertyHelper.js', 'isConstructor.js'],
+      'origin': 'promise-any-control',
+      'prerequisite': 'api',
+      'required_observation': None},
+     {'name': 'winner',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var rejected = {}, first = {}, later = {};\n'
+                'Promise.any([Promise.reject(rejected), Promise.resolve(first), '
+                'Promise.resolve(later)]).then(function (value) {\n'
+                '  assert.sameValue(value, first);\n'
+                '}).then($DONE, $DONE);\n',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': None,
+      'required_observation': None},
+     {'name': 'winner-mismatch',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var rejected = {}, first = {}, later = {};\n'
+                'Promise.any([Promise.reject(rejected), Promise.resolve(first), '
+                'Promise.resolve(later)]).then(function (value) {\n'
+                '  assert.sameValue(value, later);\n'
+                '}).then($DONE, $DONE);\n',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'winner',
+      'required_observation': None},
+     {'name': 'errors-order',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var first = {}, second = {}, rejectFirst, rejectSecond;\n'
+                'var a = new Promise(function (resolve, reject) { rejectFirst = reject; });\n'
+                'var b = new Promise(function (resolve, reject) { rejectSecond = reject; });\n'
+                'Promise.any([a, b]).then(function () {\n'
+                "  throw new Test262Error('unexpected fulfillment');\n"
+                '}, function (error) {\n'
+                '  assert.sameValue(Object.getPrototypeOf(error), AggregateError.prototype);\n'
+                '  assert.sameValue(Object.getPrototypeOf(error.errors), Array.prototype);\n'
+                '  assert.sameValue(error.errors.length, 2);\n'
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error.errors, '0'), true);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error.errors, '1'), true);\n"
+                '  assert.compareArray(error.errors, [first, second]);\n'
+                '}).then($DONE, $DONE);\n'
+                'rejectSecond(second);\n'
+                'rejectFirst(first);\n',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': None,
+      'required_observation': None},
+     {'name': 'errors-order-mismatch',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var first = {}, second = {}, rejectFirst, rejectSecond;\n'
+                'var a = new Promise(function (resolve, reject) { rejectFirst = reject; });\n'
+                'var b = new Promise(function (resolve, reject) { rejectSecond = reject; });\n'
+                'Promise.any([a, b]).then(function () {\n'
+                "  throw new Test262Error('unexpected fulfillment');\n"
+                '}, function (error) {\n'
+                '  assert.sameValue(Object.getPrototypeOf(error), AggregateError.prototype);\n'
+                '  assert.sameValue(Object.getPrototypeOf(error.errors), Array.prototype);\n'
+                '  assert.sameValue(error.errors.length, 2);\n'
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error.errors, '0'), true);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error.errors, '1'), true);\n"
+                '  assert.compareArray(error.errors, [second, first]);\n'
+                '}).then($DONE, $DONE);\n'
+                'rejectSecond(second);\n'
+                'rejectFirst(first);\n',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'errors-order',
+      'required_observation': None},
+     {'name': 'empty',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var sync = true;\n'
+                'Promise.any([]).then(function () {\n'
+                "  throw new Test262Error('unexpected fulfillment');\n"
+                '}, function (error) {\n'
+                '  assert.sameValue(sync, false);\n'
+                '  assert.sameValue(Object.getPrototypeOf(error), AggregateError.prototype);\n'
+                '  assert.sameValue(Object.getPrototypeOf(error.errors), Array.prototype);\n'
+                '  assert.sameValue(error.errors.length, 0);\n'
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error, 'message'), false);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error, 'cause'), false);\n"
+                "  var descriptor = Object.getOwnPropertyDescriptor(error, 'errors');\n"
+                '  assert.sameValue(descriptor.value, error.errors);\n'
+                '  assert.sameValue(descriptor.writable, true);\n'
+                '  assert.sameValue(descriptor.enumerable, false);\n'
+                '  assert.sameValue(descriptor.configurable, true);\n'
+                '}).then($DONE, $DONE);\n'
+                'sync = false;\n',
+      'expected': 'passed',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': None,
+      'required_observation': None},
+     {'name': 'empty-mismatch',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var sync = true;\n'
+                'Promise.any([]).then(function () {\n'
+                "  throw new Test262Error('unexpected fulfillment');\n"
+                '}, function (error) {\n'
+                '  assert.sameValue(sync, false);\n'
+                '  assert.sameValue(Object.getPrototypeOf(error), AggregateError.prototype);\n'
+                '  assert.sameValue(Object.getPrototypeOf(error.errors), Array.prototype);\n'
+                '  assert.sameValue(error.errors.length, 1);\n'
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error, 'message'), false);\n"
+                "  assert.sameValue(Object.prototype.hasOwnProperty.call(error, 'cause'), false);\n"
+                "  var descriptor = Object.getOwnPropertyDescriptor(error, 'errors');\n"
+                '  assert.sameValue(descriptor.value, error.errors);\n'
+                '  assert.sameValue(descriptor.writable, true);\n'
+                '  assert.sameValue(descriptor.enumerable, false);\n'
+                '  assert.sameValue(descriptor.configurable, true);\n'
+                '}).then($DONE, $DONE);\n'
+                'sync = false;\n',
+      'expected': 'completion-error',
+      'completion_policy': 1,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'empty',
+      'required_observation': None},
+     {'name': 'generic-once',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var result = {}, first = {}, second = {}, rejects = 0, resolves = 0;\n'
+                'var callbacks = [], resolveCallbacks = [], aggregate;\n'
+                "function sharedResolve(value) { resolves++; return 'R' + value; }\n"
+                'function C(executor) {\n'
+                "  executor(sharedResolve, function (error) { rejects++; aggregate = error; return 'rejected'; "
+                '});\n'
+                '  return result;\n'
+                '}\n'
+                'C.resolve = function (value) {\n'
+                '  return {then: function (fulfill, reject) {\n'
+                '    resolveCallbacks.push(fulfill);\n'
+                '    callbacks.push(reject);\n'
+                '    assert.sameValue(fulfill, sharedResolve);\n'
+                "    assert.sameValue(fulfill(value), 'R' + value);\n"
+                '    if (value === 1) {\n'
+                '      assert.sameValue(reject(first), undefined);\n'
+                '      assert.sameValue(reject({}), undefined);\n'
+                '    }\n'
+                '    assert.sameValue(rejects, 0);\n'
+                '  }};\n'
+                '};\n'
+                'assert.sameValue(Promise.any.call(C, [1, 2]), result);\n'
+                'assert.sameValue(resolves, 2);\n'
+                'assert.sameValue(rejects, 0);\n'
+                'assert.sameValue(resolveCallbacks[0], resolveCallbacks[1]);\n'
+                'assert.notSameValue(callbacks[0], callbacks[1]);\n'
+                "assert.sameValue(callbacks[1](second), 'rejected');\n"
+                'assert.sameValue(callbacks[1]({}), undefined);\n'
+                'assert.sameValue(callbacks[0]({}), undefined);\n'
+                'assert.sameValue(rejects, 1);\n'
+                'assert.sameValue(Object.getPrototypeOf(aggregate), AggregateError.prototype);\n'
+                'assert.compareArray(aggregate.errors, [first, second]);\n',
+      'expected': 'passed',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': None,
+      'required_observation': None},
+     {'name': 'generic-once-mismatch',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var result = {}, first = {}, second = {}, rejects = 0, resolves = 0;\n'
+                'var callbacks = [], resolveCallbacks = [], aggregate;\n'
+                "function sharedResolve(value) { resolves++; return 'R' + value; }\n"
+                'function C(executor) {\n'
+                "  executor(sharedResolve, function (error) { rejects++; aggregate = error; return 'rejected'; "
+                '});\n'
+                '  return result;\n'
+                '}\n'
+                'C.resolve = function (value) {\n'
+                '  return {then: function (fulfill, reject) {\n'
+                '    resolveCallbacks.push(fulfill);\n'
+                '    callbacks.push(reject);\n'
+                '    assert.sameValue(fulfill, sharedResolve);\n'
+                "    assert.sameValue(fulfill(value), 'R' + value);\n"
+                '    if (value === 1) {\n'
+                '      assert.sameValue(reject(first), undefined);\n'
+                '      assert.sameValue(reject({}), undefined);\n'
+                '    }\n'
+                '    assert.sameValue(rejects, 0);\n'
+                '  }};\n'
+                '};\n'
+                'assert.sameValue(Promise.any.call(C, [1, 2]), result);\n'
+                'assert.sameValue(resolves, 2);\n'
+                'assert.sameValue(rejects, 0);\n'
+                'assert.sameValue(resolveCallbacks[0], resolveCallbacks[1]);\n'
+                'assert.notSameValue(callbacks[0], callbacks[1]);\n'
+                "assert.sameValue(callbacks[1](second), 'rejected');\n"
+                'assert.sameValue(callbacks[1]({}), undefined);\n'
+                'assert.sameValue(callbacks[0]({}), undefined);\n'
+                'assert.sameValue(rejects, 2);\n'
+                'assert.sameValue(Object.getPrototypeOf(aggregate), AggregateError.prototype);\n'
+                'assert.compareArray(aggregate.errors, [first, second]);\n',
+      'expected': 'synchronous-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'generic-once',
+      'required_observation': None},
+     {'name': 'genuine-identity',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var A = AggregateError, calls = 0, firstError;\n'
+                'function C(executor) {\n'
+                "  executor(function () { throw new Test262Error('unexpected resolution'); }, function (error) "
+                '{\n'
+                '    calls++;\n'
+                '    assert.sameValue(Object.getPrototypeOf(error), A.prototype);\n'
+                '    assert.sameValue(error.errors.length, 0);\n'
+                '    if (calls === 1) { firstError = error; throw error; }\n'
+                '    assert.sameValue(calls, 2);\n'
+                '    assert.sameValue(error, firstError);\n'
+                '    throw error;\n'
+                '  });\n'
+                '}\n'
+                'C.resolve = function (value) { return value; };\n'
+                'Promise.any.call(C, []);\n'
+                "throw new Test262Error('expected escaped AggregateError');\n",
+      'expected': 'identity-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'empty',
+      'required_observation': {'status': 'exception',
+                               'phase': 'runtime',
+                               'error_type': 'AggregateError',
+                               'error_identity': 'AggregateError',
+                               'message': 'uncaught exception: [object Object]',
+                               'harness': '',
+                               'completion': {'policy': 0,
+                                              'done_calls': 0,
+                                              'success_prints': 0,
+                                              'failure_prints': 0,
+                                              'flags': 256,
+                                              'quiescent': True,
+                                              'audited': True,
+                                              'unhandled': 0}}},
+     {'name': 'renamed-identity',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var A = AggregateError, calls = 0, firstError;\n'
+                "Object.defineProperty(A, 'name', {value: 'RenamedAggregateError', writable: false, "
+                'enumerable: false, configurable: true});\n'
+                'function C(executor) {\n'
+                "  executor(function () { throw new Test262Error('unexpected resolution'); }, function (error) "
+                '{\n'
+                '    calls++;\n'
+                '    assert.sameValue(Object.getPrototypeOf(error), A.prototype);\n'
+                '    assert.sameValue(error.errors.length, 0);\n'
+                '    if (calls === 1) { firstError = error; throw error; }\n'
+                '    assert.sameValue(calls, 2);\n'
+                '    assert.sameValue(error, firstError);\n'
+                '    throw error;\n'
+                '  });\n'
+                '}\n'
+                'C.resolve = function (value) { return value; };\n'
+                'Promise.any.call(C, []);\n'
+                "throw new Test262Error('expected escaped AggregateError');\n",
+      'expected': 'identity-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'genuine-identity',
+      'required_observation': {'status': 'exception',
+                               'phase': 'runtime',
+                               'error_type': 'RenamedAggregateError',
+                               'error_identity': 'AggregateError',
+                               'message': 'uncaught exception: [object Object]',
+                               'harness': '',
+                               'completion': {'policy': 0,
+                                              'done_calls': 0,
+                                              'success_prints': 0,
+                                              'failure_prints': 0,
+                                              'flags': 256,
+                                              'quiescent': True,
+                                              'audited': True,
+                                              'unhandled': 0}}},
+     {'name': 'fake-own-constructor',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var Fake = function AggregateError() {};\n'
+                'var fake = {constructor: Fake};\n'
+                'throw fake;\n',
+      'expected': 'identity-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'genuine-identity',
+      'required_observation': {'status': 'exception',
+                               'phase': 'runtime',
+                               'error_type': 'AggregateError',
+                               'error_identity': '',
+                               'message': 'uncaught exception: [object Object]',
+                               'harness': '',
+                               'completion': {'policy': 0,
+                                              'done_calls': 0,
+                                              'success_prints': 0,
+                                              'failure_prints': 0,
+                                              'flags': 256,
+                                              'quiescent': True,
+                                              'audited': True,
+                                              'unhandled': 0}}},
+     {'name': 'fake-prototype',
+      'source': "assert.sameValue(typeof Promise.any, 'function');\n"
+                "assert.sameValue(typeof AggregateError, 'function');\n"
+                'var fake = Object.create(AggregateError.prototype);\n'
+                'throw fake;\n',
+      'expected': 'identity-exception',
+      'completion_policy': 0,
+      'includes': [],
+      'origin': 'promise-any-control',
+      'prerequisite': 'genuine-identity',
+      'required_observation': {'status': 'exception',
+                               'phase': 'runtime',
+                               'error_type': 'AggregateError',
+                               'error_identity': '',
+                               'message': 'uncaught exception: [object Object]',
+                               'harness': '',
+                               'completion': {'policy': 0,
+                                              'done_calls': 0,
+                                              'success_prints': 0,
+                                              'failure_prints': 0,
+                                              'flags': 256,
+                                              'quiescent': True,
+                                              'audited': True,
+                                              'unhandled': 0}}}]
+
+
+def promise_any_preflight_cases(files):
+    """Canonical new-profile rows; the original74 case identities stay exact."""
+    common = promise_preflight_variants()
+    selected = promise_any_preflight_variants()
+    definitions = []
+    common_names = ['promise-methods-' + row['name'] for row in common]
+    for rows, prefix in ((common, 'promise-methods-'), (selected, 'promise-any-')):
+        for mode in ('sloppy', 'strict'):
+            for held in rows:
+                policy = held['completion_policy']
+                row = dict(held, name=prefix + held['name'])
+                if prefix == 'promise-methods-':
+                    required = []
+                    if held['prerequisite']:
+                        required.append('promise-methods-' + held['prerequisite'])
+                    if held['origin'] == 'original-literal':
+                        required.extend('promise-methods-' + item['name'] for item in common
+                                        if item['origin'] == 'new-prerequisite')
+                        if held['name'] != 'one-async-completion':
+                            required.append('promise-methods-one-async-completion')
+                else:
+                    required = common_names.copy()
+                    if held['name'] != 'api':
+                        required.append('promise-any-api')
+                    if held['prerequisite']:
+                        prerequisite = 'promise-any-' + held['prerequisite']
+                        if prerequisite not in required:
+                            required.append(prerequisite)
+                row['prerequisites'] = [(name, mode) for name in required]
+                names = ['assert.js', 'sta.js'] + (['doneprintHandle.js'] if policy else []) + held['includes']
+                case = dict(id='harness-preflight:' + row['name'], file='<preflight>', mode=mode,
+                            metadata=dict(flags=['async'] if policy else [], includes=held['includes'],
+                                          features=[], locale=[], negative=None),
+                            source=held['source'].encode(),
+                            harness=[(name, files['harness/' + name]) for name in names],
+                            completion_policy=policy)
+                case['case_sha256'] = case_fingerprint(case)
+                definitions.append((row, case))
+    return definitions
+
+
+def promise_any_preflight_reference(row, case):
+    return dict(name=row['name'], mode=case['mode'], verified=True,
+                case_sha256=case['case_sha256'], source_sha256=digest(case['source']))
+
+
+def promise_any_preflight_checks(outcomes, files):
+    """Check canonical nested identities, raw evidence and classification afresh."""
+    try:
+        definitions = promise_any_preflight_cases(files)
+        if not isinstance(outcomes, list) or len(outcomes) != 102 or len(definitions) != 102:
+            return None
+        canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+        if len(canonical) != 102:
+            return None
+        observed = {}
+        for item in outcomes:
+            if (not isinstance(item, dict)
+                    or set(item) != {'name', 'expected', 'verified', 'result', 'prerequisites'}
+                    or not isinstance(item['name'], str)
+                    or not isinstance(item['expected'], str)
+                    or type(item['verified']) is not bool
+                    or not isinstance(item['result'], dict)
+                    or not isinstance(item['result'].get('mode'), str)
+                    or not isinstance(item['prerequisites'], list)):
+                return None
+            identity = (item['name'], item['result']['mode'])
+            if identity in observed or identity not in canonical:
+                return None
+            observed[identity] = item
+        if observed.keys() != canonical.keys():
+            return None
+        raw_checks = {}
+        for identity, (row, case) in canonical.items():
+            item, result = observed[identity], observed[identity]['result']
+            expected_status = ('passed' if row['expected'] == 'passed' else
+                               'resource' if row['expected'] == 'resource' else 'failed')
+            expected_result = {key: case[key] for key in ('id', 'file', 'mode', 'case_sha256')}
+            expected_result.update(source_sha256=digest(case['source']),
+                                   expected_negative=case['metadata']['negative'], status=expected_status)
+            expected_prerequisites = [promise_any_preflight_reference(*canonical[key])
+                                      for key in row['prerequisites']]
+            prerequisites = item['prerequisites']
+            good = (item['expected'] == row['expected']
+                    and set(result) == set(expected_result) | {'observation'}
+                    and all(result.get(key) == value for key, value in expected_result.items())
+                    and len(prerequisites) == len(expected_prerequisites)
+                    and all(isinstance(ref, dict)
+                            and set(ref) == {'name', 'mode', 'verified', 'case_sha256', 'source_sha256'}
+                            and type(ref.get('verified')) is bool
+                            and all(isinstance(ref.get(key), str) for key in
+                                    ('name', 'mode', 'case_sha256', 'source_sha256'))
+                            for ref in prerequisites)
+                    and prerequisites == expected_prerequisites
+                    and isinstance(result.get('observation'), dict))
+            if good:
+                observation = result['observation']
+                try:
+                    validate_promise_observation(observation, profile=PROMISE_ANY_PROFILE)
+                    good = (observation['completion']['policy'] == case['completion_policy']
+                            and classify(case, observation, profile=PROMISE_ANY_PROFILE) == expected_status)
+                    if row['expected'] == 'identity-exception':
+                        good = good and observation == row['required_observation']
+                    else:
+                        good = good and promise_preflight_verified(
+                            case, result, row['expected'], profile=PROMISE_ANY_PROFILE)
+                        # New successful/mismatched semantic rows freeze completion
+                        # counters and flags, without freezing diagnostic messages.
+                        if good and row['name'].startswith('promise-any-'):
+                            policy = case['completion_policy']
+                            counts = (1, 1, 0) if policy else (0, 0, 0)
+                            flags = 0
+                            if row['expected'] == 'synchronous-exception':
+                                flags = 256
+                            elif row['expected'] == 'completion-error':
+                                counts, flags = (1, 0, 1), 1
+                            good = observation['harness'] == '' and observation['completion'] == dict(
+                                policy=policy, done_calls=counts[0], success_prints=counts[1],
+                                failure_prints=counts[2], flags=flags,
+                                quiescent=True, audited=True, unhandled=0)
+                except (KeyError, TypeError, ValueError):
+                    good = False
+            raw_checks[identity] = good
+        checked, visiting = {}, set()
+
+        def healthy(identity):
+            if identity in checked:
+                return checked[identity]
+            if identity in visiting:
+                return False
+            visiting.add(identity)
+            row, _ = canonical[identity]
+            value = raw_checks[identity] and all(healthy(key) for key in row['prerequisites'])
+            visiting.remove(identity)
+            checked[identity] = value
+            return value
+
+        for identity in canonical:
+            healthy(identity)
+        return checked
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def promise_any_preflight_healthy(outcomes, files):
+    checks = promise_any_preflight_checks(outcomes, files)
+    return (checks is not None and len(checks) == 102 and all(checks.values())
+            and all(item['verified'] is True for item in outcomes))
+
+
+def promise_any_harness_preflight(files, binary, timeout):
+    definitions = promise_any_preflight_cases(files)
+    canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+    outcomes = []
+    for row, case in definitions:
+        result = run_case(case, binary, timeout, PROMISE_ANY_FEATURES, PROMISE_ANY_PROFILE)
+        prerequisites = [promise_any_preflight_reference(*canonical[key])
+                         for key in row['prerequisites']]
+        outcomes.append(dict(name=row['name'], expected=row['expected'], verified=False,
+                             result=result, prerequisites=prerequisites))
+    checks = promise_any_preflight_checks(outcomes, files)
+    if checks is not None:
+        for item in outcomes:
+            item['verified'] = checks[(item['name'], item['result']['mode'])]
+            for prerequisite in item['prerequisites']:
+                prerequisite['verified'] = checks[(prerequisite['name'], prerequisite['mode'])]
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -4505,7 +5082,8 @@ def main():
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
         preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (aggregate_error_preflight_healthy(preflight, files) if args.profile == AGGREGATE_ERROR_PROFILE
+        preflight_ok = (promise_any_preflight_healthy(preflight, files) if args.profile == PROMISE_ANY_PROFILE
+                        else aggregate_error_preflight_healthy(preflight, files) if args.profile == AGGREGATE_ERROR_PROFILE
                         else promise_all_settled_preflight_healthy(preflight) if args.profile == PROMISE_ALL_SETTLED_PROFILE
                         else promise_race_preflight_healthy(preflight) if args.profile == PROMISE_RACE_PROFILE
                         else promise_all_preflight_healthy(preflight) if args.profile == PROMISE_ALL_PROFILE

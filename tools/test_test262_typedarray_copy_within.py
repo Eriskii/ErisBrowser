@@ -81,7 +81,7 @@ class TypedArrayCopyWithinTests(unittest.TestCase):
         self.assertEqual(reasons.count('TypedArray copyWithin policy excludes the complete resizableArrayBufferUtils helper'), 6)
         self.assertEqual(sum(runner.unsupported_reason(c, FEATURES) is None for c in cases), 72)
         self.assertEqual(sum('/BigInt/' in c['file'] for c in cases), 48)
-        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error'}), 53)
+        self.assertEqual(len(set(runner.PROFILES) - {'promise-methods-async', 'promise-all', 'promise-race', 'promise-all-settled', 'aggregate-error', 'promise-any'}), 53)
 
     def test_controls_retain_frozen_bytes_modes_and_same_mode_positive_links(self):
         raw = CONTROLS.read_bytes()

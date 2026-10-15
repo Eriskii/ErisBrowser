@@ -1,0 +1,3195 @@
+{
+  "schema": 1,
+  "scope": "Frozen source-derived Promise.any import/corpus oracle; no project execution or outcomes",
+  "expected_manifest": {
+    "format": 1,
+    "repository": "https://github.com/tc39/test262",
+    "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+    "scope": "all 94 original .js files in the complete Promise/any subtree; root-linked nonrecursive Git proofs and unchanged six-helper closure; all original feature metadata retained; no execution or conformance claim",
+    "directories": {
+      "Promise/any": [
+        "call-reject-element-after-return.js",
+        "call-reject-element-items.js",
+        "capability-executor-called-twice.js",
+        "capability-executor-not-callable.js",
+        "capability-reject-throws-no-close.js",
+        "capability-resolve-throws-no-close.js",
+        "capability-resolve-throws-reject.js",
+        "ctx-ctor-throws.js",
+        "ctx-ctor.js",
+        "ctx-non-ctor.js",
+        "ctx-non-object.js",
+        "invoke-resolve-error-close.js",
+        "invoke-resolve-error-reject.js",
+        "invoke-resolve-get-error-reject.js",
+        "invoke-resolve-get-error.js",
+        "invoke-resolve-get-once-multiple-calls.js",
+        "invoke-resolve-get-once-no-calls.js",
+        "invoke-resolve-on-promises-every-iteration-of-custom.js",
+        "invoke-resolve-on-promises-every-iteration-of-promise.js",
+        "invoke-resolve-on-values-every-iteration-of-custom.js",
+        "invoke-resolve-on-values-every-iteration-of-promise.js",
+        "invoke-resolve-return.js",
+        "invoke-resolve.js",
+        "invoke-then-error-close.js",
+        "invoke-then-error-reject.js",
+        "invoke-then-get-error-close.js",
+        "invoke-then-get-error-reject.js",
+        "invoke-then-on-promises-every-iteration.js",
+        "invoke-then.js",
+        "is-function.js",
+        "iter-arg-is-empty-iterable-reject.js",
+        "iter-arg-is-empty-string-reject.js",
+        "iter-arg-is-error-object-reject.js",
+        "iter-arg-is-false-reject.js",
+        "iter-arg-is-null-reject.js",
+        "iter-arg-is-number-reject.js",
+        "iter-arg-is-poisoned.js",
+        "iter-arg-is-string-resolve.js",
+        "iter-arg-is-symbol-reject.js",
+        "iter-arg-is-true-reject.js",
+        "iter-arg-is-undefined-reject.js",
+        "iter-assigned-false-reject.js",
+        "iter-assigned-null-reject.js",
+        "iter-assigned-number-reject.js",
+        "iter-assigned-string-reject.js",
+        "iter-assigned-symbol-reject.js",
+        "iter-assigned-true-reject.js",
+        "iter-assigned-undefined-reject.js",
+        "iter-next-val-err-no-close.js",
+        "iter-next-val-err-reject.js",
+        "iter-returns-false-reject.js",
+        "iter-returns-null-reject.js",
+        "iter-returns-number-reject.js",
+        "iter-returns-string-reject.js",
+        "iter-returns-symbol-reject.js",
+        "iter-returns-true-reject.js",
+        "iter-returns-undefined-reject.js",
+        "iter-step-err-no-close.js",
+        "iter-step-err-reject.js",
+        "length.js",
+        "name.js",
+        "new-reject-function.js",
+        "not-a-constructor.js",
+        "prop-desc.js",
+        "reject-all-mixed.js",
+        "reject-deferred.js",
+        "reject-element-function-extensible.js",
+        "reject-element-function-length.js",
+        "reject-element-function-name.js",
+        "reject-element-function-nonconstructor.js",
+        "reject-element-function-property-order.js",
+        "reject-element-function-prototype.js",
+        "reject-from-same-thenable.js",
+        "reject-ignored-deferred.js",
+        "reject-ignored-immed.js",
+        "reject-immed.js",
+        "resolve-before-loop-exit-from-same.js",
+        "resolve-before-loop-exit.js",
+        "resolve-from-reject-catch.js",
+        "resolve-from-resolve-reject-catch.js",
+        "resolve-from-same-thenable.js",
+        "resolve-ignores-late-rejection-deferred.js",
+        "resolve-ignores-late-rejection.js",
+        "resolve-non-callable.js",
+        "resolve-non-thenable.js",
+        "resolve-not-callable-reject-with-typeerror.js",
+        "resolve-throws-iterator-return-is-not-callable.js",
+        "resolve-throws-iterator-return-null-or-undefined.js",
+        "resolved-sequence-extra-ticks.js",
+        "resolved-sequence-mixed.js",
+        "resolved-sequence-with-rejections.js",
+        "resolved-sequence.js",
+        "returns-promise.js",
+        "species-get-error.js"
+      ]
+    },
+    "test_files": 94,
+    "files": [
+      {
+        "path": "INTERPRETING.md",
+        "upstream_path": "INTERPRETING.md",
+        "bytes": 18611,
+        "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+      },
+      {
+        "path": "LICENSE",
+        "upstream_path": "LICENSE",
+        "bytes": 2213,
+        "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+      },
+      {
+        "path": "harness/assert.js",
+        "upstream_path": "harness/assert.js",
+        "bytes": 4881,
+        "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+      },
+      {
+        "path": "harness/doneprintHandle.js",
+        "upstream_path": "harness/doneprintHandle.js",
+        "bytes": 625,
+        "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+      },
+      {
+        "path": "harness/isConstructor.js",
+        "upstream_path": "harness/isConstructor.js",
+        "bytes": 544,
+        "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+      },
+      {
+        "path": "harness/promiseHelper.js",
+        "upstream_path": "harness/promiseHelper.js",
+        "bytes": 2411,
+        "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+      },
+      {
+        "path": "harness/propertyHelper.js",
+        "upstream_path": "harness/propertyHelper.js",
+        "bytes": 18956,
+        "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+      },
+      {
+        "path": "harness/sta.js",
+        "upstream_path": "harness/sta.js",
+        "bytes": 792,
+        "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+      },
+      {
+        "path": "test/built-ins/Promise/any/call-reject-element-after-return.js",
+        "upstream_path": "test/built-ins/Promise/any/call-reject-element-after-return.js",
+        "bytes": 1319,
+        "sha256": "465cd3015776e128e3fd7a2666901fe7617fe4e999429239c27589422f2871fb"
+      },
+      {
+        "path": "test/built-ins/Promise/any/call-reject-element-items.js",
+        "upstream_path": "test/built-ins/Promise/any/call-reject-element-items.js",
+        "bytes": 1426,
+        "sha256": "27662cc5f626dca071655805faf004bc16ff493c86372a24c8d32eb6fcdf9de3"
+      },
+      {
+        "path": "test/built-ins/Promise/any/capability-executor-called-twice.js",
+        "upstream_path": "test/built-ins/Promise/any/capability-executor-called-twice.js",
+        "bytes": 2887,
+        "sha256": "eec3c679524141870e78373d4ddba55ccf7d93aa772cb0aafa8b365492ea8431"
+      },
+      {
+        "path": "test/built-ins/Promise/any/capability-executor-not-callable.js",
+        "upstream_path": "test/built-ins/Promise/any/capability-executor-not-callable.js",
+        "bytes": 3078,
+        "sha256": "7f770e399b09a6c42c4bed979da3142880c8538b3314a74de9cb6f4c8463d7eb"
+      },
+      {
+        "path": "test/built-ins/Promise/any/capability-reject-throws-no-close.js",
+        "upstream_path": "test/built-ins/Promise/any/capability-reject-throws-no-close.js",
+        "bytes": 1678,
+        "sha256": "0e87acde869fd2ad76d99b99c5d9e84202fd80a179c68fe7021645e912566e2c"
+      },
+      {
+        "path": "test/built-ins/Promise/any/capability-resolve-throws-no-close.js",
+        "upstream_path": "test/built-ins/Promise/any/capability-resolve-throws-no-close.js",
+        "bytes": 1666,
+        "sha256": "ecc9d2262aeb66ab5bae25de46e8a56e697b62237d31239f0bb5097692fff260"
+      },
+      {
+        "path": "test/built-ins/Promise/any/capability-resolve-throws-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/capability-resolve-throws-reject.js",
+        "bytes": 1428,
+        "sha256": "36901f58bfddaf1941d35c49f6b3043f60f9943336c5f476cbc333498ea308b7"
+      },
+      {
+        "path": "test/built-ins/Promise/any/ctx-ctor-throws.js",
+        "upstream_path": "test/built-ins/Promise/any/ctx-ctor-throws.js",
+        "bytes": 558,
+        "sha256": "a404a2efe732cad4c766f91537146d10ed6ce049b0a285536a61c3667090c082"
+      },
+      {
+        "path": "test/built-ins/Promise/any/ctx-ctor.js",
+        "upstream_path": "test/built-ins/Promise/any/ctx-ctor.js",
+        "bytes": 834,
+        "sha256": "1b0987dbf342b0f4c2facb407ab7e288ff4ce47c14a4d588953d3d3e45509c9b"
+      },
+      {
+        "path": "test/built-ins/Promise/any/ctx-non-ctor.js",
+        "upstream_path": "test/built-ins/Promise/any/ctx-non-ctor.js",
+        "bytes": 548,
+        "sha256": "9be35238d6e3867b4713deaad84b1ab9be1d1d6772fd16431d4d89142a80b903"
+      },
+      {
+        "path": "test/built-ins/Promise/any/ctx-non-object.js",
+        "upstream_path": "test/built-ins/Promise/any/ctx-non-object.js",
+        "bytes": 872,
+        "sha256": "b8f710fbed6260e0069f3e0134850794f47a398ea4fdfa6ec1861b4014cf14be"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-error-close.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-error-close.js",
+        "bytes": 1370,
+        "sha256": "cbd5b5656a2b1b0eb88d7d31dd9139f54a41d9a834c34e852c370155b790c780"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-error-reject.js",
+        "bytes": 969,
+        "sha256": "0c3e151ed80194d92624d7ee983a237d63ce9412e11f2d73dc140dce980f17c4"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-get-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-get-error-reject.js",
+        "bytes": 1036,
+        "sha256": "4cc9a636b865ada9a2d8d058f5754ddb57e3e868b78255195d23c8c42d23b2c0"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-get-error.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-get-error.js",
+        "bytes": 1017,
+        "sha256": "d3bab90e051b19e5e3307f0e9a2479422381f0f532bdb3a90d693ee972572c77"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-get-once-multiple-calls.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-get-once-multiple-calls.js",
+        "bytes": 1549,
+        "sha256": "acf3b5039e911efce3d2a1b935a39708016a7753edd6710bf554b10d8aa9e5d6"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-get-once-no-calls.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-get-once-no-calls.js",
+        "bytes": 1460,
+        "sha256": "16fd59fde3045acdc877c125dafd11696beeddf3266ae1db983ac7d63701de9f"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js",
+        "bytes": 1254,
+        "sha256": "aaf656bbaa7bc663d15b863d9f8fda3b3cce636588a423487ce96b0162073804"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-promise.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-promise.js",
+        "bytes": 896,
+        "sha256": "8ab9dced492c1622eab94a94283f8b18f9295456dcf5a696580a00300740c682"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js",
+        "bytes": 1258,
+        "sha256": "f0c3020a8b488515e3fd59d27400c0b84e6a6318d1c40fdaab1f431010ba24e7"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-promise.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-promise.js",
+        "bytes": 911,
+        "sha256": "5e304cec27e4c2774dc402e4e76e7d72992a3c0af8d242a894a5fd6cf2b01a7e"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve-return.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve-return.js",
+        "bytes": 1075,
+        "sha256": "61a7c9110a1bce89e7d876ff789b05c84905c9dceb834759e8c022e0c139b522"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-resolve.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-resolve.js",
+        "bytes": 971,
+        "sha256": "7a7fdc4df733868329ee6263a47cce4898aaa51490833246b94c5c4d9fff46f9"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-then-error-close.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-then-error-close.js",
+        "bytes": 1368,
+        "sha256": "033ac2b8c317a860403c4606d13b78b8cf16b1c81b198b1e8390fafa5e8fa2f8"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-then-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-then-error-reject.js",
+        "bytes": 1033,
+        "sha256": "6eb624f67ae955de5f005540be24c170e52b4bb6c4b7447769cab8ab036a1808"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-then-get-error-close.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-then-get-error-close.js",
+        "bytes": 1397,
+        "sha256": "0b9e71918ad730072840241b84604da1676989c03d62eb33994b65b7e4b8d6d8"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-then-get-error-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-then-get-error-reject.js",
+        "bytes": 1063,
+        "sha256": "56c47b75f6ce96d3e233d096120f5125b7e67cf54fd7e7ac87efbde19b3e11eb"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-then-on-promises-every-iteration.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-then-on-promises-every-iteration.js",
+        "bytes": 1178,
+        "sha256": "68a21764222b75027f52bb2bc93ccacf03deb5a351c8e83de8544fed26d54f77"
+      },
+      {
+        "path": "test/built-ins/Promise/any/invoke-then.js",
+        "upstream_path": "test/built-ins/Promise/any/invoke-then.js",
+        "bytes": 1281,
+        "sha256": "4b0c5e832dce2fb860f6e01857d5758923906e8be3fbeeb16b260459e1f1c9a2"
+      },
+      {
+        "path": "test/built-ins/Promise/any/is-function.js",
+        "upstream_path": "test/built-ins/Promise/any/is-function.js",
+        "bytes": 277,
+        "sha256": "b738ae8f4f005fad0e67968dabf5588824b422e6cba67cfadacec51d6edb3cf9"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-empty-iterable-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-empty-iterable-reject.js",
+        "bytes": 1334,
+        "sha256": "0e9f99832bfa3f779bbb00bfacec97a1a544079d71fe98bdb5e8230c8ab5ea89"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-empty-string-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-empty-string-reject.js",
+        "bytes": 1332,
+        "sha256": "d4cf3156ec6a20e0ff64a4d033c07e02801d817855c384e9a6fbc1572f0da05f"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-error-object-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-error-object-reject.js",
+        "bytes": 1166,
+        "sha256": "ca7b79f1d9834af9bd7398e426dede55b38adfaa1c3e5de791081eb009f944a7"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-false-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-false-reject.js",
+        "bytes": 982,
+        "sha256": "1b5b73238f22bcd126f799a8b2dc0ec4ff43730015fea396b9b2823d9092c12f"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-null-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-null-reject.js",
+        "bytes": 980,
+        "sha256": "b1df3974ec21801e1f214a6c1869166ef27a827a663ce8d36ac11ba963799432"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-number-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-number-reject.js",
+        "bytes": 979,
+        "sha256": "7e58937b237a9daa3fc6904b0719a64982badec38169ad0786ef0d503e99a494"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-poisoned.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-poisoned.js",
+        "bytes": 1098,
+        "sha256": "7d7677c08a3115817957ea26d004f9de6ba98b3852ecb4e17abe08388904fb0b"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-string-resolve.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-string-resolve.js",
+        "bytes": 1013,
+        "sha256": "fc6a7c43f105ae801f4a146c075c559247ebde2c41b53a85ad9fc1fcd0153bd7"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-symbol-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-symbol-reject.js",
+        "bytes": 1389,
+        "sha256": "657166d89e5a20cb34e9347616eff625a0c1dbfb42e91b205d3918e15928b3b0"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-true-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-true-reject.js",
+        "bytes": 1373,
+        "sha256": "675d1bbeb4596fcd1daf7a33b20b430fcab8ba97e69f70fcfa6724f66896269c"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-arg-is-undefined-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-arg-is-undefined-reject.js",
+        "bytes": 1383,
+        "sha256": "299f2ed474d7d4fd51f906f1bf50ac9e2f67f08b0fade7c448bde0a46a2c4f04"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-assigned-false-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-assigned-false-reject.js",
+        "bytes": 1583,
+        "sha256": "8ec5758ee4f5ea989726820388947a83cef2df140deeb5c4f9a1bb3853332336"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-assigned-null-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-assigned-null-reject.js",
+        "bytes": 1477,
+        "sha256": "2fba259bc17bcb2efb7419424969a1dd0a55d8f6c447ba1f4a26fd52404bd14a"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-assigned-number-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-assigned-number-reject.js",
+        "bytes": 1471,
+        "sha256": "b4a4569f87443e3bd1af49ab9c7fc4a13362e54a2b852b9815ee95d97941ec93"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-assigned-string-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-assigned-string-reject.js",
+        "bytes": 1473,
+        "sha256": "3f8a686cc0e68ea9f1ad750b66663a5f269c9d95a50a20682120867caa43651e"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-assigned-symbol-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-assigned-symbol-reject.js",
+        "bytes": 1485,
+        "sha256": "91d29ce08d955c269f894c17dbd233283d37bc44cf43dff99e9da65c69784ee3"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-assigned-true-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-assigned-true-reject.js",
+        "bytes": 1477,
+        "sha256": "3b430205c2d2a63d30e70602bf0d7ea538d8026519db5650794b3ea9d398a7a2"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-assigned-undefined-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-assigned-undefined-reject.js",
+        "bytes": 1487,
+        "sha256": "4e7df7a439ba64ba629eac7834593963bec33541c0db39fee5b9150f67bbbbc7"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-next-val-err-no-close.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-next-val-err-no-close.js",
+        "bytes": 1550,
+        "sha256": "af3a4f05ffeefa0ab6ed6d51bfc4784b51fb8d579bc7fbaed612c2d1caffc159"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-next-val-err-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-next-val-err-reject.js",
+        "bytes": 1422,
+        "sha256": "94f9aa286c3e7d2088d409b66b3ba5e77461671d271c785dfef3e1dd5814c051"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-returns-false-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-returns-false-reject.js",
+        "bytes": 902,
+        "sha256": "5b21fa15af8d0ae3213984217a78be1160d12d2407ebb441ebf8f2deeb6c79dc"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-returns-null-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-returns-null-reject.js",
+        "bytes": 900,
+        "sha256": "3c6bf9d7eab8621c06a2eb26a3650dd442f34ee35ad4e91a977fa2f4163d9943"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-returns-number-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-returns-number-reject.js",
+        "bytes": 898,
+        "sha256": "dfe9d104f3a11fd55f68a3dfe080f88e522ed3dbb9b144da052a412a4ae774f9"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-returns-string-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-returns-string-reject.js",
+        "bytes": 899,
+        "sha256": "615d2cbc86d3573223bf833157835db3d6b894f2722fa077b9f72e3e4ed70cda"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-returns-symbol-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-returns-symbol-reject.js",
+        "bytes": 905,
+        "sha256": "2dbc065b562d0d4d862ec5dd34fb66e882e94d95207614ac395a35987d1c2b4f"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-returns-true-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-returns-true-reject.js",
+        "bytes": 899,
+        "sha256": "7bb6617be8ed66e15b19132f8aac5d351fba15d75c71e99b4206fcf84875e7c0"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-returns-undefined-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-returns-undefined-reject.js",
+        "bytes": 909,
+        "sha256": "4c0a5570001fa307fe764553ab73d12a15dc8a3893d86c82dcd5c5eb753d177e"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-step-err-no-close.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-step-err-no-close.js",
+        "bytes": 1486,
+        "sha256": "77e15f35d69bdb7038bc570e968cc9ce4f1678cde45018043e85f56d6602113e"
+      },
+      {
+        "path": "test/built-ins/Promise/any/iter-step-err-reject.js",
+        "upstream_path": "test/built-ins/Promise/any/iter-step-err-reject.js",
+        "bytes": 1421,
+        "sha256": "3da0bb4efb973f6f4f4ce5e10d8061061cd1f2719bec1cc8acd8eaafb8664a4c"
+      },
+      {
+        "path": "test/built-ins/Promise/any/length.js",
+        "upstream_path": "test/built-ins/Promise/any/length.js",
+        "bytes": 886,
+        "sha256": "28641596b2d0516133a971aec4e32f09a5d5366016170bd9b73b2ad0728e4368"
+      },
+      {
+        "path": "test/built-ins/Promise/any/name.js",
+        "upstream_path": "test/built-ins/Promise/any/name.js",
+        "bytes": 866,
+        "sha256": "b71cf9b6e328fc60fe11b144f30c1732fe7fc8ead36323dcdc055af7fda8205c"
+      },
+      {
+        "path": "test/built-ins/Promise/any/new-reject-function.js",
+        "upstream_path": "test/built-ins/Promise/any/new-reject-function.js",
+        "bytes": 1417,
+        "sha256": "ed17676d3ab41de34fca784373380fdebc80f499baced074787de8304d961f5f"
+      },
+      {
+        "path": "test/built-ins/Promise/any/not-a-constructor.js",
+        "upstream_path": "test/built-ins/Promise/any/not-a-constructor.js",
+        "bytes": 860,
+        "sha256": "4bee7d8674c64522a7273cb3c7760337660f1f869ff6e666c7efece3e5a3a842"
+      },
+      {
+        "path": "test/built-ins/Promise/any/prop-desc.js",
+        "upstream_path": "test/built-ins/Promise/any/prop-desc.js",
+        "bytes": 589,
+        "sha256": "c3c12c48a0ffa87629ba2ae9e6c41151736b3c4cd6ad66ea3a83605f00b63019"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-all-mixed.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-all-mixed.js",
+        "bytes": 739,
+        "sha256": "84b21db2d5c747a59d9739ea83ce69039934bf736c3c92df69f4163eb0ed7f6f"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-deferred.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-deferred.js",
+        "bytes": 864,
+        "sha256": "e616db5923667a227ffd7af67ccdd773fe48ead48d816c29a44bb479d106cfcf"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-element-function-extensible.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-element-function-extensible.js",
+        "bytes": 807,
+        "sha256": "7a696b349e42b08428fca6329cb23062eb9bd4fb93f38162f054061ef94d95da"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-element-function-length.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-element-function-length.js",
+        "bytes": 1094,
+        "sha256": "1c748ea6a4de8b941430bb8abc19be61ce5fb040af2befd3da615dd2c07234b1"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-element-function-name.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-element-function-name.js",
+        "bytes": 1263,
+        "sha256": "1890d27fc8ac4de851ab72517d0177c3d0aa0187bc4eea601664c282431935ea"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-element-function-nonconstructor.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-element-function-nonconstructor.js",
+        "bytes": 1002,
+        "sha256": "6d5f07db2c71e8c339fa39a38878b082e4873dc2951e5f3a05be129dc8f56a64"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-element-function-property-order.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-element-function-property-order.js",
+        "bytes": 882,
+        "sha256": "9a8df4cf0f102e0d06f5ea0715493251edb73b398cd8c9a7046c392494d540b6"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-element-function-prototype.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-element-function-prototype.js",
+        "bytes": 969,
+        "sha256": "fde3169c7e243f156a92e7f0cb37ef9b42461203cd6cc0f7561b5220f1c3be7e"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-from-same-thenable.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-from-same-thenable.js",
+        "bytes": 1637,
+        "sha256": "92175e8803bec179e652fc530b04c3f6b419741035bb8cb55390f07380012a69"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-ignored-deferred.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-ignored-deferred.js",
+        "bytes": 1802,
+        "sha256": "ce03932cd3ec207afe4e5bd5d70ba7e1ea9f1ab49c10e398ffe6ec94bc4260e8"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-ignored-immed.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-ignored-immed.js",
+        "bytes": 1463,
+        "sha256": "7b100d837ac35bfb9d5bbc446ebbb9e01a9122d36cc42aa56d102a72448f2a6e"
+      },
+      {
+        "path": "test/built-ins/Promise/any/reject-immed.js",
+        "upstream_path": "test/built-ins/Promise/any/reject-immed.js",
+        "bytes": 1205,
+        "sha256": "b83e42b7cbe551d8b5cf72818427a0b424c022ec1e2c0838c4b829dfecba3936"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-before-loop-exit-from-same.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-before-loop-exit-from-same.js",
+        "bytes": 2874,
+        "sha256": "58243f882047ced44f4117b88ad0cdf2f2cbea174d28fd5bc99f1313cc8ec25f"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-before-loop-exit.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-before-loop-exit.js",
+        "bytes": 3132,
+        "sha256": "b88857bdf03fc148ee3fd3f716016034852d870232c4364ebf7d1d003ba39ee7"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-from-reject-catch.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-from-reject-catch.js",
+        "bytes": 587,
+        "sha256": "14f7d0de3fcf2700b3e16b385f7a443764a985a83060b16c7019645da1d931a4"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-from-resolve-reject-catch.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-from-resolve-reject-catch.js",
+        "bytes": 604,
+        "sha256": "f9008ecf395d034df1a08f7a311524e3be82dbadcb75b871e75008d6bdd7b736"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-from-same-thenable.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-from-same-thenable.js",
+        "bytes": 995,
+        "sha256": "c55c152ccc36bf97c5c1107a2e70351ba4fdd4245b42c83f1270f46c8fb2f636"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-ignores-late-rejection-deferred.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-ignores-late-rejection-deferred.js",
+        "bytes": 1001,
+        "sha256": "06fb11ed9be784fb965a911b34b641c5d6af20ccc9714709c4076ce1367655a8"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-ignores-late-rejection.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-ignores-late-rejection.js",
+        "bytes": 870,
+        "sha256": "98459c6868a00a9a48abf2a71cde1058cba322f8c6091714538119077a12934c"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-non-callable.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-non-callable.js",
+        "bytes": 997,
+        "sha256": "31a90f84cf475c4fc6f3e68024d9bbd661708047dc012ca6e2fe5998e599527a"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-non-thenable.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-non-thenable.js",
+        "bytes": 667,
+        "sha256": "63932ef420489a429bebfe079b8ba6fbffbd5df099000c3e6541562e748002cb"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-not-callable-reject-with-typeerror.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-not-callable-reject-with-typeerror.js",
+        "bytes": 761,
+        "sha256": "b10b8b8839dded8df02e6d4ddd8d03567197fb6c2b37f9d7142398bb488cfac1"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js",
+        "bytes": 1806,
+        "sha256": "0353bc872d19a82b0f07e5ae90ae1fc19962871e3fbfb4649e87743cfd13a2e2"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js",
+        "upstream_path": "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js",
+        "bytes": 1819,
+        "sha256": "8e72336d721d7b7ad87a842554d6c8cf7aced2026dd9c60c6e04d0806f9655ea"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolved-sequence-extra-ticks.js",
+        "upstream_path": "test/built-ins/Promise/any/resolved-sequence-extra-ticks.js",
+        "bytes": 1562,
+        "sha256": "6f1ba6c9609f4b75e5cfe90bcadf76ec1af4a92eab8825221b8a228de9b0abde"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolved-sequence-mixed.js",
+        "upstream_path": "test/built-ins/Promise/any/resolved-sequence-mixed.js",
+        "bytes": 1849,
+        "sha256": "a88460eec6f40948c6c9c06768622e4cff0745f1b7260da7e444b391fd870f80"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolved-sequence-with-rejections.js",
+        "upstream_path": "test/built-ins/Promise/any/resolved-sequence-with-rejections.js",
+        "bytes": 1810,
+        "sha256": "6bdbfbe31a0bb35744806afa5e221ea1513c8611f99f362a7e3d6a6e157894e5"
+      },
+      {
+        "path": "test/built-ins/Promise/any/resolved-sequence.js",
+        "upstream_path": "test/built-ins/Promise/any/resolved-sequence.js",
+        "bytes": 1553,
+        "sha256": "1f1614b561296eaeca80cda978fd83e8045891efd2ef302f43edb77d1c151512"
+      },
+      {
+        "path": "test/built-ins/Promise/any/returns-promise.js",
+        "upstream_path": "test/built-ins/Promise/any/returns-promise.js",
+        "bytes": 865,
+        "sha256": "76581cc1f5680cc1acd05abc96784df1efe8a8f61c58d9e5b8351f7e02589803"
+      },
+      {
+        "path": "test/built-ins/Promise/any/species-get-error.js",
+        "upstream_path": "test/built-ins/Promise/any/species-get-error.js",
+        "bytes": 672,
+        "sha256": "2c4df046db631a3723b2c6dc4340bd1e9e56f09a6eaf590c4079a1cfc6801534"
+      }
+    ],
+    "inventory_proof": {
+      "method": "complete-nonrecursive-git-trees",
+      "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
+      "root_tree": "91b2052adad1f066ae031e2ff3a1e9bd6d732886",
+      "directory_trees": {
+        "Promise/any": "e2352be158fb0c0625d1ab642330faabc62a2df8"
+      },
+      "auxiliary_blobs": {
+        "harness/assert.js": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+        "harness/doneprintHandle.js": "334d19ec8ee58664502afb232bce3c1a74acfb16",
+        "harness/isConstructor.js": "387c664e14fdf7563769fb71ae4c122c7e503172",
+        "harness/promiseHelper.js": "9a8bf627add65c5f8ab7e25768fb7ac6992bc47f",
+        "harness/propertyHelper.js": "0acccfe87f0c40c94c1d43c315c2d8f1e35d7b52",
+        "harness/sta.js": "d291a94f46234908009a7ee909cf9d66034c73fe",
+        "LICENSE": "a56b038f0e01b05b004d92097d4601ba629afdf3",
+        "INTERPRETING.md": "ecf7ec7003a1e3ea937fb4e7d3348d22733b50b5"
+      },
+      "files": [
+        {
+          "path": "inventory-proof/commit.json",
+          "bytes": 1094,
+          "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0",
+          "url": "https://api.github.com/repos/tc39/test262/git/commits/7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd"
+        },
+        {
+          "path": "inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+          "bytes": 15975,
+          "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/176043820c3a0729f2da2a047303a984cca036c6"
+        },
+        {
+          "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+          "bytes": 5452,
+          "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/91b2052adad1f066ae031e2ff3a1e9bd6d732886"
+        },
+        {
+          "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+          "bytes": 1374,
+          "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/a2eada339f3c7e678edfc08497985f261a9ae258"
+        },
+        {
+          "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+          "bytes": 13201,
+          "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/b42c4a8f19ad479b70ee2f64ecd683735d83cde9"
+        },
+        {
+          "path": "inventory-proof/tree-e2352be158fb0c0625d1ab642330faabc62a2df8.json",
+          "bytes": 22086,
+          "sha256": "4dbd22bc48f455691f5a4fbe7aabf4b5067b07c553ea541090da2e5ba194d95b",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/e2352be158fb0c0625d1ab642330faabc62a2df8"
+        },
+        {
+          "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+          "bytes": 7655,
+          "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105",
+          "url": "https://api.github.com/repos/tc39/test262/git/trees/e7917cf01aee95d5ed85ba370c550d02cea533c7"
+        }
+      ]
+    }
+  },
+  "manifest_sha256": "8d335ebc4a1de3991fc8a6a7a5720577e38419a229cae4528d2e7b7ed4079a21",
+  "all_files": [
+    {
+      "path": "INTERPRETING.md",
+      "bytes": 18611,
+      "sha256": "cc213fd1e590ebdccacc7c846340517cbee2a241ea8a915392b0d071f3fd800e"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 2213,
+      "sha256": "4dd9244dfe8197c75348c4b24ab53d29d3b1cfad143ac76b5a3d8942aa354ce0"
+    },
+    {
+      "path": "harness/assert.js",
+      "bytes": 4881,
+      "sha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48"
+    },
+    {
+      "path": "harness/doneprintHandle.js",
+      "bytes": 625,
+      "sha256": "01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add"
+    },
+    {
+      "path": "harness/isConstructor.js",
+      "bytes": 544,
+      "sha256": "68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32"
+    },
+    {
+      "path": "harness/promiseHelper.js",
+      "bytes": 2411,
+      "sha256": "76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c"
+    },
+    {
+      "path": "harness/propertyHelper.js",
+      "bytes": 18956,
+      "sha256": "08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8"
+    },
+    {
+      "path": "harness/sta.js",
+      "bytes": 792,
+      "sha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35"
+    },
+    {
+      "path": "inventory-proof/commit.json",
+      "bytes": 1094,
+      "sha256": "b60a279470c7afdccef8a7b42b78494d270289ae629f549281f0987ee9deeca0"
+    },
+    {
+      "path": "inventory-proof/tree-176043820c3a0729f2da2a047303a984cca036c6.json",
+      "bytes": 15975,
+      "sha256": "b23303e2fc1fe03e027deb440392b473c005f27b30ce6cb4ab4a3c1c162bec61"
+    },
+    {
+      "path": "inventory-proof/tree-91b2052adad1f066ae031e2ff3a1e9bd6d732886.json",
+      "bytes": 5452,
+      "sha256": "9a60ef83930c3683096c9d39f6b422ca4c5a73c07715024734d7124b7cbd2ccb"
+    },
+    {
+      "path": "inventory-proof/tree-a2eada339f3c7e678edfc08497985f261a9ae258.json",
+      "bytes": 1374,
+      "sha256": "70f0a42cf9586e680ea376df6decf09356d9ff10d0185e67eb654f11c723d10e"
+    },
+    {
+      "path": "inventory-proof/tree-b42c4a8f19ad479b70ee2f64ecd683735d83cde9.json",
+      "bytes": 13201,
+      "sha256": "0a65d921bc76ae02cbb994514c32e2b5173d3e615011f527b5a6ebbb180c7e9e"
+    },
+    {
+      "path": "inventory-proof/tree-e2352be158fb0c0625d1ab642330faabc62a2df8.json",
+      "bytes": 22086,
+      "sha256": "4dbd22bc48f455691f5a4fbe7aabf4b5067b07c553ea541090da2e5ba194d95b"
+    },
+    {
+      "path": "inventory-proof/tree-e7917cf01aee95d5ed85ba370c550d02cea533c7.json",
+      "bytes": 7655,
+      "sha256": "27941521784b5bdc7b19e5deb27a15f6af4cc69aa785aca1b5f3b8e80515a105"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 34697,
+      "sha256": "8d335ebc4a1de3991fc8a6a7a5720577e38419a229cae4528d2e7b7ed4079a21"
+    },
+    {
+      "path": "test/built-ins/Promise/any/call-reject-element-after-return.js",
+      "bytes": 1319,
+      "sha256": "465cd3015776e128e3fd7a2666901fe7617fe4e999429239c27589422f2871fb"
+    },
+    {
+      "path": "test/built-ins/Promise/any/call-reject-element-items.js",
+      "bytes": 1426,
+      "sha256": "27662cc5f626dca071655805faf004bc16ff493c86372a24c8d32eb6fcdf9de3"
+    },
+    {
+      "path": "test/built-ins/Promise/any/capability-executor-called-twice.js",
+      "bytes": 2887,
+      "sha256": "eec3c679524141870e78373d4ddba55ccf7d93aa772cb0aafa8b365492ea8431"
+    },
+    {
+      "path": "test/built-ins/Promise/any/capability-executor-not-callable.js",
+      "bytes": 3078,
+      "sha256": "7f770e399b09a6c42c4bed979da3142880c8538b3314a74de9cb6f4c8463d7eb"
+    },
+    {
+      "path": "test/built-ins/Promise/any/capability-reject-throws-no-close.js",
+      "bytes": 1678,
+      "sha256": "0e87acde869fd2ad76d99b99c5d9e84202fd80a179c68fe7021645e912566e2c"
+    },
+    {
+      "path": "test/built-ins/Promise/any/capability-resolve-throws-no-close.js",
+      "bytes": 1666,
+      "sha256": "ecc9d2262aeb66ab5bae25de46e8a56e697b62237d31239f0bb5097692fff260"
+    },
+    {
+      "path": "test/built-ins/Promise/any/capability-resolve-throws-reject.js",
+      "bytes": 1428,
+      "sha256": "36901f58bfddaf1941d35c49f6b3043f60f9943336c5f476cbc333498ea308b7"
+    },
+    {
+      "path": "test/built-ins/Promise/any/ctx-ctor-throws.js",
+      "bytes": 558,
+      "sha256": "a404a2efe732cad4c766f91537146d10ed6ce049b0a285536a61c3667090c082"
+    },
+    {
+      "path": "test/built-ins/Promise/any/ctx-ctor.js",
+      "bytes": 834,
+      "sha256": "1b0987dbf342b0f4c2facb407ab7e288ff4ce47c14a4d588953d3d3e45509c9b"
+    },
+    {
+      "path": "test/built-ins/Promise/any/ctx-non-ctor.js",
+      "bytes": 548,
+      "sha256": "9be35238d6e3867b4713deaad84b1ab9be1d1d6772fd16431d4d89142a80b903"
+    },
+    {
+      "path": "test/built-ins/Promise/any/ctx-non-object.js",
+      "bytes": 872,
+      "sha256": "b8f710fbed6260e0069f3e0134850794f47a398ea4fdfa6ec1861b4014cf14be"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-error-close.js",
+      "bytes": 1370,
+      "sha256": "cbd5b5656a2b1b0eb88d7d31dd9139f54a41d9a834c34e852c370155b790c780"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-error-reject.js",
+      "bytes": 969,
+      "sha256": "0c3e151ed80194d92624d7ee983a237d63ce9412e11f2d73dc140dce980f17c4"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-get-error-reject.js",
+      "bytes": 1036,
+      "sha256": "4cc9a636b865ada9a2d8d058f5754ddb57e3e868b78255195d23c8c42d23b2c0"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-get-error.js",
+      "bytes": 1017,
+      "sha256": "d3bab90e051b19e5e3307f0e9a2479422381f0f532bdb3a90d693ee972572c77"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-get-once-multiple-calls.js",
+      "bytes": 1549,
+      "sha256": "acf3b5039e911efce3d2a1b935a39708016a7753edd6710bf554b10d8aa9e5d6"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-get-once-no-calls.js",
+      "bytes": 1460,
+      "sha256": "16fd59fde3045acdc877c125dafd11696beeddf3266ae1db983ac7d63701de9f"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js",
+      "bytes": 1254,
+      "sha256": "aaf656bbaa7bc663d15b863d9f8fda3b3cce636588a423487ce96b0162073804"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-promise.js",
+      "bytes": 896,
+      "sha256": "8ab9dced492c1622eab94a94283f8b18f9295456dcf5a696580a00300740c682"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js",
+      "bytes": 1258,
+      "sha256": "f0c3020a8b488515e3fd59d27400c0b84e6a6318d1c40fdaab1f431010ba24e7"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-promise.js",
+      "bytes": 911,
+      "sha256": "5e304cec27e4c2774dc402e4e76e7d72992a3c0af8d242a894a5fd6cf2b01a7e"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve-return.js",
+      "bytes": 1075,
+      "sha256": "61a7c9110a1bce89e7d876ff789b05c84905c9dceb834759e8c022e0c139b522"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-resolve.js",
+      "bytes": 971,
+      "sha256": "7a7fdc4df733868329ee6263a47cce4898aaa51490833246b94c5c4d9fff46f9"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-then-error-close.js",
+      "bytes": 1368,
+      "sha256": "033ac2b8c317a860403c4606d13b78b8cf16b1c81b198b1e8390fafa5e8fa2f8"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-then-error-reject.js",
+      "bytes": 1033,
+      "sha256": "6eb624f67ae955de5f005540be24c170e52b4bb6c4b7447769cab8ab036a1808"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-then-get-error-close.js",
+      "bytes": 1397,
+      "sha256": "0b9e71918ad730072840241b84604da1676989c03d62eb33994b65b7e4b8d6d8"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-then-get-error-reject.js",
+      "bytes": 1063,
+      "sha256": "56c47b75f6ce96d3e233d096120f5125b7e67cf54fd7e7ac87efbde19b3e11eb"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-then-on-promises-every-iteration.js",
+      "bytes": 1178,
+      "sha256": "68a21764222b75027f52bb2bc93ccacf03deb5a351c8e83de8544fed26d54f77"
+    },
+    {
+      "path": "test/built-ins/Promise/any/invoke-then.js",
+      "bytes": 1281,
+      "sha256": "4b0c5e832dce2fb860f6e01857d5758923906e8be3fbeeb16b260459e1f1c9a2"
+    },
+    {
+      "path": "test/built-ins/Promise/any/is-function.js",
+      "bytes": 277,
+      "sha256": "b738ae8f4f005fad0e67968dabf5588824b422e6cba67cfadacec51d6edb3cf9"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-empty-iterable-reject.js",
+      "bytes": 1334,
+      "sha256": "0e9f99832bfa3f779bbb00bfacec97a1a544079d71fe98bdb5e8230c8ab5ea89"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-empty-string-reject.js",
+      "bytes": 1332,
+      "sha256": "d4cf3156ec6a20e0ff64a4d033c07e02801d817855c384e9a6fbc1572f0da05f"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-error-object-reject.js",
+      "bytes": 1166,
+      "sha256": "ca7b79f1d9834af9bd7398e426dede55b38adfaa1c3e5de791081eb009f944a7"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-false-reject.js",
+      "bytes": 982,
+      "sha256": "1b5b73238f22bcd126f799a8b2dc0ec4ff43730015fea396b9b2823d9092c12f"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-null-reject.js",
+      "bytes": 980,
+      "sha256": "b1df3974ec21801e1f214a6c1869166ef27a827a663ce8d36ac11ba963799432"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-number-reject.js",
+      "bytes": 979,
+      "sha256": "7e58937b237a9daa3fc6904b0719a64982badec38169ad0786ef0d503e99a494"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-poisoned.js",
+      "bytes": 1098,
+      "sha256": "7d7677c08a3115817957ea26d004f9de6ba98b3852ecb4e17abe08388904fb0b"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-string-resolve.js",
+      "bytes": 1013,
+      "sha256": "fc6a7c43f105ae801f4a146c075c559247ebde2c41b53a85ad9fc1fcd0153bd7"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-symbol-reject.js",
+      "bytes": 1389,
+      "sha256": "657166d89e5a20cb34e9347616eff625a0c1dbfb42e91b205d3918e15928b3b0"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-true-reject.js",
+      "bytes": 1373,
+      "sha256": "675d1bbeb4596fcd1daf7a33b20b430fcab8ba97e69f70fcfa6724f66896269c"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-arg-is-undefined-reject.js",
+      "bytes": 1383,
+      "sha256": "299f2ed474d7d4fd51f906f1bf50ac9e2f67f08b0fade7c448bde0a46a2c4f04"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-assigned-false-reject.js",
+      "bytes": 1583,
+      "sha256": "8ec5758ee4f5ea989726820388947a83cef2df140deeb5c4f9a1bb3853332336"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-assigned-null-reject.js",
+      "bytes": 1477,
+      "sha256": "2fba259bc17bcb2efb7419424969a1dd0a55d8f6c447ba1f4a26fd52404bd14a"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-assigned-number-reject.js",
+      "bytes": 1471,
+      "sha256": "b4a4569f87443e3bd1af49ab9c7fc4a13362e54a2b852b9815ee95d97941ec93"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-assigned-string-reject.js",
+      "bytes": 1473,
+      "sha256": "3f8a686cc0e68ea9f1ad750b66663a5f269c9d95a50a20682120867caa43651e"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-assigned-symbol-reject.js",
+      "bytes": 1485,
+      "sha256": "91d29ce08d955c269f894c17dbd233283d37bc44cf43dff99e9da65c69784ee3"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-assigned-true-reject.js",
+      "bytes": 1477,
+      "sha256": "3b430205c2d2a63d30e70602bf0d7ea538d8026519db5650794b3ea9d398a7a2"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-assigned-undefined-reject.js",
+      "bytes": 1487,
+      "sha256": "4e7df7a439ba64ba629eac7834593963bec33541c0db39fee5b9150f67bbbbc7"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-next-val-err-no-close.js",
+      "bytes": 1550,
+      "sha256": "af3a4f05ffeefa0ab6ed6d51bfc4784b51fb8d579bc7fbaed612c2d1caffc159"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-next-val-err-reject.js",
+      "bytes": 1422,
+      "sha256": "94f9aa286c3e7d2088d409b66b3ba5e77461671d271c785dfef3e1dd5814c051"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-returns-false-reject.js",
+      "bytes": 902,
+      "sha256": "5b21fa15af8d0ae3213984217a78be1160d12d2407ebb441ebf8f2deeb6c79dc"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-returns-null-reject.js",
+      "bytes": 900,
+      "sha256": "3c6bf9d7eab8621c06a2eb26a3650dd442f34ee35ad4e91a977fa2f4163d9943"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-returns-number-reject.js",
+      "bytes": 898,
+      "sha256": "dfe9d104f3a11fd55f68a3dfe080f88e522ed3dbb9b144da052a412a4ae774f9"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-returns-string-reject.js",
+      "bytes": 899,
+      "sha256": "615d2cbc86d3573223bf833157835db3d6b894f2722fa077b9f72e3e4ed70cda"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-returns-symbol-reject.js",
+      "bytes": 905,
+      "sha256": "2dbc065b562d0d4d862ec5dd34fb66e882e94d95207614ac395a35987d1c2b4f"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-returns-true-reject.js",
+      "bytes": 899,
+      "sha256": "7bb6617be8ed66e15b19132f8aac5d351fba15d75c71e99b4206fcf84875e7c0"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-returns-undefined-reject.js",
+      "bytes": 909,
+      "sha256": "4c0a5570001fa307fe764553ab73d12a15dc8a3893d86c82dcd5c5eb753d177e"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-step-err-no-close.js",
+      "bytes": 1486,
+      "sha256": "77e15f35d69bdb7038bc570e968cc9ce4f1678cde45018043e85f56d6602113e"
+    },
+    {
+      "path": "test/built-ins/Promise/any/iter-step-err-reject.js",
+      "bytes": 1421,
+      "sha256": "3da0bb4efb973f6f4f4ce5e10d8061061cd1f2719bec1cc8acd8eaafb8664a4c"
+    },
+    {
+      "path": "test/built-ins/Promise/any/length.js",
+      "bytes": 886,
+      "sha256": "28641596b2d0516133a971aec4e32f09a5d5366016170bd9b73b2ad0728e4368"
+    },
+    {
+      "path": "test/built-ins/Promise/any/name.js",
+      "bytes": 866,
+      "sha256": "b71cf9b6e328fc60fe11b144f30c1732fe7fc8ead36323dcdc055af7fda8205c"
+    },
+    {
+      "path": "test/built-ins/Promise/any/new-reject-function.js",
+      "bytes": 1417,
+      "sha256": "ed17676d3ab41de34fca784373380fdebc80f499baced074787de8304d961f5f"
+    },
+    {
+      "path": "test/built-ins/Promise/any/not-a-constructor.js",
+      "bytes": 860,
+      "sha256": "4bee7d8674c64522a7273cb3c7760337660f1f869ff6e666c7efece3e5a3a842"
+    },
+    {
+      "path": "test/built-ins/Promise/any/prop-desc.js",
+      "bytes": 589,
+      "sha256": "c3c12c48a0ffa87629ba2ae9e6c41151736b3c4cd6ad66ea3a83605f00b63019"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-all-mixed.js",
+      "bytes": 739,
+      "sha256": "84b21db2d5c747a59d9739ea83ce69039934bf736c3c92df69f4163eb0ed7f6f"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-deferred.js",
+      "bytes": 864,
+      "sha256": "e616db5923667a227ffd7af67ccdd773fe48ead48d816c29a44bb479d106cfcf"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-element-function-extensible.js",
+      "bytes": 807,
+      "sha256": "7a696b349e42b08428fca6329cb23062eb9bd4fb93f38162f054061ef94d95da"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-element-function-length.js",
+      "bytes": 1094,
+      "sha256": "1c748ea6a4de8b941430bb8abc19be61ce5fb040af2befd3da615dd2c07234b1"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-element-function-name.js",
+      "bytes": 1263,
+      "sha256": "1890d27fc8ac4de851ab72517d0177c3d0aa0187bc4eea601664c282431935ea"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-element-function-nonconstructor.js",
+      "bytes": 1002,
+      "sha256": "6d5f07db2c71e8c339fa39a38878b082e4873dc2951e5f3a05be129dc8f56a64"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-element-function-property-order.js",
+      "bytes": 882,
+      "sha256": "9a8df4cf0f102e0d06f5ea0715493251edb73b398cd8c9a7046c392494d540b6"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-element-function-prototype.js",
+      "bytes": 969,
+      "sha256": "fde3169c7e243f156a92e7f0cb37ef9b42461203cd6cc0f7561b5220f1c3be7e"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-from-same-thenable.js",
+      "bytes": 1637,
+      "sha256": "92175e8803bec179e652fc530b04c3f6b419741035bb8cb55390f07380012a69"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-ignored-deferred.js",
+      "bytes": 1802,
+      "sha256": "ce03932cd3ec207afe4e5bd5d70ba7e1ea9f1ab49c10e398ffe6ec94bc4260e8"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-ignored-immed.js",
+      "bytes": 1463,
+      "sha256": "7b100d837ac35bfb9d5bbc446ebbb9e01a9122d36cc42aa56d102a72448f2a6e"
+    },
+    {
+      "path": "test/built-ins/Promise/any/reject-immed.js",
+      "bytes": 1205,
+      "sha256": "b83e42b7cbe551d8b5cf72818427a0b424c022ec1e2c0838c4b829dfecba3936"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-before-loop-exit-from-same.js",
+      "bytes": 2874,
+      "sha256": "58243f882047ced44f4117b88ad0cdf2f2cbea174d28fd5bc99f1313cc8ec25f"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-before-loop-exit.js",
+      "bytes": 3132,
+      "sha256": "b88857bdf03fc148ee3fd3f716016034852d870232c4364ebf7d1d003ba39ee7"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-from-reject-catch.js",
+      "bytes": 587,
+      "sha256": "14f7d0de3fcf2700b3e16b385f7a443764a985a83060b16c7019645da1d931a4"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-from-resolve-reject-catch.js",
+      "bytes": 604,
+      "sha256": "f9008ecf395d034df1a08f7a311524e3be82dbadcb75b871e75008d6bdd7b736"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-from-same-thenable.js",
+      "bytes": 995,
+      "sha256": "c55c152ccc36bf97c5c1107a2e70351ba4fdd4245b42c83f1270f46c8fb2f636"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-ignores-late-rejection-deferred.js",
+      "bytes": 1001,
+      "sha256": "06fb11ed9be784fb965a911b34b641c5d6af20ccc9714709c4076ce1367655a8"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-ignores-late-rejection.js",
+      "bytes": 870,
+      "sha256": "98459c6868a00a9a48abf2a71cde1058cba322f8c6091714538119077a12934c"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-non-callable.js",
+      "bytes": 997,
+      "sha256": "31a90f84cf475c4fc6f3e68024d9bbd661708047dc012ca6e2fe5998e599527a"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-non-thenable.js",
+      "bytes": 667,
+      "sha256": "63932ef420489a429bebfe079b8ba6fbffbd5df099000c3e6541562e748002cb"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-not-callable-reject-with-typeerror.js",
+      "bytes": 761,
+      "sha256": "b10b8b8839dded8df02e6d4ddd8d03567197fb6c2b37f9d7142398bb488cfac1"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js",
+      "bytes": 1806,
+      "sha256": "0353bc872d19a82b0f07e5ae90ae1fc19962871e3fbfb4649e87743cfd13a2e2"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js",
+      "bytes": 1819,
+      "sha256": "8e72336d721d7b7ad87a842554d6c8cf7aced2026dd9c60c6e04d0806f9655ea"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolved-sequence-extra-ticks.js",
+      "bytes": 1562,
+      "sha256": "6f1ba6c9609f4b75e5cfe90bcadf76ec1af4a92eab8825221b8a228de9b0abde"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolved-sequence-mixed.js",
+      "bytes": 1849,
+      "sha256": "a88460eec6f40948c6c9c06768622e4cff0745f1b7260da7e444b391fd870f80"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolved-sequence-with-rejections.js",
+      "bytes": 1810,
+      "sha256": "6bdbfbe31a0bb35744806afa5e221ea1513c8611f99f362a7e3d6a6e157894e5"
+    },
+    {
+      "path": "test/built-ins/Promise/any/resolved-sequence.js",
+      "bytes": 1553,
+      "sha256": "1f1614b561296eaeca80cda978fd83e8045891efd2ef302f43edb77d1c151512"
+    },
+    {
+      "path": "test/built-ins/Promise/any/returns-promise.js",
+      "bytes": 865,
+      "sha256": "76581cc1f5680cc1acd05abc96784df1efe8a8f61c58d9e5b8351f7e02589803"
+    },
+    {
+      "path": "test/built-ins/Promise/any/species-get-error.js",
+      "bytes": 672,
+      "sha256": "2c4df046db631a3723b2c6dc4340bd1e9e56f09a6eaf590c4079a1cfc6801534"
+    }
+  ],
+  "metadata": {
+    "test/built-ins/Promise/any/call-reject-element-after-return.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/call-reject-element-items.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/capability-executor-called-twice.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/capability-executor-not-callable.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/capability-reject-throws-no-close.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/capability-resolve-throws-no-close.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/capability-resolve-throws-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/ctx-ctor-throws.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/ctx-ctor.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "class"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/ctx-non-ctor.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/ctx-non-object.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-error-close.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "computed-property-names",
+        "Symbol",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-get-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-get-error.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-get-once-multiple-calls.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function",
+        "destructuring-binding"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-get-once-no-calls.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function",
+        "destructuring-binding"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "class",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-promise.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "class",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-promise.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve-return.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-resolve.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-then-error-close.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "arrow-function",
+        "computed-property-names",
+        "Symbol"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-then-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-then-get-error-close.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "arrow-function",
+        "computed-property-names",
+        "Symbol"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-then-get-error-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-then-on-promises-every-iteration.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/invoke-then.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/is-function.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-empty-iterable-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "AggregateError",
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-empty-string-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "AggregateError",
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-error-object-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-false-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-null-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-number-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-poisoned.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol",
+        "Symbol.iterator",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-string-resolve.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-symbol-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-true-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-arg-is-undefined-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-assigned-false-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "Symbol",
+        "computed-property-names"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-assigned-null-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "Symbol",
+        "computed-property-names"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-assigned-number-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "Symbol",
+        "computed-property-names"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-assigned-string-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "Symbol",
+        "computed-property-names"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-assigned-symbol-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol",
+        "Symbol.iterator",
+        "computed-property-names"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-assigned-true-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "Symbol",
+        "computed-property-names"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-assigned-undefined-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "Symbol",
+        "computed-property-names"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-next-val-err-no-close.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-next-val-err-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-returns-false-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-returns-null-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-returns-number-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-returns-string-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-returns-symbol-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-returns-true-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-returns-undefined-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-step-err-no-close.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "computed-property-names",
+        "Symbol",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/iter-step-err-reject.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator",
+        "computed-property-names",
+        "Symbol",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/length.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/name.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/new-reject-function.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/not-a-constructor.js": {
+      "flags": [],
+      "includes": [
+        "isConstructor.js"
+      ],
+      "features": [
+        "Reflect.construct",
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/prop-desc.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-all-mixed.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-deferred.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "AggregateError",
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-element-function-extensible.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-element-function-length.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-element-function-name.js": {
+      "flags": [],
+      "includes": [
+        "propertyHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-element-function-nonconstructor.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-element-function-property-order.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-element-function-prototype.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-from-same-thenable.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-ignored-deferred.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-ignored-immed.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/reject-immed.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-before-loop-exit-from-same.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-before-loop-exit.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-from-reject-catch.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-from-resolve-reject-catch.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-from-same-thenable.js": {
+      "flags": [],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-ignores-late-rejection-deferred.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-ignores-late-rejection.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-non-callable.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.iterator"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-non-thenable.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-not-callable-reject-with-typeerror.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "arrow-function"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js": {
+      "flags": [],
+      "includes": [],
+      "features": [],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolved-sequence-extra-ticks.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolved-sequence-mixed.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolved-sequence-with-rejections.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/resolved-sequence.js": {
+      "flags": [
+        "async"
+      ],
+      "includes": [
+        "promiseHelper.js"
+      ],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/returns-promise.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any"
+      ],
+      "locale": [],
+      "negative": null
+    },
+    "test/built-ins/Promise/any/species-get-error.js": {
+      "flags": [],
+      "includes": [],
+      "features": [
+        "Promise.any",
+        "Symbol.species"
+      ],
+      "locale": [],
+      "negative": null
+    }
+  },
+  "case_identities": [
+    {
+      "id": "test/built-ins/Promise/any/call-reject-element-after-return.js:sloppy",
+      "case_sha256": "032273954a10ceebfe6670c33823bc496c740850b275c8582b6d647400de24c0"
+    },
+    {
+      "id": "test/built-ins/Promise/any/call-reject-element-after-return.js:strict",
+      "case_sha256": "551083b196998d2d970c2215cf78dd2fa8f7cc7179397cbc01f092e278358835"
+    },
+    {
+      "id": "test/built-ins/Promise/any/call-reject-element-items.js:sloppy",
+      "case_sha256": "367d9b24421b50aceb81ae7967d2d1a8c1f01634715368c65c0a8fd2f54083a1"
+    },
+    {
+      "id": "test/built-ins/Promise/any/call-reject-element-items.js:strict",
+      "case_sha256": "b8be3c7d0e9f59f8ef6c31a0fd86940bcd287d5d7e6b31264c8ab0f5dd3385d5"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-executor-called-twice.js:sloppy",
+      "case_sha256": "d8fbb19003022a36c19c5988a74e431d8a8bd959d409b04f753b9e0e5eda3287"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-executor-called-twice.js:strict",
+      "case_sha256": "c8c623f26c49409078d6c582581509ad49da3a070be6c8267ec9dd02ae104343"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-executor-not-callable.js:sloppy",
+      "case_sha256": "3961a02e6bbae494c015bbb2569073bdce44346cb65a59ffa21030f6e9146820"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-executor-not-callable.js:strict",
+      "case_sha256": "1a79d4d7a4689afa443f15ef408378deaf6e4bc6913b9d65eedf39e95ff086bb"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-reject-throws-no-close.js:sloppy",
+      "case_sha256": "9814fe8060f18068ca6b19e0449dd62019d5fbc224277cc2522dd6e4fdc3fa11"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-reject-throws-no-close.js:strict",
+      "case_sha256": "1add4ee956524e6c51441b0e5ac097c9db920891d43d8544907f5de23a08c301"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-resolve-throws-no-close.js:sloppy",
+      "case_sha256": "e25be25c32bd60556f3da0323bf78f7d5ed7d30afe9610ba6a2c3e27512b89f1"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-resolve-throws-no-close.js:strict",
+      "case_sha256": "a6931b024c16719d1dd9a2081d928ff3614c7132886dde9747f430a4f2323a1e"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-resolve-throws-reject.js:sloppy",
+      "case_sha256": "1f2144eb22b24bad65356db5c9f0fa27a87ed7241e399449298647ec046e9f14"
+    },
+    {
+      "id": "test/built-ins/Promise/any/capability-resolve-throws-reject.js:strict",
+      "case_sha256": "738989f2a0d62b6e3d37f4d028828c20a6018b3dc1b331f21e24ddee6984b822"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-ctor-throws.js:sloppy",
+      "case_sha256": "e7e3b70caccdfbc038392f518274d6bcd445cdfe75caf13132c8e45784c0edf4"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-ctor-throws.js:strict",
+      "case_sha256": "8fa69d5aeb39ca4f026dee254f6e3fa300b06a5f3255f29bd7178cbac43a6c5e"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-ctor.js:sloppy",
+      "case_sha256": "4216d34ebd84d64f97b48ec8fc7254555706987bdb2b1961bb9b94677179f408"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-ctor.js:strict",
+      "case_sha256": "7df79c88672a439dfeb3e133393ab95de586d21fa1e716829614bd55708be075"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-non-ctor.js:sloppy",
+      "case_sha256": "b0a42b34ff3b4f3ed9c567405e4ef272dee84889c5153c31f9bc523ce88ae28a"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-non-ctor.js:strict",
+      "case_sha256": "031aa3c855daa8d7de2c92ab7a5654451917537fe5a2c2121f9de4bad0fa01b3"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-non-object.js:sloppy",
+      "case_sha256": "74f09925866cccecec20c461e64655b8bc1e2b847b810ec2261741a211a69e51"
+    },
+    {
+      "id": "test/built-ins/Promise/any/ctx-non-object.js:strict",
+      "case_sha256": "838a9b1a4fec43c970c6862eba84305b6d46d5fbf801afaa0b4d45584cdbf194"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-error-close.js:sloppy",
+      "case_sha256": "f8bd6ba51a77a783ae482c17f8d795fa1cc5c72e0bf0a7e6e895c10d94764763"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-error-close.js:strict",
+      "case_sha256": "a24173a8b95f73be32ff6d3adf054994dd68bbbe09362eb057fbdbe9d168fe5b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-error-reject.js:sloppy",
+      "case_sha256": "fb15592508b863be583c3227584b81b7889989e638fd1ae06b3d23602108ee68"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-error-reject.js:strict",
+      "case_sha256": "164fc75a5534f1721ffd1739639a391dd1923ba04e8de5767b7eb7024d47636d"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-error-reject.js:sloppy",
+      "case_sha256": "5db31f0e2b9daeb6b25478876da9a3bd3d4127f3f66747ef3d728b96c36a9cb9"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-error-reject.js:strict",
+      "case_sha256": "ee3531752e35316f8afd1a7c32cf28b2d87831c43e47c03dad6faa3dce74a5e8"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-error.js:sloppy",
+      "case_sha256": "43e157aff1b9aa3e2c8516329e815f1f5ca408aedbfbce3c43710a32bea9411a"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-error.js:strict",
+      "case_sha256": "c0fb8a82e9cbadca7e2c3f95db9acad46e2baa335812bdc0ec20a5b169bf33ce"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-once-multiple-calls.js:sloppy",
+      "case_sha256": "213b97dee0f17d63c3dd2d575e160a45d9f3f411c378e9501405e55fd065f7fe"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-once-multiple-calls.js:strict",
+      "case_sha256": "fba13356e67a04f09f0bf5b807d28d7ac94121fc91a69dff407f7ea815f9a779"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-once-no-calls.js:sloppy",
+      "case_sha256": "8784a8872fc67b998599448a7b2bfb1af8e3267ffaddc7a9caea6bd5fdbeae5d"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-get-once-no-calls.js:strict",
+      "case_sha256": "bbec4d8d5dddc6dd60195d9e8bfe2569765eec001ebd2aa37a347bc81e6eb6d0"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js:sloppy",
+      "case_sha256": "3e9f410f3e6f8f4ddd4abc1b66c679d57c3d391e0fe64fe67130e34c2e5715a9"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js:strict",
+      "case_sha256": "19639f4e23bee70d8558a19910633877f43a9898c4adc1e8ee22e1ad9a97ed9b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-promise.js:sloppy",
+      "case_sha256": "db1a925721816574eede963c34a3dd46f234662cc340b90123f85d38d54603c6"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-promise.js:strict",
+      "case_sha256": "67147f953c4d4c263b0269f8e7f24dce3a62cbd552d7822074193426cf24de8d"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js:sloppy",
+      "case_sha256": "7abd52f43194a606af1bacd49b56eafd6f5ce1ce59638297b837f7ed545d77d2"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js:strict",
+      "case_sha256": "076f3fb4ec12c934589e5593d58ae2a84d17137e897142906f0105925b532e2c"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-promise.js:sloppy",
+      "case_sha256": "9a5597a7941e8749901dac03c7fe3c74ee9fa90261c47b8e9fa97e825d94e865"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-promise.js:strict",
+      "case_sha256": "8ad50f4a834839bc0161f92fa5fb7fe75f34050e3a1290fef1353cdf74781439"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-return.js:sloppy",
+      "case_sha256": "6e1a0c32eef50ff9b039e6f62a217dd0bbcd8dd74a7dcf9ea1ac524671c53a33"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve-return.js:strict",
+      "case_sha256": "3c0de7e802488a507caf81ca590422112c9e4bf7c88a2d0b6e636f4d3281e468"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve.js:sloppy",
+      "case_sha256": "a7a66d4a69ea4f668b925de70513c1c131f88c24f103cda44a664bcca9e9c030"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-resolve.js:strict",
+      "case_sha256": "3e3b3a82884d1fb69e1b95f06db3e8fafd6f76ea92b7760790011b65ef8edcb4"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-error-close.js:sloppy",
+      "case_sha256": "50fea88a3bdd4eb3bb68a6cbe64e9fa3f2dfa47172cba79f2923162e536b196f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-error-close.js:strict",
+      "case_sha256": "fd68e3cbb5019a815f8927a72b1425bb0282cce7107fe668d1f22160985b888e"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-error-reject.js:sloppy",
+      "case_sha256": "b6037b6ff5273aea4d4a2e505fb537a96075a83eb22ab55b023554f2211be1ac"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-error-reject.js:strict",
+      "case_sha256": "f4ab943e5ca57ac51111e8e48cf02f81a221f3a011d796229241378c8b3e16b5"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-get-error-close.js:sloppy",
+      "case_sha256": "1f95858a5995ac4885faf9e8f1bc134ce6172e592f9733b1e58daedf1ced3145"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-get-error-close.js:strict",
+      "case_sha256": "07f5d9eb1294e38e9e162c6f4e34386dc826bbf3b632c7c05951d734677b28e2"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-get-error-reject.js:sloppy",
+      "case_sha256": "17d3ffab6b4526ad08e3a55644e9a8eaa9900eb24bac6095b70cde33682a1d54"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-get-error-reject.js:strict",
+      "case_sha256": "05572f3f9470a81f149fcb80c669422408236293e796d96ffd96288511e9f7e0"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-on-promises-every-iteration.js:sloppy",
+      "case_sha256": "1b9febcb4e98a6699f843f2fe20c7860e45dbaedef82fe49ca41d89e284e98ac"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then-on-promises-every-iteration.js:strict",
+      "case_sha256": "be88e28512d6be203a971a74d11d52019b92277b5dabc3e707fcbab2d9623e1b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then.js:sloppy",
+      "case_sha256": "17f6764a0461b05b2dbd325bcef7085b2370946458a39bd2674f2b970314ad13"
+    },
+    {
+      "id": "test/built-ins/Promise/any/invoke-then.js:strict",
+      "case_sha256": "0e06216e929e4eb6de42bfc81888e4b162e20763777f3a2fda524eedaa5955be"
+    },
+    {
+      "id": "test/built-ins/Promise/any/is-function.js:sloppy",
+      "case_sha256": "4d8d9589eeab5826902ce657fb01ef9445d5dbce0d02d63fd8c15769e2e8fab5"
+    },
+    {
+      "id": "test/built-ins/Promise/any/is-function.js:strict",
+      "case_sha256": "de0ba3ef2cb75763e602486e91ed6a33fca309ae2bce88f74aaffe691f640d76"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-empty-iterable-reject.js:sloppy",
+      "case_sha256": "f0292e59147c7d067416c2b41668610827b1b196078159d823dafd16e06b88be"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-empty-iterable-reject.js:strict",
+      "case_sha256": "60ede4283011d3cd8c75f84d25ef3f6b3c4c8c5e4f3fb084662e83133373d710"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-empty-string-reject.js:sloppy",
+      "case_sha256": "c0761e628b0de59f83e072643af1f0ddfa79ea3b5ef72bbd08a794004dff8053"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-empty-string-reject.js:strict",
+      "case_sha256": "3b182aca9c316de9c00c55b702768bbd31dec1048a9cf1bb2c7072cb30f1ab15"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-error-object-reject.js:sloppy",
+      "case_sha256": "c97d4801ece26c10f0e1638da5bfe18365022339cdb510d5e400e7f7d053382f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-error-object-reject.js:strict",
+      "case_sha256": "00a2350e153d8ec4ce6daf04e40343f396febe53e952a9ee2b2baa635a0a3ec1"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-false-reject.js:sloppy",
+      "case_sha256": "1cd24fd9aa82edc4cbb4a082ebb2710df085fe9de9c77f2a3342daaf92169d05"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-false-reject.js:strict",
+      "case_sha256": "67cc8275d8ad260a30fd3fa82a431e962f92496f886d4238c3c3f402ec686198"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-null-reject.js:sloppy",
+      "case_sha256": "84be9743419de1108a58dada07bf9aa5f93c88700f8b4ea7ec76e4e90e2622c7"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-null-reject.js:strict",
+      "case_sha256": "91986e92ee2c637140d832de7f31f32b8b76cb1dce52b42c28c9a46c6ba71107"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-number-reject.js:sloppy",
+      "case_sha256": "dc0dd6986de7cd37d464840849bff50e2c818a25656c4f61061188dc281330c9"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-number-reject.js:strict",
+      "case_sha256": "e929d04ea7e9f5a4d6f385f5e6fe52209a86b4b40846232ddfb3853e389bb282"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-poisoned.js:sloppy",
+      "case_sha256": "840ffe65851f244cbb139881d54b0df32aa7387c191f0ac466a5ba5e14f29169"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-poisoned.js:strict",
+      "case_sha256": "ee5ec9014873d9102506b519efc54f07c4ca8285f9b2bc504b4613c45e887d55"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-string-resolve.js:sloppy",
+      "case_sha256": "a7c6ca9188ab9f1337d0027a981c79322d9887078ae5807b434ddc66c1720c9c"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-string-resolve.js:strict",
+      "case_sha256": "7657353ea8128e9c0da22903a21ca2def7945dc15cb15924a21cb433fdac862b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-symbol-reject.js:sloppy",
+      "case_sha256": "386c8113fb76c7ee49210a8c1d65ef6f24b202b7e19067fee8164dcf734cbdf7"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-symbol-reject.js:strict",
+      "case_sha256": "cd02bfa735dbcdceac494a4b1a64216ef88c49f98612258b325fc488b7080f18"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-true-reject.js:sloppy",
+      "case_sha256": "24e59c89319cb682798db18ab945b350d7f95e4e1f1aa71245df949e51c14d83"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-true-reject.js:strict",
+      "case_sha256": "44327f99751c484dd74c38a8769d874b3c3d063d59bce6e90009b12619b25431"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-undefined-reject.js:sloppy",
+      "case_sha256": "2aa9d703d6baa1dd13a2bc5a4be05da3bfdeb00c816b01430145048595c3521e"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-arg-is-undefined-reject.js:strict",
+      "case_sha256": "1db189981a62499139e20bd56f731f001809b55b622ecaccd741ef668c60f525"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-false-reject.js:sloppy",
+      "case_sha256": "ef133d9b837740daa0938c26bc32975f3196fa672184f403885e7a4d8c6ba114"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-false-reject.js:strict",
+      "case_sha256": "15519bbd32dbd09c4dd42396c51d0c0d41216b482c978c6611888f69d790382a"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-null-reject.js:sloppy",
+      "case_sha256": "c3bc8d90544d200d982a8ae523911f886f658316f358fcf055287854507028c1"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-null-reject.js:strict",
+      "case_sha256": "2015385a1db229744fd48920ffd26cf5f19fb65802aa13b28e691b8251649ca8"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-number-reject.js:sloppy",
+      "case_sha256": "d80de47f75b60d582b66cb6b544be0cd9cce2ed92e304a0fba77d54d07f58f2b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-number-reject.js:strict",
+      "case_sha256": "454926d729aca6de1ab402a066a294fee96b09e9418debb5556f0b5fa517dc8f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-string-reject.js:sloppy",
+      "case_sha256": "a56397e66d98304619ede5a823a7a8a1793ecc42ed85e174b9c1cfab462a2926"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-string-reject.js:strict",
+      "case_sha256": "0672140de0ba19d40b5a4663006966b0d2722b8068fd2ff89926fc421fbbdeac"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-symbol-reject.js:sloppy",
+      "case_sha256": "86a95ed0fb4fea2dab54c1d25dc59932c6b5b12f54ab8e290d945e2f0be2da10"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-symbol-reject.js:strict",
+      "case_sha256": "13cfedd2df90b9e3aa28892972921a6b22b4a8a8af54bb43ec031c19cd91a59d"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-true-reject.js:sloppy",
+      "case_sha256": "2062343997c2314c2ebc8c5a8a88bd60375a939d7e4fa1f1e1add7148d78bb05"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-true-reject.js:strict",
+      "case_sha256": "e6777532284cbcdd8d37691d2c6f7f823c3f8fd9da0d37ed0ce1d1f868d47df4"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-undefined-reject.js:sloppy",
+      "case_sha256": "682b469f4943a344286c5c251832a646b23f8d5eb139ac38b458552c60bc6d77"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-assigned-undefined-reject.js:strict",
+      "case_sha256": "4017a557f58022742b9f6f7df36d0cc5634d04f804204e6ae9ec2bd0e860a190"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-next-val-err-no-close.js:sloppy",
+      "case_sha256": "a393ed5d6aa5a7da19feb782d91bdd2381fadbc1d53a86ae424b6b2329d41542"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-next-val-err-no-close.js:strict",
+      "case_sha256": "7245c44c00c122eace5d0f3e9ec336cb63a713d5458d3ca422243236022fd901"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-next-val-err-reject.js:sloppy",
+      "case_sha256": "4cfd7431ff76d4bd3fa208e1564581904a6ae771ab3c64724fe1daff5e9330f8"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-next-val-err-reject.js:strict",
+      "case_sha256": "c6432b4fd8a9eac42c9ee4c45228ca86e0aab292c2fae184140cbb29b98f571f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-false-reject.js:sloppy",
+      "case_sha256": "5995155151cd164c15a1175b4ea92fe7d6f780a0ffbe33617a2d66e111a5d2ba"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-false-reject.js:strict",
+      "case_sha256": "fc5f491a4c88a4bfc71e14f7d68a717e8ce019e65df2f86278d3b5cabb101384"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-null-reject.js:sloppy",
+      "case_sha256": "8a210d47291141df13abb312c9bcd38b9fe4012ffcdfdcadbb3e1d27275efc9b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-null-reject.js:strict",
+      "case_sha256": "23ec049b026a6e6abcf07ec9018dfaf535b0df97a7738ce5e4b0cd7797091848"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-number-reject.js:sloppy",
+      "case_sha256": "01b4115149f445db8544bd76b7fafa64f20d4996327f051858f14a68beb287e6"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-number-reject.js:strict",
+      "case_sha256": "0f210d1ed56726d57f7dac2a9aac6da73d4f04b232e1aabb5825a58f138b2f38"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-string-reject.js:sloppy",
+      "case_sha256": "2998ba143d60c5f3004346fbdce9eaa97a3306fc036a184aa4402ee8d27970cc"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-string-reject.js:strict",
+      "case_sha256": "60d0effc6596ae6c24f0b909e0cd7d48f7c464600946054e54c2069b1f8ebc8b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-symbol-reject.js:sloppy",
+      "case_sha256": "d3d2508b13a35a0fad7d52b9523d41f0324ca929c3376242f4d1abdf6956ff56"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-symbol-reject.js:strict",
+      "case_sha256": "0a9bc2013aac71f7c0ccc40e721a2b1b11dddf3a0f71acf48e40f22e9f041f9b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-true-reject.js:sloppy",
+      "case_sha256": "250665532f29db3500047b6e9f69ac45c2d2e69be9eefd2c09938f73aeb75aac"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-true-reject.js:strict",
+      "case_sha256": "77b41d608a708c3b048e8a46a7ddc7ba73574dde1977757a353fda2dc4d73726"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-undefined-reject.js:sloppy",
+      "case_sha256": "e727b7456644512a4662fcc92f3a2b18ce14c38eeaf100e6eec99655be5e5122"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-returns-undefined-reject.js:strict",
+      "case_sha256": "658a989bccd587464db79e8954eb4d0faf27183f6d37e1c4ea041a572d3802ea"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-step-err-no-close.js:sloppy",
+      "case_sha256": "7d714b536db887884059a10b6972d825584abd4821d3be03e4acb0f5f6f11842"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-step-err-no-close.js:strict",
+      "case_sha256": "abeabe3c40f77875f4b5f0240c54ac5dd15d0c6cdb946b1fd7970248377c6bec"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-step-err-reject.js:sloppy",
+      "case_sha256": "3c374eb1d951d2468199c8f088af8b58e3caaa3fffe1281f7701ebbb0e7b4fdc"
+    },
+    {
+      "id": "test/built-ins/Promise/any/iter-step-err-reject.js:strict",
+      "case_sha256": "cb746c4e76e94089ec9e61b682d55f82cabfd249c0f5e8f3b8d265899bf37873"
+    },
+    {
+      "id": "test/built-ins/Promise/any/length.js:sloppy",
+      "case_sha256": "b7ae844eddefe506e226c1ac0f0f1b885952fcde422bb1496746f7f633d6add6"
+    },
+    {
+      "id": "test/built-ins/Promise/any/length.js:strict",
+      "case_sha256": "d827a028ea2f0fd06196c5337f461856154c31206548f1b7d48d9e73348f34a2"
+    },
+    {
+      "id": "test/built-ins/Promise/any/name.js:sloppy",
+      "case_sha256": "1b480d076450a89297a02ed84d30ba2c1c9abdca378a6530fc061ba2158509ad"
+    },
+    {
+      "id": "test/built-ins/Promise/any/name.js:strict",
+      "case_sha256": "8c79e5c8fe6fc0ddbcf5f037f374317584e2da974456e5e7bd0fac0e1adf8094"
+    },
+    {
+      "id": "test/built-ins/Promise/any/new-reject-function.js:sloppy",
+      "case_sha256": "e5952557f646d2637b055e7846f86240f85aa759d3e4ddaf2fe441fa56ea1461"
+    },
+    {
+      "id": "test/built-ins/Promise/any/new-reject-function.js:strict",
+      "case_sha256": "2311f2448288e5c4daa8669fcd97304a3f65ebc420f46eebb5b153ef343ae375"
+    },
+    {
+      "id": "test/built-ins/Promise/any/not-a-constructor.js:sloppy",
+      "case_sha256": "f38f9034d2d45ff12088e8f98430ad697924cd3cfca659d32fd187148d39b019"
+    },
+    {
+      "id": "test/built-ins/Promise/any/not-a-constructor.js:strict",
+      "case_sha256": "dace194f44e91d57374cb8b7555f4b00e7ce542f01f6c117cb242a20d6be7363"
+    },
+    {
+      "id": "test/built-ins/Promise/any/prop-desc.js:sloppy",
+      "case_sha256": "e80987996d49f002d4082b0c2d24bc6037215139d10568a5439cd551b804c912"
+    },
+    {
+      "id": "test/built-ins/Promise/any/prop-desc.js:strict",
+      "case_sha256": "847f09536cb5b0e051ea9815967d9d05cc6bbae11d27d36f29d3761fb8b5286d"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-all-mixed.js:sloppy",
+      "case_sha256": "4146acad68b520e3b1ab35a6bcc08e1bc9300f86d4d054a84df972c05f4649fc"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-all-mixed.js:strict",
+      "case_sha256": "12c93eec51f9cde2410edf796f66a3093bc31d141418d0185f925de84d27ac50"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-deferred.js:sloppy",
+      "case_sha256": "2d359d481e14ece33cfca79692e471dfed6da04e3d12171ca494b2b6f254c808"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-deferred.js:strict",
+      "case_sha256": "735e10cf375a8c99708c6e6991ef413e57adc4ea2e42f6e0b62dd0d68269c140"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-extensible.js:sloppy",
+      "case_sha256": "74ce36051b260810b28e710afda4ca992bf0113d0d7a5f54cb76493808545acd"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-extensible.js:strict",
+      "case_sha256": "c932166945cda2202266e2cbaa5e7b815c30fe3ec40888f9f7e01e1a8edabe78"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-length.js:sloppy",
+      "case_sha256": "a1d5cd8e49ba56a34e86a243f6c262c848dce25b7f096835057830c0515e6dcd"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-length.js:strict",
+      "case_sha256": "5694877c0f2e5a34f65acfcf01b5dd1f2e4b81104bda29e3415f1a78db238565"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-name.js:sloppy",
+      "case_sha256": "318d8068aa16280377799a747f3e318c67fd4e6a9c1a02cc0cd525e82599898c"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-name.js:strict",
+      "case_sha256": "4b15d4c4b2499ba8563201a084b50fe26c8a9d770b8b03e0b8ce7099ec7ebc89"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-nonconstructor.js:sloppy",
+      "case_sha256": "f9150060c9bb6893e78281f3210231fa7ebfbeea4ecc847774e8c5bf39ab3318"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-nonconstructor.js:strict",
+      "case_sha256": "506380a648b871cf881e3176a2222902fea1789c1f232215a3c631a7a1adbfe9"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-property-order.js:sloppy",
+      "case_sha256": "34d7510262a02d7945a9abeb811f3226c11120e842323d6c9ab0f4d44c3fb3b1"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-property-order.js:strict",
+      "case_sha256": "00a23a94c24c265659f1ffd566d5712ea6582865522ef1cc7b71974c907dea27"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-prototype.js:sloppy",
+      "case_sha256": "4c25374cbce99698ccea68e810be6f2f0525bfb68633d568d48ad57728554d53"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-element-function-prototype.js:strict",
+      "case_sha256": "3f57eca5eac4bf0d1cb6ceea17d8839076dd4634e87dab44953324e902faed72"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-from-same-thenable.js:sloppy",
+      "case_sha256": "2ccb2e71e2941cff3808f25248cf75e27f2d0e6473ba866a7223b501b54f3807"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-from-same-thenable.js:strict",
+      "case_sha256": "1699d8ce877ee85b8c30da085f475d6c4e103b3adb4f270e4ef2342c79e5cdd5"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-ignored-deferred.js:sloppy",
+      "case_sha256": "07a7b549b2b4c9cd056e9bdad32ab93752aa35a29d82d2d82b9481ee735a7d1e"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-ignored-deferred.js:strict",
+      "case_sha256": "4ff2ad9556fd099fc77ef1aa3132197692a2cfb5bdec115a49dc6d53b45d4572"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-ignored-immed.js:sloppy",
+      "case_sha256": "0c9db16a4e6de2b57ca87e25b6708955f4143cf7c5faa981d3f2f741c8dabdec"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-ignored-immed.js:strict",
+      "case_sha256": "6d9500d84dcf57307b1ad6a728c38242359e989a6e1576b6bccabd408369569f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-immed.js:sloppy",
+      "case_sha256": "35bd8a49f0de821e164e058fb5fbecc27e8d5d3c32f8e0a35adf23a23b8ce611"
+    },
+    {
+      "id": "test/built-ins/Promise/any/reject-immed.js:strict",
+      "case_sha256": "aa47cb2d11a25c45b78a81fdc414769abf83fd334687c0b5bcdf233b2c1e3f49"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-before-loop-exit-from-same.js:sloppy",
+      "case_sha256": "f7332aa20bd188334783965b11b0bad1323be33546727dec337c14d8dbbad9fb"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-before-loop-exit-from-same.js:strict",
+      "case_sha256": "72bfb55014d5c4a5ff7d95d255445dfa86ba0f47703e5078cc6e99e660c7adac"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-before-loop-exit.js:sloppy",
+      "case_sha256": "532738d53fad5f3f01848b02e0b415add9bf1f6e02b16cb5c52d32152a7aad7d"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-before-loop-exit.js:strict",
+      "case_sha256": "bbc1f1cdb990cb95af74f494167928fb5672e0f4bd67bd2a42e34f2f8f667c00"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-from-reject-catch.js:sloppy",
+      "case_sha256": "2aef4a4eaa5c421052194786794f1f519890b029aa681164a86f6b7d6955024f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-from-reject-catch.js:strict",
+      "case_sha256": "87302050f615f1e937ec11649e970226dc56b869b3b59ad2501808c62000a410"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-from-resolve-reject-catch.js:sloppy",
+      "case_sha256": "e5495d785185dd61758b0f8b37b5d934d56e5f1d61d65fcca3ed39ac6121d772"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-from-resolve-reject-catch.js:strict",
+      "case_sha256": "f31696a7507093899e4b7bd04e20e621c301c907de68ddd2825a9a1de8a68fb7"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-from-same-thenable.js:sloppy",
+      "case_sha256": "8e9d240f404a64e3002eb00eeaa5eb60a3491fd4ac5825df2d5cb569d2b928b3"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-from-same-thenable.js:strict",
+      "case_sha256": "b65f2f196a9a16e13e9f304edec2eadd511d8f78c4e4400272d25bed1e45d5fe"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-ignores-late-rejection-deferred.js:sloppy",
+      "case_sha256": "e1a370dfd6d1e0aec50e08048c20019c84ea700af9032084735291667d147ce2"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-ignores-late-rejection-deferred.js:strict",
+      "case_sha256": "b85443fd97dd213ab74f2b8e39c25164084dd0cb0dcd8e01d576c9e3ccaa7399"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-ignores-late-rejection.js:sloppy",
+      "case_sha256": "22db22856ede2b570041294dc48d53e4fa4be59dbdd61a99a244d677c05580c7"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-ignores-late-rejection.js:strict",
+      "case_sha256": "ea6f8557c9c08fce7618d36cfece770dc1abdbafb72d50b472d97524522ca030"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-non-callable.js:sloppy",
+      "case_sha256": "5505dc92c9a169ef0d3f256f14121fc3e5aa45a06dc37068cf8e70dcd2435eaa"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-non-callable.js:strict",
+      "case_sha256": "04bc90aa2dc5b5d0c2d7150ea79cba276fbaeb89d22a569a4936a575795e4d2f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-non-thenable.js:sloppy",
+      "case_sha256": "41636c4c2903a8d0267e53f3e7b871fb0ee0097eb49895a45e9bacb8031fc5f0"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-non-thenable.js:strict",
+      "case_sha256": "ccb3f75e1e8fdbaad7b8262cf7ab4c120226130b8a9b37b5a51501d48bbc0f23"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-not-callable-reject-with-typeerror.js:sloppy",
+      "case_sha256": "7b54ea0f8fe7a8d77ea46b5f992234c750ea82b981a542865061a54d45de81b1"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-not-callable-reject-with-typeerror.js:strict",
+      "case_sha256": "940cb0c06f502c016329fddd92eb20657deefbca6671b6236b106734d6ca4f45"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js:sloppy",
+      "case_sha256": "010967e7405e656faf7ac2b2de45965bff04c7767005f9b03decd81e2a228cc0"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js:strict",
+      "case_sha256": "9d03f67e882eac00b40d9f5eb6be719ab821a4795014df6178995377d57d5bff"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js:sloppy",
+      "case_sha256": "23527b15535561660112b3081fdbe06c9fdf77c6b1a957fcdddef78b6e51af58"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js:strict",
+      "case_sha256": "77ad685ba49b69474d46e0d4c5ba2b5e122aa02150c6f1a038500e2a42920775"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence-extra-ticks.js:sloppy",
+      "case_sha256": "7c968cca76b0a5af819d4845b08445babdbd71123a696655dd37932906f325c3"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence-extra-ticks.js:strict",
+      "case_sha256": "1e2ea45b496ec106cfe44d2c48c90d502d219fef1cdda46fa374bf8d192d1ae9"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence-mixed.js:sloppy",
+      "case_sha256": "066b5b57577c312b0960082c2f5602d79c36d506a0764451ed3bfd0853c5aa3c"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence-mixed.js:strict",
+      "case_sha256": "0535ccd21d2aaea2530b89a1c0c00090034890836e5afb3c7bb771481520d546"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence-with-rejections.js:sloppy",
+      "case_sha256": "905b6c3d399c2f6ce214e53e16f4cc049aae88e1c3906740b73b1a52bf7f7cd0"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence-with-rejections.js:strict",
+      "case_sha256": "f5f0d6b434180c0570a1debc9610da64f35b8a8e55649ef45dd2afcc4adbf0bd"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence.js:sloppy",
+      "case_sha256": "c71ec7cd892bc513235488db32e9db7b6e946e83e93f0b5e91bed29f5a90de3f"
+    },
+    {
+      "id": "test/built-ins/Promise/any/resolved-sequence.js:strict",
+      "case_sha256": "f5d22084604bfc48e2eb08e6fbc63576c31e4e27dd8906d51c693c754d15c113"
+    },
+    {
+      "id": "test/built-ins/Promise/any/returns-promise.js:sloppy",
+      "case_sha256": "e1c6828fbaffcfb008e845b27dc18e7789bc96808aa846644a8bc1519cf66f0b"
+    },
+    {
+      "id": "test/built-ins/Promise/any/returns-promise.js:strict",
+      "case_sha256": "a5afdd6c97af9f4d2f48d627157323a7f4cc21c9f921a489c3684fb708ed8e10"
+    },
+    {
+      "id": "test/built-ins/Promise/any/species-get-error.js:sloppy",
+      "case_sha256": "557206efd04d2452b6242b2c76a4948c25b7769a97432cdd7a3209db7003a7e6"
+    },
+    {
+      "id": "test/built-ins/Promise/any/species-get-error.js:strict",
+      "case_sha256": "59725025b66ceb4bebb50c4c3b69f9ca032728d55e331d3b7f8e5120a41f81a5"
+    }
+  ],
+  "old_tables_sha256": {
+    "PROFILES": "0f57ca21c5ba797271f27a943a06d95f06dcfe183946ed4044aabe4d32a6234e",
+    "PROFILE_ROOTS": "ae25698f7ce2c533eab3903a841660190620127d4fa1c3801b8dab5543097c1f",
+    "TREE_PROFILES": "08e0449fbfcad9d61339ac98cdb5e9e07c0a3017729577657f33d1535553eedc"
+  },
+  "old_profile_count": 58
+}
