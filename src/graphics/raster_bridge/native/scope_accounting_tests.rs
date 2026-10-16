@@ -156,11 +156,12 @@ fn native_scope_accounting_keeps_full_rect_image_line_charges_across_phases() {
             },
             key: "missing".into(),
         },
+        // Line uses its full-frame bounding rectangle for the same quota.
         DrawCommand::Line {
             x1: 0.0,
             y1: 0.0,
-            x2: 0.0,
-            y2: 0.0,
+            x2: 250.0,
+            y2: 200.0,
             color: Color::TRANSPARENT,
             width: 0.0,
         },

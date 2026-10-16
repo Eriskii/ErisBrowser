@@ -378,6 +378,12 @@ Native page zoom now uses bounded command scaling. Separate 90% and 110%
 window checks match 9,011,200 acquired bytes against the CPU reference, and
 a normal 110% run uses no reference or readback; see the
 [zoom record](docs/vulkan-native-window.md#zoom-validation).
+
+[Native Line accounting](docs/vulkan-line-accounting.md) now reserves each
+Line's clipped rectangle loop area. Forty 24×1 Lines at 512×512 use 960 pixel
+work units instead of 10,485,760, within the unchanged allowance. The existing
+pixels, shaders and whole-scene fallback remain in place.
+
 The [rendering docket](docs/vulkan-rendering.md) tracks broader admission,
 compositing and performance work. There is no measured Chromium parity.
 

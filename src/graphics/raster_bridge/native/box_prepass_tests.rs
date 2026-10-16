@@ -85,23 +85,17 @@ fn earlier_rect_debt_precedes_box_classification_and_materialization_reservation
     }
 }
 
-fn line_commands(first: DrawCommand, lines: usize) -> Vec<DrawCommand> {
+fn opacity_commands(first: DrawCommand, pairs: usize) -> Vec<DrawCommand> {
     let mut commands = vec![first];
-    for _ in 0..lines {
-        commands.push(DrawCommand::Line {
-            x1: 0.0,
-            y1: 0.0,
-            x2: 1.0,
-            y2: 0.0,
-            width: 1.0,
-            color: Color::BLACK,
-        });
+    for _ in 0..pairs {
+        commands.push(DrawCommand::PushOpacity { opacity: 1.0 });
+        commands.push(DrawCommand::PopOpacity);
     }
     commands
 }
 
 #[test]
-fn full_area_line_debt_is_global_before_any_box_window_preparation() {
+fn full_area_opacity_debt_is_global_before_any_box_window_preparation() {
     // A=264000, allowance=16*A=4224000. Keep Box first in original order.
     let target = Frame::new(1000, 264, 0xffffff);
     let images = ImageStore::new();
@@ -118,23 +112,23 @@ fn full_area_line_debt_is_global_before_any_box_window_preparation() {
         )
     };
 
-    let exact = line_commands(box_command(0.0, 0.0, [[0.0; 2]; 4]), 16);
+    let exact = opacity_commands(box_command(0.0, 0.0, [[0.0; 2]; 4]), 8);
     let plan = prepare(&exact).unwrap();
     assert_eq!(plan.stats().cpu_pixel_upper_bound, 4_224_000);
     assert_eq!(plan.stats().box_masks, 0);
     assert_eq!(plan.stats().box_loop_work, 0);
     assert_eq!(plan.stats().mask_sources, 0);
 
-    let no_remainder = line_commands(box_command(4.0, 2.0, [[2.0, 1.0]; 4]), 16);
+    let no_remainder = opacity_commands(box_command(4.0, 2.0, [[2.0, 1.0]; 4]), 8);
     assert_eq!(
         prepare(&no_remainder).unwrap_err(),
         at(FallbackKind::CpuPaintBudget, 0, 0)
     );
 
     // The exact original oversized shape now selects the core route, but the
-    // sixteen Lines leave no work for its first debit. All samples stay inside.
-    // One extra Line still fails globally before visiting the first Box command.
-    let mask_short = line_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 16);
+    // sixteen opacity markers leave no work for its first debit. All samples stay inside.
+    // An extra balanced pair fails globally before visiting the first Box command.
+    let mask_short = opacity_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 8);
     assert_eq!(
         prepare(&mask_short).unwrap_err(),
         at(FallbackKind::CpuPaintBudget, 0, 0)
@@ -154,10 +148,10 @@ fn full_area_line_debt_is_global_before_any_box_window_preparation() {
         radii: [[0.0; 2]; 4],
     });
     assert_eq!(
-        prepare(&line_commands(forced_mask, 16)).unwrap_err(),
+        prepare(&opacity_commands(forced_mask, 8)).unwrap_err(),
         at(FallbackKind::MaskPreparation, 0, 0)
     );
-    let aggregate_short = line_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 17);
+    let aggregate_short = opacity_commands(box_command(1000.0, 264.0, [[0.125; 2]; 4]), 9);
     assert_eq!(
         prepare(&aggregate_short).unwrap_err(),
         NativeFallback::new(FallbackKind::CpuPaintBudget, None, None)

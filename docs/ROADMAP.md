@@ -202,8 +202,10 @@ fidelity remain open. This establishes no acquired-window or performance result.
 [Native rectangle accounting](native-rect-accounting.md) reserves the clipped
 pre-blend loop area for each Rect. The [image follow-up](native-image-accounting.md)
 extends that coordinate pass to Image sampling loops, preserving fractional
-clip work and fixed-scope restoration under the same CPU allowance. Line and
-opacity reservations, source/mask limits and GPU admission remain unchanged.
+clip work and fixed-scope restoration under the same CPU allowance.
+[Native Lines](vulkan-line-accounting.md) now use the existing clipped rectangle
+loop bound in original command order. Both opacity markers retain full-frame
+reservations; command/source/mask limits and GPU admission remain unchanged.
 The forty-image Page/worker witness now changes from the parent’s CPU-budget
 refusal to candidate admission with exact pixels before and after a click.
 A separate 1200×900 NVIDIA acquired texture matches all 4,320,000 reference

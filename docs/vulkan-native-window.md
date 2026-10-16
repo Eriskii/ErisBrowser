@@ -94,13 +94,16 @@ fixtures retain their existing limits.
 
 Clip and fixed-position scope markers consume command, nesting and parameter
 allowances but no CPU pixel-work allowance: they only update coordinate state.
-[Rectangles](native-rect-accounting.md) reserve their clipped pre-blend CPU loop
-area before glyph preparation. Image, Line and both opacity markers retain one
-full framebuffer area each, including empty groups. A bounded coordinate pass
-accounts for every phase before font work, preserving fixed-position escape and
-restoration. This admits more small-shape scenes without increasing pixel-work
-limits. Cropped GPU scratch does not replace the full-viewport CPU opacity
-reservation.
+[Rectangles](native-rect-accounting.md) and [Lines](vulkan-line-accounting.md)
+reserve their clipped pre-blend rectangle loop area before glyph preparation.
+[Images](native-image-accounting.md) reserve their own clipped sampling-loop
+area, including its distinct fractional lower-bound rules. Both opacity markers
+retain one full framebuffer area each, including empty groups. The bounded
+coordinate pass charges geometry in original command order across every phase,
+preserving fixed-position escape and restoration. These changes admit more
+small-shape scenes without increasing pixel-work limits. The metric counts
+inner pixel visits; empty outer rows have separate command/height bounds.
+Cropped GPU scratch does not replace the full-viewport CPU opacity reservation.
 
 Wide Native rounded rectangles now use at most two consecutive, nonoverlapping
 horizontal masks through `RoundedTiles::prepare_native`. Each mask retains the

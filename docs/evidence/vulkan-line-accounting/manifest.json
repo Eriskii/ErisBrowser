@@ -1,0 +1,2694 @@
+{
+  "schema": 1,
+  "status": "verified",
+  "archive": {
+    "path": "sources-and-checks.tar.gz",
+    "bytes": 1850168,
+    "sha256": "b03b98eb50c28a4c867a34798ddd68e090cbb1c9d4eb1e80868cf23ed73e026d",
+    "uncompressed_tar_bytes": 7567360,
+    "member_bytes": 7349389
+  },
+  "source_count": 10,
+  "documentation_count": 6,
+  "artifact_count": 268,
+  "source_inventory": {
+    "path": "/tmp/eris-vulkan-line-accounting-plan-1/source-final.json",
+    "bytes": 251073,
+    "sha256": "30058ce5e45580fcb791372895e6e6898764b229c327011c233301fcf688066c"
+  },
+  "candidate_inventory": {
+    "path": "/tmp/eris-vulkan-line-accounting-plan-1/source-candidate-2.json",
+    "bytes": 251073,
+    "sha256": "30058ce5e45580fcb791372895e6e6898764b229c327011c233301fcf688066c"
+  },
+  "claims": {
+    "status": "pass",
+    "scope": "Tested Native Line CPU planning/accounting checkpoint; hardware correctness remains unverified and the overall browser/performance goal is incomplete.",
+    "base": "058b4c5f8c0cd2ce197a64ee262c127c959cf1ed",
+    "source": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/source-final.json",
+      "bytes": 251073,
+      "sha256": "30058ce5e45580fcb791372895e6e6898764b229c327011c233301fcf688066c"
+    },
+    "selected_inputs": 1838,
+    "source_final_equals_candidate2": true,
+    "full_suites": {
+      "status": "pass",
+      "source": {
+        "path": "/tmp/eris-vulkan-line-accounting-plan-1/source-candidate-2.json",
+        "bytes": 251073,
+        "sha256": "30058ce5e45580fcb791372895e6e6898764b229c327011c233301fcf688066c"
+      },
+      "configurations": [
+        {
+          "config": "default",
+          "parent": {
+            "receipt": {
+              "path": "/tmp/eris-class-runtime-plan-1/validation/class-default-full-2.json",
+              "bytes": 300,
+              "sha256": "9fae87d34f49083a57102d8a14ca2f86cfd6e66d9d71d1b464ec2b799c2112af"
+            },
+            "log": {
+              "path": "/tmp/eris-class-runtime-plan-1/validation/class-default-full-2.log",
+              "bytes": 346532,
+              "sha256": "e7b2cc8e6b81d50b780148523ef7ff74e03315606a3b161a34cc19fe005241bd"
+            },
+            "passed": 3344,
+            "result_rows": 53
+          },
+          "candidate": {
+            "receipt": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-2.json",
+              "bytes": 295,
+              "sha256": "c134aad32db3266f5160e41a47860723bad00c91c01bab11136c2c8eea6a425d"
+            },
+            "log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-2.log",
+              "bytes": 347168,
+              "sha256": "66295436821403cb1ff7ddacd8b63f1fc8a7ce44e985a89247a51fc5d25a641c"
+            },
+            "passed": 3344,
+            "result_rows": 54
+          },
+          "added": [],
+          "historical_rename": null,
+          "all_other_parent_tests_preserved": true
+        },
+        {
+          "config": "host-vulkan",
+          "parent": {
+            "receipt": {
+              "path": "/tmp/eris-class-runtime-plan-1/validation/class-host-vulkan-full-1.json",
+              "bytes": 356,
+              "sha256": "88ff124bae4c0a36c146d08df1451133c4bc34bfb1b2f9d00d6a0f1ea0fa7dfe"
+            },
+            "log": {
+              "path": "/tmp/eris-class-runtime-plan-1/validation/class-host-vulkan-full-1.log",
+              "bytes": 389576,
+              "sha256": "f5ed2111af70392c69035e318ceedc1c1948ceb5a1f33f1b1aaa5815dac33014"
+            },
+            "passed": 3698,
+            "result_rows": 53
+          },
+          "candidate": {
+            "receipt": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-2.json",
+              "bytes": 351,
+              "sha256": "3d661939412ffe30d56ded4e6fd595d2d43804936217df8002e37d56775337ad"
+            },
+            "log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-2.log",
+              "bytes": 391592,
+              "sha256": "bafae452efc44563acb4aa97c38594fba43c4d026186acd40080a8fd675a1563"
+            },
+            "passed": 3708,
+            "result_rows": 54
+          },
+          "added": [
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_empty_inner_loops_keep_structural_caps",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_exact_shared_cpu_boundary_and_one_over",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_forty_small_lines_are_960_pixels",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_fractional_clip_and_translation",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_literal_geometry_and_rect_plans",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_original_order_controls_box_budget_location",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_phases_restore_fixed_and_clip_state",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_transparency_and_zero_opacity_keep_debt",
+            "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_validates_hidden_geometry_before_debit",
+            "native_line_loaded_decorations_admit_exact_plan_and_literal_pixels"
+          ],
+          "historical_rename": [
+            "graphics::raster_bridge::native::box_prepass_tests::full_area_line_debt_is_global_before_any_box_window_preparation",
+            "graphics::raster_bridge::native::box_prepass_tests::full_area_opacity_debt_is_global_before_any_box_window_preparation"
+          ],
+          "all_other_parent_tests_preserved": true
+        }
+      ],
+      "focused_msrv_bridge": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-2.json",
+          "bytes": 378,
+          "sha256": "1d416ba7e21ccb9f30f1a6568b98e0381cff33e638bd8a35018e892effe3d294"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-2.log",
+          "bytes": 14669,
+          "sha256": "abff4ac8939b5a4bf72cfe0063c5b83d55ae90f4066462822a9e8fa17fdd72ff"
+        },
+        "passed": 10,
+        "result_rows": 53
+      },
+      "qualifications": "Rust test results verify CPU planning/pixels; no GPU execution or timing inference. Selected-input inventory is not the full build graph."
+    },
+    "checks": {
+      "candidate-lines-2": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-2.json",
+          "bytes": 378,
+          "sha256": "1d416ba7e21ccb9f30f1a6568b98e0381cff33e638bd8a35018e892effe3d294"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-2.log",
+          "bytes": 14669,
+          "sha256": "abff4ac8939b5a4bf72cfe0063c5b83d55ae90f4066462822a9e8fa17fdd72ff"
+        },
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "test",
+          "--locked",
+          "--offline",
+          "--features",
+          "raster-bridge",
+          "--no-fail-fast",
+          "native_line_",
+          "--",
+          "--include-ignored"
+        ]
+      },
+      "default-full-2": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-2.json",
+          "bytes": 295,
+          "sha256": "c134aad32db3266f5160e41a47860723bad00c91c01bab11136c2c8eea6a425d"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-2.log",
+          "bytes": 347168,
+          "sha256": "66295436821403cb1ff7ddacd8b63f1fc8a7ce44e985a89247a51fc5d25a641c"
+        },
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "test",
+          "--locked",
+          "--offline",
+          "--",
+          "--include-ignored"
+        ]
+      },
+      "host-vulkan-full-2": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-2.json",
+          "bytes": 351,
+          "sha256": "3d661939412ffe30d56ded4e6fd595d2d43804936217df8002e37d56775337ad"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-2.log",
+          "bytes": 391592,
+          "sha256": "bafae452efc44563acb4aa97c38594fba43c4d026186acd40080a8fd675a1563"
+        },
+        "command": [
+          "cargo",
+          "+1.99.0",
+          "test",
+          "--locked",
+          "--offline",
+          "--features",
+          "test262-host,vulkan-raster",
+          "--",
+          "--include-ignored"
+        ]
+      },
+      "host-vulkan-clippy-2": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-2.json",
+          "bytes": 377,
+          "sha256": "8883471c22c52db3e3e47c019e01b088f8a5478cb0986574867e8e505b759248"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-2.log",
+          "bytes": 157,
+          "sha256": "49e282bffcc31143a57e952765a2b47098859679f8827343f9dbbcafcec7ee8d"
+        },
+        "command": [
+          "cargo",
+          "+1.99.0",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--features",
+          "test262-host,vulkan-raster",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ]
+      },
+      "msrv-bridge-clippy-1": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/msrv-bridge-clippy-1.json",
+          "bytes": 363,
+          "sha256": "d07440e0d42b0d1789d3075ceff30de4df49143f29e0d103120c90f06e93a226"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/msrv-bridge-clippy-1.log",
+          "bytes": 264,
+          "sha256": "d3f08c1e5b444fc31de1e9ea025619b316be9ae320aba48a2583fa5352afa115"
+        },
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--features",
+          "raster-bridge",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ]
+      },
+      "default-clippy-1": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-clippy-1.json",
+          "bytes": 321,
+          "sha256": "ca2e48a02095ac9c7fe58182822d116e207901827ad32157ad1484554b09d814"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-clippy-1.log",
+          "bytes": 157,
+          "sha256": "17ce705c9fe4e45c1aec95445df0ef0bf4bdbd8190ee89895a8214fe234e6700"
+        },
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ]
+      },
+      "format-check-1": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/format-check-1.json",
+          "bytes": 263,
+          "sha256": "92f8c42ef41c97d65631ad589f790ffd8d58411c8c8a73be2721668422ae580f"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/format-check-1.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "fmt",
+          "--all",
+          "--",
+          "--check"
+        ]
+      },
+      "vulkan-release-build-1": {
+        "receipt": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/vulkan-release-build-1.json",
+          "bytes": 356,
+          "sha256": "0e338e84c014c4b44a1492c3387f4f42559a290d5222ff4d19d56bee3e034e29"
+        },
+        "log": {
+          "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/vulkan-release-build-1.log",
+          "bytes": 6123,
+          "sha256": "7c4f20a5b1c4d41f65983b95bcecd0fab7429108638b15e29dac810f288159f6"
+        },
+        "command": [
+          "cargo",
+          "+1.99.0",
+          "build",
+          "--locked",
+          "--offline",
+          "--features",
+          "vulkan-raster",
+          "--release",
+          "--bin",
+          "eris-browser"
+        ]
+      }
+    },
+    "release_binary": {
+      "source": {
+        "path": "/tmp/eris-vulkan-line-accounting-plan-1/source-candidate-2.json",
+        "bytes": 251073,
+        "sha256": "30058ce5e45580fcb791372895e6e6898764b229c327011c233301fcf688066c"
+      },
+      "binary": {
+        "path": "/tmp/eris-vulkan-line-accounting-plan-1/target-1990/release/eris-browser",
+        "bytes": 17578504,
+        "sha256": "ed38a8ef6c7f9389a0b8656ba5b587d82ed8be0ac932ab82ca2cd281fc63ca59"
+      },
+      "build_receipt": {
+        "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/vulkan-release-build-1.json",
+        "bytes": 356,
+        "sha256": "0e338e84c014c4b44a1492c3387f4f42559a290d5222ff4d19d56bee3e034e29"
+      },
+      "build_environment": {
+        "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation/vulkan-release-build-1-environment.json",
+        "bytes": 398,
+        "sha256": "bface386f44de9a012bdcbef5184714afe1fce4db00adc48a7abe3c6e9598ab9"
+      },
+      "features": [
+        "vulkan-raster"
+      ],
+      "profile": "release",
+      "toolchain": "1.99.0",
+      "source_postcheck": "all selected inputs exact; not a full build graph"
+    },
+    "hardware": {
+      "status": "unverified",
+      "hardware_claim": false,
+      "attempts": [
+        {
+          "status": "unverified",
+          "hardware_claim": false,
+          "records": {
+            "inputs.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/inputs.json",
+              "bytes": 13265,
+              "sha256": "1528c13651e7802246904a99186e870d86324ea2679895b475a980027e0cfd55"
+            },
+            "result.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/result.json",
+              "bytes": 1485,
+              "sha256": "b5373d885980e66a935db44d675a8f2a51e1d65d7ce1f01993ca0993d18c8f71"
+            },
+            "native-check.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.json",
+              "bytes": 946,
+              "sha256": "338cb4a706f35868864e0f9808793c0af838da514888c558bf58013eb2095987"
+            },
+            "native-check.stdout.log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.stdout.log",
+              "bytes": 433,
+              "sha256": "e7be178cebafed1d3b80ad49c933cf3efa9d169c3565ff3fcfc3535721dcc333"
+            },
+            "native-check.stderr.log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.stderr.log",
+              "bytes": 768,
+              "sha256": "d2182ac44e8fc75256c041526f4002d0dc7d7775a715dc1da37749640b2f9265"
+            },
+            "native-check.supervisor.stderr.log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.supervisor.stderr.log",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          },
+          "runner_hold": {
+            "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-1/source-ready.json",
+            "bytes": 1106,
+            "sha256": "fa0b60c75a091f6ff351807ccfed7e402c9bd821ea903b1cf886e7132734242e"
+          },
+          "report": {
+            "schema": 1,
+            "kind": "native-benchmark",
+            "mode": "check",
+            "route": "native-raster",
+            "requested_frames": 1,
+            "completed_frames": 0,
+            "accepted_frames": 0,
+            "scene_hex": "",
+            "width": 3825,
+            "height": 2085,
+            "generation": 1,
+            "viewport_revision": 3,
+            "scale_factor": 1,
+            "source_load_ms": null,
+            "edit_sequence": 0,
+            "diagnostics": 0,
+            "checked": false,
+            "failure": "Vulkan target exceeds the four-megapixel/8192-axis budget",
+            "owner_failure": null,
+            "owner_init_ns": null,
+            "samples": []
+          },
+          "cleanup_complete": true,
+          "adopted_descendants": 0,
+          "verified_frames": 0,
+          "verified_active_bytes": 0,
+          "timing_samples": 0
+        },
+        {
+          "status": "unverified",
+          "hardware_claim": false,
+          "records": {
+            "inputs.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/inputs.json",
+              "bytes": 14475,
+              "sha256": "fc785ed0792a8f3ae9d562e35b9ff969b6e0484d23e1d2ccdeedc863894ae350"
+            },
+            "result.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/result.json",
+              "bytes": 1404,
+              "sha256": "015b325383cbbc34fe4c982d6144594856deef1749f80bc420753b89ee73b65e"
+            },
+            "native-check.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.json",
+              "bytes": 873,
+              "sha256": "e3e5f70176a6157d418d6fcc5cf12d7d91a862a75185c35a3ebcf4c3aed130f4"
+            },
+            "native-check.stdout.log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.stdout.log",
+              "bytes": 433,
+              "sha256": "e7be178cebafed1d3b80ad49c933cf3efa9d169c3565ff3fcfc3535721dcc333"
+            },
+            "native-check.stderr.log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.stderr.log",
+              "bytes": 458,
+              "sha256": "5870d8a39e841b04f3413e42963de01dd3289fb424949509ad4469d749e3eb7c"
+            },
+            "native-check.supervisor.stderr.log": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.supervisor.stderr.log",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "launch.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/launch.json",
+              "bytes": 2920,
+              "sha256": "8baa28e3f344981ecb68189bb8cca50269cb5db913bb0548374b320f1001b6ec"
+            },
+            "owned-control.json": {
+              "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/owned-control.json",
+              "bytes": 2482,
+              "sha256": "8c0ac2c4ff701c8685c57b76a512c737342fca46cb988ec1b3cc49f2d2269a8b"
+            }
+          },
+          "runner_hold": {
+            "path": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/source-ready.json",
+            "bytes": 2736,
+            "sha256": "deb7729114c368a86027a5939d6297afdfaf332e676ec8a048e602cf189653a7"
+          },
+          "report": {
+            "schema": 1,
+            "kind": "native-benchmark",
+            "mode": "check",
+            "route": "native-raster",
+            "requested_frames": 1,
+            "completed_frames": 0,
+            "accepted_frames": 0,
+            "scene_hex": "",
+            "width": 3825,
+            "height": 2085,
+            "generation": 1,
+            "viewport_revision": 3,
+            "scale_factor": 1,
+            "source_load_ms": null,
+            "edit_sequence": 0,
+            "diagnostics": 0,
+            "checked": false,
+            "failure": "Vulkan target exceeds the four-megapixel/8192-axis budget",
+            "owner_failure": null,
+            "owner_init_ns": null,
+            "samples": []
+          },
+          "cleanup_complete": true,
+          "adopted_descendants": 0,
+          "verified_frames": 0,
+          "verified_active_bytes": 0,
+          "timing_samples": 0
+        }
+      ],
+      "verified_frames": 0,
+      "verified_active_bytes": 0,
+      "timing_samples": 0,
+      "reason": "Both actual attempts refused compositor size3825x2085 before verification under unchanged target caps; owned-window retry exited before control/document release."
+    },
+    "parent_controls": {
+      "status": "observed expected baseline failures",
+      "run": {
+        "command": [
+          "cargo",
+          "+1.88.0",
+          "test",
+          "--locked",
+          "--offline",
+          "--features",
+          "raster-bridge",
+          "--no-fail-fast",
+          "native_line_",
+          "--",
+          "--include-ignored"
+        ],
+        "exit": 101,
+        "elapsed_seconds": 12.540880361106247,
+        "log": "parent-lines-2.log",
+        "sha256": "911b7bca652cd2929d4df20a6b0a83344bd1550fd0b9ad1865a4b336a76b07af"
+      },
+      "groups": [
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_validates_hidden_geometry_before_debit",
+          "ok"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_original_order_controls_box_budget_location",
+          "FAILED"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_empty_inner_loops_keep_structural_caps",
+          "FAILED"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_transparency_and_zero_opacity_keep_debt",
+          "FAILED"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_fractional_clip_and_translation",
+          "FAILED"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_phases_restore_fixed_and_clip_state",
+          "FAILED"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_literal_geometry_and_rect_plans",
+          "FAILED"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_forty_small_lines_are_960_pixels",
+          "FAILED"
+        ],
+        [
+          "graphics::raster_bridge::native::tests::line_accounting_tests::native_line_accounting_exact_shared_cpu_boundary_and_one_over",
+          "ok"
+        ],
+        [
+          "native_line_loaded_decorations_admit_exact_plan_and_literal_pixels",
+          "FAILED"
+        ]
+      ],
+      "passed": 2,
+      "failed": 8,
+      "qualifications": "All 10 groups ran. Failed groups stop at first assertion, so later table rows were not reached; no claim that all 59 planned native calls or 2 page passes ran on parent. Initial compile refusal parent-lines-1 retained separately. Production was exact published parent."
+    },
+    "preservation": {
+      "production_files": 1,
+      "production_chunks": 4,
+      "limits_lowering_shaders_core_unchanged": true,
+      "historical_test_migrations": 4,
+      "historical_test_renames": 1,
+      "new_public_groups": 9,
+      "new_loaded_page_groups": 1,
+      "literal_oracles_preserved": true
+    },
+    "observed_page": {
+      "viewport": [
+        512,
+        512
+      ],
+      "commands": 27,
+      "text": 9,
+      "lines": 18,
+      "line_pixel_work": 360,
+      "glyph_work": 9,
+      "total_work": 369,
+      "old_line_reservation": 4718592,
+      "unchanged_cpu_limit": 4194304,
+      "packed_draws": 19,
+      "padded_invocations": 526592,
+      "colored_pixels": 360,
+      "repeated_checks": 2
+    },
+    "retained_attempts": [
+      "Parent compile E0271 and unused_mut correction.",
+      "Observed parent2pass8fail; failed table groups stop at first assertion.",
+      "Strict lint excessive_precision resolved by scoped attributes without literal changes.",
+      "Checker rename path correction caught before execution.",
+      "Both hardware attempts refused oversized compositor tile; complete process teardown, no verified frame.",
+      "Unexecuted finalizer draft1 assumed hardware success; additive finalizer2 checks actual failures and publishes an explicitly unverified hardware status."
+    ],
+    "qualifications": [
+      "Pixel work counts inner pixel visits/span elements, not all CPU instructions; structural caps bound empty outer rows.",
+      "Line/Box refusal attribution now follows original geometry order; complete malformed-input validation still precedes debit.",
+      "The512x512 CPU-plan/pixel witness is separate from hardware attempts. No successful GPU/readback/compositor correctness claim is made.",
+      "Source inventory is cumulative selected inputs, not a complete build graph.",
+      "No Chromium performance comparison, full web compatibility or production-security claim. Unchanged JavaScript conformance profiles were not rerun for this native-only change."
+    ],
+    "finalizer": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/finalize-validation-2.py",
+      "bytes": 18575,
+      "sha256": "0ce81f73f2de1c7b12ef7788edd11c648875caa347de494c7446e90bbbe37725"
+    }
+  },
+  "claims_authority": {
+    "ledger": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/root/final-validation.json",
+      "bytes": 23600,
+      "sha256": "9c79b04ce06f25d45e23633bf16be67672e76b389eb4fdc00127d01f3edd6e66"
+    },
+    "peer": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/final-review.json",
+      "bytes": 10631,
+      "sha256": "5437618bba6be2ff327bcf0a9f6854a10328b724e581a6c6e5a822d4e57c4391"
+    },
+    "documentation_peer": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-review-1/review.json",
+      "bytes": 9481,
+      "sha256": "27be9d61a2860b81dce84bce66dde9df26549626b23acd89ffd2c30c869a0ff2"
+    },
+    "documentation_hold": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/source-ready.json",
+      "bytes": 10031,
+      "sha256": "2781b1cb798febc8aca35f0df80af7704ebeae3d501972bfd2ee39fde4bbcb19"
+    },
+    "implementation_hold": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/implementation-1/source-ready.json",
+      "bytes": 2743,
+      "sha256": "d62e8d800d5e8c7aba6536cac0f4011c6f1ad24a3b682519b817d46a11303c20"
+    },
+    "migration_hold": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/source-ready.json",
+      "bytes": 5206,
+      "sha256": "23df841952f659e907cc6e7d52150c7f402ac94f1421acf34c1eb4d4dd10cea4"
+    },
+    "public_test_hold": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/source-ready.json",
+      "bytes": 6516,
+      "sha256": "fd3a34ca773052a4e92643812e6844c6ba1b055a4465282c5fecf46f60801a48"
+    },
+    "browser_test_hold": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/source-ready.json",
+      "bytes": 3237,
+      "sha256": "38feafd1afa2b493bc5d3c3892f44471d274ef9aff58423ce01da2b72518fc28"
+    },
+    "production_peer": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/review-production-1/review.json",
+      "bytes": 4057,
+      "sha256": "e6b63fa968f11afb4638348776d09d12280358a4044b0e72e06051cfd3ee095f"
+    },
+    "test_peer": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/review-tests-1/review.json",
+      "bytes": 19564,
+      "sha256": "056e19622490b279af9581c9bf9c5df24d2758cfbbad0825179b622cae40495a"
+    },
+    "test_compile_correction_peer": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/review-tests-1/compiler-correction-review.json",
+      "bytes": 1605,
+      "sha256": "001e9f46defdc74fdacca8d947b148d4123512445c9c6f4e6c862f30205dd13e"
+    },
+    "format_review": {
+      "path": "/tmp/eris-vulkan-line-accounting-plan-1/format-review-1/review.json",
+      "bytes": 3301,
+      "sha256": "51292818f54efce2b4fcea083ca2f6865830f955bdf18ed197fcd8347d7fa1b0"
+    }
+  },
+  "selection": {
+    "path": "/tmp/eris-vulkan-line-accounting-plan-1/root/evidence-selection.json",
+    "bytes": 92804,
+    "sha256": "fb1a074cc2dbd15b979440036dd6f13668dcb6d3a038586a4a1b9fedb2062d5d"
+  },
+  "members": [
+    {
+      "path": "artifacts/author-evidence-tools.py",
+      "bytes": 9709,
+      "sha256": "f5cab68ae7c9235ca06de5f0b703acd03e53ebaa69464370d8935d695af950c4",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/author-evidence-tools.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/author-migrations.py",
+      "bytes": 9674,
+      "sha256": "349b99f3fb3f8b758e4d4335b65fd8e2d56cd26596a3e68747cb2e53ca9b3654",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/author-migrations.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/author-production-2.py",
+      "bytes": 7608,
+      "sha256": "727b678e38296923e42db03b817486291129ec0176e7da98293278d2bfa3e8d7",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/author-production-2.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/author-production.py",
+      "bytes": 7164,
+      "sha256": "24f4aaea76113509c38953796e083973281b9e97099fd9d5a6b3a5d8414fcee8",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/author-production.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/examples/vulkan-lines.html",
+      "bytes": 791,
+      "sha256": "b46abbb795c538f561e99855864c8017c240abf0074826abc628f377ffb55526",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/examples/vulkan-lines.html",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/src/graphics/raster_bridge/native.rs",
+      "bytes": 87615,
+      "sha256": "f81e875c2ecdc014944c2583e27b7ee0aa3fcfe7f21e5e41015c02e0136a76da",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/src/graphics/raster_bridge/native.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "bytes": 5529,
+      "sha256": "700be55a50229ba4ecd0de7b41a23cc99524e6cbb629b7933e491866f1c06975",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "bytes": 16708,
+      "sha256": "49604e9c9b4243d1e62b9dc5359ad8647ba56440555422cf4665e731d0f5a52c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/src/graphics/raster_bridge/native/line_accounting_tests.rs",
+      "bytes": 14367,
+      "sha256": "dddcb3b5e902ce4c0fd44d420a3c73f798d1e4b8facf985b58fe8af06992d807",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/src/graphics/raster_bridge/native/line_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "bytes": 16219,
+      "sha256": "9f54daa3075bd18b03e840f6f907eb36828c85a2b6162f63ad1c28134b395312",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "bytes": 14629,
+      "sha256": "a05c4334721de8354ed963fad939c2ce0f1402dee629b48a898cb70865480d73",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 40037,
+      "sha256": "574bb24ad77c98027060823b40a8c1bd08991358356b0cc7906ca1d22851a244",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/src/graphics/raster_bridge/native/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/tests/support/vulkan_lines.rs",
+      "bytes": 6308,
+      "sha256": "bb4b556d616a312651fea9cf0d55d545992094b42db830582f4fa73cb2ec8d2f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/tests/support/vulkan_lines.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/before-format-1/tests/vulkan_lines.rs",
+      "bytes": 1697,
+      "sha256": "959ff0e6d587dfd350d9de7104912c3f497bf3fd4da5fbb05e530e0ef3b319ab",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/before-format-1/tests/vulkan_lines.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/checks.json",
+      "bytes": 2062,
+      "sha256": "415692e0d6937d3ae0d2b1202f9f58918a027f1b0c7568b717acc23b8db090fa",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/contract.json",
+      "bytes": 15197,
+      "sha256": "6871ed354c4cc57665a81ceb49496525e1f74a5bab4ae9019e66960ad223bb39",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/contract.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/diff/examples/vulkan-lines.html.diff",
+      "bytes": 870,
+      "sha256": "c4dfd9ab966a02c8322e83084ca45e8de977fb6eb190093096e60f9d7606e08f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/diff/examples/vulkan-lines.html.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/diff/tests/support/vulkan_lines.rs.diff",
+      "bytes": 6516,
+      "sha256": "4a6dd59e559b3b1a300617566cb48fd4df5de6346cd8ea6feb90ef458cae377f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/diff/tests/support/vulkan_lines.rs.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/diff/tests/vulkan_lines.rs.diff",
+      "bytes": 1813,
+      "sha256": "2c65e244cf04fe18d294957c17e76f4705db8448f61079e76ca92f775f0b46b3",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/diff/tests/vulkan_lines.rs.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/hardware-recipe.json",
+      "bytes": 4049,
+      "sha256": "055f1c78f3b7435e32991e7a4151c7cecc77df9c2316951b6407cd5365cc66aa",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/hardware-recipe.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/literal-ready.json",
+      "bytes": 521,
+      "sha256": "6285a6cad17d6e7f3bedfc1ac843fb6bdf70b247188f783b4750a7c084a4d4c5",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/literal-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/pixel-oracle.json",
+      "bytes": 385,
+      "sha256": "daf58ade74496c8bb95349dee6f12fac795d0d5c8afa5c53d36787c30b13060e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/pixel-oracle.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/raw/examples/vulkan-lines.html",
+      "bytes": 791,
+      "sha256": "b46abbb795c538f561e99855864c8017c240abf0074826abc628f377ffb55526",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/raw/examples/vulkan-lines.html",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/raw/tests/support/vulkan_lines.rs",
+      "bytes": 6301,
+      "sha256": "87fe9de8af0049d1febc8df387acb93227d1d09d8bf2c88cfb1417b1b1c2216e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/raw/tests/support/vulkan_lines.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/raw/tests/vulkan_lines.rs",
+      "bytes": 1701,
+      "sha256": "dab5e3448011717f26d6c153e489c9f720c7d49ec97cd265032a3d01a35ec1af",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/raw/tests/vulkan_lines.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/browser-witness-1/source-ready.json",
+      "bytes": 3237,
+      "sha256": "38feafd1afa2b493bc5d3c3892f44471d274ef9aff58423ce01da2b72518fc28",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/browser-witness-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/author-draft.py",
+      "bytes": 15529,
+      "sha256": "53ae4c2b89c06b35bb47e02f75095fc5da4c58cccf07371fc2d489f8835f13a8",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/author-draft.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/README.md",
+      "bytes": 65941,
+      "sha256": "c00d1319e8241fb276785e5338a591086f11cb39bccf6aa5570a1b55e93e4a14",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/before/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/ROADMAP.md",
+      "bytes": 41641,
+      "sha256": "74bfad9e5d5bd8e238fa55d973576f4bdbe9b7052db41f3cc90bff134e1d6f01",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/before/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/SECURITY.md",
+      "bytes": 96963,
+      "sha256": "bb6b407bb786b9af0a17f4fd9e29bf8f7912c6bd0ea351603d546044eb976c32",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/before/docs/SECURITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/VALIDATION.md",
+      "bytes": 385092,
+      "sha256": "81a1150dab11e7d17646d1ef858bf7cb8ab375dc451479328b51845ded5d5ffd",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/before/docs/VALIDATION.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/before/docs/vulkan-native-window.md",
+      "bytes": 16485,
+      "sha256": "64a2d5ad4f9effca54bf33db9bbce4cff3fc69bdfb4f872eb4d74249852b04be",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/before/docs/vulkan-native-window.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/claims-and-checks.json",
+      "bytes": 26879,
+      "sha256": "0d132ae1795e57cd9f45a5036496e1baa8666e63cbb9e813a36459c3e0969d71",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/claims-and-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/claims-draft.json",
+      "bytes": 4000,
+      "sha256": "83cbb6eed370fae4090a78a37957780a69d321fa53dd6fd0ea805e169055edbe",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/claims-draft.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diff/README.md.patch",
+      "bytes": 701,
+      "sha256": "bf86369160bc732efce9e900b57db77ea189c6a344a4ddbc90566b082b8451ef",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/diff/README.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diff/docs/ROADMAP.md.patch",
+      "bytes": 1004,
+      "sha256": "07430d2f8f6ddc92a189db705bfd78cb7b44c2a437bf63416072a7923136ade0",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/diff/docs/ROADMAP.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diff/docs/SECURITY.md.patch",
+      "bytes": 6238,
+      "sha256": "96ccdee1a32bf71cc56caeea4ff81b451af7c2e8e2c29f7ce0e9a54f11582f27",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/diff/docs/SECURITY.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diff/docs/VALIDATION.md.patch",
+      "bytes": 2953,
+      "sha256": "5b843cdcac26fba7b08c87315aa188200c4207771139bd91a044b0854d3bcbca",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/diff/docs/VALIDATION.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diff/docs/vulkan-line-accounting.md.patch",
+      "bytes": 6655,
+      "sha256": "8b199d14633bb50728a4839807e965b3b58477291acdc0873d085bca48c4b9ed",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/diff/docs/vulkan-line-accounting.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/diff/docs/vulkan-native-window.md.patch",
+      "bytes": 1686,
+      "sha256": "296bc4b293f642323413fef536576bd3176f073f66ed20a7d16f70e8d5bc3308",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/diff/docs/vulkan-native-window.md.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/draft-checks.json",
+      "bytes": 2604,
+      "sha256": "75b53be5b536917820a6cbfb5fbf2e5030e7371b50cef17a24a0fc38e1b71f14",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/draft-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/draft-status.json",
+      "bytes": 8495,
+      "sha256": "74bf4e9d4f1fee3871b1e1e7cbbced974e0cfffe6daa9186f857c64a06269d2f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/draft-status.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/README.md",
+      "bytes": 66235,
+      "sha256": "1af4c4720b70972ccd1d80838ef29daad95d77d6da62b8dd026a38cbb2fa30ff",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/raw/README.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/ROADMAP.md",
+      "bytes": 41790,
+      "sha256": "f545ad4088d94c637a26fc5f0eee17556338abc968241d4d22e2b3056cad91a9",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/raw/docs/ROADMAP.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/SECURITY.md",
+      "bytes": 97552,
+      "sha256": "66d3086976dd0474910b67148d1b74fef964a2b8048c25965ff0b0d7847ee8b7",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/raw/docs/SECURITY.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/VALIDATION.md",
+      "bytes": 387878,
+      "sha256": "0087ef3762affd4cd43f49364d128fdf0b42d6adc05810ce1c096502a9f0f449",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/raw/docs/VALIDATION.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/vulkan-line-accounting.md",
+      "bytes": 6483,
+      "sha256": "831063e4c9ed38380c0f95e9920cea52c2c3002001de47d85a056b4e95028063",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/raw/docs/vulkan-line-accounting.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/raw/docs/vulkan-native-window.md",
+      "bytes": 16772,
+      "sha256": "e3678d78adf7cf4a0f67b6644aedbb820fdd3c4d9d930b25d266cfe46167fc5a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/raw/docs/vulkan-native-window.md",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/seal.py",
+      "bytes": 10798,
+      "sha256": "a275d84b06d0000a930f7996f380947817da1f2044677aef87adeca54dbf8175",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/seal.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-1/source-ready.json",
+      "bytes": 10031,
+      "sha256": "2781b1cb798febc8aca35f0df80af7704ebeae3d501972bfd2ee39fde4bbcb19",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-review-1/final-ledger-checks.json",
+      "bytes": 8344,
+      "sha256": "cff2035af26b3c8373c307f9c2922644ec43b4205dba78f473d164dc33639de8",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-review-1/final-ledger-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-review-1/hardware-observation-review.json",
+      "bytes": 3816,
+      "sha256": "b543d675ed990cc44fe46756dfeba65ef9fa2216581f123f9fbcbed675adf856",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-review-1/hardware-observation-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-review-1/interim-review.json",
+      "bytes": 6184,
+      "sha256": "e269457cbfa33e02c28e0ca07f42acc945d3451f7fa023e62cdaf75e21cf6006",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-review-1/interim-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/documentation-review-1/review.json",
+      "bytes": 9481,
+      "sha256": "27be9d61a2860b81dce84bce66dde9df26549626b23acd89ffd2c30c869a0ff2",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/documentation-review-1/review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/execution-contract.json",
+      "bytes": 2320,
+      "sha256": "6e17d96530a7e3fbeeb89c703965f1c6cb04ca6671e75081ef298ad511dde782",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/execution-contract.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/publish-evidence.py",
+      "bytes": 11311,
+      "sha256": "7dad6bba568634ee15a6187094f3534bde2503f1055a3ac90411f863011680ea",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/publish-evidence.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/publish-evidence.py.before",
+      "bytes": 9293,
+      "sha256": "02c5aa9fffb72c5d11caf125bd3f5f596124a5a93fa1a4eca767ec32b2f049ca",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/publish-evidence.py.before",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/publish-evidence.py.diff",
+      "bytes": 7431,
+      "sha256": "4264cd434e728ddab6625aa174a331ee0677602804b37e1b4d42ea1450014761",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/publish-evidence.py.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/source-checks.json",
+      "bytes": 1627,
+      "sha256": "9ad4da65ef352200f02870e06e30074ea0ac9dea04c452ae8667e809febafdd3",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/source-checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/source-ready.json",
+      "bytes": 1866,
+      "sha256": "8044b90b43438446e2643c16f54d56c63ac06917428ce4e58e10b680d44a0513",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/verify-publication.py",
+      "bytes": 11194,
+      "sha256": "867f8df75a80425ed00ba32ad45fe8b7ab5a2e5bbc42ffb7afa8329c0b5f6648",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/verify-publication.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/verify-publication.py.before",
+      "bytes": 9064,
+      "sha256": "d36762eb37694d61958e469dd95f24cebcc4628601f9d47740257bb3c746d247",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/verify-publication.py.before",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-1/verify-publication.py.diff",
+      "bytes": 8648,
+      "sha256": "a89591117ad7e0c7e71a9625344dae8de43f0ecc685b9fd5377190e2aa3fe39b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-1/verify-publication.py.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-2/delta.json",
+      "bytes": 948,
+      "sha256": "472d249ea69753fa75c1e366fafe38c8905a6590ca78e746a438abbcd78810d2",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-2/delta.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-2/execution-contract.json",
+      "bytes": 2320,
+      "sha256": "e41d0bfb4906982bb858774201034bc04c7749f4db066d9d1c08a8ff51f85b3f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-2/execution-contract.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-2/publish-evidence.py",
+      "bytes": 11311,
+      "sha256": "d14f9ee28701a9f6d8fb85c94d0ffb25ec0f3229b3dca66198ec585afd517975",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-2/publish-evidence.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-2/publish-evidence.py.diff",
+      "bytes": 1483,
+      "sha256": "045a2db67a90a7a659118920f48de89354f089439108f4781c2bb81d2fd76305",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-2/publish-evidence.py.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-2/source-ready.json",
+      "bytes": 1434,
+      "sha256": "442024c189ab76337df61566087d567d4871aa3651497e175237777b93567b91",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-2/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-2/verify-publication.py",
+      "bytes": 11194,
+      "sha256": "2625ab85e73031cbb30b295cdc710b09861e30d433136e29c9fd526c508a6788",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-2/verify-publication.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/evidence-tools-2/verify-publication.py.diff",
+      "bytes": 1874,
+      "sha256": "8099c2e70e59dcf74de6d7331f14020184a2aa854b7a0b06cf7f2738423da3b4",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/evidence-tools-2/verify-publication.py.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/format-review-1/review.json",
+      "bytes": 3301,
+      "sha256": "51292818f54efce2b4fcea083ca2f6865830f955bdf18ed197fcd8347d7fa1b0",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/format-review-1/review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/format-review-1/src__graphics__raster_bridge__native__line_accounting_tests.rs.diff",
+      "bytes": 20809,
+      "sha256": "ed17ed9ab67b918952282989eb591cd5d09c8b794cad7b3a1f010bb5d6f70705",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/format-review-1/src__graphics__raster_bridge__native__line_accounting_tests.rs.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/format-review-1/tests__support__vulkan_lines.rs.diff",
+      "bytes": 4948,
+      "sha256": "07a00cea73b6df4604bd8da22339de5415294a106798feafb8085272c5c0321b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/format-review-1/tests__support__vulkan_lines.rs.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/format-review-1/tests__vulkan_lines.rs.diff",
+      "bytes": 383,
+      "sha256": "df3a56a0d72f03b681234b343008024d97fce5a052e04912f4b746bb6ffafddd",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/format-review-1/tests__vulkan_lines.rs.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-1/inputs.json",
+      "bytes": 13265,
+      "sha256": "1528c13651e7802246904a99186e870d86324ea2679895b475a980027e0cfd55",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/inputs.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-1/native-check.json",
+      "bytes": 946,
+      "sha256": "338cb4a706f35868864e0f9808793c0af838da514888c558bf58013eb2095987",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-1/native-check.stderr.log",
+      "bytes": 768,
+      "sha256": "d2182ac44e8fc75256c041526f4002d0dc7d7775a715dc1da37749640b2f9265",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.stderr.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-1/native-check.stdout.log",
+      "bytes": 433,
+      "sha256": "e7be178cebafed1d3b80ad49c933cf3efa9d169c3565ff3fcfc3535721dcc333",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.stdout.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-1/native-check.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/native-check.supervisor.stderr.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-1/result.json",
+      "bytes": 1485,
+      "sha256": "b5373d885980e66a935db44d675a8f2a51e1d65d7ce1f01993ca0993d18c8f71",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-1/result.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/inputs.json",
+      "bytes": 14475,
+      "sha256": "fc785ed0792a8f3ae9d562e35b9ff969b6e0484d23e1d2ccdeedc863894ae350",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/inputs.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/launch.json",
+      "bytes": 2920,
+      "sha256": "8baa28e3f344981ecb68189bb8cca50269cb5db913bb0548374b320f1001b6ec",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/launch.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/native-check.json",
+      "bytes": 873,
+      "sha256": "e3e5f70176a6157d418d6fcc5cf12d7d91a862a75185c35a3ebcf4c3aed130f4",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/native-check.stderr.log",
+      "bytes": 458,
+      "sha256": "5870d8a39e841b04f3413e42963de01dd3289fb424949509ad4469d749e3eb7c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.stderr.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/native-check.stdout.log",
+      "bytes": 433,
+      "sha256": "e7be178cebafed1d3b80ad49c933cf3efa9d169c3565ff3fcfc3535721dcc333",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.stdout.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/native-check.supervisor.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/native-check.supervisor.stderr.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/owned-control.json",
+      "bytes": 2482,
+      "sha256": "8c0ac2c4ff701c8685c57b76a512c737342fca46cb988ec1b3cc49f2d2269a8b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/owned-control.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-check-2/result.json",
+      "bytes": 1404,
+      "sha256": "015b325383cbbc34fe4c982d6144594856deef1749f80bc420753b89ee73b65e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-check-2/result.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/compiler-correction-review.json",
+      "bytes": 2022,
+      "sha256": "e9bc7b7f05787ce3be18ad6f14df8d713d5df2b56a0f90989fb7cf1eef197863",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/compiler-correction-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/documentation-map.json",
+      "bytes": 3362,
+      "sha256": "c65239277cfae8594aabdc98703de1937cd07dbcbc2a94cae89e047b114378ca",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/documentation-map.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/environment.json",
+      "bytes": 18521,
+      "sha256": "4c83edda85a7dc6aebcc3160c07cc9c753f2c9eb555760641fc9e05f07d2742a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/hardware-command.json",
+      "bytes": 5598,
+      "sha256": "aa5fb26179620c69d09513b6178ead2e435ed7c67286851216daf8d8650b2b34",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/hardware-command.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/inspect.py",
+      "bytes": 15273,
+      "sha256": "92df8266a3cf4e754c2c1e7c5d8316edfd93bed9d647f264d53580d1e89798a2",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/inspect.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/root-command.sh",
+      "bytes": 1939,
+      "sha256": "d808742f83d5eb9d43d4aa86ca9d8cbce76ba44c356509bb8ea0933ed81ff08d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/root-command.sh",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/source-bindings.json",
+      "bytes": 4644,
+      "sha256": "1d75292e2d345cacd1fe24ba92b0636525adf5537de97c524e5f4a73da6c619d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-readiness-1/source-ready.json",
+      "bytes": 2169,
+      "sha256": "b5bd1954984a237d7918b32925171ce51564929d0eb5d4ee5ce24ac0bb7a04a0",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-readiness-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-1/checks.json",
+      "bytes": 2100,
+      "sha256": "77841be395f7dfccc40360fcc325b44f0e57f0eb61adb87ccdac1813d97e7f42",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-1/checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-1/contract.json",
+      "bytes": 11566,
+      "sha256": "e767235b334da00c9a2e9d2eb9d8e9768104b714fcf70587a9087beab9ef985e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-1/contract.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-1/run-hardware.py",
+      "bytes": 11480,
+      "sha256": "a43749989f42acb4a138d780059097291d84be2d317a2b2b813f87af6ad50f65",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-1/run-hardware.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-1/source-ready.json",
+      "bytes": 1106,
+      "sha256": "fa0b60c75a091f6ff351807ccfed7e402c9bd821ea903b1cf886e7132734242e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-1/usage.json",
+      "bytes": 1646,
+      "sha256": "e7a9b9eb5a9d40440fd9bb444778fbdb04a0462aa2226dcf47fac1282d53db55",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-1/usage.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/author-runner.py",
+      "bytes": 6625,
+      "sha256": "c7ff090b8c174c37a97c1a92e7597ce53a3b59db4a29ec06f66012001fce0ae1",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/author-runner.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/checks.json",
+      "bytes": 3172,
+      "sha256": "50bd5881699ce3893661999aaac57d2e968be0bddb19a0002ff80e0aec3a2901",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/contract.json",
+      "bytes": 13764,
+      "sha256": "4bd23080625096a1f2a0517ccb204afcf12555ed2b9aa2bf9f4ea4fd6e7d98d9",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/contract.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/make-owned.py",
+      "bytes": 7052,
+      "sha256": "f82344768e44f06c86b54376926e1c256803c98a34d455ba74bba1b005e30947",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/make-owned.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/owned-window.py",
+      "bytes": 15481,
+      "sha256": "278fe005e3da53741d8f83cf7556fa2c769e13e98570ad13325af8e22f7cf68c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/owned-window.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/owned-window.py.diff",
+      "bytes": 15855,
+      "sha256": "d4480dcbd00bc1aba6b661c4cc123a30c63aa650146c303fa2cc20f4faa1d5f1",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/owned-window.py.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/relay-after.txt",
+      "bytes": 9358,
+      "sha256": "409c94a865d750aa70e2a38ec73c2ef3a2a1f8a1264f3aebfa0b6a56cc930b95",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/relay-after.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/relay-before.txt",
+      "bytes": 9360,
+      "sha256": "8281b5e8e8e428ca43c3b98fdec87d18ee5d3535c592523c6c699de4be7cdd31",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/relay-before.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/relay.diff",
+      "bytes": 855,
+      "sha256": "11f1fbcc1c0e18c7074af49c99c3167154c04593b9c7c687dfcad09853967642",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/relay.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/run-hardware.py",
+      "bytes": 17020,
+      "sha256": "d407564fec1a4f14a09356de59e354edf5e614cc61d587656340d01c23f7797e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/run-hardware.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/run-hardware.py.diff",
+      "bytes": 8345,
+      "sha256": "ec029ebb1d4e3f84f93267774ba4c18aa82c2f84b14973eb9c98f599991b936c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/run-hardware.py.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/source-ready.json",
+      "bytes": 2736,
+      "sha256": "deb7729114c368a86027a5939d6297afdfaf332e676ec8a048e602cf189653a7",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-2/usage.json",
+      "bytes": 1130,
+      "sha256": "9aff2692f99a3935df36398591fbbfd8e052235e54970e093125b551239f3653",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-2/usage.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-review-1/review.json",
+      "bytes": 4570,
+      "sha256": "af5f7e763777fdd92021b5412669874ddb34a2c386b4717eb37a1064f898a90d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-review-1/review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/hardware-runner-review-2/review.json",
+      "bytes": 3579,
+      "sha256": "239718401b739948257ac12a29dfeb0ca72b0d6960542108686470c4c8152461",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/hardware-runner-review-2/review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/implementation-1/before/src/graphics/raster_bridge/native.rs",
+      "bytes": 86940,
+      "sha256": "aaf90707de65a1dbdad3b4282ff531b1077627841ec8448a6cbff0227e6d2967",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/implementation-1/before/src/graphics/raster_bridge/native.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/implementation-1/chunks.json",
+      "bytes": 2743,
+      "sha256": "090984062464d2134a4874b9e89648f349e0b95ca3b9d19b9b1fd0cdcc343d16",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/implementation-1/chunks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/implementation-1/diff/src/graphics/raster_bridge/native.rs.patch",
+      "bytes": 2750,
+      "sha256": "4d8de9ac9582dd9955da8b329c50ad23014c18e32b8a39fad5baf9162371afa5",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/implementation-1/diff/src/graphics/raster_bridge/native.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/implementation-1/preservation.json",
+      "bytes": 1478,
+      "sha256": "d14fd311cb766ba4264bb1559f494f06c4930f444f85b5c5b3adca140ad18dca",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/implementation-1/preservation.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/implementation-1/raw/src/graphics/raster_bridge/native.rs",
+      "bytes": 87615,
+      "sha256": "f81e875c2ecdc014944c2583e27b7ee0aa3fcfe7f21e5e41015c02e0136a76da",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/implementation-1/raw/src/graphics/raster_bridge/native.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/implementation-1/source-ready.json",
+      "bytes": 2743,
+      "sha256": "d62e8d800d5e8c7aba6536cac0f4011c6f1ad24a3b682519b817d46a11303c20",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/implementation-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "bytes": 5582,
+      "sha256": "dcbeb1052c1b2b2017be03364224d274e823e5f12a0ac52f94e043f94357a939",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/before/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "bytes": 16708,
+      "sha256": "f2fa3c3ebb4cf582b4c46364b0786bc0f322ad594c1b5b4e22a9c8a0ba2546f7",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/before/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "bytes": 16217,
+      "sha256": "ab53869b20d80e17621dd1146d681eeebe92a43314167b1b5ad5e628351ab2a9",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/before/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/before/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "bytes": 14550,
+      "sha256": "d56f8c3547c195152089d3fe4b8f2e515d842d7b668f8c17188aa2f63f62d5af",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/before/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/chunks.json",
+      "bytes": 4414,
+      "sha256": "9392171818ef1b33a11c195a208d901edc5d2a9dfe1e3cc5e6b50433b3109509",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/chunks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diff/src/graphics/raster_bridge/native/box_prepass_tests.rs.patch",
+      "bytes": 3077,
+      "sha256": "b86b12de6d6102b3e95f7d4b793ffa851b83b0a9a849d093fc8a537caed40e4b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/diff/src/graphics/raster_bridge/native/box_prepass_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diff/src/graphics/raster_bridge/native/image_accounting_tests.rs.patch",
+      "bytes": 694,
+      "sha256": "580840aa560c1cd83402fdbab041424a4672b8f8dfc34f3f0309c71b2c17b786",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/diff/src/graphics/raster_bridge/native/image_accounting_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diff/src/graphics/raster_bridge/native/rect_accounting_tests.rs.patch",
+      "bytes": 694,
+      "sha256": "e9d88f42766f5008ea8fda177e1b89e5aade26d7634351e2673f22ba22499161",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/diff/src/graphics/raster_bridge/native/rect_accounting_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/diff/src/graphics/raster_bridge/native/scope_accounting_tests.rs.patch",
+      "bytes": 536,
+      "sha256": "b6499a11db16f59806a028b34b9d482122b3f9a229f3c2a1d171f055bc6092bb",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/diff/src/graphics/raster_bridge/native/scope_accounting_tests.rs.patch",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "bytes": 5529,
+      "sha256": "700be55a50229ba4ecd0de7b41a23cc99524e6cbb629b7933e491866f1c06975",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/raw/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "bytes": 16708,
+      "sha256": "49604e9c9b4243d1e62b9dc5359ad8647ba56440555422cf4665e731d0f5a52c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/raw/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "bytes": 16219,
+      "sha256": "9f54daa3075bd18b03e840f6f907eb36828c85a2b6162f63ad1c28134b395312",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/raw/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/raw/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "bytes": 14629,
+      "sha256": "a05c4334721de8354ed963fad939c2ce0f1402dee629b48a898cb70865480d73",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/raw/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/roster.json",
+      "bytes": 4777,
+      "sha256": "69e43aa1f4c8ba8c4c0e4b7951042a68a5238a3dd94049fdde283d97deb2963e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/migrations-1/source-ready.json",
+      "bytes": 5206,
+      "sha256": "23df841952f659e907cc6e7d52150c7f402ac94f1421acf34c1eb4d4dd10cea4",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/migrations-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/production-authoring-qualification-1.json",
+      "bytes": 745,
+      "sha256": "470bdd104422f943031531147338c92265bcd560b554f7112564afc78cd0fdf1",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/production-authoring-qualification-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/author-tests.py",
+      "bytes": 13887,
+      "sha256": "3ec2c7d6105f1666e87f31f033aad0c8323f8840a80fa6c2fffd9413230798fb",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/author-tests.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/checks.json",
+      "bytes": 1514,
+      "sha256": "4674a6dbb221eeb8f2ae7cdd8779b6fd7492cf356e30713d71b7a2b3d800866b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/contract-addendum-1.json",
+      "bytes": 505,
+      "sha256": "b2a2b7709fb1cdf589c543f78d6f5f7477c14940fbe25a8cdb3054c6cdbcd8cc",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/contract-addendum-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/contract-addendum-2.json",
+      "bytes": 716,
+      "sha256": "f54556659e0cd0fc681fef73a6f247ac5e2422e8cbf9951909413372d6def241",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/contract-addendum-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/contract.json",
+      "bytes": 16595,
+      "sha256": "1e4042d7fef0ea085738d992d49ecd88adc84f6ca7db5151037ff7b353dbdf7d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/contract.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/freeze-contract.py",
+      "bytes": 7735,
+      "sha256": "0dac8a3bf5fd360c1be8d6bd626bef0dc681a1397aad3ce6c192f52655eaa3cb",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/freeze-contract.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/metric-ready.json",
+      "bytes": 3504,
+      "sha256": "92bee6b5648c1bf381d21a875f086dad7a64ef8ba7ef152c09e32a53fac879ee",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/metric-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/new-module.diff",
+      "bytes": 14765,
+      "sha256": "f0180d703dee6984ab56f508ab295b53d8ebf62e1275c5cfb49835836df08c9e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/new-module.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/crates/raster-core/src/lib.rs",
+      "bytes": 41480,
+      "sha256": "746c5b5b782cd9790871d6875ca9ee6e82744b04a95df1965c86632db8628faa",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/crates/raster-core/src/lib.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/crates/raster-core/src/profile.rs",
+      "bytes": 3825,
+      "sha256": "6ab8d215d4e90603814f892f4e3d81d1a7ec03dd184e283e905852a69a1bc86a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/crates/raster-core/src/profile.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/crates/raster-core/src/rounded.rs",
+      "bytes": 16984,
+      "sha256": "e8d46955f2cd29e7e54e73ce9100165d3b2c7926b37f14847f44e427ce2d6f2e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/crates/raster-core/src/rounded.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/crates/raster-core/src/scope.rs",
+      "bytes": 4398,
+      "sha256": "c65b6c2c54178fc37e81bb093c567f922cc452f7065d7c52ac7a44bb3249f97b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/crates/raster-core/src/scope.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/src/graphics.rs",
+      "bytes": 70989,
+      "sha256": "e00df1d1f43eb587d5957ece6ed3e259f3ad722f3fd892f8c9fd4ceb6261767c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/src/graphics.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/src/graphics/raster_bridge.rs",
+      "bytes": 20048,
+      "sha256": "a604d9aa57885fbd06d94ad861f11d9d255e0eb6b4af3734efab999c50dbb217",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/src/graphics/raster_bridge.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/src/graphics/raster_bridge/native.rs",
+      "bytes": 86940,
+      "sha256": "aaf90707de65a1dbdad3b4282ff531b1077627841ec8448a6cbff0227e6d2967",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/src/graphics/raster_bridge/native.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "bytes": 5582,
+      "sha256": "dcbeb1052c1b2b2017be03364224d274e823e5f12a0ac52f94e043f94357a939",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "bytes": 16217,
+      "sha256": "ab53869b20d80e17621dd1146d681eeebe92a43314167b1b5ad5e628351ab2a9",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/parent/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 39972,
+      "sha256": "684a06c824a56727a02ca7a87cb1665c983356b7b04bdb93a9457ae3db34dd8f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/parent/src/graphics/raster_bridge/native/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/raw/src/graphics/raster_bridge/native/line_accounting_tests.rs",
+      "bytes": 14367,
+      "sha256": "dddcb3b5e902ce4c0fd44d420a3c73f798d1e4b8facf985b58fe8af06992d807",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/raw/src/graphics/raster_bridge/native/line_accounting_tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/registration-after/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 40037,
+      "sha256": "574bb24ad77c98027060823b40a8c1bd08991358356b0cc7906ca1d22851a244",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/registration-after/src/graphics/raster_bridge/native/tests.rs",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/registration-append.txt",
+      "bytes": 65,
+      "sha256": "4bc5c66130061d3d8909f49148afccdb5c62eb350a5f45138cea8c366fb87e2e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/registration-append.txt",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/registration.diff",
+      "bytes": 299,
+      "sha256": "a791e5b34a2e04c28bebe917439b129db62a9a8eb2d30f1728dd67cddbc96526",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/registration.diff",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/roster.json",
+      "bytes": 2340,
+      "sha256": "5f410d9c28885ede627ebbfe084d66e80fe1d0298dc05e2f40cf4c0d97610ea6",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/roster.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/seal.py",
+      "bytes": 5055,
+      "sha256": "d24289dcd77162488b5489746d582930cf3e624c11a757d348981ab4e2e0244f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/seal.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/public-tests-1/source-ready.json",
+      "bytes": 6516,
+      "sha256": "fd3a34ca773052a4e92643812e6844c6ba1b055a4465282c5fecf46f60801a48",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/public-tests-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/readiness-1/author-readiness.py",
+      "bytes": 23164,
+      "sha256": "44947dfed2546fb3ff2a6548f42c18fef51395211e37f982115c3ac068f6d852",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/readiness-1/author-readiness.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/readiness-1/geometry-contract.json",
+      "bytes": 8126,
+      "sha256": "cce10bb47ab5e34e88a1b78f9aaf57b8facf25a301b528ad7ea00c3fa6ee542f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/readiness-1/geometry-contract.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/readiness-1/migration-census.json",
+      "bytes": 2879,
+      "sha256": "4a7f885dcf91475fa15c08c70dc1e6bb1f8c5ae3f3dc46fe0653250694a097e0",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/readiness-1/migration-census.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/readiness-1/readiness.json",
+      "bytes": 10199,
+      "sha256": "a3005dbe6cea457734792604866238d0e5e787d32557e8dba7a21e610762a35d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/readiness-1/readiness.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/readiness-1/source-bindings.json",
+      "bytes": 9741,
+      "sha256": "193a8e5c8005fb7dc878cf5a5c7af7fb33c656ed0573fbcf8944e33e15a6ecc4",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/readiness-1/source-bindings.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/readiness-1/source-ready.json",
+      "bytes": 1455,
+      "sha256": "8297396e0399b8d872790ed3bbaa222a7e8640cff9f13f94b2cce85179fd6d21",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/readiness-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/review-production-1/check.py",
+      "bytes": 8956,
+      "sha256": "0191572a71e710330f506846bef3871429b855368d888b1420b7eb5a7f964dd2",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/review-production-1/check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/review-production-1/checks.json",
+      "bytes": 18543,
+      "sha256": "05ee730922efd9017274fe94781e5823c31c8f2e609c9e002e2fc955147ca944",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/review-production-1/checks.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/review-production-1/review.json",
+      "bytes": 4057,
+      "sha256": "e6b63fa968f11afb4638348776d09d12280358a4044b0e72e06051cfd3ee095f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/review-production-1/review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/review-tests-1/check.py",
+      "bytes": 10116,
+      "sha256": "61ebe4624828857dc0f73fa33b8297a3f960253e9d800d7fb606c1aeb5dedcd3",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/review-tests-1/check.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/review-tests-1/compiler-correction-review.json",
+      "bytes": 1605,
+      "sha256": "001e9f46defdc74fdacca8d947b148d4123512445c9c6f4e6c862f30205dd13e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/review-tests-1/compiler-correction-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/review-tests-1/review.json",
+      "bytes": 19564,
+      "sha256": "056e19622490b279af9581c9bf9c5df24d2758cfbbad0825179b622cae40495a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/review-tests-1/review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/root/check-full-suites-2.py",
+      "bytes": 2714,
+      "sha256": "73fc1f84b2dd5c8fccac9ec997c3af936948839bb7c4c2ef0667b8dd062ae00a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/check-full-suites-2.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/check-full-suites-3.py",
+      "bytes": 2714,
+      "sha256": "3f03ec29a98c812a758393df4113d9841e70b3330dd7f3ae93be7f9ef109875e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/check-full-suites-3.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/check-full-suites.py",
+      "bytes": 2728,
+      "sha256": "4632a126de28e4de36059639ab040a19b63e3d2fdc1b5b3e8b39c4c9808be2bd",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/check-full-suites.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/checker-source-correction-1.json",
+      "bytes": 424,
+      "sha256": "ecf6445f8c5895476781fd226f841faad00d311ff82063e1a2418c2a7cb4b593",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/checker-source-correction-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/compiler-correction-1/receipt.json",
+      "bytes": 812,
+      "sha256": "135a0d1bf62ce0f7fe91cfb2741cc651e2d0dd74f9d3353b0334a4950f857ea9",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/compiler-correction-1/receipt.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/compiler-correction-1/tests__support__vulkan_lines.rs.diff",
+      "bytes": 616,
+      "sha256": "5be21bfde1982c2045019f3419e75d85fa758abf7cdfa5b7eeebe79f9028f55c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/compiler-correction-1/tests__support__vulkan_lines.rs.diff",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/compiler-correction-1/tests__vulkan_lines.rs.diff",
+      "bytes": 436,
+      "sha256": "39e16c0806341b865979e0d0ae32d17b35e57ecf1ebcc4cfa04580d63f5b51bc",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/compiler-correction-1/tests__vulkan_lines.rs.diff",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/contract-migration-selection-1.json",
+      "bytes": 1897,
+      "sha256": "1a288ab930ab194f14216b978ed63041b7094fa93ab1ae9fdfe13e16fd2a27cd",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/contract-migration-selection-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/documentation-import-1.json",
+      "bytes": 1150,
+      "sha256": "c1a616b1580b6eb4b8808c4a8217f7f9666d81aeacd526b575dc7b698aa82e28",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/documentation-import-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/evidence-tools-review-1/input-bindings.json",
+      "bytes": 432,
+      "sha256": "859720dfbb213608b3b5395da3360d4f063187f4d4db00c6d7354396e348ff50",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/evidence-tools-review-1/input-bindings.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/evidence-tools-review-1/publish-evidence.py.diff",
+      "bytes": 6776,
+      "sha256": "d424acccdd29e50fc0354ae5c956b3a905168b5760404711ad1885076189a156",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/evidence-tools-review-1/publish-evidence.py.diff",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/evidence-tools-review-1/review.json",
+      "bytes": 722,
+      "sha256": "27a9fef0fae1ceeb735221e09cb776c05dbcffb256af259932eeec49f69bb972",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/evidence-tools-review-1/review.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/evidence-tools-review-1/verify-publication.py.diff",
+      "bytes": 7370,
+      "sha256": "80af84d953fc7f7196667c08152b8dad030a85c61dd91e5696aba8dabdddea2e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/evidence-tools-review-1/verify-publication.py.diff",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/final-validation.json",
+      "bytes": 23600,
+      "sha256": "9c79b04ce06f25d45e23633bf16be67672e76b389eb4fdc00127d01f3edd6e66",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/final-validation.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/finalize-validation.py",
+      "bytes": 4418,
+      "sha256": "0db1d22d4c1b9c052c99259092b408f5377ad57818be4078b1b9a4831b6c16d7",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/finalize-validation.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/format-inputs-1.json",
+      "bytes": 1602,
+      "sha256": "412fa589e0fe3c6c731f5937eafbd81ef85c71a7eed7b221e744fae34be379f2",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/format-inputs-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/freeze-source.py",
+      "bytes": 1428,
+      "sha256": "f3a37a2c1ffd7c9d4f8e3818416a6632a967bcb8d90ddb4d1656139a198b5755",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/freeze-source.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/full-suite-validation-1.json",
+      "bytes": 4939,
+      "sha256": "6c564835804c863a043ffc51b0fbe449d01bba5c4381ee8744964f6f3c1eee44",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/full-suite-validation-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/full-suite-validation-2.json",
+      "bytes": 4939,
+      "sha256": "ef349c6938eff8d218834451622fdaa9ce729db91eace370332dfe127fcf4e63",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/full-suite-validation-2.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/implementation-import-1.json",
+      "bytes": 1517,
+      "sha256": "4e5f11b6f7215fec7fa07e31829abb8571c3502e43aff115f8a0115cfbdc5567",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/implementation-import-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/literal-lint-correction-1/receipt.json",
+      "bytes": 809,
+      "sha256": "5d8085ee4d131d9e565b18916ffbedbd3485952c224a5f560553152fb1302c2d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/literal-lint-correction-1/receipt.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/literal-lint-correction-1/src__graphics__raster_bridge__native__line_accounting_tests.rs.diff",
+      "bytes": 267,
+      "sha256": "715c01baa9d0264721d080257c66a2de970717857057092f9d70b35d11a64979",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/literal-lint-correction-1/src__graphics__raster_bridge__native__line_accounting_tests.rs.diff",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/literal-lint-correction-1/tests__support__vulkan_lines.rs.diff",
+      "bytes": 397,
+      "sha256": "05c99e699efae3fcb64b7af7d0e0a1d1226fe44ef4f849ea2f45b2c47bc1c225",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/literal-lint-correction-1/tests__support__vulkan_lines.rs.diff",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/parent-results-1.json",
+      "bytes": 2355,
+      "sha256": "dca7925cf953f57b6db327812565bc4f4bc625ebef861b191aae91e60800a902",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/parent-results-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/release-binary-1.json",
+      "bytes": 1033,
+      "sha256": "43241678ab4c2d82890e3132744665052a553bd0b0deb198f90a153a23b4295f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/release-binary-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/run-config-vulkan.py",
+      "bytes": 1153,
+      "sha256": "f3fcbe83561a7d73df04e3861aa8738a2338b4f61c00261a74afeba289a9b92a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/run-config-vulkan.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/run-config.py",
+      "bytes": 1088,
+      "sha256": "592d589e9048f51a1002ba0a2433f415cdeec6a17a7fb7b4dce763ed51f1d251",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/run-config.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/rust-lexical.py",
+      "bytes": 1742,
+      "sha256": "4024c26ae5f0cd0758ec2b3e5f3e355ca770c2d19ba274a02791d87789fc31f0",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/rust-lexical.py",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/selection-1.json",
+      "bytes": 1517,
+      "sha256": "b3891c45bab2abf67e776f398e50fd709d655847e511fde2b764694ad888dceb",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/selection-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/setup.json",
+      "bytes": 643,
+      "sha256": "08c78c22001ac84955dab20002b48d47abcc591c8097e7e73d739fe42956ba11",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/setup.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/root/test-import-1.json",
+      "bytes": 1161,
+      "sha256": "2e7a92026e77dcdf1651f77c73d0e46d9d9704b26fd1125389904d192bc140d7",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/root/test-import-1.json",
+      "role": "root-receipt-or-script"
+    },
+    {
+      "path": "artifacts/run-tool.py",
+      "bytes": 726,
+      "sha256": "abea4ed0c4a338841442c6d7b4fc327f719dd3e5e57b7163cc92bc5517c8532b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/run-tool.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-1.json",
+      "bytes": 251073,
+      "sha256": "863bb7cd7c6f1b7efd59c75617fc396dd4d6af0eda850abb88ff3b96aa42acdb",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/source-candidate-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-candidate-2.json",
+      "bytes": 251073,
+      "sha256": "30058ce5e45580fcb791372895e6e6898764b229c327011c233301fcf688066c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/source-candidate-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-final.json",
+      "bytes": 251073,
+      "sha256": "30058ce5e45580fcb791372895e6e6898764b229c327011c233301fcf688066c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/source-final.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-parent-with-tests.json",
+      "bytes": 251073,
+      "sha256": "261701516786ef51111947778d4077eacc95a1c4a6347a6bb81aa9cdf1e18b97",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/source-parent-with-tests.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-parent.json",
+      "bytes": 250531,
+      "sha256": "dfcd7681668f2c8d64c4571bfab43be37e9448ab76bd7df5b9a6a47f906c105c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/source-parent.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-plan-1/plan.json",
+      "bytes": 2246,
+      "sha256": "9c9b9fb1e81436f54c3a843ca91da092b12c704b2013c74a3bd0a8e224aee21e",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/source-plan-1/plan.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/source-plan-1/source-ready.json",
+      "bytes": 608,
+      "sha256": "f8a70aebb2400be100b9ec8aca8d35ebfc9f8cdb16fd2dcd8354dd4f9b406d1d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/source-plan-1/source-ready.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/actual-checks-1.json",
+      "bytes": 9352,
+      "sha256": "ba87baebfd41412f4ff0931cd26e50e50648e2cc9e5256e4baabc4b8f0a6dd1a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/actual-checks-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/check-source-2.py",
+      "bytes": 8216,
+      "sha256": "c7ae2b3dd3d3824138aa732139d727a0bec0fdbf5c91202ac7f62eb1f7b4774d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/check-source-2.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/check-source.py",
+      "bytes": 8230,
+      "sha256": "b8c1a1acfdfc7a2519d30648bc8f5590b590c17e5601e08f8a4137593808522d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/check-source.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/final-checker-review-1.json",
+      "bytes": 3158,
+      "sha256": "6a5032db1d5bb48c692183e02cd275204fbd64cc945df2f40e9c729fb5ab7a0d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/final-checker-review-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/final-review.json",
+      "bytes": 10631,
+      "sha256": "5437618bba6be2ff327bcf0a9f6854a10328b724e581a6c6e5a822d4e57c4391",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/final-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/finalize-validation-2.py",
+      "bytes": 18575,
+      "sha256": "0ce81f73f2de1c7b12ef7788edd11c648875caa347de494c7446e90bbbe37725",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/finalize-validation-2.py",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/finalizer-ready-2.json",
+      "bytes": 3088,
+      "sha256": "ae1b8998be233e3f3928913d8183f9251fa8d0f32efa1e4c77e43c3732ac5191",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/finalizer-ready-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/literal-lint-review.json",
+      "bytes": 1476,
+      "sha256": "bca624eae897812bb94aaecb11e376d9587e8fa90cbe7a7631e02d2241016a6b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/literal-lint-review.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/scaffold-1.json",
+      "bytes": 712383,
+      "sha256": "7ac0876a7622ea31201dda171e80d3d2e0fec5159859d05661d755cce78e0193",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/scaffold-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/scaffold-checker-correction-1.json",
+      "bytes": 606,
+      "sha256": "c753245957e829065db5a05da42ec66682545dae34a4a7e2b65ef701c1d0a1f2",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/scaffold-checker-correction-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation-review-1/source-checks-1.json",
+      "bytes": 4330,
+      "sha256": "428c6bd01bcd83f5ae16927d802ac20febd216890714c5c306cbbec1cb2fa05c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation-review-1/source-checks-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-lines-1-environment.json",
+      "bytes": 403,
+      "sha256": "e0b3c50dc9d8ff2a9b19523c4c43368061087ba48c61405b8ab6d554b57a9f55",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-lines-1.json",
+      "bytes": 379,
+      "sha256": "382f181589d427741740b5e471aa44d7156ad14de0dbcf837b708060d0a938ed",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-lines-1.log",
+      "bytes": 14670,
+      "sha256": "be00ea2dcc8043b51f5d5b5bde34306bae66db5c587a5f983ae26a26169893cb",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-lines-2-environment.json",
+      "bytes": 403,
+      "sha256": "e0b3c50dc9d8ff2a9b19523c4c43368061087ba48c61405b8ab6d554b57a9f55",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-2-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-lines-2.json",
+      "bytes": 378,
+      "sha256": "1d416ba7e21ccb9f30f1a6568b98e0381cff33e638bd8a35018e892effe3d294",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/candidate-lines-2.log",
+      "bytes": 14669,
+      "sha256": "abff4ac8939b5a4bf72cfe0063c5b83d55ae90f4066462822a9e8fa17fdd72ff",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/candidate-lines-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-clippy-1-environment.json",
+      "bytes": 355,
+      "sha256": "cb934c6ce39f30fee306ed6976f89f774a00bd8455640abf028529c5cf31c0c8",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-clippy-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-clippy-1.json",
+      "bytes": 321,
+      "sha256": "ca2e48a02095ac9c7fe58182822d116e207901827ad32157ad1484554b09d814",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-clippy-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-clippy-1.log",
+      "bytes": 157,
+      "sha256": "17ce705c9fe4e45c1aec95445df0ef0bf4bdbd8190ee89895a8214fe234e6700",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-clippy-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-1-environment.json",
+      "bytes": 355,
+      "sha256": "cb934c6ce39f30fee306ed6976f89f774a00bd8455640abf028529c5cf31c0c8",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-1.json",
+      "bytes": 294,
+      "sha256": "0ef3e0b3bc01ea795f8b8c97138971812153e0936862c2b02736d47995c4c531",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-1.log",
+      "bytes": 347253,
+      "sha256": "dce2e8c955a31ddeb98adb21fe7540d3f4721321ead4ff1509ad94c4cc222215",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-2-environment.json",
+      "bytes": 355,
+      "sha256": "cb934c6ce39f30fee306ed6976f89f774a00bd8455640abf028529c5cf31c0c8",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-2-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-2.json",
+      "bytes": 295,
+      "sha256": "c134aad32db3266f5160e41a47860723bad00c91c01bab11136c2c8eea6a425d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/default-full-2.log",
+      "bytes": 347168,
+      "sha256": "66295436821403cb1ff7ddacd8b63f1fc8a7ce44e985a89247a51fc5d25a641c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/default-full-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-1.json",
+      "bytes": 233,
+      "sha256": "b79c325a939555b933cb902c03366736307b6f34f6fb8c25f1fcd76fe62a42a5",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/format-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/format-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-check-1.json",
+      "bytes": 263,
+      "sha256": "92f8c42ef41c97d65631ad589f790ffd8d58411c8c8a73be2721668422ae580f",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/format-check-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/format-check-1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/format-check-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-clippy-1-environment.json",
+      "bytes": 416,
+      "sha256": "cae904f725d5ba55aabb885487d357dfd4ace142b56b3a4db06a9fbe1cd0871b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-clippy-1.json",
+      "bytes": 379,
+      "sha256": "054541788b254527fd571b3c573d82a3e785e167c748a1b99569c5dd7b0004ae",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-clippy-1.log",
+      "bytes": 1826,
+      "sha256": "cdc846e31a13b930e3110b8de3175e5c300ca91aec67f54620788bd35d26946a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-clippy-2-environment.json",
+      "bytes": 416,
+      "sha256": "cae904f725d5ba55aabb885487d357dfd4ace142b56b3a4db06a9fbe1cd0871b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-2-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-clippy-2.json",
+      "bytes": 377,
+      "sha256": "8883471c22c52db3e3e47c019e01b088f8a5478cb0986574867e8e505b759248",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-clippy-2.log",
+      "bytes": 157,
+      "sha256": "49e282bffcc31143a57e952765a2b47098859679f8827343f9dbbcafcec7ee8d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-clippy-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-1-environment.json",
+      "bytes": 416,
+      "sha256": "cae904f725d5ba55aabb885487d357dfd4ace142b56b3a4db06a9fbe1cd0871b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-1.json",
+      "bytes": 351,
+      "sha256": "d07ebcbd180ba2d18526e2e4a189cb268661085e885b77cce759535a118d9af8",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-1.log",
+      "bytes": 391700,
+      "sha256": "f4c180b1431b85a7f7527b43562422461983b3c0399400e7ab2d8826419eec5d",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-2-environment.json",
+      "bytes": 416,
+      "sha256": "cae904f725d5ba55aabb885487d357dfd4ace142b56b3a4db06a9fbe1cd0871b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-2-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-2.json",
+      "bytes": 351,
+      "sha256": "3d661939412ffe30d56ded4e6fd595d2d43804936217df8002e37d56775337ad",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/host-vulkan-full-2.log",
+      "bytes": 391592,
+      "sha256": "bafae452efc44563acb4aa97c38594fba43c4d026186acd40080a8fd675a1563",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/host-vulkan-full-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/msrv-bridge-clippy-1-environment.json",
+      "bytes": 403,
+      "sha256": "e0b3c50dc9d8ff2a9b19523c4c43368061087ba48c61405b8ab6d554b57a9f55",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/msrv-bridge-clippy-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/msrv-bridge-clippy-1.json",
+      "bytes": 363,
+      "sha256": "d07440e0d42b0d1789d3075ceff30de4df49143f29e0d103120c90f06e93a226",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/msrv-bridge-clippy-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/msrv-bridge-clippy-1.log",
+      "bytes": 264,
+      "sha256": "d3f08c1e5b444fc31de1e9ea025619b316be9ae320aba48a2583fa5352afa115",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/msrv-bridge-clippy-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-lines-1-environment.json",
+      "bytes": 403,
+      "sha256": "e0b3c50dc9d8ff2a9b19523c4c43368061087ba48c61405b8ab6d554b57a9f55",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/parent-lines-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-lines-1.json",
+      "bytes": 377,
+      "sha256": "b7dd5012478181dac9b5d3585a86a7d4147b9429e240dfa85d9f34e7004d4244",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/parent-lines-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-lines-1.log",
+      "bytes": 1436,
+      "sha256": "defdde2c1dbb66ebe43a558bab177c8ec668ab60131b00f3adc3b9c0127c4ebb",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/parent-lines-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-lines-2-environment.json",
+      "bytes": 403,
+      "sha256": "e0b3c50dc9d8ff2a9b19523c4c43368061087ba48c61405b8ab6d554b57a9f55",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/parent-lines-2-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-lines-2.json",
+      "bytes": 378,
+      "sha256": "e4563b43f451daa85b62acb56e802906a8cf20f5b294d984505591b6ad3b764c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/parent-lines-2.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/parent-lines-2.log",
+      "bytes": 19462,
+      "sha256": "911b7bca652cd2929d4df20a6b0a83344bd1550fd0b9ad1865a4b336a76b07af",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/parent-lines-2.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/vulkan-release-build-1-environment.json",
+      "bytes": 398,
+      "sha256": "bface386f44de9a012bdcbef5184714afe1fce4db00adc48a7abe3c6e9598ab9",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/vulkan-release-build-1-environment.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/vulkan-release-build-1.json",
+      "bytes": 356,
+      "sha256": "0e338e84c014c4b44a1492c3387f4f42559a290d5222ff4d19d56bee3e034e29",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/vulkan-release-build-1.json",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "artifacts/validation/vulkan-release-build-1.log",
+      "bytes": 6123,
+      "sha256": "7c4f20a5b1c4d41f65983b95bcecd0fab7429108638b15e29dac810f288159f6",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/validation/vulkan-release-build-1.log",
+      "role": "validation-artifact"
+    },
+    {
+      "path": "documentation/README.md",
+      "bytes": 66235,
+      "sha256": "1af4c4720b70972ccd1d80838ef29daad95d77d6da62b8dd026a38cbb2fa30ff",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/README.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/ROADMAP.md",
+      "bytes": 41790,
+      "sha256": "f545ad4088d94c637a26fc5f0eee17556338abc968241d4d22e2b3056cad91a9",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/docs/ROADMAP.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/SECURITY.md",
+      "bytes": 97552,
+      "sha256": "66d3086976dd0474910b67148d1b74fef964a2b8048c25965ff0b0d7847ee8b7",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/docs/SECURITY.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/VALIDATION.md",
+      "bytes": 387878,
+      "sha256": "0087ef3762affd4cd43f49364d128fdf0b42d6adc05810ce1c096502a9f0f449",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/docs/VALIDATION.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/vulkan-line-accounting.md",
+      "bytes": 6483,
+      "sha256": "831063e4c9ed38380c0f95e9920cea52c2c3002001de47d85a056b4e95028063",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/docs/vulkan-line-accounting.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "documentation/docs/vulkan-native-window.md",
+      "bytes": 16772,
+      "sha256": "e3678d78adf7cf4a0f67b6644aedbb820fdd3c4d9d930b25d266cfe46167fc5a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/docs/vulkan-native-window.md",
+      "role": "published-documentation"
+    },
+    {
+      "path": "sources/examples/vulkan-lines.html",
+      "bytes": 791,
+      "sha256": "b46abbb795c538f561e99855864c8017c240abf0074826abc628f377ffb55526",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/examples/vulkan-lines.html",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/graphics/raster_bridge/native.rs",
+      "bytes": 87615,
+      "sha256": "f81e875c2ecdc014944c2583e27b7ee0aa3fcfe7f21e5e41015c02e0136a76da",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/src/graphics/raster_bridge/native.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "bytes": 5529,
+      "sha256": "700be55a50229ba4ecd0de7b41a23cc99524e6cbb629b7933e491866f1c06975",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/src/graphics/raster_bridge/native/box_prepass_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "bytes": 16708,
+      "sha256": "49604e9c9b4243d1e62b9dc5359ad8647ba56440555422cf4665e731d0f5a52c",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/src/graphics/raster_bridge/native/image_accounting_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/graphics/raster_bridge/native/line_accounting_tests.rs",
+      "bytes": 17963,
+      "sha256": "ca6a55cee06300cdc9cb89d67b00e5f793d12a994c3a02a74cb0d2152582dd4b",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/src/graphics/raster_bridge/native/line_accounting_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "bytes": 16219,
+      "sha256": "9f54daa3075bd18b03e840f6f907eb36828c85a2b6162f63ad1c28134b395312",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/src/graphics/raster_bridge/native/rect_accounting_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "bytes": 14629,
+      "sha256": "a05c4334721de8354ed963fad939c2ce0f1402dee629b48a898cb70865480d73",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/src/graphics/raster_bridge/native/scope_accounting_tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/src/graphics/raster_bridge/native/tests.rs",
+      "bytes": 40037,
+      "sha256": "574bb24ad77c98027060823b40a8c1bd08991358356b0cc7906ca1d22851a244",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/src/graphics/raster_bridge/native/tests.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/support/vulkan_lines.rs",
+      "bytes": 6846,
+      "sha256": "2dab71f04f7be67384f2314142d0f20b3d7a3b9e4828c3cca764c9a6e20799d2",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/tests/support/vulkan_lines.rs",
+      "role": "changed-source"
+    },
+    {
+      "path": "sources/tests/vulkan_lines.rs",
+      "bytes": 1730,
+      "sha256": "c78c680eef2b499f1e1c6253b86c6022a5a94c17780432e432f259f94b28311a",
+      "origin": "/tmp/eris-vulkan-line-accounting-plan-1/worktree/tests/vulkan_lines.rs",
+      "role": "changed-source"
+    }
+  ],
+  "caps": {
+    "raw_bytes": 67108864,
+    "gzip_bytes": 8388608
+  },
+  "inventory_scope": "Cumulative selected-input inventory for the native Line geometry accounting checkpoint, including every changed/new runtime/test input; not the complete build graph. Documentation and evidence are reviewed separately."
+}

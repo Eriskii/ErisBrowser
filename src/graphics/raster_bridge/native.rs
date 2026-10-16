@@ -475,12 +475,13 @@ fn preflight(target: Frame, phases: &[NativePhase<'_>]) -> NativeResult<InputCou
                 }
             }
             counts.nontext += 1;
-            // Preserve every operation/parameter slot. Rects and Images get a
-            // separate pre-blend geometry reservation after this complete
-            // preflight; Line and opacity retain their full-frame allowance.
+            // Preserve every operation/parameter slot. Rects, Lines and Images
+            // get a pre-blend geometry reservation after complete preflight;
+            // opacity markers retain their full-frame allowance.
             if !matches!(
                 command,
                 DrawCommand::Rect { .. }
+                    | DrawCommand::Line { .. }
                     | DrawCommand::Image { .. }
                     | DrawCommand::BackgroundImage { .. }
                     | DrawCommand::LinearGradient { .. }
@@ -754,6 +755,7 @@ fn geometry_pixel_work(
             matches!(
                 command,
                 DrawCommand::Rect { .. }
+                    | DrawCommand::Line { .. }
                     | DrawCommand::Image { .. }
                     | DrawCommand::BackgroundImage { .. }
                     | DrawCommand::LinearGradient { .. }
@@ -923,7 +925,20 @@ fn geometry_pixel_work(
                     charge_geometry(remaining, work)?;
                     continue;
                 }
-                DrawCommand::Rect { rect, .. } => {
+                DrawCommand::Rect { .. } | DrawCommand::Line { .. } => {
+                    let rect = match command {
+                        DrawCommand::Rect { rect, .. } => convert_rect(*rect),
+                        DrawCommand::Line {
+                            x1,
+                            y1,
+                            x2,
+                            y2,
+                            width,
+                            ..
+                        } => line_rect(*x1, *y1, *x2, *y2, *width, index)
+                            .map_err(|error| NativeFallback::leaf(error, Some(phase)))?,
+                        _ => unreachable!(),
+                    };
                     let offset = state.offset();
                     let translated = Rect::new(
                         rect.x + offset.0,
@@ -962,7 +977,7 @@ fn geometry_pixel_work(
                 DrawCommand::PopFixed => Command::PopFixed,
                 DrawCommand::PushOpacity { opacity } => Command::PushOpacity(*opacity),
                 DrawCommand::PopOpacity => Command::PopOpacity,
-                DrawCommand::Text { .. } | DrawCommand::Line { .. } => continue,
+                DrawCommand::Text { .. } => continue,
                 DrawCommand::LinearGradient {
                     rect,
                     tile,

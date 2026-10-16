@@ -1275,3 +1275,6 @@ mod scope_accounting_tests;
 mod image_accounting_tests;
 #[path = "image_loop_differential_tests.rs"]
 mod image_loop_differential_tests;
+
+#[path = "line_accounting_tests.rs"]
+mod line_accounting_tests;

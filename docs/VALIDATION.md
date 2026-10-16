@@ -1,5 +1,51 @@
 # Validation record
 
+## Native Line accounting
+
+[Native Lines](vulkan-line-accounting.md) now reserve their existing clipped
+zero-radius rectangle loop work in original command order. Forty 24×1 Lines at
+512×512 cost **960** rather than **10,485,760** pixel work units under the same
+**4,194,304** allowance. Lowering, shaders and all resource limits are unchanged;
+the metric covers inner pixel visits, with empty outer rows bounded separately.
+
+All **ten new groups pass** in the first compiled Rust 1.88 `raster-bridge`
+candidate run. Nine unit groups include literal pixels/packed plans and exact
+admission/refusal boundaries. The loaded-page group repeats its complete
+512×512 literal pixel and packed-plan checks twice, observing **369** work units
+for 18 Lines and nine empty glyph occurrences. These checks do not execute a
+Vulkan shader.
+
+The parent records **two passing and eight failing groups**, with later rows
+unreached after each first failure. Its initial E0271 helper compile refusal and
+unused-`mut` correction remain retained; neither changed an expected value.
+Strict Clippy later flagged two exact binary32 literals after the first full
+suites passed. Narrow function-level allowances preserve both literal oracles
+and all assertions; the original lint failure is retained.
+Four historical groups retain their earlier non-Line assertions through narrow
+fixture/fee migrations, including one selected opacity-test rename.
+
+Final complete runs pass **3,344 default Rust 1.88 tests** and **3,708 Rust 1.99 tests
+with `test262-host,vulkan-raster`**. Both have 54 result rows and no failed,
+ignored or filtered tests. The default roster is unchanged; the feature roster
+preserves its parent plus ten groups and one selected historical rename.
+Strict all-target Clippy passes for Rust 1.88 default and `raster-bridge`, and
+Rust 1.99 with `test262-host,vulkan-raster`; formatting also passes.
+
+The Vulkan-only release build passes. Both hardware attempts refused the same
+3825×2085 compositor tile at the presenter's existing four-megapixel surface
+cap, before a selected native scene or correctness frame. The second attempt
+could not complete owned-window control before startup exited and released no
+HTML body. Both left zero descendants. NVIDIA RTX 4070 SUPER / `Bgra8Unorm`
+recognition is observed; actual GPU correctness remains unverified here.
+
+The final source inventory is byte-exact with candidate 2 and covers **1,838
+selected inputs**, not a complete build graph. Existing JavaScript conformance
+profiles were not rerun for this native-only change.
+
+See the [evidence manifest](evidence/vulkan-line-accounting/manifest.json) and
+[source/check archive](evidence/vulkan-line-accounting/sources-and-checks.tar.gz).
+The complete prior validation body below remains byte-exact.
+
 ## JavaScript class runtime
 
 The [class subset](classes.md) adds strict declarations/expressions, public

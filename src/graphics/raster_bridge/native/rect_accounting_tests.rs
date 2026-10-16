@@ -260,7 +260,7 @@ fn native_rect_accounting_keeps_exact_cpu_limit_and_one_pixel_refusal() {
         FallbackKind::CpuPaintBudget
     );
     // Image reserves its destination loop, including missing sources.
-    // Line and opacity markers retain their existing full-frame fees.
+    // Empty Line geometry costs zero; opacity markers retain full-frame fees.
     let other = [
         (image("missing", 0.0), 1),
         (
@@ -272,7 +272,7 @@ fn native_rect_accounting_keeps_exact_cpu_limit_and_one_pixel_refusal() {
                 color: Color::TRANSPARENT,
                 width: 0.0,
             },
-            262_144,
+            0,
         ),
     ];
     for (command, expected) in other {

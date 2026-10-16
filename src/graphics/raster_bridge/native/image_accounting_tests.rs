@@ -473,7 +473,7 @@ fn image_accounting_preserves_other_command_fees_and_gpu_limit() {
         fill(2.0, 0.0, 2.0, 1.0, Color::TRANSPARENT, 0.0),
     ];
     let scene = image_plan(target, &commands, &images).unwrap();
-    assert_eq!(scene.stats().cpu_pixel_upper_bound, 27); // 2*8 opacity + 1 image + 8 line + 2 rect
+    assert_eq!(scene.stats().cpu_pixel_upper_bound, 20); // 2*8 opacity + 1 image + 1 line + 2 rect
     let target = Frame::new(1280, 1024, 0xffffff);
     let commands = vec![image_rect("red", 0.0, 0.0, 1280.0, 1024.0); 3];
     // CPU work is below its existing limit, but packed GPU invocations retain
