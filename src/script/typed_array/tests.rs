@@ -166,6 +166,13 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
     let with_resolvers_added = s + a + d + 13 * k + bpp + n + 1269;
     // Try crosses the count11 B-tree threshold and grows owner order to12.
     let try_added = s + a + d + 14 * k + 4 * bpp + n + 1179;
+    // Classes add two initial environment state deltas and the empty class
+    // Records header in the single retained intrinsic FunctionRef Unit.
+    let class_added = 2
+        * (size_of::<Option<usize>>()
+            + size_of::<ThisBinding>().saturating_sub(size_of::<Option<Value>>()))
+        + size_of::<Vec<Vec<code::Class>>>()
+        + size_of::<usize>();
     // The cumulative remainder below starts from MAX_STEPS; only its
     // allowance origin changes, not the installation work or heap ledger.
     assert_eq!(
@@ -215,6 +222,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + any_added
             + with_resolvers_added
             + try_added
+            + class_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),

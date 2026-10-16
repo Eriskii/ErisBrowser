@@ -28,6 +28,14 @@ enum Phase {
     Body,
     Forward,
     Vacant,
+    ClassStart {
+        id: usize,
+        arguments: Vec<Value>,
+    },
+    ClassBody {
+        environment: usize,
+        kind: code::ClassKind,
+    },
 }
 struct Activation {
     code: code::FunctionRef,
@@ -52,6 +60,18 @@ impl Frame {
                 receiver,
                 native_guarded: preentered,
             },
+        }
+    }
+    pub(super) fn class_constructor(
+        id: usize,
+        arguments: Vec<Value>,
+        new_target: Value,
+        preentered: bool,
+    ) -> Self {
+        Self {
+            owns_call: !preentered,
+            new_target,
+            phase: Phase::ClassStart { id, arguments },
         }
     }
     pub(super) fn with_new_target(mut self, new_target: Value) -> Self {
@@ -113,6 +133,10 @@ pub(super) fn step(
             Some(Output::Flow(_)) => Err(ScriptError::new("loop control outside loop")),
             _ => unreachable!("function body completion"),
         },
+        Phase::ClassStart { id, arguments } => class_start(runtime, frame, id, arguments, doc),
+        Phase::ClassBody { environment, kind } => {
+            class_completion(runtime, environment, kind, output)
+        }
         Phase::Forward => Ok(output),
         Phase::Vacant => unreachable!("uninitialized invocation continuation"),
     }
@@ -298,6 +322,10 @@ fn setup(
     receiver: Value,
     doc: &mut Document,
 ) -> Result<Option<Output>> {
+    if runtime.functions[id].bound.is_none() && runtime.functions[id].code.class_kind.is_some() {
+        runtime.work(4)?;
+        return Err(ScriptError::type_error("class constructor requires new"));
+    }
     // Keep the conservative legacy activation allowance while sharing all code.
     // Argument forwarding below reserves one checked buffer instead of cloning a
     // bound vector and then growing it during recursive forwarding.
@@ -337,7 +365,7 @@ fn setup(
         } else {
             runtime.coerce_object(receiver)?
         };
-        runtime.environments[env].this_binding = Some(receiver);
+        runtime.environments[env].this_binding = crate::script::ThisBinding::Initialized(receiver);
         runtime.environments[env].new_target_binding = Some(frame.new_target.clone());
     }
     let parameter_expressions = code.has_parameter_expressions();
@@ -394,6 +422,136 @@ fn setup(
         doc,
     )
 }
+fn class_start(
+    runtime: &mut Runtime,
+    mut frame: Frame,
+    id: usize,
+    arguments: Vec<Value>,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    let kind = runtime.functions[id]
+        .code
+        .class_kind
+        .ok_or_else(|| ScriptError::resource("missing class constructor kind"))?;
+    let receiver = if matches!(
+        kind,
+        code::ClassKind::ExplicitBase | code::ClassKind::DefaultBase
+    ) {
+        // The new-target retain and eventual receiver return copy were paid
+        // before this invocation. Prototype access precedes every default.
+        let prototype = runtime.constructor_prototype(frame.new_target.clone(), "Object", doc)?;
+        let instance = runtime.object_ordered([])?;
+        Some(runtime.constructed_prototype(instance, prototype))
+    } else {
+        None
+    };
+    if kind == code::ClassKind::DefaultBase {
+        return Ok(Some(Output::Value(receiver.expect("base receiver"))));
+    }
+    if kind == code::ClassKind::DefaultDerived {
+        // Forward the existing list directly: no rest Array, arguments object,
+        // or iterator lookup. The internal parent is live at construction time.
+        let properties = runtime.functions[id].properties;
+        let parent = runtime.objects[properties]
+            .prototype
+            .clone()
+            .unwrap_or(Value::Null);
+        runtime.class_validate_superclass(&parent)?;
+        return runtime
+            .construct_with_target(parent, arguments, frame.new_target, doc)
+            .map(|value| Some(Output::Value(value)));
+    }
+    // Retain the unbound ordinary activation allowance without modifying that
+    // helper's old route or its parameter/default/arguments-object behavior.
+    let parameter_count = runtime.functions[id].code.params.len();
+    runtime.work(1 + parameter_count)?;
+    let code = &runtime.functions[id].code;
+    let text_bytes = code.params.iter().fold(0usize, |size, parameter| {
+        size.saturating_add(parameter.name.len())
+    });
+    let name_bytes = code.name.as_ref().map_or(0, String::len);
+    runtime.work(1 + text_bytes.saturating_add(name_bytes) / 8)?;
+    runtime.charge(
+        128usize
+            .saturating_add(parameter_count.saturating_mul(std::mem::size_of::<ParameterStorage>()))
+            .saturating_add(text_bytes)
+            .saturating_add(name_bytes),
+    )?;
+    let code = runtime.functions[id].code.clone();
+    let env = runtime.class_environment(runtime.functions[id].environment, None)?;
+    runtime.environments[env].function_scope = true;
+    runtime.environments[env].active_constructor = Some(id);
+    runtime.environments[env].new_target_binding =
+        Some(std::mem::replace(&mut frame.new_target, Value::Undefined));
+    runtime.environments[env].this_binding = match receiver {
+        Some(receiver) => crate::script::ThisBinding::Initialized(receiver),
+        None => crate::script::ThisBinding::Uninitialized,
+    };
+    let parameter_expressions = code.has_parameter_expressions();
+    for parameter in &code.params {
+        if !runtime.environments[env]
+            .bindings
+            .contains_key(&parameter.name)
+        {
+            runtime.define(env, &parameter.name, Value::Undefined, true)?;
+            runtime.environments[env]
+                .bindings
+                .get_mut(&parameter.name)
+                .unwrap()
+                .initialized = !parameter_expressions;
+        }
+    }
+    let shadows_arguments = code.params.iter().any(|p| p.name == "arguments")
+        || !parameter_expressions && code.body.iter().any(|s| matches!(code.unit.stmt(*s), code::Stmt::Function(name, _) if name == "arguments")
+            || matches!(code.unit.stmt(*s), code::Stmt::Var(bindings, kind) if *kind != DeclarationKind::Var && bindings.iter().any(|(name, _)| name == "arguments")));
+    let arguments_binding = !shadows_arguments;
+    if arguments_binding {
+        // Every class constructor is strict, hence always unmapped.
+        let args = runtime.arguments_object(&arguments, true, Value::Function(id))?;
+        runtime.define(env, "arguments", args, true)?;
+    }
+    parameters(
+        runtime,
+        frame,
+        Activation {
+            code,
+            env,
+            arguments,
+            arguments_binding,
+            parameter_expressions,
+        },
+        0,
+        doc,
+    )
+}
+
+fn class_completion(
+    runtime: &Runtime,
+    environment: usize,
+    kind: code::ClassKind,
+    output: Option<Output>,
+) -> Result<Option<Output>> {
+    let result = match output {
+        Some(Output::Flow(Flow::Return(value))) => value,
+        Some(Output::Flow(Flow::Normal(_))) => Value::Undefined,
+        Some(Output::Flow(_)) => return Err(ScriptError::new("loop control outside loop")),
+        _ => unreachable!("class constructor body completion"),
+    };
+    if crate::script::js_object(&result) {
+        return Ok(Some(Output::Value(result)));
+    }
+    if kind == code::ClassKind::ExplicitDerived && result != Value::Undefined {
+        return Err(ScriptError::type_error(
+            "derived constructor returned a non-object",
+        ));
+    }
+    // The original activation remains reachable even if defaults caused a
+    // separate body environment or an arrow escaped before super().
+    runtime
+        .class_this_value(environment)
+        .map(|value| Some(Output::Value(value)))
+}
+
 fn forward(
     runtime: &mut Runtime,
     frame: Frame,
@@ -459,13 +617,19 @@ fn parameters(
         if matches!(value, Value::Undefined)
             && let Some(initializer) = parameter.initializer
         {
-            let next = Job::Expression(ExprFrame {
-                unit: code.unit.clone(),
-                expression: initializer,
-                env: activation.env,
-                reference: false,
-                phase: ExprPhase::Start,
-            });
+            let expression = if code.unit.anonymous_class(initializer).is_some() {
+                let hint = runtime.class_identifier_name_hint(&parameter.name)?;
+                ExprFrame::named_class(code.unit.clone(), initializer, activation.env, hint)
+            } else {
+                ExprFrame {
+                    unit: code.unit.clone(),
+                    expression: initializer,
+                    env: activation.env,
+                    reference: false,
+                    phase: ExprPhase::Start,
+                }
+            };
+            let next = Job::Expression(expression);
             return schedule(runtime, frame, Phase::Default { activation, index }, next);
         }
         initialize_parameter(runtime, &activation, index, value);
@@ -530,7 +694,14 @@ fn body(
         ListOwner::Function(code.id()),
         body_env,
     ));
-    schedule(runtime, frame, Phase::Body, next)
+    let phase = match code.class_kind {
+        Some(kind) => Phase::ClassBody {
+            environment: env,
+            kind,
+        },
+        None => Phase::Body,
+    };
+    schedule(runtime, frame, phase, next)
 }
 
 #[cfg(test)]

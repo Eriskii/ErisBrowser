@@ -73,6 +73,7 @@ fn call_root(parser: &mut Parser<'_>) -> Kind {
         value: callee,
         chain: 0,
         async_call: false,
+        allow_update: true,
     })
     .into()
 }
@@ -443,14 +444,14 @@ fn dynamic_errors_restore_each_run_entry_not_the_whole_function_context() {
 #[test]
 fn actual_argument_in_layout_matches_both_selected_mirrors() {
     assert_eq!((size_of::<Frame>(), align_of::<Frame>()), (72, 8));
-    assert_eq!((size_of::<Kind>(), align_of::<Kind>()), (112, 8));
+    assert_eq!((size_of::<Kind>(), align_of::<Kind>()), (120, 8));
     assert_eq!(
         (size_of::<Transition>(), align_of::<Transition>()),
-        (224, 8)
+        (240, 8)
     );
     assert_eq!((size_of::<Output>(), align_of::<Output>()), (88, 8));
-    assert_eq!(32 + 4 * size_of::<Kind>(), 480);
-    assert_eq!(MAX_HEAP / size_of::<Kind>(), 74898);
+    assert_eq!(32 + 4 * size_of::<Kind>(), 512);
+    assert_eq!(MAX_HEAP / size_of::<Kind>(), 69905);
 }
 
 #[cfg(all(target_arch = "x86_64", target_os = "linux"))]
@@ -459,13 +460,13 @@ fn full_compile_tariffs_match_both_preimplementation_parent_observations() {
     // Frozen before candidate code: both 1.88/default and 1.99/host+Vulkan.
     // Includes real lexing, parse_context and final Unit publication.
     for (source, work, heap) in [
-        ("f(1)", 43, 23770),
-        ("f(1,2,)", 49, 23906),
-        ("new C(1)", 55, 25637),
-        ("new C(1,2,)", 61, 25773),
-        ("f(...x)", 71, 25772),
-        ("new C(...x,)", 75, 25855),
-        ("for(f(0).slot in {a:1}){}", 93, 26268),
+        ("f(1)", 43, 23898),
+        ("f(1,2,)", 49, 24034),
+        ("new C(1)", 55, 25893),
+        ("new C(1,2,)", 61, 26029),
+        ("f(...x)", 71, 26028),
+        ("new C(...x,)", 75, 26111),
+        ("for(f(0).slot in {a:1}){}", 93, 26524),
     ] {
         for strict in [false, true] {
             let parser = Parser::parse_context(source, false, strict).unwrap();

@@ -1,0 +1,34 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>base</title>
+<style>
+html,body { margin:0; padding:0; border:0; background:#fff; }
+#red,#blue { display:block; position:absolute; top:2px; width:4px; height:4px; box-sizing:content-box; margin:0; padding:0; border:0; }
+#red { left:2px; background:#f00; }
+#blue { left:20px; background:#00f; }
+</style></head><body><div id="red"></div><div id="blue"></div>
+<script>
+var trace='S',red=document.getElementById('red');
+class Marker {
+  constructor(node,left=2){trace+='B';this.node=node;this.offset=left;}
+  get left(){return this.offset;}
+  set left(value){this.offset=value;}
+  paint(){this.node.style.left=this.left+'px';}
+}
+class Swatch extends Marker {
+  constructor(...args){super(...args);trace+='D';}
+}
+class Deferred extends Promise {}
+var swatch=new Swatch(red,12);
+queueMicrotask(function(){trace+='Q';});
+Deferred.try(function(){trace+='T';return swatch;}).then(function(value){
+  if(value!==swatch || !(value instanceof Marker) || !(value instanceof Swatch)) throw 'class identity';
+  trace+='R';value.paint();document.title=trace;
+});
+red.addEventListener('click',function(){
+  trace+='C';
+  Deferred.try(function(){trace+='T';return 16;}).then(function(value){
+    trace+='R';swatch.left=value;swatch.paint();
+  });
+});
+red.addEventListener('click',function(){trace+='L';document.title=trace;});
+</script></body></html>

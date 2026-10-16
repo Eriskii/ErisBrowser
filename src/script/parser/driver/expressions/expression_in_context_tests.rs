@@ -89,6 +89,7 @@ fn call_root(parser: &mut Parser<'_>) -> Kind {
         value: base,
         chain: 0,
         async_call: false,
+        allow_update: true,
     })
     .into()
 }
@@ -515,14 +516,14 @@ fn computed_run_pays_sequence_heads_and_refuses_growth_before_unary() {
 fn actual_expression_in_layout_matches_both_selected_mirrors() {
     use std::mem::align_of;
     assert_eq!((size_of::<Frame>(), align_of::<Frame>()), (72, 8));
-    assert_eq!((size_of::<Kind>(), align_of::<Kind>()), (112, 8));
+    assert_eq!((size_of::<Kind>(), align_of::<Kind>()), (120, 8));
     assert_eq!(
         (size_of::<Transition>(), align_of::<Transition>()),
-        (224, 8)
+        (240, 8)
     );
     assert_eq!((size_of::<Output>(), align_of::<Output>()), (88, 8));
-    assert_eq!(32 + 4 * size_of::<Kind>(), 480);
-    assert_eq!(MAX_HEAP / size_of::<Kind>(), 74898);
+    assert_eq!(32 + 4 * size_of::<Kind>(), 512);
+    assert_eq!(MAX_HEAP / size_of::<Kind>(), 69905);
 }
 
 #[cfg(all(target_arch = "x86_64", target_os = "linux"))]
@@ -531,9 +532,9 @@ fn conditional_full_compile_tariffs_preserve_observed_parent_totals() {
     // Frozen parent measurements through actual Unit::finish; neither a
     // computed-member total nor a universal two-dispatch growth assumption.
     for (source, work, heap) in [
-        ("true?1:2", 43, 23716),
-        ("f(true?1:2)", 69, 25726),
-        ("for(var x=true?1:2;false;){}", 76, 24265),
+        ("true?1:2", 43, 23844),
+        ("f(true?1:2)", 69, 25982),
+        ("for(var x=true?1:2;false;){}", 76, 24393),
     ] {
         for strict in [false, true] {
             let parser = Parser::parse_context(source, false, strict).unwrap();

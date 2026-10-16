@@ -18,6 +18,40 @@ pub(super) struct StmtId(usize);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct FunctionId(usize);
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct ClassId(usize);
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ClassKind {
+    ExplicitBase,
+    ExplicitDerived,
+    DefaultBase,
+    DefaultDerived,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ClassElementKind {
+    Method,
+    Getter,
+    Setter,
+}
+
+#[derive(Debug)]
+pub(super) struct Class {
+    pub name: Option<String>,
+    pub heritage: Option<ExprId>,
+    pub constructor: FunctionId,
+    pub elements: Vec<ClassElement>,
+}
+
+#[derive(Debug)]
+pub(super) struct ClassElement {
+    pub name: PropertyName,
+    pub function: FunctionId,
+    pub kind: ClassElementKind,
+    pub is_static: bool,
+}
+
 #[derive(Debug)]
 pub(super) struct Parameter {
     pub name: String,
@@ -38,6 +72,7 @@ pub(super) struct Function {
     pub self_name: bool,
     pub constructable: bool,
     pub strict: bool,
+    pub class_kind: Option<ClassKind>,
 }
 impl Function {
     pub fn has_parameter_expressions(&self) -> bool {
@@ -61,6 +96,7 @@ impl Function {
             self_name: false,
             constructable: false,
             strict: true,
+            class_kind: None,
         }
     }
 }
@@ -73,6 +109,7 @@ pub(super) struct Unit {
     pub body: Vec<StmtId>,
     pub strict: bool,
     pub compiled_storage: usize,
+    classes: Records<Class>,
 }
 impl Unit {
     pub fn add_expr(&mut self, value: Expr, budget: &mut regexp::Budget) -> Result<ExprId> {
@@ -93,6 +130,20 @@ impl Unit {
         let id = FunctionId(self.functions.len());
         self.functions.append(value, budget)?;
         Ok(id)
+    }
+    pub fn add_class(&mut self, value: Class, budget: &mut regexp::Budget) -> Result<ClassId> {
+        let id = ClassId(self.classes.len());
+        self.classes.append(value, budget)?;
+        Ok(id)
+    }
+    pub fn class(&self, id: ClassId) -> &Class {
+        &self.classes[id.0]
+    }
+    pub fn anonymous_class(&self, id: ExprId) -> Option<ClassId> {
+        match self.expr(id) {
+            Expr::Class(id) if self.class(*id).name.is_none() => Some(*id),
+            _ => None,
+        }
     }
     // Used only while reinterpreting the one-pass cover grammar. IDs are private
     // to the unpublished unit; the consumed record remains a charged tombstone.
@@ -128,6 +179,7 @@ impl Unit {
             body: Vec::new(),
             strict,
             compiled_storage: 0,
+            classes: Records::new(),
         }
     }
 }
@@ -184,6 +236,9 @@ pub(super) enum Expr {
     Function(FunctionId),
     Sequence(Vec<ExprId>),
     Template(JsString, Vec<(ExprId, JsString)>),
+    Class(ClassId),
+    SuperCall(Vec<ExprId>),
+    SuperCallSpread(Vec<ExprId>),
 }
 #[derive(Debug)]
 pub(super) enum PropertyName {
@@ -217,12 +272,13 @@ pub(super) enum Stmt {
     Try(StmtId, Option<CatchClause>, Option<StmtId>),
     Break(Option<usize>),
     Continue(Option<usize>),
+    Class(ClassId),
 }
 impl Stmt {
     pub fn is_lexical_declaration(&self, block_functions: bool) -> bool {
         matches!(
             self,
-            Self::Var(_, DeclarationKind::Let | DeclarationKind::Const)
+            Self::Var(_, DeclarationKind::Let | DeclarationKind::Const) | Self::Class(_)
         ) || block_functions && matches!(self, Self::Function(..))
     }
 }
@@ -557,6 +613,7 @@ impl<'a> Lower<'a> {
             self_name: code.self_name,
             constructable: code.constructable,
             strict: code.strict,
+            class_kind: None,
         })
     }
     fn finish(mut self) -> Result<Rc<Unit>> {
@@ -802,6 +859,9 @@ mod tests {
         let child = |id| Box::new(expression(unit, id));
         let children = |ids: &[ExprId]| ids.iter().map(|&id| expression(unit, id)).collect();
         match unit.expr(id) {
+            Expr::Class(_) | Expr::SuperCall(_) | Expr::SuperCallSpread(_) => {
+                panic!("class syntax has no legacy canonical inverse")
+            }
             Expr::Literal(v) => E::Literal(v.clone()),
             Expr::RegExp(v) => E::RegExp(v.clone()),
             Expr::NewTarget => E::NewTarget,
@@ -874,6 +934,7 @@ mod tests {
         let child = |id| Box::new(statement(unit, id));
         let expr = |id| expression(unit, id);
         match unit.stmt(id) {
+            Stmt::Class(_) => panic!("class syntax has no legacy canonical inverse"),
             Stmt::Empty => S::Empty,
             Stmt::Label(label, id) => S::Label(*label, child(*id)),
             Stmt::Expr(id) => S::Expr(expr(*id)),
@@ -930,6 +991,10 @@ mod tests {
     }
     fn function(unit: &Unit, id: FunctionId) -> super::super::FunctionCode {
         let f = unit.function(id);
+        assert!(
+            f.class_kind.is_none(),
+            "class constructor has no legacy canonical inverse"
+        );
         super::super::FunctionCode {
             params: f
                 .params
@@ -1208,3 +1273,5 @@ mod tests {
         assert!(weak.upgrade().is_none());
     }
 }
+#[cfg(test)]
+mod class_storage_tests;

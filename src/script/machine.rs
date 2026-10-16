@@ -11,6 +11,7 @@ mod call_spread;
 #[cfg(test)]
 mod call_spread_phase_tests;
 mod calls;
+mod classes;
 mod statements;
 pub(super) use statements::ListOwner;
 
@@ -24,6 +25,7 @@ pub(super) enum Frame {
     Expression(ExprFrame),
     Statement(statements::Frame),
     Call(calls::Frame),
+    Class(classes::Frame),
 }
 impl Frame {
     fn weights(&self) -> (usize, usize) {
@@ -40,6 +42,22 @@ pub(super) struct ExprFrame {
     env: usize,
     reference: bool,
     phase: Phase,
+}
+impl ExprFrame {
+    pub(in crate::script) fn named_class(
+        unit: Rc<code::Unit>,
+        expression: code::ExprId,
+        env: usize,
+        name: PropertyKey,
+    ) -> Self {
+        Self {
+            unit,
+            expression,
+            env,
+            reference: false,
+            phase: Phase::NamedStart(name),
+        }
+    }
 }
 enum Phase {
     Start,
@@ -96,6 +114,21 @@ enum Phase {
         index: usize,
         function: Value,
         receiver: Value,
+        arguments: call_spread::Arguments,
+    },
+    NamedStart(PropertyKey),
+    SuperArguments {
+        owner: usize,
+        new_target: Value,
+        superclass: Value,
+        index: usize,
+        arguments: Vec<Value>,
+    },
+    SuperSpreadArguments {
+        owner: usize,
+        new_target: Value,
+        superclass: Value,
+        index: usize,
         arguments: call_spread::Arguments,
     },
 }
@@ -186,6 +219,19 @@ fn eval_child(
 ) -> Result<Option<Output>> {
     frame.phase = phase;
     child(runtime, frame, expression, false)
+}
+fn named_class_child(
+    runtime: &mut Runtime,
+    mut frame: ExprFrame,
+    phase: Phase,
+    expression: code::ExprId,
+    hint: PropertyKey,
+) -> Result<Option<Output>> {
+    let next = ExprFrame::named_class(frame.unit.clone(), expression, frame.env, hint);
+    frame.phase = phase;
+    push(runtime, Frame::Expression(frame))?;
+    enter(runtime, next)?;
+    Ok(None)
 }
 fn reference_child(
     runtime: &mut Runtime,
@@ -278,6 +324,24 @@ pub(super) fn invoke_preentered(
         _ => unreachable!("invocation root"),
     }
 }
+pub(super) fn invoke_class_preentered(
+    runtime: &mut Runtime,
+    id: usize,
+    arguments: Vec<Value>,
+    new_target: Value,
+    doc: &mut Document,
+) -> Result<Value> {
+    match drive(
+        runtime,
+        Frame::Call(calls::Frame::class_constructor(
+            id, arguments, new_target, true,
+        )),
+        doc,
+    )? {
+        Output::Value(value) => Ok(value),
+        _ => unreachable!("class invocation root"),
+    }
+}
 fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Output> {
     let base = runtime.frames.len();
     let depth = runtime.eval_depth;
@@ -295,6 +359,10 @@ fn drive(runtime: &mut Runtime, root: Frame, doc: &mut Document) -> Result<Outpu
                     Err(error) => Err(error),
                 },
                 Frame::Statement(frame) => statements::step(runtime, frame, output.take(), doc),
+                Frame::Class(frame) => match output.take().transpose() {
+                    Ok(output) => classes::step(runtime, frame, output, doc),
+                    Err(error) => Err(error),
+                },
                 Frame::Call(frame) => match output.take().transpose() {
                     Ok(output) => calls::step(runtime, frame, output, doc),
                     Err(error) => Err(error),
@@ -332,6 +400,15 @@ fn step(
     let phase = std::mem::replace(&mut frame.phase, Phase::Start);
     match phase {
         Phase::Start => start(runtime, frame, doc),
+        Phase::NamedStart(name) => {
+            runtime.tick()?;
+            let Some(class_id) = unit.anonymous_class(id) else {
+                return Err(ScriptError::resource(
+                    "named class continuation requires an anonymous class",
+                ));
+            };
+            class_expression(runtime, frame, class_id, Some(name))
+        }
         Phase::ReferenceObject => {
             let code::Expr::Member(_, key) = unit.expr(id) else {
                 unreachable!()
@@ -555,6 +632,48 @@ fn step(
                 doc,
             )
         }
+        Phase::SuperArguments {
+            owner,
+            new_target,
+            superclass,
+            index,
+            mut arguments,
+        } => {
+            arguments.push(value(output));
+            super_arguments_next(
+                runtime,
+                frame,
+                (owner, new_target, superclass),
+                index + 1,
+                arguments,
+                doc,
+            )
+        }
+        Phase::SuperSpreadArguments {
+            owner,
+            new_target,
+            superclass,
+            index,
+            mut arguments,
+        } => {
+            let incoming = call_spread::receive_prepaid(value(output));
+            let code::Expr::SuperCallSpread(items) = unit.expr(id) else {
+                unreachable!()
+            };
+            if matches!(unit.expr(items[index]), code::Expr::SpreadArgument(_)) {
+                arguments.spread_received(runtime, incoming, doc)?;
+            } else {
+                arguments.append_received(runtime, incoming)?;
+            }
+            super_spread_next(
+                runtime,
+                frame,
+                (owner, new_target, superclass),
+                index + 1,
+                arguments,
+                doc,
+            )
+        }
     }
 }
 
@@ -685,11 +804,149 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
             eval_child(runtime, frame, Phase::Callee, *callee)
         }
         code::Expr::SpreadArgument(_) => unreachable!("marker rejected before reference routing"),
+        code::Expr::Class(id) => class_expression(runtime, frame, *id, None),
+        code::Expr::SuperCall(_) => super_arguments_start(runtime, frame, false, doc),
+        code::Expr::SuperCallSpread(_) => super_arguments_start(runtime, frame, true, doc),
         code::Expr::Function(id) => runtime
             .function_value(&code::FunctionRef::new(&unit, *id), env)
             .map(|v| Some(Output::Value(v))),
     }
 }
+fn class_expression(
+    runtime: &mut Runtime,
+    mut frame: ExprFrame,
+    class_id: code::ClassId,
+    name: Option<PropertyKey>,
+) -> Result<Option<Output>> {
+    let next = classes::Frame::new(frame.unit.clone(), class_id, frame.env, name);
+    frame.phase = Phase::Identity;
+    push(runtime, Frame::Expression(frame))?;
+    enter_frame(runtime, Frame::Class(next))?;
+    Ok(None)
+}
+
+fn super_arguments_start(
+    runtime: &mut Runtime,
+    frame: ExprFrame,
+    spread: bool,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    let (owner, new_target, superclass) = runtime.class_super_target(frame.env)?;
+    if spread {
+        call_spread::prepay_entry(runtime)?;
+        return super_spread_next(
+            runtime,
+            frame,
+            (owner, new_target, superclass),
+            0,
+            call_spread::Arguments::empty_prepaid(),
+            doc,
+        );
+    }
+    let code::Expr::SuperCall(items) = frame.unit.expr(frame.expression) else {
+        unreachable!()
+    };
+    let arguments = reserve_values(runtime, items.len(), false)?;
+    super_arguments_next(
+        runtime,
+        frame,
+        (owner, new_target, superclass),
+        0,
+        arguments,
+        doc,
+    )
+}
+
+fn super_arguments_next(
+    runtime: &mut Runtime,
+    frame: ExprFrame,
+    capture: (usize, Value, Value),
+    index: usize,
+    arguments: Vec<Value>,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    let (owner, new_target, superclass) = capture;
+    let unit = frame.unit.clone();
+    let code::Expr::SuperCall(items) = unit.expr(frame.expression) else {
+        unreachable!()
+    };
+    if let Some(expression) = items.get(index) {
+        call_spread::prepay_item(runtime)?;
+        return eval_child(
+            runtime,
+            frame,
+            Phase::SuperArguments {
+                owner,
+                new_target,
+                superclass,
+                index,
+                arguments,
+            },
+            *expression,
+        );
+    }
+    finish_super(runtime, owner, new_target, superclass, arguments, doc)
+}
+
+fn super_spread_next(
+    runtime: &mut Runtime,
+    frame: ExprFrame,
+    capture: (usize, Value, Value),
+    index: usize,
+    arguments: call_spread::Arguments,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    let (owner, new_target, superclass) = capture;
+    let unit = frame.unit.clone();
+    let code::Expr::SuperCallSpread(items) = unit.expr(frame.expression) else {
+        unreachable!()
+    };
+    if let Some(item) = items.get(index) {
+        call_spread::prepay_item(runtime)?;
+        let expression = match unit.expr(*item) {
+            code::Expr::SpreadArgument(expression) => *expression,
+            _ => *item,
+        };
+        return eval_child(
+            runtime,
+            frame,
+            Phase::SuperSpreadArguments {
+                owner,
+                new_target,
+                superclass,
+                index,
+                arguments,
+            },
+            expression,
+        );
+    }
+    finish_super(
+        runtime,
+        owner,
+        new_target,
+        superclass,
+        arguments.into_values(),
+        doc,
+    )
+}
+
+fn finish_super(
+    runtime: &mut Runtime,
+    owner: usize,
+    new_target: Value,
+    superclass: Value,
+    arguments: Vec<Value>,
+    doc: &mut Document,
+) -> Result<Option<Output>> {
+    // Validate only after all argument effects, before bound forwarding can
+    // reserve storage. The captured parent and original NewTarget stay owned.
+    runtime.class_validate_superclass(&superclass)?;
+    let constructed = runtime.construct_with_target(superclass, arguments, new_target, doc)?;
+    runtime
+        .class_bind_this(owner, constructed)
+        .map(|value| Some(Output::Value(value)))
+}
+
 fn binary_next(
     runtime: &mut Runtime,
     frame: ExprFrame,
@@ -794,16 +1051,33 @@ fn assign_reference(
             return Ok(Some(Output::Value(old.unwrap())));
         }
     }
-    eval_child(
-        runtime,
-        frame,
-        Phase::AssignValue {
-            reference,
-            old: if logical { None } else { old },
-            logical,
-        },
-        *right,
-    )
+    let hint = if (op == "=" || logical) && unit.anonymous_class(*right).is_some() {
+        if let Reference::CodeName {
+            unit: owner,
+            expression,
+            ..
+        } = &reference
+        {
+            let code::Expr::Ident(name) = owner.expr(*expression) else {
+                unreachable!("identifier assignment reference")
+            };
+            Some(runtime.class_identifier_name_hint(name)?)
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+    let phase = Phase::AssignValue {
+        reference,
+        old: if logical { None } else { old },
+        logical,
+    };
+    if let Some(hint) = hint {
+        named_class_child(runtime, frame, phase, *right, hint)
+    } else {
+        eval_child(runtime, frame, phase, *right)
+    }
 }
 fn reserve_values(runtime: &mut Runtime, length: usize, array: bool) -> Result<Vec<Value>> {
     runtime.work(length)?;
@@ -904,6 +1178,16 @@ fn object_entry(
         };
         match &items[index].1 {
             code::ObjectEntry::Data(expression) => {
+                if unit.anonymous_class(*expression).is_some() {
+                    let hint = runtime.class_name_hint(&key)?;
+                    return named_class_child(
+                        runtime,
+                        frame,
+                        Phase::ObjectValue { index, object, key },
+                        *expression,
+                        hint,
+                    );
+                }
                 return eval_child(
                     runtime,
                     frame,

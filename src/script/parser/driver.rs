@@ -3,6 +3,7 @@ use super::*;
 
 #[cfg(test)]
 mod call_spread_layout_tests;
+mod classes;
 mod expressions;
 mod functions;
 mod statements;
@@ -15,6 +16,7 @@ enum Output {
     Parameters(functions::State),
     Key(PropertyName),
     Declaration(Stmt),
+    Class(ClassId),
 }
 struct Body {
     statements: Vec<StmtId>,
@@ -26,11 +28,23 @@ enum Kind {
     Statement(statements::Frame),
     Function(functions::Frame),
     Body(statements::BodyFrame),
+    Class(classes::Frame),
 }
 enum Transition {
     Done(Output),
     Again(Kind),
     Child(Kind, Kind),
+}
+struct EntryContext {
+    allow_in: bool,
+    strict: bool,
+    super_call_allowed: bool,
+    in_class: bool,
+}
+impl From<classes::Frame> for Kind {
+    fn from(frame: classes::Frame) -> Self {
+        Self::Class(frame)
+    }
 }
 impl From<expressions::Frame> for Kind {
     fn from(frame: expressions::Frame) -> Self {
@@ -84,6 +98,12 @@ fn key(output: Option<Output>) -> PropertyName {
         unreachable!("property grammar output")
     };
     key
+}
+fn class(output: Option<Output>) -> ClassId {
+    let Some(Output::Class(id)) = output else {
+        unreachable!("class grammar output")
+    };
+    id
 }
 fn declaration(output: Option<Output>) -> Stmt {
     let Some(Output::Declaration(stmt)) = output else {
@@ -167,7 +187,12 @@ pub(super) fn dynamic_function<'s>(
 }
 
 fn run(parser: &mut Parser<'_>, root: Kind) -> Result<Output> {
-    let entry_in = parser.allow_in;
+    let entry = EntryContext {
+        allow_in: parser.allow_in,
+        strict: parser.strict,
+        super_call_allowed: parser.super_call_allowed,
+        in_class: parser.in_class,
+    };
     let result = (|| {
         let mut frames = Vec::new();
         enter(parser, &mut frames, root)?;
@@ -179,6 +204,7 @@ fn run(parser: &mut Parser<'_>, root: Kind) -> Result<Output> {
                 Kind::Statement(state) => statements::step(parser, state, output.take()),
                 Kind::Function(state) => functions::step(parser, state, output.take()),
                 Kind::Body(state) => statements::body_step(parser, state, output.take()),
+                Kind::Class(state) => classes::step(parser, state, output.take()),
             }?;
             match transition {
                 Transition::Done(value) => {
@@ -194,9 +220,12 @@ fn run(parser: &mut Parser<'_>, root: Kind) -> Result<Output> {
         Ok(output.expect("root grammar output"))
     })();
     // Successful Dynamic parameters deliberately hand context to the body run.
-    // On errors, restore only this invocation's grammar flag; quotas stay spent.
+    // Restore this invocation's scalar grammar flags on error; quotas stay spent.
     if result.is_err() {
-        parser.allow_in = entry_in;
+        parser.allow_in = entry.allow_in;
+        parser.strict = entry.strict;
+        parser.super_call_allowed = entry.super_call_allowed;
+        parser.in_class = entry.in_class;
     }
     result
 }

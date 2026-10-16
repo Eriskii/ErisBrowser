@@ -1,5 +1,17 @@
 # Development docket
 
+[The class runtime slice](classes.md) now covers declarations/expressions,
+strict lexical names, public methods/accessors and base/derived construction,
+including direct `super()`, alternate `new.target`, escaped arrows and native
+Promise subclasses. Fields, private elements, static blocks, `super` properties
+and async/generator methods remain future work. Upstream class feature admission
+is a separate step; the profile results below retain their historical scope.
+Final validation passes 80 public groups in 164 mode attempts, 16 private groups
+and two browser witnesses. Complete Rust suites pass 3,344/3,698 groups; eight
+unchanged profile replays retain 1,330 cases and 640 healthy controls. Their 20
+new passes and ten newly reached failures are recorded in the chapter; no
+previously passing case regressed.
+
 [Promise construction and reactions](promise-foundation.md) now include
 thenable adoption, generic capabilities/species and a shared FIFO with
 `queueMicrotask`. [Generic `catch`](promise-catch.md) and

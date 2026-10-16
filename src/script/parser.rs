@@ -11,8 +11,8 @@ macro_rules! emit {
     }};
 }
 use code::{
-    CatchClause, Expr, ExprId, ForBinding, Function as FunctionCode, FunctionId, ObjectEntry,
-    Parameter, Stmt, StmtId,
+    CatchClause, ClassId, Expr, ExprId, ForBinding, Function as FunctionCode, FunctionId,
+    ObjectEntry, Parameter, Stmt, StmtId,
 };
 
 // IdentifierName syntax is needed only until an object entry is complete.
@@ -50,6 +50,8 @@ pub(super) struct Parser<'source> {
     next_label: usize,
     allow_in: bool,
     strict: bool,
+    super_call_allowed: bool,
+    in_class: bool,
 }
 impl<'source> Parser<'source> {
     pub(super) fn program(source: &'source str) -> Result<Rc<code::Unit>> {
@@ -103,6 +105,8 @@ impl<'source> Parser<'source> {
             next_label: 0,
             allow_in: true,
             strict,
+            super_call_allowed: false,
+            in_class: false,
         })
     }
     fn parse_body(&mut self) -> Result<()> {
@@ -130,6 +134,7 @@ impl<'source> Parser<'source> {
             self_name: false,
             constructable: false,
             strict: parser.strict,
+            class_kind: None,
         };
         let id = parser.emit_function(function)?;
         let unit = parser.unit.finish(&mut parser.compile_budget)?;
@@ -162,6 +167,9 @@ impl<'source> Parser<'source> {
     fn emit_function(&mut self, value: FunctionCode) -> Result<FunctionId> {
         self.unit.add_function(value, &mut self.compile_budget)
     }
+    fn emit_class(&mut self, value: code::Class) -> Result<ClassId> {
+        self.unit.add_class(value, &mut self.compile_budget)
+    }
     fn done(&self) -> bool {
         matches!(self.tokens[self.pos].kind, TokenKind::End)
     }
@@ -192,6 +200,11 @@ impl<'source> Parser<'source> {
     }
     fn error(&self, message: impl Into<String>) -> ScriptError {
         if let TokenKind::Invalid(error) = &self.tokens[self.pos].kind {
+            if self.in_class
+                && self.source.as_bytes().get(self.tokens[self.pos].offset) == Some(&b'#')
+            {
+                return ScriptError::unsupported("private class elements are not implemented");
+            }
             return (**error).clone();
         }
         ScriptError::at(message, self.tokens[self.pos].offset)
@@ -567,6 +580,14 @@ fn check_scope<'a>(
                     lexical.push(name, false, budget)?;
                 }
             }
+            Stmt::Class(id) => {
+                let name = unit
+                    .class(*id)
+                    .name
+                    .as_deref()
+                    .expect("class declaration name");
+                lexical.push(name, false, budget)?;
+            }
             Stmt::Function(name, _) if block_functions => {
                 lexical.push(name, true, budget)?;
             }
@@ -662,6 +683,20 @@ fn check_parameter_lexicals<'a>(
                     ));
                 }
             }
+        }
+        if let Stmt::Class(id) = unit.stmt(*statement)
+            && params.contains(
+                unit.class(*id)
+                    .name
+                    .as_deref()
+                    .expect("class declaration name"),
+                budget,
+            )?
+        {
+            return Err(ScriptError::at(
+                "parameter conflicts with lexical declaration",
+                0,
+            ));
         }
     }
     Ok(())
@@ -792,7 +827,7 @@ mod tests {
         "var \\u0069f=1;",
         "return 1;",
         "with(a){}",
-        "class A{}",
+        "class A{field;}",
         "function* f(){}",
         "({*m(){}})",
     ];
@@ -1054,3 +1089,5 @@ mod tests {
             .unwrap();
     }
 }
+#[cfg(test)]
+mod class_tests;

@@ -37,6 +37,7 @@ pub(super) enum Frame {
     TryBody,
     CatchBody(StmtId, Option<String>),
     FinallyBody(StmtId, Option<CatchClause>),
+    ClassDone,
 }
 pub(super) struct Switch {
     value: ExprId,
@@ -263,6 +264,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             let id = p.emit_function(code)?;
             done_stmt(p, Stmt::Function(name, id))
         }
+        Frame::ClassDone => done_stmt(p, Stmt::Class(class(output))),
         Frame::Block => done_stmt(p, Stmt::Block(body(output).statements)),
         Frame::Label(start, target) => {
             let id = statement(output);
@@ -475,6 +477,12 @@ fn start(p: &mut Parser<'_>, declarations: bool) -> Result<Transition> {
     }
     if p.declaration_start() && (declarations || !p.is("let")) {
         return child(Frame::DeclarationDone, Frame::Declaration(false));
+    }
+    if p.is("class") {
+        return child(
+            Frame::ClassDone,
+            classes::Frame::Start { declaration: true },
+        );
     }
     if p.eat("function") {
         if p.is("*") {

@@ -55,6 +55,9 @@ enum Phase {
     If,
     UpdateEmpty,
     Declare(usize),
+    ClassInitialize {
+        binding_environment: usize,
+    },
     WhileTest(Value),
     DoTest(Value),
     LoopBody(Value),
@@ -311,6 +314,20 @@ pub(super) fn step(
             }
         }
         Phase::UpdateEmpty => done(flow(output).update_empty(Some(&Value::Undefined))),
+        Phase::ClassInitialize {
+            binding_environment,
+        } => {
+            let code::Stmt::Class(id) = unit.stmt(frame.id()) else {
+                unreachable!("class declaration continuation")
+            };
+            let name = unit
+                .class(*id)
+                .name
+                .as_deref()
+                .expect("named class declaration");
+            runtime.initialize_class_declaration(binding_environment, name, value(output))?;
+            done(Flow::Normal(None))
+        }
         Phase::Declare(index) => {
             declaration_value(runtime, &frame, index, value(output), doc)?;
             declaration_next(runtime, frame, index + 1, doc)
@@ -474,6 +491,17 @@ fn start(runtime: &mut Runtime, frame: Frame, doc: &mut Document) -> Result<Opti
         }
         code::Stmt::Expr(expr) => expression(runtime, frame, Phase::Expression, *expr, env),
         code::Stmt::Var(..) => declaration_next(runtime, frame, 0, doc),
+        code::Stmt::Class(id) => {
+            let next = Job::Class(super::classes::Frame::new(unit.clone(), *id, env, None));
+            schedule(
+                runtime,
+                frame,
+                Phase::ClassInitialize {
+                    binding_environment: env,
+                },
+                next,
+            )
+        }
         code::Stmt::Block(_) => {
             let child = runtime.environment(env)?;
             list(runtime, frame, Phase::Identity, ListOwner::Block(id), child)
@@ -616,9 +644,19 @@ fn declaration_next(
     let code::Stmt::Var(bindings, kind) = unit.stmt(frame.id()) else {
         unreachable!()
     };
-    while let Some((_, initializer)) = bindings.get(index) {
+    while let Some((name, initializer)) = bindings.get(index) {
         if let Some(initializer) = initializer {
             let env = frame.env;
+            if unit.anonymous_class(*initializer).is_some() {
+                let hint = runtime.class_identifier_name_hint(name)?;
+                let next = Job::Expression(ExprFrame::named_class(
+                    unit.clone(),
+                    *initializer,
+                    env,
+                    hint,
+                ));
+                return schedule(runtime, frame, Phase::Declare(index), next);
+            }
             return expression(runtime, frame, Phase::Declare(index), *initializer, env);
         }
         if *kind != DeclarationKind::Var {

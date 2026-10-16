@@ -42,6 +42,11 @@ pub(super) enum Frame {
     ComputedKey(bool),
     TemplatePart(JsString, Vec<(ExprId, JsString)>, bool),
     Pass,
+    LeftHandSide,
+    LeftHandSideBase(bool),
+    ClassDone,
+    // Flags: any spread, current spread, saved allow_in, permit postfix update.
+    SuperArguments(Vec<ExprId>, bool, bool, bool, bool),
 }
 pub(super) struct Binary {
     left: ExprId,
@@ -53,6 +58,7 @@ pub(super) struct Postfix {
     value: ExprId,
     chain: usize,
     async_call: bool,
+    allow_update: bool,
 }
 pub(super) struct NewState {
     value: ExprId,
@@ -169,6 +175,9 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                 };
                 return child(Frame::PrefixUpdate(delta), Frame::Unary);
             }
+            if p.is("super") {
+                return super_start(p, true);
+            }
             let async_call = p.is("async")
                 && p.token_is(p.pos + 1, "(")
                 && !p.tokens[p.pos + 1].line_break_before;
@@ -196,8 +205,63 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                 value: expression(output),
                 chain: 0,
                 async_call,
+                allow_update: true,
             },
         ),
+        Frame::LeftHandSide => {
+            if p.is("super") {
+                return super_start(p, false);
+            }
+            let async_call = p.is("async")
+                && p.token_is(p.pos + 1, "(")
+                && !p.tokens[p.pos + 1].line_break_before;
+            child(Frame::LeftHandSideBase(async_call), Frame::New)
+        }
+        Frame::LeftHandSideBase(async_call) => postfix(
+            p,
+            Postfix {
+                value: expression(output),
+                chain: 0,
+                async_call,
+                allow_update: false,
+            },
+        ),
+        Frame::ClassDone => done_expr(p, Expr::Class(class(output))),
+        Frame::SuperArguments(
+            mut arguments,
+            has_spread,
+            current_spread,
+            saved_in,
+            allow_update,
+        ) => {
+            let mut item = expression(output);
+            if current_spread {
+                item = p.emit_expr(Expr::SpreadArgument(item))?;
+            }
+            push(&mut arguments, item, &mut p.compile_budget)?;
+            if p.eat(")") {
+                p.allow_in = saved_in;
+                super_done(p, arguments, has_spread, allow_update)
+            } else {
+                p.expect(",")?;
+                if p.eat(")") {
+                    p.allow_in = saved_in;
+                    super_done(p, arguments, has_spread, allow_update)
+                } else {
+                    let current_spread = argument_spread(p)?;
+                    child(
+                        Frame::SuperArguments(
+                            arguments,
+                            has_spread || current_spread,
+                            current_spread,
+                            saved_in,
+                            allow_update,
+                        ),
+                        Frame::Assignment,
+                    )
+                }
+            }
+        }
         Frame::PostfixResume(state) => postfix(p, state),
         Frame::Computed(mut state, saved_in) => {
             let property = expression(output);
@@ -576,14 +640,63 @@ fn postfix(p: &mut Parser<'_>, mut state: Postfix) -> Result<Transition> {
             break;
         }
     }
-    if !p.tokens[p.pos].line_break_before && p.eat("++") {
+    if state.allow_update && !p.tokens[p.pos].line_break_before && p.eat("++") {
         p.assignment_target(state.value)?;
         state.value = p.emit_expr(Expr::Update(state.value, 1.0, false))?;
-    } else if !p.tokens[p.pos].line_break_before && p.eat("--") {
+    } else if state.allow_update && !p.tokens[p.pos].line_break_before && p.eat("--") {
         p.assignment_target(state.value)?;
         state.value = p.emit_expr(Expr::Update(state.value, -1.0, false))?;
     }
     Ok(Transition::Done(Output::Expression(state.value)))
+}
+fn super_start(p: &mut Parser<'_>, allow_update: bool) -> Result<Transition> {
+    p.expect("super")?;
+    if p.is(".") || p.is("[") {
+        return Err(ScriptError::unsupported(
+            "super property references are not implemented",
+        ));
+    }
+    if !p.super_call_allowed {
+        return Err(p.error("super call outside a derived constructor"));
+    }
+    p.expect("(")?;
+    if p.eat(")") {
+        return super_done(p, Vec::new(), false, allow_update);
+    }
+    let current_spread = argument_spread(p)?;
+    let saved_in = p.allow_in;
+    p.allow_in = true;
+    child(
+        Frame::SuperArguments(
+            Vec::new(),
+            current_spread,
+            current_spread,
+            saved_in,
+            allow_update,
+        ),
+        Frame::Assignment,
+    )
+}
+fn super_done(
+    p: &mut Parser<'_>,
+    arguments: Vec<ExprId>,
+    has_spread: bool,
+    allow_update: bool,
+) -> Result<Transition> {
+    let value = p.emit_expr(if has_spread {
+        Expr::SuperCallSpread(arguments)
+    } else {
+        Expr::SuperCall(arguments)
+    })?;
+    Ok(Transition::Again(
+        Frame::PostfixResume(Postfix {
+            value,
+            chain: 0,
+            async_call: false,
+            allow_update,
+        })
+        .into(),
+    ))
 }
 fn argument_spread(p: &mut Parser<'_>) -> Result<bool> {
     if p.is(".") {
@@ -669,6 +782,18 @@ fn new_members(p: &mut Parser<'_>, mut state: NewState) -> Result<Transition> {
     }
 }
 fn primary(p: &mut Parser<'_>) -> Result<Transition> {
+    if p.is("class") {
+        return child(
+            Frame::ClassDone,
+            classes::Frame::Start { declaration: false },
+        );
+    }
+    if p.in_class
+        && matches!(p.tokens[p.pos].kind, TokenKind::Invalid(_))
+        && p.source.as_bytes().get(p.tokens[p.pos].offset) == Some(&b'#')
+    {
+        return Err(p.error("expected expression"));
+    }
     if p.unsupported_async_start() {
         return Err(ScriptError::unsupported(
             "async functions are not implemented",
@@ -762,9 +887,15 @@ fn primary(p: &mut Parser<'_>) -> Result<Transition> {
         TokenKind::Word(s) if !s.escaped && &*s.value == "null" => {
             done_expr(p, Expr::Literal(Value::Null))
         }
-        TokenKind::Word(s) if !s.escaped && &*s.value == "super" => Err(ScriptError::unsupported(
-            "super property and constructor references are not implemented",
-        )),
+        TokenKind::Word(s) if !s.escaped && &*s.value == "super" => {
+            if p.is(".") || p.is("[") {
+                Err(ScriptError::unsupported(
+                    "super property references are not implemented",
+                ))
+            } else {
+                Err(ScriptError::at("invalid super expression", offset))
+            }
+        }
         TokenKind::Word(word) => {
             let name = p.copy_identifier(&word.value)?;
             if p.is("=>") {

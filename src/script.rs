@@ -27,6 +27,7 @@ mod aggregate_error_abort_tests;
 mod aggregate_error_semantic_tests;
 #[cfg(test)]
 mod bootstrap_tests;
+mod classes;
 mod code;
 mod construction;
 mod data_view;
@@ -1308,10 +1309,20 @@ impl Binding {
         }
     }
 }
+enum ThisBinding {
+    Lexical,
+    Uninitialized,
+    Initialized(Value),
+}
+// Retain the existing conservative environment allowance and account for
+// the complete added state, including the active constructor ID.
+const ENVIRONMENT_CLASS_BYTES: usize = std::mem::size_of::<Option<usize>>()
+    + std::mem::size_of::<ThisBinding>().saturating_sub(std::mem::size_of::<Option<Value>>());
 struct Environment {
     bindings: BTreeMap<String, Binding>,
     // Execution receiver, never an author-visible property or lexical name.
-    this_binding: Option<Value>,
+    this_binding: ThisBinding,
+    active_constructor: Option<usize>,
     new_target_binding: Option<Value>,
     parent: Option<usize>,
     function_scope: bool,
@@ -1739,7 +1750,8 @@ impl Runtime {
             environments: vec![
                 Environment {
                     bindings,
-                    this_binding: Some(Value::Window),
+                    this_binding: ThisBinding::Initialized(Value::Window),
+                    active_constructor: None,
                     new_target_binding: None,
                     parent: None,
                     function_scope: true,
@@ -1747,7 +1759,8 @@ impl Runtime {
                 },
                 Environment {
                     bindings: BTreeMap::new(),
-                    this_binding: None,
+                    this_binding: ThisBinding::Lexical,
+                    active_constructor: None,
                     new_target_binding: None,
                     parent: Some(0),
                     function_scope: false,
@@ -1795,6 +1808,7 @@ impl Runtime {
                 + std::mem::size_of::<microtasks::State>()
                 + std::mem::size_of::<promises::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
+                + 2 * ENVIRONMENT_CLASS_BYTES
                 + initial_binding_bytes
                 + native_names.len() * NATIVE_METADATA_BYTES
                 + TrackedGlobal::ALL
@@ -1812,6 +1826,7 @@ impl Runtime {
                 + std::mem::size_of::<microtasks::State>()
                 + std::mem::size_of::<promises::State>()
                 + 4 * std::mem::size_of::<Option<Value>>()
+                + 2 * ENVIRONMENT_CLASS_BYTES
                 + initial_binding_bytes
                 + native_names.len() * NATIVE_METADATA_BYTES
                 + TrackedGlobal::ALL
@@ -3755,11 +3770,12 @@ impl Runtime {
         Ok(Value::Object(id))
     }
     fn environment(&mut self, parent: usize) -> Result<usize> {
-        self.charge(128 + 2 * std::mem::size_of::<Option<Value>>())?;
+        self.charge(128 + 2 * std::mem::size_of::<Option<Value>>() + ENVIRONMENT_CLASS_BYTES)?;
         let id = self.environments.len();
         self.environments.push(Environment {
             bindings: BTreeMap::new(),
-            this_binding: None,
+            this_binding: ThisBinding::Lexical,
+            active_constructor: None,
             new_target_binding: None,
             parent: Some(parent),
             function_scope: false,
@@ -3817,7 +3833,7 @@ impl Runtime {
             let mut cursor = env;
             loop {
                 self.tick()?;
-                if self.environments[cursor].this_binding.is_some() {
+                if !matches!(self.environments[cursor].this_binding, ThisBinding::Lexical) {
                     return Ok(Some(cursor));
                 }
                 let Some(parent) = self.environments[cursor].parent else {
@@ -3837,10 +3853,7 @@ impl Runtime {
     }
     fn binding_value(&mut self, env: usize, name: &str, doc: &mut Document) -> Result<Value> {
         if name == "this" {
-            return self.environments[env]
-                .this_binding
-                .clone()
-                .ok_or_else(|| ScriptError::reference("missing execution receiver"));
+            return self.class_this_value(env);
         }
         if env == 0 {
             // Ordinary own data bindings need neither prototype traversal nor
@@ -3873,6 +3886,24 @@ impl Runtime {
         env: usize,
     ) -> Result<()> {
         for statement in body {
+            if let code::Stmt::Class(id) = unit.stmt(*statement) {
+                let name = unit
+                    .class(*id)
+                    .name
+                    .as_ref()
+                    .expect("named class declaration");
+                if self.environments[env].bindings.contains_key(name)
+                    || env == 1
+                        && self.environments[0]
+                            .bindings
+                            .get(name)
+                            .is_some_and(|b| !b.deletable)
+                {
+                    return Err(ScriptError::syntax(format!(
+                        "duplicate lexical binding '{name}'"
+                    )));
+                }
+            }
             if let code::Stmt::Var(bindings, kind) = unit.stmt(*statement)
                 && *kind != DeclarationKind::Var
             {
@@ -3901,6 +3932,28 @@ impl Runtime {
     ) -> Result<()> {
         self.validate_lexical(unit, body, env)?;
         for statement in body {
+            if let code::Stmt::Class(id) = unit.stmt(*statement) {
+                let name = unit
+                    .class(*id)
+                    .name
+                    .as_ref()
+                    .expect("named class declaration");
+                self.charge(name.len() + BINDING_BYTES)?;
+                self.environments[env].bindings.insert(
+                    name.clone(),
+                    Binding {
+                        value: Value::Undefined,
+                        accessor: None,
+                        mutable: true,
+                        initialized: false,
+                        strict_immutable: false,
+                        global_property: false,
+                        global_order: 0,
+                        enumerable: true,
+                        deletable: false,
+                    },
+                );
+            }
             if let code::Stmt::Var(bindings, kind) = unit.stmt(*statement)
                 && *kind != DeclarationKind::Var
             {
@@ -3923,6 +3976,39 @@ impl Runtime {
                 }
             }
         }
+        Ok(())
+    }
+    fn initialize_class_declaration(
+        &mut self,
+        environment: usize,
+        name: &str,
+        constructor: Value,
+    ) -> Result<()> {
+        self.work(6)?;
+        let bindings = self
+            .environments
+            .get(environment)
+            .ok_or_else(|| ScriptError::resource("invalid class declaration environment"))?
+            .bindings
+            .len();
+        let width = name
+            .len()
+            .checked_add(1)
+            .ok_or_else(|| ScriptError::resource("class binding lookup overflow"))?;
+        let work = promises::intrinsic_tree(bindings)
+            .0
+            .checked_mul(width)
+            .ok_or_else(|| ScriptError::resource("class binding lookup overflow"))?;
+        self.work(work)?;
+        let binding = self.environments[environment]
+            .bindings
+            .get_mut(name)
+            .ok_or_else(|| ScriptError::resource("missing class declaration binding"))?;
+        if !binding.mutable || binding.global_property || binding.initialized {
+            return Err(ScriptError::resource("invalid class declaration binding"));
+        }
+        binding.value = constructor;
+        binding.initialized = true;
         Ok(())
     }
     fn var_scope(&self, mut env: usize) -> usize {
@@ -10650,7 +10736,7 @@ mod tests {
             "(function*(){yield 1;})",
             "({*f(){yield 1;}})",
             "label:function f(){}",
-            "class C{}",
+            "class C{field;}",
             "import x from 'x';",
             "export var x=1;",
         ] {
@@ -20862,3 +20948,11 @@ mod with_resolvers_semantics_tests;
 mod try_abort_tests;
 #[cfg(test)]
 mod try_semantics_tests;
+
+#[cfg(test)]
+mod class_abort_tests;
+#[cfg(test)]
+mod class_semantics_tests;
+
+#[cfg(test)]
+mod class_superclass_tests;

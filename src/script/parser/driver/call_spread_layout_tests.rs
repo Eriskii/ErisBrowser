@@ -13,12 +13,12 @@ fn actual_call_spread_parser_layout_matches_both_held_mirrors() {
         ),
         (72, 8)
     );
-    assert_eq!((size_of::<Kind>(), align_of::<Kind>()), (112, 8));
+    assert_eq!((size_of::<Kind>(), align_of::<Kind>()), (120, 8));
     assert_eq!(
         (size_of::<Transition>(), align_of::<Transition>()),
-        (224, 8)
+        (240, 8)
     );
     assert_eq!((size_of::<Output>(), align_of::<Output>()), (88, 8));
-    assert_eq!(4 * size_of::<Kind>() + 32, 480);
-    assert_eq!(MAX_HEAP / size_of::<Kind>(), 74898);
+    assert_eq!(4 * size_of::<Kind>() + 32, 512);
+    assert_eq!(MAX_HEAP / size_of::<Kind>(), 69905);
 }

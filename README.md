@@ -4,6 +4,16 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[JavaScript classes](docs/classes.md) now support declarations and expressions,
+base/derived construction, public methods/accessors and native Promise
+subclasses. Strict lexical bindings, `super()` ordering, alternate `new.target`
+and retained arrow activations share the existing runtime limits. Fields,
+private elements, static blocks, `super` properties and async/generator methods
+remain unsupported. This runtime change does not enable the `class` feature in
+upstream profile policies; earlier profile counts below retain their checkpoint
+scope. Final checks pass 80 public groups across 164 mode attempts, with the
+complete Rust suites and eight existing profile replays recorded in the chapter.
+
 [Promise construction and reactions](docs/promise-foundation.md) add the
 constructor, `then`, `resolve`, `reject`, generic species/capabilities and
 thenable adoption to the shared microtask FIFO. Jobs preserve original
@@ -67,7 +77,7 @@ modes retain their class metadata or parser reasons.
 [Spread arguments](docs/call-spread.md) now work in ordinary calls and `new`,
 including mixed, multiple and empty spreads and trailing commas. Iterator reads
 preserve evaluation order and share the existing resource limits. This closes
-four upstream Promise modes; array/object spread and classes remain unfinished.
+four upstream Promise modes; array/object spread remains unfinished.
 [Argument grammar contexts](docs/call-argument-in.md) also allow `in` expressions
 inside call and constructor arguments in `for` initializers, while preserving
 the surrounding `for-in` grammar.

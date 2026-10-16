@@ -190,7 +190,7 @@ impl Runtime {
         })
     }
 
-    fn constructed_prototype(&mut self, object: Value, prototype: Value) -> Value {
+    pub(super) fn constructed_prototype(&mut self, object: Value, prototype: Value) -> Value {
         let id = self
             .property_object(&object)
             .expect("allocated constructor result");
@@ -258,6 +258,9 @@ impl Runtime {
                     new_target = target.clone();
                 }
                 self.construct_with_target(target, combined, new_target, doc)
+            }
+            Value::Function(id) if self.functions[*id].code.class_kind.is_some() => {
+                self.construct_class(*id, arguments, new_target, doc)
             }
             Value::Function(id) if self.functions[*id].code.constructable => {
                 let prototype = self.constructor_prototype(new_target.clone(), "Object", doc)?;

@@ -1,5 +1,67 @@
 # Validation record
 
+## JavaScript class runtime
+
+The [class subset](classes.md) adds strict declarations/expressions, public
+methods/accessors and base/derived construction, including direct `super()`,
+retained arrows and native Promise subclasses. Fields, private elements, static
+blocks, `super` properties and async/generator methods remain unsupported.
+Upstream feature policies are unchanged; this checkpoint does not admit the
+`class` feature to those profiles.
+
+The final default Rust 1.88 suite passes **3,344 groups**, and Rust 1.99 with
+`test262-host,vulkan-raster` passes **3,698**. Each produces 53 result rows and
+preserves the complete prior roster plus **98 new groups**: **80 public / 164
+mode attempts**, **16 private** and **two browser witnesses**. Private coverage
+contains 114 measured helper/parser operations plus one raw/layout observation.
+Strict Clippy checks for both configurations and formatting pass. Direct Page
+and confined-worker witnesses verify two viewports, disabled/initial/repeated/
+click states and exact pixels. The feature suite also checks native raster-plan
+pixels; no hardware Vulkan run was performed for this checkpoint.
+
+Rebuilt ordinary and host release adapters replay eight existing profiles with
+**1,330 case rows and 640 healthy controls**. Results are **1,222 passed, 60
+failed and 48 unsupported**. Twenty formerly unsupported modes now pass. Ten
+other formerly unsupported modes become failures: eight expose BigInt literal
+syntax that remains unimplemented, and two `finally` subclass modes reach the
+existing final-unhandled-rejection host audit. No previously passing case
+regressed. Complete ordered identities and raw transitions are retained; no
+policy, original corpus or baseline was changed. Earlier profile totals below
+retain their original checkpoint scope.
+
+Four complete-shape probes and final production checks bind Environment
+96→112, its retained allowance 176→192, compiled Unit 136→168 and parser frame
+112→120. The 184-byte runtime frame remains unchanged. The two initial
+environments add 32 accounted bytes, and the empty Unit class-record container
+adds another 32. These are recorded target layouts and logical charges, not
+process-memory or timing measurements. Author 100,000, bootstrap 1,000,000 and
+cumulative 8 MiB limits are unchanged.
+
+Retained corrections and failed attempts are part of the evidence:
+
+- The first compiled candidate passed the original 79 public groups / 162
+  modes. Compilation first required sibling visibility for
+  `constructed_prototype`, with its body and tariff unchanged. A separate
+  private-fixture compile error needed only an expected-value lifetime fix.
+- Source review then found missing superclass validation before generic bound
+  forwarding. The class-only check now runs after explicit arguments or before
+  default forwarding, paying one retained handle plus existing constructor-check
+  work. An independent public group and private group were added; the original
+  79-group parent comparison does not include that late supplement.
+- The initial full default attempt reported 2,993 passing and nine failing
+  library groups: eight sandbox socket refusals and a missed cumulative
+  typed-array startup heap witness. A single derived +64-byte term preserves
+  its earlier terms, work and counts. The successful final default rerun had
+  permission for the tests' local sockets. The initial failure remains retained.
+
+The final candidate is the second source inventory: **1,834 selected inputs**
+and **30 changed/new paths** (16 existing, 14 new), not a complete build graph.
+Cargo/build inputs and conformance tooling, policies, corpora and baselines are
+unchanged. No new remote CI result, complete compatibility, security
+certification or performance claim is made here. See the [evidence manifest](evidence/classes/manifest.json)
+and [source/check archive](evidence/classes/sources-and-checks.tar.gz). The
+complete prior validation body below remains byte-exact.
+
 ## Complete pinned Promise.try selection
 
 The [Try upstream profile](promise-try-upstream.md) retains all 15 pinned sources
