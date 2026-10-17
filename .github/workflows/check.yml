@@ -238,6 +238,7 @@ jobs:
               ('src/graphics/raster_bridge/native/opacity_tests.rs', 'graphics::raster_bridge::native::tests::opacity_tests::', 17),
               ('src/graphics/raster_bridge/native/scope_accounting_tests.rs', 'graphics::raster_bridge::native::tests::scope_accounting_tests::', 6),
               ('src/graphics/raster_bridge/native/rect_accounting_tests.rs', 'graphics::raster_bridge::native::tests::rect_accounting_tests::', 6),
+              ('src/graphics/raster_bridge/native/line_accounting_tests.rs', 'graphics::raster_bridge::native::tests::line_accounting_tests::', 9),
               ('src/graphics/raster_bridge/native/image_accounting_tests.rs', 'graphics::raster_bridge::native::tests::image_accounting_tests::', 10),
               ('src/graphics/raster_bridge/native/image_loop_differential_tests.rs', 'graphics::raster_bridge::native::tests::image_loop_differential_tests::', 1),
               ('src/graphics/raster_bridge/gradient_tests.rs', 'graphics::raster_bridge::gradient_tests::', 3),
@@ -254,13 +255,13 @@ jobs:
           )
           expected = set()
           for source, prefix, count in modules:
-              names = re.findall(r'(?m)^#\[test\]\s*\nfn ([A-Za-z_]\w*)\(', Path(source).read_text())
+              names = re.findall(r'(?m)^#\[test\]\s*\n(?:(?://[^\n]*|#\[[^\n]*\])\s*\n)*fn ([A-Za-z_]\w*)\(', Path(source).read_text())
               if len(names) != count or len(set(names)) != count:
                   raise SystemExit(f'{source}: expected {count} distinct test declarations, got {len(names)}')
               expected.update(prefix + name for name in names)
           found = [line.removesuffix(': test') for line in Path(sys.argv[1]).read_text().splitlines()
                    if line.endswith(': test')]
-          if len(found) != 192 or set(found) != expected:
+          if len(found) != 201 or set(found) != expected:
               raise SystemExit(f'bridge test discovery mismatch: found={len(found)}, '
                                f'missing={sorted(expected - set(found))}, extra={sorted(set(found) - expected)}')
           print(f'Verified all {len(expected)} declared bridge tests are discoverable.')
