@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 import import_test262 as importer
 import test262_conformance as runner
+import test_test262_promise_runner as legacy
 
 
 ORACLE = Path(__file__).with_name('with-resolvers-preservation-oracle.json')
@@ -33,7 +34,7 @@ class WithResolversPreservationTests(unittest.TestCase):
         self.assertEqual({k: v for k, v in importer.PROFILES.items() if k not in {NEW_PROFILE, 'promise-try'}}, old['profiles'])
         self.assertEqual({k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {NEW_PROFILE, 'promise-try'}}, old['roots'])
         self.assertEqual(sorted(importer.TREE_PROFILES - {NEW_PROFILE, 'promise-try'}), old['tree_profiles'])
-        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {NEW_PROFILE, 'promise-try'}}, old['features'])
+        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {NEW_PROFILE, 'promise-try'}}, {k: legacy.class_admitted_features(k, v) for k, v in old['features'].items()})
         self.assertEqual(sorted(runner.PROMISE_HOST_PROFILES - {'promise-try'}), old['promise_host_profiles'])
         self.assertEqual(sorted(runner.INTRINSIC_ERRORS), old['intrinsic_errors'])
         self.assertEqual(len(old['profiles']), 59)
@@ -47,6 +48,9 @@ class WithResolversPreservationTests(unittest.TestCase):
                     stack.enter_context(patch.object(runner, 'load_corpus', return_value=(
                         dict(repository='fixture', revision='fixture', test_files=0), {}, [], [], '0' * 64)))
                     stack.enter_context(patch.object(runner, 'harness_preflight', return_value=[]))
+                    # Empty-inventory policy fixture; class raw evidence is tested separately.
+                    stack.enter_context(patch.object(runner, 'promise_class_harness_preflight', return_value=[]))
+                    stack.enter_context(patch.object(runner, 'promise_class_preflight_healthy', return_value=True))
                     for health in ('promise_any_preflight_healthy', 'aggregate_error_preflight_healthy', 'promise_preflight_healthy',
                                    'promise_all_preflight_healthy', 'promise_race_preflight_healthy',
                                    'promise_all_settled_preflight_healthy'):
@@ -59,7 +63,7 @@ class WithResolversPreservationTests(unittest.TestCase):
                     call.assert_not_called()
                 report = json.loads(output.read_bytes())
                 self.assertEqual((report['runner_policy'], report['runner_policy_sha256']),
-                                 (expected['policy'], expected['sha256']), profile)
+                                 legacy.class_admitted_policy(profile, expected['policy'], expected['sha256']), profile)
                 self.assertEqual((report['mode_cases'], report['counts']), (0, {}))
 
     def test_old_import_authentication_gates_classifiers_and_encoders_remain_exact(self):

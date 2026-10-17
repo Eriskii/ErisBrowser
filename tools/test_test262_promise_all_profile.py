@@ -155,7 +155,7 @@ class PromiseAllProfileTests(unittest.TestCase):
         self.assertEqual(identities(cases), self.oracle['case_identities'])
         self.assertEqual([sum(c['mode'] == mode for c in cases) for mode in ['sloppy', 'strict']], [98, 98])
         self.assertEqual(sum(c['completion_policy'] for c in cases), 114)
-        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], set(self.oracle['features']))
+        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], set(legacy.class_admitted_features(PROFILE, self.oracle['features'])))
         excluded = []
         for case in cases:
             self.assertIs(type(case['completion_policy']), int)
@@ -262,8 +262,8 @@ class PromiseAllProfileTests(unittest.TestCase):
             self.assertEqual((code, recorded, calls), (1, False, []))
             self.assertEqual((report['mode_cases'], report['counts']), (196, {'blocked': 196}))
             self.assertEqual({r['id'] for r in report['cases']}, {c['id'] for c in cases})
-            self.assertEqual(report['runner_policy'], self.oracle['policy'])
-            self.assertEqual(report['runner_policy_sha256'], self.oracle['policy_sha256'])
+            self.assertEqual((report['runner_policy'], report['runner_policy_sha256']),
+                             legacy.class_admitted_policy(PROFILE, self.oracle['policy'], self.oracle['policy_sha256']))
 
     def test_mock_healthy_report_keeps_host_policy_failure_and_all_modes_in_denominator(self):
         # Synthetic verifier outcomes only; untagged syntax may fail in a real adapter.
@@ -278,8 +278,8 @@ class PromiseAllProfileTests(unittest.TestCase):
         self.assertEqual((code, recorded, len(calls)), (0, True, 196))
         self.assertEqual(report['counts'], {'failed': 192, 'unsupported': 4})
         self.assertFalse(report['full_test262_conformance'])
-        self.assertEqual(report['runner_policy'], self.oracle['policy'])
-        self.assertEqual(report['runner_policy_sha256'], self.oracle['policy_sha256'])
+        self.assertEqual((report['runner_policy'], report['runner_policy_sha256']),
+                         legacy.class_admitted_policy(PROFILE, self.oracle['policy'], self.oracle['policy_sha256']))
         self.assertTrue(all(row['observation']['status'] == 'host-failure' and row['observation']['message'] == 'unhandled-rejection'
                             for row in report['cases'] if row['status'] == 'failed'))
 
@@ -298,7 +298,7 @@ class PromiseAllProfileTests(unittest.TestCase):
         self.assertEqual(len(preflight), 74)
         code, report, recorded, _ = legacy.PromiseRunnerTests().report(OLD_PROFILE, preflight)
         self.assertEqual((code, recorded), (0, True))
-        self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), (old['policy'], old['policy_sha256']))
+        self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), legacy.class_admitted_policy(OLD_PROFILE, old['policy'], old['policy_sha256']))
 
 
 if __name__ == '__main__':

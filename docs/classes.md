@@ -1,5 +1,11 @@
 # JavaScript classes
 
+The subsequent [Promise class-admission checkpoint](promise-class-admission.md)
+enables declared class metadata in seven bounded Promise profiles without
+changing this runtime. The remainder of this chapter records the original
+class-runtime checkpoint: its validation totals and statements about unchanged
+upstream policies remain historical.
+
 The interpreter now supports a bounded class subset: named declarations, named
 and anonymous expressions, base and derived constructors, public instance and
 static methods, getters and setters, and literal or computed string/Symbol

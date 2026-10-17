@@ -1,5 +1,55 @@
 # Validation record
 
+## Class metadata admission in Promise profiles
+
+The [class-admission checkpoint](promise-class-admission.md) adds only `class` to
+seven existing profile feature sets, with 84 independently frozen control rows.
+All eight complete replays retain **1,330 modes** and **724 healthy controls**:
+**1,258 passed, 64 failed and eight unsupported**. All 640 previous control rows
+remain exact. The 40 changed case rows are precisely the previously excluded
+class-tagged modes: **36 now pass**, while **four now fail** at the existing
+final-unhandled-rejection host audit. No other raw case row changes and no
+previously passing case regresses.
+
+The four newly reached failures are both modes of `Promise/reject/ctx-ctor.js`
+and `Promise/any/ctx-ctor.js`; each retains a genuine `unhandled-rejection`
+observation with one outstanding rejection. They are not converted into passes
+or described as proved Promise algorithm failures. The withResolvers profile
+now passes all 12 modes, and Try all 30; those are complete bounded selections,
+not full language or browser conformance.
+
+The complete Python suite passes **696 tests with no skips**, preserving all
+683 parent test identities plus 13 new adversarial groups. The focused candidate
+passes all 13 groups; against the parent they recorded one pass and 12
+missing-API failures. The first full candidate recorded 695 passes and one
+failure: an old mocked withResolvers route still expected its former feature
+set. A single expected-set addition of `class` corrected that fixture, without
+changing the producer, independent control oracle or runtime. The failed run,
+original payload and additive source review remain retained.
+
+After independent review, seven compact baselines were updated from the healthy
+measurements. All eight fresh `--baseline` runs exit zero and reproduce the
+complete measured reports except elapsed time, retaining every failed and
+unsupported outcome. Relative to the older baselines, 56 new passes and 14 newly
+reached failures include the earlier class-runtime checkpoint's 20 passes and
+ten failures; this admission change contributes only 36 and four. AggregateError
+and all other unselected baselines are unchanged.
+
+The ordinary Rust 1.88 and host Rust 1.99 release adapters were rebuilt and
+frozen before parent/candidate measurements. The candidate uses those exact
+binaries. Rust runtime source, corpus originals/helpers, completion protocols,
+resource limits and negative-error identity boundaries are unchanged; 54 other
+profile policy maps are exact. No new full Rust suite result is claimed here.
+The final inventory covers 1,840 selected inputs and 25 changed source, test or
+baseline paths; it is not a complete build graph.
+A source review corrected the new graph check to preserve 192 existing
+cross-mode prerequisite edges; only the 246 new class edges require the same
+mode. The original producer and the additive correction remain retained.
+
+See the [evidence manifest](evidence/promise-class-admission/manifest.json) and
+[source/check archive](evidence/promise-class-admission/sources-and-checks.tar.gz).
+The complete prior validation body below remains byte-exact.
+
 ## Native Line accounting
 
 [Native Lines](vulkan-line-accounting.md) now reserve their existing clipped

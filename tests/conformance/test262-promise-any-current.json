@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "8d335ebc4a1de3991fc8a6a7a5720577e38419a229cae4528d2e7b7ed4079a21",
-  "runner_policy_sha256": "49eb48da6d22d28eb01f3129bef7d44e3af2dfb2dbfe56716ef54d49f7b9e705",
-  "binary_sha256": "36fb50db9be2bcfe97323b832d7525252281773e5d68be73bafe214b1b5c27a3",
+  "runner_policy_sha256": "19ebb2983cd5678fdb243ddd68dcb57458f1aa8bcfeac4f250e61de0fdbfffbb",
+  "binary_sha256": "70957cf419f568a38b9a7493f9616fe489965c212a64c08ca0acf4691ae801c4",
   "cases": {
     "test/built-ins/Promise/any/call-reject-element-after-return.js:sloppy": {
       "status": "passed",
@@ -85,12 +85,12 @@
       "source_sha256": "a404a2efe732cad4c766f91537146d10ed6ce049b0a285536a61c3667090c082"
     },
     "test/built-ins/Promise/any/ctx-ctor.js:sloppy": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "4216d34ebd84d64f97b48ec8fc7254555706987bdb2b1961bb9b94677179f408",
       "source_sha256": "1b0987dbf342b0f4c2facb407ab7e288ff4ce47c14a4d588953d3d3e45509c9b"
     },
     "test/built-ins/Promise/any/ctx-ctor.js:strict": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "7df79c88672a439dfeb3e133393ab95de586d21fa1e716829614bd55708be075",
       "source_sha256": "1b0987dbf342b0f4c2facb407ab7e288ff4ce47c14a4d588953d3d3e45509c9b"
     },
@@ -175,12 +175,12 @@
       "source_sha256": "16fd59fde3045acdc877c125dafd11696beeddf3266ae1db983ac7d63701de9f"
     },
     "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "3e9f410f3e6f8f4ddd4abc1b66c679d57c3d391e0fe64fe67130e34c2e5715a9",
       "source_sha256": "aaf656bbaa7bc663d15b863d9f8fda3b3cce636588a423487ce96b0162073804"
     },
     "test/built-ins/Promise/any/invoke-resolve-on-promises-every-iteration-of-custom.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "19639f4e23bee70d8558a19910633877f43a9898c4adc1e8ee22e1ad9a97ed9b",
       "source_sha256": "aaf656bbaa7bc663d15b863d9f8fda3b3cce636588a423487ce96b0162073804"
     },
@@ -195,12 +195,12 @@
       "source_sha256": "8ab9dced492c1622eab94a94283f8b18f9295456dcf5a696580a00300740c682"
     },
     "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "7abd52f43194a606af1bacd49b56eafd6f5ce1ce59638297b837f7ed545d77d2",
       "source_sha256": "f0c3020a8b488515e3fd59d27400c0b84e6a6318d1c40fdaab1f431010ba24e7"
     },
     "test/built-ins/Promise/any/invoke-resolve-on-values-every-iteration-of-custom.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "076f3fb4ec12c934589e5593d58ae2a84d17137e897142906f0105925b532e2c",
       "source_sha256": "f0c3020a8b488515e3fd59d27400c0b84e6a6318d1c40fdaab1f431010ba24e7"
     },
@@ -865,22 +865,22 @@
       "source_sha256": "b10b8b8839dded8df02e6d4ddd8d03567197fb6c2b37f9d7142398bb488cfac1"
     },
     "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js:sloppy": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "010967e7405e656faf7ac2b2de45965bff04c7767005f9b03decd81e2a228cc0",
       "source_sha256": "0353bc872d19a82b0f07e5ae90ae1fc19962871e3fbfb4649e87743cfd13a2e2"
     },
     "test/built-ins/Promise/any/resolve-throws-iterator-return-is-not-callable.js:strict": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "9d03f67e882eac00b40d9f5eb6be719ab821a4795014df6178995377d57d5bff",
       "source_sha256": "0353bc872d19a82b0f07e5ae90ae1fc19962871e3fbfb4649e87743cfd13a2e2"
     },
     "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "23527b15535561660112b3081fdbe06c9fdf77c6b1a957fcdddef78b6e51af58",
       "source_sha256": "8e72336d721d7b7ad87a842554d6c8cf7aced2026dd9c60c6e04d0806f9655ea"
     },
     "test/built-ins/Promise/any/resolve-throws-iterator-return-null-or-undefined.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "77ad685ba49b69474d46e0d4c5ba2b5e122aa02150c6f1a038500e2a42920775",
       "source_sha256": "8e72336d721d7b7ad87a842554d6c8cf7aced2026dd9c60c6e04d0806f9655ea"
     },

@@ -1,16 +1,16 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "fb37d92c48c11850d893bb2b8375244673b674ea56403aecd81dee9362e89a94",
-  "runner_policy_sha256": "c5e877e3ff1038793e2d615d513568f412dcd070e715a8e62086e71564283183",
-  "binary_sha256": "ffab897811a1b49f7c2336942c55f762ba41d01426b7f50d38c78dd727a42486",
+  "runner_policy_sha256": "624ea2eca136dcefd60f1940244003ee0c66141454eed63702238bbfa22dd20b",
+  "binary_sha256": "3a03a3012aa8583fac86f90f93ceeb018090e7352cc22708118fe9cb276afe00",
   "cases": {
     "test/built-ins/Promise/withResolvers/ctx-ctor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "9e681a93c2ab377c24fa305a897f77f93e6d537e1e1c0ee7b498d5caef5d66f4",
       "source_sha256": "9b300e14b4ec7698294757126a71b8126c9815c420522930781e273041801b4f"
     },
     "test/built-ins/Promise/withResolvers/ctx-ctor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "2cfd5c83e185c3ef2aa99db4ef0497424c13c405f15e06ad132de074ab340bd1",
       "source_sha256": "9b300e14b4ec7698294757126a71b8126c9815c420522930781e273041801b4f"
     },

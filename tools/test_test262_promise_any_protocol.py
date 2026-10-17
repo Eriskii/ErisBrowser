@@ -74,7 +74,7 @@ class PromiseAnyProtocolTests(unittest.TestCase):
                 self.assertEqual(runner.profile_intrinsic_errors(profile), SEVEN)
         self.assertIsInstance(runner.profile_intrinsic_errors(PROFILE), frozenset)
         self.assertEqual(runner.INTRINSIC_ERRORS, set(SEVEN))
-        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES)
+        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES | {'class'})
         self.assertEqual(runner.PROMISE_HOST_PROFILES - {PROFILE, 'promise-try'}, set(OLD_HOST))
 
     def test_any_genuine_renamed_and_fake_wire_identities_stay_distinct(self):

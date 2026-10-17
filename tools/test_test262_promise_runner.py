@@ -23,6 +23,27 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+# Expected current policies are derived only from the immutable historical
+# oracles and the explicit seven-profile class admission selection.
+CLASS_ADMISSION_PROFILES = {
+    'promise-methods-async', 'promise-all', 'promise-race',
+    'promise-all-settled', 'promise-any', 'promise-with-resolvers', 'promise-try',
+}
+
+
+def class_admitted_features(profile, features):
+    return sorted(set(features) | ({'class'} if profile in CLASS_ADMISSION_PROFILES else set()))
+
+
+def class_admitted_policy(profile, policy, policy_sha256):
+    assert digest(json.dumps(policy, sort_keys=True).encode()) == policy_sha256
+    if profile not in CLASS_ADMISSION_PROFILES:
+        return policy, policy_sha256
+    current = copy.deepcopy(policy)
+    current['supported_features'] = class_admitted_features(profile, policy['supported_features'])
+    return current, digest(json.dumps(current, sort_keys=True).encode())
+
+
 def fixture_case():
     return dict(id='fixture:sloppy', file='fixture.js', mode='sloppy', source=b'1',
                 harness=[], metadata=dict(flags=[], includes=[], features=[],
@@ -111,7 +132,7 @@ class PromiseRunnerTests(unittest.TestCase):
         self.assertEqual([sum(c['mode'] == m for c in cases) for m in ['sloppy', 'strict']], [229, 229])
         self.assertEqual([sum('async' in c['metadata']['flags'] for c in cases),
                           sum('async' not in c['metadata']['flags'] for c in cases)], [222, 236])
-        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], set(self.oracle['features']))
+        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], set(class_admitted_features(PROFILE, self.oracle['features'])))
         self.assertEqual((len(manifest['inventory_proof']['files']),
                           sum(x['bytes'] for x in manifest['inventory_proof']['files'])), (13, 86344))
         for path, row in self.oracle['auxiliary_files'].items():
@@ -126,8 +147,10 @@ class PromiseRunnerTests(unittest.TestCase):
             for name, data in case['harness']:
                 self.assertEqual(digest(data), self.oracle['auxiliary_files']['harness/' + name]['sha256'])
             self.assertEqual(runner.encode_request(case)[:8], b'ERJS2' + bytes([int(case['mode'] == 'strict'), 0, policy]))
-            if {'class', 'cross-realm'} & set(case['metadata']['features']):
+            if 'cross-realm' in case['metadata']['features']:
                 self.assertIsNotNone(runner.unsupported_reason(case, runner.PROFILE_FEATURES[PROFILE], PROFILE))
+            elif 'class' in case['metadata']['features']:
+                self.assertIsNone(runner.unsupported_reason(case, runner.PROFILE_FEATURES[PROFILE], PROFILE))
 
     def test_policy_participates_only_in_new_case_fingerprint(self):
         value = fixture_case()
@@ -224,6 +247,16 @@ class PromiseRunnerTests(unittest.TestCase):
             result = observed(c) if observed else dict(status='passed')
             return dict(id=c['id'], mode=c['mode'], case_sha256=c['case_sha256'],
                         source_sha256=digest(c['source']), **result)
+        # This fixture tests the old guard and reporting contract. The separate
+        # class-gate suite supplies full combined rows and raw class evidence.
+        def old_health(outcomes, files, selected):
+            return {
+                'promise-methods-async': runner.promise_preflight_healthy,
+                'promise-all': runner.promise_all_preflight_healthy,
+                'promise-race': runner.promise_race_preflight_healthy,
+                'promise-all-settled': runner.promise_all_settled_preflight_healthy,
+            }[selected](outcomes)
+
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary)
             binary, output, baseline = [path / n for n in ['inert', 'report.json', 'baseline.json']]
@@ -232,7 +265,9 @@ class PromiseRunnerTests(unittest.TestCase):
                     '--record-baseline', str(baseline), '--jobs', '1']
             with patch.object(runner.sys, 'argv', argv), patch.object(runner, 'load_corpus',
                     return_value=(manifest, {}, cases, [], '0' * 64)), patch.object(runner, 'harness_preflight',
-                    return_value=preflight), patch.object(runner, 'run_case', side_effect=execute), contextlib.redirect_stdout(io.StringIO()):
+                    return_value=preflight), patch.object(runner, 'promise_class_harness_preflight',
+                    return_value=preflight), patch.object(runner, 'promise_class_preflight_healthy',
+                    side_effect=old_health), patch.object(runner, 'run_case', side_effect=execute), contextlib.redirect_stdout(io.StringIO()):
                 code = runner.main()
             report = json.loads(output.read_bytes())
             return code, report, baseline.exists(), calls
@@ -271,8 +306,8 @@ class PromiseRunnerTests(unittest.TestCase):
                 self.assertEqual({x['id'] for x in report['cases']}, {x['id'] for x in cases})
                 self.assertTrue(all(x['reason'] == 'Promise host preflight failed' for x in report['cases']))
                 self.assertFalse(report['harness_preflight_passed'])
-                self.assertEqual(report['runner_policy'], self.oracle['new_policy'])
-                self.assertEqual(report['runner_policy_sha256'], self.oracle['new_policy_sha256'])
+                self.assertEqual((report['runner_policy'], report['runner_policy_sha256']),
+                                 class_admitted_policy(PROFILE, self.oracle['new_policy'], self.oracle['new_policy_sha256']))
 
     def test_healthy_report_preserves_host_policy_reason_and_unsupported_denominator(self):
         _, _, cases, _, _ = runner.load_corpus(CORPUS, PROFILE)
@@ -290,8 +325,8 @@ class PromiseRunnerTests(unittest.TestCase):
         self.assertTrue(all(x['observation']['message'] == 'unhandled-rejection'
                             and x['observation']['status'] == 'host-failure'
                             for x in report['cases'] if x['status'] == 'failed'))
-        self.assertEqual(report['runner_policy'], self.oracle['new_policy'])
-        self.assertEqual(report['runner_policy_sha256'], self.oracle['new_policy_sha256'])
+        self.assertEqual((report['runner_policy'], report['runner_policy_sha256']),
+                         class_admitted_policy(PROFILE, self.oracle['new_policy'], self.oracle['new_policy_sha256']))
 
 
 if __name__ == '__main__':

@@ -269,6 +269,9 @@ class PromiseAnyControlsTests(unittest.TestCase):
             manifest = dict(repository='fixture', revision='fixture', test_files=1)
             with patch.object(runner, 'load_corpus', return_value=(manifest, self.files(), [case], [], '0' * 64)), \
                     patch.object(runner, 'harness_preflight', return_value=outcomes), \
+                    patch.object(runner, 'promise_class_harness_preflight', return_value=outcomes), \
+                    patch.object(runner, 'promise_class_preflight_healthy',
+                                 side_effect=lambda rows, files, profile: runner.promise_any_preflight_healthy(rows, files)), \
                     patch.object(runner, 'run_case', side_effect=AssertionError('blocked case dispatched')) as called, \
                     patch('sys.argv', ['test262_conformance.py', '--profile', PROFILE, '--binary', str(binary),
                                        '--output', str(report), '--record-baseline', str(baseline)]), \

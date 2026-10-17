@@ -71,7 +71,7 @@ class PromiseTryLoaderTests(unittest.TestCase):
         self.assertEqual(sum('class' in c['metadata']['features'] for c in cases), 6)
         self.assertTrue(all('promiseHelper.js' not in [n for n, _ in c['harness']] for c in cases))
         self.assertIn('harness/promiseHelper.js', files)
-        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], {'Reflect.construct', 'promise-try'})
+        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], {'Reflect.construct', 'promise-try', 'class'})
 
     def test_auxiliary_authentication_refuses_self_consistent_edits_omissions_and_extras(self):
         auxiliary = sorted(self.manifest['inventory_proof']['auxiliary_blobs'])

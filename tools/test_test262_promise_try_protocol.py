@@ -71,8 +71,8 @@ class PromiseTryProtocolTests(unittest.TestCase):
 
     def test_selected_features_host_family_and_seven_identity_boundary(self):
         self.assertEqual(runner.PROMISE_TRY_PROFILE, PROFILE)
-        self.assertEqual(runner.PROMISE_TRY_FEATURES, FEATURES)
-        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES)
+        self.assertEqual(runner.PROMISE_TRY_FEATURES, FEATURES | {'class'})
+        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES | {'class'})
         self.assertEqual(runner.PROMISE_HOST_PROFILES, set(OLD_HOST) | {PROFILE})
         self.assertEqual(runner.INTRINSIC_ERRORS, set(SEVEN))
         for selected in (None, 'unknown-profile', PROFILE, *OLD_HOST[:-1], ORDINARY[1]):

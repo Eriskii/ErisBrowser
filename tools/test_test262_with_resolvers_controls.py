@@ -49,7 +49,7 @@ class WithResolversControlTests(unittest.TestCase):
 
     def test_frozen_44_literals_metadata_helpers_modes_and_references_are_exact(self):
         self.assertEqual(runner.PROMISE_WITH_RESOLVERS_PROFILE, PROFILE)
-        self.assertEqual(runner.PROMISE_WITH_RESOLVERS_FEATURES, {'promise-with-resolvers'})
+        self.assertEqual(runner.PROMISE_WITH_RESOLVERS_FEATURES, {'promise-with-resolvers', 'class'})
         rows = runner.with_resolvers_preflight_variants()
         self.assertEqual(normalized(rows), self.oracle['variants'])
         self.assertEqual(len(rows), 44)
@@ -88,7 +88,7 @@ class WithResolversControlTests(unittest.TestCase):
 
         def run(case, binary, timeout, features, profile):
             self.assertEqual((binary, timeout, features, profile),
-                             (Path('/inert'), 3.0, {'promise-with-resolvers'}, PROFILE))
+                             (Path('/inert'), 3.0, {'promise-with-resolvers', 'class'}, PROFILE))
             self.assertNotIn('completion_policy', case)
             captured.append((case['id'], case['mode']))
             return copy.deepcopy(held[(case['id'], case['mode'])]['result'])
@@ -289,6 +289,10 @@ class WithResolversControlTests(unittest.TestCase):
                         with contextlib.ExitStack() as stack:
                             stack.enter_context(patch.object(runner, 'load_corpus', return_value=(manifest, self.files, cases, [], '0' * 64)))
                             stack.enter_context(patch.object(runner, 'harness_preflight', return_value=preflight))
+                            # Preserve this fixture's legacy44 gate scope; new class evidence has independent tests.
+                            stack.enter_context(patch.object(runner, 'promise_class_harness_preflight', return_value=preflight))
+                            stack.enter_context(patch.object(runner, 'promise_class_preflight_healthy',
+                                side_effect=lambda outcomes, files, profile: runner.with_resolvers_preflight_healthy(outcomes, files)))
                             call = stack.enter_context(patch.object(runner, 'run_case', side_effect=AssertionError('source dispatch after bad gate')))
                             stack.enter_context(patch('sys.argv', ['runner', '--profile', PROFILE, '--binary', str(binary),
                                                                  '--output', str(output), '--record-baseline', str(baseline)]))
@@ -320,7 +324,7 @@ class WithResolversControlTests(unittest.TestCase):
             manifest = dict(repository='synthetic fixture', revision='fixture', test_files=6)
 
             def run(case, binary_arg, timeout, features, profile):
-                self.assertEqual((binary_arg, timeout, features, profile), (binary, 3.0, {'promise-with-resolvers'}, PROFILE))
+                self.assertEqual((binary_arg, timeout, features, profile), (binary, 3.0, {'promise-with-resolvers', 'class'}, PROFILE))
                 # A mock result, including deliberately successful synthetic
                 # class-tagged rows: this test exercises main's gate, not policy.
                 return dict(id=case['id'], file=case['file'], mode=case['mode'], case_sha256=case['case_sha256'],
@@ -330,6 +334,10 @@ class WithResolversControlTests(unittest.TestCase):
             with contextlib.ExitStack() as stack:
                 stack.enter_context(patch.object(runner, 'load_corpus', return_value=(manifest, self.files, cases, [], '0' * 64)))
                 stack.enter_context(patch.object(runner, 'harness_preflight', return_value=self.good))
+                # Preserve this fixture's legacy44 gate scope; new class evidence has independent tests.
+                stack.enter_context(patch.object(runner, 'promise_class_harness_preflight', return_value=self.good))
+                stack.enter_context(patch.object(runner, 'promise_class_preflight_healthy',
+                    side_effect=lambda outcomes, files, profile: runner.with_resolvers_preflight_healthy(outcomes, files)))
                 call = stack.enter_context(patch.object(runner, 'run_case', side_effect=run))
                 stack.enter_context(patch('sys.argv', ['runner', '--profile', PROFILE, '--binary', str(binary),
                                                      '--output', str(output), '--record-baseline', str(baseline)]))

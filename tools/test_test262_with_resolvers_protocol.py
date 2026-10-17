@@ -48,8 +48,8 @@ class WithResolversProtocolTests(unittest.TestCase):
 
     def test_feature_identity_and_host_sets_remain_separate(self):
         self.assertEqual(runner.PROMISE_WITH_RESOLVERS_PROFILE, PROFILE)
-        self.assertEqual(runner.PROMISE_WITH_RESOLVERS_FEATURES, FEATURES)
-        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES)
+        self.assertEqual(runner.PROMISE_WITH_RESOLVERS_FEATURES, FEATURES | {'class'})
+        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], FEATURES | {'class'})
         self.assertEqual(runner.PROMISE_HOST_PROFILES - {'promise-try'}, set(HOST))
         self.assertEqual(runner.INTRINSIC_ERRORS, set(SEVEN))
         self.assertEqual(runner.profile_intrinsic_errors(PROFILE), SEVEN)

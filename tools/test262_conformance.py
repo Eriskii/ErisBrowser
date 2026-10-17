@@ -111,7 +111,7 @@ PROFILE_FEATURES = {'typedarray-copy-within': TYPEDARRAY_COPY_WITHIN_FEATURES, '
 PROMISE_PROFILE = 'promise-methods-async'
 PROMISE_FEATURES = {'Promise', 'Promise.prototype.finally', 'Symbol.species',
                     'Reflect.construct', 'arrow-function', 'Reflect',
-                    'Symbol.toStringTag', 'Symbol'}
+                    'Symbol.toStringTag', 'Symbol', 'class'}
 PROFILE_FEATURES[PROMISE_PROFILE] = PROMISE_FEATURES
 PROMISE_ALL_PROFILE = 'promise-all'
 PROMISE_ALL_FEATURES = PROMISE_FEATURES | {'Symbol.iterator'}
@@ -125,7 +125,7 @@ PROFILE_FEATURES[PROMISE_ALL_SETTLED_PROFILE] = PROMISE_ALL_SETTLED_FEATURES
 PROMISE_ANY_PROFILE = 'promise-any'
 PROMISE_ANY_FEATURES = {'AggregateError', 'Promise.any', 'Reflect.construct', 'Symbol',
                         'Symbol.iterator', 'Symbol.species', 'arrow-function',
-                        'computed-property-names'}
+                        'computed-property-names', 'class'}
 PROFILE_FEATURES[PROMISE_ANY_PROFILE] = PROMISE_ANY_FEATURES
 PROMISE_HOST_PROFILES = {PROMISE_PROFILE, PROMISE_ALL_PROFILE, PROMISE_RACE_PROFILE, PROMISE_ALL_SETTLED_PROFILE}
 PROMISE_HOST_PROFILES.add(PROMISE_ANY_PROFILE)
@@ -134,10 +134,10 @@ AGGREGATE_ERROR_FEATURES = {'AggregateError', 'error-cause', 'Reflect', 'Reflect
                             'Symbol', 'Symbol.iterator', 'Symbol.toPrimitive'}
 PROFILE_FEATURES[AGGREGATE_ERROR_PROFILE] = AGGREGATE_ERROR_FEATURES
 PROMISE_WITH_RESOLVERS_PROFILE = 'promise-with-resolvers'
-PROMISE_WITH_RESOLVERS_FEATURES = {'promise-with-resolvers'}
+PROMISE_WITH_RESOLVERS_FEATURES = {'promise-with-resolvers', 'class'}
 PROFILE_FEATURES[PROMISE_WITH_RESOLVERS_PROFILE] = PROMISE_WITH_RESOLVERS_FEATURES
 PROMISE_TRY_PROFILE = 'promise-try'
-PROMISE_TRY_FEATURES = {'Reflect.construct', 'promise-try'}
+PROMISE_TRY_FEATURES = {'Reflect.construct', 'promise-try', 'class'}
 PROFILE_FEATURES[PROMISE_TRY_PROFILE] = PROMISE_TRY_FEATURES
 PROMISE_HOST_PROFILES.add(PROMISE_TRY_PROFILE)
 INTRINSIC_ERRORS = {'Error', 'TypeError', 'RangeError', 'SyntaxError', 'ReferenceError', 'EvalError', 'URIError'}
@@ -5900,6 +5900,876 @@ def promise_try_harness_preflight(files, binary, timeout):
     return outcomes
 
 
+# Profile-scoped class admission; existing preflight bodies remain unchanged.
+PROMISE_CLASS_COUNTS = {'promise-methods-async': 74,
+ 'promise-all': 90,
+ 'promise-race': 90,
+ 'promise-all-settled': 94,
+ 'promise-any': 102,
+ 'promise-with-resolvers': 44,
+ 'promise-try': 94}
+PROMISE_CLASS_HELPERS = {'promise-methods-async': ('assert.js',
+                           'doneprintHandle.js',
+                           'isConstructor.js',
+                           'promiseHelper.js',
+                           'propertyHelper.js',
+                           'sta.js'),
+ 'promise-all': ('assert.js',
+                 'doneprintHandle.js',
+                 'isConstructor.js',
+                 'promiseHelper.js',
+                 'propertyHelper.js',
+                 'sta.js'),
+ 'promise-race': ('assert.js',
+                  'compareArray.js',
+                  'doneprintHandle.js',
+                  'isConstructor.js',
+                  'promiseHelper.js',
+                  'propertyHelper.js',
+                  'sta.js'),
+ 'promise-all-settled': ('assert.js',
+                         'doneprintHandle.js',
+                         'isConstructor.js',
+                         'promiseHelper.js',
+                         'propertyHelper.js',
+                         'sta.js'),
+ 'promise-any': ('assert.js',
+                 'doneprintHandle.js',
+                 'isConstructor.js',
+                 'promiseHelper.js',
+                 'propertyHelper.js',
+                 'sta.js'),
+ 'promise-with-resolvers': ('assert.js', 'propertyHelper.js', 'sta.js'),
+ 'promise-try': ('assert.js',
+                 'asyncHelpers.js',
+                 'compareArray.js',
+                 'doneprintHandle.js',
+                 'isConstructor.js',
+                 'promiseHelper.js',
+                 'propertyHelper.js',
+                 'sta.js')}
+PROMISE_CLASS_HELPER_PINS = {'assert.js': (4881, '206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48'),
+ 'doneprintHandle.js': (625, '01282de15feb05d865dfc2cdfc68f59d8e760eb7d81a14ade3bc08cbc8520add'),
+ 'isConstructor.js': (544, '68e1a3e4565a8d33ea7fc918627fbbf446bcf14d7a939777616b2b545a5e7d32'),
+ 'promiseHelper.js': (2411, '76cf933b2a7069dc22fcff70d6d4f082ab777b3485e08b79ab4d6a18aef9df9c'),
+ 'propertyHelper.js': (18956, '08bc29114d804c4f24f906bac950ee4dc9c93c659d93258e7b44a54283ba9bb8'),
+ 'sta.js': (792, '1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35'),
+ 'compareArray.js': (243, '3330423fe116cd96db70077d194471319ae9767ba1c8e2f73d7c133c5204509d'),
+ 'asyncHelpers.js': (3570, '9afd9a18e080f30b998fa3b9c3e2303fc85fb1ebae664a532a58d56d86d3bcc9')}
+PROMISE_CLASS_LITERALS = {
+    ('construction', 'positive'): """var trace = '', defaults = 0, captured, savedResolve;
+class Base {
+  constructor(value = (defaults++, 7)) { trace += 'B'; this.value = value; }
+  method() { return this.value; }
+}
+class Derived extends Base {}
+var object = new Derived(7);
+assert.sameValue(Object.getPrototypeOf(Derived), Base);
+assert.sameValue(Object.getPrototypeOf(Derived.prototype), Base.prototype);
+assert.sameValue(Object.getPrototypeOf(object), Derived.prototype);
+assert.sameValue(object.method(), 7);
+assert.throws(TypeError, function () { Base(); });
+assert.throws(TypeError, function () { new object.method(); });
+assert.sameValue(defaults, 0);
+class SubPromise extends Promise {
+  constructor(executor) { captured = executor; trace += 'P'; super(executor); }
+}
+class LeafPromise extends SubPromise {}
+var executor = function (resolve) { savedResolve = resolve; };
+var promise = new LeafPromise(executor);
+assert.sameValue(captured, executor);
+assert.sameValue(typeof savedResolve, 'function');
+assert.sameValue(Object.getPrototypeOf(SubPromise), Promise);
+assert.sameValue(Object.getPrototypeOf(LeafPromise), SubPromise);
+assert.sameValue(Object.getPrototypeOf(LeafPromise.prototype), SubPromise.prototype);
+assert.sameValue(Object.getPrototypeOf(promise), LeafPromise.prototype);
+assert.sameValue(Promise.resolve.call(LeafPromise, promise), promise);
+assert.sameValue(trace, 'BP');
+""",
+    ('construction', 'mismatch'): """var trace = '', defaults = 0, captured, savedResolve;
+class Base {
+  constructor(value = (defaults++, 7)) { trace += 'B'; this.value = value; }
+  method() { return this.value; }
+}
+class Derived extends Base {}
+var object = new Derived(7);
+assert.sameValue(Object.getPrototypeOf(Derived), Base);
+assert.sameValue(Object.getPrototypeOf(Derived.prototype), Base.prototype);
+assert.sameValue(Object.getPrototypeOf(object), Derived.prototype);
+assert.sameValue(object.method(), 7);
+assert.throws(TypeError, function () { Base(); });
+assert.throws(TypeError, function () { new object.method(); });
+assert.sameValue(defaults, 0);
+class SubPromise extends Promise {
+  constructor(executor) { captured = executor; trace += 'P'; super(executor); }
+}
+class LeafPromise extends SubPromise {}
+var executor = function (resolve) { savedResolve = resolve; };
+var promise = new LeafPromise(executor);
+assert.sameValue(captured, executor);
+assert.sameValue(typeof savedResolve, 'function');
+assert.sameValue(Object.getPrototypeOf(SubPromise), Promise);
+assert.sameValue(Object.getPrototypeOf(LeafPromise), SubPromise);
+assert.sameValue(Object.getPrototypeOf(LeafPromise.prototype), SubPromise.prototype);
+assert.sameValue(Object.getPrototypeOf(promise), LeafPromise.prototype);
+assert.sameValue(Promise.resolve.call(LeafPromise, promise), promise);
+assert.sameValue(trace, 'BPP');
+""",
+    ('species', 'positive'): """var token = {}, captured, alternateCalls = 0, resolveCalls = 0, rejectCalls = 0;
+function resolve(value) { resolveCalls++; }
+function reject(reason) { rejectCalls++; }
+class NativePromise extends Promise {}
+var promise = new NativePromise(function () {});
+assert.sameValue(Promise.resolve.call(NativePromise, promise), promise);
+class Alternate extends Promise {
+  constructor(executor) {
+    alternateCalls++;
+    captured = executor;
+    executor(resolve, reject);
+    return token;
+  }
+}
+Object.defineProperty(NativePromise, Symbol.species, {value: Alternate, configurable: true});
+var result = promise.then(function (value) { return value; });
+assert.sameValue(typeof captured, 'function');
+assert.sameValue(result, token);
+assert.sameValue(resolveCalls, 0);
+assert.sameValue(rejectCalls, 0);
+assert.throws(TypeError, function () { captured(resolve, reject); });
+class InvalidCapture extends Promise {
+  constructor(executor) { executor(0, 0); return {}; }
+}
+Object.defineProperty(NativePromise, Symbol.species, {value: InvalidCapture, configurable: true});
+assert.throws(TypeError, function () { promise.then(); });
+assert.sameValue(alternateCalls, 1);
+""",
+    ('species', 'mismatch'): """var token = {}, captured, alternateCalls = 0, resolveCalls = 0, rejectCalls = 0;
+function resolve(value) { resolveCalls++; }
+function reject(reason) { rejectCalls++; }
+class NativePromise extends Promise {}
+var promise = new NativePromise(function () {});
+assert.sameValue(Promise.resolve.call(NativePromise, promise), promise);
+class Alternate extends Promise {
+  constructor(executor) {
+    alternateCalls++;
+    captured = executor;
+    executor(resolve, reject);
+    return token;
+  }
+}
+Object.defineProperty(NativePromise, Symbol.species, {value: Alternate, configurable: true});
+var result = promise.then(function (value) { return value; });
+assert.sameValue(typeof captured, 'function');
+assert.sameValue(result, token);
+assert.sameValue(resolveCalls, 0);
+assert.sameValue(rejectCalls, 0);
+assert.throws(TypeError, function () { captured(resolve, reject); });
+class InvalidCapture extends Promise {
+  constructor(executor) { executor(0, 0); return {}; }
+}
+Object.defineProperty(NativePromise, Symbol.species, {value: InvalidCapture, configurable: true});
+assert.throws(TypeError, function () { promise.then(); });
+assert.sameValue(alternateCalls, 2);
+""",
+    ('promise-methods-async', 'positive'): """var trace = '';
+class SubError extends Error {}
+class SubPromise extends Promise {}
+var sentinel = new SubError('class sentinel');
+assert.sameValue(Object.getPrototypeOf(sentinel), SubError.prototype);
+assert.sameValue(sentinel instanceof Error, true);
+var rejected = SubPromise.reject(sentinel);
+assert.sameValue(Object.getPrototypeOf(rejected), SubPromise.prototype);
+var recovered = rejected.catch(function (reason) {
+  assert.sameValue(reason, sentinel);
+  trace += 'R';
+  return 7;
+});
+assert.sameValue(Object.getPrototypeOf(recovered), SubPromise.prototype);
+var finished = recovered.finally(function () { trace += 'F'; });
+assert.sameValue(Object.getPrototypeOf(finished), SubPromise.prototype);
+assert.notSameValue(finished, recovered);
+finished.then(function (value) {
+  assert.sameValue(value, 7);
+  trace += 'V';
+  assert.sameValue(trace, 'RFV');
+}).then($DONE, $DONE);
+""",
+    ('promise-methods-async', 'mismatch'): """var trace = '';
+class SubError extends Error {}
+class SubPromise extends Promise {}
+var sentinel = new SubError('class sentinel');
+assert.sameValue(Object.getPrototypeOf(sentinel), SubError.prototype);
+assert.sameValue(sentinel instanceof Error, true);
+var rejected = SubPromise.reject(sentinel);
+assert.sameValue(Object.getPrototypeOf(rejected), SubPromise.prototype);
+var recovered = rejected.catch(function (reason) {
+  assert.sameValue(reason, sentinel);
+  trace += 'R';
+  return 7;
+});
+assert.sameValue(Object.getPrototypeOf(recovered), SubPromise.prototype);
+var finished = recovered.finally(function () { trace += 'F'; });
+assert.sameValue(Object.getPrototypeOf(finished), SubPromise.prototype);
+assert.notSameValue(finished, recovered);
+finished.then(function (value) {
+  assert.sameValue(value, 7);
+  trace += 'V';
+  assert.sameValue(trace, 'RFV!');
+}).then($DONE, $DONE);
+""",
+    ('promise-all', 'positive'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.all([3, 4]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value.length, 2);
+  assert.sameValue(value[0], 3);
+  assert.sameValue(value[1], 4);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV');
+}).then($DONE, $DONE);
+""",
+    ('promise-all', 'mismatch'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.all([3, 4]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value.length, 2);
+  assert.sameValue(value[0], 3);
+  assert.sameValue(value[1], 4);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV!');
+}).then($DONE, $DONE);
+""",
+    ('promise-race', 'positive'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.race([3, 4]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value, 3);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV');
+}).then($DONE, $DONE);
+""",
+    ('promise-race', 'mismatch'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.race([3, 4]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value, 3);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV!');
+}).then($DONE, $DONE);
+""",
+    ('promise-all-settled', 'positive'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.allSettled([3, Promise.reject(sentinel)]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value.length, 2);
+  assert.sameValue(value[0].status, 'fulfilled');
+  assert.sameValue(value[0].value, 3);
+  assert.sameValue(value[1].status, 'rejected');
+  assert.sameValue(value[1].reason, sentinel);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV');
+}).then($DONE, $DONE);
+""",
+    ('promise-all-settled', 'mismatch'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.allSettled([3, Promise.reject(sentinel)]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value.length, 2);
+  assert.sameValue(value[0].status, 'fulfilled');
+  assert.sameValue(value[0].value, 3);
+  assert.sameValue(value[1].status, 'rejected');
+  assert.sameValue(value[1].reason, sentinel);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV!');
+}).then($DONE, $DONE);
+""",
+    ('promise-any', 'positive'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.any([Promise.reject(sentinel), 4]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value, 4);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV');
+}).then($DONE, $DONE);
+""",
+    ('promise-any', 'mismatch'): """var trace = '', reads = 0, calls = 0, sentinel = {};
+class SubPromise extends Promise {}
+Object.defineProperty(SubPromise, 'resolve', {
+  configurable: true,
+  get: function () {
+    reads++;
+    trace += 'G';
+    return function (value) {
+      assert.sameValue(this, SubPromise);
+      calls++;
+      trace += 'r';
+      if (calls === 1) {
+        Object.defineProperty(SubPromise, 'resolve', {
+          configurable: true,
+          value: function () { throw new Test262Error('uncached resolve'); }
+        });
+      }
+      return Promise.resolve(value);
+    };
+  }
+});
+var result = SubPromise.any([Promise.reject(sentinel), 4]);
+assert.sameValue(Object.getPrototypeOf(result), SubPromise.prototype);
+assert.sameValue(reads, 1);
+assert.sameValue(calls, 2);
+assert.sameValue(trace, 'Grr');
+result.then(function (value) {
+  assert.sameValue(value, 4);
+  trace += 'V';
+  assert.sameValue(trace, 'GrrV!');
+}).then($DONE, $DONE);
+""",
+    ('promise-with-resolvers', 'positive'): """class SubPromise extends Promise {}
+var record = SubPromise.withResolvers();
+assert.sameValue(Object.getPrototypeOf(record), Object.prototype);
+assert.sameValue(Object.getPrototypeOf(record.promise), SubPromise.prototype);
+assert.sameValue(Promise.resolve.call(SubPromise, record.promise), record.promise);
+assert.sameValue(typeof record.resolve, 'function');
+assert.sameValue(typeof record.reject, 'function');
+assert.notSameValue(record.resolve, record.reject);
+var names = ['promise', 'resolve', 'reject'];
+for (var i = 0; i < names.length; i++) {
+  var descriptor = Object.getOwnPropertyDescriptor(record, names[i]);
+  assert.sameValue(descriptor.value, record[names[i]]);
+  assert.sameValue(descriptor.writable, true);
+  assert.sameValue(descriptor.enumerable, true);
+  assert.sameValue(descriptor.configurable, true);
+}
+record.resolve(7);
+record.reject({});
+assert.sameValue(Object.keys(record).join(','), 'promise,resolve,reject');
+""",
+    ('promise-with-resolvers', 'mismatch'): """class SubPromise extends Promise {}
+var record = SubPromise.withResolvers();
+assert.sameValue(Object.getPrototypeOf(record), Object.prototype);
+assert.sameValue(Object.getPrototypeOf(record.promise), SubPromise.prototype);
+assert.sameValue(Promise.resolve.call(SubPromise, record.promise), record.promise);
+assert.sameValue(typeof record.resolve, 'function');
+assert.sameValue(typeof record.reject, 'function');
+assert.notSameValue(record.resolve, record.reject);
+var names = ['promise', 'resolve', 'reject'];
+for (var i = 0; i < names.length; i++) {
+  var descriptor = Object.getOwnPropertyDescriptor(record, names[i]);
+  assert.sameValue(descriptor.value, record[names[i]]);
+  assert.sameValue(descriptor.writable, true);
+  assert.sameValue(descriptor.enumerable, true);
+  assert.sameValue(descriptor.configurable, true);
+}
+record.resolve(7);
+record.reject({});
+assert.sameValue(Object.keys(record).join(','), 'resolve,promise,reject');
+""",
+    ('promise-try', 'positive'): """var trace = '', recordConstruction = false, value = {}, sentinel = {};
+class SubPromise extends Promise {
+  constructor(executor) {
+    if (recordConstruction) { trace += 'C'; }
+    super(executor);
+  }
+}
+var seed = new SubPromise(function (resolve) { resolve(value); });
+recordConstruction = true;
+var same = SubPromise.try(function () { trace += 'N'; return seed; });
+assert.sameValue(same, seed);
+assert.sameValue(trace, 'N');
+var rejected = SubPromise.try(function () { trace += 'T'; throw sentinel; });
+assert.sameValue(Object.getPrototypeOf(rejected), SubPromise.prototype);
+assert.sameValue(trace, 'NTC');
+recordConstruction = false;
+rejected.then(function () {
+  throw new Test262Error('unexpected fulfillment');
+}, function (reason) {
+  assert.sameValue(reason, sentinel);
+  trace += 'R';
+  assert.sameValue(trace, 'NTCR');
+}).then($DONE, $DONE);
+""",
+    ('promise-try', 'mismatch'): """var trace = '', recordConstruction = false, value = {}, sentinel = {};
+class SubPromise extends Promise {
+  constructor(executor) {
+    if (recordConstruction) { trace += 'C'; }
+    super(executor);
+  }
+}
+var seed = new SubPromise(function (resolve) { resolve(value); });
+recordConstruction = true;
+var same = SubPromise.try(function () { trace += 'N'; return seed; });
+assert.sameValue(same, seed);
+assert.sameValue(trace, 'N');
+var rejected = SubPromise.try(function () { trace += 'T'; throw sentinel; });
+assert.sameValue(Object.getPrototypeOf(rejected), SubPromise.prototype);
+assert.sameValue(trace, 'NTC');
+recordConstruction = false;
+rejected.then(function () {
+  throw new Test262Error('unexpected fulfillment');
+}, function (reason) {
+  assert.sameValue(reason, sentinel);
+  trace += 'R';
+  assert.sameValue(trace, 'NTCR!');
+}).then($DONE, $DONE);
+""",
+}
+
+
+def promise_class_preflight_variants(profile):
+    """Expand the frozen class literals without deriving expectations from results."""
+    if type(profile) is not str or profile not in PROMISE_CLASS_COUNTS:
+        raise ValueError('unknown class prerequisite profile')
+    ordinary = profile == PROMISE_WITH_RESOLVERS_PROFILE
+    rows = []
+    for mode in ('sloppy', 'strict'):
+        for family in ('construction', 'species', 'subclass'):
+            policy = int(family == 'subclass' and not ordinary)
+            literal = profile if family == 'subclass' else family
+            for variant in ('positive', 'mismatch'):
+                mismatch = variant == 'mismatch'
+                name = 'class-' + profile + '-' + family + '-' + variant
+                required = (['strict-success' if mode == 'strict' else 'success',
+                             'with-resolvers-genuine'] if ordinary else
+                            ['promise-methods-promise-api-positive'])
+                if policy:
+                    required.append('promise-methods-one-async-completion')
+                if family != 'construction':
+                    required.append('class-' + profile + '-construction-positive')
+                if family == 'subclass':
+                    required.append('class-' + profile + '-species-positive')
+                if mismatch:
+                    required.append('class-' + profile + '-' + family + '-positive')
+                expected = ('passed' if not mismatch else 'failed' if ordinary else
+                            'completion-error' if policy else 'synchronous-exception')
+                raw = dict(status='complete', phase='runtime', error_type='',
+                           error_identity='', message='', harness='')
+                rule = dict(kind='exact', value='')
+                if mismatch and policy:
+                    raw.update(status='host-failure', phase='host', message='completion-error')
+                    rule['value'] = 'completion-error'
+                elif mismatch:
+                    raw.update(status='exception', error_type='Test262Error')
+                    del raw['message']
+                    rule = dict(kind='bounded-diagnostic', type='str', max_utf8_bytes=16384,
+                                qualification='Helper assertion wording is not an oracle; all other raw fields are exact.')
+                if not ordinary:
+                    raw['completion'] = dict(policy=policy, done_calls=policy,
+                        success_prints=int(policy and not mismatch), failure_prints=int(policy and mismatch),
+                        flags=(1 if policy else 256) if mismatch else 0,
+                        quiescent=True, audited=True, unhandled=0)
+                row = dict(name=name, mode=mode, expected=expected,
+                           source=PROMISE_CLASS_LITERALS[(literal, variant)],
+                           metadata=dict(flags=['async'] if policy else [], includes=[],
+                                         features=['class'], locale=[], negative=None),
+                           required_observation=raw, message_rule=rule,
+                           prerequisites=[(required_name, mode) for required_name in required])
+                if not ordinary:
+                    row['completion_policy'] = policy
+                rows.append(row)
+    return rows
+
+
+def promise_class_preflight_cases(files, profile):
+    """Reconstruct every old identity and append the independently frozen suffix."""
+    if type(profile) is not str or profile not in PROMISE_CLASS_COUNTS or type(files) is not dict:
+        raise ValueError('invalid class prerequisite inputs')
+    for name in PROMISE_CLASS_HELPERS[profile]:
+        data = files['harness/' + name]
+        size, expected = PROMISE_CLASS_HELPER_PINS[name]
+        if type(data) is not bytes or len(data) != size or digest(data) != expected:
+            raise ValueError('class prerequisite helper bytes differ: ' + name)
+    builders = {PROMISE_ANY_PROFILE: promise_any_preflight_cases,
+                PROMISE_TRY_PROFILE: promise_try_preflight_cases,
+                PROMISE_WITH_RESOLVERS_PROFILE: with_resolvers_preflight_cases}
+    if profile in builders:
+        definitions = builders[profile](files)
+    else:
+        common = promise_preflight_variants()
+        groups = [(common, 'promise-methods-')]
+        selected = {PROMISE_ALL_PROFILE: (promise_all_preflight_variants, 'promise-all-'),
+                    PROMISE_RACE_PROFILE: (promise_race_preflight_variants, 'promise-race-'),
+                    PROMISE_ALL_SETTLED_PROFILE: (promise_all_settled_preflight_variants, 'promise-all-settled-')}
+        if profile in selected:
+            variants, prefix = selected[profile]
+            groups.append((variants(), prefix))
+        definitions = []
+        for variants, prefix in groups:
+            for mode in ('sloppy', 'strict'):
+                for held in variants:
+                    required = []
+                    if prefix == 'promise-methods-':
+                        if held['prerequisite']:
+                            required.append(prefix + held['prerequisite'])
+                        if held['origin'] == 'original-literal':
+                            required.extend(prefix + item['name'] for item in common
+                                            if item['origin'] == 'new-prerequisite')
+                            if held['name'] != 'one-async-completion':
+                                required.append(prefix + 'one-async-completion')
+                    else:
+                        required = ['promise-methods-' + item['name'] for item in common]
+                        required.extend(prefix + name for name in held.get('additional_prerequisites', []))
+                        if held['prerequisite']:
+                            required.append(prefix + held['prerequisite'])
+                    row = dict(held, name=prefix + held['name'],
+                               prerequisites=[(name, mode) for name in required])
+                    policy = held['completion_policy']
+                    names = ['assert.js', 'sta.js'] + (['doneprintHandle.js'] if policy else []) + held['includes']
+                    case = dict(id='harness-preflight:' + row['name'], file='<preflight>', mode=mode,
+                        metadata=dict(flags=['async'] if policy else [], includes=held['includes'],
+                                      features=[], locale=[], negative=None),
+                        source=held['source'].encode(), harness=[(name, files['harness/' + name]) for name in names],
+                        completion_policy=policy)
+                    case['case_sha256'] = case_fingerprint(case)
+                    definitions.append((row, case))
+    if len(definitions) != PROMISE_CLASS_COUNTS[profile]:
+        raise ValueError('class prerequisite legacy count differs')
+    for row in promise_class_preflight_variants(profile):
+        metadata = row['metadata']
+        case = dict(id='harness-preflight:' + row['name'], file='<preflight>', mode=row['mode'],
+                    metadata=metadata, source=row['source'].encode(),
+                    harness=[(name, files['harness/' + name]) for name in harness_names(metadata)])
+        if profile != PROMISE_WITH_RESOLVERS_PROFILE:
+            case['completion_policy'] = row['completion_policy']
+        case['case_sha256'] = case_fingerprint(case)
+        definitions.append((row, case))
+    return definitions
+
+
+def promise_class_preflight_reference(row, case):
+    return dict(name=row['name'], mode=case['mode'], id=case['id'],
+                case_sha256=case['case_sha256'], source_sha256=digest(case['source']),
+                expected=row['expected'])
+
+
+def promise_class_preflight_checks(outcomes, files, profile):
+    """Authenticate the complete prefix/suffix and reclassify raw observations."""
+    try:
+        definitions = promise_class_preflight_cases(files, profile)
+        count = PROMISE_CLASS_COUNTS[profile]
+        if type(outcomes) is not list or len(outcomes) != count + 12 or len(definitions) != count + 12:
+            return None
+        canonical, ordered, edges = {}, [], {}
+        for row, case in definitions:
+            if (type(row) is not dict or type(case) is not dict
+                    or type(row.get('name')) is not str or type(case.get('mode')) is not str
+                    or case['mode'] not in ('sloppy', 'strict') or type(row.get('prerequisites')) is not list):
+                return None
+            key = (row['name'], case['mode'])
+            if key in canonical:
+                return None
+            canonical[key] = (row, case)
+            ordered.append(key)
+            required = row['prerequisites']
+            if (len(required) > len(definitions) or any(type(edge) is not tuple or len(edge) != 2
+                    or any(type(value) is not str for value in edge)
+                    or (len(ordered) > count and edge[1] != key[1]) for edge in required)
+                    or len(set(required)) != len(required)):
+                return None
+            edges[key] = required
+        if any(target not in canonical for required in edges.values() for target in required):
+            return None
+        # Fixed-size iterative topological walk: cycles fail, no Python recursion.
+        remaining, topology = set(ordered), []
+        for _ in range(len(ordered)):
+            ready = [key for key in ordered if key in remaining
+                     and all(target not in remaining for target in edges[key])]
+            if not ready:
+                break
+            topology.extend(ready)
+            remaining.difference_update(ready)
+        if remaining:
+            return None
+        result_keys = {'id', 'file', 'mode', 'case_sha256', 'source_sha256',
+                       'expected_negative', 'status', 'observation'}
+        text_keys = ('id', 'file', 'mode', 'case_sha256', 'source_sha256', 'status')
+        ordinary = profile == PROMISE_WITH_RESOLVERS_PROFILE
+        raw_checks = {}
+        for index, (key, item) in enumerate(zip(ordered, outcomes)):
+            if (type(item) is not dict or set(item) != {'name', 'expected', 'verified', 'result', 'prerequisites'}
+                    or type(item['name']) is not str or type(item['expected']) is not str
+                    or len(item['name'].encode('utf-8')) > 16384 or len(item['expected'].encode('utf-8')) > 16384
+                    or type(item['verified']) is not bool or type(item['result']) is not dict
+                    or type(item['prerequisites']) is not list):
+                return None
+            result = item['result']
+            if (set(result) != result_keys or any(type(result.get(name)) is not str
+                    or len(result[name].encode('utf-8')) > 16384 for name in text_keys)
+                    or (item['name'], result['mode']) != key):
+                return None
+            negative = result['expected_negative']
+            if negative is not None and (type(negative) is not dict or set(negative) != {'phase', 'type'}
+                                        or any(type(value) is not str for value in negative.values())):
+                return None
+            row, case = canonical[key]
+            expected_status = ('passed' if row['expected'] == 'passed' else
+                               'resource' if row['expected'] == 'resource' else 'failed')
+            expected = {name: case[name] for name in ('id', 'file', 'mode', 'case_sha256')}
+            expected.update(source_sha256=digest(case['source']), expected_negative=case['metadata']['negative'],
+                            status=expected_status)
+            references = []
+            for target in edges[key]:
+                target_row, target_case = canonical[target]
+                if index >= count or ordinary:
+                    references.append(promise_class_preflight_reference(target_row, target_case))
+                else:
+                    references.append(dict(name=target_row['name'], mode=target_case['mode'], verified=True,
+                        case_sha256=target_case['case_sha256'], source_sha256=digest(target_case['source'])))
+            reference_keys = ({'name', 'mode', 'id', 'case_sha256', 'source_sha256', 'expected'}
+                              if index >= count or ordinary else
+                              {'name', 'mode', 'verified', 'case_sha256', 'source_sha256'})
+            if (len(item['prerequisites']) != len(references)
+                    or any(type(ref) is not dict or set(ref) != reference_keys
+                           or any(type(value) is not (bool if name == 'verified' else str)
+                                  for name, value in ref.items())
+                           or any(len(value.encode('utf-8')) > 16384 for value in ref.values() if type(value) is str)
+                           for ref in item['prerequisites'])):
+                return None
+            observation = result['observation']
+            names = {'status', 'phase', 'error_type', 'error_identity', 'message', 'harness'}
+            if (type(observation) is not dict or set(observation) != names | (set() if ordinary else {'completion'})
+                    or any(type(observation[name]) is not str or len(observation[name].encode('utf-8')) > 16384 for name in names)):
+                return None
+            good = (item['expected'] == row['expected'] and all(result[name] == value for name, value in expected.items())
+                    and item['prerequisites'] == references)
+            if good:
+                if ordinary:
+                    good = ('completion_policy' not in case
+                            and classify(case, observation) == expected_status)
+                else:
+                    validate_promise_observation(observation, profile=profile)
+                    good = (classify_promise(case, observation, profile=profile) == expected_status
+                            and promise_preflight_verified(case, result, row['expected'], profile=profile))
+                    if row['expected'] == 'identity-exception':
+                        good = (classify_promise(case, observation, profile=profile) == expected_status
+                                and observation == row['required_observation'])
+                if index >= count:
+                    required = row['required_observation']
+                    good = good and all(observation[name] == value for name, value in required.items())
+                    rule = row['message_rule']
+                    if rule['kind'] == 'exact':
+                        good = good and observation['message'] == rule['value']
+                    elif rule['kind'] != 'bounded-diagnostic':
+                        return None
+            raw_checks[key] = good
+        # Later profiles already possess canonical legacy checks: retain all their criteria.
+        legacy_checkers = {PROMISE_ANY_PROFILE: promise_any_preflight_checks,
+                           PROMISE_TRY_PROFILE: promise_try_preflight_checks,
+                           PROMISE_WITH_RESOLVERS_PROFILE: with_resolvers_preflight_checks}
+        if profile in legacy_checkers:
+            previous = legacy_checkers[profile](outcomes[:count], files)
+            if previous is None:
+                return None
+            for key in ordered[:count]:
+                raw_checks[key] = raw_checks[key] and previous.get(key) is True
+        checked = {}
+        for key in topology:
+            checked[key] = raw_checks[key] and all(checked[target] for target in edges[key])
+        return checked
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def promise_class_preflight_healthy(outcomes, files, profile):
+    checks = promise_class_preflight_checks(outcomes, files, profile)
+    if (checks is None or not all(checks.values())
+            or not all(item['verified'] is True for item in outcomes)):
+        return False
+    count = PROMISE_CLASS_COUNTS[profile]
+    prefix = outcomes[:count]
+    gates = {PROMISE_PROFILE: promise_preflight_healthy,
+             PROMISE_ALL_PROFILE: promise_all_preflight_healthy,
+             PROMISE_RACE_PROFILE: promise_race_preflight_healthy,
+             PROMISE_ALL_SETTLED_PROFILE: promise_all_settled_preflight_healthy}
+    if profile in gates:
+        return gates[profile](prefix)
+    gate = {PROMISE_ANY_PROFILE: promise_any_preflight_healthy,
+            PROMISE_TRY_PROFILE: promise_try_preflight_healthy,
+            PROMISE_WITH_RESOLVERS_PROFILE: with_resolvers_preflight_healthy}[profile]
+    return gate(prefix, files)
+
+
+def promise_class_harness_preflight(files, binary, timeout, profile):
+    try:
+        definitions = promise_class_preflight_cases(files, profile)
+    except (KeyError, TypeError, ValueError):
+        return []
+    count = PROMISE_CLASS_COUNTS[profile]
+    canonical = {(row['name'], case['mode']): (row, case) for row, case in definitions}
+    # The old producer remains byte-exact, and no old returned record is modified.
+    outcomes = harness_preflight(files, binary, timeout, profile)
+    for row, case in definitions[count:]:
+        result = run_case(case, binary, timeout, PROFILE_FEATURES[profile], profile)
+        prerequisites = [promise_class_preflight_reference(*canonical[key]) for key in row['prerequisites']]
+        outcomes.append(dict(name=row['name'], expected=row['expected'], verified=False,
+                             result=result, prerequisites=prerequisites))
+    checks = promise_class_preflight_checks(outcomes, files, profile)
+    if checks is not None:
+        for item in outcomes[count:]:
+            item['verified'] = checks[(item['name'], item['result']['mode'])]
+    return outcomes
+
+
 def check_baseline(previous, current):
     for key in ('revision', 'corpus_manifest_sha256', 'runner_policy_sha256'):
         if previous.get(key) != current[key]:
@@ -5943,8 +6813,12 @@ def main():
         manifest, files, cases, fixtures, corpus_hash = load_corpus(args.corpus, args.profile)
         binary = args.binary.resolve()
         binary_hash = digest(binary.read_bytes())
-        preflight = harness_preflight(files, binary, args.timeout, args.profile)
-        preflight_ok = (promise_try_preflight_healthy(preflight, files) if args.profile == PROMISE_TRY_PROFILE
+        preflight = (promise_class_harness_preflight(files, binary, args.timeout, args.profile)
+                     if args.profile in PROMISE_CLASS_COUNTS
+                     else harness_preflight(files, binary, args.timeout, args.profile))
+        preflight_ok = (promise_class_preflight_healthy(preflight, files, args.profile)
+                        if args.profile in PROMISE_CLASS_COUNTS
+                        else promise_try_preflight_healthy(preflight, files) if args.profile == PROMISE_TRY_PROFILE
                         else with_resolvers_preflight_healthy(preflight, files) if args.profile == PROMISE_WITH_RESOLVERS_PROFILE
                         else promise_any_preflight_healthy(preflight, files) if args.profile == PROMISE_ANY_PROFILE
                         else aggregate_error_preflight_healthy(preflight, files) if args.profile == AGGREGATE_ERROR_PROFILE

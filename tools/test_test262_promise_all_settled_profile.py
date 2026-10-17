@@ -181,7 +181,7 @@ class PromiseAllSettledProfileTests(unittest.TestCase):
         self.assertEqual(digest(canonical(identities(cases))), self.oracle['case_identities_sha256'])
         self.assertEqual([sum(c['mode'] == m for c in cases) for m in ('sloppy', 'strict')], [104, 104])
         self.assertEqual(sum(c['completion_policy'] for c in cases), 114)
-        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], set(self.oracle['features']))
+        self.assertEqual(runner.PROFILE_FEATURES[PROFILE], set(legacy.class_admitted_features(PROFILE, self.oracle['features'])))
         for case in cases:
             self.assertIs(type(case['completion_policy']), int)
             self.assertNotIn('timeout', case['metadata'])
@@ -348,7 +348,7 @@ class PromiseAllSettledProfileTests(unittest.TestCase):
             self.assertEqual((report['mode_cases'], report['counts']), (208, {'blocked': 208}))
             self.assertEqual({r['id'] for r in report['cases']}, {c['id'] for c in cases})
             self.assertTrue(all(r['reason'] == 'Promise host preflight failed' for r in report['cases']))
-            self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), (self.oracle['policy'], self.oracle['policy_sha256']))
+            self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), legacy.class_admitted_policy(PROFILE, self.oracle['policy'], self.oracle['policy_sha256']))
 
     def test_missing_host_capability_or_legacy_complete_cannot_admit_the_profile(self):
         # Complete and valid ERJR2, deliberately lacking authenticated evidence.
@@ -382,7 +382,7 @@ class PromiseAllSettledProfileTests(unittest.TestCase):
         self.assertEqual((code, recorded, len(calls)), (0, True, 208))
         self.assertEqual(report['counts'], {'failed': 204, 'unsupported': 4})
         self.assertFalse(report['full_test262_conformance'])
-        self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), (self.oracle['policy'], self.oracle['policy_sha256']))
+        self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), legacy.class_admitted_policy(PROFILE, self.oracle['policy'], self.oracle['policy_sha256']))
         self.assertTrue(all(r['observation']['status'] == 'host-failure' and r['observation']['message'] == 'unhandled-rejection'
                             for r in report['cases'] if r['status'] == 'failed'))
         for status in ('resource', 'timeout', 'adapter-error'):
@@ -399,7 +399,7 @@ class PromiseAllSettledProfileTests(unittest.TestCase):
         self.assertEqual(tables, self.oracle['old_tables'])
         self.assertEqual((len(tables['profiles']), digest(canonical(tables))), (56, self.oracle['old_tables_sha256']))
         self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {PROFILE, 'aggregate-error', 'promise-any', 'promise-with-resolvers', 'promise-try'}},
-                         self.oracle['old_features'])
+                         {k: legacy.class_admitted_features(k, v) for k, v in self.oracle['old_features'].items()})
         self.assertEqual(runner.promise_preflight_variants(), self.common)
         self.assertEqual(runner.promise_all_preflight_variants(), self.all_oracle['controls'])
         self.assertEqual(runner.promise_race_preflight_variants(), self.race_oracle['controls'])
@@ -424,7 +424,7 @@ class PromiseAllSettledProfileTests(unittest.TestCase):
             self.assertEqual(actual, self.oracle['old_control_identities'][profile])
             code, report, recorded, _ = legacy.PromiseRunnerTests().report(profile, preflight)
             self.assertEqual((code, recorded), (0, True))
-            self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), (old['policy'], old['policy_sha256']))
+            self.assertEqual((report['runner_policy'], report['runner_policy_sha256']), legacy.class_admitted_policy(profile, old['policy'], old['policy_sha256']))
 
 
 if __name__ == '__main__':

@@ -9,10 +9,12 @@ base/derived construction, public methods/accessors and native Promise
 subclasses. Strict lexical bindings, `super()` ordering, alternate `new.target`
 and retained arrow activations share the existing runtime limits. Fields,
 private elements, static blocks, `super` properties and async/generator methods
-remain unsupported. This runtime change does not enable the `class` feature in
-upstream profile policies; earlier profile counts below retain their checkpoint
-scope. Final checks pass 80 public groups across 164 mode attempts, with the
-complete Rust suites and eight existing profile replays recorded in the chapter.
+remain unsupported. The separate [Promise class-admission checkpoint](docs/promise-class-admission.md)
+now enables declared `class` metadata in seven existing Promise profiles, with
+1,330 modes across eight replays: **1,258 passed, 64 failed and eight unsupported**,
+and **724 healthy controls**. This changes profile admission and its gate;
+Rust semantics and limits are unchanged. Earlier API/profile totals below belong
+to their original checkpoints; the linked table records the current selection.
 
 [Promise construction and reactions](docs/promise-foundation.md) add the
 constructor, `then`, `resolve`, `reject`, generic species/capabilities and
@@ -41,7 +43,7 @@ controls verified**.
 capability callbacks. Ordinary constructor errors remain synchronous; existing
 settlement and terminal queue behavior are preserved. Its complete pinned
 six-source upstream profile retains all 12 modes: **10 passed and two unsupported**,
-with all **44 controls verified**. The two class-tagged modes remain excluded;
+with all **44 controls verified**. At that checkpoint, the two class-tagged modes were excluded;
 the profile uses ordinary requests and responses without a Promise host policy.
 
 [`Promise.try`](docs/promise-try.md) calls the callback synchronously before
@@ -50,7 +52,7 @@ ECMAScript 2027 draft. It preserves generic receiver behavior, argument identity
 and existing terminal suspension. Its separate [complete pinned upstream
 profile](docs/promise-try-upstream.md) retains all 15 sources and 30 modes:
 **24 passed and six unsupported**, with all **94 controls verified**.
-The six class-tagged modes remain excluded; authenticated completion uses the
+At that checkpoint, the six class-tagged modes were excluded; authenticated completion uses the
 existing Promise host adapter.
 
 [`AggregateError`](docs/aggregate-error.md) adds callable and constructed errors

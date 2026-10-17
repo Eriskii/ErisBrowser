@@ -1,5 +1,14 @@
 # Development docket
 
+[Promise class metadata admission](promise-class-admission.md) now runs the
+previously excluded class-tagged sources in seven existing Promise profiles.
+Eight complete replays retain 1,330 modes: **1,258 passed, 64 failed and eight
+unsupported**, under **724 healthy controls**. Of 40 newly dispatched modes,
+36 pass and four reach the unchanged final-unhandled-rejection host veto.
+No previously passing case regresses. This is a tooling/gate change; the class
+runtime and all limits are unchanged. The older runtime/profile summaries below
+retain their original checkpoint results and policy scope.
+
 [The class runtime slice](classes.md) now covers declarations/expressions,
 strict lexical names, public methods/accessors and base/derived construction,
 including direct `super()`, alternate `new.target`, escaped arrows and native

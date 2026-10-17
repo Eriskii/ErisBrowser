@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "cf8d1ea1c354de83add3e0ca734159806d6d293b1a750d6bb5f972f0a0d2bde9",
-  "runner_policy_sha256": "cc53ccb2c71f7b7452034cf1b0410df6149b6ffe6458df3990049d5c98c916ed",
-  "binary_sha256": "a880fea61e8d7128f3206ae00ade955375ada6bcb0ff6cda9f8041d32158872d",
+  "runner_policy_sha256": "22ef44988e3d082798bcc0480ca7ca2dc127cad526899139a064981926bc9bdf",
+  "binary_sha256": "70957cf419f568a38b9a7493f9616fe489965c212a64c08ca0acf4691ae801c4",
   "cases": {
     "test/built-ins/Promise/Symbol.species/length.js:sloppy": {
       "status": "passed",
@@ -525,22 +525,22 @@
       "source_sha256": "9d803213571305144e0e45df4786eb53a6ab1eee37e3b42316fc8a1424698b54"
     },
     "test/built-ins/Promise/prototype/finally/rejected-observable-then-calls-PromiseResolve.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "8b6f734cfbd6118b7fcbab3b533ea289a347920a867b70a02c8a335a0f8482e4",
       "source_sha256": "ce92fd2d31a855d5552b6588134e247b6867d3f72fe465c932f58e2572f6f946"
     },
     "test/built-ins/Promise/prototype/finally/rejected-observable-then-calls-PromiseResolve.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "fa9ed3647d05b5349a8fd4871333b83d297d2ec077423e8055ca19c5f4880a5b",
       "source_sha256": "ce92fd2d31a855d5552b6588134e247b6867d3f72fe465c932f58e2572f6f946"
     },
     "test/built-ins/Promise/prototype/finally/rejected-observable-then-calls-argument.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ec639b0508ace6913e37b776cd5d94e3d6f9a656c7ab8c3aa604a13b18ad2d3f",
       "source_sha256": "ec4642d25813c5c7cb106ca565de16ca7e6ba7059a3cf36ad65024ef6950a136"
     },
     "test/built-ins/Promise/prototype/finally/rejected-observable-then-calls-argument.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "811406690121837d9eea653d9ad36ccbb400e801db3f78c13afeb6ef1cb7163b",
       "source_sha256": "ec4642d25813c5c7cb106ca565de16ca7e6ba7059a3cf36ad65024ef6950a136"
     },
@@ -585,12 +585,12 @@
       "source_sha256": "56378f7ee14df6e926d0bb5669ca9a5ef12ec6f5162497e2772f1cecf7965c80"
     },
     "test/built-ins/Promise/prototype/finally/resolved-observable-then-calls-PromiseResolve.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "1f5668c9e2ff2af165554be1328621fbb7c84dd13d2af5e6e6872b9d6167c52b",
       "source_sha256": "3219d6c9d703728e43fb25f643ec92c3bbba40a52b719d966f2bfb03ab817da8"
     },
     "test/built-ins/Promise/prototype/finally/resolved-observable-then-calls-PromiseResolve.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "fd8f3215a9d07cbb0bc3371d79596f9ba3422dec2ce8f89dde0cbcb8bbe45472",
       "source_sha256": "3219d6c9d703728e43fb25f643ec92c3bbba40a52b719d966f2bfb03ab817da8"
     },
@@ -625,52 +625,52 @@
       "source_sha256": "df59c47d2ec8de631e2343f3004b69bcfa091155b07ed4f04f0c9a182f55e084"
     },
     "test/built-ins/Promise/prototype/finally/species-constructor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "541f52c7657b2a2aab5e02238f03b1d990488377e63515906189e354b9102530",
       "source_sha256": "ab9fc5fac1298881b916ffa49be822dbc691b3302981e1c469807df0099ff696"
     },
     "test/built-ins/Promise/prototype/finally/species-constructor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0959c8a8f3bdc179f59e308a56e080b580ef96b2affc68db2bfb7fdd2baea51c",
       "source_sha256": "ab9fc5fac1298881b916ffa49be822dbc691b3302981e1c469807df0099ff696"
     },
     "test/built-ins/Promise/prototype/finally/subclass-reject-count.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "91e30a9dab704a013d5b6cbe9624e6b7044650ac387b0021d5ab8bef5fb7f1c5",
       "source_sha256": "249131719095fb0c25e2f0048c1e93202ee38bbccbdbe3f555ec4fc301bf83d9"
     },
     "test/built-ins/Promise/prototype/finally/subclass-reject-count.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "34cfd0e32155282714d167001dc7c7727712d24f4cb1a27793daaf36752d4eb6",
       "source_sha256": "249131719095fb0c25e2f0048c1e93202ee38bbccbdbe3f555ec4fc301bf83d9"
     },
     "test/built-ins/Promise/prototype/finally/subclass-resolve-count.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "188dbc67a42a0646c5a7463adde6cbed270ca36d6710b3d61b52386c4af74358",
       "source_sha256": "419d2b8a83e21526f98e80f85c5a75173d264ea8a2866e197b77f4f602652da0"
     },
     "test/built-ins/Promise/prototype/finally/subclass-resolve-count.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "fa5ea57f55cd10fc59717f38aea03643fb68f7d8e88a8ad14107329769c5301c",
       "source_sha256": "419d2b8a83e21526f98e80f85c5a75173d264ea8a2866e197b77f4f602652da0"
     },
     "test/built-ins/Promise/prototype/finally/subclass-species-constructor-reject-count.js:sloppy": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "c27d4ad47cfcb3ca43fa0effe7b12b5f737166941284a413551848beb823158c",
       "source_sha256": "40238310d279c4f159df9529654126b65df3b31570ce7649825846d67fed57a3"
     },
     "test/built-ins/Promise/prototype/finally/subclass-species-constructor-reject-count.js:strict": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "b022d90d8d08650fa94d150b0faa769e34bc1ddfbe27dc87f4997cd80f891016",
       "source_sha256": "40238310d279c4f159df9529654126b65df3b31570ce7649825846d67fed57a3"
     },
     "test/built-ins/Promise/prototype/finally/subclass-species-constructor-resolve-count.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ae940171cf256e16ac35c993189297d1748c1218cbecab491ab1e73ffa118077",
       "source_sha256": "1d0a66d8ab2cf7dd2c141b3ba56170c0b4d87c9e44251569b22a942e12491f5e"
     },
     "test/built-ins/Promise/prototype/finally/subclass-species-constructor-resolve-count.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "0b6dfae4bcb441b2abd90fff9d720382e4d6ab6553641c33db3456105ba0fc06",
       "source_sha256": "1d0a66d8ab2cf7dd2c141b3ba56170c0b4d87c9e44251569b22a942e12491f5e"
     },
@@ -915,22 +915,22 @@
       "source_sha256": "2cd4bac699fc1b7ab9d05e821ae59c24b6e45f740f442e2eada560d8530053a7"
     },
     "test/built-ins/Promise/prototype/then/capability-executor-called-twice.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "7bf1d2ff6d78e44b60b5262d5cfaee957b12f2329909fc0b102fd3adb48e7a73",
       "source_sha256": "eb7f1a826aa926d972412cd42c0be7d5da86e6ce6f2d0784e34f1004896a1efd"
     },
     "test/built-ins/Promise/prototype/then/capability-executor-called-twice.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b0767dc77036173ea001502ffedd431c7f56feb202882bcc2a499c9d14bbf2a9",
       "source_sha256": "eb7f1a826aa926d972412cd42c0be7d5da86e6ce6f2d0784e34f1004896a1efd"
     },
     "test/built-ins/Promise/prototype/then/capability-executor-not-callable.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "f2edb386ed40f7f55c87294473c870b9e7222aa716bc859d9dfcc5a749262e29",
       "source_sha256": "ca381e04c6530bb9008832f9dd5a460b945b9bcb8deb42decbd4bd793392cb07"
     },
     "test/built-ins/Promise/prototype/then/capability-executor-not-callable.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "e0d8a1d7ac64ed8dfa4d15489b043ac1b5d75f62deb67446a4663de47afef7bf",
       "source_sha256": "ca381e04c6530bb9008832f9dd5a460b945b9bcb8deb42decbd4bd793392cb07"
     },
@@ -955,12 +955,12 @@
       "source_sha256": "30e37e8b76381eee695e2501161daba32d4060360e09bff54dc82ce418cfd787"
     },
     "test/built-ins/Promise/prototype/then/ctor-custom.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "968a6c9e9adbb5014c63820e9c1d3bc825f00765c8b84b252ca40bc84a2b20ea",
       "source_sha256": "47b9a37c4a62bc1c85f30c0dfcc879255f5f3f5955086613bf08cac81c130bfb"
     },
     "test/built-ins/Promise/prototype/then/ctor-custom.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "5bb7caae29b1f98992ea55c505065e546f1f2f4f24a598ae4a806cb5ab9cf285",
       "source_sha256": "47b9a37c4a62bc1c85f30c0dfcc879255f5f3f5955086613bf08cac81c130bfb"
     },
@@ -1005,12 +1005,12 @@
       "source_sha256": "afe71f7f94f0427656f30e4a476e3dcc8043b100d3598cdbb683da32b7d5ceae"
     },
     "test/built-ins/Promise/prototype/then/deferred-is-resolved-value.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "cdd8e7205f4974529391db66750898d3627c700874c226007bcc5b4e42ea95d3",
       "source_sha256": "a4520087021002ed8068a70ae2d837a00ce141f0c43e9b130412b5dc7cdb2bcd"
     },
     "test/built-ins/Promise/prototype/then/deferred-is-resolved-value.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b4cac3cb1123cdbb7a95211fdeea4ab1363813ee126aa77e4b3dd16d9cbf9e3c",
       "source_sha256": "a4520087021002ed8068a70ae2d837a00ce141f0c43e9b130412b5dc7cdb2bcd"
     },
@@ -1725,12 +1725,12 @@
       "source_sha256": "c72f550b72ee71ac001850f0d4f17a35377d74ac3fb597c2dff2208ca5ee6976"
     },
     "test/built-ins/Promise/reject/ctx-ctor.js:sloppy": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "194ba98a9ccb571caf5c83adf3f695720b79b1e03340e6ea9912fdbd0a57819e",
       "source_sha256": "c3169b9dcac5a916e38806933b9c66e080636c67e01a38a005bd39d87220f3be"
     },
     "test/built-ins/Promise/reject/ctx-ctor.js:strict": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "2d837b0fd690d46ceefc9cef1587d9077efe68647352bae6bab9d0fadf0fa25e",
       "source_sha256": "c3169b9dcac5a916e38806933b9c66e080636c67e01a38a005bd39d87220f3be"
     },
@@ -2145,12 +2145,12 @@
       "source_sha256": "7c0fdb269d531daac1f4f5c1a66e4c646600b1c3eda952058993788c1e2845c9"
     },
     "test/built-ins/Promise/resolve/ctx-ctor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "903de5c0da1191946a79a491c479c05016a3441a04b8d1e999f2d700a0c102a3",
       "source_sha256": "f836f856dccf42a0823095b520b7e13644dcfcdb376505b48ed9ea83e10d53e5"
     },
     "test/built-ins/Promise/resolve/ctx-ctor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "fc8a31eccde94e9a3ab3f3e767913b5f3bfd261db897f725cc786d08a93122ba",
       "source_sha256": "f836f856dccf42a0823095b520b7e13644dcfcdb376505b48ed9ea83e10d53e5"
     },

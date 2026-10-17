@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 import import_test262 as importer
 import test262_conformance as runner
+import test_test262_promise_runner as legacy
 
 
 NEW_PROFILE = 'aggregate-error'
@@ -50,7 +51,7 @@ class AggregateErrorPreservationTests(unittest.TestCase):
         self.assertEqual({k: v for k, v in importer.PROFILES.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}}, self.old['profiles'])
         self.assertEqual({k: v for k, v in importer.PROFILE_ROOTS.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}}, self.old['roots'])
         self.assertEqual(sorted(importer.TREE_PROFILES - {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}), self.old['tree_profiles'])
-        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}}, self.old['features'])
+        self.assertEqual({k: sorted(v) for k, v in runner.PROFILE_FEATURES.items() if k not in {NEW_PROFILE, 'promise-any', 'promise-with-resolvers', 'promise-try'}}, {k: legacy.class_admitted_features(k, v) for k, v in self.old['features'].items()})
         self.assertEqual(len(self.old['profiles']), 57)
         self.assertEqual(sorted(runner.INTRINSIC_ERRORS), self.old['intrinsic_errors'])
         # Exercise main's real policy construction. An explicitly empty mocked
@@ -65,6 +66,9 @@ class AggregateErrorPreservationTests(unittest.TestCase):
                 with self.subTest(profile=profile), contextlib.ExitStack() as stack:
                     stack.enter_context(patch.object(runner, 'load_corpus', return_value=(manifest, {}, [], [], '0' * 64)))
                     stack.enter_context(patch.object(runner, 'harness_preflight', return_value=[]))
+                    # Empty-inventory policy fixture; class raw evidence is tested separately.
+                    stack.enter_context(patch.object(runner, 'promise_class_harness_preflight', return_value=[]))
+                    stack.enter_context(patch.object(runner, 'promise_class_preflight_healthy', return_value=True))
                     for health in ('promise_preflight_healthy', 'promise_all_preflight_healthy',
                                    'promise_race_preflight_healthy', 'promise_all_settled_preflight_healthy'):
                         stack.enter_context(patch.object(runner, health, return_value=True))
@@ -76,7 +80,7 @@ class AggregateErrorPreservationTests(unittest.TestCase):
                     call.assert_not_called()
                 report = json.loads(output.read_bytes())
                 self.assertEqual((report['runner_policy'], report['runner_policy_sha256']),
-                                 (expected['policy'], expected['sha256']), profile)
+                                 legacy.class_admitted_policy(profile, expected['policy'], expected['sha256']), profile)
                 self.assertEqual((report['mode_cases'], report['counts']), (0, {}))
 
     def test_default_seven_identities_and_existing_erjr3_rejection_are_preserved(self):

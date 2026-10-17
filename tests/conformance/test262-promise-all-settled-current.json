@@ -1,8 +1,8 @@
 {
   "revision": "7ab7fafa0003f73fc85c1b95d88094d33f7eb8bd",
   "corpus_manifest_sha256": "bca16210396a6aa07adac947ff47166cde4b4da97f4f7a82d24e9d8763b7ef8e",
-  "runner_policy_sha256": "87f888f36abaafac52f9e76178d6e385815a7b2df2e461517c21d9592d151447",
-  "binary_sha256": "b653280c13235292194de1491cf134e3523e6b10e21c0eb73f9f19d6301d872a",
+  "runner_policy_sha256": "0c067935cf04124818ff95236ec27b64a32e18f0de32e640b6561a110eec6b74",
+  "binary_sha256": "70957cf419f568a38b9a7493f9616fe489965c212a64c08ca0acf4691ae801c4",
   "cases": {
     "test/built-ins/Promise/allSettled/call-resolve-element-after-return.js:sloppy": {
       "status": "passed",
@@ -85,12 +85,12 @@
       "source_sha256": "0c90e24cd74287fffd00b0565026c2928c57cd888a4165cd1133c537f92ed41b"
     },
     "test/built-ins/Promise/allSettled/ctx-ctor.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "ce2004165e96ee2302c71ec3e44708b2830c347c1d09bf8286f627b4f19ad7cd",
       "source_sha256": "9fbdc718fc77f088182f27c0895d0d0cb6cffcf634c527646d4138d3e71201de"
     },
     "test/built-ins/Promise/allSettled/ctx-ctor.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "59752805e7c1fd6b7af9e80a4a4cdfc80e33226e2d1a45091d83633e202d6483",
       "source_sha256": "9fbdc718fc77f088182f27c0895d0d0cb6cffcf634c527646d4138d3e71201de"
     },
@@ -185,12 +185,12 @@
       "source_sha256": "3b362e382def80d2e78222371342cf7d1006ce703f5d2abf7b80f7fac4cf1c1c"
     },
     "test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-custom.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "93d3cd75138eba1131d0b27f581d6960a99483b1f94e26cb4310b1145283d23f",
       "source_sha256": "3e771636f906b729be94e0fbe6fc80c7e3756351a741bb6386b743eb5fd63602"
     },
     "test/built-ins/Promise/allSettled/invoke-resolve-on-promises-every-iteration-of-custom.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "c6724d2a56669dd768a2f36336bb5ce069b07287253f626f9466d1258eaf97dd",
       "source_sha256": "3e771636f906b729be94e0fbe6fc80c7e3756351a741bb6386b743eb5fd63602"
     },
@@ -895,22 +895,22 @@
       "source_sha256": "3d85ec835839061e524bc38cf03fbdf929e04c0355836d3d58d70aeef99d5695"
     },
     "test/built-ins/Promise/allSettled/resolve-throws-iterator-return-is-not-callable.js:sloppy": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "7ee34252273d0d7df5fc0071eb35e4fbde795346c31336486ad422223ed61df3",
       "source_sha256": "3551cb9eb68dcb9d7e763368e864ce466a4321ae9c69a444706326b2a77baa57"
     },
     "test/built-ins/Promise/allSettled/resolve-throws-iterator-return-is-not-callable.js:strict": {
-      "status": "unsupported",
+      "status": "failed",
       "case_sha256": "6bce6e3fe1c9f3bbfb9e44a06544917ee7e6c31a4c7e138c6772afa31dcbe9be",
       "source_sha256": "3551cb9eb68dcb9d7e763368e864ce466a4321ae9c69a444706326b2a77baa57"
     },
     "test/built-ins/Promise/allSettled/resolve-throws-iterator-return-null-or-undefined.js:sloppy": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "762900ebe38029ea52704aee0f9a22cb56c4adde696eb646eeaee17fd4b94e87",
       "source_sha256": "7de58acd1311417b0e892aee7c7f0c439b22a64d42aaae049bb8077fd4369248"
     },
     "test/built-ins/Promise/allSettled/resolve-throws-iterator-return-null-or-undefined.js:strict": {
-      "status": "unsupported",
+      "status": "passed",
       "case_sha256": "b0e7b47705fbb9dcd52e646939b60e7aa8f8cef258da19552f527d13c6785720",
       "source_sha256": "7de58acd1311417b0e892aee7c7f0c439b22a64d42aaae049bb8077fd4369248"
     },
