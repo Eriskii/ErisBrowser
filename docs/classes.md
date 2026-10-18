@@ -1,5 +1,9 @@
 # JavaScript classes
 
+[Class `super` properties](class-super-properties.md) now extend the public
+instance/static method, accessor, constructor and lexical-arrow contexts.
+Object-literal method `super` remains unsupported.
+
 The subsequent [Promise class-admission checkpoint](promise-class-admission.md)
 enables declared class metadata in seven bounded Promise profiles without
 changing this runtime. The remainder of this chapter records the original
@@ -49,8 +53,8 @@ or upstream feature admission. Existing class-tagged upstream rows remain
 excluded by unchanged profile policies; results in older chapters belong to
 their recorded checkpoints.
 
-Fields, private elements, static blocks, `super` property access, generator and
-async methods remain explicitly unsupported. Modules, decorators, async
+Fields, private elements, static blocks, object-literal method `super`,
+generator and async methods remain explicitly unsupported. Modules, decorators, async
 functions, multiple realms and the other documented language gaps remain
 outside this slice.
 

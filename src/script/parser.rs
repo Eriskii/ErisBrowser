@@ -51,6 +51,8 @@ pub(super) struct Parser<'source> {
     allow_in: bool,
     strict: bool,
     super_call_allowed: bool,
+    super_property_allowed: bool,
+    super_property_deferred: bool,
     in_class: bool,
 }
 impl<'source> Parser<'source> {
@@ -106,6 +108,8 @@ impl<'source> Parser<'source> {
             allow_in: true,
             strict,
             super_call_allowed: false,
+            super_property_allowed: false,
+            super_property_deferred: false,
             in_class: false,
         })
     }
@@ -308,7 +312,7 @@ impl<'source> Parser<'source> {
     fn assignment_target(&self, target: ExprId) -> Result<()> {
         let target = self.unit.expr(target);
         if !matches!(target, Expr::Ident(name) if name != "this")
-            && !matches!(target, Expr::Member(..))
+            && !matches!(target, Expr::Member(..) | Expr::SuperProperty(_))
         {
             return Err(self.error("invalid assignment target"));
         }
@@ -1091,3 +1095,6 @@ mod tests {
 }
 #[cfg(test)]
 mod class_tests;
+
+#[cfg(test)]
+mod super_property_tests;

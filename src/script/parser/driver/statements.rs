@@ -728,7 +728,10 @@ fn for_head(
                 ForBinding::Declaration(bindings.remove(0).0, kind)
             }
             Some(Stmt::Expr(target))
-                if matches!(p.unit.expr(target), Expr::Ident(_) | Expr::Member(..)) =>
+                if matches!(
+                    p.unit.expr(target),
+                    Expr::Ident(_) | Expr::Member(..) | Expr::SuperProperty(_)
+                ) =>
             {
                 p.assignment_target(target)?;
                 ForBinding::Target(target)

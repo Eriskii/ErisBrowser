@@ -341,9 +341,11 @@ fn ordinary_argument_storage_retains_exact_original_tariff() {
 
 #[cfg(all(target_arch = "x86_64", target_os = "linux"))]
 #[test]
-fn actual_call_spread_machine_layout_matches_both_held_mirrors() {
-    assert_eq!((size_of::<Phase>(), align_of::<Phase>()), (96, 8));
-    assert_eq!((size_of::<ExprFrame>(), align_of::<ExprFrame>()), (128, 8));
+fn actual_call_spread_machine_layout_after_super_property_extension() {
+    // Historical call-spread mirrors remain retained. SuperProperty enlarges
+    // Phase, ExprFrame and Reference; the top frame and its capacity stay fixed.
+    assert_eq!((size_of::<Phase>(), align_of::<Phase>()), (112, 8));
+    assert_eq!((size_of::<ExprFrame>(), align_of::<ExprFrame>()), (144, 8));
     assert_eq!((size_of::<Frame>(), align_of::<Frame>()), (184, 8));
     assert_eq!(
         (
@@ -358,7 +360,7 @@ fn actual_call_spread_machine_layout_matches_both_held_mirrors() {
     );
     assert_eq!((size_of::<Arguments>(), align_of::<Arguments>()), (32, 8));
     assert_eq!((size_of::<Value>(), align_of::<Value>()), (24, 8));
-    assert_eq!((size_of::<Reference>(), align_of::<Reference>()), (56, 8));
+    assert_eq!((size_of::<Reference>(), align_of::<Reference>()), (80, 8));
     assert_eq!(INITIAL_FRAMES * size_of::<Frame>() + 32, 1504);
     assert_eq!(MAX_FRAMES, 45590);
     #[cfg(not(feature = "test262-host"))]

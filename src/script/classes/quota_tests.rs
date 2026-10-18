@@ -231,7 +231,7 @@ fn class_private_environment_growth_and_named_tdz_refusals_retain_only_paid_rows
                     assert!(env.strict && !env.function_scope);
                     assert_eq!(env.parent, Some(1));
                     assert!(matches!(env.this_binding, ThisBinding::Lexical));
-                    assert!(env.new_target_binding.is_none() && env.active_constructor.is_none());
+                    assert!(env.new_target_binding.is_none() && env.active_function.is_none());
                     assert_eq!(env.bindings.len(), usize::from(ok && named));
                     if ok && named {
                         let binding = &env.bindings["x"];
@@ -587,7 +587,7 @@ fn class_private_super_capture_retains_original_target_live_parent_and_prepaid_b
             };
             let owner = runtime.class_environment(1, None).unwrap();
             runtime.environments[owner].function_scope = true;
-            runtime.environments[owner].active_constructor = Some(id);
+            runtime.environments[owner].active_function = Some(id);
             runtime.environments[owner].new_target_binding = Some(function.clone());
             runtime.environments[owner].this_binding = if initialized {
                 ThisBinding::Initialized(Value::Window)
@@ -663,7 +663,7 @@ fn class_private_raw_environment_allowance_preserves_old_terms_and_adds_two_delt
     {
         assert_eq!(size_of::<ThisBinding>(), 24);
         assert_eq!(size_of::<Environment>(), 112);
-        assert_eq!(size_of::<Function>(), 104);
+        assert_eq!(size_of::<Function>(), 120);
         assert_eq!(size_of::<machine::Frame>(), 184);
         assert_eq!(size_of::<code::Function>(), 80);
         assert_eq!(size_of::<code::Unit>(), 168);

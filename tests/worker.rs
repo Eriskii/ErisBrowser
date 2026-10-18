@@ -2918,5 +2918,7 @@ mod promise_race;
 #[path = "worker/promise_all_settled.rs"]
 mod promise_all_settled;
 
+#[path = "worker/class_super_properties.rs"]
+mod class_super_properties;
 #[path = "worker/classes.rs"]
 mod classes;

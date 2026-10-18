@@ -144,12 +144,16 @@ impl Runtime {
         let name = PropertyKey::String(self.dom_proto_text("name")?);
         let prototype_key = PropertyKey::String(self.dom_proto_text("prototype")?);
         let constructor_key = PropertyKey::String(self.dom_proto_text("constructor")?);
+        let Value::Object(prototype_id) = prototype else {
+            unreachable!()
+        };
         let id = self.functions.len();
         self.functions.push(Function {
             code: code.clone(),
             environment: class_env,
             properties,
             bound: None,
+            home_object: Some(prototype_id),
         });
         let constructor = Value::Function(id);
         self.class_define_property(
@@ -173,9 +177,6 @@ impl Runtime {
                 true,
             ),
         )?;
-        let Value::Object(prototype_id) = prototype else {
-            unreachable!()
-        };
         self.class_define_property(
             &constructor,
             &prototype_key,
@@ -217,7 +218,7 @@ impl Runtime {
         self.charge(objects.bytes)?;
         self.class_reserve_functions(functions)?;
         self.class_reserve_objects(objects)?;
-        let method = self.function_value(code, class_env)?;
+        let method = self.function_value_prepaid_home(code, class_env)?;
         self.set_key_function_name(&method, key, prefix)?;
         Ok(method)
     }
@@ -318,7 +319,7 @@ impl Runtime {
         self.work(3)?;
         let owner = self.this_environment(environment)?;
         let row = &self.environments[owner];
-        let id = row.active_constructor.ok_or_else(invalid)?;
+        let id = row.active_function.ok_or_else(invalid)?;
         let target = row.new_target_binding.as_ref().ok_or_else(invalid)?;
         let function = self.functions.get(id).ok_or_else(invalid)?;
         if !matches!(

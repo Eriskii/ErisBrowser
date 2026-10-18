@@ -173,6 +173,9 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + size_of::<ThisBinding>().saturating_sub(size_of::<Option<Value>>()))
         + size_of::<Vec<Vec<code::Class>>>()
         + size_of::<usize>();
+    // SuperProperty adds one saved home slot to the retained intrinsic Function.
+    // Its bootstrap charge is separate from every historical installation term.
+    let function_home_added = size_of::<Option<usize>>();
     // The cumulative remainder below starts from MAX_STEPS; only its
     // allowance origin changes, not the installation work or heap ledger.
     assert_eq!(
@@ -223,6 +226,7 @@ fn typed_array_bootstrap_reports_types_and_reconciles_installation_ledger() {
             + with_resolvers_added
             + try_added
             + class_added
+            + function_home_added
     );
     assert_eq!(
         (runtime.objects.len(), runtime.objects.capacity()),

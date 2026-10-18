@@ -10,6 +10,8 @@ pub(super) enum Frame {
     ArrowExpression(State),
     // true only for a derived literal constructor; class methods use false.
     ClassMethod(bool),
+    // Object methods have a valid super grammar but no selected runtime home object.
+    ObjectMethod,
 }
 pub(super) struct State {
     params: Vec<Parameter>,
@@ -26,12 +28,16 @@ struct Context {
     labels: Vec<ActiveLabel>,
     new_target_allowed: bool,
     super_call_allowed: bool,
+    super_property_allowed: bool,
+    super_property_deferred: bool,
 }
 impl Context {
     fn enter(p: &mut Parser<'_>, arrow: bool) -> Self {
         let saved = Self {
             new_target_allowed: p.new_target_allowed,
             super_call_allowed: p.super_call_allowed,
+            super_property_allowed: p.super_property_allowed,
+            super_property_deferred: p.super_property_deferred,
             loop_depth: p.loop_depth,
             switch_depth: p.switch_depth,
             allow_in: p.allow_in,
@@ -45,6 +51,8 @@ impl Context {
         p.new_target_allowed |= !arrow;
         if !arrow {
             p.super_call_allowed = false;
+            p.super_property_allowed = false;
+            p.super_property_deferred = false;
         }
         saved
     }
@@ -56,6 +64,8 @@ impl Context {
         p.labels = self.labels;
         p.new_target_allowed = self.new_target_allowed;
         p.super_call_allowed = self.super_call_allowed;
+        p.super_property_allowed = self.super_property_allowed;
+        p.super_property_deferred = self.super_property_deferred;
     }
 }
 pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> Result<Transition> {
@@ -80,6 +90,24 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             p.expect("(")?;
             let saved = Context::enter(p, false);
             p.super_call_allowed = derived_constructor;
+            p.super_property_allowed = true;
+            let state = State {
+                params: Vec::new(),
+                saved,
+                unique: true,
+                arrow: false,
+                dynamic: false,
+            };
+            if p.eat(")") {
+                function_body(p, state)
+            } else {
+                parameters(p, state)
+            }
+        }
+        Frame::ObjectMethod => {
+            p.expect("(")?;
+            let saved = Context::enter(p, false);
+            p.super_property_deferred = true;
             let state = State {
                 params: Vec::new(),
                 saved,

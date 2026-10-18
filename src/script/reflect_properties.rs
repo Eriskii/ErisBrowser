@@ -282,7 +282,7 @@ impl Runtime {
         Ok((None, false))
     }
 
-    fn reflect_find(
+    pub(super) fn reflect_find(
         &mut self,
         target: &Value,
         key: &PropertyKey,
@@ -312,7 +312,7 @@ impl Runtime {
         Err(ScriptError::resource("prototype chain limit exceeded"))
     }
 
-    fn reflect_set(
+    pub(super) fn reflect_set(
         &mut self,
         target: &Value,
         key: &PropertyKey,

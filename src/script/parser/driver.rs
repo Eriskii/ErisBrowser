@@ -39,6 +39,8 @@ struct EntryContext {
     allow_in: bool,
     strict: bool,
     super_call_allowed: bool,
+    super_property_allowed: bool,
+    super_property_deferred: bool,
     in_class: bool,
 }
 impl From<classes::Frame> for Kind {
@@ -191,6 +193,8 @@ fn run(parser: &mut Parser<'_>, root: Kind) -> Result<Output> {
         allow_in: parser.allow_in,
         strict: parser.strict,
         super_call_allowed: parser.super_call_allowed,
+        super_property_allowed: parser.super_property_allowed,
+        super_property_deferred: parser.super_property_deferred,
         in_class: parser.in_class,
     };
     let result = (|| {
@@ -225,6 +229,8 @@ fn run(parser: &mut Parser<'_>, root: Kind) -> Result<Output> {
         parser.allow_in = entry.allow_in;
         parser.strict = entry.strict;
         parser.super_call_allowed = entry.super_call_allowed;
+        parser.super_property_allowed = entry.super_property_allowed;
+        parser.super_property_deferred = entry.super_property_deferred;
         parser.in_class = entry.in_class;
     }
     result

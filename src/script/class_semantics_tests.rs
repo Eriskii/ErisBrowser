@@ -1026,19 +1026,26 @@ fn class_public_async_generator_method() {
 
 #[test]
 fn class_public_super_named_property() {
-    unsupported(
+    observe(
         "super_named_property",
         r###"class C {m(){return super.x;}}
+Object.setPrototypeOf(C.prototype, {x:17});
+var result=(new C()).m();
 "###,
+        "result",
+        Value::Number(17.0),
     );
 }
 
 #[test]
 fn class_public_super_computed_assignment() {
-    unsupported(
+    observe(
         "super_computed_assignment",
         r###"class C {m(k,v){super[k]=v;}}
+var item=new C();item.m('x',23);var result=item.x;
 "###,
+        "result",
+        Value::Number(23.0),
     );
 }
 

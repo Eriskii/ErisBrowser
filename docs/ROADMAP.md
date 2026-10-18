@@ -12,8 +12,10 @@ retain their original checkpoint results and policy scope.
 [The class runtime slice](classes.md) now covers declarations/expressions,
 strict lexical names, public methods/accessors and base/derived construction,
 including direct `super()`, alternate `new.target`, escaped arrows and native
-Promise subclasses. Fields, private elements, static blocks, `super` properties
-and async/generator methods remain future work. Upstream class feature admission
+Promise subclasses. The subsequent [class `super` property slice](class-super-properties.md)
+adds dot/computed reads, calls, assignments and updates while preserving the
+method's home and actual receiver. Object-literal method `super`, fields,
+private elements, static blocks and async/generator methods remain future work. Upstream class feature admission
 is a separate step; the profile results below retain their historical scope.
 Final validation passes 80 public groups in 164 mode attempts, 16 private groups
 and two browser witnesses. Complete Rust suites pass 3,344/3,698 groups; eight

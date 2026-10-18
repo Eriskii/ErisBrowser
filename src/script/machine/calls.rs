@@ -358,6 +358,9 @@ fn setup(
     runtime.environments[env].function_scope = true;
     runtime.environments[env].strict = code.strict;
     if !code.arrow {
+        // The active closure owns super properties before any parameter default.
+        runtime.work(1)?;
+        runtime.environments[env].active_function = Some(id);
         let receiver = if code.strict {
             receiver
         } else if matches!(receiver, Value::Undefined | Value::Null) {
@@ -480,7 +483,7 @@ fn class_start(
     let code = runtime.functions[id].code.clone();
     let env = runtime.class_environment(runtime.functions[id].environment, None)?;
     runtime.environments[env].function_scope = true;
-    runtime.environments[env].active_constructor = Some(id);
+    runtime.environments[env].active_function = Some(id);
     runtime.environments[env].new_target_binding =
         Some(std::mem::replace(&mut frame.new_target, Value::Undefined));
     runtime.environments[env].this_binding = match receiver {

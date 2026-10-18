@@ -239,6 +239,8 @@ pub(super) enum Expr {
     Class(ClassId),
     SuperCall(Vec<ExprId>),
     SuperCallSpread(Vec<ExprId>),
+    // Class home-object reference; the child remains an unevaluated raw key.
+    SuperProperty(ExprId),
 }
 #[derive(Debug)]
 pub(super) enum PropertyName {
@@ -859,7 +861,10 @@ mod tests {
         let child = |id| Box::new(expression(unit, id));
         let children = |ids: &[ExprId]| ids.iter().map(|&id| expression(unit, id)).collect();
         match unit.expr(id) {
-            Expr::Class(_) | Expr::SuperCall(_) | Expr::SuperCallSpread(_) => {
+            Expr::Class(_)
+            | Expr::SuperCall(_)
+            | Expr::SuperCallSpread(_)
+            | Expr::SuperProperty(_) => {
                 panic!("class syntax has no legacy canonical inverse")
             }
             Expr::Literal(v) => E::Literal(v.clone()),

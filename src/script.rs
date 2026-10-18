@@ -27,6 +27,7 @@ mod aggregate_error_abort_tests;
 mod aggregate_error_semantic_tests;
 #[cfg(test)]
 mod bootstrap_tests;
+mod class_super_properties;
 mod classes;
 mod code;
 mod construction;
@@ -69,6 +70,7 @@ mod reflect_properties_install;
 mod regexp_builtins;
 mod scalar_codec;
 mod string_builtins;
+mod super_properties;
 mod symbols;
 #[cfg(feature = "test262-host")]
 mod test262_host;
@@ -1322,18 +1324,24 @@ struct Environment {
     bindings: BTreeMap<String, Binding>,
     // Execution receiver, never an author-visible property or lexical name.
     this_binding: ThisBinding,
-    active_constructor: Option<usize>,
+    active_function: Option<usize>,
     new_target_binding: Option<Value>,
     parent: Option<usize>,
     function_scope: bool,
     strict: bool,
 }
+// Complete Function layout grows from 104 to 120 bytes on both validated
+// toolchains. Class factories already charge typed arena/slot sizes; other
+// closure routes add this measured delta to their legacy allowances.
+const FUNCTION_HOME_BYTES: usize = std::mem::size_of::<Option<usize>>();
 #[derive(Clone)]
 struct Function {
     code: code::FunctionRef,
     environment: usize,
     properties: usize,
     bound: Option<BoundFunction>,
+    // Identity of the defining object, independent of this and the live parent.
+    home_object: Option<usize>,
 }
 #[derive(Clone)]
 struct BoundFunction {
@@ -1392,6 +1400,12 @@ enum Reference {
     // Computed names stay uncoerced until GetValue/PutValue. A successful read
     // replaces the name with a string or symbol so compound assignments convert once.
     Property(Value, Value, bool),
+    SuperProperty {
+        base: Value,
+        name: Value,
+        receiver: Value,
+        strict: bool,
+    },
 }
 
 #[derive(Clone, Debug)]
@@ -1751,7 +1765,7 @@ impl Runtime {
                 Environment {
                     bindings,
                     this_binding: ThisBinding::Initialized(Value::Window),
-                    active_constructor: None,
+                    active_function: None,
                     new_target_binding: None,
                     parent: None,
                     function_scope: true,
@@ -1760,7 +1774,7 @@ impl Runtime {
                 Environment {
                     bindings: BTreeMap::new(),
                     this_binding: ThisBinding::Lexical,
-                    active_constructor: None,
+                    active_function: None,
                     new_target_binding: None,
                     parent: Some(0),
                     function_scope: false,
@@ -1958,13 +1972,17 @@ impl Runtime {
         self.objects[self.prototypes["AbortSignal"]].prototype =
             Some(Value::Object(self.prototypes["EventTarget"]));
         self.charge(
-            std::mem::size_of::<code::Unit>() + std::mem::size_of::<code::Function>() + 64,
+            std::mem::size_of::<code::Unit>()
+                + std::mem::size_of::<code::Function>()
+                + 64
+                + FUNCTION_HOME_BYTES,
         )?;
         self.functions.push(Function {
             code: code::FunctionRef::empty()?,
             environment: 0,
             properties: self.prototypes["Function"],
             bound: None,
+            home_object: None,
         });
         self.objects[self.prototypes["Function"]]
             .insert_hidden("name".into(), Value::String(JsString::default()));
@@ -3775,7 +3793,7 @@ impl Runtime {
         self.environments.push(Environment {
             bindings: BTreeMap::new(),
             this_binding: ThisBinding::Lexical,
-            active_constructor: None,
+            active_function: None,
             new_target_binding: None,
             parent: Some(parent),
             function_scope: false,
@@ -4070,6 +4088,15 @@ impl Runtime {
         Ok(())
     }
     fn function_value(&mut self, code: &code::FunctionRef, environment: usize) -> Result<Value> {
+        self.charge(FUNCTION_HOME_BYTES)?;
+        self.function_value_prepaid_home(code, environment)
+    }
+    // Class factories have already paid the complete typed slot and arena growth.
+    fn function_value_prepaid_home(
+        &mut self,
+        code: &code::FunctionRef,
+        environment: usize,
+    ) -> Result<Value> {
         self.charge_function_code_copy(code)?;
         let id = self.functions.len();
         let Value::Object(properties) = self.object_ordered([
@@ -4090,6 +4117,7 @@ impl Runtime {
             environment,
             properties,
             bound: None,
+            home_object: None,
         });
         if code.self_name
             && let Some(name) = &code.name
@@ -4531,6 +4559,18 @@ impl Runtime {
                 *name = key.value();
                 self.get_property_key(object.clone(), &key, doc)
             }
+            Reference::SuperProperty {
+                base,
+                name,
+                receiver,
+                ..
+            } => {
+                // Raw-key copy, normalized-key retention and both handle cleanups.
+                self.work(4)?;
+                let key = self.reference_key(base, name.clone(), doc)?;
+                *name = key.value();
+                self.get_super_property_key(base, &key, receiver, doc)
+            }
         }
     }
     fn write_reference(
@@ -4554,6 +4594,17 @@ impl Runtime {
             Reference::Property(object, key, strict) => {
                 let key = self.reference_key(&object, key, doc)?;
                 self.set_property_key(object, &key, value, strict, doc)
+            }
+            Reference::SuperProperty {
+                base,
+                name,
+                receiver,
+                strict,
+            } => {
+                // The capture producer funded retained owners, including refusal.
+                self.work(4)?;
+                let key = self.reference_key(&base, name, doc)?;
+                self.set_super_property_key(&base, &key, &receiver, value, strict, doc)
             }
         }
     }
@@ -8648,9 +8699,10 @@ impl Runtime {
                 let name = self.string(units)?;
                 let bound_args: Vec<_> = args.iter().skip(1).cloned().collect();
                 self.charge(
-                    192 + bound_args
-                        .len()
-                        .saturating_mul(std::mem::size_of::<Value>()),
+                    192 + FUNCTION_HOME_BYTES
+                        + bound_args
+                            .len()
+                            .saturating_mul(std::mem::size_of::<Value>()),
                 )?;
                 let Value::Object(properties) = self.object_ordered([
                     ("name".into(), name),
@@ -8670,6 +8722,7 @@ impl Runtime {
                     code: self.functions[self.function_prototype].code.clone(),
                     environment: 0,
                     properties,
+                    home_object: None,
                     bound: Some(BoundFunction {
                         target,
                         receiver: arg(0),
@@ -20956,3 +21009,8 @@ mod class_semantics_tests;
 
 #[cfg(test)]
 mod class_superclass_tests;
+
+#[cfg(test)]
+mod super_property_abort_tests;
+#[cfg(test)]
+mod super_property_semantics_tests;

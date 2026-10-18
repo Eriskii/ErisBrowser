@@ -281,6 +281,12 @@ fn define_element(
         &key,
         prefix,
     )?;
+    let home = if element.is_static {
+        runtime.functions[constructor].properties
+    } else {
+        prototype
+    };
+    runtime.class_attach_home(&method, home)?;
     let mut descriptor = PropertyDescriptor {
         enumerable: Some(false),
         configurable: Some(true),

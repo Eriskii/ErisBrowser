@@ -63,6 +63,10 @@ enum Phase {
     Start,
     ReferenceObject,
     ReferenceKey(Value),
+    SuperReferenceKey {
+        owner: usize,
+        receiver: Value,
+    },
     Unary,
     Delete,
     BinaryHead,
@@ -426,12 +430,32 @@ fn step(
                     .map(|value| Some(Output::Value(value)))
             }
         }
+        Phase::SuperReferenceKey { owner, receiver } => {
+            let mut reference = runtime.class_super_property_reference(
+                owner,
+                receiver,
+                value(output),
+                runtime.environments[env].strict,
+            )?;
+            if frame.reference {
+                Ok(Some(Output::Reference(reference)))
+            } else {
+                runtime
+                    .read_reference(&mut reference, doc)
+                    .map(|value| Some(Output::Value(value)))
+            }
+        }
         Phase::Unary => {
             unary(runtime, &unit, id, value(output), doc).map(|v| Some(Output::Value(v)))
         }
         Phase::Delete => {
-            let Reference::Property(object, key, strict) = reference(output) else {
-                unreachable!()
+            let (object, key, strict) = match reference(output) {
+                Reference::Property(object, key, strict) => (object, key, strict),
+                Reference::SuperProperty { .. } => {
+                    runtime.work(1)?;
+                    return Err(ScriptError::reference("cannot delete a super property"));
+                }
+                _ => unreachable!(),
             };
             let key = runtime.reference_key(&object, key, doc)?;
             let deleted = runtime.delete_property_key(object, &key)?;
@@ -580,10 +604,14 @@ fn step(
         Phase::Callee => arguments_start(runtime, frame, value(output), Value::Undefined, doc),
         Phase::MemberCallee => {
             let mut reference = reference(output);
-            let Reference::Property(receiver, _, _) = &reference else {
-                unreachable!()
+            let receiver = match &reference {
+                Reference::Property(receiver, _, _) => receiver.clone(),
+                Reference::SuperProperty { receiver, .. } => {
+                    runtime.work(2)?; // call receiver retain and eventual release
+                    receiver.clone()
+                }
+                _ => unreachable!(),
             };
-            let receiver = receiver.clone();
             let function = runtime.read_reference(&mut reference, doc)?;
             arguments_start(runtime, frame, function, receiver, doc)
         }
@@ -677,6 +705,22 @@ fn step(
     }
 }
 
+fn super_property_start(
+    runtime: &mut Runtime,
+    frame: ExprFrame,
+    key: code::ExprId,
+) -> Result<Option<Output>> {
+    let (owner, receiver) = runtime.class_super_property_owner(frame.env)?;
+    // Fund receipt/release of the raw key before the child can run author code.
+    runtime.work(2)?;
+    eval_child(
+        runtime,
+        frame,
+        Phase::SuperReferenceKey { owner, receiver },
+        key,
+    )
+}
+
 fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<Option<Output>> {
     let unit = frame.unit.clone();
     let id = frame.expression;
@@ -700,6 +744,7 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
             code::Expr::Member(object, _) => {
                 eval_child(runtime, frame, Phase::ReferenceObject, *object)
             }
+            code::Expr::SuperProperty(key) => super_property_start(runtime, frame, *key),
             _ => Err(ScriptError::type_error("invalid assignment target")),
         };
     }
@@ -721,7 +766,7 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
         code::Expr::Unary(op, expression) => {
             if op == "delete" {
                 match unit.expr(*expression) {
-                    code::Expr::Member(..) => {
+                    code::Expr::Member(..) | code::Expr::SuperProperty(_) => {
                         return reference_child(runtime, frame, Phase::Delete, *expression);
                     }
                     code::Expr::Ident(name) => {
@@ -779,12 +824,16 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
         code::Expr::Member(object, _) => {
             eval_child(runtime, frame, Phase::ReferenceObject, *object)
         }
+        code::Expr::SuperProperty(key) => super_property_start(runtime, frame, *key),
         code::Expr::Assign(_, left, _) => {
             reference_child(runtime, frame, Phase::AssignReference, *left)
         }
         code::Expr::Update(target, _, _) => reference_child(runtime, frame, Phase::Update, *target),
         code::Expr::Call(callee, _) => {
-            if matches!(unit.expr(*callee), code::Expr::Member(..)) {
+            if matches!(
+                unit.expr(*callee),
+                code::Expr::Member(..) | code::Expr::SuperProperty(_)
+            ) {
                 reference_child(runtime, frame, Phase::MemberCallee, *callee)
             } else {
                 eval_child(runtime, frame, Phase::Callee, *callee)
@@ -793,7 +842,10 @@ fn start(runtime: &mut Runtime, frame: ExprFrame, doc: &mut Document) -> Result<
         code::Expr::New(callee, _) => eval_child(runtime, frame, Phase::Callee, *callee),
         code::Expr::CallSpread(callee, _) => {
             call_spread::prepay_entry(runtime)?;
-            if matches!(unit.expr(*callee), code::Expr::Member(..)) {
+            if matches!(
+                unit.expr(*callee),
+                code::Expr::Member(..) | code::Expr::SuperProperty(_)
+            ) {
                 reference_child(runtime, frame, Phase::MemberCallee, *callee)
             } else {
                 eval_child(runtime, frame, Phase::Callee, *callee)

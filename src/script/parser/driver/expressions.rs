@@ -47,6 +47,7 @@ pub(super) enum Frame {
     ClassDone,
     // Flags: any spread, current spread, saved allow_in, permit postfix update.
     SuperArguments(Vec<ExprId>, bool, bool, bool, bool),
+    SuperPropertyKey(bool),
 }
 pub(super) struct Binary {
     left: ExprId,
@@ -175,7 +176,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
                 };
                 return child(Frame::PrefixUpdate(delta), Frame::Unary);
             }
-            if p.is("super") {
+            if p.is("super") && !p.token_is(p.pos + 1, ".") && !p.token_is(p.pos + 1, "[") {
                 return super_start(p, true);
             }
             let async_call = p.is("async")
@@ -209,7 +210,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             },
         ),
         Frame::LeftHandSide => {
-            if p.is("super") {
+            if p.is("super") && !p.token_is(p.pos + 1, ".") && !p.token_is(p.pos + 1, "[") {
                 return super_start(p, false);
             }
             let async_call = p.is("async")
@@ -227,6 +228,12 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             },
         ),
         Frame::ClassDone => done_expr(p, Expr::Class(class(output))),
+        Frame::SuperPropertyKey(saved_in) => {
+            let key = expression(output);
+            p.expect("]")?;
+            p.allow_in = saved_in;
+            done_expr(p, Expr::SuperProperty(key))
+        }
         Frame::SuperArguments(
             mut arguments,
             has_spread,
@@ -406,7 +413,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
             } else if p.is("(") {
                 child(
                     Frame::ObjectFunction(state, key, None),
-                    functions::Frame::Start(true),
+                    functions::Frame::ObjectMethod,
                 )
             } else if p.eat(":") {
                 let prototype = matches!(&key,PropertyName::Literal(name,_) if name==&JsString::from("__proto__"));
@@ -435,7 +442,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
         }
         Frame::AccessorKey(state, setter) => child(
             Frame::ObjectFunction(state, key(output), Some(setter)),
-            functions::Frame::Start(true),
+            functions::Frame::ObjectMethod,
         ),
         Frame::ObjectFunction(state, key, setter) => {
             let mut code = function(output);
@@ -649,13 +656,30 @@ fn postfix(p: &mut Parser<'_>, mut state: Postfix) -> Result<Transition> {
     }
     Ok(Transition::Done(Output::Expression(state.value)))
 }
+// Called after consuming the super keyword in the MemberExpression grammar.
+// Keep the key as an expression edge: runtime owns this/key/coercion ordering.
+fn super_property(p: &mut Parser<'_>) -> Result<Transition> {
+    if !p.super_property_allowed {
+        return Err(if p.super_property_deferred {
+            ScriptError::unsupported("object method super properties are not implemented")
+        } else {
+            p.error("super property outside a class method")
+        });
+    }
+    if p.eat(".") {
+        let name = p.identifier()?;
+        let key = p.identifier_key(&name)?;
+        let key = p.emit_expr(Expr::Literal(Value::String(key)))?;
+        done_expr(p, Expr::SuperProperty(key))
+    } else {
+        p.expect("[")?;
+        let saved_in = p.allow_in;
+        p.allow_in = true;
+        child(Frame::SuperPropertyKey(saved_in), Frame::Sequence)
+    }
+}
 fn super_start(p: &mut Parser<'_>, allow_update: bool) -> Result<Transition> {
     p.expect("super")?;
-    if p.is(".") || p.is("[") {
-        return Err(ScriptError::unsupported(
-            "super property references are not implemented",
-        ));
-    }
     if !p.super_call_allowed {
         return Err(p.error("super call outside a derived constructor"));
     }
@@ -889,9 +913,7 @@ fn primary(p: &mut Parser<'_>) -> Result<Transition> {
         }
         TokenKind::Word(s) if !s.escaped && &*s.value == "super" => {
             if p.is(".") || p.is("[") {
-                Err(ScriptError::unsupported(
-                    "super property references are not implemented",
-                ))
+                super_property(p)
             } else {
                 Err(ScriptError::at("invalid super expression", offset))
             }
