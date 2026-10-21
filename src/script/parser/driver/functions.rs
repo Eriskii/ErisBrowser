@@ -10,7 +10,7 @@ pub(super) enum Frame {
     ArrowExpression(State),
     // true only for a derived literal constructor; class methods use false.
     ClassMethod(bool),
-    // Object methods have a valid super grammar but no selected runtime home object.
+    // Object methods permit super properties, but never direct super calls.
     ObjectMethod,
 }
 pub(super) struct State {
@@ -107,7 +107,7 @@ pub(super) fn step(p: &mut Parser<'_>, frame: Frame, output: Option<Output>) -> 
         Frame::ObjectMethod => {
             p.expect("(")?;
             let saved = Context::enter(p, false);
-            p.super_property_deferred = true;
+            p.super_property_allowed = true;
             let state = State {
                 params: Vec::new(),
                 saved,

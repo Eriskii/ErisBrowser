@@ -1249,12 +1249,14 @@ fn object_entry(
             }
             code::ObjectEntry::Method(id) => {
                 let function = runtime.function_value(&code::FunctionRef::new(&unit, *id), env)?;
+                runtime.object_attach_home(&function, &object)?;
                 runtime.set_key_function_name(&function, &key, None)?;
                 desc.value = Some(function);
                 desc.writable = Some(true);
             }
             code::ObjectEntry::Accessor(id, setter) => {
                 let function = runtime.function_value(&code::FunctionRef::new(&unit, *id), env)?;
+                runtime.object_attach_home(&function, &object)?;
                 runtime.set_key_function_name(
                     &function,
                     &key,

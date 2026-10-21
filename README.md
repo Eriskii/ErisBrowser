@@ -10,8 +10,10 @@ subclasses. Strict lexical bindings, `super()` ordering, alternate `new.target`
 and retained arrow activations share the existing runtime limits.
 [Class `super` properties](docs/class-super-properties.md) add receiver-aware
 reads, calls and writes in constructors, public methods/accessors and lexical
-arrows. Object-literal method `super`, fields, private elements, static blocks
-and async/generator methods remain unsupported. The separate [Promise class-admission checkpoint](docs/promise-class-admission.md)
+arrows. [Object-literal methods and accessors](docs/object-super-properties.md)
+now support the same `super` property operations while preserving ordinary
+strict/sloppy behavior. Fields, private elements, static blocks and
+async/generator methods remain unsupported. The separate [Promise class-admission checkpoint](docs/promise-class-admission.md)
 now enables declared `class` metadata in seven existing Promise profiles, with
 1,330 modes across eight replays: **1,258 passed, 64 failed and eight unsupported**,
 and **724 healthy controls**. This changes profile admission and its gate;

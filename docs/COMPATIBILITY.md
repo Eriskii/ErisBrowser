@@ -1,5 +1,18 @@
 # Compatibility status
 
+[Class `super` properties](class-super-properties.md) and
+[object-literal method/accessor `super`](object-super-properties.md) now support
+dot/computed reads, calls and writes with the defining home kept separate from
+the receiver. Object methods preserve ordinary strict/sloppy behavior;
+optional chaining and the other documented deferrals remain unsupported.
+
+The [Promise class-admission checkpoint](promise-class-admission.md) enables
+declared class metadata in seven existing profiles. Current eight-profile
+replays retain **1,330 cases: 1,258 passed, 64 failed and eight unsupported**,
+with **724 healthy controls**, unchanged in the object-method checkpoint.
+The opening class-runtime summary and API/profile results below record earlier
+checkpoints; their feature deferrals, policies and totals remain historical.
+
 [JavaScript classes](classes.md) now include named declarations, named/anonymous
 expressions, public methods/accessors, strict lexical bindings and base/derived
 constructors. Direct `super()`, alternate `new.target`, retained arrows and

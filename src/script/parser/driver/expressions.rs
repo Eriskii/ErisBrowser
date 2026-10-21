@@ -616,9 +616,22 @@ fn binary_next(p: &mut Parser<'_>, mut state: Binary) -> Result<Transition> {
         done_expr(p, Expr::BinaryChain(state.left, state.operations))
     }
 }
+// The unchanged lexer emits two symbols for ?. and one Number for .3.
+// Require adjacent source offsets so ? . and ?/* comment */. stay conditional.
+// This recognizes only the unsupported boundary, without consuming its tail.
+fn optional_chain_start(p: &Parser<'_>) -> bool {
+    p.is("?")
+        && p.token_is(p.pos + 1, ".")
+        && p.tokens[p.pos + 1].offset == p.tokens[p.pos].offset + 1
+}
 fn postfix(p: &mut Parser<'_>, mut state: Postfix) -> Result<Transition> {
     loop {
         state.chain += 1;
+        if optional_chain_start(p) {
+            return Err(ScriptError::unsupported(
+                "optional chaining is not implemented",
+            ));
+        }
         if p.eat(".") {
             let name = p.identifier()?;
             let key = p.identifier_key(&name)?;
@@ -770,6 +783,9 @@ fn new_done(
 }
 fn new_members(p: &mut Parser<'_>, mut state: NewState) -> Result<Transition> {
     loop {
+        if optional_chain_start(p) {
+            return Err(p.error("optional chain cannot be a new constructor"));
+        }
         if p.eat(".") {
             let name = p.identifier()?;
             let key = p.identifier_key(&name)?;

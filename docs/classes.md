@@ -2,7 +2,8 @@
 
 [Class `super` properties](class-super-properties.md) now extend the public
 instance/static method, accessor, constructor and lexical-arrow contexts.
-Object-literal method `super` remains unsupported.
+The later [object-literal method/accessor checkpoint](object-super-properties.md)
+also supports these property operations with ordinary strict/sloppy behavior.
 
 The subsequent [Promise class-admission checkpoint](promise-class-admission.md)
 enables declared class metadata in seven bounded Promise profiles without

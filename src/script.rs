@@ -60,6 +60,7 @@ mod number_format;
 mod object_has_own;
 mod object_integrity;
 mod object_is;
+mod object_super_properties;
 mod own_keys;
 mod parser;
 mod processing_instruction;
@@ -20008,13 +20009,13 @@ mod tests {
             assert!(error.is_parse_error(), "{source}: {error:?}");
         }
         Runtime::parse_only("({m(a=1){return a;}})").unwrap();
+        Runtime::parse_only("({m(){return super.x;}})").unwrap();
         for source in [
             "({*m(){}})",
             "({async m(){}})",
             "({async ['m'](){}})",
             "({async *m(){}})",
             "({...x})",
-            "({m(){return super.x;}})",
             "({m({a}){}})",
         ] {
             assert!(
@@ -21014,3 +21015,8 @@ mod class_superclass_tests;
 mod super_property_abort_tests;
 #[cfg(test)]
 mod super_property_semantics_tests;
+
+#[cfg(test)]
+mod object_super_property_abort_tests;
+#[cfg(test)]
+mod object_super_property_semantics_tests;

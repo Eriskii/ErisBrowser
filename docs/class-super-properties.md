@@ -70,7 +70,9 @@ mode-specific mapped-arguments expectations and eleven natural terminal sources.
 Its literals were frozen independently of producer code. Separate private
 contracts exercise home/owner/reference admissions and receiver routes.
 
-Object-literal method/accessor `super`, fields, private elements, static blocks,
+The later [object-literal method/accessor checkpoint](object-super-properties.md)
+adds `super` properties in ordinary object methods. The validation below records
+this earlier class-only checkpoint. Fields, private elements, static blocks,
 async/generator methods, optional chaining and tagged templates remain outside
 this slice. Proxy objects, multiple realms and the other documented language
 gaps remain unsupported. This is not complete class or ECMAScript conformance,

@@ -2922,3 +2922,6 @@ mod promise_all_settled;
 mod class_super_properties;
 #[path = "worker/classes.rs"]
 mod classes;
+
+#[path = "worker/object_super_properties.rs"]
+mod object_super_properties;

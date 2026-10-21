@@ -1045,20 +1045,26 @@ class C { m(){return super?.x;} }
 }
 
 #[test]
-fn super_property_deferred_object_literal_method_super() {
-    deferred(
-        r####"deferred_object_literal_method_super"####,
+fn super_property_accepted_object_literal_method_super() {
+    observe(
+        r####"accepted_object_literal_method_super"####,
         r####"var object={m(){return super.x;}};
 "####,
+        r####"[typeof object.m,object.m()===undefined].join(':')"####,
+        "function:true",
+        "function:true",
     );
 }
 
 #[test]
-fn super_property_deferred_object_literal_accessor_arrow_super() {
-    deferred(
-        r####"deferred_object_literal_accessor_arrow_super"####,
+fn super_property_accepted_object_literal_accessor_arrow_super() {
+    observe(
+        r####"accepted_object_literal_accessor_arrow_super"####,
         r####"var object={get x(){return ()=>super.x;}};
 "####,
+        r####"var arrow=object.x;[typeof arrow,arrow()===undefined].join(':')"####,
+        "function:true",
+        "function:true",
     );
 }
 
