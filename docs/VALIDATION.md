@@ -1,5 +1,34 @@
 # Validation record
 
+## Canvas backgrounds under display:none
+
+An HTML root with `display:none` now suppresses both its own canvas background
+and the body fallback. The shared selector also prevents those background images
+from being re-added to resource preparation. Revealing the root permits normal
+loading; hiding it retains already loaded images. Root/body precedence and
+`visibility:hidden` canvas propagation remain covered by the regression tests.
+
+Of the 14 new regression test groups, eight passed and six failed on parent
+`af46557a`; all fourteen pass with the six-line selector fix. They cover eight
+complete 8×6 pixel scenes, three CSSOM hide/show sequences in both execution
+modes (18 snapshots), and three resource-selection/cache groups using the
+existing fake bridge. The latter do not independently establish process isolation.
+
+Full suites pass **3,535 tests on Rust 1.88** and **3,899 on Rust 1.99 with
+`test262-host,vulkan-raster`**, across 59 result rows each, with zero failed or
+ignored tests. All previous test names remain and fourteen are added. Both
+strict Clippy configurations, formatting and the release build pass. All
+**102 existing visual reference pairs pass**, and their **204 PNG files are
+byte-identical to the parent output**. No storage field, wire format or resource
+limit changes. Missing-root/style-row fallback preservation was source-reviewed;
+these malformed-host cases were not added to the executed matrix.
+
+See the [validation record](evidence/canvas-display/validation.json) and
+[logs, source snapshots and reviews](evidence/canvas-display/sources-and-checks.tar.gz).
+This narrow fix adds no new GPU hardware or Chromium performance result. The
+published parent has eleven successful GitHub CI jobs; that is a separate result
+from this checkpoint's local checks. Prior validation entries follow unchanged.
+
 ## CSS visible/hidden visibility
 
 The [visibility subset](css-visibility.md) keeps hidden boxes in layout while

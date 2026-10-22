@@ -34,9 +34,11 @@ native editing focus, and showing a node does not automatically focus it.
 DOM event paths remain intact, so a visible child's event can still bubble
 through a hidden ancestor; visibility does not make the subtree inert.
 
-The canvas background remains painted when its selected html/body source is
-hidden, while ordinary hidden borders and content are suppressed. This follows
-the [canvas-versus-element background distinction](https://www.w3.org/TR/2024/CRD-css-backgrounds-3-20240311/#special-backgrounds).
+The canvas background remains painted when its selected html/body source has
+`visibility:hidden`, while ordinary hidden borders and content are suppressed.
+An HTML root with `display:none` suppresses both its own canvas background and
+the body fallback. A `display:none` body cannot supply a propagated background.
+This follows the [canvas-versus-element background distinction](https://www.w3.org/TR/2024/CRD-css-backgrounds-3-20240311/#special-backgrounds).
 Table background layers need a separate qualification. Existing row fragments
 use their originating cell's visibility while retaining row geometry, rank and
 opacity: a hidden row with a visible cell paints that row layer; a visible row

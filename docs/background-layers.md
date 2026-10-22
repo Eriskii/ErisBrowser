@@ -69,6 +69,14 @@ geometry/current-color behavior and ignores the selected layer clip for its
 canvas extent. The chosen owner's backgrounds are not painted a second time
 on its principal box.
 
+An HTML root with `display:none` suppresses both root and body canvas
+backgrounds. The shared selector also prevents those owners from being re-added
+to background resource preparation. A later displayed layout can load their
+images normally; hiding does not evict an already loaded image. A displayed
+root retains its background when only the body is `display:none`, while
+`visibility:hidden` preserves canvas propagation. See the
+[canvas background rule](https://www.w3.org/TR/2024/CRD-css-backgrounds-3-20240311/#special-backgrounds).
+
 ## Geometry and resource preparation
 
 Principal boxes, existing table-row/cell paths and ordinary wrapped inlines

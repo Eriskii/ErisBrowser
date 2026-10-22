@@ -76,6 +76,12 @@ pub(crate) fn canvas_background_owner(
     html: Option<NodeId>,
     body: Option<NodeId>,
 ) -> Option<NodeId> {
+    if html
+        .and_then(|id| styles.get(id))
+        .is_some_and(|style| style.display == Display::None)
+    {
+        return None;
+    }
     let present =
         |style: &ComputedStyle| style.background_color.a > 0 || !style.backgrounds.is_single_none();
     html.filter(|id| styles.get(*id).is_some_and(present))

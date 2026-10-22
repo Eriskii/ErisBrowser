@@ -362,3 +362,131 @@ fn key_work_cut_keeps_decoded_admission_but_does_not_publish_partial_alias() {
 
 #[path = "background_resource_layers_tests.rs"]
 mod layers;
+
+// Initial suppression tests selection before any image can enter the cache.
+// Later hiding retains that cache; this is not an eviction/cancellation test.
+fn canvas_display_resource_reveal_sequence(source: &str) {
+    with_page(source, |page| {
+        let fonts = Fonts::new();
+        assert_eq!(requests(), ["https://page.test/start"]);
+        let hidden = page.prepare_layout(8.0, 6.0, &fonts);
+        assert_eq!(requests(), ["https://page.test/start"]);
+        assert!(keys(&hidden).is_empty());
+        assert!(page.images.is_empty());
+        let resources = page.resources.as_ref().unwrap();
+        assert!(resources.image_cache.is_empty());
+        assert!(resources.background_keys.is_empty());
+        assert_eq!(resources.decoded_image_bytes, 0);
+
+        page.runtime
+            .execute(
+                r#"document.getElementById('root').style.display = 'block';"#,
+                &mut page.document,
+            )
+            .unwrap();
+        let shown = page.prepare_layout(8.0, 6.0, &fonts);
+        let selected = keys(&shown);
+        assert_eq!(selected.len(), 1);
+        let key = selected[0].to_owned();
+        assert_eq!(
+            requests(),
+            [
+                "https://page.test/start",
+                "https://page.test/final/tile.png"
+            ]
+        );
+        assert_eq!(page.images.len(), 1);
+        let resources = page.resources.as_ref().unwrap();
+        assert_eq!(resources.image_cache.len(), 1);
+        assert_eq!(resources.background_keys.len(), 1);
+        assert_eq!(resources.decoded_image_bytes, 8);
+
+        page.runtime
+            .execute(
+                r#"document.getElementById('root').style.display = 'none';"#,
+                &mut page.document,
+            )
+            .unwrap();
+        assert!(keys(&page.prepare_layout(8.0, 6.0, &fonts)).is_empty());
+        assert_eq!(
+            requests(),
+            [
+                "https://page.test/start",
+                "https://page.test/final/tile.png"
+            ]
+        );
+        assert_eq!(page.images.len(), 1);
+        let resources = page.resources.as_ref().unwrap();
+        assert_eq!(resources.image_cache.len(), 1);
+        assert_eq!(resources.background_keys.len(), 1);
+        assert_eq!(resources.decoded_image_bytes, 8);
+
+        page.runtime
+            .execute(
+                r#"document.getElementById('root').style.display = 'block';"#,
+                &mut page.document,
+            )
+            .unwrap();
+        let again = page.prepare_layout(8.0, 6.0, &fonts);
+        assert_eq!(keys(&again), [key.as_str()]);
+        assert_eq!(
+            requests(),
+            [
+                "https://page.test/start",
+                "https://page.test/final/tile.png"
+            ]
+        );
+        assert_eq!(page.images.len(), 1);
+        let resources = page.resources.as_ref().unwrap();
+        assert_eq!(resources.image_cache.len(), 1);
+        assert_eq!(resources.background_keys.len(), 1);
+        assert_eq!(resources.decoded_image_bytes, 8);
+    });
+}
+
+#[test]
+fn canvas_display_root_none_root_url_waits_for_reveal() {
+    canvas_display_resource_reveal_sequence(
+        r#"<!doctype html><html id=root><head><style>html,body{margin:0;padding:0}html{display:none;width:8px;height:6px;background:transparent;background-image:url(tile.png);background-repeat:no-repeat}body{width:8px;height:6px;background:transparent}</style></head><body id=body></body></html>"#,
+    );
+}
+
+#[test]
+fn canvas_display_root_none_body_url_waits_for_reveal() {
+    canvas_display_resource_reveal_sequence(
+        r#"<!doctype html><html id=root><head><style>html,body{margin:0;padding:0}html{display:none;width:8px;height:6px;background:transparent}body{width:8px;height:6px;background:transparent;background-image:url(tile.png);background-repeat:no-repeat}</style></head><body id=body></body></html>"#,
+    );
+}
+
+#[test]
+fn canvas_display_displayed_root_and_body_urls_prepare_once() {
+    for source in [
+        r#"<!doctype html><html id=root><head><style>html,body{margin:0;padding:0}html{display:block;width:8px;height:6px;background:transparent;background-image:url(tile.png);background-repeat:no-repeat}body{width:8px;height:6px;background:transparent}</style></head><body id=body></body></html>"#,
+        r#"<!doctype html><html id=root><head><style>html,body{margin:0;padding:0}html{display:block;width:8px;height:6px;background:transparent}body{width:8px;height:6px;background:transparent;background-image:url(tile.png);background-repeat:no-repeat}</style></head><body id=body></body></html>"#,
+    ] {
+        with_page(source, |page| {
+            let fonts = Fonts::new();
+            assert_eq!(requests(), ["https://page.test/start"]);
+            let result = page.prepare_layout(8.0, 6.0, &fonts);
+            let selected = keys(&result);
+            assert_eq!(selected.len(), 1);
+            let key = selected[0].to_owned();
+            assert_eq!(
+                requests(),
+                [
+                    "https://page.test/start",
+                    "https://page.test/final/tile.png"
+                ]
+            );
+            assert_eq!(keys(&page.layout(8.0, 6.0, &fonts)), [key.as_str()]);
+            assert_eq!(keys(&page.prepare_layout(8.0, 6.0, &fonts)), [key.as_str()]);
+            assert_eq!(
+                requests(),
+                [
+                    "https://page.test/start",
+                    "https://page.test/final/tile.png"
+                ]
+            );
+        });
+    }
+}
