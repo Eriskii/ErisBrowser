@@ -164,7 +164,7 @@ fn extended_gradient_retains_geometry_stop_validation_and_shared_byte_admission(
     }
     // The extra mask is wire metadata; retained payload cost is unchanged.
     let raw = literal(Some(0));
-    let mut gradient_wire = b"ERWB\x63".to_vec();
+    let mut gradient_wire = b"ERWC\x63".to_vec();
     gradient_wire.extend_from_slice(&raw[46..]);
     let charge = std::mem::size_of::<GradientStop>()
         + std::mem::size_of::<LinearGradient>()

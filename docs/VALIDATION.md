@@ -1,5 +1,57 @@
 # Validation record
 
+## CSS pointer-events: auto and none
+
+This checkpoint adds inherited pointer-target eligibility to the existing HTML
+hit regions. CSS parsing, cascade, variables, CSSOM and feature-query routing
+share the selected keyword grammar. Both point-selection paths skip `none`
+regions; painting, geometry, keyboard focus, fragment navigation and DOM event
+ancestry remain independent. ERWC snapshots retain every admitted region and
+append one strict eligibility byte, making each serialized hit record 23 bytes.
+
+The default Rust 1.88 suite passes 3,577 tests; Rust 1.99 with
+`test262-host,vulkan-raster` passes 3,942. Both include ignored tests explicitly,
+with zero failures or skips across 62 targets. Their prior passing rosters are
+preserved with 42 new default groups and one extra native-raster group. Strict
+Clippy passes for both configurations; formatting and the release build pass.
+All 102 existing visual-reference pairs pass, and their 204 PNGs are byte-identical
+to the previous canvas-display checkpoint.
+
+The original parent passes three of the 19 public targeting/CSSOM/dynamic groups
+and fails the other 16. The final candidate passes all 42 focused groups,
+including the three additional all-reset regressions. Direct and confined-worker
+dynamic controls each cover 24 full-frame snapshots (scripts off/on, six phases,
+two widths). Feature-enabled runs compare the same pixels with the CPU native
+scene witness; they are not GPU hardware executions.
+
+Candidate1 exposed an `all:initial` CSSOM work-budget failure. The final change
+skips redundant name searches only for an `all` expansion into an empty block,
+whose static longhand names are distinct. Record admission remains before every
+push; nonempty merges, importance, source order, summary/clone/commit accounting
+and limits stay in place. The unchanged public control now passes. Three new
+controls preserve earlier priority, later order and pending shorthand behavior;
+before the correction, the two bounded parse controls failed and the merge
+control passed. All failed attempts and the additive correction are retained. The selected inventory binds 15322 source/build/test inputs and 33 changed source paths, SHA-256 `3c30d540f63a6758ca77f5e1f74a3b03d5a23b340c314e742ff5658e9471a27d`.
+
+Measured on the tested x86_64 Rust 1.88 build, `ComputedStyle` remains 1,032 bytes,
+`HitRegion` 32 bytes and `LayoutResult` 80 bytes, all aligned to 8. The new byte
+fits existing Rust padding, so hit-vector stride does not grow. ERWC still adds
+one serialized byte per hit; the Rust layout result is platform-specific.
+
+Local validation is complete for this checkpoint. GitHub CI for its new commit
+is pending at publication; the preceding `3d90bd57` checkpoint passed all 11 jobs.
+See the [validation manifest](evidence/pointer-events/validation.json) and
+[source/check archive](evidence/pointer-events/sources-and-checks.tar.gz).
+
+The frozen controls distinguish point targets from unchanged pixels and focus
+geometry, and cover CSS grammar/cascade, exact budget cuts, event ancestry,
+wire discriminants and prior refusal behavior. They are authored regression
+controls, not an imported WPT conformance inventory. The false feature query
+for unresolved `var()` preserves the existing conservative supports policy;
+ordinary variable declarations remain supported. No GPU execution, new benchmark,
+Chromium comparison, whole-browser compatibility or security-audit result is
+claimed here. The earlier checkpoint entries below retain their exact text.
+
 ## Canvas backgrounds under display:none
 
 An HTML root with `display:none` now suppresses both its own canvas background

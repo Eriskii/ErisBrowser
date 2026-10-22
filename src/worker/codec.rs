@@ -7,7 +7,7 @@ use crate::graphics::gradient::{
     MAX_GRADIENT_STOPS,
 };
 use crate::{
-    css::Visibility,
+    css::{PointerEvents, Visibility},
     dom::{
         AttributeNamespace, Doctype, Document, DocumentMode, DomString, Element, MAX_DOM_BYTES,
         MAX_NODES, Namespace, Node, NodeKind,
@@ -28,7 +28,7 @@ const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
 const MAX_GRADIENT_BYTES: usize = 8 * 1024 * 1024;
-const MAGIC: &[u8] = b"ERWB";
+const MAGIC: &[u8] = b"ERWC";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -886,6 +886,10 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
             HitAction::Node => 0,
             HitAction::DefaultSummary => 1,
         });
+        e.byte(match hit.pointer_events {
+            PointerEvents::Auto => 0,
+            PointerEvents::None => 1,
+        });
     }
     e.u32(s.layout.commands.len());
     let mut gradient_bytes = MAX_GRADIENT_BYTES;
@@ -1254,11 +1258,17 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
             }
             _ => return Err("invalid IPC hit action".into()),
         };
+        let pointer_events = match d.byte()? {
+            0 => PointerEvents::Auto,
+            1 => PointerEvents::None,
+            _ => return Err("unknown IPC pointer events".into()),
+        };
         hit_regions.push(HitRegion {
             node,
             rect,
             fixed,
             action,
+            pointer_events,
         });
     }
     let mut commands = Vec::new();
@@ -1721,6 +1731,8 @@ mod background_image_tests;
 mod box_decoration_tests;
 #[cfg(test)]
 mod gradient_tests;
+#[cfg(test)]
+mod pointer_events_tests;
 #[cfg(test)]
 mod visibility_tests;
 
@@ -2298,10 +2310,10 @@ mod tests {
         let units =
             DomString::from_nonscalar_units(vec![0xd800, 0, 0x41, 0xdc00, 0xd83d, 0xde00]).unwrap();
         for (value, expected) in [
-            (scalar, b"ERWBc\x00\x06\0\0\0A\0\xf0\x9f\x98\x80".as_slice()),
+            (scalar, b"ERWCc\x00\x06\0\0\0A\0\xf0\x9f\x98\x80".as_slice()),
             (
                 units,
-                b"ERWBc\x01\x06\0\0\0\x00\xd8\0\0A\0\x00\xdc\x3d\xd8\x00\xde".as_slice(),
+                b"ERWCc\x01\x06\0\0\0\x00\xd8\0\0A\0\x00\xdc\x3d\xd8\x00\xde".as_slice(),
             ),
         ] {
             let mut encoded = Encoder::new(99);
@@ -2548,11 +2560,11 @@ mod tests {
     fn four_byte_wire_version_rejects_old_versions_for_all_message_kinds() {
         for kind in 0..=8 {
             let current = Encoder::new(kind).finish().unwrap();
-            assert_eq!(&current[..4], b"ERWB");
+            assert_eq!(&current[..4], b"ERWC");
             assert_eq!(current.len(), 5);
             Decoder::new(&current, kind).unwrap();
             assert_eq!(is_fetch_request(&current), kind == 3);
-            for old in [b"ERWA", b"ERW9", b"ERW8"] {
+            for old in [b"ERWB", b"ERWA", b"ERW9", b"ERW8"] {
                 let mut stale = current.clone();
                 stale[..4].copy_from_slice(old);
                 assert!(

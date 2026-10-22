@@ -1,5 +1,14 @@
 # Development docket
 
+[CSS pointer targeting](css-pointer-events.md) separates pointer eligibility
+from retained layout, painting and keyboard-focus geometry. The selected
+`auto`/`none` HTML slice uses each hit region's own computed value, including
+re-enabled descendants, and carries it as a strict byte in ERWC snapshots.
+SVG-only values, pointer capture, specialized pointer events and broader
+selection behavior remain future work. This checkpoint adds no GPU or
+Chromium-relative performance result. Earlier ERWB and visibility measurements
+below remain records of their original checkpoint.
+
 [CSS visibility](css-visibility.md) adds inherited `visible`/`hidden` values
 while preserving layout, scroll extent and visible descendants. Paint, hit and
 native focus eligibility now use each node's own computed value. The bounded

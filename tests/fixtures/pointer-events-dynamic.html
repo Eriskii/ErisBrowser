@@ -1,0 +1,19 @@
+<!doctype html><title>auto</title><style>
+html,body{margin:0;padding:0}
+#under,#over{position:absolute;left:0;top:4px;width:8px;height:6px}
+#under{background:blue}#over{background:red;pointer-events:auto}
+#child{position:absolute;left:0;top:0;width:2px;height:2px;background:yellow;pointer-events:auto}
+#toggle{position:absolute;left:10px;top:0;width:2px;height:2px;background:lime}
+</style><div id=under></div><div id=over><div id=child></div></div><div id=toggle></div>
+<script>
+var overlay = document.getElementById('over');
+document.getElementById('toggle').addEventListener('click', function() {
+  var off = overlay.style.pointerEvents !== 'none';
+  overlay.style.pointerEvents = off ? 'none' : 'auto';
+  document.title = off ? 'none' : 'auto';
+});
+document.getElementById('under').addEventListener('click', function() { document.title += 'U'; });
+overlay.addEventListener('click', function() { document.title += 'C'; }, true);
+document.getElementById('child').addEventListener('click', function() { document.title += 'T'; });
+overlay.addEventListener('click', function() { document.title += 'B'; });
+</script>

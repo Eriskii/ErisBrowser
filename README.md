@@ -4,6 +4,13 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[CSS pointer targeting](docs/css-pointer-events.md) adds inherited
+`pointer-events:auto` and `none` for the existing HTML hit regions. A `none`
+overlay leaves its pixels and geometry intact while allowing eligible content
+behind it to receive pointer hits. Descendants can restore targeting with
+`auto`; keyboard focus and event propagation remain independent. SVG-only
+values and broader pointer APIs remain outside this slice.
+
 [CSS visibility](docs/css-visibility.md) now supports `visible` and `hidden`
 through the cascade, inline CSSOM and feature queries. Hidden boxes retain their
 layout space; visible descendants can still paint and receive hits. Native

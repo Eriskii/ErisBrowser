@@ -5,8 +5,12 @@ use crate::dom::{
 use crate::graphics::{Color, gradient::LinearGradient};
 mod background;
 mod border_spacing;
+mod keyword_value;
+mod pointer_events;
 mod visibility;
 pub(crate) use border_spacing::valid as valid_border_spacing;
+pub use pointer_events::PointerEvents;
+pub(crate) use pointer_events::valid as valid_pointer_events;
 pub use visibility::Visibility;
 pub(crate) use visibility::valid as valid_visibility;
 mod gradient;
@@ -266,6 +270,7 @@ pub struct ObjectPosition {
 pub struct ComputedStyle {
     pub display: Display,
     pub visibility: Visibility,
+    pub pointer_events: PointerEvents,
     pub object_fit: ObjectFit,
     pub object_position: ObjectPosition,
     pub flow_root: bool,
@@ -338,6 +343,7 @@ impl Default for ComputedStyle {
         Self {
             display: Display::Inline,
             visibility: Visibility::Visible,
+            pointer_events: PointerEvents::Auto,
             object_fit: ObjectFit::Fill,
             object_position: ObjectPosition::default(),
             flow_root: false,
@@ -412,6 +418,7 @@ impl ComputedStyle {
         if let Some(p) = parent {
             s.color = p.color;
             s.visibility = p.visibility;
+            s.pointer_events = p.pointer_events;
             s.border_spacing = p.border_spacing;
             s.font_size = p.font_size;
             s.line_height = p.line_height;
@@ -1545,6 +1552,12 @@ pub(crate) fn supports_matches_with_budget(
     *work -= available - evaluator.work;
     result == Ok(true) && !evaluator.exhausted
 }
+fn keyword_value_property(name: &str) -> Option<&'static str> {
+    ["visibility", "pointer-events"]
+        .into_iter()
+        .find(|property| name.eq_ignore_ascii_case(property))
+}
+
 /// The bounded two-argument CSS.supports(property, value) capability check.
 /// The property is a literal name; the value is parsed independently.
 pub fn supports_declaration(property: &str, value: &str) -> bool {
@@ -1583,7 +1596,7 @@ pub(crate) fn supports_declaration_with_budget(
         let tokens = crate::selectors::tokens(value, &mut evaluator.work).map_err(|_| ())?;
         evaluator.tokens(&tokens)?;
         let spacing_property = property.eq_ignore_ascii_case("border-spacing");
-        let visibility_property = property.eq_ignore_ascii_case("visibility");
+        let keyword_property = keyword_value_property(property).is_some();
         let image_property = property.eq_ignore_ascii_case("background")
             || property.eq_ignore_ascii_case("background-image");
         let box_property = property.eq_ignore_ascii_case("background")
@@ -1597,7 +1610,7 @@ pub(crate) fn supports_declaration_with_budget(
                 && !(image_property && image::url_payload(*token))
                 && !(box_property && background_box_token(*token))
                 && !(spacing_property && border_spacing::escape_allowed(*token))
-                && !(visibility_property && visibility::escape_allowed(*token))
+                && !(keyword_property && keyword_value::escape_allowed(*token))
         }) {
             return Ok(false);
         }
@@ -1613,6 +1626,7 @@ pub(crate) fn supports_declaration_with_budget(
             property.as_str(),
             "border-spacing"
                 | "visibility"
+                | "pointer-events"
                 | "object-fit"
                 | "object-position"
                 | "background"
@@ -1783,17 +1797,23 @@ impl SupportsEvaluator {
         let spacing_property = name.eq_ignore_ascii_case("border-spacing");
         // A supports condition uses CSS syntax for its property identifier.
         // The separate two-argument API deliberately keeps its literal-name rule.
-        let visibility_property = name.eq_ignore_ascii_case("visibility")
-            || name.contains('\\')
-                && css_identifier(name).is_some_and(|(decoded, end)| {
-                    end == name.len() && decoded.eq_ignore_ascii_case("visibility")
-                });
+        let keyword_property = keyword_value_property(name).or_else(|| {
+            if !name.contains('\\') {
+                return None;
+            }
+            let (decoded, end) = css_identifier(name)?;
+            if end == name.len() {
+                keyword_value_property(&decoded)
+            } else {
+                None
+            }
+        });
         let image_property = name.eq_ignore_ascii_case("background")
             || name.eq_ignore_ascii_case("background-image");
         let box_property = name.eq_ignore_ascii_case("background")
             || name.eq_ignore_ascii_case("background-origin")
             || name.eq_ignore_ascii_case("background-clip");
-        if image_property || box_property || spacing_property || visibility_property {
+        if image_property || box_property || spacing_property || keyword_property.is_some() {
             use crate::selectors::Kind;
             let tokens = crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
             self.spend(tokens.len() + 1)?;
@@ -1819,7 +1839,7 @@ impl SupportsEvaluator {
                     && !(image_property && image::url_payload(*t))
                     && !(box_property && background_box_token(*t))
                     && !(spacing_property && border_spacing::escape_allowed(*t))
-                    && !(visibility_property && visibility::escape_allowed(*t))
+                    && !(keyword_property.is_some() && keyword_value::escape_allowed(*t))
             }) {
                 return Ok(false);
             }
@@ -1828,11 +1848,7 @@ impl SupportsEvaluator {
                 return Ok(false);
             }
             let clean = image::comments(raw, &mut self.work).map_err(|_| ())?;
-            let name = if visibility_property {
-                "visibility".into()
-            } else {
-                name.to_ascii_lowercase()
-            };
+            let name = keyword_property.map_or_else(|| name.to_ascii_lowercase(), str::to_owned);
             return valid_declaration_value(&name, media_trim(&clean), &mut self.work)
                 .map_err(|_| ());
         }
@@ -1991,6 +2007,10 @@ pub(crate) fn supports_property(name: &str, value: &str) -> bool {
     if name == "visibility" {
         let mut work = MAX_SUPPORTS_WORK;
         return valid_visibility(value, &mut work).unwrap_or(false);
+    }
+    if name == "pointer-events" {
+        let mut work = MAX_SUPPORTS_WORK;
+        return valid_pointer_events(value, &mut work).unwrap_or(false);
     }
     if name == "border-spacing" {
         let mut work = MAX_SUPPORTS_WORK;
@@ -3660,6 +3680,7 @@ pub fn compute_styles_with_rules(
 const SUPPORTED_PROPERTIES: &[&str] = &[
     "display",
     "visibility",
+    "pointer-events",
     "object-fit",
     "object-position",
     "float",
@@ -4624,6 +4645,7 @@ fn apply_property(
             name,
             "color"
                 | "visibility"
+                | "pointer-events"
                 | "border-spacing"
                 | "font-size"
                 | "font-weight"
@@ -4675,6 +4697,11 @@ fn apply_property(
         "visibility" => {
             if let Ok(Some(visibility)) = visibility::parse(value, work) {
                 s.visibility = visibility;
+            }
+        }
+        "pointer-events" => {
+            if let Ok(Some(pointer_events)) = pointer_events::parse(value, work) {
+                s.pointer_events = pointer_events;
             }
         }
         "object-fit" => {
@@ -5086,6 +5113,7 @@ fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
     match name {
         "border-spacing" => s.border_spacing = p.border_spacing,
         "visibility" => s.visibility = p.visibility,
+        "pointer-events" => s.pointer_events = p.pointer_events,
         "object-fit" => s.object_fit = p.object_fit,
         "object-position" => s.object_position = p.object_position,
         "display" => {
@@ -5696,6 +5724,8 @@ fn valid_declaration_value(
 ) -> Result<bool, crate::selectors::Error> {
     if name == "visibility" {
         valid_visibility(value, work)
+    } else if name == "pointer-events" {
+        valid_pointer_events(value, work)
     } else if name == "border-spacing" {
         valid_border_spacing(value, work)
     } else if matches!(name, "object-fit" | "object-position") {
@@ -8860,3 +8890,9 @@ mod visibility_tests;
 
 #[cfg(test)]
 mod visibility_budget_tests;
+
+#[cfg(test)]
+mod pointer_events_tests;
+
+#[cfg(test)]
+mod pointer_events_budget_tests;

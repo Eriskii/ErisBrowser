@@ -128,6 +128,7 @@ fn visibility_browser_metadata_does_not_replace_reachability_or_revive_missing_s
     snapshot.layout.hit_regions = vec![eris::layout::HitRegion {
         node: child,
         action: HitAction::Node,
+        pointer_events: PointerEvents::Auto,
         rect: Rect {
             x: 0.0,
             y: 2000.0,

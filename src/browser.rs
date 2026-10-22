@@ -3,7 +3,7 @@ use crate::{
     presenter::{FrameStamp, Presenter, PresenterConfig, Target},
 };
 use eris::{
-    css::Visibility,
+    css::{PointerEvents, Visibility},
     dom::{Namespace, NodeId},
     graphics::{Canvas, Color, DrawCommand, Fonts, Rect},
     layout::HitAction,
@@ -913,10 +913,11 @@ impl Browser {
             return None;
         }
         snapshot.layout.hit_regions.iter().rev().find(|h| {
-            h.rect.contains(
-                x / self.zoom,
-                (y - TOOLBAR + if h.fixed { 0.0 } else { self.scroll }) / self.zoom,
-            )
+            h.pointer_events == PointerEvents::Auto
+                && h.rect.contains(
+                    x / self.zoom,
+                    (y - TOOLBAR + if h.fixed { 0.0 } else { self.scroll }) / self.zoom,
+                )
         })
     }
     fn ancestor_with_tag(&self, mut id: NodeId, tags: &[&str]) -> Option<NodeId> {
@@ -2315,6 +2316,8 @@ mod background_geometry_tests;
 #[cfg(test)]
 mod gradient_tests;
 #[cfg(test)]
+mod pointer_events_tests;
+#[cfg(test)]
 mod visibility_tests;
 
 #[cfg(test)]
@@ -2452,12 +2455,14 @@ mod tests {
             eris::layout::HitRegion {
                 node: normal,
                 action: HitAction::Node,
+                pointer_events: PointerEvents::Auto,
                 rect,
                 fixed: false,
             },
             eris::layout::HitRegion {
                 node: fixed,
                 action: HitAction::Node,
+                pointer_events: PointerEvents::Auto,
                 rect,
                 fixed: true,
             },

@@ -234,22 +234,22 @@ fn pending_record_setter_keeps_position_but_removed_target_reappends() {
 #[test]
 fn pending_record_all_expansion_uses_same256_record_cap() {
     let style = parse("--a:initial;all:var(--a)");
-    assert_eq!(style.len(), 88);
+    assert_eq!(style.len(), 89);
     assert_eq!(style.item(0), "--a");
     assert_eq!(style.item(1), "display");
-    assert_eq!(style.item(21), "border-spacing");
-    assert_eq!(style.item(87), "vertical-align");
-    assert_eq!(style.item(88), "");
+    assert_eq!(style.item(22), "border-spacing");
+    assert_eq!(style.item(88), "vertical-align");
+    assert_eq!(style.item(89), "");
     assert_eq!(value(&style, "all"), "var(--a)");
     assert_eq!(text(&style), "--a: initial; all: var(--a);");
-    for custom_count in [169, 170] {
+    for custom_count in [168, 169] {
         let source = (0..custom_count)
             .map(|i| format!("--c{i}:0;"))
             .collect::<String>();
         let mut style = parse(&source);
         let before = style.clone();
         let result = style.set_property("all", "var(--a)", "", &mut WORK.clone());
-        if custom_count == 169 {
+        if custom_count == 168 {
             assert_eq!(result, Ok(true));
             assert_eq!(style.len(), 256);
         } else {
@@ -261,14 +261,14 @@ fn pending_record_all_expansion_uses_same256_record_cap() {
 
 #[test]
 fn pending_record_logical_storage_exact64k_charges_each_shared_reference() {
-    // 87 target names total 1059 bytes; 87*(737+4)+1059=65526.
-    // --pad contributes 5+1+4=10, giving exactly 65536.
-    let pending = format!("var(--x,{})", "0".repeat(728));
-    assert_eq!(pending.len(), 737);
-    let filler = "x".to_string();
+    // 88 target names total 1073 bytes; 88*(728+4)+1073=65489.
+    // --pad contributes 5+38+4=47, giving exactly 65536.
+    let pending = format!("var(--x,{})", "0".repeat(719));
+    assert_eq!(pending.len(), 728);
+    let filler = "x".repeat(38);
     let source = format!("all:{pending};--pad:{filler}");
     let mut style = parse(&source);
-    assert_eq!(style.len(), 88);
+    assert_eq!(style.len(), 89);
     assert_eq!(value(&style, "all"), pending);
     let before = style.clone();
     assert_eq!(

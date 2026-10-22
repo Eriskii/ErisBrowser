@@ -4,8 +4,8 @@
 //! deliberately explicit about its limits: it is not a complete CSS formatter.
 use crate::css::{
     BackgroundBox, BackgroundImage, BackgroundPosition, BackgroundSize, ComputedStyle, Display,
-    GridBreadth, GridLine, GridTrack, Length, ObjectFit, ObjectPosition, PositionComponent,
-    Visibility,
+    GridBreadth, GridLine, GridTrack, Length, ObjectFit, ObjectPosition, PointerEvents,
+    PositionComponent, Visibility,
 };
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
@@ -955,6 +955,8 @@ fn positioned_axis(axis: PositionedAxis) -> (f32, f32) {
 pub struct HitRegion {
     pub node: NodeId,
     pub action: HitAction,
+    /// Point eligibility; geometry remains available to focus and navigation.
+    pub pointer_events: PointerEvents,
     pub rect: Rect,
     /// Coordinates are viewport-relative when true, document-relative otherwise.
     pub fixed: bool,
@@ -980,7 +982,8 @@ impl LayoutResult {
     /// Paint order is also hit-test order; descendants win over ancestors.
     pub fn hit_test(&self, x: f32, y: f32) -> Option<NodeId> {
         self.hit_regions.iter().rev().find_map(|hit| {
-            (x >= hit.rect.x
+            (hit.pointer_events == PointerEvents::Auto
+                && x >= hit.rect.x
                 && y >= hit.rect.y
                 && x < hit.rect.x + hit.rect.width
                 && y < hit.rect.y + hit.rect.height)
@@ -1804,6 +1807,7 @@ impl<'a> Engine<'a> {
             fixed: false,
             node: id,
             action: HitAction::Node,
+            pointer_events: style.pointer_events,
             rect: rect(x, y, width, 0.0),
         });
         let clip_index = if matches!(style.overflow.as_str(), "hidden" | "clip") {
@@ -1852,6 +1856,7 @@ impl<'a> Engine<'a> {
             self.push_hit(HitRegion {
                 node: id,
                 action: HitAction::DefaultSummary,
+                pointer_events: style.pointer_events,
                 fixed: false,
                 rect: rect(inner_x, inner_y, inner_width, header_height),
             });
@@ -3619,6 +3624,7 @@ impl<'a> Engine<'a> {
                         fixed: false,
                         node: item.node,
                         action: HitAction::Node,
+                        pointer_events: style.pointer_events,
                         rect: item_rect,
                     });
                 }
@@ -4560,6 +4566,7 @@ impl<'a> Engine<'a> {
                 fixed: false,
                 node: id,
                 action: HitAction::Node,
+                pointer_events: self.style(id).pointer_events,
                 rect: row_rect,
             });
             cursor += heights[row] + vertical;
@@ -8333,12 +8340,14 @@ mod tests {
                     fixed: false,
                     node: 1,
                     action: HitAction::Node,
+                    pointer_events: PointerEvents::Auto,
                     rect: rect(0.0, 0.0, 100.0, 100.0),
                 },
                 HitRegion {
                     fixed: false,
                     node: 2,
                     action: HitAction::Node,
+                    pointer_events: PointerEvents::Auto,
                     rect: rect(20.0, 20.0, 20.0, 20.0),
                 },
             ],

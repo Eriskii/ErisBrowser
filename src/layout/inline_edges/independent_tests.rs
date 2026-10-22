@@ -118,6 +118,7 @@ fn atomic(node: NodeId, color: Color) -> InlineItem {
                     rect: rect(0.0, 0.0, 4.0, 4.0),
                     fixed: false,
                     action: HitAction::Node,
+                    pointer_events: PointerEvents::Auto,
                 }],
                 boxes: Vec::new(),
                 positioned: Vec::new(),
@@ -184,6 +185,7 @@ fn actual_paint_line_exact_and_one_short_preserve_published_state_and_caller_cur
             rect: sentinel,
             fixed: false,
             action: HitAction::Node,
+            pointer_events: PointerEvents::Auto,
         });
         // Atomic fragments were already admitted during collection. The only
         // new line tariff is 2 scan + 2*2 membership + 1*2*(1+2) order + 2 positions + 1 phase commit =15.

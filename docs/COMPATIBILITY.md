@@ -1,5 +1,14 @@
 # Compatibility status
 
+[CSS pointer targeting](css-pointer-events.md) supports the inherited
+`auto`/`none` subset for HTML hit regions, with cascade, variables and inline
+CSSOM integration. Point selection skips `none` regions while retaining their
+geometry for focus, editing and fragment navigation. Re-enabled descendants
+can receive events through a `none` ancestor. SVG-specific values and complete
+pointer-event/selection behavior remain deferred. Feature queries retain the
+existing conservative refusal of unresolved `var()`; that refusal is an
+implementation boundary, not invalid variable syntax under the CSS standard.
+
 [CSS visibility](css-visibility.md) supports the `visible`/`hidden` subset,
 including inheritance, existing CSS-wide keywords, variables, priority and
 inline CSSOM. Hidden boxes preserve geometry and allow visible descendants;

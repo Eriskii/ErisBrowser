@@ -55,7 +55,7 @@ fn typed_inline_traversal_has_literal_shared_work_boundaries() {
 #[test]
 fn allocation_free_shorthand_count_matches_supported_literal_rosters() {
     for (name, count) in [
-        ("all", 87),
+        ("all", 88),
         ("background", 7),
         ("border", 12),
         ("border-top", 3),

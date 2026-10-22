@@ -38,7 +38,7 @@ fn complete(value: u8) -> Vec<u8> {
 fn visibility_codec_roundtrip_preserves_each_exact_byte_and_rejects_old_magic() {
     for (value, visibility) in [(0, Visibility::Visible), (1, Visibility::Hidden)] {
         let bytes = complete(value);
-        assert_eq!(&bytes[..4], b"ERWB");
+        assert_eq!(&bytes[..4], b"ERWC");
         let mut decoder = Decoder::new(&bytes, 99).unwrap();
         let snapshot = decode_snapshot(&mut decoder).unwrap();
         decoder.end().unwrap();
@@ -65,11 +65,13 @@ fn visibility_codec_roundtrip_preserves_each_exact_byte_and_rejects_old_magic() 
         for cut in 0..encoded.len() {
             assert!(decode_reply(&encoded[..cut]).is_err(), "cut={cut}");
         }
-        let mut old = encoded;
-        old[..4].copy_from_slice(b"ERWA");
-        assert!(
-            matches!(decode_reply(&old), Err(error) if error == "invalid IPC version/message kind")
-        );
+        for magic in [b"ERWB", b"ERWA"] {
+            let mut old = encoded.clone();
+            old[..4].copy_from_slice(magic);
+            assert!(
+                matches!(decode_reply(&old), Err(error) if error == "invalid IPC version/message kind")
+            );
+        }
     }
 }
 
@@ -140,6 +142,7 @@ fn visibility_codec_rejects_hidden_hit_targets_in_both_directions() {
         },
         fixed: false,
         action: HitAction::Node,
+        pointer_events: PointerEvents::Auto,
     });
     let mut encoder = Encoder::new(99);
     encode_snapshot(&mut encoder, &snapshot);

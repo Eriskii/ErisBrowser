@@ -405,7 +405,7 @@ fn sender_key_helper_checks_admission_before_copy_and_shares_remaining_bytes() {
     let mut remaining = 2;
     exact.budget_string("é", &mut remaining);
     assert_eq!(remaining, 0);
-    assert_eq!(exact.bytes, b"ERWB\x63\x02\0\0\0\xc3\xa9");
+    assert_eq!(exact.bytes, b"ERWC\x63\x02\0\0\0\xc3\xa9");
     let before = exact.bytes.clone();
     exact.budget_string("x", &mut remaining);
     assert_eq!(remaining, 0);
@@ -415,7 +415,7 @@ fn sender_key_helper_checks_admission_before_copy_and_shares_remaining_bytes() {
     let mut remaining = 1;
     short.budget_string("é", &mut remaining);
     assert_eq!(remaining, 1);
-    assert_eq!(short.bytes, b"ERWB\x63");
+    assert_eq!(short.bytes, b"ERWC\x63");
     assert!(short.finish().is_err());
 }
 
@@ -466,7 +466,7 @@ fn aggregate_key_cap_includes_aliases_old_images_and_tiled_images() {
     let oversized = "x".repeat(16_777_217);
     encoder.budget_string(&oversized, &mut remaining);
     assert_eq!(remaining, 16_777_218);
-    assert_eq!(encoder.bytes, b"ERWB\x63");
+    assert_eq!(encoder.bytes, b"ERWC\x63");
     assert!(encoder.finish().is_err());
 }
 

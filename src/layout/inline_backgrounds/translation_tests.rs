@@ -62,6 +62,7 @@ fn pending(area: Rect, fixed: bool) -> Fragment {
         hits: vec![HitRegion {
             node: 1,
             action: HitAction::Node,
+            pointer_events: PointerEvents::Auto,
             rect: area,
             fixed,
         }],

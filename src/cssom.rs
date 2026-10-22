@@ -342,12 +342,22 @@ impl InlineStyle {
             return Err(Error::Limit);
         }
         if let Some(records) = records(&property, value, important, work)? {
+            // Both accepted all forms emit the distinct SUPPORTED_PROPERTIES
+            // roster once. A fresh block has no earlier winners to search;
+            // retain each record's name work and admission before its push.
+            let fresh_all = property == "all" && self.records.is_empty();
             for record in records {
-                spend(
-                    work,
-                    add(self.summary.names_work, add(record.name.len(), 1)?)?,
-                )?;
-                let index = self.records.iter().position(|old| old.name == record.name);
+                let search_work = if fresh_all {
+                    0
+                } else {
+                    self.summary.names_work
+                };
+                spend(work, add(search_work, add(record.name.len(), 1)?)?)?;
+                let index = if fresh_all {
+                    None
+                } else {
+                    self.records.iter().position(|old| old.name == record.name)
+                };
                 if index.is_some_and(|i| self.records[i].important && !record.important) {
                     continue;
                 }
@@ -1189,6 +1199,9 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
     if property == "visibility" {
         return css::valid_visibility(value, work).map_err(|_| Error::Limit);
     }
+    if property == "pointer-events" {
+        return css::valid_pointer_events(value, work).map_err(|_| Error::Limit);
+    }
     if property == "border-spacing" {
         return css::valid_border_spacing(value, work).map_err(|_| Error::Limit);
     }
@@ -1922,3 +1935,6 @@ mod wide_getter_tests;
 
 #[cfg(test)]
 mod wide_getter_budget_tests;
+
+#[cfg(test)]
+mod pointer_events_all_tests;

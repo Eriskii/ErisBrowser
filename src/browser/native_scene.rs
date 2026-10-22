@@ -703,6 +703,7 @@ mod tests {
             snapshot.layout.hit_regions = vec![eris::layout::HitRegion {
                 node,
                 action: HitAction::Node,
+                pointer_events: PointerEvents::Auto,
                 rect: Rect {
                     x: 27.5,
                     y: 83.25,
@@ -1089,3 +1090,7 @@ mod tiled_image_tests;
 
 #[cfg(test)]
 mod box_decoration_tests;
+
+#[cfg(test)]
+#[path = "native_scene/pointer_events_tests.rs"]
+mod pointer_events_tests;

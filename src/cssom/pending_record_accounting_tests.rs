@@ -18,7 +18,7 @@ fn budget(steps: usize, heap_limit: usize) -> DomMutationBudget {
 #[test]
 fn pending_record_shared_all_payload_has_conservative_per_reference_retention() {
     let mut style = parse("--a:initial;all:var(--a)");
-    assert_eq!(style.declarations().len(), 88);
+    assert_eq!(style.declarations().len(), 89);
     let RecordValue::Pending(first) = &style.records[1].value else {
         panic!("pending all")
     };
