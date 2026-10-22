@@ -1,11 +1,20 @@
 # Compatibility status
 
+[Plain CSS feature queries](css-supports-plain.md) admit nonnegative primitive
+`font-size` lengths and percentages, unitless zero and existing CSS-wide values.
+Conditions decode one complete escaped property identifier before using the
+existing value grammar. Two-argument property names remain literal. Named font
+sizes, font math, escaped numeric units and other omitted properties remain
+excluded. Numeric underflow controls describe Eris query admission, not universal
+browser precision or full query/render parity at extremes.
+
 [Variables in CSS feature queries](css-supports-variables.md) covers the
 existing 88 longhands, 29 shorthands and 13 aliases. Valid legacy `var()` syntax
 can report support before substitution, including otherwise unrecognized final
 value grammar. Unknown names, custom-property queries and newer variable-name
-argument syntax remain excluded. Existing no-var false negatives are retained;
-this is a bounded feature-query correction, not complete CSS conformance.
+argument syntax remain excluded. That checkpoint preserved the no-var answers;
+the later plain-query slice corrects primitive fonts and escaped condition names.
+Other no-var false negatives remain; neither slice establishes complete CSS conformance.
 
 [CSS pointer targeting](css-pointer-events.md) supports the inherited
 `auto`/`none` subset for HTML hit regions, with cascade, variables and inline

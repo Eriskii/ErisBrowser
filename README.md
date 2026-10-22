@@ -4,6 +4,13 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Primitive fonts and escaped feature names](docs/css-supports-plain.md) correct
+plain CSS feature queries for numeric `font-size` values and CSS-escaped
+condition property names. The two-argument property name stays literal, and
+variable queries keep their existing behavior. Named font sizes, font math and
+other omitted ordinary grammars remain outside this slice; layout and painting
+are unchanged.
+
 [Variables in CSS feature queries](docs/css-supports-variables.md) are now recognized
 through the existing legacy `var()` grammar for implemented property names.
 Queries defer final value grammar without resolving custom properties;

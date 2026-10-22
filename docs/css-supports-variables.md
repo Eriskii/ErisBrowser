@@ -53,13 +53,13 @@ still raises a resource error.
 Unknown ordinary properties and custom-property support queries remain excluded,
 even though custom-property declarations themselves work. The newer draft's
 broader first-argument substitution grammar, `attr()`/`env()` feature admission
-and registration are outside this checkpoint. Existing no-var answers stay
-unchanged, including false negatives for some implemented values and escaped
-ordinary condition names. A false no-var query such as `font-size:12px` remains
-a reporting limitation rather than evidence that the browser cannot lay out
-that value. Earlier [validation entries](VALIDATION.md) retain the original
-conservative variable-query behavior; the current pointer and visibility
-chapters link to this subsequent improvement.
+and registration are outside this checkpoint. This variable-query checkpoint
+originally preserved no-var answers, including false negatives for primitive
+fonts and escaped ordinary condition names. The later [plain-query slice](css-supports-plain.md)
+corrects those two gaps: `font-size:12px` and an escaped `width` condition now
+report support. Other omitted ordinary grammars remain conservative. The
+validation totals below describe the variable-query checkpoint; earlier
+[validation entries](VALIDATION.md) retain its original scope and results.
 
 The frozen contracts define 20 test groups. On the published `339b257f` parent,
 one of the 14 public groups passes and 13 fail; those observations are retained.

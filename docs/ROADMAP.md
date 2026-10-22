@@ -1,10 +1,21 @@
 # Development docket
 
+The [plain-query follow-up](css-supports-plain.md) reports existing primitive
+font-size support and decodes generic escaped condition property names. It keeps
+variable queries, two-argument literal names, layout and all limits unchanged.
+Named font sizes, font math, additional ordinary grammars and numeric
+query/render parity at extremes still need separate work. The storage argument
+is incremental: new preparation dies before existing special validators, and
+name ownership replaces their prior allocation; it is not a new global peak
+proof. Earlier [validation entries](VALIDATION.md) retain their historical
+results. This adds no GPU or Chromium-relative performance claim.
+
 The [variable-query slice](css-supports-variables.md) separates
 pending value syntax from computed substitution. The selected ordinary-name
 roster admits valid legacy `var()` values while preserving shared resource
-limits and the no-var paths. Custom-property support queries, newer argument
-grammar and remaining no-var reporting gaps still need separate work. Earlier
+limits. Its original no-var paths are qualified by the later plain-query slice.
+Custom-property support queries, newer argument grammar and remaining no-var
+reporting gaps still need separate work. Earlier
 [validation entries](VALIDATION.md) retain their original query limitations and
 results; this slice adds no GPU, Chromium-speed or security result.
 

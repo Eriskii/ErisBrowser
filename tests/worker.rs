@@ -2934,3 +2934,6 @@ mod pointer_events_dynamic;
 
 #[path = "worker/supports_var_pixels.rs"]
 mod supports_var_pixels;
+
+#[path = "worker/supports_plain_pixels.rs"]
+mod supports_plain_pixels;

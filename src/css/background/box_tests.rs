@@ -228,16 +228,17 @@ fn invalid_shorthands_never_publish_partial_box_or_color_state() {
 
 #[test]
 fn box_escape_exception_does_not_broaden_other_supports_values_or_names() {
-    for (name, value) in [
-        (r"background-\63 lip", "content-box"),
-        ("color", r"r\65 d"),
-        ("background", r"r\65 d content-box"),
-        ("background-repeat", r"r\65 peat"),
-        ("background-origin", r"\0 content-box"),
+    for (name, value, condition_supported) in [
+        (r"background-\63 lip", "content-box", true),
+        ("color", r"r\65 d", false),
+        ("background", r"r\65 d content-box", false),
+        ("background-repeat", r"r\65 peat", false),
+        ("background-origin", r"\0 content-box", false),
     ] {
         assert!(!css::supports_declaration(name, value), "{name}:{value}");
-        assert!(
-            !css::supports_matches(&format!("({name}:{value})")),
+        assert_eq!(
+            css::supports_matches(&format!("({name}:{value})")),
+            condition_supported,
             "{name}:{value}"
         );
     }

@@ -12,6 +12,13 @@ Unlike media queries, an unknown but valid feature is false and can be negated: 
 
 `css::supports_matches` accepts the strict condition form. The JavaScript one-argument `CSS.supports` entry and import `supports(...)` additionally accept an unparenthesized declaration, so `supports(display:flex)` and `supports((display:flex))` agree. A trailing `!important` is accepted on a declaration leaf and does not alter its support. It is not accepted as arbitrary embedded punctuation.
 
+Conditions also decode one complete CSS property identifier, including ordinary
+escaped names such as `(w\69 dth:1px)`, before selecting the existing value grammar.
+Comments cannot join identifier pieces, and names followed by extra tokens are
+refused. This does not extend value escapes, aliases or unrelated grammars. See
+[plain feature queries](../../docs/css-supports-plain.md) for the selected font
+and name corrections.
+
 ## Two-argument declaration API
 
 The Rust `css::supports_declaration(property, value)` helper implements the bounded capability check used by JavaScript `CSS.supports(property, value)`. The two strings are validated independently and are never concatenated into a condition or declaration. Following [Conditional Rules 3's overload algorithm](https://drafts.csswg.org/css-conditional-3/#dom-css-supports) and [CSSOM value parsing](https://drafts.csswg.org/cssom/#parse-a-css-value), property names are compared literally with ASCII case folding only: leading/trailing whitespace, comments, escapes, delimiters and injected conditions do not name a supported property. Without a valid pending variable, values must consume the supported property's entire standalone value grammar. [Variables in feature queries](../../docs/css-supports-variables.md) adds valid legacy `var()` syntax for the implemented ordinary-name roster, deferring final property grammar without substitution.
@@ -20,9 +27,9 @@ The Rust `css::supports_declaration(property, value)` helper implements the boun
 
 Names are capped at 256 bytes, values at 4 KiB, balanced component nesting at 16, and local charged evaluation work at 256 KiB. The crate-private budgeted entry consumes a supplied shared allowance and returns false for unsupported syntax or exhausted local limits. JavaScript argument conversion, overload selection and runtime quota behavior are covered separately by the script implementation. Full CSS value tokenization, escape decoding and EOF repair remain outside this positive subset.
 
-## Legacy no-var declaration inventory
+## Ordinary-value declaration inventory
 
-This table records the legacy ordinary-value subset, not the larger pending-variable name roster. Later property-specific validators can report additional supported values. Property names are ASCII case-insensitive. Every property in this table accepts the implemented CSS-wide keywords `initial`, `inherit`, `unset`, `revert`, and `revert-layer`.
+This table records the selected ordinary-value subset, not the larger pending-variable name roster. Later property-specific validators can report additional supported values. Property names are ASCII case-insensitive. Every property in this table accepts the implemented CSS-wide keywords `initial`, `inherit`, `unset`, `revert`, and `revert-layer`.
 
 | Properties | Positive ordinary values |
 | --- | --- |
@@ -31,6 +38,7 @@ This table records the legacy ordinary-value subset, not the larger pending-vari
 | `position` | `static`, `relative`, `absolute`, `fixed` |
 | `box-sizing` | `content-box`, `border-box` |
 | `flex-direction`; `flex-wrap` | `row`, `row-reverse`, `column`, `column-reverse`; `nowrap`, `wrap`, `wrap-reverse` |
+| `font-size` | Nonnegative primitive length/percentage or unitless zero; named sizes and math remain excluded |
 | `width`, `height`, `min-width`, `min-height`, `flex-basis` | Nonnegative simple length/percentage, unitless zero, or `auto` |
 | `max-width`, `max-height` | Nonnegative simple length/percentage, unitless zero, or `none` |
 | Physical `top/right/bottom/left`, `inset`, `margin`, physical `margin-*` | Signed simple length/percentage, unitless zero, or `auto`; `inset` and `margin` accept one to four values |
@@ -49,7 +57,7 @@ Simple lengths use the renderer's `px`, `em`, `rem`, `ex`, `ch`, viewport varian
 
 Color validation distinguishes legacy comma-separated channels from modern space-separated channels with optional slash alpha. Legacy RGB channels must consistently use numbers or percentages. HSL saturation/lightness require percentages, with numeric/deg/rad/turn hue. Malformed mixtures and duplicate separators do not inherit the renderer color helper's permissive fallback behavior.
 
-The legacy no-var inventory intentionally returns false for other properties and values, including `position:sticky` (accepted as a stored keyword but without sticky layout), custom-property declarations, `calc()`, intrinsic sizing keywords for ordinary dimensions, arbitrary shorthands, background images, advanced colors, and unimplemented display forms. Generic escaped declaration identifiers/values still have false negatives in the no-var path; property-specific validators and the pending-variable condition path have their separately documented escape handling. Value spelling follows that path: `display`, `box-sizing`, flex direction/wrap, and shorthand `background:currentcolor` require lowercase keyword spelling; property names, float/clear/position/grid keywords, colors, and simple unit spellings are case-insensitive. These conservative false negatives are documented compatibility gaps.
+The base no-var allowlist remains conservative for `position:sticky` (accepted as a stored keyword but without sticky layout), custom-property queries and unimplemented display forms. Calculation, intrinsic-size, shorthand, image and advanced-color queries retain their documented property-specific validators where present; unsupported forms outside those validators remain false. This base inventory is not a blanket refusal of every background-image or calculation query. Generic escaped condition property names now use the same selected ordinary validators. Escaped values retain their existing property-specific exceptions; unrelated ordinary-value false negatives remain. The two-argument property remains literal. Value spelling follows that path: `display`, `box-sizing`, flex direction/wrap, and shorthand `background:currentcolor` require lowercase keyword spelling; property names, float/clear/position/grid keywords, colors, and simple unit spellings are case-insensitive. These conservative false negatives are documented compatibility gaps.
 
 ## Positive selector inventory
 

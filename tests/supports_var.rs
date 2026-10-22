@@ -340,13 +340,13 @@ fn supports_var_no_var() {
         ("visibility", "hidden", true),
         ("pointer-events", "none", true),
         ("pointer-events", "visiblePainted", false),
-        ("font-size", "12px", false),
+        ("font-size", "12px", true),
         ("unknown-property", "inherit", false),
     ]);
     conditions(&[
         ("(display:grid)", true),
         ("not (position:sticky)", true),
-        ("(w\\69 dth:1px)", false),
+        ("(w\\69 dth:1px)", true),
         ("(visibility:\\68 idden)", true),
     ]);
 }

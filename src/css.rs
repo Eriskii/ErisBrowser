@@ -1662,6 +1662,9 @@ pub(crate) fn supports_declaration_with_budget(
             return Ok(false);
         }
         let property = property.to_ascii_lowercase();
+        if property == "font-size" {
+            return evaluator.font_size_plain(clean);
+        }
         if matches!(
             property.as_str(),
             "border-spacing"
@@ -1825,6 +1828,56 @@ impl SupportsEvaluator {
         };
         Ok((value, end + 1))
     }
+    fn font_size_plain(&mut self, value: &str) -> Result<bool, ()> {
+        // Query-only admission: preserve CSSOM/cascade helpers and their fees.
+        // Pay before keyword/numeric helpers allocate normalized strings.
+        self.spend(value.len().saturating_mul(16).saturating_add(256))?;
+        if css_wide(value) {
+            return Ok(true);
+        }
+        let Some(end) = media_number_end(value) else {
+            return Ok(false);
+        };
+        let mantissa = value[..end].split(['e', 'E']).next().unwrap_or("");
+        let nonzero = mantissa.bytes().any(|byte| matches!(byte, b'1'..=b'9'));
+        // Source mantissa policy is independent of f32 rounding. Exponent
+        // digits do not turn signed zero into a nonzero value or vice versa.
+        if nonzero && (value.starts_with('-') || end == value.len()) {
+            return Ok(false);
+        }
+        Ok(supports_length(value, true, false))
+    }
+    fn decoded_plain_condition_name(&mut self, original: &str) -> Result<Option<String>, ()> {
+        use crate::selectors::{Error, Kind, trim};
+        // This vector dies when the helper returns, before any value parser.
+        let tokens = crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
+        self.spend(tokens.len() + 1)?;
+        let Some(colon) = tokens
+            .iter()
+            .position(|token| token.kind == Kind::Delim(':'))
+        else {
+            return Ok(None);
+        };
+        let names = trim(&tokens[..colon]);
+        if names.len() != 1 || names[0].kind != Kind::Ident || names[0].raw.len() > 256 {
+            return Ok(None);
+        }
+        let raw = names[0].raw;
+        self.spend(raw.len().saturating_mul(8).saturating_add(1))?;
+        let (mut name, consumed) = match css_identifier_checked(raw) {
+            Ok(decoded) => decoded,
+            Err(Error::Limit) => {
+                self.exhausted = true;
+                return Err(());
+            }
+            Err(_) => return Ok(None),
+        };
+        if consumed != raw.len() || name.len() > 256 {
+            return Ok(None);
+        }
+        name.make_ascii_lowercase();
+        Ok(Some(name))
+    }
     fn pending_declaration(&mut self, original: &str) -> Result<bool, ()> {
         use crate::selectors::{Kind, trim};
         // Preparation tokens are dropped before the variable parser allocates
@@ -1931,7 +1984,6 @@ impl SupportsEvaluator {
         {
             return self.pending_declaration(original);
         }
-        let spacing_property = name.eq_ignore_ascii_case("border-spacing");
         // A supports condition uses CSS syntax for its property identifier.
         // The separate two-argument API deliberately keeps its literal-name rule.
         let keyword_property = keyword_value_property(name).or_else(|| {
@@ -1945,6 +1997,39 @@ impl SupportsEvaluator {
                 None
             }
         });
+        let raw_name = name;
+        let mut decoded_name = if name.contains('\\') && keyword_property.is_none() {
+            let Some(name) = self.decoded_plain_condition_name(original)? else {
+                return Ok(false);
+            };
+            Some(name)
+        } else {
+            None
+        };
+        // These existing validators have their own temporary token vectors.
+        // Consume a newly decoded special name before entering those stages;
+        // its static spelling also replaces the old lowercase-name allocation.
+        let decoded_special: Option<&'static str> =
+            decoded_name.as_deref().and_then(|name| match name {
+                "border-spacing" => Some("border-spacing"),
+                "object-fit" => Some("object-fit"),
+                "object-position" => Some("object-position"),
+                "background" => Some("background"),
+                "background-image" => Some("background-image"),
+                "background-size" => Some("background-size"),
+                "background-position" => Some("background-position"),
+                "background-repeat" => Some("background-repeat"),
+                "background-origin" => Some("background-origin"),
+                "background-clip" => Some("background-clip"),
+                _ => None,
+            });
+        if decoded_special.is_some() {
+            drop(decoded_name.take());
+        }
+        let name = decoded_special
+            .or(decoded_name.as_deref())
+            .unwrap_or(raw_name);
+        let spacing_property = name.eq_ignore_ascii_case("border-spacing");
         let image_property = name.eq_ignore_ascii_case("background")
             || name.eq_ignore_ascii_case("background-image");
         let box_property = name.eq_ignore_ascii_case("background")
@@ -1985,8 +2070,15 @@ impl SupportsEvaluator {
                 return Ok(false);
             }
             let clean = image::comments(raw, &mut self.work).map_err(|_| ())?;
-            let name = keyword_property.map_or_else(|| name.to_ascii_lowercase(), str::to_owned);
-            return valid_declaration_value(&name, media_trim(&clean), &mut self.work)
+            let owned_name;
+            let name = if let Some(name) = decoded_special {
+                name
+            } else {
+                owned_name =
+                    keyword_property.map_or_else(|| raw_name.to_ascii_lowercase(), str::to_owned);
+                &owned_name
+            };
+            return valid_declaration_value(name, media_trim(&clean), &mut self.work)
                 .map_err(|_| ());
         }
         if let Some((before, important)) = value.rsplit_once('!') {
@@ -1998,14 +2090,23 @@ impl SupportsEvaluator {
         if value.is_empty() || value.contains([';', '!', '{', '}']) {
             return Ok(false);
         }
-        // Escaped property/value identifiers are not decoded by the actual
-        // declaration application path. Do not claim that spelling works.
-        if name.contains('\\') || value.contains('\\') {
+        // Property names use CSS syntax in conditions. Value escape admission
+        // remains limited to the existing property-specific routes above.
+        if value.contains('\\') {
             return Ok(false);
         }
-        let name = name.to_ascii_lowercase();
+        let owned_name;
+        let name = if let Some(name) = decoded_special {
+            name
+        } else {
+            owned_name = decoded_name.unwrap_or_else(|| raw_name.to_ascii_lowercase());
+            &owned_name
+        };
+        if name == "font-size" {
+            return self.font_size_plain(value);
+        }
         if matches!(
-            name.as_str(),
+            name,
             "object-fit"
                 | "object-position"
                 | "background"
@@ -2028,9 +2129,9 @@ impl SupportsEvaluator {
             if !valid_calculations(&original[colon.end..], &mut self.work).map_err(|_| ())? {
                 return Ok(false);
             }
-            valid_declaration_value(&name, value, &mut self.work).map_err(|_| ())
+            valid_declaration_value(name, value, &mut self.work).map_err(|_| ())
         } else {
-            Ok(supports_property(&name, value))
+            Ok(supports_property(name, value))
         }
     }
 }
@@ -7038,6 +7139,7 @@ mod tests {
             "(grid-column-start:span 3)",
             "(grid-row-end:-2)",
             "(width:var(--size))",
+            r"(d\69 splay:flex)",
         ] {
             assert!(supports_matches(query), "{query}");
         }
@@ -7080,7 +7182,6 @@ mod tests {
             "(width:calc(1px + 2px))",
             "(transform:rotate(1deg))",
             "(display:FLEX)",
-            r"(d\69 splay:flex)",
         ] {
             assert!(!supports_matches(query), "{query}");
         }
@@ -9039,3 +9140,6 @@ mod pointer_events_budget_tests;
 #[cfg(test)]
 #[path = "css/supports_var_budget_tests.rs"]
 mod supports_var_budget_tests;
+
+#[cfg(test)]
+mod supports_plain_budget_tests;

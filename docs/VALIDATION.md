@@ -1,5 +1,63 @@
 # Validation record
 
+## Primitive fonts and escaped plain feature names
+
+The [plain-query slice](css-supports-plain.md) admits primitive nonnegative
+`font-size` lengths/percentages, unitless zero and existing CSS-wide values. It
+decodes generic condition property identifiers while preserving two-argument
+literal names, the variable-query branch, value grammar boundaries and all
+limits. Named font sizes, font math and other omitted ordinary grammars remain
+deferred. Extreme numeric controls freeze Eris source admission before `f32`
+conversion; they are not universal cross-browser precision assertions or full
+query/render parity evidence.
+
+The published `64cd81af` parent reports three passes and 17 failures across
+20 public groups and four suites. The first 16 groups report two passes and 14
+failures; the four special-validator groups report one pass and three failures.
+These are group results, and an early assertion failure can leave later rows
+unreached. The independent private budget contract adds five groups containing
+30 API calls. Direct and confined worker controls compare the same 48 literal
+pixels; optional native-plan reconstruction runs on the CPU.
+
+The first candidate passes all 25 focused groups across 66 result rows. Its
+first full Rust 1.88 run reports 3,621 passes and one failure: an additional old
+escaped `background-clip` condition still expected false. Independent review
+confirms that the frozen generic-name design and existing validator require
+true. The supplemental migration preserves the exact original literal and
+group, all unrelated assertions, and the two-argument false result. Only
+`src/css/background/box_tests.rs` changes between Candidate1 and Candidate2;
+production and all 25 new controls remain unchanged. The failed run is retained.
+This historical row was found during execution, not in the initial census.
+
+Final Rust 1.88 default and Rust 1.99 `test262-host,vulkan-raster` runs pass
+3,622 and 3,987 tests, respectively, with zero failures or ignored tests across
+67 result rows each. Both include ignored tests, preserve the prior passing
+rosters and add exactly 25 groups. Strict Clippy passes in both configurations;
+formatting and Rust 1.88 release compilation pass. All 102 existing
+visual-reference pairs pass, and their 204 PNGs are byte-identical to Q.
+
+The tested Candidate2 inventory contains 15,335 selected source/build/test
+inputs and 11 changed source paths. Its SHA-256 is
+`83ed7b222bc30d2ae2bfefc1ee11654cca6f5d03ff1b323db5bb85f8b2ed23a0`.
+The later `tests/conformance/supports.md` update changes prose in an inventoried
+path. Its exact before/after bytes and diff are bound separately as a
+post-validation documentation-only update. Executable and test-code inputs
+remain as tested; final whole-tree equality to every tested row is not claimed.
+
+Parent Q passed all 11 GitHub CI jobs in run `39703906403`. CI for this
+checkpoint is pending at publication.
+
+See the [validation record](evidence/supports-plain/validation.json) and
+[source/check archive](evidence/supports-plain/sources-and-checks.tar.gz).
+
+This checkpoint changes query reporting, not CSSOM mutation, computed font
+layout or painting. The storage review establishes only the selected incremental
+lifetimes: new preparation dies before existing special validators, and canonical
+name ownership replaces prior lowercase storage. It is not a blanket memory
+bound for every validator. No limits are raised, and no GPU hardware run,
+Chromium-relative benchmark, full web compatibility or security audit is claimed.
+The earlier validation body below is preserved byte for byte.
+
 ## Variables in CSS feature queries
 
 This slice admits valid legacy `var()` syntax for 88 implemented longhands,
