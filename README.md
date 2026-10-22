@@ -4,6 +4,12 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[Variables in CSS feature queries](docs/css-supports-variables.md) are now recognized
+through the existing legacy `var()` grammar for implemented property names.
+Queries defer final value grammar without resolving custom properties;
+missing or cyclic values therefore do not decide support. Custom-property
+queries and broader substitution grammar remain outside this slice.
+
 [CSS pointer targeting](docs/css-pointer-events.md) adds inherited
 `pointer-events:auto` and `none` for the existing HTML hit regions. A `none`
 overlay leaves its pixels and geometry intact while allowing eligible content

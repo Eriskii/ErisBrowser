@@ -1,5 +1,64 @@
 # Validation record
 
+## Variables in CSS feature queries
+
+This slice admits valid legacy `var()` syntax for 88 implemented longhands,
+29 shorthands and 13 aliases in `@supports` and `CSS.supports()`. Query validation
+defers final property grammar without substituting custom properties. Literal
+two-argument names, decoded condition names, trailing condition priority and
+ordinary-declaration curly-block structure remain distinct. Unknown/custom
+property queries and newer variable-name argument grammar remain outside scope.
+
+The published `339b257f` parent was run against the 14 public groups: one passed
+and 13 failed. Those raw failures are retained. The independent contracts define
+20 new groups: 12 semantic, two direct/confined pixel and six private budget
+groups. The focused Rust 1.88 run passes all 20 groups across 63 result rows.
+The full Rust 1.88 default suite passes 3,597 tests; Rust 1.99 with
+`test262-host,vulkan-raster` passes 3,962. Both full runs include ignored tests
+and report zero failures or ignored tests across 64 result rows each. Both
+preserve the prior passing rosters and add exactly 20 groups. Strict Clippy
+passes in both configurations; formatting and release compilation pass. All
+102 existing visual-reference pairs pass, and their 204 PNGs are byte-identical
+to the preceding pointer-events checkpoint.
+
+The first candidate needed no code, test or expected-output correction. The
+summary helper initially missed test names with intervening ignored-test
+attributes; only its census expression changed. The original helper and
+correction record are retained, with no change to execution commands. The
+preceding `339b257f` commit passed all 11 GitHub CI jobs. CI for this checkpoint
+is pending at publication.
+
+The tested Candidate1 inventory binds 15,328 selected source/build/test inputs
+and 11 changed source paths. Its SHA-256 is
+`bfd1b08f17ca8d5cdf89ceee4a9cdbe81ceda37fe16e9913eb523980127dd4c2`.
+The later `tests/conformance/supports.md` update changes prose in a path included
+by that inventory. Its exact before/after bindings and diff are recorded as a
+post-validation documentation-only update. Executable and test-code inputs stay
+as tested; final whole-tree equality to every tested inventory row is not
+claimed.
+
+The public semantic adapter contains 369 CSS Boolean assertions if all rows
+complete, six strict/sloppy Runtime attempts and one CPU pixel frame. The two
+additional direct/confined groups use the same 48 literal pixels at 8 by 6;
+conditional native-scene checks reconstruct packed plans on the CPU. Six private
+groups freeze 30 API invocations, including exact shared-work cuts, typed
+Invalid/Limit results and the unchanged 227-unit no-var keyword cut. These are
+source-level coverage counts for the completed focused controls, rather than
+additional test groups.
+
+The raw pending-value bound remains 4,096 bytes. Its local oversize refusal is
+ordinary false and can be negated; resource exhaustion during token, work or
+depth processing aborts the whole query instead. Existing Option syntax callers
+and computed substitution keep their previous behavior. No limits are raised.
+
+See the [validation manifest](evidence/supports-variables/validation.json) and
+[source/check archive](evidence/supports-variables/sources-and-checks.tar.gz).
+These are authored regression controls, not a complete WPT or web-platform
+conformance inventory. No new GPU hardware execution, benchmark, Chromium
+comparison or security-audit result is claimed. The earlier validation text
+below is preserved byte for byte, including the pointer checkpoint's former
+conservative `supports(var())` limitation.
+
 ## CSS pointer-events: auto and none
 
 This checkpoint adds inherited pointer-target eligibility to the existing HTML

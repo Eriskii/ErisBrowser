@@ -22,8 +22,10 @@ existing bounded CSSOM machinery. Invalid setter values remain no-ops. Feature
 queries accept supported visibility identifiers, including escaped spellings.
 Condition syntax can decode an escaped visibility property name; the
 two-argument `CSS.supports(property, value)` overload retains its literal
-property-name rule and rejects escapes in that argument. The existing
-conservative feature-query treatment of unresolved `var()` remains unchanged.
+property-name rule and rejects escapes in that argument. The subsequent
+[variable-query slice](css-supports-variables.md) admits valid legacy `var()`
+syntax without substitution, superseding this checkpoint's earlier conservative
+refusal. The validation results below retain their original checkpoint scope.
 
 Painting is filtered after layout and scope construction. Hidden ancestors do
 not cut off visible descendants or erase clip, fixed-coordinate and opacity

@@ -567,36 +567,40 @@ fn layer_name(source: &str) -> Option<Vec<String>> {
 }
 
 pub(crate) fn css_identifier(rest: &str) -> Option<(String, usize)> {
+    css_identifier_checked(rest).ok()
+}
+fn css_identifier_checked(rest: &str) -> Result<(String, usize), crate::selectors::Error> {
+    use crate::selectors::Error;
     let mut name = String::new();
     let mut consumed = 0;
     let mut chars = rest.char_indices().peekable();
-    let first = rest.chars().next()?;
+    let first = rest.chars().next().ok_or(Error::Invalid)?;
     let second = rest.chars().nth(1);
     let start = |c: char| matches!(c, '_' | '\0') || c.is_ascii_alphabetic() || !c.is_ascii();
     if !(start(first)
         || first == '\\'
         || first == '-' && second.is_some_and(|c| start(c) || matches!(c, '-' | '\\')))
     {
-        return None;
+        return Err(Error::Invalid);
     }
     while let Some((at, ch)) = chars.next() {
         if name.len() > 1024 {
-            return None;
+            return Err(Error::Limit);
         }
         if ch == '\\' {
-            let (_, next) = chars.next()?;
+            let (_, next) = chars.next().ok_or(Error::Invalid)?;
             if matches!(next, '\n' | '\r' | '\x0c') {
-                return None;
+                return Err(Error::Invalid);
             }
             if next.is_ascii_hexdigit() {
-                let mut value = next.to_digit(16)?;
+                let mut value = next.to_digit(16).ok_or(Error::Invalid)?;
                 consumed = at + 1 + next.len_utf8();
                 for _ in 1..6 {
                     if let Some((offset, digit)) = chars.peek().copied()
                         && digit.is_ascii_hexdigit()
                     {
                         chars.next();
-                        value = value * 16 + digit.to_digit(16)?;
+                        value = value * 16 + digit.to_digit(16).ok_or(Error::Invalid)?;
                         consumed = offset + digit.len_utf8();
                     } else {
                         break;
@@ -608,7 +612,7 @@ pub(crate) fn css_identifier(rest: &str) -> Option<(String, usize)> {
                     chars.next();
                     consumed = offset + space.len_utf8();
                     if space == '\r' && chars.peek().is_some_and(|(_, c)| *c == '\n') {
-                        let (offset, _) = chars.next()?;
+                        let (offset, _) = chars.next().ok_or(Error::Invalid)?;
                         consumed = offset + 1;
                     }
                 }
@@ -628,7 +632,13 @@ pub(crate) fn css_identifier(rest: &str) -> Option<(String, usize)> {
             break;
         }
     }
-    (!name.is_empty() && name.len() <= 1024).then_some((name, consumed))
+    if name.len() > 1024 {
+        Err(Error::Limit)
+    } else if name.is_empty() {
+        Err(Error::Invalid)
+    } else {
+        Ok((name, consumed))
+    }
 }
 
 pub fn parse_stylesheet(source: &str, width: f32, height: f32) -> Vec<Rule> {
@@ -1544,7 +1554,7 @@ pub(crate) fn supports_matches_with_budget(
         evaluator.tokens(&tokens)?;
         let clean = strip_comments(query);
         if implied_declaration && supports_declaration_parts(media_trim(&clean)).is_some() {
-            evaluator.declaration(media_trim(&clean), query)
+            evaluator.declaration(media_trim(&clean), query, &tokens)
         } else {
             evaluator.condition(query, &tokens, 0)
         }
@@ -1552,6 +1562,30 @@ pub(crate) fn supports_matches_with_budget(
     *work -= available - evaluator.work;
     result == Ok(true) && !evaluator.exhausted
 }
+pub(crate) fn property_alias(name: &str) -> &str {
+    match name {
+        "inline-size" => "width",
+        "block-size" => "height",
+        "grid-row-gap" => "row-gap",
+        "grid-column-gap" => "column-gap",
+        "margin-inline-start" => "margin-left",
+        "margin-inline-end" => "margin-right",
+        "margin-block-start" => "margin-top",
+        "margin-block-end" => "margin-bottom",
+        "padding-inline-start" => "padding-left",
+        "padding-inline-end" => "padding-right",
+        "padding-block-start" => "padding-top",
+        "padding-block-end" => "padding-bottom",
+        "text-decoration-line" => "text-decoration",
+        _ => name,
+    }
+}
+// Ordinary names only: custom-property support queries remain a separate slice.
+fn supported_ordinary_property(name: &str) -> bool {
+    let name = property_alias(name);
+    SUPPORTED_PROPERTIES.contains(&name) || shorthand_property_count(name).is_some()
+}
+
 fn keyword_value_property(name: &str) -> Option<&'static str> {
     ["visibility", "pointer-events"]
         .into_iter()
@@ -1595,6 +1629,12 @@ pub(crate) fn supports_declaration_with_budget(
         }
         let tokens = crate::selectors::tokens(value, &mut evaluator.work).map_err(|_| ())?;
         evaluator.tokens(&tokens)?;
+        if tokens
+            .iter()
+            .any(|token| token.kind == Kind::Function && token.is_name("var"))
+        {
+            return evaluator.pending_value(property, value);
+        }
         let spacing_property = property.eq_ignore_ascii_case("border-spacing");
         let keyword_property = keyword_value_property(property).is_some();
         let image_property = property.eq_ignore_ascii_case("background")
@@ -1766,7 +1806,7 @@ impl SupportsEvaluator {
             let clean = strip_comments(raw);
             let clean = media_trim(&clean);
             if supports_declaration_parts(clean).is_some() {
-                return Ok((self.declaration(clean, raw)?, end + 1));
+                return Ok((self.declaration(clean, raw, inner)?, end + 1));
             }
             if inner.first().is_some_and(|t| {
                 matches!(t.kind, Kind::Open('(') | Kind::Function)
@@ -1785,7 +1825,96 @@ impl SupportsEvaluator {
         };
         Ok((value, end + 1))
     }
-    fn declaration(&mut self, source: &str, original: &str) -> Result<bool, ()> {
+    fn pending_declaration(&mut self, original: &str) -> Result<bool, ()> {
+        use crate::selectors::{Kind, trim};
+        // Preparation tokens are dropped before the variable parser allocates
+        // its own token/close/reference storage. All spans still borrow input.
+        let (name, value) = {
+            let tokens = crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
+            self.spend(tokens.len() + 1)?;
+            let Some(colon) = tokens
+                .iter()
+                .position(|token| token.kind == Kind::Delim(':'))
+            else {
+                return Ok(false);
+            };
+            let names = trim(&tokens[..colon]);
+            if names.len() != 1 || names[0].kind != Kind::Ident {
+                return Ok(false);
+            }
+            let Some((name, consumed)) = css_identifier(names[0].raw) else {
+                return Ok(false);
+            };
+            if consumed != names[0].raw.len() || name.len() > 256 {
+                return Ok(false);
+            }
+            let mut end = original.len();
+            let mut significant = tokens[colon + 1..]
+                .iter()
+                .rev()
+                .filter(|token| token.kind != Kind::Whitespace);
+            if let (Some(important), Some(bang)) = (significant.next(), significant.next())
+                && important.kind == Kind::Ident
+                && important.is_name("important")
+                && bang.kind == Kind::Delim('!')
+            {
+                end = bang.start;
+            }
+            (name, &original[tokens[colon].end..end])
+        };
+        self.pending_value(&name, value)
+    }
+    fn pending_value(&mut self, name: &str, value: &str) -> Result<bool, ()> {
+        use crate::selectors::{Error, Kind};
+        // This new raw-value cap is an ordinary false leaf, like the existing
+        // local declaration bounds; it does not change any no-var leaf.
+        if value.len() > 4096 {
+            return Ok(false);
+        }
+        // The fixed match arms are 29 shorthands plus 13 aliases. Charge each
+        // possible name comparison and normalization before name allocation.
+        let names = SUPPORTED_PROPERTIES.len() + 29 + 13;
+        self.spend(1 + names * (name.len() + 1))?;
+        if !supported_ordinary_property(&name.to_ascii_lowercase()) {
+            return Ok(false);
+        }
+        let syntax = match VariableSyntax::parse_checked(value, &mut self.work) {
+            Ok(syntax) => syntax,
+            Err(Error::Limit) => {
+                self.exhausted = true;
+                return Err(());
+            }
+            Err(_) => return Ok(false),
+        };
+        self.spend(syntax.tokens.len() + 1)?;
+        // CSS Syntax declaration rule: a top-level curly block may be the
+        // whole value, but cannot be mixed with another component. Blocks
+        // nested inside var fallbacks retain the shared variable grammar.
+        let mut depth = 0usize;
+        let mut components = 0usize;
+        let mut curly = false;
+        for token in &syntax.tokens {
+            if token.raw.contains('\0') {
+                return Ok(false);
+            }
+            if depth == 0 && token.kind != Kind::Whitespace {
+                components += 1;
+                curly |= token.kind == Kind::Open('{');
+            }
+            if token.open().is_some() {
+                depth += 1;
+            } else if matches!(token.kind, Kind::Close(_)) {
+                depth -= 1; // parse_checked already matched every delimiter.
+            }
+        }
+        Ok(!curly || components == 1)
+    }
+    fn declaration(
+        &mut self,
+        source: &str,
+        original: &str,
+        tokens: &[crate::selectors::Token<'_>],
+    ) -> Result<bool, ()> {
         self.term()?;
         self.spend(source.len().saturating_mul(8) + 1)?;
         let Some((name, mut value)) = supports_declaration_parts(source) else {
@@ -1793,6 +1922,14 @@ impl SupportsEvaluator {
         };
         if name.len() > 256 || value.len() > 4096 {
             return Ok(false);
+        }
+        // The existing declaration scan envelope covers this borrowed-token
+        // detection. No-var leaves retain their former work charges exactly.
+        if tokens
+            .iter()
+            .any(|token| token.kind == crate::selectors::Kind::Function && token.is_name("var"))
+        {
+            return self.pending_declaration(original);
         }
         let spacing_property = name.eq_ignore_ascii_case("border-spacing");
         // A supports condition uses CSS syntax for its property identifier.
@@ -4020,17 +4157,20 @@ struct VariableSyntax<'a> {
 }
 impl<'a> VariableSyntax<'a> {
     fn parse(source: &'a str, work: &mut usize) -> Option<Self> {
-        use crate::selectors::Kind;
+        Self::parse_checked(source, work).ok()
+    }
+    fn parse_checked(source: &'a str, work: &mut usize) -> Result<Self, crate::selectors::Error> {
+        use crate::selectors::{Error, Kind};
         if source.len() > MAX_VARIABLE_VALUE {
-            return None;
+            return Err(Error::Limit);
         }
-        let tokens = crate::selectors::tokens(source, work).ok()?;
-        crate::selectors::spend(work, tokens.len().saturating_mul(4) + 1).ok()?;
+        let tokens = crate::selectors::tokens(source, work)?;
+        crate::selectors::spend(work, tokens.len().saturating_mul(4) + 1)?;
         let mut stack = Vec::new();
         let mut closes = vec![usize::MAX; tokens.len()];
         for (i, token) in tokens.iter().enumerate() {
             if token.kind == Kind::Bad {
-                return None;
+                return Err(Error::Invalid);
             }
             // EOF repair and replacement of NUL are outside this bounded value
             // parser. Reject instead of serializing an unterminated token.
@@ -4046,32 +4186,32 @@ impl<'a> VariableSyntax<'a> {
                         % 2
                         != 0
                 {
-                    return None;
+                    return Err(Error::Invalid);
                 }
             }
             if token.kind == Kind::Url && !token.raw.ends_with(')') {
-                return None;
+                return Err(Error::Invalid);
             }
             if token.kind == Kind::Delim('\0') {
-                return None;
+                return Err(Error::Invalid);
             }
             if let Some(open) = token.open() {
                 if stack.len() >= MAX_VARIABLE_DEPTH {
-                    return None;
+                    return Err(Error::Limit);
                 }
                 stack.push((i, open));
             } else if let Kind::Close(close) = token.kind {
-                let (start, open) = stack.pop()?;
+                let (start, open) = stack.pop().ok_or(Error::Invalid)?;
                 if !matches!((open, close), ('(', ')') | ('[', ']') | ('{', '}')) {
-                    return None;
+                    return Err(Error::Invalid);
                 }
                 closes[start] = i;
             } else if stack.is_empty() && matches!(token.kind, Kind::Delim('!' | ';')) {
-                return None;
+                return Err(Error::Invalid);
             }
         }
         if !stack.is_empty() {
-            return None;
+            return Err(Error::Invalid);
         }
         let mut references = BTreeMap::new();
         for (i, token) in tokens.iter().enumerate() {
@@ -4083,17 +4223,16 @@ impl<'a> VariableSyntax<'a> {
             while at < close && tokens[at].kind == Kind::Whitespace {
                 at += 1;
             }
-            let name_token = tokens.get(at)?;
+            let name_token = tokens.get(at).ok_or(Error::Invalid)?;
             if name_token.kind != Kind::Ident {
-                return None;
+                return Err(Error::Invalid);
             }
-            let (name, consumed) = css_identifier(name_token.raw)?;
-            if consumed != name_token.raw.len()
-                || !name.starts_with("--")
-                || name == "--"
-                || name.len() > 256
-            {
-                return None;
+            let (name, consumed) = css_identifier_checked(name_token.raw)?;
+            if consumed != name_token.raw.len() || !name.starts_with("--") || name == "--" {
+                return Err(Error::Invalid);
+            }
+            if name.len() > 256 {
+                return Err(Error::Invalid);
             }
             at += 1;
             while at < close && tokens[at].kind == Kind::Whitespace {
@@ -4106,7 +4245,7 @@ impl<'a> VariableSyntax<'a> {
                 at = begin;
                 while at < close {
                     if matches!(tokens[at].kind, Kind::Delim('!' | ';')) {
-                        return None;
+                        return Err(Error::Invalid);
                     }
                     at = if tokens[at].open().is_some() {
                         closes[at] + 1
@@ -4116,7 +4255,7 @@ impl<'a> VariableSyntax<'a> {
                 }
                 Some(begin)
             } else {
-                return None;
+                return Err(Error::Invalid);
             };
             references.insert(
                 i,
@@ -4127,7 +4266,7 @@ impl<'a> VariableSyntax<'a> {
                 },
             );
         }
-        Some(Self { tokens, references })
+        Ok(Self { tokens, references })
     }
     fn substitute(
         &self,
@@ -6590,6 +6729,7 @@ mod tests {
             ("color", "red/* ; !important ) { "),
             ("grid-template-columns", "repeat(2, minmax(10px,1fr))"),
             ("height", "inherit"),
+            ("width", "var(--theme)"),
         ] {
             assert!(
                 supports_declaration(property, value),
@@ -6629,7 +6769,6 @@ mod tests {
             ("color", "red; (display:grid)"),
             ("color", "red\0"),
             ("--theme", "red"),
-            ("width", "var(--theme)"),
             ("width", ""),
             ("color", "/*empty*/"),
         ] {
@@ -6898,6 +7037,7 @@ mod tests {
             "(grid-auto-flow:column dense)",
             "(grid-column-start:span 3)",
             "(grid-row-end:-2)",
+            "(width:var(--size))",
         ] {
             assert!(supports_matches(query), "{query}");
         }
@@ -6937,7 +7077,6 @@ mod tests {
             "(grid-column-start:0)",
             "(grid-column-start:span -1)",
             "(--custom:anything)",
-            "(width:var(--size))",
             "(width:calc(1px + 2px))",
             "(transform:rotate(1deg))",
             "(display:FLEX)",
@@ -8896,3 +9035,7 @@ mod pointer_events_tests;
 
 #[cfg(test)]
 mod pointer_events_budget_tests;
+
+#[cfg(test)]
+#[path = "css/supports_var_budget_tests.rs"]
+mod supports_var_budget_tests;

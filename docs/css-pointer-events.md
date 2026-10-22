@@ -17,10 +17,11 @@ the bounded CSSOM machinery. The supported longhand roster now has 88 entries.
 
 Feature queries share the keyword validator. A condition can decode an escaped
 CSS property name, while the two-argument `CSS.supports(property,value)` API
-keeps its literal-name rule. Queries containing unresolved `var()` retain Eris's
-conservative false result. This is a capability-query limitation, not a claim
-that variable references are invalid CSS; valid references defer property
-validation under [CSS Variables](https://www.w3.org/TR/2022/CR-css-variables-1-20220616/#using-variables).
+keeps its literal-name rule. The subsequent [variable-query slice](css-supports-variables.md)
+admits valid legacy `var()` syntax without substitution, superseding the earlier
+conservative false result. Valid references defer final property validation under
+[CSS Variables](https://www.w3.org/TR/2022/CR-css-variables-1-20220616/#using-variables).
+The validation results below retain their original pointer checkpoint scope.
 
 Layout retains every admitted hit region, its rectangle and its order. The
 ordinary-box, default-summary, text and table-row producers record their own

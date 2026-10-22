@@ -2931,3 +2931,6 @@ mod visibility_dynamic;
 
 #[path = "worker/pointer_events_dynamic.rs"]
 mod pointer_events_dynamic;
+
+#[path = "worker/supports_var_pixels.rs"]
+mod supports_var_pixels;

@@ -1,0 +1,9 @@
+<!doctype html><style>
+html,body{margin:0;background:white}div{position:absolute;top:0;width:2px;height:2px;background:red}
+#a{left:0}#b{left:2px}#c{left:4px}#d{left:6px}#e{left:0;top:2px;width:8px;height:4px}
+@supports(width:var(--missing)){#a{background:#00ff00}}
+@supports not (width:var(--missing)){#b{background:#0000ff}}
+@supports (unknown-property:var(--x)) or (display:block){#c{background:#ffff00}}
+@supports(w\69 dth:var(--missing)!important){#d{background:#00ffff}}
+@supports(width:calc(var(--x) + )){#e{background:#ff00ff}}
+</style><div id=a></div><div id=b></div><div id=c></div><div id=d></div><div id=e></div>

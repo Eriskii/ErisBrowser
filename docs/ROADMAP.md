@@ -1,5 +1,13 @@
 # Development docket
 
+The [variable-query slice](css-supports-variables.md) separates
+pending value syntax from computed substitution. The selected ordinary-name
+roster admits valid legacy `var()` values while preserving shared resource
+limits and the no-var paths. Custom-property support queries, newer argument
+grammar and remaining no-var reporting gaps still need separate work. Earlier
+[validation entries](VALIDATION.md) retain their original query limitations and
+results; this slice adds no GPU, Chromium-speed or security result.
+
 [CSS pointer targeting](css-pointer-events.md) separates pointer eligibility
 from retained layout, painting and keyboard-focus geometry. The selected
 `auto`/`none` HTML slice uses each hit region's own computed value, including

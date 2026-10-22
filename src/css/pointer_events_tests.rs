@@ -140,6 +140,7 @@ fn pointer_events_css_supports_respects_property_and_value_tokens() {
         "unset",
         "revert",
         "revert-layer",
+        "var(--x)",
     ] {
         assert!(supports_declaration("pointer-events", value), "{value}");
     }
@@ -148,7 +149,6 @@ fn pointer_events_css_supports_respects_property_and_value_tokens() {
         ("pointer-events", "no/**/ne"),
         ("pointer-events", "auto none"),
         ("pointer-events", "none()"),
-        ("pointer-events", "var(--x)"),
         ("pointer-events", "none!important"),
         ("pointer-events", "none;color:red"),
         (r"pointer\2d events", "none"),

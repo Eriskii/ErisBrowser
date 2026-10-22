@@ -1,13 +1,20 @@
 # Compatibility status
 
+[Variables in CSS feature queries](css-supports-variables.md) covers the
+existing 88 longhands, 29 shorthands and 13 aliases. Valid legacy `var()` syntax
+can report support before substitution, including otherwise unrecognized final
+value grammar. Unknown names, custom-property queries and newer variable-name
+argument syntax remain excluded. Existing no-var false negatives are retained;
+this is a bounded feature-query correction, not complete CSS conformance.
+
 [CSS pointer targeting](css-pointer-events.md) supports the inherited
 `auto`/`none` subset for HTML hit regions, with cascade, variables and inline
 CSSOM integration. Point selection skips `none` regions while retaining their
 geometry for focus, editing and fragment navigation. Re-enabled descendants
 can receive events through a `none` ancestor. SVG-specific values and complete
-pointer-event/selection behavior remain deferred. Feature queries retain the
-existing conservative refusal of unresolved `var()`; that refusal is an
-implementation boundary, not invalid variable syntax under the CSS standard.
+pointer-event/selection behavior remain deferred. The variable-query slice supersedes
+this checkpoint's earlier conservative refusal of unresolved `var()`. The
+pointer-targeting chapter retains its original validation totals.
 
 [CSS visibility](css-visibility.md) supports the `visible`/`hidden` subset,
 including inheritance, existing CSS-wide keywords, variables, priority and

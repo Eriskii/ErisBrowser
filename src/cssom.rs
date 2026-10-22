@@ -139,24 +139,6 @@ fn arc_bytes() -> usize {
 fn summary_work(count: usize) -> Result<usize, Error> {
     add(1, mul(264, count)?)
 }
-fn alias(name: &str) -> &str {
-    match name {
-        "inline-size" => "width",
-        "block-size" => "height",
-        "grid-row-gap" => "row-gap",
-        "grid-column-gap" => "column-gap",
-        "margin-inline-start" => "margin-left",
-        "margin-inline-end" => "margin-right",
-        "margin-block-start" => "margin-top",
-        "margin-block-end" => "margin-bottom",
-        "padding-inline-start" => "padding-left",
-        "padding-inline-end" => "padding-right",
-        "padding-block-start" => "padding-top",
-        "padding-block-end" => "padding-bottom",
-        "text-decoration-line" => "text-decoration",
-        _ => name,
-    }
-}
 fn name(name: &str) -> Option<String> {
     if name.len() > MAX_NAME_BYTES || name.is_empty() {
         return None;
@@ -166,7 +148,7 @@ fn name(name: &str) -> Option<String> {
         return (name != "--" && !name.contains('\0')).then(|| name.to_owned());
     }
     let lower = name.to_ascii_lowercase();
-    let lower = alias(&lower);
+    let lower = css::property_alias(&lower);
     (css::supported_property(lower) || css::shorthand_property_count(lower).is_some())
         .then(|| lower.to_owned())
 }
