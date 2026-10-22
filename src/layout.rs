@@ -5,6 +5,7 @@
 use crate::css::{
     BackgroundBox, BackgroundImage, BackgroundPosition, BackgroundSize, ComputedStyle, Display,
     GridBreadth, GridLine, GridTrack, Length, ObjectFit, ObjectPosition, PositionComponent,
+    Visibility,
 };
 use crate::dom::{Document, Namespace, NodeId, NodeKind};
 use crate::graphics::{Color, DrawCommand, Fonts, Rect};
@@ -871,6 +872,8 @@ const MAX_POSITION_WORK: usize = 2_000_000;
 struct PaintOwner {
     node: NodeId,
     background: bool,
+    // Painting eligibility can differ from the node used for rank and opacity.
+    paint_visibility: Visibility,
     // Explicit pending layer and phase, independent of command admission.
     inline_layer: InlineLayer,
     inline_prefix: f32,
@@ -963,6 +966,8 @@ pub struct LayoutResult {
     pub commands: Vec<DrawCommand>,
     pub hit_regions: Vec<HitRegion>,
     pub content_height: f32,
+    /// Computed visibility by DOM node, independent of geometry and ancestry.
+    pub node_visibility: Vec<Visibility>,
 }
 
 impl LayoutResult {
@@ -1143,6 +1148,24 @@ pub(crate) fn layout_with_backgrounds(
         width: finite(width, 800.0).clamp(1.0, 100_000.0),
         height: finite(height, 600.0).clamp(1.0, 100_000.0),
     };
+    let mut node_visibility = Vec::new();
+    if doc.nodes.len() > crate::dom::MAX_NODES
+        || node_visibility.try_reserve_exact(doc.nodes.len()).is_err()
+    {
+        // An incomplete table must not publish paint or interaction state.
+        // The worker rejects its cardinality for a nonempty document.
+        return LayoutResult {
+            commands: Vec::new(),
+            hit_regions: Vec::new(),
+            content_height: viewport.height,
+            node_visibility,
+        };
+    }
+    node_visibility.extend((0..doc.nodes.len()).map(|node| {
+        styles
+            .get(node)
+            .map_or(Visibility::Visible, |style| style.visibility)
+    }));
     let html = doc.first_html_element("html");
     let canvas_background_node =
         canvas_background_owner(styles, html, doc.first_html_element("body"));
@@ -1161,6 +1184,8 @@ pub(crate) fn layout_with_backgrounds(
         paint_owner: PaintOwner {
             node: doc.root,
             background: true,
+            // The propagated canvas background is not an element's box paint.
+            paint_visibility: Visibility::Visible,
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
@@ -1274,6 +1299,7 @@ pub(crate) fn layout_with_backgrounds(
         commands: engine.commands,
         hit_regions: engine.hits,
         content_height,
+        node_visibility,
     }
 }
 
@@ -1688,6 +1714,7 @@ impl<'a> Engine<'a> {
         self.paint_owner = PaintOwner {
             node: id,
             background: true,
+            paint_visibility: style.visibility,
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
@@ -2265,6 +2292,7 @@ impl<'a> Engine<'a> {
             let owner = PaintOwner {
                 node: job.node,
                 background: false,
+                paint_visibility: self.style(job.node).visibility,
                 inline_layer: InlineLayer::None,
                 inline_prefix: 0.0,
                 inline_sides: 0,
@@ -2524,7 +2552,7 @@ impl<'a> Engine<'a> {
                         }
                         _ => true,
                     };
-                    if visible {
+                    if visible && owner.paint_visibility == Visibility::Visible {
                         atoms.push(Atom {
                             command,
                             rank: ranks[owner.node][usize::from(!owner.background)],
@@ -2654,7 +2682,15 @@ impl<'a> Engine<'a> {
         let hit_rank = |hit: &HitRegion| {
             ranks[hit.node][usize::from(matches!(self.doc.nodes[hit.node].kind, NodeKind::Text(_)))]
         };
-        self.hits.retain(|hit| hit_rank(hit) < cutoff);
+        self.hits.retain(|hit| {
+            hit_rank(hit) < cutoff
+                && self
+                    .styles
+                    .get(hit.node)
+                    .unwrap_or(&self.fallback)
+                    .visibility
+                    == Visibility::Visible
+        });
         self.hits.sort_by_key(hit_rank);
     }
 
@@ -3525,6 +3561,7 @@ impl<'a> Engine<'a> {
             self.paint_owner = PaintOwner {
                 node: item.node,
                 background: false,
+                paint_visibility: self.style(item.node).visibility,
                 inline_layer: InlineLayer::None,
                 inline_prefix: 0.0,
                 inline_sides: 0,
@@ -4318,6 +4355,8 @@ impl<'a> Engine<'a> {
         self.paint_owner = PaintOwner {
             node: row,
             background: true,
+            // Cells render row background layers; row retains rank and opacity.
+            paint_visibility: self.style(cell).visibility,
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
@@ -8298,6 +8337,7 @@ mod tests {
                 },
             ],
             content_height: 100.0,
+            node_visibility: vec![Visibility::Visible; 3],
         };
         assert_eq!(result.hit_test(21.0, 21.0), Some(2));
         assert_eq!(result.hit_test(0.0, 0.0), Some(1));
@@ -8341,6 +8381,7 @@ mod object_fit_tests {
             paint_owner: PaintOwner {
                 node: doc.root,
                 background: false,
+                paint_visibility: Visibility::Visible,
                 inline_layer: InlineLayer::None,
                 inline_prefix: 0.0,
                 inline_sides: 0,

@@ -3,6 +3,7 @@ use crate::{
     presenter::{FrameStamp, Presenter, PresenterConfig, Target},
 };
 use eris::{
+    css::Visibility,
     dom::{Namespace, NodeId},
     graphics::{Canvas, Color, DrawCommand, Fonts, Rect},
     layout::HitAction,
@@ -110,9 +111,14 @@ fn control_value_for_editing(document: &eris::dom::Document, node: NodeId) -> Op
 
 /// Hit regions have already been clipped by layout. Propagating their visible
 /// area to ancestors also covers inline links whose text owns the actual hits.
+/// Each candidate must also have its own visible style: a visible descendant
+/// can provide geometry without making a hidden ancestor focusable.
 /// Do not clip to the viewport: a control below the fold remains focusable.
 fn visible_layout_nodes(snapshot: &Snapshot) -> Vec<bool> {
     let mut visible = vec![false; snapshot.document.nodes.len()];
+    if snapshot.layout.node_visibility.len() != visible.len() {
+        return visible;
+    }
     let mut default_summaries = vec![false; snapshot.document.nodes.len()];
     for hit in &snapshot.layout.hit_regions {
         if hit.rect.width <= 0.0 || hit.rect.height <= 0.0 {
@@ -143,6 +149,7 @@ fn visible_layout_nodes(snapshot: &Snapshot) -> Vec<bool> {
         {
             *mark = default_summaries[node];
         }
+        *mark &= snapshot.layout.node_visibility[node] == Visibility::Visible;
     }
     visible
 }
@@ -2307,6 +2314,8 @@ fn scaled_command(command: &DrawCommand, z: f32) -> DrawCommand {
 mod background_geometry_tests;
 #[cfg(test)]
 mod gradient_tests;
+#[cfg(test)]
+mod visibility_tests;
 
 #[cfg(test)]
 mod tests {

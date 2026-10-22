@@ -89,6 +89,7 @@ fn reply(commands: Vec<DrawCommand>) -> Reply {
             layout: LayoutResult {
                 commands,
                 hit_regions: Vec::new(),
+                node_visibility: vec![Visibility::Visible; page.document.nodes.len()],
                 content_height: 24.0,
             },
             images: page.images,
@@ -562,7 +563,7 @@ fn box_key_exact_and_one_short_share_existing_sender_and_receiver_counters() {
     );
     assert!(e.finish().is_err());
     assert_eq!(keys, 1);
-    let bytes = [b"ERWA\x63".as_slice(), literal(1, 0, false, "é").as_slice()].concat();
+    let bytes = [b"ERWB\x63".as_slice(), literal(1, 0, false, "é").as_slice()].concat();
     let mut d = Decoder::new(&bytes, 99).unwrap();
     assert_eq!(d.byte().unwrap(), 13);
     assert!(decode_box_decoration(&mut d, &mut keys, &mut gradients).is_err());
@@ -653,7 +654,7 @@ fn box_gradients_share_exact_retained_admission_with_old_payloads() {
     );
     assert!(e.finish().is_err());
     assert_eq!(left, charge - 1);
-    let bytes = [b"ERWA\x63".as_slice(), literal(2, 0, false, "").as_slice()].concat();
+    let bytes = [b"ERWB\x63".as_slice(), literal(2, 0, false, "").as_slice()].concat();
     let mut d = Decoder::new(&bytes, 99).unwrap();
     assert_eq!(d.byte().unwrap(), 13);
     assert!(decode_box_decoration(&mut d, &mut keys, &mut left).is_err());

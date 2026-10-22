@@ -28,7 +28,7 @@ fn gradient() -> LinearGradient {
 
 // Authored from the wire contract, independently of Encoder's methods.
 fn literal() -> Vec<u8> {
-    let mut bytes = b"ERWA\x63\x00".to_vec();
+    let mut bytes = b"ERWB\x63\x00".to_vec();
     bytes.extend_from_slice(&(-45.0f64).to_le_bytes());
     bytes.extend_from_slice(&3u32.to_le_bytes());
     bytes.extend_from_slice(&[0, 255, 0, 0, 128, 1]);
@@ -64,6 +64,7 @@ fn reply(commands: Vec<DrawCommand>) -> Reply {
             layout: LayoutResult {
                 commands,
                 hit_regions: Vec::new(),
+                node_visibility: vec![Visibility::Visible; page.document.nodes.len()],
                 content_height: 24.0,
             },
             images: page.images,

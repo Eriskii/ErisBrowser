@@ -4,6 +4,14 @@ An independent Rust browser with custom HTML parsing, DOM, CSS cascade, layout, 
 
 **Status: an early browser implementation, not a fully web-compatible or production-secure browser.** The original requirements—every web standard, production security, and performance within 30% of Chromium—are not achieved. Many modern websites will not function. See [compatibility](docs/COMPATIBILITY.md) and [security](docs/SECURITY.md) for concrete boundaries.
 
+[CSS visibility](docs/css-visibility.md) now supports `visible` and `hidden`
+through the cascade, inline CSSOM and feature queries. Hidden boxes retain their
+layout space; visible descendants can still paint and receive hits. Native
+focus checks each candidate's own visibility. Canvas backgrounds remain painted,
+and table row layers follow the explicitly qualified CSS Tables draft policy.
+`collapse` remains unsupported. This adds no complete CSS, security or
+Chromium-relative performance claim.
+
 [JavaScript classes](docs/classes.md) now support declarations and expressions,
 base/derived construction, public methods/accessors and native Promise
 subclasses. Strict lexical bindings, `super()` ordering, alternate `new.target`

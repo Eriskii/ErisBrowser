@@ -276,6 +276,7 @@ fn engine<'a>(
         paint_owner: PaintOwner {
             node: doc.root,
             background: false,
+            paint_visibility: Visibility::Visible,
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,

@@ -1,5 +1,13 @@
 # Development docket
 
+[CSS visibility](css-visibility.md) adds inherited `visible`/`hidden` values
+while preserving layout, scroll extent and visible descendants. Paint, hit and
+native focus eligibility now use each node's own computed value. The bounded
+worker snapshot carries that value in ERWB metadata. `collapse`, broader table
+behavior, animations and accessibility API expansion remain future work. The
+selected table row-layer rule retains its draft/interoperability qualification;
+this checkpoint makes no Chromium performance comparison.
+
 [Promise class metadata admission](promise-class-admission.md) now runs the
 previously excluded class-tagged sources in seven existing Promise profiles.
 Eight complete replays retain 1,330 modes: **1,258 passed, 64 failed and eight

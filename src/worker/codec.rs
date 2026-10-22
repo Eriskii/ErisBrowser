@@ -7,6 +7,7 @@ use crate::graphics::gradient::{
     MAX_GRADIENT_STOPS,
 };
 use crate::{
+    css::Visibility,
     dom::{
         AttributeNamespace, Doctype, Document, DocumentMode, DomString, Element, MAX_DOM_BYTES,
         MAX_NODES, Namespace, Node, NodeKind,
@@ -27,7 +28,7 @@ const MAX_STRING: usize = 16 * 1024 * 1024;
 const MAX_IMAGES: usize = 64 * 1024 * 1024;
 const MAX_COMMANDS: usize = 200_000;
 const MAX_GRADIENT_BYTES: usize = 8 * 1024 * 1024;
-const MAGIC: &[u8] = b"ERWA";
+const MAGIC: &[u8] = b"ERWB";
 type Result<T> = std::result::Result<T, String>;
 
 pub(super) fn read_frame(input: &mut impl Read, limit: usize) -> Result<Vec<u8>> {
@@ -740,6 +741,12 @@ fn decode_box_decoration(
 }
 
 fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
+    if s.layout.node_visibility.len() != s.document.nodes.len()
+        || s.layout.node_visibility.len() > MAX_NODES
+    {
+        e.failed = true;
+        return;
+    }
     e.u64(s.generation);
     e.u64(s.processed_edit_sequence);
     e.byte(match s.task_state {
@@ -835,6 +842,13 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
             }
         }
     }
+    e.u32(s.layout.node_visibility.len());
+    for visibility in &s.layout.node_visibility {
+        e.byte(match visibility {
+            Visibility::Visible => 0,
+            Visibility::Hidden => 1,
+        });
+    }
     // Multiple element keys can refer to one decoded raster. Preserve sharing.
     let mut indices = HashMap::new();
     let mut rasters = Vec::new();
@@ -861,6 +875,10 @@ fn encode_snapshot(e: &mut Encoder, s: &Snapshot) {
     e.f32(s.layout.content_height);
     e.u32(s.layout.hit_regions.len());
     for hit in &s.layout.hit_regions {
+        if s.layout.node_visibility.get(hit.node) == Some(&Visibility::Hidden) {
+            e.failed = true;
+            return;
+        }
         e.u32(hit.node);
         e.rect(hit.rect);
         e.boolean(hit.fixed);
@@ -1163,6 +1181,26 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     } else if document.frozen_base().is_some() {
         return Err("missing IPC frozen base URL".into());
     }
+    let visibility_count = d.count(MAX_NODES)?;
+    if visibility_count != document.nodes.len() {
+        return Err("IPC visibility count differs from DOM node count".into());
+    }
+    // Validate the complete bounded payload before allocating typed storage.
+    let visibility_bytes = d.raw(visibility_count)?;
+    if visibility_bytes.iter().any(|value| *value > 1) {
+        return Err("unknown IPC visibility".into());
+    }
+    let mut node_visibility = Vec::new();
+    node_visibility
+        .try_reserve_exact(visibility_count)
+        .map_err(|_| "IPC allocation failed")?;
+    for value in visibility_bytes {
+        node_visibility.push(if *value == 0 {
+            Visibility::Visible
+        } else {
+            Visibility::Hidden
+        });
+    }
     let mut images = ImageStore::new();
     let mut rasters = Vec::new();
     let mut image_bytes = MAX_IMAGES;
@@ -1199,6 +1237,9 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
     let mut hit_regions = Vec::new();
     for _ in 0..d.count(MAX_COMMANDS)? {
         let node = d.count(document.nodes.len() - 1)?;
+        if node_visibility[node] == Visibility::Hidden {
+            return Err("IPC hit targets hidden node".into());
+        }
         let rect = d.rect()?;
         let fixed = d.boolean()?;
         let action = match d.byte()? {
@@ -1406,6 +1447,7 @@ fn decode_snapshot(d: &mut Decoder<'_>) -> Result<Snapshot> {
             commands,
             hit_regions,
             content_height,
+            node_visibility,
         },
         images,
         document,
@@ -1679,6 +1721,8 @@ mod background_image_tests;
 mod box_decoration_tests;
 #[cfg(test)]
 mod gradient_tests;
+#[cfg(test)]
+mod visibility_tests;
 
 #[cfg(test)]
 mod tests {
@@ -2190,6 +2234,8 @@ mod tests {
         let document = Document::parse(&source);
         drop(source);
         assert!(document.retained_bytes() > MAX_STRING);
+        r.snapshot.as_mut().unwrap().layout.node_visibility =
+            vec![Visibility::Visible; document.nodes.len()];
         r.snapshot.as_mut().unwrap().document = document;
         r.snapshot.as_mut().unwrap().layout.hit_regions.clear();
         let expected_bytes = r.snapshot.as_ref().unwrap().document.retained_bytes();
@@ -2252,10 +2298,10 @@ mod tests {
         let units =
             DomString::from_nonscalar_units(vec![0xd800, 0, 0x41, 0xdc00, 0xd83d, 0xde00]).unwrap();
         for (value, expected) in [
-            (scalar, b"ERWAc\x00\x06\0\0\0A\0\xf0\x9f\x98\x80".as_slice()),
+            (scalar, b"ERWBc\x00\x06\0\0\0A\0\xf0\x9f\x98\x80".as_slice()),
             (
                 units,
-                b"ERWAc\x01\x06\0\0\0\x00\xd8\0\0A\0\x00\xdc\x3d\xd8\x00\xde".as_slice(),
+                b"ERWBc\x01\x06\0\0\0\x00\xd8\0\0A\0\x00\xdc\x3d\xd8\x00\xde".as_slice(),
             ),
         ] {
             let mut encoded = Encoder::new(99);
@@ -2456,6 +2502,14 @@ mod tests {
         )
         .unwrap();
         assert_eq!(document.retained_bytes(), before + 45);
+        let count = document.nodes.len();
+        reply
+            .snapshot
+            .as_mut()
+            .unwrap()
+            .layout
+            .node_visibility
+            .resize(count, Visibility::Visible);
         let bytes = encode_reply(&reply).unwrap();
         let decoded = decode_reply(&bytes).unwrap();
         assert_eq!(encode_reply(&decoded).unwrap(), bytes);
@@ -2494,11 +2548,11 @@ mod tests {
     fn four_byte_wire_version_rejects_old_versions_for_all_message_kinds() {
         for kind in 0..=8 {
             let current = Encoder::new(kind).finish().unwrap();
-            assert_eq!(&current[..4], b"ERWA");
+            assert_eq!(&current[..4], b"ERWB");
             assert_eq!(current.len(), 5);
             Decoder::new(&current, kind).unwrap();
             assert_eq!(is_fetch_request(&current), kind == 3);
-            for old in [b"ERW9", b"ERW8"] {
+            for old in [b"ERWA", b"ERW9", b"ERW8"] {
                 let mut stale = current.clone();
                 stale[..4].copy_from_slice(old);
                 assert!(

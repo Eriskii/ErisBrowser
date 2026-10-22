@@ -1,0 +1,20 @@
+<!doctype html>
+<title>hidden</title>
+<style>
+html,body { margin:0; padding:0; background:white }
+#box { width:12px; height:8px; background:red; visibility:hidden }
+#toggle { width:4px; height:4px; background:blue; visibility:visible }
+#after { width:4px; height:4px; background:lime }
+</style>
+<div id=box><div id=toggle></div></div><div id=after></div>
+<script>
+var box = document.getElementById('box');
+var toggle = document.getElementById('toggle');
+var shown = false;
+toggle.addEventListener('click', function () {
+    shown = !shown;
+    box.style.visibility = shown ? 'visible' : 'hidden';
+    document.title = shown ? 'shown' : 'hidden';
+});
+box.addEventListener('click', function () { document.title += 'B'; });
+</script>

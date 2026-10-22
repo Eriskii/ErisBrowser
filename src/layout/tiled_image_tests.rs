@@ -173,6 +173,7 @@ fn tiled_restack_keeps_only_positive_paint_and_tile_boxes() {
         paint_owner: PaintOwner {
             node: doc.root,
             background: true,
+            paint_visibility: Visibility::Visible,
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,

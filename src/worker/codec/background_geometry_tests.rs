@@ -43,6 +43,7 @@ fn reply(commands: Vec<DrawCommand>) -> Reply {
             layout: LayoutResult {
                 commands,
                 hit_regions: Vec::new(),
+                node_visibility: vec![Visibility::Visible; page.document.nodes.len()],
                 content_height: 6.0,
             },
             images: page.images,
@@ -163,7 +164,7 @@ fn extended_gradient_retains_geometry_stop_validation_and_shared_byte_admission(
     }
     // The extra mask is wire metadata; retained payload cost is unchanged.
     let raw = literal(Some(0));
-    let mut gradient_wire = b"ERWA\x63".to_vec();
+    let mut gradient_wire = b"ERWB\x63".to_vec();
     gradient_wire.extend_from_slice(&raw[46..]);
     let charge = std::mem::size_of::<GradientStop>()
         + std::mem::size_of::<LinearGradient>()

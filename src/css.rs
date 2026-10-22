@@ -5,7 +5,10 @@ use crate::dom::{
 use crate::graphics::{Color, gradient::LinearGradient};
 mod background;
 mod border_spacing;
+mod visibility;
 pub(crate) use border_spacing::valid as valid_border_spacing;
+pub use visibility::Visibility;
+pub(crate) use visibility::valid as valid_visibility;
 mod gradient;
 mod image;
 pub mod url;
@@ -262,6 +265,7 @@ pub struct ObjectPosition {
 #[derive(Debug, Clone)]
 pub struct ComputedStyle {
     pub display: Display,
+    pub visibility: Visibility,
     pub object_fit: ObjectFit,
     pub object_position: ObjectPosition,
     pub flow_root: bool,
@@ -333,6 +337,7 @@ impl Default for ComputedStyle {
     fn default() -> Self {
         Self {
             display: Display::Inline,
+            visibility: Visibility::Visible,
             object_fit: ObjectFit::Fill,
             object_position: ObjectPosition::default(),
             flow_root: false,
@@ -406,6 +411,7 @@ impl ComputedStyle {
         let mut s = Self::default();
         if let Some(p) = parent {
             s.color = p.color;
+            s.visibility = p.visibility;
             s.border_spacing = p.border_spacing;
             s.font_size = p.font_size;
             s.line_height = p.line_height;
@@ -1577,6 +1583,7 @@ pub(crate) fn supports_declaration_with_budget(
         let tokens = crate::selectors::tokens(value, &mut evaluator.work).map_err(|_| ())?;
         evaluator.tokens(&tokens)?;
         let spacing_property = property.eq_ignore_ascii_case("border-spacing");
+        let visibility_property = property.eq_ignore_ascii_case("visibility");
         let image_property = property.eq_ignore_ascii_case("background")
             || property.eq_ignore_ascii_case("background-image");
         let box_property = property.eq_ignore_ascii_case("background")
@@ -1590,6 +1597,7 @@ pub(crate) fn supports_declaration_with_budget(
                 && !(image_property && image::url_payload(*token))
                 && !(box_property && background_box_token(*token))
                 && !(spacing_property && border_spacing::escape_allowed(*token))
+                && !(visibility_property && visibility::escape_allowed(*token))
         }) {
             return Ok(false);
         }
@@ -1604,6 +1612,7 @@ pub(crate) fn supports_declaration_with_budget(
         if matches!(
             property.as_str(),
             "border-spacing"
+                | "visibility"
                 | "object-fit"
                 | "object-position"
                 | "background"
@@ -1772,12 +1781,19 @@ impl SupportsEvaluator {
             return Ok(false);
         }
         let spacing_property = name.eq_ignore_ascii_case("border-spacing");
+        // A supports condition uses CSS syntax for its property identifier.
+        // The separate two-argument API deliberately keeps its literal-name rule.
+        let visibility_property = name.eq_ignore_ascii_case("visibility")
+            || name.contains('\\')
+                && css_identifier(name).is_some_and(|(decoded, end)| {
+                    end == name.len() && decoded.eq_ignore_ascii_case("visibility")
+                });
         let image_property = name.eq_ignore_ascii_case("background")
             || name.eq_ignore_ascii_case("background-image");
         let box_property = name.eq_ignore_ascii_case("background")
             || name.eq_ignore_ascii_case("background-origin")
             || name.eq_ignore_ascii_case("background-clip");
-        if image_property || box_property || spacing_property {
+        if image_property || box_property || spacing_property || visibility_property {
             use crate::selectors::Kind;
             let tokens = crate::selectors::tokens(original, &mut self.work).map_err(|_| ())?;
             self.spend(tokens.len() + 1)?;
@@ -1803,6 +1819,7 @@ impl SupportsEvaluator {
                     && !(image_property && image::url_payload(*t))
                     && !(box_property && background_box_token(*t))
                     && !(spacing_property && border_spacing::escape_allowed(*t))
+                    && !(visibility_property && visibility::escape_allowed(*t))
             }) {
                 return Ok(false);
             }
@@ -1811,12 +1828,13 @@ impl SupportsEvaluator {
                 return Ok(false);
             }
             let clean = image::comments(raw, &mut self.work).map_err(|_| ())?;
-            return valid_declaration_value(
-                &name.to_ascii_lowercase(),
-                media_trim(&clean),
-                &mut self.work,
-            )
-            .map_err(|_| ());
+            let name = if visibility_property {
+                "visibility".into()
+            } else {
+                name.to_ascii_lowercase()
+            };
+            return valid_declaration_value(&name, media_trim(&clean), &mut self.work)
+                .map_err(|_| ());
         }
         if let Some((before, important)) = value.rsplit_once('!') {
             if !media_trim(important).eq_ignore_ascii_case("important") {
@@ -1970,6 +1988,10 @@ fn supports_color(value: &str) -> bool {
 pub(crate) fn supports_property(name: &str, value: &str) -> bool {
     // This compatibility boolean helper owns a top-level allowance. Metered
     // supports/CSSOM entry points dispatch spacing directly before this path.
+    if name == "visibility" {
+        let mut work = MAX_SUPPORTS_WORK;
+        return valid_visibility(value, &mut work).unwrap_or(false);
+    }
     if name == "border-spacing" {
         let mut work = MAX_SUPPORTS_WORK;
         return valid_border_spacing(value, &mut work).unwrap_or(false);
@@ -3637,6 +3659,7 @@ pub fn compute_styles_with_rules(
 }
 const SUPPORTED_PROPERTIES: &[&str] = &[
     "display",
+    "visibility",
     "object-fit",
     "object-position",
     "float",
@@ -4600,6 +4623,7 @@ fn apply_property(
         let inherited = matches!(
             name,
             "color"
+                | "visibility"
                 | "border-spacing"
                 | "font-size"
                 | "font-weight"
@@ -4648,6 +4672,11 @@ fn apply_property(
         }
     };
     match name {
+        "visibility" => {
+            if let Ok(Some(visibility)) = visibility::parse(value, work) {
+                s.visibility = visibility;
+            }
+        }
         "object-fit" => {
             if let Ok(Some(fit)) = parse_object_fit(value, work) {
                 s.object_fit = fit;
@@ -5056,6 +5085,7 @@ fn apply_property(
 fn copy_property(s: &mut ComputedStyle, p: &ComputedStyle, name: &str) {
     match name {
         "border-spacing" => s.border_spacing = p.border_spacing,
+        "visibility" => s.visibility = p.visibility,
         "object-fit" => s.object_fit = p.object_fit,
         "object-position" => s.object_position = p.object_position,
         "display" => {
@@ -5664,7 +5694,9 @@ fn valid_declaration_value(
     value: &str,
     work: &mut usize,
 ) -> Result<bool, crate::selectors::Error> {
-    if name == "border-spacing" {
+    if name == "visibility" {
+        valid_visibility(value, work)
+    } else if name == "border-spacing" {
         valid_border_spacing(value, work)
     } else if matches!(name, "object-fit" | "object-position") {
         valid_object_property(name, value, work)
@@ -8822,3 +8854,9 @@ pub(crate) fn serialize_background_shorthand(
 mod pending_inline_budget_tests;
 #[cfg(test)]
 mod pending_inline_tests;
+
+#[cfg(test)]
+mod visibility_tests;
+
+#[cfg(test)]
+mod visibility_budget_tests;

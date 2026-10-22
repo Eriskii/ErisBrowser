@@ -126,6 +126,7 @@ fn engine<'a>(
         paint_owner: PaintOwner {
             node: doc.root,
             background: false,
+            paint_visibility: Visibility::Visible,
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
@@ -591,6 +592,7 @@ fn inline_pending_slots_are_private_balanced_and_budget_refusal_keeps_color() {
         commands: e.commands,
         hit_regions: e.hits,
         content_height: 2.0,
+        node_visibility: vec![Visibility::Visible; doc.nodes.len()],
     };
     assert!(rasters(&result).is_empty());
     assert_eq!(pixels(&result, 4, 2), vec![0x00ff00; 8]);

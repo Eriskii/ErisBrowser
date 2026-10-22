@@ -213,6 +213,7 @@ impl Engine<'_> {
         self.paint_owner = PaintOwner {
             node,
             background: true,
+            paint_visibility: self.style(node).visibility,
             inline_layer: InlineLayer::Clip,
             inline_prefix: prefix,
             inline_sides: physical_sides,

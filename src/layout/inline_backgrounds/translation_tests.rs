@@ -6,6 +6,7 @@ fn owner(layer: InlineLayer) -> PaintOwner {
     PaintOwner {
         node: 1,
         background: true,
+        paint_visibility: Visibility::Visible,
         inline_layer: layer,
         inline_prefix: 8.0,
         inline_sides: LAST,

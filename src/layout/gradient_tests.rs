@@ -90,6 +90,7 @@ fn engine<'a>(doc: &'a Document, styles: &'a [ComputedStyle], fonts: &'a Fonts) 
         paint_owner: PaintOwner {
             node: doc.root,
             background: false,
+            paint_visibility: Visibility::Visible,
             inline_layer: InlineLayer::None,
             inline_prefix: 0.0,
             inline_sides: 0,
@@ -591,6 +592,7 @@ fn pending_inline_admission_is_atomic_and_zero_positioning_boxes_are_not_pending
     e.paint_owner = PaintOwner {
         node: z,
         background: true,
+        paint_visibility: Visibility::Visible,
         inline_layer: InlineLayer::None,
         inline_prefix: 0.0,
         inline_sides: 0,

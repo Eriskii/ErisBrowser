@@ -1,5 +1,13 @@
 # Compatibility status
 
+[CSS visibility](css-visibility.md) supports the `visible`/`hidden` subset,
+including inheritance, existing CSS-wide keywords, variables, priority and
+inline CSSOM. Hidden boxes preserve geometry and allow visible descendants;
+their own paint, hit targets and native focus eligibility are suppressed.
+`collapse` remains unsupported. Row-background visibility follows the selected
+CSS Tables 3 draft interpretation, whose interoperability remains unsettled.
+The chapter separates current validation from older checkpoint totals below.
+
 [Class `super` properties](class-super-properties.md) and
 [object-literal method/accessor `super`](object-super-properties.md) now support
 dot/computed reads, calls and writes with the defining home kept separate from

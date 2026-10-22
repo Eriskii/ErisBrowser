@@ -1186,6 +1186,9 @@ fn valid_longhand(property: &str, value: &str, work: &mut usize) -> Result<bool,
     if wide(value) {
         return Ok(true);
     }
+    if property == "visibility" {
+        return css::valid_visibility(value, work).map_err(|_| Error::Limit);
+    }
     if property == "border-spacing" {
         return css::valid_border_spacing(value, work).map_err(|_| Error::Limit);
     }

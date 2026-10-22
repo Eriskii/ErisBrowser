@@ -856,6 +856,7 @@ fn browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation() {
     let mut images = ImageStore::new();
     let source = raster([1, 2, 3, 255]);
     images.insert("one".into(), source.clone());
+    let document = crate::dom::Document::default();
     let snapshot = crate::worker::Snapshot {
         generation: 81,
         processed_edit_sequence: 0,
@@ -864,9 +865,10 @@ fn browser_bridge_snapshot_delegation_borrows_public_fields_without_mutation() {
             commands: vec![image("one")],
             hit_regions: Vec::new(),
             content_height: 3.0,
+            node_visibility: vec![crate::css::Visibility::Visible; document.nodes.len()],
         },
         images,
-        document: crate::dom::Document::default(),
+        document,
         title: "held".into(),
         url: "about:blank".into(),
         diagnostics: vec!["retained".into()],

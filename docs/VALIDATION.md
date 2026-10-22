@@ -1,5 +1,76 @@
 # Validation record
 
+## CSS visible/hidden visibility
+
+The [visibility subset](css-visibility.md) keeps hidden boxes in layout while
+filtering their own paint/hits and native focus eligibility. Visible descendants
+retain their clip, fixed-coordinate, opacity and ancestor context. Canvas
+backgrounds remain painted; table row layers follow a selected CSS Tables 3
+working-draft interpretation with recorded interoperability disagreement.
+`collapse` is deferred. Layout, resource and IPC limits are unchanged.
+
+The selected source passed **3,521 tests on Rust 1.88** and **3,885 on Rust 1.99
+with `test262-host,vulkan-raster`**, across 58 result rows each, with zero failed
+or ignored tests. Both strict Clippy configurations and the final formatting
+check passed. The full rosters preserve all prior groups and add 36: six CSS,
+sixteen pixel/CSSOM, three native-focus, four codec, two direct/confined dynamic
+and five resource-boundary groups. The earlier focused run passed 35 matching
+groups (31 new and four existing); the five budget groups were added afterward.
+
+The parent had compiled and failed all sixteen public integration groups:
+fifteen pixel/hit/reference groups and one missing-property CSSOM group. Direct
+computed-style controls require the new field and were not run against the
+parent. Separate direct and confined dynamic parent witnesses failed on the
+hidden red pixel. Their selected candidate versions pass in the full suites.
+
+The release browser passed all **102 existing reference pairs**, and all
+**204 test/reference images matched the parent exactly**. The separate selected
+measurement run completed all eighteen supervised processes with expected pixels
+and clean teardown. For the dense all-visible scene, three direct median
+candidate/parent ratios were 1.0307, 0.9782 and 1.0384; confined worker-total
+ratios were 1.0430, 1.0640 and 1.0416. The worker's pooled 300 warm samples per
+revision had median totals of 2.824274 ms parent and 2.964620 ms candidate.
+These are uncontrolled local CPU observations, not a performance gate or a
+Chromium/GPU comparison. Direct rounded summaries are not pooled as raw samples.
+
+Actual Rust 1.88 type measurements keep `ComputedStyle` at 1,032 bytes;
+`PaintOwner` changes from 16 to 24 and `LayoutResult` from 56 to 80. One typed
+visibility byte is stored per DOM node, with allocator/capacity overhead
+additional. ERWB transmits a four-byte count plus one checked byte per node,
+`4 + N` bytes with a maximum of 100,004; all old frame and node caps remain.
+
+The first full attempt's top-level result was 3,142 passes and twelve failures:
+four stale historical `all` fixtures and eight localhost socket-preflight
+`EPERM` failures. Nested child-process summaries in that log are not additional
+top-level groups. The three-file fixture migration updates the 87-longhand
+roster and its token/filler arithmetic while preserving the 256-record and exact
+65,536-byte caps and atomic one-over refusals. A one-line `repeat(1)` replacement
+constructs the same one-byte filler before linting. Full suites then passed with
+the required socket permission. Earlier table-width, missing-property-name and
+missing-layout-field source corrections remain separate immutable holds with
+unchanged pixel oracles. Source-checker interruptions and their narrow checker
+corrections are also retained; they did not change candidate behavior.
+
+Measurement attempt1 failed before any accepted samples: `TZ=UTC` could not load
+its timezone data on this host. The supervisor recorded completed cleanup and
+zero descendants. The additive runner2 selects POSIX `UTC0` with the same offset
+and unchanged fixtures, process order, expected images and supervision. The
+successful second attempt is the selected result; the first remains archived.
+
+The final source inventory is candidate3: **15,307 inputs and 35 changed source
+paths**, SHA-256 `1421a1fc1b5433361ab03181cf4a5917d2fbe11c7b28d0a0632ac928fd8dfad4`.
+Its scope includes source, Cargo build inputs, tools and tests, including pinned
+corpora; it excludes documentation, build outputs and external dependencies.
+The final validation ledger is SHA-256
+`1c4ecff753c6b9fdc6b1711d4f25c73f7ad557f57529ae0d2551ebb4653cf8eb`.
+The published parent `18d3648c` has eleven successful remote CI jobs; that is
+not a remote result for this checkpoint. No new GPU execution, complete browser
+compatibility, security certification or Chromium performance result is claimed.
+
+See the [evidence manifest](evidence/css-visibility/manifest.json) and
+[source/check archive](evidence/css-visibility/sources-and-checks.tar.gz).
+The complete prior validation body below remains byte-exact.
+
 ## Class metadata admission in Promise profiles
 
 The [class-admission checkpoint](promise-class-admission.md) adds only `class` to

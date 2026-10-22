@@ -1900,7 +1900,7 @@ fn unexpected_inherited_descriptor_is_rejected() {
             .stderr(Stdio::null())
             .spawn()
             .unwrap();
-        let mut init = b"ERWA\x00\x00".to_vec();
+        let mut init = b"ERWB\x00\x00".to_vec();
         init.extend_from_slice(&103u64.to_le_bytes());
         init.push(0); // Scripts disabled: no timezone capability is needed.
         let mut input = direct.stdin.take().unwrap();
@@ -2094,12 +2094,12 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         let mut output = child.0.stdout.take().unwrap();
         let flags = rustix::fs::fcntl_getfl(&output).unwrap();
         rustix::fs::fcntl_setfl(&output, flags | rustix::fs::OFlags::NONBLOCK).unwrap();
-        send(&mut input, b"ERWA\x06");
-        assert_eq!(receive(&mut output), b"ERWA\x02\x01\x00\x00");
+        send(&mut input, b"ERWB\x06");
+        assert_eq!(receive(&mut output), b"ERWB\x02\x01\x00\x00");
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap();
         assert!(status.contains("NoNewPrivs:\t1"));
         assert!(status.contains("Seccomp:\t2"));
-        let mut request = b"ERWA\x07".to_vec();
+        let mut request = b"ERWB\x07".to_vec();
         request.extend_from_slice(&(mime.len() as u32).to_le_bytes());
         request.extend_from_slice(mime.as_bytes());
         request.extend_from_slice(&budget.to_le_bytes());
@@ -2107,7 +2107,7 @@ fn image_decoder_confines_decodes_once_and_exits_without_response_body_leaks() {
         request.extend_from_slice(body);
         send(&mut input, &request);
         let response = receive(&mut output);
-        assert_eq!(&response[..5], b"ERWA\x08");
+        assert_eq!(&response[..5], b"ERWB\x08");
         assert_eq!(response[5], u8::from(success));
         if success {
             assert_eq!(u32::from_le_bytes(response[6..10].try_into().unwrap()), 2);
@@ -2925,3 +2925,6 @@ mod classes;
 
 #[path = "worker/object_super_properties.rs"]
 mod object_super_properties;
+
+#[path = "worker/visibility_dynamic.rs"]
+mod visibility_dynamic;
